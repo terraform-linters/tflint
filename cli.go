@@ -127,8 +127,10 @@ func (cli *CLI) Run(args []string) int {
 
 		list, _ := root.Node.(*ast.ObjectList)
 		for _, item := range list.Filter("resource", "aws_instance").Items {
-			instanceTypeToken := item.Val.(*ast.ObjectType).List.Filter("instance_type").Items[0].Val.(*ast.LiteralType).Token
+			instanceItemList := item.Val.(*ast.ObjectType).List
+			instanceTypeToken := instanceItemList.Filter("instance_type").Items[0].Val.(*ast.LiteralType).Token
 			instanceTypeKey := strings.Trim(instanceTypeToken.Text, "\"")
+			instanceIAMProfile := instanceItemList.Filter("iam_instance_profile")
 
 			if !validInstanceType[instanceTypeKey] && !validPreviousGenerationInstanceType[instanceTypeKey] {
 				fmt.Fprintf(cli.outStream, "WARNING: %s is invalid instance type. Line: %d in %s\n", instanceTypeToken.Text, instanceTypeToken.Pos.Line, flags.Arg(0))
@@ -136,6 +138,10 @@ func (cli *CLI) Run(args []string) int {
 
 			if validPreviousGenerationInstanceType[instanceTypeKey] {
 				fmt.Fprintf(cli.outStream, "NOTICE: %s is previous generation instance type. Line: %d in %s\n", instanceTypeToken.Text, instanceTypeToken.Pos.Line, flags.Arg(0))
+			}
+
+			if len(instanceIAMProfile.Items) == 0 {
+				fmt.Fprintf(cli.outStream, "NOTICE: \"iam_instance_profile\" is not specified. You cannot edit this value later. Line: %d in %s\n", item.Pos().Line, flags.Arg(0))
 			}
 
 			pp.Print(instanceTypeToken)
