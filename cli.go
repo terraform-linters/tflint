@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/detector"
 	"github.com/wata727/tflint/loader"
 	"github.com/wata727/tflint/printer"
@@ -47,15 +48,21 @@ func (cli *CLI) Run(args []string) int {
 		return ExitCodeOK
 	}
 
+	// Main function
+	var listmap map[string]*ast.ObjectList
+	var err error
 	if flags.NArg() > 0 {
-		listmap, err := loader.LoadFile(flags.Arg(0))
-		if err != nil {
-			fmt.Fprintln(cli.errStream, err)
-			return ExitCodeError
-		}
-		issues := detector.Detect(listmap)
-		printer.Print(issues, cli.outStream, cli.errStream)
+		listmap, err = loader.LoadFile(nil, flags.Arg(0))
+	} else {
+		listmap, err = loader.LoadAllFile()
 	}
+
+	if err != nil {
+		fmt.Fprintln(cli.errStream, err)
+		return ExitCodeError
+	}
+	issues := detector.Detect(listmap)
+	printer.Print(issues, cli.outStream, cli.errStream)
 
 	return ExitCodeOK
 }
