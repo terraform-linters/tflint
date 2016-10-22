@@ -8,19 +8,19 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-func DetectAwsInstanceInvalidType(list *ast.ObjectList, file string) []*issue.Issue {
+func (d *AwsDetector) DetectAwsInstanceInvalidType() []*issue.Issue {
 	var issues = []*issue.Issue{}
 
-	for _, item := range list.Filter("resource", "aws_instance").Items {
+	for _, item := range d.List.Filter("resource", "aws_instance").Items {
 		instanceTypeToken := item.Val.(*ast.ObjectType).List.Filter("instance_type").Items[0].Val.(*ast.LiteralType).Token
-		instanceTypeKey := strings.Trim(instanceTypeToken.Text, "\"")
+		instanceTypeKey := d.EvalConfig.Eval(strings.Trim(instanceTypeToken.Text, "\""))
 
 		if !ValidInstanceType[instanceTypeKey] {
 			issue := &issue.Issue{
 				Type:    "WARNING",
-				Message: fmt.Sprintf("%s is invalid instance type.", instanceTypeToken.Text),
+				Message: fmt.Sprintf("\"%s\" is invalid instance type.", instanceTypeKey),
 				Line:    instanceTypeToken.Pos.Line,
-				File:    file,
+				File:    d.File,
 			}
 			issues = append(issues, issue)
 		}

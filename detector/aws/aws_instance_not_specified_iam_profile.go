@@ -5,10 +5,10 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-func DetectAwsInstanceNotSpecifiedIamProfile(list *ast.ObjectList, file string) []*issue.Issue {
+func (d *AwsDetector) DetectAwsInstanceNotSpecifiedIamProfile() []*issue.Issue {
 	var issues = []*issue.Issue{}
 
-	for _, item := range list.Filter("resource", "aws_instance").Items {
+	for _, item := range d.List.Filter("resource", "aws_instance").Items {
 		instanceIAMProfile := item.Val.(*ast.ObjectType).List.Filter("iam_instance_profile")
 
 		if len(instanceIAMProfile.Items) == 0 {
@@ -16,7 +16,7 @@ func DetectAwsInstanceNotSpecifiedIamProfile(list *ast.ObjectList, file string) 
 				Type:    "NOTICE",
 				Message: "\"iam_instance_profile\" is not specified. You cannot edit this value later.",
 				Line:    item.Pos().Line,
-				File:    file,
+				File:    d.File,
 			}
 			issues = append(issues, issue)
 		}
