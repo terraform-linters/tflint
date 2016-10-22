@@ -4,11 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 
-	"github.com/hashicorp/hcl/hcl/ast"
-	"github.com/hashicorp/hcl/hcl/parser"
 	"github.com/wata727/tflint/detector"
+	"github.com/wata727/tflint/loader"
 	"github.com/wata727/tflint/printer"
 )
 
@@ -50,19 +48,12 @@ func (cli *CLI) Run(args []string) int {
 	}
 
 	if flags.NArg() > 0 {
-		b, err := ioutil.ReadFile(flags.Arg(0))
+		listmap, err := loader.LoadFile(flags.Arg(0))
 		if err != nil {
-			fmt.Fprintf(cli.errStream, "ERROR: Cannot open file %s\n", flags.Arg(0))
+			fmt.Fprintln(cli.errStream, err)
 			return ExitCodeError
 		}
-		root, err := parser.Parse(b)
-		if err != nil {
-			fmt.Fprintf(cli.errStream, "ERROR: Parse error occurred by %s\n", flags.Arg(0))
-			return ExitCodeError
-		}
-
-		list, _ := root.Node.(*ast.ObjectList)
-		issues := detector.Detect(list, flags.Arg(0))
+		issues := detector.Detect(listmap)
 		printer.Print(issues, cli.outStream, cli.errStream)
 	}
 

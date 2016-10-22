@@ -6,7 +6,6 @@ import (
 )
 
 type AwsDetector struct {
-	List       *ast.ObjectList
-	File       string
+	ListMap    map[string]*ast.ObjectList
 	EvalConfig *eval.Evaluator
 }

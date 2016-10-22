@@ -8,16 +8,14 @@ import (
 )
 
 type Detector struct {
-	List       *ast.ObjectList
-	File       string
+	ListMap    map[string]*ast.ObjectList
 	EvalConfig *eval.Evaluator
 }
 
-func Detect(list *ast.ObjectList, file string) []*issue.Issue {
+func Detect(listmap map[string]*ast.ObjectList) []*issue.Issue {
 	detector := &Detector{
-		List:       list,
-		File:       file,
-		EvalConfig: eval.NewEvaluator(list),
+		ListMap:    listmap,
+		EvalConfig: eval.NewEvaluator(listmap),
 	}
 	return detector.Detect()
 }
@@ -25,8 +23,7 @@ func Detect(list *ast.ObjectList, file string) []*issue.Issue {
 func (d *Detector) Detect() []*issue.Issue {
 	var issues = []*issue.Issue{}
 	awsDetector := &aws.AwsDetector{
-		List:       d.List,
-		File:       d.File,
+		ListMap:    d.ListMap,
 		EvalConfig: d.EvalConfig,
 	}
 

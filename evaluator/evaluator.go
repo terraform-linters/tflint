@@ -12,8 +12,8 @@ type Evaluator struct {
 	Config hil.EvalConfig
 }
 
-func NewEvaluator(list *hcl_ast.ObjectList) *Evaluator {
-	varmap := detectVariables(list)
+func NewEvaluator(listmap map[string]*hcl_ast.ObjectList) *Evaluator {
+	varmap := detectVariables(listmap)
 
 	evaluator := &Evaluator{
 		Config: hil.EvalConfig{
@@ -26,22 +26,24 @@ func NewEvaluator(list *hcl_ast.ObjectList) *Evaluator {
 	return evaluator
 }
 
-func detectVariables(list *hcl_ast.ObjectList) map[string]hil_ast.Variable {
+func detectVariables(listmap map[string]*hcl_ast.ObjectList) map[string]hil_ast.Variable {
 	varmap := make(map[string]hil_ast.Variable)
 
-	for _, item := range list.Filter("variable").Items {
-		var variable hil_ast.Variable
-		varName := "var." + strings.Trim(item.Keys[0].Token.Text, "\"")
-		varTypeString := strings.Trim(item.Val.(*hcl_ast.ObjectType).List.Filter("type").Items[0].Val.(*hcl_ast.LiteralType).Token.Text, "\"")
+	for _, list := range listmap {
+		for _, item := range list.Filter("variable").Items {
+			var variable hil_ast.Variable
+			varName := "var." + strings.Trim(item.Keys[0].Token.Text, "\"")
+			varTypeString := strings.Trim(item.Val.(*hcl_ast.ObjectType).List.Filter("type").Items[0].Val.(*hcl_ast.LiteralType).Token.Text, "\"")
 
-		switch varTypeString {
-		case "string":
-			variable = hil_ast.Variable{
-				Type:  hil_ast.TypeString,
-				Value: strings.Trim(item.Val.(*hcl_ast.ObjectType).List.Filter("default").Items[0].Val.(*hcl_ast.LiteralType).Token.Text, "\""),
+			switch varTypeString {
+			case "string":
+				variable = hil_ast.Variable{
+					Type:  hil_ast.TypeString,
+					Value: strings.Trim(item.Val.(*hcl_ast.ObjectType).List.Filter("default").Items[0].Val.(*hcl_ast.LiteralType).Token.Text, "\""),
+				}
 			}
+			varmap[varName] = variable
 		}
-		varmap[varName] = variable
 	}
 
 	return varmap
