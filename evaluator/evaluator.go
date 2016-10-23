@@ -121,5 +121,8 @@ func parseVariable(val interface{}, varType string) hil_ast.Variable {
 func (e *Evaluator) Eval(src string) string {
 	root, _ := hil.Parse(src)
 	result, _ := hil.Eval(root, &e.Config)
+	if result.Value == nil {
+		return ""
+	}
 	return result.Value.(string)
 }
