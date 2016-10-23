@@ -1,8 +1,10 @@
 package evaluator
 
 import (
-	"strings"
+	"fmt"
+	"reflect"
 
+	"github.com/hashicorp/hcl"
 	hcl_ast "github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hil"
 	hil_ast "github.com/hashicorp/hil/ast"
@@ -10,6 +12,14 @@ import (
 
 type Evaluator struct {
 	Config hil.EvalConfig
+}
+
+type hclVariable struct {
+	Name         string `hcl:",key"`
+	Default      interface{}
+	Description  string
+	DeclaredType string   `hcl:"type"`
+	Fields       []string `hcl:",decodedFields"`
 }
 
 func NewEvaluator(listmap map[string]*hcl_ast.ObjectList) *Evaluator {
@@ -30,23 +40,73 @@ func detectVariables(listmap map[string]*hcl_ast.ObjectList) map[string]hil_ast.
 	varmap := make(map[string]hil_ast.Variable)
 
 	for _, list := range listmap {
-		for _, item := range list.Filter("variable").Items {
-			var variable hil_ast.Variable
-			varName := "var." + strings.Trim(item.Keys[0].Token.Text, "\"")
-			varTypeString := strings.Trim(item.Val.(*hcl_ast.ObjectType).List.Filter("type").Items[0].Val.(*hcl_ast.LiteralType).Token.Text, "\"")
+		var variables []*hclVariable
+		if err := hcl.DecodeObject(&variables, list.Filter("variable")); err != nil {
+			return varmap
+		}
 
-			switch varTypeString {
-			case "string":
-				variable = hil_ast.Variable{
-					Type:  hil_ast.TypeString,
-					Value: strings.Trim(item.Val.(*hcl_ast.ObjectType).List.Filter("default").Items[0].Val.(*hcl_ast.LiteralType).Token.Text, "\""),
-				}
-			}
-			varmap[varName] = variable
+		for _, v := range variables {
+			varName := "var." + v.Name
+			varmap[varName] = parseVariable(v.Default, v.DeclaredType)
 		}
 	}
 
 	return varmap
+}
+
+func parseVariable(val interface{}, varType string) hil_ast.Variable {
+	if varType == "" {
+		switch reflect.TypeOf(val).Kind() {
+		case reflect.String:
+			varType = "string"
+		case reflect.Slice:
+			varType = "list"
+		case reflect.Map:
+			varType = "list"
+		default:
+			varType = "string"
+		}
+	}
+
+	var hilVar hil_ast.Variable
+	switch varType {
+	case "string":
+		hilVar = hil_ast.Variable{
+			Type:  hil_ast.TypeString,
+			Value: val,
+		}
+	case "list":
+		s := reflect.ValueOf(val)
+
+		switch reflect.TypeOf(s.Index(0).Interface()).Kind() {
+		case reflect.Map:
+			var variables map[string]hil_ast.Variable
+			variables = map[string]hil_ast.Variable{}
+			for i := 0; i < s.Len(); i++ {
+				ms := reflect.ValueOf(s.Index(i).Interface())
+				for _, k := range ms.MapKeys() {
+					key := fmt.Sprint(k.Interface())
+					value := fmt.Sprint(ms.MapIndex(reflect.ValueOf(key)).Interface())
+					variables[key] = parseVariable(value, "")
+				}
+			}
+			hilVar = hil_ast.Variable{
+				Type:  hil_ast.TypeMap,
+				Value: variables,
+			}
+		default:
+			var variables []hil_ast.Variable
+			for i := 0; i < s.Len(); i++ {
+				variables = append(variables, parseVariable(s.Index(i).Interface(), ""))
+			}
+			hilVar = hil_ast.Variable{
+				Type:  hil_ast.TypeList,
+				Value: variables,
+			}
+		}
+	}
+
+	return hilVar
 }
 
 func (e *Evaluator) Eval(src string) string {
