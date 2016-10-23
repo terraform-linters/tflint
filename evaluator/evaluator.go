@@ -1,6 +1,7 @@
 package evaluator
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 
@@ -22,8 +23,11 @@ type hclVariable struct {
 	Fields       []string `hcl:",decodedFields"`
 }
 
-func NewEvaluator(listmap map[string]*hcl_ast.ObjectList) *Evaluator {
-	varmap := detectVariables(listmap)
+func NewEvaluator(listmap map[string]*hcl_ast.ObjectList) (*Evaluator, error) {
+	varmap, err := detectVariables(listmap)
+	if err != nil {
+		return nil, err
+	}
 
 	evaluator := &Evaluator{
 		Config: hil.EvalConfig{
@@ -33,25 +37,28 @@ func NewEvaluator(listmap map[string]*hcl_ast.ObjectList) *Evaluator {
 		},
 	}
 
-	return evaluator
+	return evaluator, nil
 }
 
-func detectVariables(listmap map[string]*hcl_ast.ObjectList) map[string]hil_ast.Variable {
+func detectVariables(listmap map[string]*hcl_ast.ObjectList) (map[string]hil_ast.Variable, error) {
 	varmap := make(map[string]hil_ast.Variable)
 
 	for _, list := range listmap {
 		var variables []*hclVariable
 		if err := hcl.DecodeObject(&variables, list.Filter("variable")); err != nil {
-			return varmap
+			return nil, err
 		}
 
 		for _, v := range variables {
+			if v.Default == nil {
+				return nil, errors.New(fmt.Sprintf("ERROR: Cannot parse variable \"%s\"\n", v.Name))
+			}
 			varName := "var." + v.Name
 			varmap[varName] = parseVariable(v.Default, v.DeclaredType)
 		}
 	}
 
-	return varmap
+	return varmap, nil
 }
 
 func parseVariable(val interface{}, varType string) hil_ast.Variable {
@@ -62,7 +69,7 @@ func parseVariable(val interface{}, varType string) hil_ast.Variable {
 		case reflect.Slice:
 			varType = "list"
 		case reflect.Map:
-			varType = "list"
+			varType = "map"
 		default:
 			varType = "string"
 		}
@@ -75,6 +82,8 @@ func parseVariable(val interface{}, varType string) hil_ast.Variable {
 			Type:  hil_ast.TypeString,
 			Value: val,
 		}
+	case "map":
+		fallthrough
 	case "list":
 		s := reflect.ValueOf(val)
 

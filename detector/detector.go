@@ -12,12 +12,17 @@ type Detector struct {
 	EvalConfig *eval.Evaluator
 }
 
-func Detect(listmap map[string]*ast.ObjectList) []*issue.Issue {
+func Detect(listmap map[string]*ast.ObjectList) ([]*issue.Issue, error) {
+	evalConfig, err := eval.NewEvaluator(listmap)
+	if err != nil {
+		return nil, err
+	}
+
 	detector := &Detector{
 		ListMap:    listmap,
-		EvalConfig: eval.NewEvaluator(listmap),
+		EvalConfig: evalConfig,
 	}
-	return detector.Detect()
+	return detector.Detect(), nil
 }
 
 func (d *Detector) Detect() []*issue.Issue {

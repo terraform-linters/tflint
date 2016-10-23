@@ -61,7 +61,11 @@ func (cli *CLI) Run(args []string) int {
 		fmt.Fprintln(cli.errStream, err)
 		return ExitCodeError
 	}
-	issues := detector.Detect(listmap)
+	issues, err := detector.Detect(listmap)
+	if err != nil {
+		fmt.Fprintln(cli.errStream, err)
+		return ExitCodeError
+	}
 	printer.Print(issues, cli.outStream, cli.errStream)
 
 	return ExitCodeOK
