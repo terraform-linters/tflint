@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"regexp"
+	"strings"
 
 	"github.com/hashicorp/hcl"
 	hcl_ast "github.com/hashicorp/hcl/hcl/ast"
@@ -118,7 +120,25 @@ func parseVariable(val interface{}, varType string) hil_ast.Variable {
 	return hilVar
 }
 
+func is_evaluable(src string) bool {
+	var supportPrefix = []string{
+		"var",
+	}
+
+	supportPrefixPattern := "("
+	for _, v := range supportPrefix {
+		supportPrefixPattern = supportPrefixPattern + v + "|"
+	}
+	supportPrefixPattern = strings.Trim(supportPrefixPattern, "|") + ")"
+	supportHilPattern := "\\${" + supportPrefixPattern + "\\..+}"
+
+	return regexp.MustCompile(supportHilPattern).Match([]byte(src)) || !strings.Contains(src, "$")
+}
+
 func (e *Evaluator) Eval(src string) (interface{}, error) {
+	if !is_evaluable(src) {
+		return "[NOT EVALUABLE]", nil
+	}
 	root, _ := hil.Parse(src)
 	result, _ := hil.Eval(root, &e.Config)
 
@@ -132,6 +152,6 @@ func (e *Evaluator) Eval(src string) (interface{}, error) {
 	case "TypeInt":
 		return result.Value.(int), nil
 	default:
-		return nil, errors.New(fmt.Sprintf("ERROR: unexcepted type variable \"%s\"\n", src))
+		return nil, errors.New(fmt.Sprintf("ERROR: unexcepted type variable \"%s\"", src))
 	}
 }

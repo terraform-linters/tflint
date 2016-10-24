@@ -33,6 +33,8 @@ func (d *AwsDetector) DetectAwsInstanceInvalidType() []*issue.Issue {
 					File:    filename,
 				}
 				issues = append(issues, issue)
+			} else if fmt.Sprint(reflect.ValueOf(instanceTypeKey)) == "[NOT EVALUABLE]" {
+				// skip
 			} else if !ValidInstanceType[fmt.Sprint(reflect.ValueOf(instanceTypeKey))] {
 				issue := &issue.Issue{
 					Type:    "WARNING",
