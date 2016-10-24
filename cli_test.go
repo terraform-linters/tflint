@@ -18,7 +18,7 @@ func TestRun_versionFlag(t *testing.T) {
 	}
 
 	expected := fmt.Sprintf("tflint version %s", Version)
-	if !strings.Contains(errStream.String(), expected) {
-		t.Errorf("expected %q to eq %q", errStream.String(), expected)
+	if !strings.Contains(outStream.String(), expected) {
+		t.Errorf("expected %q to eq %q", outStream.String(), expected)
 	}
 }
