@@ -53,7 +53,7 @@ func detectVariables(listmap map[string]*hcl_ast.ObjectList) (map[string]hil_ast
 
 		for _, v := range variables {
 			if v.Default == nil {
-				return nil, errors.New(fmt.Sprintf("ERROR: Cannot parse variable \"%s\"\n", v.Name))
+				continue
 			}
 			varName := "var." + v.Name
 			varmap[varName] = parseVariable(v.Default, v.DeclaredType)

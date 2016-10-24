@@ -178,6 +178,11 @@ func TestEvalReturnNil(t *testing.T) {
 			Input: "",
 			Src:   "${var.name}",
 		},
+		{
+			Name:  "missing default",
+			Input: "variable \"name\" {}",
+			Src:   "${var.name}",
+		},
 	}
 
 	for _, tc := range cases {
@@ -192,30 +197,6 @@ func TestEvalReturnNil(t *testing.T) {
 		result, _ := evaluator.Eval(tc.Src)
 		if result != nil {
 			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, nil, tc.Name)
-		}
-	}
-}
-
-func TestEvalError(t *testing.T) {
-	cases := []struct {
-		Name  string
-		Input string
-	}{
-		{
-			Name:  "missing default",
-			Input: "variable \"name\" {}",
-		},
-	}
-
-	for _, tc := range cases {
-		root, _ := parser.Parse([]byte(tc.Input))
-		list, _ := root.Node.(*ast.ObjectList)
-		listmap := map[string]*ast.ObjectList{"testfile": list}
-
-		_, err := NewEvaluator(listmap)
-
-		if err == nil {
-			t.Fatalf("Error: should cause error.\n\ntestcase: %s", tc.Name)
 		}
 	}
 }
