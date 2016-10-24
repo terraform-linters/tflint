@@ -118,11 +118,20 @@ func parseVariable(val interface{}, varType string) hil_ast.Variable {
 	return hilVar
 }
 
-func (e *Evaluator) Eval(src string) string {
+func (e *Evaluator) Eval(src string) (interface{}, error) {
 	root, _ := hil.Parse(src)
 	result, _ := hil.Eval(root, &e.Config)
-	if result.Value == nil {
-		return ""
+
+	switch result.Type.String() {
+	case "TypeString":
+		return result.Value.(string), nil
+	case "TypeList":
+		return result.Value.([]interface{}), nil
+	case "TypeMap":
+		return result.Value.(map[string]interface{}), nil
+	case "TypeInt":
+		return result.Value.(int), nil
+	default:
+		return nil, errors.New(fmt.Sprintf("ERROR: unexcepted type variable \"%s\"\n", src))
 	}
-	return result.Value.(string)
 }

@@ -2,6 +2,7 @@ package aws
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 
 	"github.com/hashicorp/hcl/hcl/ast"
@@ -14,9 +15,25 @@ func (d *AwsDetector) DetectAwsInstancePreviousType() []*issue.Issue {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_instance").Items {
 			instanceTypeToken := item.Val.(*ast.ObjectType).List.Filter("instance_type").Items[0].Val.(*ast.LiteralType).Token
-			instanceTypeKey := d.EvalConfig.Eval(strings.Trim(instanceTypeToken.Text, "\""))
+			instanceTypeKey, err := d.EvalConfig.Eval(strings.Trim(instanceTypeToken.Text, "\""))
 
-			if PreviousInstanceType[instanceTypeKey] {
+			if err != nil {
+				issue := &issue.Issue{
+					Type:    "ERROR",
+					Message: fmt.Sprintf("Eval Error in %s. Message: %s", instanceTypeToken.Text, err),
+					Line:    instanceTypeToken.Pos.Line,
+					File:    filename,
+				}
+				issues = append(issues, issue)
+			} else if reflect.TypeOf(instanceTypeKey).Kind() != reflect.String {
+				issue := &issue.Issue{
+					Type:    "ERROR",
+					Message: fmt.Sprintf("Eval Error in %s. Message: %s", instanceTypeToken.Text, err),
+					Line:    instanceTypeToken.Pos.Line,
+					File:    filename,
+				}
+				issues = append(issues, issue)
+			} else if PreviousInstanceType[fmt.Sprint(reflect.ValueOf(instanceTypeKey))] {
 				issue := &issue.Issue{
 					Type:    "NOTICE",
 					Message: fmt.Sprintf("\"%s\" is previous generation instance type.", instanceTypeKey),

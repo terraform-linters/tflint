@@ -1,13 +1,14 @@
 package evaluator
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/parser"
 )
 
-func TestEval(t *testing.T) {
+func TestEvalReturnString(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Input  string
@@ -77,11 +78,39 @@ variable "name" {
 			Src:    "${var.name[\"key\"]}",
 			Result: "test1",
 		},
+	}
+
+	for _, tc := range cases {
+		root, _ := parser.Parse([]byte(tc.Input))
+		list, _ := root.Node.(*ast.ObjectList)
+		listmap := map[string]*ast.ObjectList{"testfile": list}
+
+		evaluator, err := NewEvaluator(listmap)
+		if err != nil {
+			t.Fatalf("Error: %s\n\ntestcase: %s", err, tc.Name)
+		}
+		result, _ := evaluator.Eval(tc.Src)
+		if result != tc.Result {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+		}
+	}
+}
+
+func TestEvalReturnList(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Input  string
+		Src    string
+		Result []interface{}
+	}{
 		{
-			Name:   "undefined variable",
-			Input:  "",
+			Name: "return list variable",
+			Input: `
+variable "name" {
+    default = ["test1", "test2"]
+}`,
 			Src:    "${var.name}",
-			Result: "",
+			Result: []interface{}{"test1", "test2"},
 		},
 	}
 
@@ -94,9 +123,75 @@ variable "name" {
 		if err != nil {
 			t.Fatalf("Error: %s\n\ntestcase: %s", err, tc.Name)
 		}
-		result := evaluator.Eval(tc.Src)
-		if result != tc.Result {
+		result, _ := evaluator.Eval(tc.Src)
+		if !reflect.DeepEqual(result, tc.Result) {
 			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+		}
+	}
+}
+
+func TestEvalReturnMap(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Input  string
+		Src    string
+		Result map[string]interface{}
+	}{
+		{
+			Name: "return map variable",
+			Input: `
+variable "name" {
+    default = {
+        key = "test1"
+        value = "test2"
+    }
+}`,
+			Src:    "${var.name}",
+			Result: map[string]interface{}{"key": "test1", "value": "test2"},
+		},
+	}
+
+	for _, tc := range cases {
+		root, _ := parser.Parse([]byte(tc.Input))
+		list, _ := root.Node.(*ast.ObjectList)
+		listmap := map[string]*ast.ObjectList{"testfile": list}
+
+		evaluator, err := NewEvaluator(listmap)
+		if err != nil {
+			t.Fatalf("Error: %s\n\ntestcase: %s", err, tc.Name)
+		}
+		result, _ := evaluator.Eval(tc.Src)
+		if !reflect.DeepEqual(result, tc.Result) {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+		}
+	}
+}
+
+func TestEvalReturnNil(t *testing.T) {
+	cases := []struct {
+		Name  string
+		Input string
+		Src   string
+	}{
+		{
+			Name:  "undefined variable",
+			Input: "",
+			Src:   "${var.name}",
+		},
+	}
+
+	for _, tc := range cases {
+		root, _ := parser.Parse([]byte(tc.Input))
+		list, _ := root.Node.(*ast.ObjectList)
+		listmap := map[string]*ast.ObjectList{"testfile": list}
+
+		evaluator, err := NewEvaluator(listmap)
+		if err != nil {
+			t.Fatalf("Error: %s\n\ntestcase: %s", err, tc.Name)
+		}
+		result, _ := evaluator.Eval(tc.Src)
+		if result != nil {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, nil, tc.Name)
 		}
 	}
 }
