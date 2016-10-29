@@ -28,8 +28,9 @@ func detectModules(listmap map[string]*hcl_ast.ObjectList) (map[string]*hclModul
 				return nil, err
 			}
 
-			moduleKey := moduleKey(name, fmt.Sprint(module["source"]))
-			moduleListmap, err := loader.LoadAllFile(modulePath(moduleKey))
+			moduleSource := fmt.Sprint(module["source"])
+			moduleKey := moduleKey(name, moduleSource)
+			moduleListmap, err := loader.LoadModuleFile(moduleKey, moduleSource)
 			if err != nil {
 				return nil, err
 			}
@@ -59,8 +60,4 @@ func moduleKey(name string, source string) string {
 	base := "root." + name + "-" + source
 	sum := md5.Sum([]byte(base))
 	return hex.EncodeToString(sum[:])
-}
-
-func modulePath(moduleKey string) string {
-	return ".terraform/modules/" + moduleKey
 }
