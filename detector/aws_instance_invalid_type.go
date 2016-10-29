@@ -2,15 +2,12 @@ package detector
 
 import (
 	"fmt"
-	"reflect"
-	"strings"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
 func (d *Detector) DetectAwsInstanceInvalidType(issues *[]*issue.Issue) {
-	var ValidInstanceType = map[string]bool{
+	var validInstanceType = map[string]bool{
 		"t2.nano":     true,
 		"t2.micro":    true,
 		"t2.small":    true,
@@ -73,31 +70,19 @@ func (d *Detector) DetectAwsInstanceInvalidType(issues *[]*issue.Issue) {
 
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_instance").Items {
-			instanceTypeToken := item.Val.(*ast.ObjectType).List.Filter("instance_type").Items[0].Val.(*ast.LiteralType).Token
-			instanceTypeKey, err := d.EvalConfig.Eval(strings.Trim(instanceTypeToken.Text, "\""))
-
+			instanceTypeToken, err := hclLiteralToken(item, "instance_type")
 			if err != nil {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("Eval Error in %s. Message: %s", instanceTypeToken.Text, err),
-					Line:    instanceTypeToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			} else if reflect.TypeOf(instanceTypeKey).Kind() != reflect.String {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("Eval Error in %s. Message: %s", instanceTypeToken.Text, err),
-					Line:    instanceTypeToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			} else if fmt.Sprint(reflect.ValueOf(instanceTypeKey)) == "[NOT EVALUABLE]" {
-				// skip
-			} else if !ValidInstanceType[fmt.Sprint(reflect.ValueOf(instanceTypeKey))] {
+				continue
+			}
+			instanceType, err := d.evalToString(instanceTypeToken.Text)
+			if err != nil {
+				continue
+			}
+
+			if !validInstanceType[instanceType] {
 				issue := &issue.Issue{
 					Type:    "WARNING",
-					Message: fmt.Sprintf("\"%s\" is invalid instance type.", instanceTypeKey),
+					Message: fmt.Sprintf("\"%s\" is invalid instance type.", instanceType),
 					Line:    instanceTypeToken.Pos.Line,
 					File:    filename,
 				}
