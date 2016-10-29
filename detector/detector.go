@@ -36,5 +36,18 @@ func (d *Detector) Detect() []*issue.Issue {
 	issues = append(issues, awsDetector.DetectAwsInstancePreviousType()...)
 	issues = append(issues, awsDetector.DetectAwsInstanceNotSpecifiedIamProfile()...)
 
+	for _, m := range d.EvalConfig.ModuleConfig {
+		awsModuleDetector := &aws.AwsDetector{
+			ListMap: m.ListMap,
+			EvalConfig: &eval.Evaluator{
+				Config: m.Config,
+			},
+		}
+
+		issues = append(issues, awsModuleDetector.DetectAwsInstanceInvalidType()...)
+		issues = append(issues, awsModuleDetector.DetectAwsInstancePreviousType()...)
+		issues = append(issues, awsModuleDetector.DetectAwsInstanceNotSpecifiedIamProfile()...)
+	}
+
 	return issues
 }

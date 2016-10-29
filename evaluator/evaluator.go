@@ -14,7 +14,8 @@ import (
 )
 
 type Evaluator struct {
-	Config hil.EvalConfig
+	Config       hil.EvalConfig
+	ModuleConfig map[string]*hclModule
 }
 
 type hclVariable struct {
@@ -30,6 +31,10 @@ func NewEvaluator(listmap map[string]*hcl_ast.ObjectList) (*Evaluator, error) {
 	if err != nil {
 		return nil, err
 	}
+	modulemap, err := detectModules(listmap)
+	if err != nil {
+		return nil, err
+	}
 
 	evaluator := &Evaluator{
 		Config: hil.EvalConfig{
@@ -37,6 +42,7 @@ func NewEvaluator(listmap map[string]*hcl_ast.ObjectList) (*Evaluator, error) {
 				VarMap: varmap,
 			},
 		},
+		ModuleConfig: modulemap,
 	}
 
 	return evaluator, nil

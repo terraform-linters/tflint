@@ -54,7 +54,7 @@ func (cli *CLI) Run(args []string) int {
 	if flags.NArg() > 0 {
 		listmap, err = loader.LoadFile(nil, flags.Arg(0))
 	} else {
-		listmap, err = loader.LoadAllFile()
+		listmap, err = loader.LoadAllFile(".")
 	}
 
 	if err != nil {

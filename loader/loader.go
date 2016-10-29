@@ -29,10 +29,11 @@ func LoadFile(listmap map[string]*ast.ObjectList, filename string) (map[string]*
 	return listmap, nil
 }
 
-func LoadAllFile() (map[string]*ast.ObjectList, error) {
+func LoadAllFile(dir string) (map[string]*ast.ObjectList, error) {
 	var listmap = make(map[string]*ast.ObjectList)
 
-	files, err := filepath.Glob("./*.tf")
+	filePattern := dir + "/*.tf"
+	files, err := filepath.Glob(filePattern)
 	if err != nil {
 		return nil, err
 	}
