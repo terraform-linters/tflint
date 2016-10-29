@@ -41,13 +41,10 @@ func hclLiteralToken(item *ast.ObjectItem, k string) (token.Token, error) {
 		return token.Token{}, errors.New("key not found")
 	}
 
-	v := items[0].Val
-	switch v.(type) {
-	case *ast.LiteralType:
-		return v.(*ast.LiteralType).Token, nil
-	default:
-		return token.Token{}, errors.New("value is not literal")
+	if v, ok := items[0].Val.(*ast.LiteralType); ok {
+		return v.Token, nil
 	}
+	return token.Token{}, errors.New("value is not literal")
 }
 
 func (d *Detector) detect() []*issue.Issue {
