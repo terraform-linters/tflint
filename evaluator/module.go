@@ -3,7 +3,7 @@ package evaluator
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"fmt"
+	"errors"
 
 	"github.com/hashicorp/hcl"
 	hcl_ast "github.com/hashicorp/hcl/hcl/ast"
@@ -17,43 +17,49 @@ type hclModule struct {
 	ListMap map[string]*hcl_ast.ObjectList
 }
 
-func detectModules(listmap map[string]*hcl_ast.ObjectList) (map[string]*hclModule, error) {
-	modulemap := make(map[string]*hclModule)
+func detectModules(listMap map[string]*hcl_ast.ObjectList) (map[string]*hclModule, error) {
+	moduleMap := make(map[string]*hclModule)
 
-	for _, list := range listmap {
+	for _, list := range listMap {
 		for _, item := range list.Filter("module").Items {
-			name := item.Keys[0].Token.Value().(string)
+			name, ok := item.Keys[0].Token.Value().(string)
+			if !ok {
+				return nil, errors.New("invalid module name")
+			}
 			var module map[string]interface{}
 			if err := hcl.DecodeObject(&module, item.Val); err != nil {
 				return nil, err
 			}
 
-			moduleSource := fmt.Sprint(module["source"])
+			moduleSource, ok := module["source"].(string)
+			if !ok {
+				return nil, errors.New("invalid module source")
+			}
 			moduleKey := moduleKey(name, moduleSource)
-			moduleListmap, err := loader.LoadModuleFile(moduleKey, moduleSource)
+			moduleListMap, err := loader.LoadModuleFile(moduleKey, moduleSource)
 			if err != nil {
 				return nil, err
 			}
 			delete(module, "source")
 
-			varmap := make(map[string]hil_ast.Variable)
+			varMap := make(map[string]hil_ast.Variable)
 			for k, v := range module {
 				varName := "var." + k
-				varmap[varName] = parseVariable(v, "")
+				varMap[varName] = parseVariable(v, "")
 			}
 
-			modulemap[moduleKey] = &hclModule{
+			moduleMap[moduleKey] = &hclModule{
 				Config: hil.EvalConfig{
 					GlobalScope: &hil_ast.BasicScope{
-						VarMap: varmap,
+						VarMap: varMap,
 					},
 				},
-				ListMap: moduleListmap,
+				ListMap: moduleListMap,
 			}
 		}
 	}
 
-	return modulemap, nil
+	return moduleMap, nil
 }
 
 func moduleKey(name string, source string) string {

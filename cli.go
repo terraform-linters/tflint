@@ -49,19 +49,19 @@ func (cli *CLI) Run(args []string) int {
 	}
 
 	// Main function
-	var listmap map[string]*ast.ObjectList
+	var listMap map[string]*ast.ObjectList
 	var err error
 	if flags.NArg() > 0 {
-		listmap, err = loader.LoadFile(nil, flags.Arg(0))
+		listMap, err = loader.LoadFile(nil, flags.Arg(0))
 	} else {
-		listmap, err = loader.LoadAllFile(".")
+		listMap, err = loader.LoadAllFile(".")
 	}
 
 	if err != nil {
 		fmt.Fprintln(cli.errStream, err)
 		return ExitCodeError
 	}
-	issues, err := detector.Detect(listmap)
+	issues, err := detector.Detect(listMap)
 	if err != nil {
 		fmt.Fprintln(cli.errStream, err)
 		return ExitCodeError

@@ -16,12 +16,12 @@ type Evaluator struct {
 	ModuleConfig map[string]*hclModule
 }
 
-func NewEvaluator(listmap map[string]*hcl_ast.ObjectList) (*Evaluator, error) {
-	varmap, err := detectVariables(listmap)
+func NewEvaluator(listMap map[string]*hcl_ast.ObjectList) (*Evaluator, error) {
+	varMap, err := detectVariables(listMap)
 	if err != nil {
 		return nil, err
 	}
-	modulemap, err := detectModules(listmap)
+	moduleMap, err := detectModules(listMap)
 	if err != nil {
 		return nil, err
 	}
@@ -29,16 +29,16 @@ func NewEvaluator(listmap map[string]*hcl_ast.ObjectList) (*Evaluator, error) {
 	evaluator := &Evaluator{
 		Config: hil.EvalConfig{
 			GlobalScope: &hil_ast.BasicScope{
-				VarMap: varmap,
+				VarMap: varMap,
 			},
 		},
-		ModuleConfig: modulemap,
+		ModuleConfig: moduleMap,
 	}
 
 	return evaluator, nil
 }
 
-func is_evaluable(src string) bool {
+func isEvaluable(src string) bool {
 	var supportPrefix = []string{
 		"var",
 	}
@@ -54,11 +54,17 @@ func is_evaluable(src string) bool {
 }
 
 func (e *Evaluator) Eval(src string) (interface{}, error) {
-	if !is_evaluable(src) {
+	if !isEvaluable(src) {
 		return "[NOT EVALUABLE]", nil
 	}
-	root, _ := hil.Parse(src)
-	result, _ := hil.Eval(root, &e.Config)
+	root, err := hil.Parse(src)
+	if err != nil {
+		return nil, err
+	}
+	result, err := hil.Eval(root, &e.Config)
+	if err != nil {
+		return nil, err
+	}
 
 	switch result.Type.String() {
 	case "TypeString":

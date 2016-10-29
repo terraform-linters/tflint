@@ -1,7 +1,6 @@
 package evaluator
 
 import (
-	"fmt"
 	"reflect"
 
 	"github.com/hashicorp/hcl"
@@ -17,10 +16,10 @@ type hclVariable struct {
 	Fields       []string `hcl:",decodedFields"`
 }
 
-func detectVariables(listmap map[string]*hcl_ast.ObjectList) (map[string]hil_ast.Variable, error) {
-	varmap := make(map[string]hil_ast.Variable)
+func detectVariables(listMap map[string]*hcl_ast.ObjectList) (map[string]hil_ast.Variable, error) {
+	varMap := make(map[string]hil_ast.Variable)
 
-	for _, list := range listmap {
+	for _, list := range listMap {
 		var variables []*hclVariable
 		if err := hcl.DecodeObject(&variables, list.Filter("variable")); err != nil {
 			return nil, err
@@ -31,11 +30,11 @@ func detectVariables(listmap map[string]*hcl_ast.ObjectList) (map[string]hil_ast
 				continue
 			}
 			varName := "var." + v.Name
-			varmap[varName] = parseVariable(v.Default, v.DeclaredType)
+			varMap[varName] = parseVariable(v.Default, v.DeclaredType)
 		}
 	}
 
-	return varmap, nil
+	return varMap, nil
 }
 
 func parseVariable(val interface{}, varType string) hil_ast.Variable {
@@ -71,8 +70,8 @@ func parseVariable(val interface{}, varType string) hil_ast.Variable {
 			for i := 0; i < s.Len(); i++ {
 				ms := reflect.ValueOf(s.Index(i).Interface())
 				for _, k := range ms.MapKeys() {
-					key := fmt.Sprint(k.Interface())
-					value := fmt.Sprint(ms.MapIndex(reflect.ValueOf(key)).Interface())
+					key := k.Interface().(string)
+					value := ms.MapIndex(reflect.ValueOf(key)).Interface().(string)
 					variables[key] = parseVariable(value, "")
 				}
 			}

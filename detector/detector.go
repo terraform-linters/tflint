@@ -22,14 +22,14 @@ var detectors = []string{
 	"DetectAwsInstanceNotSpecifiedIamProfile",
 }
 
-func Detect(listmap map[string]*ast.ObjectList) ([]*issue.Issue, error) {
-	evalConfig, err := eval.NewEvaluator(listmap)
+func Detect(listMap map[string]*ast.ObjectList) ([]*issue.Issue, error) {
+	evalConfig, err := eval.NewEvaluator(listMap)
 	if err != nil {
 		return nil, err
 	}
 
 	detector := &Detector{
-		ListMap:    listmap,
+		ListMap:    listMap,
 		EvalConfig: evalConfig,
 	}
 	return detector.detect(), nil
