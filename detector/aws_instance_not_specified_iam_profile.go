@@ -1,13 +1,11 @@
-package aws
+package detector
 
 import (
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
-func (d *AwsDetector) DetectAwsInstanceNotSpecifiedIamProfile() []*issue.Issue {
-	var issues = []*issue.Issue{}
-
+func (d *Detector) DetectAwsInstanceNotSpecifiedIamProfile(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_instance").Items {
 			instanceIAMProfile := item.Val.(*ast.ObjectType).List.Filter("iam_instance_profile")
@@ -19,10 +17,8 @@ func (d *AwsDetector) DetectAwsInstanceNotSpecifiedIamProfile() []*issue.Issue {
 					Line:    item.Pos().Line,
 					File:    filename,
 				}
-				issues = append(issues, issue)
+				*issues = append(*issues, issue)
 			}
 		}
 	}
-
-	return issues
 }

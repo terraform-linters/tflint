@@ -1,4 +1,4 @@
-package aws
+package detector
 
 import (
 	"fmt"
@@ -9,8 +9,24 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-func (d *AwsDetector) DetectAwsInstancePreviousType() []*issue.Issue {
-	var issues = []*issue.Issue{}
+func (d *Detector) DetectAwsInstancePreviousType(issues *[]*issue.Issue) {
+	var PreviousInstanceType = map[string]bool{
+		"t1.micro":    true,
+		"m1.small":    true,
+		"m1.medium":   true,
+		"m1.large":    true,
+		"m1.xlarge":   true,
+		"c1.medium":   true,
+		"c1.xlarge":   true,
+		"cc2.8xlarge": true,
+		"cg1.4xlarge": true,
+		"m2.xlarge":   true,
+		"m2.2xlarge":  true,
+		"m2.4xlarge":  true,
+		"cr1.8xlarge": true,
+		"hi1.4xlarge": true,
+		"hs1.8xlarge": true,
+	}
 
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_instance").Items {
@@ -24,7 +40,7 @@ func (d *AwsDetector) DetectAwsInstancePreviousType() []*issue.Issue {
 					Line:    instanceTypeToken.Pos.Line,
 					File:    filename,
 				}
-				issues = append(issues, issue)
+				*issues = append(*issues, issue)
 			} else if reflect.TypeOf(instanceTypeKey).Kind() != reflect.String {
 				issue := &issue.Issue{
 					Type:    "ERROR",
@@ -32,7 +48,7 @@ func (d *AwsDetector) DetectAwsInstancePreviousType() []*issue.Issue {
 					Line:    instanceTypeToken.Pos.Line,
 					File:    filename,
 				}
-				issues = append(issues, issue)
+				*issues = append(*issues, issue)
 			} else if fmt.Sprint(reflect.ValueOf(instanceTypeKey)) == "[NOT EVALUABLE]" {
 				// skip
 			} else if PreviousInstanceType[fmt.Sprint(reflect.ValueOf(instanceTypeKey))] {
@@ -42,28 +58,8 @@ func (d *AwsDetector) DetectAwsInstancePreviousType() []*issue.Issue {
 					Line:    instanceTypeToken.Pos.Line,
 					File:    filename,
 				}
-				issues = append(issues, issue)
+				*issues = append(*issues, issue)
 			}
 		}
 	}
-
-	return issues
-}
-
-var PreviousInstanceType = map[string]bool{
-	"t1.micro":    true,
-	"m1.small":    true,
-	"m1.medium":   true,
-	"m1.large":    true,
-	"m1.xlarge":   true,
-	"c1.medium":   true,
-	"c1.xlarge":   true,
-	"cc2.8xlarge": true,
-	"cg1.4xlarge": true,
-	"m2.xlarge":   true,
-	"m2.2xlarge":  true,
-	"m2.4xlarge":  true,
-	"cr1.8xlarge": true,
-	"hi1.4xlarge": true,
-	"hs1.8xlarge": true,
 }
