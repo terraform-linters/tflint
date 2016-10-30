@@ -28,7 +28,7 @@ func TestHclLiteralToken(t *testing.T) {
 			Name: "return literal token",
 			Input: Input{
 				File: `
-resource "aws_instance" {
+resource "aws_instance" "web" {
     instance_type = "t2.micro"
 }`,
 				Key: "instance_type",
@@ -50,7 +50,7 @@ resource "aws_instance" {
 			Name: "happen error when value is list",
 			Input: Input{
 				File: `
-resource "aws_instance" {
+resource "aws_instance" "web" {
     instance_type = ["t2.micro"]
 }`,
 				Key: "instance_type",
@@ -62,7 +62,7 @@ resource "aws_instance" {
 			Name: "happen error when value is map",
 			Input: Input{
 				File: `
-resource "aws_instance" {
+resource "aws_instance" "web" {
     instance_type = {
         default = "t2.micro"
     }
@@ -76,7 +76,7 @@ resource "aws_instance" {
 			Name: "happen error when key not found",
 			Input: Input{
 				File: `
-resource "aws_instance" {
+resource "aws_instance" "web" {
     instance_type = "t2.micro"
 }`,
 				Key: "ami_id",
