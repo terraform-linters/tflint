@@ -8,6 +8,8 @@ import (
 	"github.com/hashicorp/hcl/hcl/parser"
 )
 
+// TODO: add NewEvaluator test
+
 func TestIsEvaluable(t *testing.T) {
 	cases := []struct {
 		Name   string
