@@ -8,6 +8,46 @@ import (
 	"github.com/hashicorp/hcl/hcl/parser"
 )
 
+func TestIsEvaluable(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Input  string
+		Result bool
+	}{
+		{
+			Name:   "var syntax",
+			Input:  "${var.text}",
+			Result: true,
+		},
+		{
+			Name:   "plain text",
+			Input:  "text",
+			Result: true,
+		},
+		{
+			Name:   "module syntax",
+			Input:  "${module.text}",
+			Result: false,
+		},
+		{
+			Name:   "resource syntax",
+			Input:  "${aws_subnet.app.id}",
+			Result: false,
+		},
+		{
+			Name:   "function syntax",
+			Input:  "${lookup(var.roles, count.index)}",
+			Result: false,
+		},
+	}
+
+	for _, tc := range cases {
+		if isEvaluable(tc.Input) != tc.Result {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", tc.Input, tc.Result, tc.Name)
+		}
+	}
+}
+
 func TestEvalReturnString(t *testing.T) {
 	cases := []struct {
 		Name   string

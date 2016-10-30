@@ -9,7 +9,7 @@ import (
 	hil_ast "github.com/hashicorp/hil/ast"
 )
 
-func TestDetectVariable(t *testing.T) {
+func TestDetectVariables(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Input  map[string]string
@@ -101,12 +101,12 @@ variable "stat" {
 	}
 }
 
-type Input struct {
-	Val  interface{}
-	Type string
-}
-
 func TestParseVariable(t *testing.T) {
+	type Input struct {
+		Val  interface{}
+		Type string
+	}
+
 	cases := []struct {
 		Name   string
 		Input  Input
