@@ -38,17 +38,16 @@ func detectVariables(listMap map[string]*hcl_ast.ObjectList) (map[string]hil_ast
 }
 
 func parseVariable(val interface{}, varType string) hil_ast.Variable {
-	if varType == "" {
-		switch reflect.TypeOf(val).Kind() {
-		case reflect.String:
-			varType = "string"
-		case reflect.Slice:
-			varType = "list"
-		case reflect.Map:
-			varType = "map"
-		default:
-			varType = "string"
-		}
+	// varType is overwrite invariably. Because, happen panic when used in incorrect type
+	switch reflect.TypeOf(val).Kind() {
+	case reflect.String:
+		varType = "string"
+	case reflect.Slice:
+		varType = "list"
+	case reflect.Map:
+		varType = "map"
+	default:
+		varType = "string"
 	}
 
 	var hilVar hil_ast.Variable
@@ -59,6 +58,34 @@ func parseVariable(val interface{}, varType string) hil_ast.Variable {
 			Value: val,
 		}
 	case "map":
+		// When HCL map var convert(parse) to Go var,
+		// get map in slice. following example:
+		//
+		// ```HCL
+		// key = {
+		//     name = "test"
+		//     value = "hcl"
+		// }
+		// ```
+		//
+		// Incorrect:
+		//
+		// map[string]string{
+		//     "key": map[string][string]{
+		//         "name":  "test",
+		//         "value": "hcl",
+		//     },
+		// }
+		//
+		// Correct:
+		//
+		// []map[string]string{
+		//     map[string]string{
+		//         "name":  "test",
+		//         "value": "hcl",
+		//     },
+		// }
+		//
 		fallthrough
 	case "list":
 		s := reflect.ValueOf(val)
@@ -71,7 +98,7 @@ func parseVariable(val interface{}, varType string) hil_ast.Variable {
 				ms := reflect.ValueOf(s.Index(i).Interface())
 				for _, k := range ms.MapKeys() {
 					key := k.Interface().(string)
-					value := ms.MapIndex(reflect.ValueOf(key)).Interface().(string)
+					value := ms.MapIndex(reflect.ValueOf(key)).Interface()
 					variables[key] = parseVariable(value, "")
 				}
 			}
