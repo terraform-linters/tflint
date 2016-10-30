@@ -5,117 +5,24 @@ import (
 	"testing"
 
 	hcl_ast "github.com/hashicorp/hcl/hcl/ast"
-	"github.com/hashicorp/hcl/hcl/token"
+	"github.com/hashicorp/hcl/hcl/parser"
 	hil_ast "github.com/hashicorp/hil/ast"
 )
 
 func TestDetectVariable(t *testing.T) {
 	cases := []struct {
 		Name   string
-		Input  map[string]*hcl_ast.ObjectList
+		Input  map[string]string
 		Result map[string]hil_ast.Variable
 		Error  bool
 	}{
 		{
 			Name: "return hil variable from hcl object list",
-			Input: map[string]*hcl_ast.ObjectList{
-				"variable.tf": &hcl_ast.ObjectList{
-					Items: []*hcl_ast.ObjectItem{
-						&hcl_ast.ObjectItem{
-							Keys: []*hcl_ast.ObjectKey{
-								&hcl_ast.ObjectKey{
-									Token: token.Token{
-										Type: 4,
-										Pos: token.Pos{
-											Filename: "",
-											Offset:   0,
-											Line:     1,
-											Column:   1,
-										},
-										Text: "variable",
-										JSON: false,
-									},
-								},
-								&hcl_ast.ObjectKey{
-									Token: token.Token{
-										Type: 9,
-										Pos: token.Pos{
-											Filename: "",
-											Offset:   9,
-											Line:     1,
-											Column:   10,
-										},
-										Text: "\"type\"",
-										JSON: false,
-									},
-								},
-							},
-							Assign: token.Pos{
-								Filename: "",
-								Offset:   0,
-								Line:     0,
-								Column:   0,
-							},
-							Val: &hcl_ast.ObjectType{
-								Lbrace: token.Pos{
-									Filename: "",
-									Offset:   16,
-									Line:     1,
-									Column:   17,
-								},
-								Rbrace: token.Pos{
-									Filename: "",
-									Offset:   96,
-									Line:     6,
-									Column:   1,
-								},
-								List: &hcl_ast.ObjectList{
-									Items: []*hcl_ast.ObjectItem{
-										&hcl_ast.ObjectItem{
-											Keys: []*hcl_ast.ObjectKey{
-												&hcl_ast.ObjectKey{
-													Token: token.Token{
-														Type: 4,
-														Pos: token.Pos{
-															Filename: "",
-															Offset:   22,
-															Line:     2,
-															Column:   5,
-														},
-														Text: "default",
-														JSON: false,
-													},
-												},
-											},
-											Assign: token.Pos{
-												Filename: "",
-												Offset:   34,
-												Line:     2,
-												Column:   17,
-											},
-											Val: &hcl_ast.LiteralType{
-												Token: token.Token{
-													Type: 9,
-													Pos: token.Pos{
-														Filename: "",
-														Offset:   36,
-														Line:     2,
-														Column:   19,
-													},
-													Text: "\"name\"",
-													JSON: false,
-												},
-												LineComment: (*hcl_ast.CommentGroup)(nil),
-											},
-											LeadComment: (*hcl_ast.CommentGroup)(nil),
-											LineComment: (*hcl_ast.CommentGroup)(nil),
-										},
-									},
-								},
-							},
-						},
-					},
-				},
+			Input: map[string]string{
+				"variable.tf": `
+variable "type" {
+	default = "name"
+}`,
 			},
 			Result: map[string]hil_ast.Variable{
 				"var.type": hil_ast.Variable{
@@ -127,369 +34,34 @@ func TestDetectVariable(t *testing.T) {
 		},
 		{
 			Name: "return empty from hcl object list when default is not found",
-			Input: map[string]*hcl_ast.ObjectList{
-				"variable.tf": &hcl_ast.ObjectList{
-					Items: []*hcl_ast.ObjectItem{
-						&hcl_ast.ObjectItem{
-							Keys: []*hcl_ast.ObjectKey{
-								&hcl_ast.ObjectKey{
-									Token: token.Token{
-										Type: 4,
-										Pos: token.Pos{
-											Filename: "",
-											Offset:   0,
-											Line:     1,
-											Column:   1,
-										},
-										Text: "variable",
-										JSON: false,
-									},
-								},
-								&hcl_ast.ObjectKey{
-									Token: token.Token{
-										Type: 9,
-										Pos: token.Pos{
-											Filename: "",
-											Offset:   9,
-											Line:     1,
-											Column:   10,
-										},
-										Text: "\"type\"",
-										JSON: false,
-									},
-								},
-							},
-							Assign: token.Pos{
-								Filename: "",
-								Offset:   0,
-								Line:     0,
-								Column:   0,
-							},
-							Val: &hcl_ast.ObjectType{
-								Lbrace: token.Pos{
-									Filename: "",
-									Offset:   16,
-									Line:     1,
-									Column:   17,
-								},
-								Rbrace: token.Pos{
-									Filename: "",
-									Offset:   96,
-									Line:     6,
-									Column:   1,
-								},
-								List: &hcl_ast.ObjectList{
-									Items: []*hcl_ast.ObjectItem{},
-								},
-							},
-						},
-					},
-				},
+			Input: map[string]string{
+				"variable.tf": `variable "type" {}`,
 			},
 			Result: map[string]hil_ast.Variable{},
 			Error:  false,
 		},
 		{
 			Name: "return empty from hcl object list when variable not found",
-			Input: map[string]*hcl_ast.ObjectList{
-				"template.tf": &hcl_ast.ObjectList{
-					Items: []*hcl_ast.ObjectItem{
-						&hcl_ast.ObjectItem{
-							Keys: []*hcl_ast.ObjectKey{
-								&hcl_ast.ObjectKey{
-									Token: token.Token{
-										Type: 4,
-										Pos: token.Pos{
-											Filename: "",
-											Offset:   0,
-											Line:     1,
-											Column:   1,
-										},
-										Text: "provider",
-										JSON: false,
-									},
-								},
-								&hcl_ast.ObjectKey{
-									Token: token.Token{
-										Type: 9,
-										Pos: token.Pos{
-											Filename: "",
-											Offset:   9,
-											Line:     1,
-											Column:   10,
-										},
-										Text: "\"aws\"",
-										JSON: false,
-									},
-								},
-							},
-							Assign: token.Pos{
-								Filename: "",
-								Offset:   0,
-								Line:     0,
-								Column:   0,
-							},
-							Val: &hcl_ast.ObjectType{
-								Lbrace: token.Pos{
-									Filename: "",
-									Offset:   15,
-									Line:     1,
-									Column:   16,
-								},
-								Rbrace: token.Pos{
-									Filename: "",
-									Offset:   40,
-									Line:     3,
-									Column:   1,
-								},
-								List: &hcl_ast.ObjectList{
-									Items: []*hcl_ast.ObjectItem{
-										&hcl_ast.ObjectItem{
-											Keys: []*hcl_ast.ObjectKey{
-												&hcl_ast.ObjectKey{
-													Token: token.Token{
-														Type: 4,
-														Pos: token.Pos{
-															Filename: "",
-															Offset:   19,
-															Line:     2,
-															Column:   3,
-														},
-														Text: "region",
-														JSON: false,
-													},
-												},
-											},
-											Assign: token.Pos{
-												Filename: "",
-												Offset:   26,
-												Line:     2,
-												Column:   10,
-											},
-											Val: &hcl_ast.LiteralType{
-												Token: token.Token{
-													Type: 9,
-													Pos: token.Pos{
-														Filename: "",
-														Offset:   28,
-														Line:     2,
-														Column:   12,
-													},
-													Text: "\"us-east-1\"",
-													JSON: false,
-												},
-												LineComment: (*hcl_ast.CommentGroup)(nil),
-											},
-											LeadComment: (*hcl_ast.CommentGroup)(nil),
-											LineComment: (*hcl_ast.CommentGroup)(nil),
-										},
-									},
-								},
-							},
-						},
-					},
-				},
+			Input: map[string]string{
+				"variable.tf": `
+provider "aws" {
+	region = "us-east-1"
+}`,
 			},
 			Result: map[string]hil_ast.Variable{},
 			Error:  false,
 		},
 		{
 			Name: "return hil variables from multi hcl object list",
-			Input: map[string]*hcl_ast.ObjectList{
-				"variable1.tf": &hcl_ast.ObjectList{
-					Items: []*hcl_ast.ObjectItem{
-						&hcl_ast.ObjectItem{
-							Keys: []*hcl_ast.ObjectKey{
-								&hcl_ast.ObjectKey{
-									Token: token.Token{
-										Type: 4,
-										Pos: token.Pos{
-											Filename: "",
-											Offset:   0,
-											Line:     1,
-											Column:   1,
-										},
-										Text: "variable",
-										JSON: false,
-									},
-								},
-								&hcl_ast.ObjectKey{
-									Token: token.Token{
-										Type: 9,
-										Pos: token.Pos{
-											Filename: "",
-											Offset:   9,
-											Line:     1,
-											Column:   10,
-										},
-										Text: "\"type\"",
-										JSON: false,
-									},
-								},
-							},
-							Assign: token.Pos{
-								Filename: "",
-								Offset:   0,
-								Line:     0,
-								Column:   0,
-							},
-							Val: &hcl_ast.ObjectType{
-								Lbrace: token.Pos{
-									Filename: "",
-									Offset:   16,
-									Line:     1,
-									Column:   17,
-								},
-								Rbrace: token.Pos{
-									Filename: "",
-									Offset:   96,
-									Line:     6,
-									Column:   1,
-								},
-								List: &hcl_ast.ObjectList{
-									Items: []*hcl_ast.ObjectItem{
-										&hcl_ast.ObjectItem{
-											Keys: []*hcl_ast.ObjectKey{
-												&hcl_ast.ObjectKey{
-													Token: token.Token{
-														Type: 4,
-														Pos: token.Pos{
-															Filename: "",
-															Offset:   22,
-															Line:     2,
-															Column:   5,
-														},
-														Text: "default",
-														JSON: false,
-													},
-												},
-											},
-											Assign: token.Pos{
-												Filename: "",
-												Offset:   34,
-												Line:     2,
-												Column:   17,
-											},
-											Val: &hcl_ast.LiteralType{
-												Token: token.Token{
-													Type: 9,
-													Pos: token.Pos{
-														Filename: "",
-														Offset:   36,
-														Line:     2,
-														Column:   19,
-													},
-													Text: "\"name\"",
-													JSON: false,
-												},
-												LineComment: (*hcl_ast.CommentGroup)(nil),
-											},
-											LeadComment: (*hcl_ast.CommentGroup)(nil),
-											LineComment: (*hcl_ast.CommentGroup)(nil),
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-				"variable2.tf": &hcl_ast.ObjectList{
-					Items: []*hcl_ast.ObjectItem{
-						&hcl_ast.ObjectItem{
-							Keys: []*hcl_ast.ObjectKey{
-								&hcl_ast.ObjectKey{
-									Token: token.Token{
-										Type: 4,
-										Pos: token.Pos{
-											Filename: "",
-											Offset:   0,
-											Line:     1,
-											Column:   1,
-										},
-										Text: "variable",
-										JSON: false,
-									},
-								},
-								&hcl_ast.ObjectKey{
-									Token: token.Token{
-										Type: 9,
-										Pos: token.Pos{
-											Filename: "",
-											Offset:   9,
-											Line:     1,
-											Column:   10,
-										},
-										Text: "\"stat\"",
-										JSON: false,
-									},
-								},
-							},
-							Assign: token.Pos{
-								Filename: "",
-								Offset:   0,
-								Line:     0,
-								Column:   0,
-							},
-							Val: &hcl_ast.ObjectType{
-								Lbrace: token.Pos{
-									Filename: "",
-									Offset:   16,
-									Line:     1,
-									Column:   17,
-								},
-								Rbrace: token.Pos{
-									Filename: "",
-									Offset:   96,
-									Line:     6,
-									Column:   1,
-								},
-								List: &hcl_ast.ObjectList{
-									Items: []*hcl_ast.ObjectItem{
-										&hcl_ast.ObjectItem{
-											Keys: []*hcl_ast.ObjectKey{
-												&hcl_ast.ObjectKey{
-													Token: token.Token{
-														Type: 4,
-														Pos: token.Pos{
-															Filename: "",
-															Offset:   22,
-															Line:     2,
-															Column:   5,
-														},
-														Text: "default",
-														JSON: false,
-													},
-												},
-											},
-											Assign: token.Pos{
-												Filename: "",
-												Offset:   34,
-												Line:     2,
-												Column:   17,
-											},
-											Val: &hcl_ast.LiteralType{
-												Token: token.Token{
-													Type: 9,
-													Pos: token.Pos{
-														Filename: "",
-														Offset:   36,
-														Line:     2,
-														Column:   19,
-													},
-													Text: "\"usage\"",
-													JSON: false,
-												},
-												LineComment: (*hcl_ast.CommentGroup)(nil),
-											},
-											LeadComment: (*hcl_ast.CommentGroup)(nil),
-											LineComment: (*hcl_ast.CommentGroup)(nil),
-										},
-									},
-								},
-							},
-						},
-					},
-				},
+			Input: map[string]string{
+				"variable1.tf": `
+variable "type" {
+	default = "name"
+}`,
+				"variable2.tf": `
+variable "stat" {
+	default = "usage"
+}`,
 			},
 			Result: map[string]hil_ast.Variable{
 				"var.type": hil_ast.Variable{
@@ -506,7 +78,14 @@ func TestDetectVariable(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		result, err := detectVariables(tc.Input)
+		listMap := make(map[string]*hcl_ast.ObjectList)
+		for k, v := range tc.Input {
+			root, _ := parser.Parse([]byte(v))
+			list, _ := root.Node.(*hcl_ast.ObjectList)
+			listMap[k] = list
+		}
+
+		result, err := detectVariables(listMap)
 		if tc.Error == true && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 			continue
