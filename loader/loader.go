@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -29,6 +30,9 @@ func LoadModuleFile(moduleKey string, source string) (map[string]*ast.ObjectList
 	var listmap = make(map[string]*ast.ObjectList)
 
 	modulePath := ".terraform/modules/" + moduleKey
+	if _, err := os.Stat(modulePath); err != nil {
+		return nil, err
+	}
 	filePattern := modulePath + "/*.tf"
 	files, err := filepath.Glob(filePattern)
 	if err != nil {

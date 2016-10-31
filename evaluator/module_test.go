@@ -112,13 +112,26 @@ module "ec2_instances" {
 			Result: nil,
 			Error:  true,
 		},
+		{
+			Name: "module not found",
+			Input: map[string]string{
+				"module.tf": `
+module "ec2_instances" {
+    source = "unresolvable_module_source"
+    ami = "ami-12345"
+    num = "1"
+}`,
+			},
+			Result: nil,
+			Error:  true,
+		},
 	}
 
 	for _, tc := range cases {
 		prev, _ := filepath.Abs(".")
 		dir, _ := os.Getwd()
 		defer os.Chdir(prev)
-		testDir := dir + "test-fixtures"
+		testDir := dir + "/test-fixtures"
 		os.Chdir(testDir)
 
 		listMap := make(map[string]*hcl_ast.ObjectList)
