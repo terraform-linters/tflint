@@ -55,6 +55,9 @@ func LoadModuleFile(moduleKey string, source string) (map[string]*ast.ObjectList
 func LoadAllFile(dir string) (map[string]*ast.ObjectList, error) {
 	var listmap = make(map[string]*ast.ObjectList)
 
+	if _, err := os.Stat(dir); err != nil {
+		return nil, err
+	}
 	filePattern := dir + "/*.tf"
 	files, err := filepath.Glob(filePattern)
 	if err != nil {
