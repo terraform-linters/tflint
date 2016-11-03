@@ -19,6 +19,7 @@ var fileColor = color.New(color.Bold).SprintfFunc()
 var errorColor = color.New(color.FgRed).SprintFunc()
 var warningColor = color.New(color.FgYellow).SprintFunc()
 var noticeColor = color.New(color.FgHiWhite).SprintFunc()
+var successColor = color.New(color.FgHiGreen).SprintFunc()
 
 func Print(issues []*issue.Issue, stdout io.Writer, stderr io.Writer) {
 	printer := &Printer{
@@ -29,6 +30,11 @@ func Print(issues []*issue.Issue, stdout io.Writer, stderr io.Writer) {
 }
 
 func (p *Printer) Print(issues []*issue.Issue) {
+	if len(issues) == 0 {
+		p.printAwesome()
+		return
+	}
+
 	sort.Sort(issue.ByFile{issue.Issues(issues)})
 	bIssue := issues[0]
 	sIssues := []*issue.Issue{
@@ -86,10 +92,14 @@ func (p *Printer) printSummary(issues []*issue.Issue) {
 		}
 	}
 
-	allResult := fileColor("All Issues: " + strconv.Itoa(len(issues)))
-	eResult := errorColor("error " + strconv.Itoa(len(eIssues)))
-	wResult := warningColor("warning " + strconv.Itoa(len(wIssues)))
-	nResult := noticeColor("notice " + strconv.Itoa(len(nIssues)))
+	allResult := fileColor(strconv.Itoa(len(issues)) + " issues")
+	eResult := errorColor(strconv.Itoa(len(eIssues)) + " errors")
+	wResult := warningColor(strconv.Itoa(len(wIssues)) + " warnings")
+	nResult := noticeColor(strconv.Itoa(len(nIssues)) + " notices")
 
-	fmt.Fprintf(p.stdout, "\n%s  %s , %s , %s\n", allResult, eResult, wResult, nResult)
+	fmt.Fprintf(p.stdout, "\nResult: %s  (%s , %s , %s)\n", allResult, eResult, wResult, nResult)
+}
+
+func (p *Printer) printAwesome() {
+	fmt.Fprintf(p.stdout, "%s\n", successColor("Awesome! Your code is following the best practices :)"))
 }
