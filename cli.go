@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"io"
@@ -28,23 +29,44 @@ type CLI struct {
 func (cli *CLI) Run(args []string) int {
 	var (
 		version bool
+		help    bool
 	)
 
 	// Define option flag parse
 	flags := flag.NewFlagSet(Name, flag.ContinueOnError)
-	flags.SetOutput(cli.errStream)
+	// Do not print default usage message
+	flags.SetOutput(new(bytes.Buffer))
 
 	flags.BoolVar(&version, "version", false, "Print version information and quit.")
+	flags.BoolVar(&version, "v", false, "Alias for -version")
+	flags.BoolVar(&help, "help", false, "Show usage (this page)")
+	flags.BoolVar(&help, "h", false, "Alias for -help")
 
 	// Parse commandline flag
 	if err := flags.Parse(args[1:]); err != nil {
-		fmt.Fprintln(cli.errStream, "ERROR: Parse error occurred.\n")
+		fmt.Fprintf(cli.errStream, "ERROR: `%s` is unknown options. Please run `tflint --help`\n", args[1])
 		return ExitCodeError
 	}
 
 	// Show version
 	if version {
 		fmt.Fprintf(cli.outStream, "%s version %s\n", Name, Version)
+		return ExitCodeOK
+	}
+
+	if help {
+		fmt.Fprintln(cli.outStream, `TFLint is a linter of Terraform.
+
+Usage: tflint [<options>] <args>
+
+Available options:
+	-h, --help	show usage of TFLint. This page.
+	-v, --version	print version information.
+
+Support aruguments:
+	TFLint scans all configuration file of Terraform in current directory by default.
+	If you specified single file path, it scans only this.
+`)
 		return ExitCodeOK
 	}
 

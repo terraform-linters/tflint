@@ -1,4 +1,4 @@
 package main
 
-const Name string = "tflint"
+const Name string = "TFLint"
 const Version string = "0.1.0"
