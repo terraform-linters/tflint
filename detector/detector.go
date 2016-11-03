@@ -2,6 +2,7 @@ package detector
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"strings"
 
@@ -38,13 +39,18 @@ func Detect(listMap map[string]*ast.ObjectList) ([]*issue.Issue, error) {
 func hclLiteralToken(item *ast.ObjectItem, k string) (token.Token, error) {
 	items := item.Val.(*ast.ObjectType).List.Filter(k).Items
 	if len(items) == 0 {
-		return token.Token{}, errors.New("key not found")
+		return token.Token{}, errors.New(fmt.Sprintf("ERROR: key `%s` not found", k))
 	}
 
 	if v, ok := items[0].Val.(*ast.LiteralType); ok {
 		return v.Token, nil
 	}
-	return token.Token{}, errors.New("value is not literal")
+	return token.Token{}, errors.New(fmt.Sprintf("ERROR: `%s` value is not literal", k))
+}
+
+func IsKeyNotFound(item *ast.ObjectItem, k string) bool {
+	items := item.Val.(*ast.ObjectType).List.Filter(k).Items
+	return len(items) == 0
 }
 
 func (d *Detector) detect() []*issue.Issue {
@@ -75,9 +81,9 @@ func (d *Detector) evalToString(v string) (string, error) {
 	if err != nil {
 		return "", err
 	} else if reflect.TypeOf(ev).Kind() != reflect.String {
-		return "", errors.New("value is not string")
+		return "", errors.New(fmt.Sprintf("ERROR: `%s` is not string", v))
 	} else if ev.(string) == "[NOT EVALUABLE]" {
-		return "", errors.New("value is not evaluable")
+		return "", errors.New(fmt.Sprintf("ERROR; `%s` is not evaluable", v))
 	}
 
 	return ev.(string), nil

@@ -31,7 +31,7 @@ func LoadModuleFile(moduleKey string, source string) (map[string]*ast.ObjectList
 
 	modulePath := ".terraform/modules/" + moduleKey
 	if _, err := os.Stat(modulePath); err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprintf("ERROR: module `%s` not found. Did you run `terraform get`?", source))
 	}
 	filePattern := modulePath + "/*.tf"
 	files, err := filepath.Glob(filePattern)
@@ -77,11 +77,11 @@ func LoadAllFile(dir string) (map[string]*ast.ObjectList, error) {
 func load(filename string) (*ast.ObjectList, error) {
 	b, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("ERROR: Cannot open file %s\n", filename))
+		return nil, errors.New(fmt.Sprintf("ERROR: Cannot open file %s", filename))
 	}
 	root, err := parser.Parse(b)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("ERROR: Parse error occurred by %s\n", filename))
+		return nil, errors.New(fmt.Sprintf("ERROR: Parse error occurred by %s", filename))
 	}
 
 	list, _ := root.Node.(*ast.ObjectList)

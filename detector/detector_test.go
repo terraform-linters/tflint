@@ -107,6 +107,53 @@ resource "aws_instance" "web" {
 	}
 }
 
+func TestIsKeyNotFound(t *testing.T) {
+	type Input struct {
+		File string
+		Key  string
+	}
+
+	cases := []struct {
+		Name   string
+		Input  Input
+		Result bool
+	}{
+		{
+			Name: "key found",
+			Input: Input{
+				File: `
+resource "aws_instance" "web" {
+    instance_type = "t2.micro"
+}`,
+				Key: "instance_type",
+			},
+			Result: false,
+		},
+		{
+			Name: "happen error when value is list",
+			Input: Input{
+				File: `
+resource "aws_instance" "web" {
+    instance_type = "t2.micro"
+}`,
+				Key: "iam_instance_profile",
+			},
+			Result: true,
+		},
+	}
+
+	for _, tc := range cases {
+		root, _ := parser.Parse([]byte(tc.Input.File))
+		list, _ := root.Node.(*ast.ObjectList)
+		item := list.Filter("resource", "aws_instance").Items[0]
+		result := IsKeyNotFound(item, tc.Input.Key)
+
+		if result != tc.Result {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+		}
+	}
+}
+
 func TestEvalToString(t *testing.T) {
 	type Input struct {
 		Src  string

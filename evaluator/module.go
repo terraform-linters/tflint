@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
+	"fmt"
 
 	"github.com/hashicorp/hcl"
 	hcl_ast "github.com/hashicorp/hcl/hcl/ast"
@@ -20,11 +21,11 @@ type hclModule struct {
 func detectModules(listMap map[string]*hcl_ast.ObjectList) (map[string]*hclModule, error) {
 	moduleMap := make(map[string]*hclModule)
 
-	for _, list := range listMap {
+	for file, list := range listMap {
 		for _, item := range list.Filter("module").Items {
 			name, ok := item.Keys[0].Token.Value().(string)
 			if !ok {
-				return nil, errors.New("invalid module name")
+				return nil, errors.New(fmt.Sprintf("ERROR: Invalid module syntax in %s", file))
 			}
 			var module map[string]interface{}
 			if err := hcl.DecodeObject(&module, item.Val); err != nil {
@@ -33,7 +34,7 @@ func detectModules(listMap map[string]*hcl_ast.ObjectList) (map[string]*hclModul
 
 			moduleSource, ok := module["source"].(string)
 			if !ok {
-				return nil, errors.New("invalid module source")
+				return nil, errors.New(fmt.Sprintf("ERROR: Invalid module source in %s", name))
 			}
 			moduleKey := moduleKey(name, moduleSource)
 			moduleListMap, err := loader.LoadModuleFile(moduleKey, moduleSource)
