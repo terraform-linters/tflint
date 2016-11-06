@@ -10,77 +10,90 @@ import (
 
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/parser"
+	"github.com/wata727/tflint/config"
+	"github.com/wata727/tflint/logger"
 )
 
-func LoadFile(listmap map[string]*ast.ObjectList, filename string) (map[string]*ast.ObjectList, error) {
-	if listmap == nil {
-		listmap = make(map[string]*ast.ObjectList)
-	}
-
-	list, err := load(filename)
-	if err != nil {
-		return nil, err
-	}
-
-	listmap[filename] = list
-	return listmap, nil
+type Loader struct {
+	Config  *config.Config
+	Logger  *logger.Logger
+	ListMap map[string]*ast.ObjectList
 }
 
-func LoadModuleFile(moduleKey string, source string) (map[string]*ast.ObjectList, error) {
-	var listmap = make(map[string]*ast.ObjectList)
+func NewLoader(c *config.Config) *Loader {
+	return &Loader{
+		Config:  c,
+		Logger:  logger.Init(c.Debug),
+		ListMap: make(map[string]*ast.ObjectList),
+	}
+}
 
+func (l *Loader) LoadFile(filename string) error {
+	list, err := load(filename, l.Logger)
+	if err != nil {
+		return err
+	}
+
+	l.ListMap[filename] = list
+	return nil
+}
+
+func (l *Loader) LoadModuleFile(moduleKey string, source string) error {
+	l.Logger.Info(fmt.Sprintf("load module `%s`", source))
 	modulePath := ".terraform/modules/" + moduleKey
 	if _, err := os.Stat(modulePath); err != nil {
-		return nil, errors.New(fmt.Sprintf("ERROR: module `%s` not found. Did you run `terraform get`?", source))
+		l.Logger.Error(err)
+		return errors.New(fmt.Sprintf("ERROR: module `%s` not found. Did you run `terraform get`?", source))
 	}
 	filePattern := modulePath + "/*.tf"
 	files, err := filepath.Glob(filePattern)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	for _, file := range files {
-		list, err := load(file)
+		list, err := load(file, l.Logger)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		filename := strings.Replace(file, modulePath, "", 1)
 		fileKey := source + filename
-		listmap[fileKey] = list
+		l.ListMap[fileKey] = list
 	}
 
-	return listmap, nil
+	return nil
 }
 
-func LoadAllFile(dir string) (map[string]*ast.ObjectList, error) {
-	var listmap = make(map[string]*ast.ObjectList)
-
+func (l *Loader) LoadAllFile(dir string) error {
 	if _, err := os.Stat(dir); err != nil {
-		return nil, err
+		return err
 	}
 	filePattern := dir + "/*.tf"
 	files, err := filepath.Glob(filePattern)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	for _, file := range files {
-		listmap, err = LoadFile(listmap, file)
+		err := l.LoadFile(file)
 		if err != nil {
-			return nil, err
+			return err
 		}
 	}
 
-	return listmap, nil
+	return nil
 }
 
-func load(filename string) (*ast.ObjectList, error) {
+func load(filename string, l *logger.Logger) (*ast.ObjectList, error) {
+	l.Info(fmt.Sprintf("load `%s`", filename))
 	b, err := ioutil.ReadFile(filename)
 	if err != nil {
+		l.Error(err)
 		return nil, errors.New(fmt.Sprintf("ERROR: Cannot open file %s", filename))
 	}
 	root, err := parser.Parse(b)
 	if err != nil {
+		l.Error(err)
 		return nil, errors.New(fmt.Sprintf("ERROR: Parse error occurred by %s", filename))
 	}
 

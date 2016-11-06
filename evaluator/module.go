@@ -10,6 +10,7 @@ import (
 	hcl_ast "github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hil"
 	hil_ast "github.com/hashicorp/hil/ast"
+	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/loader"
 )
 
@@ -37,7 +38,8 @@ func detectModules(listMap map[string]*hcl_ast.ObjectList) (map[string]*hclModul
 				return nil, errors.New(fmt.Sprintf("ERROR: Invalid module source in %s", name))
 			}
 			moduleKey := moduleKey(name, moduleSource)
-			moduleListMap, err := loader.LoadModuleFile(moduleKey, moduleSource)
+			load := loader.NewLoader(config.Init())
+			err := load.LoadModuleFile(moduleKey, moduleSource)
 			if err != nil {
 				return nil, err
 			}
@@ -55,7 +57,7 @@ func detectModules(listMap map[string]*hcl_ast.ObjectList) (map[string]*hclModul
 						VarMap: varMap,
 					},
 				},
-				ListMap: moduleListMap,
+				ListMap: load.ListMap,
 			}
 		}
 	}

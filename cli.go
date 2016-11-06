@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/hashicorp/hcl/hcl/ast"
+	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/detector"
 	"github.com/wata727/tflint/loader"
 	"github.com/wata727/tflint/printer"
@@ -30,6 +30,7 @@ func (cli *CLI) Run(args []string) int {
 	var (
 		version bool
 		help    bool
+		debug   bool
 	)
 
 	// Define option flag parse
@@ -41,12 +42,15 @@ func (cli *CLI) Run(args []string) int {
 	flags.BoolVar(&version, "v", false, "Alias for -version")
 	flags.BoolVar(&help, "help", false, "Show usage (this page)")
 	flags.BoolVar(&help, "h", false, "Alias for -help")
+	flags.BoolVar(&debug, "debug", false, "Enable debug mode")
 
 	// Parse commandline flag
 	if err := flags.Parse(args[1:]); err != nil {
 		fmt.Fprintf(cli.errStream, "ERROR: `%s` is unknown options. Please run `tflint --help`\n", args[1])
 		return ExitCodeError
 	}
+
+	c := config.Init()
 
 	// Show version
 	if version {
@@ -62,6 +66,7 @@ Usage: tflint [<options>] <args>
 Available options:
 	-h, --help	show usage of TFLint. This page.
 	-v, --version	print version information.
+	--debug		enable debug mode.
 
 Support aruguments:
 	TFLint scans all configuration file of Terraform in current directory by default.
@@ -70,20 +75,25 @@ Support aruguments:
 		return ExitCodeOK
 	}
 
+	if debug {
+		c.Debug = true
+	}
+
 	// Main function
-	var listMap map[string]*ast.ObjectList
 	var err error
+	load := loader.NewLoader(c)
+
 	if flags.NArg() > 0 {
-		listMap, err = loader.LoadFile(nil, flags.Arg(0))
+		err = load.LoadFile(flags.Arg(0))
 	} else {
-		listMap, err = loader.LoadAllFile(".")
+		err = load.LoadAllFile(".")
 	}
 
 	if err != nil {
 		fmt.Fprintln(cli.errStream, err)
 		return ExitCodeError
 	}
-	issues, err := detector.Detect(listMap)
+	issues, err := detector.Detect(load.ListMap)
 	if err != nil {
 		fmt.Fprintln(cli.errStream, err)
 		return ExitCodeError

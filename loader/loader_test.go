@@ -7,6 +7,8 @@ import (
 	"testing"
 
 	"github.com/hashicorp/hcl/hcl/ast"
+	"github.com/wata727/tflint/config"
+	"github.com/wata727/tflint/logger"
 )
 
 func TestLoad(t *testing.T) {
@@ -39,7 +41,7 @@ func TestLoad(t *testing.T) {
 		testDir := dir + "/test-fixtures/files"
 		os.Chdir(testDir)
 
-		_, err := load(tc.Input)
+		_, err := load(tc.Input, logger.Init(false))
 		if tc.Error == true && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 		}
@@ -81,10 +83,15 @@ func TestLoadFile(t *testing.T) {
 		defer os.Chdir(prev)
 		testDir := dir + "/test-fixtures/files"
 		os.Chdir(testDir)
+		load := &Loader{
+			Config:  config.Init(),
+			Logger:  logger.Init(false),
+			ListMap: tc.Input.ListMap,
+		}
 
-		listMap, _ := LoadFile(tc.Input.ListMap, tc.Input.File)
-		if !reflect.DeepEqual(listMap, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", listMap, tc.Result, tc.Name)
+		load.LoadFile(tc.Input.File)
+		if !reflect.DeepEqual(load.ListMap, tc.Result) {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", load.ListMap, tc.Result, tc.Name)
 		}
 	}
 }
@@ -119,7 +126,7 @@ func TestLoadModuleFile(t *testing.T) {
 				Key: "not_found",
 				Src: "github.com/wata727/example-module",
 			},
-			Result: nil,
+			Result: make(map[string]*ast.ObjectList),
 			Error:  true,
 		},
 	}
@@ -130,8 +137,9 @@ func TestLoadModuleFile(t *testing.T) {
 		defer os.Chdir(prev)
 		testDir := dir + "/test-fixtures/modules"
 		os.Chdir(testDir)
+		load := NewLoader(config.Init())
 
-		listMap, err := LoadModuleFile(tc.Input.Key, tc.Input.Src)
+		err := load.LoadModuleFile(tc.Input.Key, tc.Input.Src)
 		if tc.Error == true && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 			continue
@@ -141,8 +149,8 @@ func TestLoadModuleFile(t *testing.T) {
 			continue
 		}
 
-		if !reflect.DeepEqual(listMap, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", listMap, tc.Result, tc.Name)
+		if !reflect.DeepEqual(load.ListMap, tc.Result) {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", load.ListMap, tc.Result, tc.Name)
 		}
 	}
 }
@@ -166,7 +174,7 @@ func TestLoadAllFile(t *testing.T) {
 		{
 			Name:   "dir not found",
 			Input:  "not_found",
-			Result: nil,
+			Result: make(map[string]*ast.ObjectList),
 			Error:  true,
 		},
 	}
@@ -177,8 +185,9 @@ func TestLoadAllFile(t *testing.T) {
 		defer os.Chdir(prev)
 		testDir := dir + "/test-fixtures"
 		os.Chdir(testDir)
+		load := NewLoader(config.Init())
 
-		listMap, err := LoadAllFile(tc.Input)
+		err := load.LoadAllFile(tc.Input)
 		if tc.Error == true && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 			continue
@@ -188,8 +197,8 @@ func TestLoadAllFile(t *testing.T) {
 			continue
 		}
 
-		if !reflect.DeepEqual(listMap, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", listMap, tc.Result, tc.Name)
+		if !reflect.DeepEqual(load.ListMap, tc.Result) {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", load.ListMap, tc.Result, tc.Name)
 		}
 	}
 }
