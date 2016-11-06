@@ -72,10 +72,12 @@ func (d *Detector) DetectAwsInstanceInvalidType(issues *[]*issue.Issue) {
 		for _, item := range list.Filter("resource", "aws_instance").Items {
 			instanceTypeToken, err := hclLiteralToken(item, "instance_type")
 			if err != nil {
+				d.Logger.Error(err)
 				continue
 			}
 			instanceType, err := d.evalToString(instanceTypeToken.Text)
 			if err != nil {
+				d.Logger.Error(err)
 				continue
 			}
 

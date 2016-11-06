@@ -8,13 +8,17 @@ import (
 
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/token"
+	"github.com/wata727/tflint/config"
 	eval "github.com/wata727/tflint/evaluator"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/logger"
 )
 
 type Detector struct {
 	ListMap    map[string]*ast.ObjectList
+	Config     *config.Config
 	EvalConfig *eval.Evaluator
+	Logger     *logger.Logger
 }
 
 var detectors = []string{
@@ -23,17 +27,18 @@ var detectors = []string{
 	"DetectAwsInstanceNotSpecifiedIamProfile",
 }
 
-func Detect(listMap map[string]*ast.ObjectList) ([]*issue.Issue, error) {
+func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detector, error) {
 	evalConfig, err := eval.NewEvaluator(listMap)
 	if err != nil {
 		return nil, err
 	}
 
-	detector := &Detector{
+	return &Detector{
 		ListMap:    listMap,
+		Config:     c,
 		EvalConfig: evalConfig,
-	}
-	return detector.detect(), nil
+		Logger:     logger.Init(c.Debug),
+	}, nil
 }
 
 func hclLiteralToken(item *ast.ObjectItem, k string) (token.Token, error) {
@@ -53,19 +58,23 @@ func IsKeyNotFound(item *ast.ObjectItem, k string) bool {
 	return len(items) == 0
 }
 
-func (d *Detector) detect() []*issue.Issue {
+func (d *Detector) Detect() []*issue.Issue {
 	var issues = []*issue.Issue{}
 
 	for _, detectorMethod := range detectors {
+		d.Logger.Info(fmt.Sprintf("detect by `%s`", detectorMethod))
 		method := reflect.ValueOf(d).MethodByName(detectorMethod)
 		method.Call([]reflect.Value{reflect.ValueOf(&issues)})
 
-		for _, m := range d.EvalConfig.ModuleConfig {
+		for name, m := range d.EvalConfig.ModuleConfig {
+			d.Logger.Info(fmt.Sprintf("detect module `%s`", name))
 			moduleDetector := &Detector{
 				ListMap: m.ListMap,
+				Config:  d.Config,
 				EvalConfig: &eval.Evaluator{
 					Config: m.Config,
 				},
+				Logger: d.Logger,
 			}
 			method := reflect.ValueOf(moduleDetector).MethodByName(detectorMethod)
 			method.Call([]reflect.Value{reflect.ValueOf(&issues)})

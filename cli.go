@@ -81,23 +81,24 @@ Support aruguments:
 
 	// Main function
 	var err error
-	load := loader.NewLoader(c)
-
+	l := loader.NewLoader(c)
 	if flags.NArg() > 0 {
-		err = load.LoadFile(flags.Arg(0))
+		err = l.LoadFile(flags.Arg(0))
 	} else {
-		err = load.LoadAllFile(".")
+		err = l.LoadAllFile(".")
+	}
+	if err != nil {
+		fmt.Fprintln(cli.errStream, err)
+		return ExitCodeError
 	}
 
+	d, err := detector.NewDetector(l.ListMap, c)
 	if err != nil {
 		fmt.Fprintln(cli.errStream, err)
 		return ExitCodeError
 	}
-	issues, err := detector.Detect(load.ListMap)
-	if err != nil {
-		fmt.Fprintln(cli.errStream, err)
-		return ExitCodeError
-	}
+	issues := d.Detect()
+
 	printer.Print(issues, cli.outStream, cli.errStream)
 
 	return ExitCodeOK
