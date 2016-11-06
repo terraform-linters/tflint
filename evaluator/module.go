@@ -19,7 +19,7 @@ type hclModule struct {
 	ListMap map[string]*hcl_ast.ObjectList
 }
 
-func detectModules(listMap map[string]*hcl_ast.ObjectList) (map[string]*hclModule, error) {
+func detectModules(listMap map[string]*hcl_ast.ObjectList, c *config.Config) (map[string]*hclModule, error) {
 	moduleMap := make(map[string]*hclModule)
 
 	for file, list := range listMap {
@@ -38,7 +38,7 @@ func detectModules(listMap map[string]*hcl_ast.ObjectList) (map[string]*hclModul
 				return nil, errors.New(fmt.Sprintf("ERROR: Invalid module source in %s", name))
 			}
 			moduleKey := moduleKey(name, moduleSource)
-			load := loader.NewLoader(config.Init())
+			load := loader.NewLoader(c)
 			err := load.LoadModuleFile(moduleKey, moduleSource)
 			if err != nil {
 				return nil, err

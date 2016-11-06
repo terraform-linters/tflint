@@ -9,6 +9,7 @@ import (
 	hcl_ast "github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hil"
 	hil_ast "github.com/hashicorp/hil/ast"
+	"github.com/wata727/tflint/config"
 )
 
 type Evaluator struct {
@@ -16,12 +17,12 @@ type Evaluator struct {
 	ModuleConfig map[string]*hclModule
 }
 
-func NewEvaluator(listMap map[string]*hcl_ast.ObjectList) (*Evaluator, error) {
+func NewEvaluator(listMap map[string]*hcl_ast.ObjectList, c *config.Config) (*Evaluator, error) {
 	varMap, err := detectVariables(listMap)
 	if err != nil {
 		return nil, err
 	}
-	moduleMap, err := detectModules(listMap)
+	moduleMap, err := detectModules(listMap, c)
 	if err != nil {
 		return nil, err
 	}

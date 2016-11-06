@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/parser"
+	"github.com/wata727/tflint/config"
 	eval "github.com/wata727/tflint/evaluator"
 	"github.com/wata727/tflint/issue"
 )
@@ -48,7 +49,7 @@ resource "aws_instance" "web" {
 		list, _ := root.Node.(*ast.ObjectList)
 		listMap["test.tf"] = list
 
-		evalConfig, _ := eval.NewEvaluator(listMap)
+		evalConfig, _ := eval.NewEvaluator(listMap, config.Init())
 		d := &Detector{
 			ListMap:    listMap,
 			EvalConfig: evalConfig,

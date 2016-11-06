@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/parser"
+	"github.com/wata727/tflint/config"
 )
 
 // TODO: add NewEvaluator test
@@ -127,7 +128,7 @@ variable "name" {
 		list, _ := root.Node.(*ast.ObjectList)
 		listmap := map[string]*ast.ObjectList{"testfile": list}
 
-		evaluator, err := NewEvaluator(listmap)
+		evaluator, err := NewEvaluator(listmap, config.Init())
 		if err != nil {
 			t.Fatalf("Error: %s\n\ntestcase: %s", err, tc.Name)
 		}
@@ -161,7 +162,7 @@ variable "name" {
 		list, _ := root.Node.(*ast.ObjectList)
 		listmap := map[string]*ast.ObjectList{"testfile": list}
 
-		evaluator, err := NewEvaluator(listmap)
+		evaluator, err := NewEvaluator(listmap, config.Init())
 		if err != nil {
 			t.Fatalf("Error: %s\n\ntestcase: %s", err, tc.Name)
 		}
@@ -198,7 +199,7 @@ variable "name" {
 		list, _ := root.Node.(*ast.ObjectList)
 		listmap := map[string]*ast.ObjectList{"testfile": list}
 
-		evaluator, err := NewEvaluator(listmap)
+		evaluator, err := NewEvaluator(listmap, config.Init())
 		if err != nil {
 			t.Fatalf("Error: %s\n\ntestcase: %s", err, tc.Name)
 		}
@@ -232,7 +233,7 @@ func TestEvalReturnNil(t *testing.T) {
 		list, _ := root.Node.(*ast.ObjectList)
 		listmap := map[string]*ast.ObjectList{"testfile": list}
 
-		evaluator, err := NewEvaluator(listmap)
+		evaluator, err := NewEvaluator(listmap, config.Init())
 		if err != nil {
 			t.Fatalf("Error: %s\n\ntestcase: %s", err, tc.Name)
 		}

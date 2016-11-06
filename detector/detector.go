@@ -28,7 +28,7 @@ var detectors = []string{
 }
 
 func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detector, error) {
-	evalConfig, err := eval.NewEvaluator(listMap)
+	evalConfig, err := eval.NewEvaluator(listMap, c)
 	if err != nil {
 		return nil, err
 	}

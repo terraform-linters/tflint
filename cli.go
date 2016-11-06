@@ -41,7 +41,6 @@ func (cli *CLI) Run(args []string) int {
 	flags.BoolVar(&version, "version", false, "Print version information and quit.")
 	flags.BoolVar(&version, "v", false, "Alias for -version")
 	flags.BoolVar(&help, "help", false, "Show usage (this page)")
-	flags.BoolVar(&help, "h", false, "Alias for -help")
 	flags.BoolVar(&debug, "debug", false, "Enable debug mode")
 
 	// Parse commandline flag
@@ -64,7 +63,7 @@ func (cli *CLI) Run(args []string) int {
 Usage: tflint [<options>] <args>
 
 Available options:
-	-h, --help	show usage of TFLint. This page.
+	--help		show usage of TFLint. This page.
 	-v, --version	print version information.
 	--debug		enable debug mode.
 

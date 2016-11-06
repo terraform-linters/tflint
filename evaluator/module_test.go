@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/hcl/hcl/parser"
 	"github.com/hashicorp/hil"
 	hil_ast "github.com/hashicorp/hil/ast"
+	"github.com/wata727/tflint/config"
 )
 
 func TestDetectModules(t *testing.T) {
@@ -140,7 +141,7 @@ module "ec2_instances" {
 			list, _ := root.Node.(*hcl_ast.ObjectList)
 			listMap[k] = list
 		}
-		result, err := detectModules(listMap)
+		result, err := detectModules(listMap, config.Init())
 		if tc.Error == true && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 			continue
