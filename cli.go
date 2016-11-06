@@ -31,6 +31,7 @@ func (cli *CLI) Run(args []string) int {
 		version bool
 		help    bool
 		debug   bool
+		format  string
 	)
 
 	// Define option flag parse
@@ -41,11 +42,19 @@ func (cli *CLI) Run(args []string) int {
 	flags.BoolVar(&version, "version", false, "Print version information and quit.")
 	flags.BoolVar(&version, "v", false, "Alias for -version")
 	flags.BoolVar(&help, "help", false, "Show usage (this page)")
+	flags.BoolVar(&help, "h", false, "Alias for --help")
 	flags.BoolVar(&debug, "debug", false, "Enable debug mode")
+	flags.BoolVar(&debug, "d", false, "Alias for --debug")
+	flags.StringVar(&format, "format", "default", "Specify output format")
+	flags.StringVar(&format, "f", "default", "Alias for --format")
 
 	// Parse commandline flag
 	if err := flags.Parse(args[1:]); err != nil {
 		fmt.Fprintf(cli.errStream, "ERROR: `%s` is unknown options. Please run `tflint --help`\n", args[1])
+		return ExitCodeError
+	}
+	if !printer.ValidateFormat(format) {
+		fmt.Fprintf(cli.errStream, "ERROR: `%s` is unknown format. Please run `tflint --help`\n", format)
 		return ExitCodeError
 	}
 
@@ -63,9 +72,10 @@ func (cli *CLI) Run(args []string) int {
 Usage: tflint [<options>] <args>
 
 Available options:
-	--help		show usage of TFLint. This page.
-	-v, --version	print version information.
-	--debug		enable debug mode.
+	-h, --help		show usage of TFLint. This page.
+	-v, --version		print version information.
+	-f, --format <format>	choose output format from "default" or "json"
+	-d, --debug		enable debug mode.
 
 Support aruguments:
 	TFLint scans all configuration file of Terraform in current directory by default.
@@ -98,7 +108,8 @@ Support aruguments:
 	}
 	issues := d.Detect()
 
-	printer.Print(issues, cli.outStream, cli.errStream)
+	p := printer.NewPrinter(cli.outStream, cli.errStream)
+	p.Print(issues, format)
 
 	return ExitCodeOK
 }

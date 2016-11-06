@@ -1,10 +1,10 @@
 package issue
 
 type Issue struct {
-	Type    string
-	Message string
-	Line    int
-	File    string
+	Type    string `json:"type"`
+	Message string `json:"message"`
+	Line    int    `json:"line"`
+	File    string `json:"file"`
 }
 
 type Issues []*Issue
