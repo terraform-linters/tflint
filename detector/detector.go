@@ -62,11 +62,19 @@ func (d *Detector) Detect() []*issue.Issue {
 	var issues = []*issue.Issue{}
 
 	for _, detectorMethod := range detectors {
+		if d.Config.IgnoreRule[detectorMethod] {
+			d.Logger.Info(fmt.Sprintf("ignore rule `%s`", detectorMethod))
+			continue
+		}
 		d.Logger.Info(fmt.Sprintf("detect by `%s`", detectorMethod))
 		method := reflect.ValueOf(d).MethodByName(detectorMethod)
 		method.Call([]reflect.Value{reflect.ValueOf(&issues)})
 
 		for name, m := range d.EvalConfig.ModuleConfig {
+			if d.Config.IgnoreModule[m.Source] {
+				d.Logger.Info(fmt.Sprintf("ignore module `%s`", name))
+				continue
+			}
 			d.Logger.Info(fmt.Sprintf("detect module `%s`", name))
 			moduleDetector := &Detector{
 				ListMap: m.ListMap,

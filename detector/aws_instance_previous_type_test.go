@@ -48,7 +48,7 @@ resource "aws_instance" "web" {
 		list, _ := root.Node.(*ast.ObjectList)
 		listMap["test.tf"] = list
 
-		evalConfig, _ := eval.NewEvaluator(listMap, config.Init())
+		evalConfig, _ := eval.NewEvaluator(listMap, config.Init("", ""))
 		d := &Detector{
 			ListMap:    listMap,
 			EvalConfig: evalConfig,

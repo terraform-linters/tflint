@@ -28,10 +28,12 @@ type CLI struct {
 // Run invokes the CLI with the given arguments.
 func (cli *CLI) Run(args []string) int {
 	var (
-		version bool
-		help    bool
-		debug   bool
-		format  string
+		version      bool
+		help         bool
+		debug        bool
+		format       string
+		ignoreModule string
+		ignoreRule   string
 	)
 
 	// Define option flag parse
@@ -47,6 +49,8 @@ func (cli *CLI) Run(args []string) int {
 	flags.BoolVar(&debug, "d", false, "Alias for --debug")
 	flags.StringVar(&format, "format", "default", "Specify output format")
 	flags.StringVar(&format, "f", "default", "Alias for --format")
+	flags.StringVar(&ignoreModule, "ignore-module", "", "Ignore specified module source")
+	flags.StringVar(&ignoreRule, "ignore-rule", "", "Ignore specified rules")
 
 	// Parse commandline flag
 	if err := flags.Parse(args[1:]); err != nil {
@@ -58,7 +62,7 @@ func (cli *CLI) Run(args []string) int {
 		return ExitCodeError
 	}
 
-	c := config.Init()
+	c := config.Init(ignoreModule, ignoreRule)
 
 	// Show version
 	if version {
@@ -72,10 +76,12 @@ func (cli *CLI) Run(args []string) int {
 Usage: tflint [<options>] <args>
 
 Available options:
-	-h, --help		show usage of TFLint. This page.
-	-v, --version		print version information.
-	-f, --format <format>	choose output format from "default" or "json"
-	-d, --debug		enable debug mode.
+	-h, --help				show usage of TFLint. This page.
+	-v, --version				print version information.
+	-f, --format <format>			choose output format from "default" or "json"
+	--ignore-module <source1,source2...>	ignore module by specified source.
+	--ignore-rule <rule1,rule2...>		ignore rules.
+	-d, --debug				enable debug mode.
 
 Support aruguments:
 	TFLint scans all configuration file of Terraform in current directory by default.

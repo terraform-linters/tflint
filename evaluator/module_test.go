@@ -147,7 +147,7 @@ module "ec2_instances" {
 			list, _ := root.Node.(*hcl_ast.ObjectList)
 			listMap[k] = list
 		}
-		result, err := detectModules(listMap, config.Init())
+		result, err := detectModules(listMap, config.Init("", ""))
 		if tc.Error == true && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 			continue
