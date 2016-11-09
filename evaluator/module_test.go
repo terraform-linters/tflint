@@ -32,6 +32,8 @@ module "ec2_instance" {
 			},
 			Result: map[string]*hclModule{
 				"960d94c2f60d34845dc3051edfad76e1": &hclModule{
+					Name:   "ec2_instance",
+					Source: "./tf_aws_ec2_instance",
 					Config: hil.EvalConfig{
 						GlobalScope: &hil_ast.BasicScope{
 							VarMap: map[string]hil_ast.Variable{
@@ -68,6 +70,8 @@ module "ec2_instance" {
 			},
 			Result: map[string]*hclModule{
 				"960d94c2f60d34845dc3051edfad76e1": &hclModule{
+					Name:   "ec2_instance",
+					Source: "./tf_aws_ec2_instance",
 					Config: hil.EvalConfig{
 						GlobalScope: &hil_ast.BasicScope{
 							VarMap: map[string]hil_ast.Variable{
@@ -85,6 +89,8 @@ module "ec2_instance" {
 					ListMap: map[string]*hcl_ast.ObjectList{},
 				},
 				"0cf2d4dab02de8de33c7058799b6f81e": &hclModule{
+					Name:   "ec2_instance",
+					Source: "github.com/wata727/example-module",
 					Config: hil.EvalConfig{
 						GlobalScope: &hil_ast.BasicScope{
 							VarMap: map[string]hil_ast.Variable{

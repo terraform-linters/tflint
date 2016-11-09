@@ -15,6 +15,8 @@ import (
 )
 
 type hclModule struct {
+	Name    string
+	Source  string
 	Config  hil.EvalConfig
 	ListMap map[string]*hcl_ast.ObjectList
 }
@@ -52,6 +54,8 @@ func detectModules(listMap map[string]*hcl_ast.ObjectList, c *config.Config) (ma
 			}
 
 			moduleMap[moduleKey] = &hclModule{
+				Name:   name,
+				Source: moduleSource,
 				Config: hil.EvalConfig{
 					GlobalScope: &hil_ast.BasicScope{
 						VarMap: varMap,
