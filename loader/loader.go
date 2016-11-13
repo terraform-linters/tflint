@@ -1,7 +1,6 @@
 package loader
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -43,7 +42,7 @@ func (l *Loader) LoadModuleFile(moduleKey string, source string) error {
 	modulePath := ".terraform/modules/" + moduleKey
 	if _, err := os.Stat(modulePath); err != nil {
 		l.Logger.Error(err)
-		return errors.New(fmt.Sprintf("ERROR: module `%s` not found. Did you run `terraform get`?", source))
+		return fmt.Errorf("ERROR: module `%s` not found. Did you run `terraform get`?", source)
 	}
 	filePattern := modulePath + "/*.tf"
 	files, err := filepath.Glob(filePattern)
@@ -89,12 +88,12 @@ func load(filename string, l *logger.Logger) (*ast.ObjectList, error) {
 	b, err := ioutil.ReadFile(filename)
 	if err != nil {
 		l.Error(err)
-		return nil, errors.New(fmt.Sprintf("ERROR: Cannot open file %s", filename))
+		return nil, fmt.Errorf("ERROR: Cannot open file %s", filename)
 	}
 	root, err := parser.Parse(b)
 	if err != nil {
 		l.Error(err)
-		return nil, errors.New(fmt.Sprintf("ERROR: Parse error occurred by %s", filename))
+		return nil, fmt.Errorf("ERROR: Parse error occurred by %s", filename)
 	}
 
 	list, _ := root.Node.(*ast.ObjectList)

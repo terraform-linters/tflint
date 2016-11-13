@@ -1,7 +1,6 @@
 package evaluator
 
 import (
-	"errors"
 	"fmt"
 	"regexp"
 	"strings"
@@ -77,6 +76,6 @@ func (e *Evaluator) Eval(src string) (interface{}, error) {
 	case "TypeInt":
 		return result.Value.(int), nil
 	default:
-		return nil, errors.New(fmt.Sprintf("ERROR: unexcepted type variable `%s`", src))
+		return nil, fmt.Errorf("ERROR: unexcepted type variable `%s`", src)
 	}
 }

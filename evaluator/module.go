@@ -3,7 +3,6 @@ package evaluator
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"errors"
 	"fmt"
 
 	"github.com/hashicorp/hcl"
@@ -28,7 +27,7 @@ func detectModules(listMap map[string]*hcl_ast.ObjectList, c *config.Config) (ma
 		for _, item := range list.Filter("module").Items {
 			name, ok := item.Keys[0].Token.Value().(string)
 			if !ok {
-				return nil, errors.New(fmt.Sprintf("ERROR: Invalid module syntax in %s", file))
+				return nil, fmt.Errorf("ERROR: Invalid module syntax in %s", file)
 			}
 			var module map[string]interface{}
 			if err := hcl.DecodeObject(&module, item.Val); err != nil {
@@ -37,7 +36,7 @@ func detectModules(listMap map[string]*hcl_ast.ObjectList, c *config.Config) (ma
 
 			moduleSource, ok := module["source"].(string)
 			if !ok {
-				return nil, errors.New(fmt.Sprintf("ERROR: Invalid module source in %s", name))
+				return nil, fmt.Errorf("ERROR: Invalid module source in %s", name)
 			}
 			moduleKey := moduleKey(name, moduleSource)
 			load := loader.NewLoader(c)

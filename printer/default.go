@@ -48,7 +48,7 @@ func (p *Printer) printByLine(issues []*issue.Issue) {
 
 	fmt.Fprintf(p.stdout, "%s\n", fileColor(issues[0].File))
 	for _, i := range issues {
-		var issuePrefix string = i.Type + ":" + strconv.Itoa(i.Line)
+		issuePrefix := i.Type + ":" + strconv.Itoa(i.Line)
 
 		switch i.Type {
 		case "ERROR":

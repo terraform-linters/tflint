@@ -1,7 +1,6 @@
 package config
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -34,11 +33,11 @@ func (c *Config) LoadConfig(filename string) error {
 	// TODO: move to other package, and print debug log
 	b, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return errors.New(fmt.Sprintf("ERROR: Cannot open file %s", filename))
+		return fmt.Errorf("ERROR: Cannot open file %s", filename)
 	}
 	root, err := parser.Parse(b)
 	if err != nil {
-		return errors.New(fmt.Sprintf("ERROR: Parse error occurred by %s", filename))
+		return fmt.Errorf("ERROR: Parse error occurred by %s", filename)
 	}
 	list, _ := root.Node.(*ast.ObjectList)
 
@@ -50,7 +49,7 @@ func (c *Config) LoadConfig(filename string) error {
 }
 
 func (c *Config) SetIgnoreModule(ignoreModule string) {
-	var ignoreModules []string = strings.Split(ignoreModule, ",")
+	ignoreModules := strings.Split(ignoreModule, ",")
 
 	for _, m := range ignoreModules {
 		c.IgnoreModule[m] = true
@@ -58,7 +57,7 @@ func (c *Config) SetIgnoreModule(ignoreModule string) {
 }
 
 func (c *Config) SetIgnoreRule(ignoreRule string) {
-	var ignoreRules []string = strings.Split(ignoreRule, ",")
+	ignoreRules := strings.Split(ignoreRule, ",")
 
 	for _, r := range ignoreRules {
 		c.IgnoreRule[r] = true
