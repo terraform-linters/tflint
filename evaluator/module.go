@@ -39,7 +39,7 @@ func detectModules(listMap map[string]*hcl_ast.ObjectList, c *config.Config) (ma
 				return nil, fmt.Errorf("ERROR: Invalid module source in %s", name)
 			}
 			moduleKey := moduleKey(name, moduleSource)
-			load := loader.NewLoader(c)
+			load := loader.NewLoader(c.Debug)
 			err := load.LoadModuleFile(moduleKey, moduleSource)
 			if err != nil {
 				return nil, err

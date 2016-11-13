@@ -96,7 +96,10 @@ Support aruguments:
 	if debug {
 		c.Debug = true
 	}
-	c.LoadConfig(configFile)
+	if err := c.LoadConfig(configFile); err != nil {
+		fmt.Fprintln(cli.errStream, err)
+		return ExitCodeError
+	}
 
 	if ignoreModule != "" {
 		c.SetIgnoreModule(ignoreModule)
@@ -108,7 +111,7 @@ Support aruguments:
 
 	// Main function
 	var err error
-	l := loader.NewLoader(c)
+	l := loader.NewLoader(c.Debug)
 	if flags.NArg() > 0 {
 		err = l.LoadFile(flags.Arg(0))
 	} else {

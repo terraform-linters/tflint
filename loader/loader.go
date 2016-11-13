@@ -9,20 +9,17 @@ import (
 
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/parser"
-	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/logger"
 )
 
 type Loader struct {
-	Config  *config.Config
 	Logger  *logger.Logger
 	ListMap map[string]*ast.ObjectList
 }
 
-func NewLoader(c *config.Config) *Loader {
+func NewLoader(debug bool) *Loader {
 	return &Loader{
-		Config:  c,
-		Logger:  logger.Init(c.Debug),
+		Logger:  logger.Init(debug),
 		ListMap: make(map[string]*ast.ObjectList),
 	}
 }

@@ -1,14 +1,11 @@
 package config
 
 import (
-	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
 	"github.com/hashicorp/hcl"
-	"github.com/hashicorp/hcl/hcl/ast"
-	"github.com/hashicorp/hcl/hcl/parser"
+	"github.com/wata727/tflint/loader"
 )
 
 type Config struct {
@@ -30,18 +27,12 @@ func (c *Config) LoadConfig(filename string) error {
 		return nil
 	}
 
-	// TODO: move to other package, and print debug log
-	b, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return fmt.Errorf("ERROR: Cannot open file %s", filename)
+	l := loader.NewLoader(c.Debug)
+	if err := l.LoadFile(filename); err != nil {
+		return nil
 	}
-	root, err := parser.Parse(b)
-	if err != nil {
-		return fmt.Errorf("ERROR: Parse error occurred by %s", filename)
-	}
-	list, _ := root.Node.(*ast.ObjectList)
 
-	if err := hcl.DecodeObject(c, list.Filter("config").Items[0]); err != nil {
+	if err := hcl.DecodeObject(c, l.ListMap[filename].Filter("config").Items[0]); err != nil {
 		return err
 	}
 

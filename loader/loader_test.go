@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/hashicorp/hcl/hcl/ast"
-	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/logger"
 )
 
@@ -84,7 +83,6 @@ func TestLoadFile(t *testing.T) {
 		testDir := dir + "/test-fixtures/files"
 		os.Chdir(testDir)
 		load := &Loader{
-			Config:  config.Init(),
 			Logger:  logger.Init(false),
 			ListMap: tc.Input.ListMap,
 		}
@@ -137,7 +135,7 @@ func TestLoadModuleFile(t *testing.T) {
 		defer os.Chdir(prev)
 		testDir := dir + "/test-fixtures/modules"
 		os.Chdir(testDir)
-		load := NewLoader(config.Init())
+		load := NewLoader(false)
 
 		err := load.LoadModuleFile(tc.Input.Key, tc.Input.Src)
 		if tc.Error == true && err == nil {
@@ -185,7 +183,7 @@ func TestLoadAllFile(t *testing.T) {
 		defer os.Chdir(prev)
 		testDir := dir + "/test-fixtures"
 		os.Chdir(testDir)
-		load := NewLoader(config.Init())
+		load := NewLoader(false)
 
 		err := load.LoadAllFile(tc.Input)
 		if tc.Error == true && err == nil {
