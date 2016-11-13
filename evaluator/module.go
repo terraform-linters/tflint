@@ -6,9 +6,9 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/hcl"
-	hcl_ast "github.com/hashicorp/hcl/hcl/ast"
+	hclast "github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hil"
-	hil_ast "github.com/hashicorp/hil/ast"
+	hilast "github.com/hashicorp/hil/ast"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/loader"
 )
@@ -17,10 +17,10 @@ type hclModule struct {
 	Name    string
 	Source  string
 	Config  hil.EvalConfig
-	ListMap map[string]*hcl_ast.ObjectList
+	ListMap map[string]*hclast.ObjectList
 }
 
-func detectModules(listMap map[string]*hcl_ast.ObjectList, c *config.Config) (map[string]*hclModule, error) {
+func detectModules(listMap map[string]*hclast.ObjectList, c *config.Config) (map[string]*hclModule, error) {
 	moduleMap := make(map[string]*hclModule)
 
 	for file, list := range listMap {
@@ -46,7 +46,7 @@ func detectModules(listMap map[string]*hcl_ast.ObjectList, c *config.Config) (ma
 			}
 			delete(module, "source")
 
-			varMap := make(map[string]hil_ast.Variable)
+			varMap := make(map[string]hilast.Variable)
 			for k, v := range module {
 				varName := "var." + k
 				varMap[varName] = parseVariable(v, "")
@@ -56,7 +56,7 @@ func detectModules(listMap map[string]*hcl_ast.ObjectList, c *config.Config) (ma
 				Name:   name,
 				Source: moduleSource,
 				Config: hil.EvalConfig{
-					GlobalScope: &hil_ast.BasicScope{
+					GlobalScope: &hilast.BasicScope{
 						VarMap: varMap,
 					},
 				},

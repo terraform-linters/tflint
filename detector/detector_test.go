@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/hcl/hcl/parser"
 	"github.com/hashicorp/hcl/hcl/token"
 	"github.com/wata727/tflint/config"
-	eval "github.com/wata727/tflint/evaluator"
+	"github.com/wata727/tflint/evaluator"
 )
 
 // TODO: add Detect test
@@ -208,7 +208,7 @@ variable "text" {
 		list, _ := root.Node.(*ast.ObjectList)
 		listMap["text.tf"] = list
 
-		evalConfig, _ := eval.NewEvaluator(listMap, config.Init())
+		evalConfig, _ := evaluator.NewEvaluator(listMap, config.Init())
 		d := &Detector{
 			ListMap:    listMap,
 			EvalConfig: evalConfig,

@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/token"
 	"github.com/wata727/tflint/config"
-	eval "github.com/wata727/tflint/evaluator"
+	"github.com/wata727/tflint/evaluator"
 	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/logger"
 )
@@ -16,7 +16,7 @@ import (
 type Detector struct {
 	ListMap    map[string]*ast.ObjectList
 	Config     *config.Config
-	EvalConfig *eval.Evaluator
+	EvalConfig *evaluator.Evaluator
 	Logger     *logger.Logger
 }
 
@@ -27,7 +27,7 @@ var detectors = map[string]string{
 }
 
 func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detector, error) {
-	evalConfig, err := eval.NewEvaluator(listMap, c)
+	evalConfig, err := evaluator.NewEvaluator(listMap, c)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (d *Detector) Detect() []*issue.Issue {
 			moduleDetector := &Detector{
 				ListMap: m.ListMap,
 				Config:  d.Config,
-				EvalConfig: &eval.Evaluator{
+				EvalConfig: &evaluator.Evaluator{
 					Config: m.Config,
 				},
 				Logger: d.Logger,

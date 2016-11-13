@@ -4,8 +4,8 @@ import (
 	"reflect"
 
 	"github.com/hashicorp/hcl"
-	hcl_ast "github.com/hashicorp/hcl/hcl/ast"
-	hil_ast "github.com/hashicorp/hil/ast"
+	hclast "github.com/hashicorp/hcl/hcl/ast"
+	hilast "github.com/hashicorp/hil/ast"
 )
 
 type hclVariable struct {
@@ -16,8 +16,8 @@ type hclVariable struct {
 	Fields       []string `hcl:",decodedFields"`
 }
 
-func detectVariables(listMap map[string]*hcl_ast.ObjectList) (map[string]hil_ast.Variable, error) {
-	varMap := make(map[string]hil_ast.Variable)
+func detectVariables(listMap map[string]*hclast.ObjectList) (map[string]hilast.Variable, error) {
+	varMap := make(map[string]hilast.Variable)
 
 	for _, list := range listMap {
 		var variables []*hclVariable
@@ -37,7 +37,7 @@ func detectVariables(listMap map[string]*hcl_ast.ObjectList) (map[string]hil_ast
 	return varMap, nil
 }
 
-func parseVariable(val interface{}, varType string) hil_ast.Variable {
+func parseVariable(val interface{}, varType string) hilast.Variable {
 	// varType is overwrite invariably. Because, happen panic when used in incorrect type
 	switch reflect.TypeOf(val).Kind() {
 	case reflect.String:
@@ -50,11 +50,11 @@ func parseVariable(val interface{}, varType string) hil_ast.Variable {
 		varType = "string"
 	}
 
-	var hilVar hil_ast.Variable
+	var hilVar hilast.Variable
 	switch varType {
 	case "string":
-		hilVar = hil_ast.Variable{
-			Type:  hil_ast.TypeString,
+		hilVar = hilast.Variable{
+			Type:  hilast.TypeString,
 			Value: val,
 		}
 	case "map":
@@ -92,8 +92,8 @@ func parseVariable(val interface{}, varType string) hil_ast.Variable {
 
 		switch reflect.TypeOf(s.Index(0).Interface()).Kind() {
 		case reflect.Map:
-			var variables map[string]hil_ast.Variable
-			variables = map[string]hil_ast.Variable{}
+			var variables map[string]hilast.Variable
+			variables = map[string]hilast.Variable{}
 			for i := 0; i < s.Len(); i++ {
 				ms := reflect.ValueOf(s.Index(i).Interface())
 				for _, k := range ms.MapKeys() {
@@ -102,17 +102,17 @@ func parseVariable(val interface{}, varType string) hil_ast.Variable {
 					variables[key] = parseVariable(value, "")
 				}
 			}
-			hilVar = hil_ast.Variable{
-				Type:  hil_ast.TypeMap,
+			hilVar = hilast.Variable{
+				Type:  hilast.TypeMap,
 				Value: variables,
 			}
 		default:
-			var variables []hil_ast.Variable
+			var variables []hilast.Variable
 			for i := 0; i < s.Len(); i++ {
 				variables = append(variables, parseVariable(s.Index(i).Interface(), ""))
 			}
-			hilVar = hil_ast.Variable{
-				Type:  hil_ast.TypeList,
+			hilVar = hilast.Variable{
+				Type:  hilast.TypeList,
 				Value: variables,
 			}
 		}

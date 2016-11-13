@@ -5,9 +5,9 @@ import (
 	"regexp"
 	"strings"
 
-	hcl_ast "github.com/hashicorp/hcl/hcl/ast"
+	hclast "github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hil"
-	hil_ast "github.com/hashicorp/hil/ast"
+	hilast "github.com/hashicorp/hil/ast"
 	"github.com/wata727/tflint/config"
 )
 
@@ -16,7 +16,7 @@ type Evaluator struct {
 	ModuleConfig map[string]*hclModule
 }
 
-func NewEvaluator(listMap map[string]*hcl_ast.ObjectList, c *config.Config) (*Evaluator, error) {
+func NewEvaluator(listMap map[string]*hclast.ObjectList, c *config.Config) (*Evaluator, error) {
 	varMap, err := detectVariables(listMap)
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ func NewEvaluator(listMap map[string]*hcl_ast.ObjectList, c *config.Config) (*Ev
 
 	evaluator := &Evaluator{
 		Config: hil.EvalConfig{
-			GlobalScope: &hil_ast.BasicScope{
+			GlobalScope: &hilast.BasicScope{
 				VarMap: varMap,
 			},
 		},

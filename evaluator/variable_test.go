@@ -4,16 +4,16 @@ import (
 	"reflect"
 	"testing"
 
-	hcl_ast "github.com/hashicorp/hcl/hcl/ast"
+	hclast "github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/parser"
-	hil_ast "github.com/hashicorp/hil/ast"
+	hilast "github.com/hashicorp/hil/ast"
 )
 
 func TestDetectVariables(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Input  map[string]string
-		Result map[string]hil_ast.Variable
+		Result map[string]hilast.Variable
 		Error  bool
 	}{
 		{
@@ -24,9 +24,9 @@ variable "type" {
 	default = "name"
 }`,
 			},
-			Result: map[string]hil_ast.Variable{
-				"var.type": hil_ast.Variable{
-					Type:  hil_ast.TypeString,
+			Result: map[string]hilast.Variable{
+				"var.type": hilast.Variable{
+					Type:  hilast.TypeString,
 					Value: "name",
 				},
 			},
@@ -37,7 +37,7 @@ variable "type" {
 			Input: map[string]string{
 				"variable.tf": `variable "type" {}`,
 			},
-			Result: map[string]hil_ast.Variable{},
+			Result: map[string]hilast.Variable{},
 			Error:  false,
 		},
 		{
@@ -48,7 +48,7 @@ provider "aws" {
 	region = "us-east-1"
 }`,
 			},
-			Result: map[string]hil_ast.Variable{},
+			Result: map[string]hilast.Variable{},
 			Error:  false,
 		},
 		{
@@ -63,13 +63,13 @@ variable "stat" {
 	default = "usage"
 }`,
 			},
-			Result: map[string]hil_ast.Variable{
-				"var.type": hil_ast.Variable{
-					Type:  hil_ast.TypeString,
+			Result: map[string]hilast.Variable{
+				"var.type": hilast.Variable{
+					Type:  hilast.TypeString,
 					Value: "name",
 				},
-				"var.stat": hil_ast.Variable{
-					Type:  hil_ast.TypeString,
+				"var.stat": hilast.Variable{
+					Type:  hilast.TypeString,
 					Value: "usage",
 				},
 			},
@@ -78,10 +78,10 @@ variable "stat" {
 	}
 
 	for _, tc := range cases {
-		listMap := make(map[string]*hcl_ast.ObjectList)
+		listMap := make(map[string]*hclast.ObjectList)
 		for k, v := range tc.Input {
 			root, _ := parser.Parse([]byte(v))
-			list, _ := root.Node.(*hcl_ast.ObjectList)
+			list, _ := root.Node.(*hclast.ObjectList)
 			listMap[k] = list
 		}
 
@@ -110,7 +110,7 @@ func TestParseVariable(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Input  Input
-		Result hil_ast.Variable
+		Result hilast.Variable
 	}{
 		{
 			Name: "parse string with correct type",
@@ -118,8 +118,8 @@ func TestParseVariable(t *testing.T) {
 				Val:  "test",
 				Type: "string",
 			},
-			Result: hil_ast.Variable{
-				Type:  hil_ast.TypeString,
+			Result: hilast.Variable{
+				Type:  hilast.TypeString,
 				Value: "test",
 			},
 		},
@@ -129,15 +129,15 @@ func TestParseVariable(t *testing.T) {
 				Val:  []string{"test1", "test2"},
 				Type: "list",
 			},
-			Result: hil_ast.Variable{
-				Type: hil_ast.TypeList,
-				Value: []hil_ast.Variable{
-					hil_ast.Variable{
-						Type:  hil_ast.TypeString,
+			Result: hilast.Variable{
+				Type: hilast.TypeList,
+				Value: []hilast.Variable{
+					hilast.Variable{
+						Type:  hilast.TypeString,
 						Value: "test1",
 					},
-					hil_ast.Variable{
-						Type:  hil_ast.TypeString,
+					hilast.Variable{
+						Type:  hilast.TypeString,
 						Value: "test2",
 					},
 				},
@@ -150,15 +150,15 @@ func TestParseVariable(t *testing.T) {
 				Val:  []map[string]string{map[string]string{"test1": "test2", "test3": "test4"}},
 				Type: "map",
 			},
-			Result: hil_ast.Variable{
-				Type: hil_ast.TypeMap,
-				Value: map[string]hil_ast.Variable{
-					"test1": hil_ast.Variable{
-						Type:  hil_ast.TypeString,
+			Result: hilast.Variable{
+				Type: hilast.TypeMap,
+				Value: map[string]hilast.Variable{
+					"test1": hilast.Variable{
+						Type:  hilast.TypeString,
 						Value: "test2",
 					},
-					"test3": hil_ast.Variable{
-						Type:  hil_ast.TypeString,
+					"test3": hilast.Variable{
+						Type:  hilast.TypeString,
 						Value: "test4",
 					},
 				},
@@ -170,8 +170,8 @@ func TestParseVariable(t *testing.T) {
 				Val:  "test",
 				Type: "",
 			},
-			Result: hil_ast.Variable{
-				Type:  hil_ast.TypeString,
+			Result: hilast.Variable{
+				Type:  hilast.TypeString,
 				Value: "test",
 			},
 		},
@@ -181,15 +181,15 @@ func TestParseVariable(t *testing.T) {
 				Val:  []string{"test1", "test2"},
 				Type: "",
 			},
-			Result: hil_ast.Variable{
-				Type: hil_ast.TypeList,
-				Value: []hil_ast.Variable{
-					hil_ast.Variable{
-						Type:  hil_ast.TypeString,
+			Result: hilast.Variable{
+				Type: hilast.TypeList,
+				Value: []hilast.Variable{
+					hilast.Variable{
+						Type:  hilast.TypeString,
 						Value: "test1",
 					},
-					hil_ast.Variable{
-						Type:  hil_ast.TypeString,
+					hilast.Variable{
+						Type:  hilast.TypeString,
 						Value: "test2",
 					},
 				},
@@ -201,15 +201,15 @@ func TestParseVariable(t *testing.T) {
 				Val:  []map[string]string{map[string]string{"test1": "test2", "test3": "test4"}},
 				Type: "",
 			},
-			Result: hil_ast.Variable{
-				Type: hil_ast.TypeMap,
-				Value: map[string]hil_ast.Variable{
-					"test1": hil_ast.Variable{
-						Type:  hil_ast.TypeString,
+			Result: hilast.Variable{
+				Type: hilast.TypeMap,
+				Value: map[string]hilast.Variable{
+					"test1": hilast.Variable{
+						Type:  hilast.TypeString,
 						Value: "test2",
 					},
-					"test3": hil_ast.Variable{
-						Type:  hil_ast.TypeString,
+					"test3": hilast.Variable{
+						Type:  hilast.TypeString,
 						Value: "test4",
 					},
 				},
@@ -221,8 +221,8 @@ func TestParseVariable(t *testing.T) {
 				Val:  "test",
 				Type: "map",
 			},
-			Result: hil_ast.Variable{
-				Type:  hil_ast.TypeString,
+			Result: hilast.Variable{
+				Type:  hilast.TypeString,
 				Value: "test",
 			},
 		},
@@ -232,15 +232,15 @@ func TestParseVariable(t *testing.T) {
 				Val:  []string{"test1", "test2"},
 				Type: "string",
 			},
-			Result: hil_ast.Variable{
-				Type: hil_ast.TypeList,
-				Value: []hil_ast.Variable{
-					hil_ast.Variable{
-						Type:  hil_ast.TypeString,
+			Result: hilast.Variable{
+				Type: hilast.TypeList,
+				Value: []hilast.Variable{
+					hilast.Variable{
+						Type:  hilast.TypeString,
 						Value: "test1",
 					},
-					hil_ast.Variable{
-						Type:  hil_ast.TypeString,
+					hilast.Variable{
+						Type:  hilast.TypeString,
 						Value: "test2",
 					},
 				},
@@ -252,15 +252,15 @@ func TestParseVariable(t *testing.T) {
 				Val:  []map[string]string{map[string]string{"test1": "test2", "test3": "test4"}},
 				Type: "slice",
 			},
-			Result: hil_ast.Variable{
-				Type: hil_ast.TypeMap,
-				Value: map[string]hil_ast.Variable{
-					"test1": hil_ast.Variable{
-						Type:  hil_ast.TypeString,
+			Result: hilast.Variable{
+				Type: hilast.TypeMap,
+				Value: map[string]hilast.Variable{
+					"test1": hilast.Variable{
+						Type:  hilast.TypeString,
 						Value: "test2",
 					},
-					"test3": hil_ast.Variable{
-						Type:  hil_ast.TypeString,
+					"test3": hilast.Variable{
+						Type:  hilast.TypeString,
 						Value: "test4",
 					},
 				},
@@ -290,31 +290,31 @@ func TestParseVariable(t *testing.T) {
 					},
 				},
 			},
-			Result: hil_ast.Variable{
-				Type: hil_ast.TypeMap,
-				Value: map[string]hil_ast.Variable{
-					"a": hil_ast.Variable{
-						Type: hil_ast.TypeList,
-						Value: []hil_ast.Variable{
-							hil_ast.Variable{
-								Type:  hil_ast.TypeString,
+			Result: hilast.Variable{
+				Type: hilast.TypeMap,
+				Value: map[string]hilast.Variable{
+					"a": hilast.Variable{
+						Type: hilast.TypeList,
+						Value: []hilast.Variable{
+							hilast.Variable{
+								Type:  hilast.TypeString,
 								Value: "test1",
 							},
-							hil_ast.Variable{
-								Type:  hil_ast.TypeString,
+							hilast.Variable{
+								Type:  hilast.TypeString,
 								Value: "test2",
 							},
 						},
 					},
-					"b": hil_ast.Variable{
-						Type: hil_ast.TypeMap,
-						Value: map[string]hil_ast.Variable{
-							"test3": hil_ast.Variable{
-								Type:  hil_ast.TypeString,
+					"b": hilast.Variable{
+						Type: hilast.TypeMap,
+						Value: map[string]hilast.Variable{
+							"test3": hilast.Variable{
+								Type:  hilast.TypeString,
 								Value: 1,
 							},
-							"test4": hil_ast.Variable{
-								Type:  hil_ast.TypeString,
+							"test4": hilast.Variable{
+								Type:  hilast.TypeString,
 								Value: 10,
 							},
 						},

@@ -6,10 +6,10 @@ import (
 	"reflect"
 	"testing"
 
-	hcl_ast "github.com/hashicorp/hcl/hcl/ast"
+	hclast "github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/parser"
 	"github.com/hashicorp/hil"
-	hil_ast "github.com/hashicorp/hil/ast"
+	hilast "github.com/hashicorp/hil/ast"
 	"github.com/wata727/tflint/config"
 )
 
@@ -35,20 +35,20 @@ module "ec2_instance" {
 					Name:   "ec2_instance",
 					Source: "./tf_aws_ec2_instance",
 					Config: hil.EvalConfig{
-						GlobalScope: &hil_ast.BasicScope{
-							VarMap: map[string]hil_ast.Variable{
-								"var.ami": hil_ast.Variable{
-									Type:  hil_ast.TypeString,
+						GlobalScope: &hilast.BasicScope{
+							VarMap: map[string]hilast.Variable{
+								"var.ami": hilast.Variable{
+									Type:  hilast.TypeString,
 									Value: "ami-12345",
 								},
-								"var.num": hil_ast.Variable{
-									Type:  hil_ast.TypeString,
+								"var.num": hilast.Variable{
+									Type:  hilast.TypeString,
 									Value: "1",
 								},
 							},
 						},
 					},
-					ListMap: map[string]*hcl_ast.ObjectList{},
+					ListMap: map[string]*hclast.ObjectList{},
 				},
 			},
 			Error: false,
@@ -73,35 +73,35 @@ module "ec2_instance" {
 					Name:   "ec2_instance",
 					Source: "./tf_aws_ec2_instance",
 					Config: hil.EvalConfig{
-						GlobalScope: &hil_ast.BasicScope{
-							VarMap: map[string]hil_ast.Variable{
-								"var.ami": hil_ast.Variable{
-									Type:  hil_ast.TypeString,
+						GlobalScope: &hilast.BasicScope{
+							VarMap: map[string]hilast.Variable{
+								"var.ami": hilast.Variable{
+									Type:  hilast.TypeString,
 									Value: "ami-12345",
 								},
-								"var.num": hil_ast.Variable{
-									Type:  hil_ast.TypeString,
+								"var.num": hilast.Variable{
+									Type:  hilast.TypeString,
 									Value: "1",
 								},
 							},
 						},
 					},
-					ListMap: map[string]*hcl_ast.ObjectList{},
+					ListMap: map[string]*hclast.ObjectList{},
 				},
 				"0cf2d4dab02de8de33c7058799b6f81e": &hclModule{
 					Name:   "ec2_instance",
 					Source: "github.com/wata727/example-module",
 					Config: hil.EvalConfig{
-						GlobalScope: &hil_ast.BasicScope{
-							VarMap: map[string]hil_ast.Variable{
-								"var.ami": hil_ast.Variable{
-									Type:  hil_ast.TypeString,
+						GlobalScope: &hilast.BasicScope{
+							VarMap: map[string]hilast.Variable{
+								"var.ami": hilast.Variable{
+									Type:  hilast.TypeString,
 									Value: "ami-54321",
 								},
 							},
 						},
 					},
-					ListMap: map[string]*hcl_ast.ObjectList{},
+					ListMap: map[string]*hclast.ObjectList{},
 				},
 			},
 			Error: false,
@@ -141,10 +141,10 @@ module "ec2_instances" {
 		testDir := dir + "/test-fixtures"
 		os.Chdir(testDir)
 
-		listMap := make(map[string]*hcl_ast.ObjectList)
+		listMap := make(map[string]*hclast.ObjectList)
 		for k, v := range tc.Input {
 			root, _ := parser.Parse([]byte(v))
-			list, _ := root.Node.(*hcl_ast.ObjectList)
+			list, _ := root.Node.(*hclast.ObjectList)
 			listMap[k] = list
 		}
 		result, err := detectModules(listMap, config.Init())
