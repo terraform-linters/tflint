@@ -71,6 +71,7 @@ func (cli *CLI) Run(args []string) int {
 		return ExitCodeOK
 	}
 
+	// Show help
 	if help {
 		fmt.Fprintln(cli.outStream, `TFLint is a linter of Terraform.
 
@@ -92,6 +93,7 @@ Support aruguments:
 		return ExitCodeOK
 	}
 
+	// Setup config
 	c := config.Init()
 	if debug {
 		c.Debug = true
@@ -100,11 +102,9 @@ Support aruguments:
 		fmt.Fprintln(cli.errStream, err)
 		return ExitCodeError
 	}
-
 	if ignoreModule != "" {
 		c.SetIgnoreModule(ignoreModule)
 	}
-
 	if ignoreRule != "" {
 		c.SetIgnoreRule(ignoreRule)
 	}
