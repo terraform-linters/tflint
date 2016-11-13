@@ -208,7 +208,7 @@ variable "text" {
 		list, _ := root.Node.(*ast.ObjectList)
 		listMap["text.tf"] = list
 
-		evalConfig, _ := eval.NewEvaluator(listMap, config.Init("", ""))
+		evalConfig, _ := eval.NewEvaluator(listMap, config.Init())
 		d := &Detector{
 			ListMap:    listMap,
 			EvalConfig: evalConfig,

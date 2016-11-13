@@ -34,6 +34,7 @@ func (cli *CLI) Run(args []string) int {
 		format       string
 		ignoreModule string
 		ignoreRule   string
+		configFile   string
 	)
 
 	// Define option flag parse
@@ -51,6 +52,8 @@ func (cli *CLI) Run(args []string) int {
 	flags.StringVar(&format, "f", "default", "Alias for --format")
 	flags.StringVar(&ignoreModule, "ignore-module", "", "Ignore specified module source")
 	flags.StringVar(&ignoreRule, "ignore-rule", "", "Ignore specified rules")
+	flags.StringVar(&configFile, "config", ".tflint.hcl", "specify config file")
+	flags.StringVar(&configFile, "c", ".tflint.hcl", "Alias for --config")
 
 	// Parse commandline flag
 	if err := flags.Parse(args[1:]); err != nil {
@@ -61,8 +64,6 @@ func (cli *CLI) Run(args []string) int {
 		fmt.Fprintf(cli.errStream, "ERROR: `%s` is unknown format. Please run `tflint --help`\n", format)
 		return ExitCodeError
 	}
-
-	c := config.Init(ignoreModule, ignoreRule)
 
 	// Show version
 	if version {
@@ -79,6 +80,7 @@ Available options:
 	-h, --help				show usage of TFLint. This page.
 	-v, --version				print version information.
 	-f, --format <format>			choose output format from "default" or "json"
+	-c, --config <file>			specify config file. default is ".tflint.hcl"
 	--ignore-module <source1,source2...>	ignore module by specified source.
 	--ignore-rule <rule1,rule2...>		ignore rules.
 	-d, --debug				enable debug mode.
@@ -90,8 +92,18 @@ Support aruguments:
 		return ExitCodeOK
 	}
 
+	c := config.Init()
 	if debug {
 		c.Debug = true
+	}
+	c.LoadConfig(configFile)
+
+	if ignoreModule != "" {
+		c.SetIgnoreModule(ignoreModule)
+	}
+
+	if ignoreRule != "" {
+		c.SetIgnoreRule(ignoreRule)
 	}
 
 	// Main function

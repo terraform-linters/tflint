@@ -21,10 +21,10 @@ type Detector struct {
 	Logger     *logger.Logger
 }
 
-var detectors = []string{
-	"DetectAwsInstanceInvalidType",
-	"DetectAwsInstancePreviousType",
-	"DetectAwsInstanceNotSpecifiedIamProfile",
+var detectors = map[string]string{
+	"aws_instance_invalid_type":              "DetectAwsInstanceInvalidType",
+	"aws_instance_previous_type":             "DetectAwsInstancePreviousType",
+	"aws_instance_not_specified_iam_profile": "DetectAwsInstanceNotSpecifiedIamProfile",
 }
 
 func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detector, error) {
@@ -61,12 +61,12 @@ func IsKeyNotFound(item *ast.ObjectItem, k string) bool {
 func (d *Detector) Detect() []*issue.Issue {
 	var issues = []*issue.Issue{}
 
-	for _, detectorMethod := range detectors {
-		if d.Config.IgnoreRule[detectorMethod] {
-			d.Logger.Info(fmt.Sprintf("ignore rule `%s`", detectorMethod))
+	for ruleName, detectorMethod := range detectors {
+		if d.Config.IgnoreRule[ruleName] {
+			d.Logger.Info(fmt.Sprintf("ignore rule `%s`", ruleName))
 			continue
 		}
-		d.Logger.Info(fmt.Sprintf("detect by `%s`", detectorMethod))
+		d.Logger.Info(fmt.Sprintf("detect by `%s`", ruleName))
 		method := reflect.ValueOf(d).MethodByName(detectorMethod)
 		method.Call([]reflect.Value{reflect.ValueOf(&issues)})
 
