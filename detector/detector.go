@@ -7,6 +7,7 @@ import (
 
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/token"
+	// "github.com/k0kubun/pp"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/evaluator"
 	"github.com/wata727/tflint/issue"
@@ -24,6 +25,7 @@ var detectors = map[string]string{
 	"aws_instance_invalid_type":              "DetectAwsInstanceInvalidType",
 	"aws_instance_previous_type":             "DetectAwsInstancePreviousType",
 	"aws_instance_not_specified_iam_profile": "DetectAwsInstanceNotSpecifiedIamProfile",
+	"aws_instance_default_standard_volume":   "DetectAwsInstanceDefaultStandardVolume",
 }
 
 func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detector, error) {
@@ -41,15 +43,23 @@ func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detecto
 }
 
 func hclLiteralToken(item *ast.ObjectItem, k string) (token.Token, error) {
-	items := item.Val.(*ast.ObjectType).List.Filter(k).Items
-	if len(items) == 0 {
-		return token.Token{}, fmt.Errorf("ERROR: key `%s` not found", k)
+	objItems, err := hclObjectItems(item, k)
+	if err != nil {
+		return token.Token{}, err
 	}
 
-	if v, ok := items[0].Val.(*ast.LiteralType); ok {
+	if v, ok := objItems[0].Val.(*ast.LiteralType); ok {
 		return v.Token, nil
 	}
 	return token.Token{}, fmt.Errorf("ERROR: `%s` value is not literal", k)
+}
+
+func hclObjectItems(item *ast.ObjectItem, k string) ([]*ast.ObjectItem, error) {
+	items := item.Val.(*ast.ObjectType).List.Filter(k).Items
+	if len(items) == 0 {
+		return []*ast.ObjectItem{}, fmt.Errorf("ERROR: key `%s` not found", k)
+	}
+	return items, nil
 }
 
 func IsKeyNotFound(item *ast.ObjectItem, k string) bool {
