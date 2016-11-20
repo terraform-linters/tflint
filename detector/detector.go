@@ -7,7 +7,6 @@ import (
 
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/token"
-	// "github.com/k0kubun/pp"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/evaluator"
 	"github.com/wata727/tflint/issue"
@@ -22,10 +21,11 @@ type Detector struct {
 }
 
 var detectors = map[string]string{
-	"aws_instance_invalid_type":              "DetectAwsInstanceInvalidType",
-	"aws_instance_previous_type":             "DetectAwsInstancePreviousType",
-	"aws_instance_not_specified_iam_profile": "DetectAwsInstanceNotSpecifiedIamProfile",
-	"aws_instance_default_standard_volume":   "DetectAwsInstanceDefaultStandardVolume",
+	"aws_instance_invalid_type":               "DetectAwsInstanceInvalidType",
+	"aws_instance_previous_type":              "DetectAwsInstancePreviousType",
+	"aws_instance_not_specified_iam_profile":  "DetectAwsInstanceNotSpecifiedIamProfile",
+	"aws_instance_default_standard_volume":    "DetectAwsInstanceDefaultStandardVolume",
+	"aws_db_instance_default_parameter_group": "DetectAwsDbInstanceDefaultParameterGroup",
 }
 
 func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detector, error) {
