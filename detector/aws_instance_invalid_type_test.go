@@ -25,7 +25,7 @@ resource "aws_instance" "web" {
 }`,
 			Issues: []*issue.Issue{
 				&issue.Issue{
-					Type:    "WARNING",
+					Type:    "ERROR",
 					Message: "\"t2.2xlarge\" is invalid instance type.",
 					Line:    3,
 					File:    "test.tf",

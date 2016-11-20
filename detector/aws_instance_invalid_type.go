@@ -83,7 +83,7 @@ func (d *Detector) DetectAwsInstanceInvalidType(issues *[]*issue.Issue) {
 
 			if !validInstanceType[instanceType] {
 				issue := &issue.Issue{
-					Type:    "WARNING",
+					Type:    "ERROR",
 					Message: fmt.Sprintf("\"%s\" is invalid instance type.", instanceType),
 					Line:    instanceTypeToken.Pos.Line,
 					File:    filename,

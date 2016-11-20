@@ -25,7 +25,7 @@ resource "aws_instance" "web" {
 }`,
 			Issues: []*issue.Issue{
 				&issue.Issue{
-					Type:    "NOTICE",
+					Type:    "WARNING",
 					Message: "\"t1.micro\" is previous generation instance type.",
 					Line:    3,
 					File:    "test.tf",

@@ -25,7 +25,7 @@ func (d *Detector) detectForBlockDevices(issues *[]*issue.Issue, item *ast.Objec
 		for _, deviceItem := range deviceItems {
 			if IsKeyNotFound(deviceItem, "volume_type") {
 				issue := &issue.Issue{
-					Type:    "NOTICE",
+					Type:    "WARNING",
 					Message: "\"volume_type\" is not specified. Default standard volume type is not recommended. You should use \"gp2\"",
 					Line:    deviceItem.Assign.Line,
 					File:    filename,

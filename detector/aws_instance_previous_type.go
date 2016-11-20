@@ -40,7 +40,7 @@ func (d *Detector) DetectAwsInstancePreviousType(issues *[]*issue.Issue) {
 
 			if previousInstanceType[instanceType] {
 				issue := &issue.Issue{
-					Type:    "NOTICE",
+					Type:    "WARNING",
 					Message: fmt.Sprintf("\"%s\" is previous generation instance type.", instanceType),
 					Line:    instanceTypeToken.Pos.Line,
 					File:    filename,
