@@ -26,7 +26,7 @@ resource "aws_instance" "web" {
 			Issues: []*issue.Issue{
 				&issue.Issue{
 					Type:    "NOTICE",
-					Message: "\"iam_instance_profile\" is not specified. You cannot edit this value later.",
+					Message: "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate it",
 					Line:    2,
 					File:    "test.tf",
 				},

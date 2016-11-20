@@ -8,7 +8,7 @@ func (d *Detector) DetectAwsInstanceNotSpecifiedIamProfile(issues *[]*issue.Issu
 			if IsKeyNotFound(item, "iam_instance_profile") {
 				issue := &issue.Issue{
 					Type:    "NOTICE",
-					Message: "\"iam_instance_profile\" is not specified. You cannot edit this value later.",
+					Message: "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate it",
 					Line:    item.Pos().Line,
 					File:    filename,
 				}

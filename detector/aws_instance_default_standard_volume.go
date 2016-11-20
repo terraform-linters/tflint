@@ -26,7 +26,7 @@ func (d *Detector) detectForBlockDevices(issues *[]*issue.Issue, item *ast.Objec
 			if IsKeyNotFound(deviceItem, "volume_type") {
 				issue := &issue.Issue{
 					Type:    "WARNING",
-					Message: "\"volume_type\" is not specified. Default standard volume type is not recommended. You should use \"gp2\"",
+					Message: "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
 					Line:    deviceItem.Assign.Line,
 					File:    filename,
 				}
