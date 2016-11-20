@@ -21,11 +21,12 @@ type Detector struct {
 }
 
 var detectors = map[string]string{
-	"aws_instance_invalid_type":               "DetectAwsInstanceInvalidType",
-	"aws_instance_previous_type":              "DetectAwsInstancePreviousType",
-	"aws_instance_not_specified_iam_profile":  "DetectAwsInstanceNotSpecifiedIamProfile",
-	"aws_instance_default_standard_volume":    "DetectAwsInstanceDefaultStandardVolume",
-	"aws_db_instance_default_parameter_group": "DetectAwsDbInstanceDefaultParameterGroup",
+	"aws_instance_invalid_type":                       "DetectAwsInstanceInvalidType",
+	"aws_instance_previous_type":                      "DetectAwsInstancePreviousType",
+	"aws_instance_not_specified_iam_profile":          "DetectAwsInstanceNotSpecifiedIamProfile",
+	"aws_instance_default_standard_volume":            "DetectAwsInstanceDefaultStandardVolume",
+	"aws_db_instance_default_parameter_group":         "DetectAwsDbInstanceDefaultParameterGroup",
+	"aws_elasticache_cluster_default_parameter_group": "DetectAwsElasticacheClusterDefaultParameterGroup",
 }
 
 func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detector, error) {

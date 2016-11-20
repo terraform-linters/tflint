@@ -7,9 +7,9 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-func (d *Detector) DetectAwsDbInstanceDefaultParameterGroup(issues *[]*issue.Issue) {
+func (d *Detector) DetectAwsElasticacheClusterDefaultParameterGroup(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_db_instance").Items {
+		for _, item := range list.Filter("resource", "aws_elasticache_cluster").Items {
 			parameterGroupToken, err := hclLiteralToken(item, "parameter_group_name")
 			if err != nil {
 				d.Logger.Error(err)
@@ -21,7 +21,7 @@ func (d *Detector) DetectAwsDbInstanceDefaultParameterGroup(issues *[]*issue.Iss
 				continue
 			}
 
-			if isDefaultDbParameterGroup(parameterGroup) {
+			if isDefaultCacheParameterGroup(parameterGroup) {
 				issue := &issue.Issue{
 					Type:    "NOTICE",
 					Message: fmt.Sprintf("\"%s\" is default parameter group. You cannot edit it.", parameterGroup),
@@ -34,6 +34,6 @@ func (d *Detector) DetectAwsDbInstanceDefaultParameterGroup(issues *[]*issue.Iss
 	}
 }
 
-func isDefaultDbParameterGroup(s string) bool {
+func isDefaultCacheParameterGroup(s string) bool {
 	return regexp.MustCompile("^default").Match([]byte(s))
 }
