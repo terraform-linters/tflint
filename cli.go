@@ -35,6 +35,10 @@ func (cli *CLI) Run(args []string) int {
 		ignoreModule string
 		ignoreRule   string
 		configFile   string
+		deepCheck    bool
+		awsAccessKey string
+		awsSecretKey string
+		awsRegion    string
 	)
 
 	// Define option flag parse
@@ -42,18 +46,22 @@ func (cli *CLI) Run(args []string) int {
 	// Do not print default usage message
 	flags.SetOutput(new(bytes.Buffer))
 
-	flags.BoolVar(&version, "version", false, "Print version information and quit.")
-	flags.BoolVar(&version, "v", false, "Alias for -version")
-	flags.BoolVar(&help, "help", false, "Show usage (this page)")
-	flags.BoolVar(&help, "h", false, "Alias for --help")
-	flags.BoolVar(&debug, "debug", false, "Enable debug mode")
-	flags.BoolVar(&debug, "d", false, "Alias for --debug")
-	flags.StringVar(&format, "format", "default", "Specify output format")
-	flags.StringVar(&format, "f", "default", "Alias for --format")
-	flags.StringVar(&ignoreModule, "ignore-module", "", "Ignore specified module source")
-	flags.StringVar(&ignoreRule, "ignore-rule", "", "Ignore specified rules")
-	flags.StringVar(&configFile, "config", ".tflint.hcl", "specify config file")
-	flags.StringVar(&configFile, "c", ".tflint.hcl", "Alias for --config")
+	flags.BoolVar(&version, "version", false, "print version information.")
+	flags.BoolVar(&version, "v", false, "alias for -version")
+	flags.BoolVar(&help, "help", false, "show usage of TFLint. This page.")
+	flags.BoolVar(&help, "h", false, "alias for --help")
+	flags.BoolVar(&debug, "debug", false, "enable debug mode.")
+	flags.BoolVar(&debug, "d", false, "alias for --debug")
+	flags.StringVar(&format, "format", "default", "choose output format from \"default\" or \"json\"")
+	flags.StringVar(&format, "f", "default", "alias for --format")
+	flags.StringVar(&ignoreModule, "ignore-module", "", "ignore module by specified source.")
+	flags.StringVar(&ignoreRule, "ignore-rule", "", "ignore rules.")
+	flags.StringVar(&configFile, "config", ".tflint.hcl", "specify config file. default is \".tflint.hcl\"")
+	flags.StringVar(&configFile, "c", ".tflint.hcl", "alias for --config")
+	flags.BoolVar(&deepCheck, "deep", false, "enable deep check mode.")
+	flags.StringVar(&awsAccessKey, "aws-access-key", "", "AWS access key used in deep check mode.")
+	flags.StringVar(&awsSecretKey, "aws-secret-key", "", "AWS secret key used in deep check mode.")
+	flags.StringVar(&awsRegion, "aws-region", "", "AWS region used in deep check mode.")
 
 	// Parse commandline flag
 	if err := flags.Parse(args[1:]); err != nil {
@@ -84,6 +92,10 @@ Available options:
 	-c, --config <file>			specify config file. default is ".tflint.hcl"
 	--ignore-module <source1,source2...>	ignore module by specified source.
 	--ignore-rule <rule1,rule2...>		ignore rules.
+	--deep					enable deep check mode.
+	--aws-access-key			set AWS access key used in deep check mode.
+	--aws-secret-key			set AWS secret key used in deep check mode.
+	--aws-region				set AWS region used in deep check mode.
 	-d, --debug				enable debug mode.
 
 Support aruguments:
@@ -101,6 +113,10 @@ Support aruguments:
 	if err := c.LoadConfig(configFile); err != nil {
 		fmt.Fprintln(cli.errStream, err)
 		return ExitCodeError
+	}
+	if deepCheck || c.DeepCheck {
+		c.DeepCheck = true
+		c.SetAwsCredentials(awsAccessKey, awsSecretKey, awsRegion)
 	}
 	if ignoreModule != "" {
 		c.SetIgnoreModule(ignoreModule)
@@ -128,6 +144,10 @@ Support aruguments:
 		return ExitCodeError
 	}
 	issues := d.Detect()
+	if d.Error {
+		fmt.Fprintln(cli.errStream, "ERROR: error occurred in detecting. Please run with --debug options for details.")
+		return ExitCodeError
+	}
 
 	p := printer.NewPrinter(cli.outStream, cli.errStream)
 	p.Print(issues, format)

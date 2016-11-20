@@ -9,16 +9,20 @@ import (
 )
 
 type Config struct {
-	Debug        bool
-	IgnoreModule map[string]bool `hcl:"ignore_module"`
-	IgnoreRule   map[string]bool `hcl:"ignore_rule"`
+	Debug          bool
+	DeepCheck      bool              `hcl:"deep_check"`
+	AwsCredentials map[string]string `hcl:"aws_credentials"`
+	IgnoreModule   map[string]bool   `hcl:"ignore_module"`
+	IgnoreRule     map[string]bool   `hcl:"ignore_rule"`
 }
 
 func Init() *Config {
 	return &Config{
-		Debug:        false,
-		IgnoreModule: map[string]bool{},
-		IgnoreRule:   map[string]bool{},
+		Debug:          false,
+		DeepCheck:      false,
+		AwsCredentials: map[string]string{},
+		IgnoreModule:   map[string]bool{},
+		IgnoreRule:     map[string]bool{},
 	}
 }
 
@@ -37,6 +41,26 @@ func (c *Config) LoadConfig(filename string) error {
 	}
 
 	return nil
+}
+
+func (c *Config) SetAwsCredentials(accessKey string, secretKey string, region string) {
+	if accessKey != "" {
+		c.AwsCredentials["access_key"] = accessKey
+	}
+	if secretKey != "" {
+		c.AwsCredentials["secret_key"] = secretKey
+	}
+	if region != "" {
+		c.AwsCredentials["region"] = region
+	}
+}
+
+func (c *Config) HasAwsRegion() bool {
+	return c.AwsCredentials["region"] != ""
+}
+
+func (c *Config) HasAwsCredentials() bool {
+	return c.AwsCredentials["access_key"] != "" && c.AwsCredentials["secret_key"] != "" && c.AwsCredentials["region"] != ""
 }
 
 func (c *Config) SetIgnoreModule(ignoreModule string) {

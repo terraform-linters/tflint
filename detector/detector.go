@@ -16,8 +16,10 @@ import (
 type Detector struct {
 	ListMap    map[string]*ast.ObjectList
 	Config     *config.Config
+	AwsClient  *config.AwsClient
 	EvalConfig *evaluator.Evaluator
 	Logger     *logger.Logger
+	Error      bool
 }
 
 var detectors = map[string]string{
@@ -27,6 +29,7 @@ var detectors = map[string]string{
 	"aws_instance_default_standard_volume":            "DetectAwsInstanceDefaultStandardVolume",
 	"aws_db_instance_default_parameter_group":         "DetectAwsDbInstanceDefaultParameterGroup",
 	"aws_elasticache_cluster_default_parameter_group": "DetectAwsElasticacheClusterDefaultParameterGroup",
+	"aws_instance_invalid_iam_profile":                "DetectAwsInstanceInvalidIamProfile",
 }
 
 func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detector, error) {
@@ -38,8 +41,10 @@ func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detecto
 	return &Detector{
 		ListMap:    listMap,
 		Config:     c,
+		AwsClient:  c.NewAwsClient(),
 		EvalConfig: evalConfig,
 		Logger:     logger.Init(c.Debug),
+		Error:      false,
 	}, nil
 }
 
