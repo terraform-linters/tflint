@@ -23,6 +23,15 @@ type CLI struct {
 	// outStream and errStream are the stdout and stderr
 	// to write message from the CLI.
 	outStream, errStream io.Writer
+	testMode             bool
+	TestCLIOptions       TestCLIOptions
+}
+
+type TestCLIOptions struct {
+	Config     *config.Config
+	Format     string
+	LoadFile   string
+	ConfigFile string
 }
 
 // Run invokes the CLI with the given arguments.
@@ -125,32 +134,41 @@ Support aruguments:
 		c.SetIgnoreRule(ignoreRule)
 	}
 
-	// Main function
-	var err error
-	l := loader.NewLoader(c.Debug)
-	if flags.NArg() > 0 {
-		err = l.LoadFile(flags.Arg(0))
+	if cli.testMode {
+		cli.TestCLIOptions = TestCLIOptions{
+			Config:     c,
+			Format:     format,
+			LoadFile:   flags.Arg(0),
+			ConfigFile: configFile,
+		}
 	} else {
-		err = l.LoadAllFile(".")
-	}
-	if err != nil {
-		fmt.Fprintln(cli.errStream, err)
-		return ExitCodeError
-	}
+		// Main function
+		var err error
+		l := loader.NewLoader(c.Debug)
+		if flags.NArg() > 0 {
+			err = l.LoadFile(flags.Arg(0))
+		} else {
+			err = l.LoadAllFile(".")
+		}
+		if err != nil {
+			fmt.Fprintln(cli.errStream, err)
+			return ExitCodeError
+		}
 
-	d, err := detector.NewDetector(l.ListMap, c)
-	if err != nil {
-		fmt.Fprintln(cli.errStream, err)
-		return ExitCodeError
-	}
-	issues := d.Detect()
-	if d.Error {
-		fmt.Fprintln(cli.errStream, "ERROR: error occurred in detecting. Please run with --debug options for details.")
-		return ExitCodeError
-	}
+		d, err := detector.NewDetector(l.ListMap, c)
+		if err != nil {
+			fmt.Fprintln(cli.errStream, err)
+			return ExitCodeError
+		}
+		issues := d.Detect()
+		if d.Error {
+			fmt.Fprintln(cli.errStream, "ERROR: error occurred in detecting. Please run with --debug options for details.")
+			return ExitCodeError
+		}
 
-	p := printer.NewPrinter(cli.outStream, cli.errStream)
-	p.Print(issues, format)
+		p := printer.NewPrinter(cli.outStream, cli.errStream)
+		p.Print(issues, format)
+	}
 
 	return ExitCodeOK
 }
