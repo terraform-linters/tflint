@@ -9,8 +9,6 @@ import (
 	"github.com/wata727/tflint/config"
 )
 
-// TODO: add NewEvaluator test
-
 func TestIsEvaluable(t *testing.T) {
 	cases := []struct {
 		Name   string
