@@ -1,0 +1,24 @@
+package: github.com/wata727/tflint
+import:
+- package: github.com/aws/aws-sdk-go
+  version: ^1.5.10
+  subpackages:
+  - aws
+  - aws/credentials
+  - aws/request
+  - aws/session
+  - service/iam
+  - service/iam/iamiface
+- package: github.com/fatih/color
+  version: ^1.1.0
+- package: github.com/golang/mock
+  subpackages:
+  - gomock
+- package: github.com/hashicorp/hcl
+  subpackages:
+  - hcl/ast
+  - hcl/parser
+  - hcl/token
+- package: github.com/hashicorp/hil
+  subpackages:
+  - ast

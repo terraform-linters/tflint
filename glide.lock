@@ -1,0 +1,71 @@
+hash: d6e1af5cf6ecefa4a3df1bb90781fc7f1c2adfa359fa0a02feba359a139b783d
+updated: 2016-11-25T03:07:43.166815174+09:00
+imports:
+- name: github.com/aws/aws-sdk-go
+  version: 4a6ff995f57ee4f8994db17ae83f01a9c9cc2274
+  subpackages:
+  - aws
+  - aws/awserr
+  - aws/awsutil
+  - aws/client
+  - aws/client/metadata
+  - aws/corehandlers
+  - aws/credentials
+  - aws/credentials/ec2rolecreds
+  - aws/credentials/endpointcreds
+  - aws/credentials/stscreds
+  - aws/defaults
+  - aws/ec2metadata
+  - aws/request
+  - aws/session
+  - aws/signer/v4
+  - private/endpoints
+  - private/protocol
+  - private/protocol/query
+  - private/protocol/query/queryutil
+  - private/protocol/rest
+  - private/protocol/xml/xmlutil
+  - private/waiter
+  - service/iam
+  - service/iam/iamiface
+  - service/sts
+- name: github.com/fatih/color
+  version: dea9d3a26a087187530244679c1cfb3a42937794
+- name: github.com/go-ini/ini
+  version: 2ba15ac2dc9cdf88c110ec2dc0ced7fa45f5678c
+- name: github.com/golang/mock
+  version: bd3c8e81be01eef76d4b503f5e687d2d1354d2d9
+  subpackages:
+  - gomock
+- name: github.com/hashicorp/hcl
+  version: 7cb7455c285ca3bf3362aa4ba6a06a6d6f5c3ba0
+  subpackages:
+  - hcl/ast
+  - hcl/parser
+  - hcl/scanner
+  - hcl/strconv
+  - hcl/token
+  - json/parser
+  - json/scanner
+  - json/token
+- name: github.com/hashicorp/hil
+  version: 76d6c606283f17780baaad00df4b6ce8e9fca941
+  subpackages:
+  - ast
+  - parser
+  - scanner
+- name: github.com/jmespath/go-jmespath
+  version: bd40a432e4c76585ef6b72d3fd96fb9b6dc7b68d
+- name: github.com/mattn/go-colorable
+  version: d228849504861217f796da67fae4f6e347643f15
+- name: github.com/mattn/go-isatty
+  version: 30a891c33c7cde7b02a981314b4228ec99380cca
+- name: github.com/mitchellh/mapstructure
+  version: f3009df150dadf309fdee4a54ed65c124afad715
+- name: github.com/mitchellh/reflectwalk
+  version: 9ad27c461a633e32a235a061d523aefe8f18571d
+- name: golang.org/x/sys
+  version: 30237cf4eefd639b184d1f2cb77a581ea0be8947
+  subpackages:
+  - unix
+testImports: []
