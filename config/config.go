@@ -64,6 +64,9 @@ func (c *Config) HasAwsCredentials() bool {
 }
 
 func (c *Config) SetIgnoreModule(ignoreModule string) {
+	if ignoreModule == "" {
+		return
+	}
 	ignoreModules := strings.Split(ignoreModule, ",")
 
 	for _, m := range ignoreModules {
@@ -72,6 +75,9 @@ func (c *Config) SetIgnoreModule(ignoreModule string) {
 }
 
 func (c *Config) SetIgnoreRule(ignoreRule string) {
+	if ignoreRule == "" {
+		return
+	}
 	ignoreRules := strings.Split(ignoreRule, ",")
 
 	for _, r := range ignoreRules {

@@ -1,0 +1,321 @@
+package config
+
+import (
+	"os"
+	"path/filepath"
+	"reflect"
+	"testing"
+)
+
+func TestLoadConfig(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Input  string
+		Result *Config
+	}{
+		{
+			Name:  "load config file",
+			Input: ".tflint.hcl",
+			Result: &Config{
+				DeepCheck: true,
+				AwsCredentials: map[string]string{
+					"access_key": "AWS_ACCESS_KEY",
+					"secret_key": "AWS_SECRET_KEY",
+					"region":     "us-east-1",
+				},
+				IgnoreRule: map[string]bool{
+					"aws_instance_invalid_type":  true,
+					"aws_instance_previous_type": true,
+				},
+				IgnoreModule: map[string]bool{
+					"github.com/wata727/example-module": true,
+				},
+			},
+		},
+		{
+			Name:   "config file not found",
+			Input:  ".tflint.config",
+			Result: Init(),
+		},
+	}
+
+	for _, tc := range cases {
+		prev, _ := filepath.Abs(".")
+		dir, _ := os.Getwd()
+		defer os.Chdir(prev)
+		testDir := dir + "/test-fixtures"
+		os.Chdir(testDir)
+
+		c := Init()
+		c.LoadConfig(tc.Input)
+		if !reflect.DeepEqual(c, tc.Result) {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", c, tc.Result, tc.Name)
+		}
+	}
+}
+
+func TestSetAwsCredentials(t *testing.T) {
+	type Input struct {
+		AccessKey string
+		SecretKey string
+		Region    string
+	}
+
+	cases := []struct {
+		Name   string
+		Config *Config
+		Input  Input
+		Result *Config
+	}{
+		{
+			Name: "set credentials",
+			Config: &Config{
+				AwsCredentials: map[string]string{},
+			},
+			Input: Input{
+				AccessKey: "AWS_ACCESS_KEY",
+				SecretKey: "AWS_SECRET_KEY",
+				Region:    "us-east-1",
+			},
+			Result: &Config{
+				AwsCredentials: map[string]string{
+					"access_key": "AWS_ACCESS_KEY",
+					"secret_key": "AWS_SECRET_KEY",
+					"region":     "us-east-1",
+				},
+			},
+		},
+		{
+			Name: "do not overwrite",
+			Config: &Config{
+				AwsCredentials: map[string]string{
+					"access_key": "AWS_ACCESS_KEY",
+					"secret_key": "AWS_SECRET_KEY",
+					"region":     "us-east-1",
+				},
+			},
+			Input: Input{
+				AccessKey: "",
+				SecretKey: "",
+				Region:    "",
+			},
+			Result: &Config{
+				AwsCredentials: map[string]string{
+					"access_key": "AWS_ACCESS_KEY",
+					"secret_key": "AWS_SECRET_KEY",
+					"region":     "us-east-1",
+				},
+			},
+		},
+	}
+
+	for _, tc := range cases {
+		tc.Config.SetAwsCredentials(tc.Input.AccessKey, tc.Input.SecretKey, tc.Input.Region)
+		if !reflect.DeepEqual(tc.Config, tc.Result) {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", tc.Config, tc.Result, tc.Name)
+		}
+	}
+}
+
+func TestHasAwsRegion(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Input  *Config
+		Result bool
+	}{
+		{
+			Name: "has region",
+			Input: &Config{
+				AwsCredentials: map[string]string{
+					"region": "us-east-1",
+				},
+			},
+			Result: true,
+		},
+		{
+			Name: "does not have region",
+			Input: &Config{
+				AwsCredentials: map[string]string{},
+			},
+			Result: false,
+		},
+	}
+
+	for _, tc := range cases {
+		result := tc.Input.HasAwsRegion()
+		if !reflect.DeepEqual(result, tc.Result) {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+		}
+	}
+}
+
+func TestHasAwsCredentials(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Input  *Config
+		Result bool
+	}{
+		{
+			Name: "has credentials",
+			Input: &Config{
+				AwsCredentials: map[string]string{
+					"access_key": "AWS_ACCESS_KEY",
+					"secret_key": "AWS_SECRET_KEY",
+					"region":     "us-east-1",
+				},
+			},
+			Result: true,
+		},
+		{
+			Name: "does not have access_key",
+			Input: &Config{
+				AwsCredentials: map[string]string{
+					"secret_key": "AWS_SECRET_KEY",
+					"region":     "us-east-1",
+				},
+			},
+			Result: false,
+		},
+		{
+			Name: "does not have secret_key",
+			Input: &Config{
+				AwsCredentials: map[string]string{
+					"access_key": "AWS_ACCESS_KEY",
+					"region":     "us-east-1",
+				},
+			},
+			Result: false,
+		},
+		{
+			Name: "does not have region",
+			Input: &Config{
+				AwsCredentials: map[string]string{
+					"access_key": "AWS_ACCESS_KEY",
+					"secret_key": "AWS_SECRET_KEY",
+				},
+			},
+			Result: false,
+		},
+	}
+
+	for _, tc := range cases {
+		result := tc.Input.HasAwsCredentials()
+		if !reflect.DeepEqual(result, tc.Result) {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+		}
+	}
+}
+
+func TestSetIgnoreModule(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Config *Config
+		Input  string
+		Result *Config
+	}{
+		{
+			Name: "set modules",
+			Config: &Config{
+				IgnoreModule: map[string]bool{},
+			},
+			Input: "module1,module2",
+			Result: &Config{
+				IgnoreModule: map[string]bool{
+					"module1": true,
+					"module2": true,
+				},
+			},
+		},
+		{
+			Name: "not set",
+			Config: &Config{
+				IgnoreModule: map[string]bool{},
+			},
+			Input: "",
+			Result: &Config{
+				IgnoreModule: map[string]bool{},
+			},
+		},
+		{
+			Name: "append modules",
+			Config: &Config{
+				IgnoreModule: map[string]bool{
+					"module1": true,
+					"module2": true,
+				},
+			},
+			Input: "module3",
+			Result: &Config{
+				IgnoreModule: map[string]bool{
+					"module1": true,
+					"module2": true,
+					"module3": true,
+				},
+			},
+		},
+	}
+
+	for _, tc := range cases {
+		tc.Config.SetIgnoreModule(tc.Input)
+		if !reflect.DeepEqual(tc.Config, tc.Result) {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", tc.Config, tc.Result, tc.Name)
+		}
+	}
+}
+
+func TestSetIgnoreRule(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Config *Config
+		Input  string
+		Result *Config
+	}{
+		{
+			Name: "set rules",
+			Config: &Config{
+				IgnoreRule: map[string]bool{},
+			},
+			Input: "rule1,rule2",
+			Result: &Config{
+				IgnoreRule: map[string]bool{
+					"rule1": true,
+					"rule2": true,
+				},
+			},
+		},
+		{
+			Name: "not set",
+			Config: &Config{
+				IgnoreRule: map[string]bool{},
+			},
+			Input: "",
+			Result: &Config{
+				IgnoreRule: map[string]bool{},
+			},
+		},
+		{
+			Name: "append rules",
+			Config: &Config{
+				IgnoreRule: map[string]bool{
+					"rule1": true,
+					"rule2": true,
+				},
+			},
+			Input: "rule3",
+			Result: &Config{
+				IgnoreRule: map[string]bool{
+					"rule1": true,
+					"rule2": true,
+					"rule3": true,
+				},
+			},
+		},
+	}
+
+	for _, tc := range cases {
+		tc.Config.SetIgnoreRule(tc.Input)
+		if !reflect.DeepEqual(tc.Config, tc.Result) {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", tc.Config, tc.Result, tc.Name)
+		}
+	}
+}
