@@ -1,4 +1,7 @@
 # TFLint
+[![GitHub release](https://img.shields.io/github/release/wata727/tflint.svg)](https://github.com/wata727/tflint/releases/latest)
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+
 TFLint is a linter of [Terraform](https://www.terraform.io/). TFLint is intended to supplement `terraform plan` in AWS provider. In particular, it can detect errors that can not be detected by `terraform plan` or template that do not follow best practices.
 
 ## Why do we need to supplement `terraform plan`?
@@ -41,7 +44,7 @@ template.tf
 Result: 2 issues  (1 errors , 0 warnings , 1 notices)
 ```
 
-Two issues were reported. One is for invalid instance type, the other one is for beat practices about IAM instance profile. If you would like to know more about these issues please check the documentation.
+Two issues were reported. One is for invalid instance type, the other one is for beat practices about IAM instance profile. If you would like to know more about these issues please check the [documentation](https://github.com/wata727/tflint/tree/master/docs).
 
 ### Specify Template
 If you want to parse only a specific template, not all templates, you can specify a filename as an argument.
