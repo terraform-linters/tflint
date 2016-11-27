@@ -16,6 +16,7 @@ install: test
 release: test
 	go get github.com/mitchellh/gox
 	gox --output 'dist/{{.OS}}_{{.Arch}}/{{.Dir}}'
+	mkdir -p dist/releases
 	zip -j dist/releases/tflint_darwin_386.zip    dist/darwin_386/tflint
 	zip -j dist/releases/tflint_darwin_amd64.zip  dist/darwin_amd64/tflint
 	zip -j dist/releases/tflint_freebsd_386.zip   dist/freebsd_386/tflint
