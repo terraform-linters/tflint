@@ -4,6 +4,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/aws/aws-sdk-go/service/ec2/ec2iface"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/iam/iamiface"
 	"github.com/wata727/tflint/logger"
@@ -11,6 +13,7 @@ import (
 
 type AwsClient struct {
 	Iam iamiface.IAMAPI
+	Ec2 ec2iface.EC2API
 }
 
 func (c *Config) NewAwsClient() *AwsClient {
@@ -18,6 +21,7 @@ func (c *Config) NewAwsClient() *AwsClient {
 	s := c.NewAwsSession()
 
 	client.Iam = iam.New(s)
+	client.Ec2 = ec2.New(s)
 
 	return client
 }
