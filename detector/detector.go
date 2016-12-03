@@ -93,12 +93,14 @@ func (d *Detector) Detect() []*issue.Issue {
 			}
 			d.Logger.Info(fmt.Sprintf("detect module `%s`", name))
 			moduleDetector := &Detector{
-				ListMap: m.ListMap,
-				Config:  d.Config,
+				ListMap:   m.ListMap,
+				Config:    d.Config,
+				AwsClient: d.AwsClient,
 				EvalConfig: &evaluator.Evaluator{
 					Config: m.Config,
 				},
 				Logger: d.Logger,
+				Error:  false,
 			}
 			method := reflect.ValueOf(moduleDetector).MethodByName(detectorMethod)
 			method.Call([]reflect.Value{reflect.ValueOf(&issues)})
