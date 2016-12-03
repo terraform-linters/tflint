@@ -307,7 +307,7 @@ func TestCLIRun(t *testing.T) {
 
 		status := cli.Run(args)
 		if status != tc.Result.Status {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", status, tc.Result.Status, tc.Name)
+			t.Fatalf("Bad: %d\nExpected: %d\n\ntestcase: %s", status, tc.Result.Status, tc.Name)
 		}
 		var output string = outStream.String()
 		if status == ExitCodeError {
@@ -317,7 +317,7 @@ func TestCLIRun(t *testing.T) {
 			t.Fatalf("Bad: %s\nExpected Contains: %s\n\ntestcase: %s", output, tc.Result.Output, tc.Name)
 		}
 		if !reflect.DeepEqual(cli.TestCLIOptions, tc.Result.CLIOptions) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", cli.TestCLIOptions, tc.Result.CLIOptions, tc.Name)
+			t.Fatalf("Bad: %+v\nExpected: %+v\n\ntestcase: %s", cli.TestCLIOptions, tc.Result.CLIOptions, tc.Name)
 		}
 	}
 }
