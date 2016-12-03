@@ -6,7 +6,7 @@
 TFLint is a linter of [Terraform](https://www.terraform.io/). TFLint is intended to supplement `terraform plan` in AWS provider. In particular, it can detect errors that can not be detected by `terraform plan` or template that do not follow best practices.
 
 ## Why do we need to supplement `terraform plan`?
-Terraform is a great tool for infrastructure as a code. it generates an execution plan, we can rely on this plan to proceed with development. However, this plan does not verify values ​​used in template. For example, following template is invalid configuration (t2.2xlarge is not exists) 
+Terraform is a great tool for infrastructure as a code. it generates an execution plan, we can rely on this plan to proceed with development. However, this plan does not verify values used in template. For example, following template is invalid configuration (t2.2xlarge is not exists)
 
 ```
 resource "aws_instance" "web" {
@@ -108,7 +108,7 @@ $ tflint --config other_config.hcl
 TFLint can interpret part of [interpolation syntax](https://www.terraform.io/docs/configuration/interpolation.html). We now support only variables. So you cannot use attributes of resource, outputs of modules and built-in functions. If you are using them, TFLint ignores it. You can check what is ignored by executing it with `--debug` option.
 
 ## Deep Check?
-Deep check is an option that you can actually search resources on AWS and check if invalid values ​​are used. You can activate it by executing it with `--deep` option as following:
+Deep check is an option that you can actually search resources on AWS and check if invalid values are used. You can activate it by executing it with `--deep` option as following:
 
 ```
 $ tflint --deep
