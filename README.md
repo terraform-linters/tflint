@@ -6,7 +6,7 @@
 TFLint is a linter of [Terraform](https://www.terraform.io/). TFLint is intended to supplement `terraform plan` in AWS provider. In particular, it can detect errors that can not be detected by `terraform plan` or template that do not follow best practices.
 
 ## Why do we need to supplement `terraform plan`?
-Terraform is a great tool for infrastructure as a code. it generates an execution plan, we can rely on this plan to proceed with development. However, this plan does not verify values used in template. For example, following template is invalid configuration (t1.2xlarge is not exists)
+Terraform is a great tool for infrastructure as a code. It generates an execution plan, we can rely on this plan to proceed with development. However, this plan does not verify values used in template. For example, following template is invalid configuration (t1.2xlarge is not exists)
 
 ```
 resource "aws_instance" "web" {
@@ -37,7 +37,7 @@ $ tflint -v
 ```
 
 ## Quick Start
-Try running TFLint under the directory where Terraform is executed. it detect if there is a issue and output the result. For example, we analyze the previous invaild template.
+Try running TFLint under the directory where Terraform is executed. It detect if there is a issue and output the result. For example, we analyze the previous invalid template.
 
 ```
 $ tflint
