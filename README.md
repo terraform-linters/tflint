@@ -6,12 +6,12 @@
 TFLint is a linter of [Terraform](https://www.terraform.io/). TFLint is intended to supplement `terraform plan` in AWS provider. In particular, it can detect errors that can not be detected by `terraform plan` or template that do not follow best practices.
 
 ## Why do we need to supplement `terraform plan`?
-Terraform is a great tool for infrastructure as a code. It generates an execution plan, we can rely on this plan to proceed with development. However, this plan does not verify values used in template. For example, following template is invalid configuration (t2.2xlarge is not exists)
+Terraform is a great tool for infrastructure as a code. It generates an execution plan, we can rely on this plan to proceed with development. However, this plan does not verify values used in template. For example, following template is invalid configuration (t1.2xlarge is not exists)
 
 ```
 resource "aws_instance" "web" {
   ami           = "ami-b73b63a0"
-  instance_type = "t2.2xlarge" # invalid type!
+  instance_type = "t1.2xlarge" # invalid type!
 
   tags {
     Name = "HelloWorld"
@@ -43,7 +43,7 @@ Try running TFLint under the directory where Terraform is executed. It detect if
 $ tflint
 template.tf
         NOTICE:1 "iam_instance_profile" is not specified. If you want to change it, you need to recreate it
-        ERROR:3 "t2.2xlarge" is invalid instance type.
+        ERROR:3 "t1.2xlarge" is invalid instance type.
 
 Result: 2 issues  (1 errors , 0 warnings , 1 notices)
 ```
@@ -113,7 +113,7 @@ Deep check is an option that you can actually search resources on AWS and check 
 ```
 $ tflint --deep
 template.tf
-        ERROR:3 "t2.2xlarge" is invalid instance type.
+        ERROR:3 "t1.2xlarge" is invalid instance type.
         ERROR:4 "invalid_profile" is invalid IAM profile name.
 
 Result: 2 issues  (2 errors , 0 warnings , 0 notices)

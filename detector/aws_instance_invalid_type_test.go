@@ -18,15 +18,15 @@ func TestDetectAwsInstanceInvalidType(t *testing.T) {
 		Issues []*issue.Issue
 	}{
 		{
-			Name: "t2.2xlarge is invalid",
+			Name: "t1.2xlarge is invalid",
 			Src: `
 resource "aws_instance" "web" {
-    instance_type = "t2.2xlarge"
+    instance_type = "t1.2xlarge"
 }`,
 			Issues: []*issue.Issue{
 				&issue.Issue{
 					Type:    "ERROR",
-					Message: "\"t2.2xlarge\" is invalid instance type.",
+					Message: "\"t1.2xlarge\" is invalid instance type.",
 					Line:    3,
 					File:    "test.tf",
 				},
