@@ -11,7 +11,7 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-func TestDetectAwsElasticacheClusterDefaultParameterGroup(t *testing.T) {
+func TestDetectAwsElastiCacheClusterDefaultParameterGroup(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Src    string
@@ -49,13 +49,15 @@ resource "aws_elasticache_cluster" "cache" {
 		listMap["test.tf"] = list
 
 		evalConfig, _ := evaluator.NewEvaluator(listMap, config.Init())
-		d := &Detector{
-			ListMap:    listMap,
-			EvalConfig: evalConfig,
+		d := &AwsElastiCacheClusterDefaultParameterGroupDetector{
+			&Detector{
+				ListMap:    listMap,
+				EvalConfig: evalConfig,
+			},
 		}
 
 		var issues = []*issue.Issue{}
-		d.DetectAwsElasticacheClusterDefaultParameterGroup(&issues)
+		d.Detect(&issues)
 
 		if !reflect.DeepEqual(issues, tc.Issues) {
 			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", issues, tc.Issues, tc.Name)

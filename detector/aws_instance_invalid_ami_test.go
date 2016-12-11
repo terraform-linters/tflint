@@ -15,7 +15,7 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-func TestDetectAwsInstanceInvalidAmi(t *testing.T) {
+func TestDetectAwsInstanceInvalidAMI(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Src      string
@@ -72,11 +72,13 @@ resource "aws_instance" "web" {
 		c := config.Init()
 		c.DeepCheck = true
 		evalConfig, _ := evaluator.NewEvaluator(listMap, config.Init())
-		d := &Detector{
-			ListMap:    listMap,
-			EvalConfig: evalConfig,
-			Config:     c,
-			AwsClient:  c.NewAwsClient(),
+		d := &AwsInstanceInvalidAMIDetector{
+			&Detector{
+				ListMap:    listMap,
+				EvalConfig: evalConfig,
+				Config:     c,
+				AwsClient:  c.NewAwsClient(),
+			},
 		}
 
 		ctrl := gomock.NewController(t)
@@ -88,7 +90,7 @@ resource "aws_instance" "web" {
 		d.AwsClient.Ec2 = iammock
 
 		var issues = []*issue.Issue{}
-		d.DetectAwsInstanceInvalidAmi(&issues)
+		d.Detect(&issues)
 
 		if !reflect.DeepEqual(issues, tc.Issues) {
 			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", issues, tc.Issues, tc.Name)

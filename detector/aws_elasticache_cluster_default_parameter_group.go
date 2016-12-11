@@ -7,7 +7,15 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-func (d *Detector) DetectAwsElasticacheClusterDefaultParameterGroup(issues *[]*issue.Issue) {
+type AwsElastiCacheClusterDefaultParameterGroupDetector struct {
+	*Detector
+}
+
+func (d *Detector) CreateAwsElastiCacheClusterDefaultParameterGroupDetector() *AwsElastiCacheClusterDefaultParameterGroupDetector {
+	return &AwsElastiCacheClusterDefaultParameterGroupDetector{d}
+}
+
+func (d *AwsElastiCacheClusterDefaultParameterGroupDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_elasticache_cluster").Items {
 			parameterGroupToken, err := hclLiteralToken(item, "parameter_group_name")
@@ -21,7 +29,7 @@ func (d *Detector) DetectAwsElasticacheClusterDefaultParameterGroup(issues *[]*i
 				continue
 			}
 
-			if isDefaultCacheParameterGroup(parameterGroup) {
+			if d.isDefaultCacheParameterGroup(parameterGroup) {
 				issue := &issue.Issue{
 					Type:    "NOTICE",
 					Message: fmt.Sprintf("\"%s\" is default parameter group. You cannot edit it.", parameterGroup),
@@ -34,6 +42,6 @@ func (d *Detector) DetectAwsElasticacheClusterDefaultParameterGroup(issues *[]*i
 	}
 }
 
-func isDefaultCacheParameterGroup(s string) bool {
+func (d *AwsElastiCacheClusterDefaultParameterGroupDetector) isDefaultCacheParameterGroup(s string) bool {
 	return regexp.MustCompile("^default").Match([]byte(s))
 }

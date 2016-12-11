@@ -2,7 +2,15 @@ package detector
 
 import "github.com/wata727/tflint/issue"
 
-func (d *Detector) DetectAwsInstanceNotSpecifiedIamProfile(issues *[]*issue.Issue) {
+type AwsInstanceNotSpecifiedIAMProfileDetector struct {
+	*Detector
+}
+
+func (d *Detector) CreateAwsInstanceNotSpecifiedIAMProfileDetector() *AwsInstanceNotSpecifiedIAMProfileDetector {
+	return &AwsInstanceNotSpecifiedIAMProfileDetector{d}
+}
+
+func (d *AwsInstanceNotSpecifiedIAMProfileDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_instance").Items {
 			if IsKeyNotFound(item, "iam_instance_profile") {

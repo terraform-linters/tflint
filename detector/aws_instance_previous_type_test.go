@@ -49,13 +49,15 @@ resource "aws_instance" "web" {
 		listMap["test.tf"] = list
 
 		evalConfig, _ := evaluator.NewEvaluator(listMap, config.Init())
-		d := &Detector{
-			ListMap:    listMap,
-			EvalConfig: evalConfig,
+		d := &AwsInstancePreviousTypeDetector{
+			&Detector{
+				ListMap:    listMap,
+				EvalConfig: evalConfig,
+			},
 		}
 
 		var issues = []*issue.Issue{}
-		d.DetectAwsInstancePreviousType(&issues)
+		d.Detect(&issues)
 
 		if !reflect.DeepEqual(issues, tc.Issues) {
 			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", issues, tc.Issues, tc.Name)

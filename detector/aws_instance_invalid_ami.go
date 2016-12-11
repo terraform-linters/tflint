@@ -7,7 +7,15 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-func (d *Detector) DetectAwsInstanceInvalidAmi(issues *[]*issue.Issue) {
+type AwsInstanceInvalidAMIDetector struct {
+	*Detector
+}
+
+func (d *Detector) CreateAwsInstanceInvalidAMIDetector() *AwsInstanceInvalidAMIDetector {
+	return &AwsInstanceInvalidAMIDetector{d}
+}
+
+func (d *AwsInstanceInvalidAMIDetector) Detect(issues *[]*issue.Issue) {
 	if !d.Config.DeepCheck {
 		d.Logger.Info("skip this rule.")
 		return

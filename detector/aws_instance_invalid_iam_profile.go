@@ -7,7 +7,15 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-func (d *Detector) DetectAwsInstanceInvalidIamProfile(issues *[]*issue.Issue) {
+type AwsInstanceInvalidIAMProfileDetector struct {
+	*Detector
+}
+
+func (d *Detector) CreateAwsInstanceInvalidIAMProfileDetector() *AwsInstanceInvalidIAMProfileDetector {
+	return &AwsInstanceInvalidIAMProfileDetector{d}
+}
+
+func (d *AwsInstanceInvalidIAMProfileDetector) Detect(issues *[]*issue.Issue) {
 	if !d.Config.DeepCheck {
 		d.Logger.Info("skip this rule.")
 		return

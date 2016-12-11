@@ -5,7 +5,15 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-func (d *Detector) DetectAwsInstanceDefaultStandardVolume(issues *[]*issue.Issue) {
+type AwsInstanceDefaultStandardVolumeDetector struct {
+	*Detector
+}
+
+func (d *Detector) CreateAwsInstanceDefaultStandardVolumeDetector() *AwsInstanceDefaultStandardVolumeDetector {
+	return &AwsInstanceDefaultStandardVolumeDetector{d}
+}
+
+func (d *AwsInstanceDefaultStandardVolumeDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_instance").Items {
 			d.detectForBlockDevices(issues, item, filename, "root_block_device")
@@ -14,7 +22,7 @@ func (d *Detector) DetectAwsInstanceDefaultStandardVolume(issues *[]*issue.Issue
 	}
 }
 
-func (d *Detector) detectForBlockDevices(issues *[]*issue.Issue, item *ast.ObjectItem, filename string, device string) {
+func (d *AwsInstanceDefaultStandardVolumeDetector) detectForBlockDevices(issues *[]*issue.Issue, item *ast.ObjectItem, filename string, device string) {
 	if !IsKeyNotFound(item, device) {
 		deviceItems, err := hclObjectItems(item, device)
 		if err != nil {

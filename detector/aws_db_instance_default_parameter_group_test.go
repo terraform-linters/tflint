@@ -11,7 +11,7 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-func TestDetectAwsDbInstanceDefaultParameterGroup(t *testing.T) {
+func TestDetectAwsDBInstanceDefaultParameterGroup(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Src    string
@@ -49,13 +49,15 @@ resource "aws_db_instance" "db" {
 		listMap["test.tf"] = list
 
 		evalConfig, _ := evaluator.NewEvaluator(listMap, config.Init())
-		d := &Detector{
-			ListMap:    listMap,
-			EvalConfig: evalConfig,
+		d := &AwsDBInstanceDefaultParameterGroupDetector{
+			&Detector{
+				ListMap:    listMap,
+				EvalConfig: evalConfig,
+			},
 		}
 
 		var issues = []*issue.Issue{}
-		d.DetectAwsDbInstanceDefaultParameterGroup(&issues)
+		d.Detect(&issues)
 
 		if !reflect.DeepEqual(issues, tc.Issues) {
 			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", issues, tc.Issues, tc.Name)

@@ -6,7 +6,15 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-func (d *Detector) DetectAwsInstanceInvalidType(issues *[]*issue.Issue) {
+type AwsInstanceInvalidTypeDetector struct {
+	*Detector
+}
+
+func (d *Detector) CreateAwsInstanceInvalidTypeDetector() *AwsInstanceInvalidTypeDetector {
+	return &AwsInstanceInvalidTypeDetector{d}
+}
+
+func (d *AwsInstanceInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
 	var validInstanceType = map[string]bool{
 		"t2.nano":     true,
 		"t2.micro":    true,

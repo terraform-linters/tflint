@@ -53,7 +53,7 @@ func TestDetect(t *testing.T) {
 	}
 
 	detectors = map[string]string{
-		"test_rule": "DetectMethodForTest",
+		"test_rule": "CreateTestDetector",
 	}
 
 	for _, tc := range cases {
@@ -91,7 +91,15 @@ module "ec2_instance" {
 	}
 }
 
-func (d *Detector) DetectMethodForTest(issues *[]*issue.Issue) {
+type TestDetector struct {
+	*Detector
+}
+
+func (d *Detector) CreateTestDetector() *TestDetector {
+	return &TestDetector{d}
+}
+
+func (d *TestDetector) Detect(issues *[]*issue.Issue) {
 	*issues = append(*issues, &issue.Issue{
 		Type:    "TEST",
 		Message: "this is test method",

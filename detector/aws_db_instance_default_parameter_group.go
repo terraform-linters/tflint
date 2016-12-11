@@ -7,7 +7,15 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-func (d *Detector) DetectAwsDbInstanceDefaultParameterGroup(issues *[]*issue.Issue) {
+type AwsDBInstanceDefaultParameterGroupDetector struct {
+	*Detector
+}
+
+func (d *Detector) CreateAwsDBInstanceDefaultParameterGroupDetector() *AwsDBInstanceDefaultParameterGroupDetector {
+	return &AwsDBInstanceDefaultParameterGroupDetector{d}
+}
+
+func (d *AwsDBInstanceDefaultParameterGroupDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_db_instance").Items {
 			parameterGroupToken, err := hclLiteralToken(item, "parameter_group_name")
@@ -21,7 +29,7 @@ func (d *Detector) DetectAwsDbInstanceDefaultParameterGroup(issues *[]*issue.Iss
 				continue
 			}
 
-			if isDefaultDbParameterGroup(parameterGroup) {
+			if d.isDefaultDbParameterGroup(parameterGroup) {
 				issue := &issue.Issue{
 					Type:    "NOTICE",
 					Message: fmt.Sprintf("\"%s\" is default parameter group. You cannot edit it.", parameterGroup),
@@ -34,6 +42,6 @@ func (d *Detector) DetectAwsDbInstanceDefaultParameterGroup(issues *[]*issue.Iss
 	}
 }
 
-func isDefaultDbParameterGroup(s string) bool {
+func (d *AwsDBInstanceDefaultParameterGroupDetector) isDefaultDbParameterGroup(s string) bool {
 	return regexp.MustCompile("^default").Match([]byte(s))
 }
