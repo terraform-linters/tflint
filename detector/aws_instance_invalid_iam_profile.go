@@ -22,12 +22,15 @@ func (d *AwsInstanceInvalidIAMProfileDetector) Detect(issues *[]*issue.Issue) {
 	}
 
 	validIamProfiles := map[string]bool{}
-	resp, err := d.AwsClient.Iam.ListInstanceProfiles(&iam.ListInstanceProfilesInput{})
-	if err != nil {
-		d.Logger.Error(err)
-		d.Error = true
+	if d.ResponseCache.ListInstanceProfilesOutput == nil {
+		resp, err := d.AwsClient.Iam.ListInstanceProfiles(&iam.ListInstanceProfilesInput{})
+		if err != nil {
+			d.Logger.Error(err)
+			d.Error = true
+		}
+		d.ResponseCache.ListInstanceProfilesOutput = resp
 	}
-	for _, iamProfile := range resp.InstanceProfiles {
+	for _, iamProfile := range d.ResponseCache.ListInstanceProfilesOutput.InstanceProfiles {
 		validIamProfiles[*iamProfile.InstanceProfileName] = true
 	}
 

@@ -22,12 +22,15 @@ func (d *AwsInstanceInvalidAMIDetector) Detect(issues *[]*issue.Issue) {
 	}
 
 	validAmi := map[string]bool{}
-	resp, err := d.AwsClient.Ec2.DescribeImages(&ec2.DescribeImagesInput{})
-	if err != nil {
-		d.Logger.Error(err)
-		d.Error = true
+	if d.ResponseCache.DescribeImagesOutput == nil {
+		resp, err := d.AwsClient.Ec2.DescribeImages(&ec2.DescribeImagesInput{})
+		if err != nil {
+			d.Logger.Error(err)
+			d.Error = true
+		}
+		d.ResponseCache.DescribeImagesOutput = resp
 	}
-	for _, image := range resp.Images {
+	for _, image := range d.ResponseCache.DescribeImagesOutput.Images {
 		validAmi[*image.ImageId] = true
 	}
 
