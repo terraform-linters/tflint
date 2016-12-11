@@ -76,6 +76,7 @@ func IsKeyNotFound(item *ast.ObjectItem, k string) bool {
 
 func (d *Detector) Detect() []*issue.Issue {
 	var issues = []*issue.Issue{}
+	modules := d.EvalConfig.ModuleConfig
 
 	for ruleName, creatorMethod := range detectors {
 		if d.Config.IgnoreRule[ruleName] {
@@ -85,20 +86,26 @@ func (d *Detector) Detect() []*issue.Issue {
 		d.Logger.Info(fmt.Sprintf("detect by `%s`", ruleName))
 		creator := reflect.ValueOf(d).MethodByName(creatorMethod)
 		detector := creator.Call([]reflect.Value{})[0]
-
 		method := detector.MethodByName("Detect")
 		method.Call([]reflect.Value{reflect.ValueOf(&issues)})
 
-		for name, m := range d.EvalConfig.ModuleConfig {
+		for name, m := range modules {
 			if d.Config.IgnoreModule[m.Source] {
 				d.Logger.Info(fmt.Sprintf("ignore module `%s`", name))
 				continue
 			}
 			d.Logger.Info(fmt.Sprintf("detect module `%s`", name))
-			detector.Elem().FieldByName("ListMap").Set(reflect.ValueOf(m.ListMap))
-			detector.Elem().FieldByName("EvalConfig").Set(reflect.ValueOf(&evaluator.Evaluator{
+			moduleDetector, err := NewDetector(m.ListMap, d.Config)
+			if err != nil {
+				d.Logger.Error(err)
+				continue
+			}
+			moduleDetector.EvalConfig = &evaluator.Evaluator{
 				Config: m.Config,
-			}))
+			}
+			moduleDetector.Error = d.Error
+			creator := reflect.ValueOf(moduleDetector).MethodByName(creatorMethod)
+			detector := creator.Call([]reflect.Value{})[0]
 			method := detector.MethodByName("Detect")
 			method.Call([]reflect.Value{reflect.ValueOf(&issues)})
 		}
