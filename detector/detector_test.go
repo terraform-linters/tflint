@@ -11,7 +11,6 @@ import (
 	"github.com/hashicorp/hcl/hcl/token"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/evaluator"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/logger"
 )
 
@@ -89,23 +88,6 @@ module "ec2_instance" {
 			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", len(issues), tc.Result, tc.Name)
 		}
 	}
-}
-
-type TestDetector struct {
-	*Detector
-}
-
-func (d *Detector) CreateTestDetector() *TestDetector {
-	return &TestDetector{d}
-}
-
-func (d *TestDetector) Detect(issues *[]*issue.Issue) {
-	*issues = append(*issues, &issue.Issue{
-		Type:    "TEST",
-		Message: "this is test method",
-		Line:    1,
-		File:    "",
-	})
 }
 
 func TestHclLiteralToken(t *testing.T) {

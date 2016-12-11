@@ -7,11 +7,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/golang/mock/gomock"
-	"github.com/hashicorp/hcl/hcl/ast"
-	"github.com/hashicorp/hcl/hcl/parser"
 	"github.com/wata727/tflint/awsmock"
 	"github.com/wata727/tflint/config"
-	"github.com/wata727/tflint/evaluator"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -64,33 +61,26 @@ resource "aws_instance" "web" {
 	}
 
 	for _, tc := range cases {
-		listMap := make(map[string]*ast.ObjectList)
-		root, _ := parser.Parse([]byte(tc.Src))
-		list, _ := root.Node.(*ast.ObjectList)
-		listMap["test.tf"] = list
-
 		c := config.Init()
 		c.DeepCheck = true
-		evalConfig, _ := evaluator.NewEvaluator(listMap, config.Init())
-		d := &AwsInstanceInvalidAMIDetector{
-			&Detector{
-				ListMap:    listMap,
-				EvalConfig: evalConfig,
-				Config:     c,
-				AwsClient:  c.NewAwsClient(),
-			},
-		}
 
+		awsClient := c.NewAwsClient()
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
-		iammock := awsmock.NewMockEC2API(ctrl)
-		iammock.EXPECT().DescribeImages(&ec2.DescribeImagesInput{}).Return(&ec2.DescribeImagesOutput{
+		ec2mock := awsmock.NewMockEC2API(ctrl)
+		ec2mock.EXPECT().DescribeImages(&ec2.DescribeImagesInput{}).Return(&ec2.DescribeImagesOutput{
 			Images: tc.Response,
 		}, nil)
-		d.AwsClient.Ec2 = iammock
+		awsClient.Ec2 = ec2mock
 
 		var issues = []*issue.Issue{}
-		d.Detect(&issues)
+		TestDetectByCreatorName(
+			"CreateAwsInstanceInvalidAMIDetector",
+			tc.Src,
+			c,
+			awsClient,
+			&issues,
+		)
 
 		if !reflect.DeepEqual(issues, tc.Issues) {
 			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", issues, tc.Issues, tc.Name)

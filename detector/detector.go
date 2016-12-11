@@ -77,13 +77,13 @@ func IsKeyNotFound(item *ast.ObjectItem, k string) bool {
 func (d *Detector) Detect() []*issue.Issue {
 	var issues = []*issue.Issue{}
 
-	for ruleName, detectorMethod := range detectors {
+	for ruleName, creatorMethod := range detectors {
 		if d.Config.IgnoreRule[ruleName] {
 			d.Logger.Info(fmt.Sprintf("ignore rule `%s`", ruleName))
 			continue
 		}
 		d.Logger.Info(fmt.Sprintf("detect by `%s`", ruleName))
-		creator := reflect.ValueOf(d).MethodByName(detectorMethod)
+		creator := reflect.ValueOf(d).MethodByName(creatorMethod)
 		detector := creator.Call([]reflect.Value{})[0]
 
 		method := detector.MethodByName("Detect")
