@@ -7,19 +7,30 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-func (d *Detector) DetectAwsInstanceInvalidIamProfile(issues *[]*issue.Issue) {
+type AwsInstanceInvalidIAMProfileDetector struct {
+	*Detector
+}
+
+func (d *Detector) CreateAwsInstanceInvalidIAMProfileDetector() *AwsInstanceInvalidIAMProfileDetector {
+	return &AwsInstanceInvalidIAMProfileDetector{d}
+}
+
+func (d *AwsInstanceInvalidIAMProfileDetector) Detect(issues *[]*issue.Issue) {
 	if !d.Config.DeepCheck {
 		d.Logger.Info("skip this rule.")
 		return
 	}
 
 	validIamProfiles := map[string]bool{}
-	resp, err := d.AwsClient.Iam.ListInstanceProfiles(&iam.ListInstanceProfilesInput{})
-	if err != nil {
-		d.Logger.Error(err)
-		d.Error = true
+	if d.ResponseCache.ListInstanceProfilesOutput == nil {
+		resp, err := d.AwsClient.Iam.ListInstanceProfiles(&iam.ListInstanceProfilesInput{})
+		if err != nil {
+			d.Logger.Error(err)
+			d.Error = true
+		}
+		d.ResponseCache.ListInstanceProfilesOutput = resp
 	}
-	for _, iamProfile := range resp.InstanceProfiles {
+	for _, iamProfile := range d.ResponseCache.ListInstanceProfilesOutput.InstanceProfiles {
 		validIamProfiles[*iamProfile.InstanceProfileName] = true
 	}
 

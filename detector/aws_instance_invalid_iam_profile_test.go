@@ -7,15 +7,12 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/golang/mock/gomock"
-	"github.com/hashicorp/hcl/hcl/ast"
-	"github.com/hashicorp/hcl/hcl/parser"
 	"github.com/wata727/tflint/awsmock"
 	"github.com/wata727/tflint/config"
-	"github.com/wata727/tflint/evaluator"
 	"github.com/wata727/tflint/issue"
 )
 
-func TestDetectAwsInstanceInvalidIamProfile(t *testing.T) {
+func TestDetectAwsInstanceInvalidIAMProfile(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Src      string
@@ -67,31 +64,26 @@ resource "aws_instance" "web" {
 	}
 
 	for _, tc := range cases {
-		listMap := make(map[string]*ast.ObjectList)
-		root, _ := parser.Parse([]byte(tc.Src))
-		list, _ := root.Node.(*ast.ObjectList)
-		listMap["test.tf"] = list
-
 		c := config.Init()
 		c.DeepCheck = true
-		evalConfig, _ := evaluator.NewEvaluator(listMap, config.Init())
-		d := &Detector{
-			ListMap:    listMap,
-			EvalConfig: evalConfig,
-			Config:     c,
-			AwsClient:  c.NewAwsClient(),
-		}
 
+		awsClient := c.NewAwsClient()
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		iammock := awsmock.NewMockIAMAPI(ctrl)
 		iammock.EXPECT().ListInstanceProfiles(&iam.ListInstanceProfilesInput{}).Return(&iam.ListInstanceProfilesOutput{
 			InstanceProfiles: tc.Response,
 		}, nil)
-		d.AwsClient.Iam = iammock
+		awsClient.Iam = iammock
 
 		var issues = []*issue.Issue{}
-		d.DetectAwsInstanceInvalidIamProfile(&issues)
+		TestDetectByCreatorName(
+			"CreateAwsInstanceInvalidIAMProfileDetector",
+			tc.Src,
+			c,
+			awsClient,
+			&issues,
+		)
 
 		if !reflect.DeepEqual(issues, tc.Issues) {
 			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", issues, tc.Issues, tc.Name)

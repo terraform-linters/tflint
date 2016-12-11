@@ -6,7 +6,15 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-func (d *Detector) DetectAwsInstancePreviousType(issues *[]*issue.Issue) {
+type AwsInstancePreviousTypeDetector struct {
+	*Detector
+}
+
+func (d *Detector) CreateAwsInstancePreviousTypeDetector() *AwsInstancePreviousTypeDetector {
+	return &AwsInstancePreviousTypeDetector{d}
+}
+
+func (d *AwsInstancePreviousTypeDetector) Detect(issues *[]*issue.Issue) {
 	var previousInstanceType = map[string]bool{
 		"t1.micro":    true,
 		"m1.small":    true,

@@ -4,14 +4,11 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/hashicorp/hcl/hcl/ast"
-	"github.com/hashicorp/hcl/hcl/parser"
 	"github.com/wata727/tflint/config"
-	"github.com/wata727/tflint/evaluator"
 	"github.com/wata727/tflint/issue"
 )
 
-func TestDetectAwsInstanceNotSpecifiedIamProfile(t *testing.T) {
+func TestDetectAwsInstanceNotSpecifiedIAMProfile(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Src    string
@@ -44,19 +41,14 @@ resource "aws_instance" "web" {
 	}
 
 	for _, tc := range cases {
-		listMap := make(map[string]*ast.ObjectList)
-		root, _ := parser.Parse([]byte(tc.Src))
-		list, _ := root.Node.(*ast.ObjectList)
-		listMap["test.tf"] = list
-
-		evalConfig, _ := evaluator.NewEvaluator(listMap, config.Init())
-		d := &Detector{
-			ListMap:    listMap,
-			EvalConfig: evalConfig,
-		}
-
 		var issues = []*issue.Issue{}
-		d.DetectAwsInstanceNotSpecifiedIamProfile(&issues)
+		TestDetectByCreatorName(
+			"CreateAwsInstanceNotSpecifiedIAMProfileDetector",
+			tc.Src,
+			config.Init(),
+			config.Init().NewAwsClient(),
+			&issues,
+		)
 
 		if !reflect.DeepEqual(issues, tc.Issues) {
 			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", issues, tc.Issues, tc.Name)

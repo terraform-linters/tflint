@@ -14,23 +14,24 @@ import (
 )
 
 type Detector struct {
-	ListMap    map[string]*ast.ObjectList
-	Config     *config.Config
-	AwsClient  *config.AwsClient
-	EvalConfig *evaluator.Evaluator
-	Logger     *logger.Logger
-	Error      bool
+	ListMap       map[string]*ast.ObjectList
+	Config        *config.Config
+	AwsClient     *config.AwsClient
+	EvalConfig    *evaluator.Evaluator
+	Logger        *logger.Logger
+	ResponseCache *ResponseCache
+	Error         bool
 }
 
 var detectors = map[string]string{
-	"aws_instance_invalid_type":                       "DetectAwsInstanceInvalidType",
-	"aws_instance_previous_type":                      "DetectAwsInstancePreviousType",
-	"aws_instance_not_specified_iam_profile":          "DetectAwsInstanceNotSpecifiedIamProfile",
-	"aws_instance_default_standard_volume":            "DetectAwsInstanceDefaultStandardVolume",
-	"aws_db_instance_default_parameter_group":         "DetectAwsDbInstanceDefaultParameterGroup",
-	"aws_elasticache_cluster_default_parameter_group": "DetectAwsElasticacheClusterDefaultParameterGroup",
-	"aws_instance_invalid_iam_profile":                "DetectAwsInstanceInvalidIamProfile",
-	"aws_instance_invalid_ami":                        "DetectAwsInstanceInvalidAmi",
+	"aws_instance_invalid_type":                       "CreateAwsInstanceInvalidTypeDetector",
+	"aws_instance_previous_type":                      "CreateAwsInstancePreviousTypeDetector",
+	"aws_instance_not_specified_iam_profile":          "CreateAwsInstanceNotSpecifiedIAMProfileDetector",
+	"aws_instance_default_standard_volume":            "CreateAwsInstanceDefaultStandardVolumeDetector",
+	"aws_db_instance_default_parameter_group":         "CreateAwsDBInstanceDefaultParameterGroupDetector",
+	"aws_elasticache_cluster_default_parameter_group": "CreateAwsElastiCacheClusterDefaultParameterGroupDetector",
+	"aws_instance_invalid_iam_profile":                "CreateAwsInstanceInvalidIAMProfileDetector",
+	"aws_instance_invalid_ami":                        "CreateAwsInstanceInvalidAMIDetector",
 }
 
 func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detector, error) {
@@ -40,12 +41,13 @@ func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detecto
 	}
 
 	return &Detector{
-		ListMap:    listMap,
-		Config:     c,
-		AwsClient:  c.NewAwsClient(),
-		EvalConfig: evalConfig,
-		Logger:     logger.Init(c.Debug),
-		Error:      false,
+		ListMap:       listMap,
+		Config:        c,
+		AwsClient:     c.NewAwsClient(),
+		EvalConfig:    evalConfig,
+		Logger:        logger.Init(c.Debug),
+		ResponseCache: &ResponseCache{},
+		Error:         false,
 	}, nil
 }
 
@@ -76,33 +78,38 @@ func IsKeyNotFound(item *ast.ObjectItem, k string) bool {
 
 func (d *Detector) Detect() []*issue.Issue {
 	var issues = []*issue.Issue{}
+	modules := d.EvalConfig.ModuleConfig
 
-	for ruleName, detectorMethod := range detectors {
+	for ruleName, creatorMethod := range detectors {
 		if d.Config.IgnoreRule[ruleName] {
 			d.Logger.Info(fmt.Sprintf("ignore rule `%s`", ruleName))
 			continue
 		}
 		d.Logger.Info(fmt.Sprintf("detect by `%s`", ruleName))
-		method := reflect.ValueOf(d).MethodByName(detectorMethod)
+		creator := reflect.ValueOf(d).MethodByName(creatorMethod)
+		detector := creator.Call([]reflect.Value{})[0]
+		method := detector.MethodByName("Detect")
 		method.Call([]reflect.Value{reflect.ValueOf(&issues)})
 
-		for name, m := range d.EvalConfig.ModuleConfig {
+		for name, m := range modules {
 			if d.Config.IgnoreModule[m.Source] {
 				d.Logger.Info(fmt.Sprintf("ignore module `%s`", name))
 				continue
 			}
 			d.Logger.Info(fmt.Sprintf("detect module `%s`", name))
-			moduleDetector := &Detector{
-				ListMap:   m.ListMap,
-				Config:    d.Config,
-				AwsClient: d.AwsClient,
-				EvalConfig: &evaluator.Evaluator{
-					Config: m.Config,
-				},
-				Logger: d.Logger,
-				Error:  false,
+			moduleDetector, err := NewDetector(m.ListMap, d.Config)
+			if err != nil {
+				d.Logger.Error(err)
+				continue
 			}
-			method := reflect.ValueOf(moduleDetector).MethodByName(detectorMethod)
+			moduleDetector.EvalConfig = &evaluator.Evaluator{
+				Config: m.Config,
+			}
+			moduleDetector.ResponseCache = d.ResponseCache
+			moduleDetector.Error = d.Error
+			creator := reflect.ValueOf(moduleDetector).MethodByName(creatorMethod)
+			detector := creator.Call([]reflect.Value{})[0]
+			method := detector.MethodByName("Detect")
 			method.Call([]reflect.Value{reflect.ValueOf(&issues)})
 		}
 	}
