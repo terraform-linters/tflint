@@ -7,5 +7,6 @@ import (
 
 type ResponseCache struct {
 	DescribeImagesOutput       *ec2.DescribeImagesOutput
+	DescribeKeyPairsOutput     *ec2.DescribeKeyPairsOutput
 	ListInstanceProfilesOutput *iam.ListInstanceProfilesOutput
 }
