@@ -19,6 +19,7 @@ Issues are classified into the following three types.
     - [Default Standard Volume](AWS_Instance_Default_Standard_Volume.md)
     - [Invalid AMI](AWS_Instance_Invalid_AMI.md)
     - [Invalid Key Name](AWS_Instance_Invalid_Key_Name.md)
+    - [Invalid Subnet](AWS_Instance_Invalid_Subnet.md)
 - AWS DB Instance
     - [Default Parameter Group](AWS_DB_Instance_Default_Parameter_Group.md)
 - AWS Elasticache Cluster
