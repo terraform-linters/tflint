@@ -32,6 +32,7 @@ var detectors = map[string]string{
 	"aws_elasticache_cluster_default_parameter_group": "CreateAwsElastiCacheClusterDefaultParameterGroupDetector",
 	"aws_instance_invalid_iam_profile":                "CreateAwsInstanceInvalidIAMProfileDetector",
 	"aws_instance_invalid_ami":                        "CreateAwsInstanceInvalidAMIDetector",
+	"aws_instance_invalid_key_name":                   "CreateAwsInstanceInvalidKeyNameDetector",
 }
 
 func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detector, error) {
