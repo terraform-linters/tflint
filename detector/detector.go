@@ -34,6 +34,7 @@ var detectors = map[string]string{
 	"aws_instance_invalid_ami":                        "CreateAwsInstanceInvalidAMIDetector",
 	"aws_instance_invalid_key_name":                   "CreateAwsInstanceInvalidKeyNameDetector",
 	"aws_instance_invalid_subnet":                     "CreateAwsInstanceInvalidSubnetDetector",
+	"aws_instance_invalid_vpc_security_group":         "CreateAwsInstanceInvalidVPCSecurityGroupDetector",
 }
 
 func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detector, error) {
@@ -63,6 +64,26 @@ func hclLiteralToken(item *ast.ObjectItem, k string) (token.Token, error) {
 		return v.Token, nil
 	}
 	return token.Token{}, fmt.Errorf("ERROR: `%s` value is not literal", k)
+}
+
+func hclLiteralListToken(item *ast.ObjectItem, k string) ([]token.Token, error) {
+	objItems, err := hclObjectItems(item, k)
+	if err != nil {
+		return []token.Token{}, err
+	}
+
+	var tokens []token.Token
+	if v, ok := objItems[0].Val.(*ast.ListType); ok {
+		for _, node := range v.List {
+			if v, ok := node.(*ast.LiteralType); ok {
+				tokens = append(tokens, v.Token)
+			} else {
+				return []token.Token{}, fmt.Errorf("ERROR: `%s` contains not literal value", k)
+			}
+		}
+		return tokens, nil
+	}
+	return []token.Token{}, fmt.Errorf("ERROR: `%s` value is not list", k)
 }
 
 func hclObjectItems(item *ast.ObjectItem, k string) ([]*ast.ObjectItem, error) {

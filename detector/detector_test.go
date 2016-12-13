@@ -185,6 +185,121 @@ resource "aws_instance" "web" {
 	}
 }
 
+func TestHclLiteralListToken(t *testing.T) {
+	type Input struct {
+		File string
+		Key  string
+	}
+
+	cases := []struct {
+		Name   string
+		Input  Input
+		Result []token.Token
+		Error  bool
+	}{
+		{
+			Name: "return literal tokens",
+			Input: Input{
+				File: `
+resource "aws_instance" "web" {
+    vpc_security_group_ids = [
+        "sg-1234abcd",
+        "sg-abcd1234",
+    ]
+}`,
+				Key: "vpc_security_group_ids",
+			},
+			Result: []token.Token{
+				token.Token{
+					Type: 9,
+					Pos: token.Pos{
+						Filename: "",
+						Offset:   72,
+						Line:     4,
+						Column:   9,
+					},
+					Text: "\"sg-1234abcd\"",
+					JSON: false,
+				},
+				token.Token{
+					Type: 9,
+					Pos: token.Pos{
+						Filename: "",
+						Offset:   95,
+						Line:     5,
+						Column:   9,
+					},
+					Text: "\"sg-abcd1234\"",
+					JSON: false,
+				},
+			},
+			Error: false,
+		},
+		{
+			Name: "happen error when value is literal",
+			Input: Input{
+				File: `
+resource "aws_instance" "web" {
+    vpc_security_group_ids = "sg-1234abcd"
+}`,
+				Key: "vpc_security_group_ids",
+			},
+			Result: []token.Token{},
+			Error:  true,
+		},
+		{
+			Name: "happen error when value is map",
+			Input: Input{
+				File: `
+resource "aws_instance" "web" {
+    vpc_security_group_ids = {
+        first  = "sg-1234abcd"
+        second = "sg-abcd1234"
+    }
+}`,
+				Key: "vpc_security_group_ids",
+			},
+			Result: []token.Token{},
+			Error:  true,
+		},
+		{
+			Name: "happen error when key not found",
+			Input: Input{
+				File: `
+resource "aws_instance" "web" {
+    vpc_security_group_ids = [
+        "sg-1234abcd",
+        "sg-abcd1234",
+    ]
+}`,
+				Key: "instance_type",
+			},
+			Result: []token.Token{},
+			Error:  true,
+		},
+	}
+
+	for _, tc := range cases {
+		root, _ := parser.Parse([]byte(tc.Input.File))
+		list, _ := root.Node.(*ast.ObjectList)
+		item := list.Filter("resource", "aws_instance").Items[0]
+
+		result, err := hclLiteralListToken(item, tc.Input.Key)
+		if tc.Error == true && err == nil {
+			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
+			continue
+		}
+		if tc.Error == false && err != nil {
+			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
+			continue
+		}
+
+		if !reflect.DeepEqual(result, tc.Result) {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+		}
+	}
+}
+
 func TestHclObjectItems(t *testing.T) {
 	type Input struct {
 		File string
