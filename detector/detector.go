@@ -153,3 +153,19 @@ func (d *Detector) evalToString(v string) (string, error) {
 
 	return ev.(string), nil
 }
+
+func (d *Detector) isDeepCheck(resources ...string) bool {
+	if !d.Config.DeepCheck {
+		d.Logger.Info("skip this rule.")
+		return false
+	}
+	target_resources := 0
+	for _, list := range d.ListMap {
+		target_resources += len(list.Filter(resources...).Items)
+	}
+	if target_resources == 0 {
+		d.Logger.Info("target resources are not found.")
+		return false
+	}
+	return true
+}
