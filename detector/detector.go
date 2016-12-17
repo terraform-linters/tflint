@@ -35,6 +35,7 @@ var detectors = map[string]string{
 	"aws_instance_invalid_key_name":                   "CreateAwsInstanceInvalidKeyNameDetector",
 	"aws_instance_invalid_subnet":                     "CreateAwsInstanceInvalidSubnetDetector",
 	"aws_instance_invalid_vpc_security_group":         "CreateAwsInstanceInvalidVPCSecurityGroupDetector",
+	"aws_elb_invalid_security_group":                  "CreateAwsELBInvalidSecurityGroupDetector",
 }
 
 func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detector, error) {
