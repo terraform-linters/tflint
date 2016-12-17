@@ -16,8 +16,7 @@ func (d *Detector) CreateAwsInstanceInvalidVPCSecurityGroupDetector() *AwsInstan
 }
 
 func (d *AwsInstanceInvalidVPCSecurityGroupDetector) Detect(issues *[]*issue.Issue) {
-	if !d.Config.DeepCheck {
-		d.Logger.Info("skip this rule.")
+	if !d.isDeepCheck("resource", "aws_instance") {
 		return
 	}
 

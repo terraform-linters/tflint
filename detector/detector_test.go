@@ -553,3 +553,73 @@ variable "text" {
 		}
 	}
 }
+
+func TestIsDeepCheck(t *testing.T) {
+	type Input struct {
+		File      string
+		DeepCheck bool
+		Resources []string
+	}
+
+	cases := []struct {
+		Name   string
+		Input  Input
+		Result bool
+	}{
+		{
+			Name: "return true when enabled deep checking",
+			Input: Input{
+				File: `
+resource "aws_instance" {
+    ami = "ami-12345"
+}`,
+				DeepCheck: true,
+				Resources: []string{"resource", "aws_instance"},
+			},
+			Result: true,
+		},
+		{
+			Name: "return false when disabled deep checking",
+			Input: Input{
+				File: `
+resource "aws_instance" {
+    ami = "ami-12345"
+}`,
+				DeepCheck: false,
+				Resources: []string{"resource", "aws_instance"},
+			},
+			Result: false,
+		},
+		{
+			Name: "return false when target resources are not found",
+			Input: Input{
+				File: `
+resource "aws_instance" {
+    ami = "ami-12345"
+}`,
+				DeepCheck: true,
+				Resources: []string{"resource", "not_found"},
+			},
+			Result: false,
+		},
+	}
+
+	for _, tc := range cases {
+		listMap := make(map[string]*ast.ObjectList)
+		root, _ := parser.Parse([]byte(tc.Input.File))
+		list, _ := root.Node.(*ast.ObjectList)
+		listMap["text.tf"] = list
+
+		d := &Detector{
+			ListMap: listMap,
+			Config:  config.Init(),
+			Logger:  logger.Init(false),
+		}
+		d.Config.DeepCheck = tc.Input.DeepCheck
+
+		result := d.isDeepCheck(tc.Input.Resources...)
+		if result != tc.Result {
+			t.Fatalf("Bad: %t\nExpected: %t\n\ntestcase: %s", result, tc.Result, tc.Name)
+		}
+	}
+}
