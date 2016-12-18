@@ -38,6 +38,8 @@ var detectors = map[string]string{
 	"aws_elb_invalid_security_group":                  "CreateAwsELBInvalidSecurityGroupDetector",
 	"aws_elb_invalid_subnet":                          "CreateAwsELBInvalidSubnetDetector",
 	"aws_elb_invalid_instance":                        "CreateAwsELBInvalidInstanceDetector",
+	"aws_alb_invalid_security_group":                  "CreateAwsALBInvalidSecurityGroupDetector",
+	"aws_alb_invalid_subnet":                          "CreateAwsALBInvalidSubnetDetector",
 }
 
 func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detector, error) {
