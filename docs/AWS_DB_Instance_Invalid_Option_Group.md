@@ -1,5 +1,5 @@
-# AWS DB Instance Invalid Parameter Group
-Report this issue if you have specified the invalid parameter name. This issue type is ERROR. This issue is enable only with deep check.
+# AWS DB Instance Invalid Option Group
+Report this issue if you have specified the invalid option group name. This issue type is ERROR. This issue is enable only with deep check.
 
 ## Example
 ```
@@ -15,7 +15,8 @@ resource "aws_db_instance" "mysql" {
   publicly_accessible    = false
   vpc_security_group_ids = ["sg-12345678"]
   db_subnet_group_name   = "app-subnet-group"
-  parameter_group_name   = "invalid_parameter_group"
+  parameter_group_name   = "default.mysql5.7"
+  option_group_name      = "invalid_option"
   multi_az               = true
 }
 ```
@@ -25,13 +26,13 @@ The following is the execution result of TFLint:
 ```
 $ tflint --deep
 template.tf
-        ERROR:13 "invalid_parameter_group" is invalid parameter group name.
+        ERROR:14 "invalid_option" is invalid option group name.
 
 Result: 1 issues  (1 errors , 0 warnings , 0 notices)
 ```
 
 ## Why
-If an invalid parameter group name is specified, an error will occur at `terraform apply`.
+If an invalid option group name is specified, an error will occur at `terraform apply`.
 
 ## How to fix
-Check your parameter groups and select a valid name again.
+Check your option groups and select a valid name again.

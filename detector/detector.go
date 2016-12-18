@@ -32,6 +32,7 @@ var detectors = map[string]string{
 	"aws_db_instance_invalid_vpc_security_group":      "CreateAwsDBInstanceInvalidVPCSecurityGroupDetector",
 	"aws_db_instance_invalid_db_subnet_group":         "CreateAwsDBInstanceInvalidDBSubnetGroupDetector",
 	"aws_db_instance_invalid_parameter_group":         "CreateAwsDBInstanceInvalidParameterGroupDetector",
+	"aws_db_instance_invalid_option_group":            "CreateAwsDBInstanceInvalidOptionGroupDetector",
 	"aws_elasticache_cluster_default_parameter_group": "CreateAwsElastiCacheClusterDefaultParameterGroupDetector",
 	"aws_instance_invalid_iam_profile":                "CreateAwsInstanceInvalidIAMProfileDetector",
 	"aws_instance_invalid_ami":                        "CreateAwsInstanceInvalidAMIDetector",
