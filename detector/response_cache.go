@@ -11,4 +11,5 @@ type ResponseCache struct {
 	DescribeSubnetsOutput        *ec2.DescribeSubnetsOutput
 	DescribeSecurityGroupsOutput *ec2.DescribeSecurityGroupsOutput
 	ListInstanceProfilesOutput   *iam.ListInstanceProfilesOutput
+	DescribeInstancesOutput      *ec2.DescribeInstancesOutput
 }
