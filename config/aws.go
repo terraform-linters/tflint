@@ -8,12 +8,15 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2/ec2iface"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/iam/iamiface"
+	"github.com/aws/aws-sdk-go/service/rds"
+	"github.com/aws/aws-sdk-go/service/rds/rdsiface"
 	"github.com/wata727/tflint/logger"
 )
 
 type AwsClient struct {
 	Iam iamiface.IAMAPI
 	Ec2 ec2iface.EC2API
+	Rds rdsiface.RDSAPI
 }
 
 func (c *Config) NewAwsClient() *AwsClient {
@@ -22,6 +25,7 @@ func (c *Config) NewAwsClient() *AwsClient {
 
 	client.Iam = iam.New(s)
 	client.Ec2 = ec2.New(s)
+	client.Rds = rds.New(s)
 
 	return client
 }
