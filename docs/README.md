@@ -31,5 +31,6 @@ Issues are classified into the following three types.
 - AWS DB Instance
     - [Default Parameter Group](AWS_DB_Instance_Default_Parameter_Group.md)
     - [Invalid VPC Security Group](AWS_DB_Instance_Invalid_VPC_Security_Group.md)
+    - [Invalid DB Subnet Group](AWS_DB_Instance_Invalid_DB_Subnet_Group.md)
 - AWS Elasticache Cluster
     - [Default Parameter Group](AWS_Elasticache_Cluster_Default_Parameter_Group.md)
