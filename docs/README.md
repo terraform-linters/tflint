@@ -21,6 +21,8 @@ Issues are classified into the following three types.
     - [Invalid Key Name](AWS_Instance_Invalid_Key_Name.md)
     - [Invalid Subnet](AWS_Instance_Invalid_Subnet.md)
     - [Invalid VPC Security Group](AWS_Instance_Invalid_VPC_Security_Group.md)
+- AWS ALB
+    - [Invalid Security Group](AWS_ALB_Invalid_Security_Group.md)
 - AWS ELB
     - [Invalid Security Group](AWS_ELB_Invalid_Security_Group.md)
     - [Invalid Subnet](AWS_ELB_Invalid_Subnet.md)
