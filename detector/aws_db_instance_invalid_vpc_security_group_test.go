@@ -1,0 +1,101 @@
+package detector
+
+import (
+	"reflect"
+	"testing"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/golang/mock/gomock"
+	"github.com/wata727/tflint/awsmock"
+	"github.com/wata727/tflint/config"
+	"github.com/wata727/tflint/issue"
+)
+
+func TestDetectAwsDBInstanceInvalidVPCSecurityGroup(t *testing.T) {
+	cases := []struct {
+		Name     string
+		Src      string
+		Response []*ec2.SecurityGroup
+		Issues   []*issue.Issue
+	}{
+		{
+			Name: "security group is invalid",
+			Src: `
+resource "aws_db_instance" "mysql" {
+    vpc_security_group_ids = [
+        "sg-1234abcd",
+        "sg-abcd1234",
+    ]
+}`,
+			Response: []*ec2.SecurityGroup{
+				&ec2.SecurityGroup{
+					GroupId: aws.String("sg-12345678"),
+				},
+				&ec2.SecurityGroup{
+					GroupId: aws.String("sg-abcdefgh"),
+				},
+			},
+			Issues: []*issue.Issue{
+				&issue.Issue{
+					Type:    "ERROR",
+					Message: "\"sg-1234abcd\" is invalid security group.",
+					Line:    4,
+					File:    "test.tf",
+				},
+				&issue.Issue{
+					Type:    "ERROR",
+					Message: "\"sg-abcd1234\" is invalid security group.",
+					Line:    5,
+					File:    "test.tf",
+				},
+			},
+		},
+		{
+			Name: "key name is valid",
+			Src: `
+resource "aws_db_instance" "mysql" {
+    vpc_security_group_ids = [
+        "sg-1234abcd",
+        "sg-abcd1234",
+    ]
+}`,
+			Response: []*ec2.SecurityGroup{
+				&ec2.SecurityGroup{
+					GroupId: aws.String("sg-1234abcd"),
+				},
+				&ec2.SecurityGroup{
+					GroupId: aws.String("sg-abcd1234"),
+				},
+			},
+			Issues: []*issue.Issue{},
+		},
+	}
+
+	for _, tc := range cases {
+		c := config.Init()
+		c.DeepCheck = true
+
+		awsClient := c.NewAwsClient()
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		ec2mock := awsmock.NewMockEC2API(ctrl)
+		ec2mock.EXPECT().DescribeSecurityGroups(&ec2.DescribeSecurityGroupsInput{}).Return(&ec2.DescribeSecurityGroupsOutput{
+			SecurityGroups: tc.Response,
+		}, nil)
+		awsClient.Ec2 = ec2mock
+
+		var issues = []*issue.Issue{}
+		TestDetectByCreatorName(
+			"CreateAwsDBInstanceInvalidVPCSecurityGroupDetector",
+			tc.Src,
+			c,
+			awsClient,
+			&issues,
+		)
+
+		if !reflect.DeepEqual(issues, tc.Issues) {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", issues, tc.Issues, tc.Name)
+		}
+	}
+}
