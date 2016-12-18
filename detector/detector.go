@@ -151,10 +151,38 @@ func (d *Detector) evalToString(v string) (string, error) {
 	} else if reflect.TypeOf(ev).Kind() != reflect.String {
 		return "", fmt.Errorf("ERROR: `%s` is not string", v)
 	} else if ev.(string) == "[NOT EVALUABLE]" {
-		return "", fmt.Errorf("ERROR; `%s` is not evaluable", v)
+		return "", fmt.Errorf("ERROR: `%s` is not evaluable", v)
 	}
 
 	return ev.(string), nil
+}
+
+func (d *Detector) evalToStringTokens(t token.Token) ([]token.Token, error) {
+	ev, err := d.EvalConfig.Eval(strings.Trim(t.Text, "\""))
+
+	if err != nil {
+		return []token.Token{}, err
+	} else if reflect.TypeOf(ev).Kind() != reflect.Slice {
+		return []token.Token{}, fmt.Errorf("ERROR: `%s` is not list", t.Text)
+	} else if sev, _ := ev.(string); sev == "[NOT EVALUABLE]" {
+		return []token.Token{}, fmt.Errorf("ERROR: `%s` is not evaluable", t.Text)
+	}
+
+	var tokens []token.Token
+	for _, node := range ev.([]interface{}) {
+		if reflect.TypeOf(node).Kind() != reflect.String {
+			return []token.Token{}, fmt.Errorf("ERROR: `%s` contains not string value", t.Text)
+		}
+		nodeToken := token.Token{
+			Text: node.(string),
+			Pos: token.Pos{
+				Line: t.Pos.Line,
+			},
+		}
+		tokens = append(tokens, nodeToken)
+	}
+
+	return tokens, nil
 }
 
 func (d *Detector) isDeepCheck(resources ...string) bool {

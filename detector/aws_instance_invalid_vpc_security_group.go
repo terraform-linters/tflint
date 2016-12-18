@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/hashicorp/hcl/hcl/token"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -35,10 +36,22 @@ func (d *AwsInstanceInvalidVPCSecurityGroupDetector) Detect(issues *[]*issue.Iss
 
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_instance").Items {
-			securityGroupTokens, err := hclLiteralListToken(item, "vpc_security_group_ids")
-			if err != nil {
+			var varToken token.Token
+			var securityGroupTokens []token.Token
+			var err error
+			if varToken, err = hclLiteralToken(item, "vpc_security_group_ids"); err == nil {
+				securityGroupTokens, err = d.evalToStringTokens(varToken)
+				if err != nil {
+					d.Logger.Error(err)
+					continue
+				}
+			} else {
 				d.Logger.Error(err)
-				continue
+				securityGroupTokens, err = hclLiteralListToken(item, "vpc_security_group_ids")
+				if err != nil {
+					d.Logger.Error(err)
+					continue
+				}
 			}
 
 			for _, securityGroupToken := range securityGroupTokens {

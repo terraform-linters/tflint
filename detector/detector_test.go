@@ -554,6 +554,109 @@ variable "text" {
 	}
 }
 
+func TestEvalToStringTokens(t *testing.T) {
+	type Input struct {
+		Src  token.Token
+		File string
+	}
+
+	cases := []struct {
+		Name   string
+		Input  Input
+		Result []token.Token
+		Error  bool
+	}{
+		{
+			Name: "return list",
+			Input: Input{
+				Src: token.Token{
+					Text: "${var.array}",
+					Pos: token.Pos{
+						Line: 14,
+					},
+				},
+				File: `
+variable "array" {
+    default = ["result1", "result2"]
+}`,
+			},
+			Result: []token.Token{
+				token.Token{
+					Text: "result1",
+					Pos: token.Pos{
+						Line: 14,
+					},
+				},
+				token.Token{
+					Text: "result2",
+					Pos: token.Pos{
+						Line: 14,
+					},
+				},
+			},
+			Error: false,
+		},
+		{
+			Name: "not list",
+			Input: Input{
+				Src: token.Token{
+					Text: "${var.array}",
+					Pos: token.Pos{
+						Line: 14,
+					},
+				},
+				File: `
+variable "array" {
+    default = "result"
+}`,
+			},
+			Result: []token.Token{},
+			Error:  true,
+		},
+		{
+			Name: "not evaluable",
+			Input: Input{
+				Src: token.Token{
+					Text: "${var.array}",
+					Pos: token.Pos{
+						Line: 14,
+					},
+				},
+				File: `variable "array" {}`,
+			},
+			Result: []token.Token{},
+			Error:  true,
+		},
+	}
+
+	for _, tc := range cases {
+		listMap := make(map[string]*ast.ObjectList)
+		root, _ := parser.Parse([]byte(tc.Input.File))
+		list, _ := root.Node.(*ast.ObjectList)
+		listMap["text.tf"] = list
+
+		evalConfig, _ := evaluator.NewEvaluator(listMap, config.Init())
+		d := &Detector{
+			ListMap:    listMap,
+			EvalConfig: evalConfig,
+		}
+
+		result, err := d.evalToStringTokens(tc.Input.Src)
+		if tc.Error == true && err == nil {
+			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
+			continue
+		}
+		if tc.Error == false && err != nil {
+			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
+			continue
+		}
+
+		if !reflect.DeepEqual(result, tc.Result) {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+		}
+	}
+}
+
 func TestIsDeepCheck(t *testing.T) {
 	type Input struct {
 		File      string
