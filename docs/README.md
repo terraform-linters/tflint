@@ -24,6 +24,7 @@ Issues are classified into the following three types.
 - AWS ELB
     - [Invalid Security Group](AWS_ELB_Invalid_Security_Group.md)
     - [Invalid Subnet](AWS_ELB_Invalid_Subnet.md)
+    - [Invalid Instance](AWS_ELB_Invalid_Instance.md)
 - AWS DB Instance
     - [Default Parameter Group](AWS_DB_Instance_Default_Parameter_Group.md)
 - AWS Elasticache Cluster
