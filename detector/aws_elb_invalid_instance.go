@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/hashicorp/hcl/hcl/token"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -37,10 +38,22 @@ func (d *AwsELBInvalidInstanceDetector) Detect(issues *[]*issue.Issue) {
 
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_elb").Items {
-			instanceTokens, err := hclLiteralListToken(item, "instances")
-			if err != nil {
+			var varToken token.Token
+			var instanceTokens []token.Token
+			var err error
+			if varToken, err = hclLiteralToken(item, "instances"); err == nil {
+				instanceTokens, err = d.evalToStringTokens(varToken)
+				if err != nil {
+					d.Logger.Error(err)
+					continue
+				}
+			} else {
 				d.Logger.Error(err)
-				continue
+				instanceTokens, err = hclLiteralListToken(item, "instances")
+				if err != nil {
+					d.Logger.Error(err)
+					continue
+				}
 			}
 
 			for _, instanceToken := range instanceTokens {

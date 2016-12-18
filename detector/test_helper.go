@@ -8,6 +8,7 @@ import (
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/evaluator"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/logger"
 )
 
 type TestDetector struct {
@@ -38,6 +39,7 @@ func TestDetectByCreatorName(creatorMethod string, src string, c *config.Config,
 		ListMap:       listMap,
 		EvalConfig:    evalConfig,
 		Config:        c,
+		Logger:        logger.Init(false),
 		AwsClient:     awsClient,
 		ResponseCache: &ResponseCache{},
 	}).MethodByName(creatorMethod)

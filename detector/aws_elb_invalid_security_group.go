@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/hashicorp/hcl/hcl/token"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -35,10 +36,22 @@ func (d *AwsELBInvalidSecurityGroupDetector) Detect(issues *[]*issue.Issue) {
 
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_elb").Items {
-			securityGroupTokens, err := hclLiteralListToken(item, "security_groups")
-			if err != nil {
+			var varToken token.Token
+			var securityGroupTokens []token.Token
+			var err error
+			if varToken, err = hclLiteralToken(item, "security_groups"); err == nil {
+				securityGroupTokens, err = d.evalToStringTokens(varToken)
+				if err != nil {
+					d.Logger.Error(err)
+					continue
+				}
+			} else {
 				d.Logger.Error(err)
-				continue
+				securityGroupTokens, err = hclLiteralListToken(item, "security_groups")
+				if err != nil {
+					d.Logger.Error(err)
+					continue
+				}
 			}
 
 			for _, securityGroupToken := range securityGroupTokens {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/hashicorp/hcl/hcl/token"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -35,10 +36,22 @@ func (d *AwsELBInvalidSubnetDetector) Detect(issues *[]*issue.Issue) {
 
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_elb").Items {
-			subnetTokens, err := hclLiteralListToken(item, "subnets")
-			if err != nil {
+			var varToken token.Token
+			var subnetTokens []token.Token
+			var err error
+			if varToken, err = hclLiteralToken(item, "subnets"); err == nil {
+				subnetTokens, err = d.evalToStringTokens(varToken)
+				if err != nil {
+					d.Logger.Error(err)
+					continue
+				}
+			} else {
 				d.Logger.Error(err)
-				continue
+				subnetTokens, err = hclLiteralListToken(item, "subnets")
+				if err != nil {
+					d.Logger.Error(err)
+					continue
+				}
 			}
 
 			for _, subnetToken := range subnetTokens {
