@@ -12,27 +12,33 @@ Issues are classified into the following three types.
 ## Issues
 
 - AWS Instance
-    - [Invalid Type](AWS_Instance_Invalid_Type.md)
-    - [Previous Type](AWS_Instance_Previous_Type.md)
-    - [Not Specified IAM Profile](AWS_Instance_Not_Specified_IAM_Profile.md)
-    - [Invalid IAM Profile](AWS_Instance_Invalid_IAM_Profile.md)
-    - [Default Standard Volume](AWS_Instance_Default_Standard_Volume.md)
-    - [Invalid AMI](AWS_Instance_Invalid_AMI.md)
-    - [Invalid Key Name](AWS_Instance_Invalid_Key_Name.md)
-    - [Invalid Subnet](AWS_Instance_Invalid_Subnet.md)
-    - [Invalid VPC Security Group](AWS_Instance_Invalid_VPC_Security_Group.md)
-- AWS ALB
-    - [Invalid Security Group](AWS_ALB_Invalid_Security_Group.md)
-    - [Invalid Subnet](AWS_ALB_Invalid_Subnet.md)
-- AWS ELB
-    - [Invalid Security Group](AWS_ELB_Invalid_Security_Group.md)
-    - [Invalid Subnet](AWS_ELB_Invalid_Subnet.md)
-    - [Invalid Instance](AWS_ELB_Invalid_Instance.md)
+    - [aws_instance_invalid_type](aws_instance_invalid_type.md)
+    - [aws_instance_previous_type](aws_instance_previous_type.md)
+    - [aws_instance_not_specified_iam_profile](aws_instance_not_specified_iam_profile.md)
+    - [aws_instance_default_standard_volume](aws_instance_default_standard_volume.md)
 - AWS DB Instance
-    - [Default Parameter Group](AWS_DB_Instance_Default_Parameter_Group.md)
-    - [Invalid VPC Security Group](AWS_DB_Instance_Invalid_VPC_Security_Group.md)
-    - [Invalid DB Subnet Group](AWS_DB_Instance_Invalid_DB_Subnet_Group.md)
-    - [Invalid Parameter Group](AWS_DB_Instance_Invalid_Parameter_Group.md)
-    - [Invalid Option Group](AWS_DB_Instance_Invalid_Option_Group.md)
-- AWS Elasticache Cluster
-    - [Default Parameter Group](AWS_Elasticache_Cluster_Default_Parameter_Group.md)
+    - [aws_db_instance_default_parameter_group](aws_db_instance_default_parameter_group.md)
+- AWS ElastiCache Cluster
+    - [aws_elasticache_cluster_default_parameter_group](aws_elasticache_cluster_default_parameter_group.md)
+
+### Invalid Issues
+If you have enabled deep check, you can check if nonexistent values ​​are not used. All issues are reported as ERROR.
+
+- AWS Instance
+    - aws_instance_invalid_iam_profile
+    - aws_instance_invalid_ami
+    - aws_instance_invalid_key_name
+    - aws_instance_invalid_subnet
+    - aws_instance_invalid_vpc_security_group
+- AWS ALB
+    - aws_alb_invalid_security_group
+    - aws_alb_invalid_subnet
+- AWS ELB
+    - aws_elb_invalid_security_group
+    - aws_elb_invalid_subnet
+    - aws_elb_invalid_instance
+- AWS DB Instance
+    - aws_db_instance_invalid_vpc_security_group
+    - aws_db_instance_invalid_db_subnet_group
+    - aws_db_instance_invalid_parameter_group
+    - aws_db_instance_invalid_option_group
