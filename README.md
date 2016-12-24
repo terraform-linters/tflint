@@ -26,7 +26,7 @@ Download binary built for your architecture from [latest releases](https://githu
 
 An example of installation by command is as follows.
 ```
-$ wget https://github.com/wata727/tflint/releases/download/v0.1.0/tflint_darwin_amd64.zip
+$ wget https://github.com/wata727/tflint/releases/download/v0.2.0/tflint_darwin_amd64.zip
 $ unzip tflint_darwin_amd64.zip
 Archive:  tflint_darwin_amd64.zip
   inflating: tflint
