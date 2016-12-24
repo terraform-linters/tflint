@@ -18,4 +18,5 @@ type ResponseCache struct {
 	DescribeDBParameterGroupsOutput    *rds.DescribeDBParameterGroupsOutput
 	DescribeOptionGroupsOutput         *rds.DescribeOptionGroupsOutput
 	DescribeCacheParameterGroupsOutput *elasticache.DescribeCacheParameterGroupsOutput
+	DescribeCacheSubnetGroupsOutput    *elasticache.DescribeCacheSubnetGroupsOutput
 }
