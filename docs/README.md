@@ -45,3 +45,4 @@ If you have enabled deep check, you can check if nonexistent values ​​are no
 - AWS ElastiCache Cluster
     - aws_elasticache_cluster_invalid_parameter_group
     - aws_elasticache_cluster_invalid_subnet_group
+    - aws_elasticache_cluster_invalid_security_group
