@@ -16,6 +16,7 @@ Available options:
     --aws-secret-key                        set AWS secret key used in deep check mode.
     --aws-region                            set AWS region used in deep check mode.
     -d, --debug                             enable debug mode.
+    --error-with-issues                     return exit status code when issue exists.
 
 Support aruguments:
     TFLint scans all configuration file of Terraform in current directory by default.

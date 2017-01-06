@@ -16,6 +16,7 @@ import (
 const (
 	ExitCodeOK    int = 0
 	ExitCodeError int = 1 + iota
+	ExitCodeIssuesFound
 )
 
 // CLI is the command line object
@@ -37,17 +38,18 @@ type TestCLIOptions struct {
 // Run invokes the CLI with the given arguments.
 func (cli *CLI) Run(args []string) int {
 	var (
-		version      bool
-		help         bool
-		debug        bool
-		format       string
-		ignoreModule string
-		ignoreRule   string
-		configFile   string
-		deepCheck    bool
-		awsAccessKey string
-		awsSecretKey string
-		awsRegion    string
+		version         bool
+		help            bool
+		debug           bool
+		format          string
+		ignoreModule    string
+		ignoreRule      string
+		configFile      string
+		deepCheck       bool
+		awsAccessKey    string
+		awsSecretKey    string
+		awsRegion       string
+		errorWithIssues bool
 	)
 
 	// Define option flag parse
@@ -71,6 +73,7 @@ func (cli *CLI) Run(args []string) int {
 	flags.StringVar(&awsAccessKey, "aws-access-key", "", "AWS access key used in deep check mode.")
 	flags.StringVar(&awsSecretKey, "aws-secret-key", "", "AWS secret key used in deep check mode.")
 	flags.StringVar(&awsRegion, "aws-region", "", "AWS region used in deep check mode.")
+	flags.BoolVar(&errorWithIssues, "error-with-issues", false, "return exit status code when issue exists.")
 
 	// Parse commandline flag
 	if err := flags.Parse(args[1:]); err != nil {
@@ -148,6 +151,10 @@ func (cli *CLI) Run(args []string) int {
 
 		p := printer.NewPrinter(cli.outStream, cli.errStream)
 		p.Print(issues, format)
+
+		if errorWithIssues && len(issues) > 0 {
+			return ExitCodeIssuesFound
+		}
 	}
 
 	return ExitCodeOK
