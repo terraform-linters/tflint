@@ -18,6 +18,7 @@ Issues are classified into the following three types.
     - [aws_instance_default_standard_volume](aws_instance_default_standard_volume.md)
 - AWS DB Instance
     - [aws_db_instance_invalid_type](aws_db_instance_invalid_type.md)
+    - [aws_db_instance_previous_type](aws_db_instance_previous_type.md)
     - [aws_db_instance_default_parameter_group](aws_db_instance_default_parameter_group.md)
 - AWS ElastiCache Cluster
     - [aws_elasticache_cluster_default_parameter_group](aws_elasticache_cluster_default_parameter_group.md)
