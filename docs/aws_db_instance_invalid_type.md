@@ -30,4 +30,4 @@ Result: 1 issues  (1 errors , 0 warnings , 0 notices)
 If an invalid instance type is specified, an error will occur at `terraform apply`.
 
 ## How to fix
-Check the [instance type list](https://aws.amazon.com/jp/rds/details/) and select a valid instance type again.
+Check the [instance type list](https://aws.amazon.com/rds/details/) and select a valid instance type again.

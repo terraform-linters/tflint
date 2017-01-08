@@ -22,6 +22,7 @@ Issues are classified into the following three types.
     - [aws_db_instance_default_parameter_group](aws_db_instance_default_parameter_group.md)
 - AWS ElastiCache Cluster
     - [aws_elasticache_cluster_invalid_type](aws_elasticache_cluster_invalid_type.md)
+    - [aws_elasticache_cluster_previous_type](aws_elasticache_cluster_previous_type.md)
     - [aws_elasticache_cluster_default_parameter_group](aws_elasticache_cluster_default_parameter_group.md)
 
 ### Invalid Issues
