@@ -726,3 +726,15 @@ resource "aws_instance" {
 		}
 	}
 }
+
+func TestHasError(t *testing.T) {
+	d := &Detector{Error: false}
+
+	if d.HasError() != false {
+		t.Fatal("If no error has occurred, should return false.")
+	}
+	d.Error = true
+	if d.HasError() != true {
+		t.Fatal("If an error has occurred, should return true.")
+	}
+}

@@ -24,14 +24,15 @@ type CLI struct {
 	// outStream and errStream are the stdout and stderr
 	// to write message from the CLI.
 	outStream, errStream io.Writer
+	loader               loader.LoaderIF
+	detector             detector.DetectorIF
+	printer              printer.PrinterIF
 	testMode             bool
 	TestCLIOptions       TestCLIOptions
 }
 
 type TestCLIOptions struct {
 	Config     *config.Config
-	Format     string
-	LoadFile   string
 	ConfigFile string
 }
 
@@ -116,45 +117,52 @@ func (cli *CLI) Run(args []string) int {
 	if ignoreRule != "" {
 		c.SetIgnoreRule(ignoreRule)
 	}
-
+	// If enabled test mode, set config infomation
 	if cli.testMode {
 		cli.TestCLIOptions = TestCLIOptions{
 			Config:     c,
-			Format:     format,
-			LoadFile:   flags.Arg(0),
 			ConfigFile: configFile,
 		}
+	}
+
+	// Main function
+	var err error
+	// If disabled test mode, generates real loader
+	if !cli.testMode {
+		cli.loader = loader.NewLoader(c.Debug)
+	}
+	if flags.NArg() > 0 {
+		err = cli.loader.LoadFile(flags.Arg(0))
 	} else {
-		// Main function
-		var err error
-		l := loader.NewLoader(c.Debug)
-		if flags.NArg() > 0 {
-			err = l.LoadFile(flags.Arg(0))
-		} else {
-			err = l.LoadAllFile(".")
-		}
-		if err != nil {
-			fmt.Fprintln(cli.errStream, err)
-			return ExitCodeError
-		}
+		err = cli.loader.LoadAllFile(".")
+	}
+	if err != nil {
+		fmt.Fprintln(cli.errStream, err)
+		return ExitCodeError
+	}
 
-		d, err := detector.NewDetector(l.ListMap, c)
-		if err != nil {
-			fmt.Fprintln(cli.errStream, err)
-			return ExitCodeError
-		}
-		issues := d.Detect()
-		if d.Error {
-			fmt.Fprintln(cli.errStream, "ERROR: error occurred in detecting. Please run with --debug options for details.")
-			return ExitCodeError
-		}
+	// If disabled test mode, generates real detector
+	if !cli.testMode {
+		cli.detector, err = detector.NewDetector(cli.loader.DumpFiles(), c)
+	}
+	if err != nil {
+		fmt.Fprintln(cli.errStream, err)
+		return ExitCodeError
+	}
+	issues := cli.detector.Detect()
+	if cli.detector.HasError() {
+		fmt.Fprintln(cli.errStream, "ERROR: error occurred in detecting. Please run with --debug options for details.")
+		return ExitCodeError
+	}
 
-		p := printer.NewPrinter(cli.outStream, cli.errStream)
-		p.Print(issues, format)
+	// If disabled test mode, generates real printer
+	if !cli.testMode {
+		cli.printer = printer.NewPrinter(cli.outStream, cli.errStream)
+	}
+	cli.printer.Print(issues, format)
 
-		if errorWithIssues && len(issues) > 0 {
-			return ExitCodeIssuesFound
-		}
+	if errorWithIssues && len(issues) > 0 {
+		return ExitCodeIssuesFound
 	}
 
 	return ExitCodeOK
