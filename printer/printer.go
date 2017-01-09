@@ -6,6 +6,10 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
+type PrinterIF interface {
+	Print(issues []*issue.Issue, format string)
+}
+
 type Printer struct {
 	stdout io.Writer
 	stderr io.Writer

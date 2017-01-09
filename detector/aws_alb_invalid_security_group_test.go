@@ -7,9 +7,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/golang/mock/gomock"
-	"github.com/wata727/tflint/awsmock"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/mock"
 )
 
 func TestDetectAwsALBInvalidSecurityGroup(t *testing.T) {
@@ -79,7 +79,7 @@ resource "aws_alb" "balancer" {
 		awsClient := c.NewAwsClient()
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
-		ec2mock := awsmock.NewMockEC2API(ctrl)
+		ec2mock := mock.NewMockEC2API(ctrl)
 		ec2mock.EXPECT().DescribeSecurityGroups(&ec2.DescribeSecurityGroupsInput{}).Return(&ec2.DescribeSecurityGroupsOutput{
 			SecurityGroups: tc.Response,
 		}, nil)

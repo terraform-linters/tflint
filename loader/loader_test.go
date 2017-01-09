@@ -200,3 +200,16 @@ func TestLoadAllFile(t *testing.T) {
 		}
 	}
 }
+
+func TestDumpFiles(t *testing.T) {
+	load := NewLoader(false)
+	listMap := map[string]*ast.ObjectList{
+		"main.tf":   &ast.ObjectList{},
+		"output.tf": &ast.ObjectList{},
+	}
+	load.ListMap = listMap
+
+	if !reflect.DeepEqual(load.DumpFiles(), listMap) {
+		t.Fatalf("Bad: %s\nExpected: %s\n\n", load.DumpFiles(), listMap)
+	}
+}

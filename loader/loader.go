@@ -12,6 +12,13 @@ import (
 	"github.com/wata727/tflint/logger"
 )
 
+type LoaderIF interface {
+	LoadFile(filename string) error
+	LoadModuleFile(moduleKey string, source string) error
+	LoadAllFile(dir string) error
+	DumpFiles() map[string]*ast.ObjectList
+}
+
 type Loader struct {
 	Logger  *logger.Logger
 	ListMap map[string]*ast.ObjectList
@@ -78,6 +85,10 @@ func (l *Loader) LoadAllFile(dir string) error {
 	}
 
 	return nil
+}
+
+func (l *Loader) DumpFiles() map[string]*ast.ObjectList {
+	return l.ListMap
 }
 
 func load(filename string, l *logger.Logger) (*ast.ObjectList, error) {

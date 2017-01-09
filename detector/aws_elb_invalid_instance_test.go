@@ -7,9 +7,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/golang/mock/gomock"
-	"github.com/wata727/tflint/awsmock"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/mock"
 )
 
 func TestDetectAwsELBInvalidInstance(t *testing.T) {
@@ -79,7 +79,7 @@ resource "aws_elb" "balancer" {
 		awsClient := c.NewAwsClient()
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
-		ec2mock := awsmock.NewMockEC2API(ctrl)
+		ec2mock := mock.NewMockEC2API(ctrl)
 		ec2mock.EXPECT().DescribeInstances(&ec2.DescribeInstancesInput{}).Return(&ec2.DescribeInstancesOutput{
 			Reservations: []*ec2.Reservation{
 				&ec2.Reservation{

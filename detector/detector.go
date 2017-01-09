@@ -13,6 +13,11 @@ import (
 	"github.com/wata727/tflint/logger"
 )
 
+type DetectorIF interface {
+	Detect() []*issue.Issue
+	HasError() bool
+}
+
 type Detector struct {
 	ListMap       map[string]*ast.ObjectList
 	Config        *config.Config
@@ -154,6 +159,10 @@ func (d *Detector) Detect() []*issue.Issue {
 	}
 
 	return issues
+}
+
+func (d *Detector) HasError() bool {
+	return d.Error
 }
 
 func (d *Detector) evalToString(v string) (string, error) {

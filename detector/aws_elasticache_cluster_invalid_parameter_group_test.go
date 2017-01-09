@@ -7,9 +7,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/elasticache"
 	"github.com/golang/mock/gomock"
-	"github.com/wata727/tflint/awsmock"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/mock"
 )
 
 func TestDetectAwsElastiCacheInvalidParameterGroup(t *testing.T) {
@@ -70,7 +70,7 @@ resource "aws_elasticache_cluster" "redis" {
 		awsClient := c.NewAwsClient()
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
-		elasticachemock := awsmock.NewMockElastiCacheAPI(ctrl)
+		elasticachemock := mock.NewMockElastiCacheAPI(ctrl)
 		elasticachemock.EXPECT().DescribeCacheParameterGroups(&elasticache.DescribeCacheParameterGroupsInput{}).Return(&elasticache.DescribeCacheParameterGroupsOutput{
 			CacheParameterGroups: tc.Response,
 		}, nil)
