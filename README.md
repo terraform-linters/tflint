@@ -72,6 +72,7 @@ Please show `tflint --help`
 --aws-secret-key                        set AWS secret key used in deep check mode.
 --aws-region                            set AWS region used in deep check mode.
 -d, --debug                             enable debug mode.
+--error-with-issues                     return exit status code when issue exists.
 ```
 
 ## Configuration
