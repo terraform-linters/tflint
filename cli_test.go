@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"reflect"
 	"strings"
@@ -34,7 +35,7 @@ func TestCLIRun(t *testing.T) {
 		detector.EXPECT().HasError().Return(false)
 		return detector
 	}
-	var printerDefaultBehavior = func(ctrl *gomock.Controller) printer.PrinterIF {
+	var printerNoIssuesDefaultBehaviour = func(ctrl *gomock.Controller) printer.PrinterIF {
 		printer := mock.NewMockPrinterIF(ctrl)
 		printer.EXPECT().Print([]*issue.Issue{}, "default")
 		return printer
@@ -107,9 +108,76 @@ func TestCLIRun(t *testing.T) {
 			Command:           "./tflint",
 			LoaderGenerator:   loaderDefaultBehavior,
 			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerDefaultBehavior,
+			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
 			Result: Result{
 				Status:     ExitCodeOK,
+				CLIOptions: defaultCLIOptions,
+			},
+		},
+		{
+			Name:            "nothing options when issues found",
+			Command:         "./tflint",
+			LoaderGenerator: loaderDefaultBehavior,
+			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF {
+				detector := mock.NewMockDetectorIF(ctrl)
+				detector.EXPECT().Detect().Return([]*issue.Issue{
+					&issue.Issue{
+						Type:    "TEST",
+						Message: "this is test method",
+						Line:    1,
+						File:    "",
+					},
+				})
+				detector.EXPECT().HasError().Return(false)
+				return detector
+			},
+			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF {
+				printer := mock.NewMockPrinterIF(ctrl)
+				printer.EXPECT().Print([]*issue.Issue{
+					&issue.Issue{
+						Type:    "TEST",
+						Message: "this is test method",
+						Line:    1,
+						File:    "",
+					},
+				}, "default")
+				return printer
+			},
+			Result: Result{
+				Status:     ExitCodeOK,
+				CLIOptions: defaultCLIOptions,
+			},
+		},
+		{
+			Name:    "nothing options when occurred loading error",
+			Command: "./tflint",
+			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
+				loader := mock.NewMockLoaderIF(ctrl)
+				loader.EXPECT().LoadAllFile(".").Return(errors.New("loading error!"))
+				return loader
+			},
+			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
+			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
+			Result: Result{
+				Status:     ExitCodeError,
+				Stderr:     "loading error!",
+				CLIOptions: defaultCLIOptions,
+			},
+		},
+		{
+			Name:            "nothing options when occurred detecting error",
+			Command:         "./tflint",
+			LoaderGenerator: loaderDefaultBehavior,
+			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF {
+				detector := mock.NewMockDetectorIF(ctrl)
+				detector.EXPECT().Detect().Return([]*issue.Issue{})
+				detector.EXPECT().HasError().Return(true)
+				return detector
+			},
+			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
+			Result: Result{
+				Status:     ExitCodeError,
+				Stderr:     "error occurred in detecting",
 				CLIOptions: defaultCLIOptions,
 			},
 		},
@@ -122,9 +190,25 @@ func TestCLIRun(t *testing.T) {
 				return loader
 			},
 			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerDefaultBehavior,
+			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
 			Result: Result{
 				Status:     ExitCodeOK,
+				CLIOptions: defaultCLIOptions,
+			},
+		},
+		{
+			Name:    "load single file when occurred loading error",
+			Command: "./tflint test_template.tf",
+			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
+				loader := mock.NewMockLoaderIF(ctrl)
+				loader.EXPECT().LoadFile("test_template.tf").Return(errors.New("loading error!"))
+				return loader
+			},
+			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
+			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
+			Result: Result{
+				Status:     ExitCodeError,
+				Stderr:     "loading error!",
 				CLIOptions: defaultCLIOptions,
 			},
 		},
@@ -133,7 +217,7 @@ func TestCLIRun(t *testing.T) {
 			Command:           "./tflint --debug",
 			LoaderGenerator:   loaderDefaultBehavior,
 			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerDefaultBehavior,
+			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
 			Result: Result{
 				Status: ExitCodeOK,
 				CLIOptions: TestCLIOptions{
@@ -153,7 +237,7 @@ func TestCLIRun(t *testing.T) {
 			Command:           "./tflint -d",
 			LoaderGenerator:   loaderDefaultBehavior,
 			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerDefaultBehavior,
+			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
 			Result: Result{
 				Status: ExitCodeOK,
 				CLIOptions: TestCLIOptions{
@@ -184,6 +268,17 @@ func TestCLIRun(t *testing.T) {
 			},
 		},
 		{
+			Name:              "specify invalid format",
+			Command:           "./tflint --format awesome",
+			LoaderGenerator:   func(ctrl *gomock.Controller) loader.LoaderIF { return mock.NewMockLoaderIF(ctrl) },
+			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
+			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
+			Result: Result{
+				Status: ExitCodeError,
+				Stderr: "`awesome` is unknown format",
+			},
+		},
+		{
 			Name:              "specify json format by alias",
 			Command:           "./tflint -f json",
 			LoaderGenerator:   loaderDefaultBehavior,
@@ -203,7 +298,7 @@ func TestCLIRun(t *testing.T) {
 			Command:           "./tflint --ignore-rule rule1,rule2",
 			LoaderGenerator:   loaderDefaultBehavior,
 			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerDefaultBehavior,
+			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
 			Result: Result{
 				Status: ExitCodeOK,
 				CLIOptions: TestCLIOptions{
@@ -223,7 +318,7 @@ func TestCLIRun(t *testing.T) {
 			Command:           "./tflint --ignore-module module1,module2",
 			LoaderGenerator:   loaderDefaultBehavior,
 			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerDefaultBehavior,
+			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
 			Result: Result{
 				Status: ExitCodeOK,
 				CLIOptions: TestCLIOptions{
@@ -243,7 +338,7 @@ func TestCLIRun(t *testing.T) {
 			Command:           "./tflint --config .tflint.example.hcl",
 			LoaderGenerator:   loaderDefaultBehavior,
 			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerDefaultBehavior,
+			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
 			Result: Result{
 				Status: ExitCodeOK,
 				CLIOptions: TestCLIOptions{
@@ -263,7 +358,7 @@ func TestCLIRun(t *testing.T) {
 			Command:           "./tflint -c .tflint.example.hcl",
 			LoaderGenerator:   loaderDefaultBehavior,
 			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerDefaultBehavior,
+			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
 			Result: Result{
 				Status: ExitCodeOK,
 				CLIOptions: TestCLIOptions{
@@ -283,7 +378,7 @@ func TestCLIRun(t *testing.T) {
 			Command:           "./tflint --deep",
 			LoaderGenerator:   loaderDefaultBehavior,
 			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerDefaultBehavior,
+			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
 			Result: Result{
 				Status: ExitCodeOK,
 				CLIOptions: TestCLIOptions{
@@ -303,7 +398,7 @@ func TestCLIRun(t *testing.T) {
 			Command:           "./tflint --deep --aws-access-key AWS_ACCESS_KEY_ID --aws-secret-key AWS_SECRET_ACCESS_KEY --aws-region us-east-1",
 			LoaderGenerator:   loaderDefaultBehavior,
 			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerDefaultBehavior,
+			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
 			Result: Result{
 				Status: ExitCodeOK,
 				CLIOptions: TestCLIOptions{
@@ -320,6 +415,62 @@ func TestCLIRun(t *testing.T) {
 					},
 					ConfigFile: ".tflint.hcl",
 				},
+			},
+		},
+		{
+			Name:              "enabled error with issues flag when no issues found",
+			Command:           "./tflint --error-with-issues",
+			LoaderGenerator:   loaderDefaultBehavior,
+			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
+			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
+			Result: Result{
+				Status:     ExitCodeOK,
+				CLIOptions: defaultCLIOptions,
+			},
+		},
+		{
+			Name:            "enabled error with issues flag when issues found",
+			Command:         "./tflint --error-with-issues",
+			LoaderGenerator: loaderDefaultBehavior,
+			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF {
+				detector := mock.NewMockDetectorIF(ctrl)
+				detector.EXPECT().Detect().Return([]*issue.Issue{
+					&issue.Issue{
+						Type:    "TEST",
+						Message: "this is test method",
+						Line:    1,
+						File:    "",
+					},
+				})
+				detector.EXPECT().HasError().Return(false)
+				return detector
+			},
+			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF {
+				printer := mock.NewMockPrinterIF(ctrl)
+				printer.EXPECT().Print([]*issue.Issue{
+					&issue.Issue{
+						Type:    "TEST",
+						Message: "this is test method",
+						Line:    1,
+						File:    "",
+					},
+				}, "default")
+				return printer
+			},
+			Result: Result{
+				Status:     ExitCodeIssuesFound,
+				CLIOptions: defaultCLIOptions,
+			},
+		},
+		{
+			Name:              "invalid options",
+			Command:           "./tflint --invalid-option",
+			LoaderGenerator:   func(ctrl *gomock.Controller) loader.LoaderIF { return mock.NewMockLoaderIF(ctrl) },
+			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
+			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
+			Result: Result{
+				Status: ExitCodeError,
+				Stderr: "`--invalid-option` is unknown options",
 			},
 		},
 	}
