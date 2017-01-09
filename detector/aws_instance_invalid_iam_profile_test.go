@@ -7,9 +7,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/golang/mock/gomock"
-	"github.com/wata727/tflint/awsmock"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/mock"
 )
 
 func TestDetectAwsInstanceInvalidIAMProfile(t *testing.T) {
@@ -70,7 +70,7 @@ resource "aws_instance" "web" {
 		awsClient := c.NewAwsClient()
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
-		iammock := awsmock.NewMockIAMAPI(ctrl)
+		iammock := mock.NewMockIAMAPI(ctrl)
 		iammock.EXPECT().ListInstanceProfiles(&iam.ListInstanceProfilesInput{}).Return(&iam.ListInstanceProfilesOutput{
 			InstanceProfiles: tc.Response,
 		}, nil)

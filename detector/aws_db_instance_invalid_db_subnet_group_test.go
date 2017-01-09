@@ -7,9 +7,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/golang/mock/gomock"
-	"github.com/wata727/tflint/awsmock"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/mock"
 )
 
 func TestDetectAwsDBInstanceInvalidDBSubnetGroup(t *testing.T) {
@@ -70,7 +70,7 @@ resource "aws_db_instance" "mysql" {
 		awsClient := c.NewAwsClient()
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
-		rdsmock := awsmock.NewMockRDSAPI(ctrl)
+		rdsmock := mock.NewMockRDSAPI(ctrl)
 		rdsmock.EXPECT().DescribeDBSubnetGroups(&rds.DescribeDBSubnetGroupsInput{}).Return(&rds.DescribeDBSubnetGroupsOutput{
 			DBSubnetGroups: tc.Response,
 		}, nil)
