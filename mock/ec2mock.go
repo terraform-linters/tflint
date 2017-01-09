@@ -118,6 +118,28 @@ func (_mr *_MockEC2APIRecorder) AllocateHosts(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AllocateHosts", arg0)
 }
 
+func (_m *MockEC2API) AssignIpv6AddressesRequest(_param0 *ec2.AssignIpv6AddressesInput) (*request.Request, *ec2.AssignIpv6AddressesOutput) {
+	ret := _m.ctrl.Call(_m, "AssignIpv6AddressesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.AssignIpv6AddressesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) AssignIpv6AddressesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AssignIpv6AddressesRequest", arg0)
+}
+
+func (_m *MockEC2API) AssignIpv6Addresses(_param0 *ec2.AssignIpv6AddressesInput) (*ec2.AssignIpv6AddressesOutput, error) {
+	ret := _m.ctrl.Call(_m, "AssignIpv6Addresses", _param0)
+	ret0, _ := ret[0].(*ec2.AssignIpv6AddressesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) AssignIpv6Addresses(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AssignIpv6Addresses", arg0)
+}
+
 func (_m *MockEC2API) AssignPrivateIpAddressesRequest(_param0 *ec2.AssignPrivateIpAddressesInput) (*request.Request, *ec2.AssignPrivateIpAddressesOutput) {
 	ret := _m.ctrl.Call(_m, "AssignPrivateIpAddressesRequest", _param0)
 	ret0, _ := ret[0].(*request.Request)
@@ -204,6 +226,50 @@ func (_m *MockEC2API) AssociateRouteTable(_param0 *ec2.AssociateRouteTableInput)
 
 func (_mr *_MockEC2APIRecorder) AssociateRouteTable(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AssociateRouteTable", arg0)
+}
+
+func (_m *MockEC2API) AssociateSubnetCidrBlockRequest(_param0 *ec2.AssociateSubnetCidrBlockInput) (*request.Request, *ec2.AssociateSubnetCidrBlockOutput) {
+	ret := _m.ctrl.Call(_m, "AssociateSubnetCidrBlockRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.AssociateSubnetCidrBlockOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) AssociateSubnetCidrBlockRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AssociateSubnetCidrBlockRequest", arg0)
+}
+
+func (_m *MockEC2API) AssociateSubnetCidrBlock(_param0 *ec2.AssociateSubnetCidrBlockInput) (*ec2.AssociateSubnetCidrBlockOutput, error) {
+	ret := _m.ctrl.Call(_m, "AssociateSubnetCidrBlock", _param0)
+	ret0, _ := ret[0].(*ec2.AssociateSubnetCidrBlockOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) AssociateSubnetCidrBlock(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AssociateSubnetCidrBlock", arg0)
+}
+
+func (_m *MockEC2API) AssociateVpcCidrBlockRequest(_param0 *ec2.AssociateVpcCidrBlockInput) (*request.Request, *ec2.AssociateVpcCidrBlockOutput) {
+	ret := _m.ctrl.Call(_m, "AssociateVpcCidrBlockRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.AssociateVpcCidrBlockOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) AssociateVpcCidrBlockRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AssociateVpcCidrBlockRequest", arg0)
+}
+
+func (_m *MockEC2API) AssociateVpcCidrBlock(_param0 *ec2.AssociateVpcCidrBlockInput) (*ec2.AssociateVpcCidrBlockOutput, error) {
+	ret := _m.ctrl.Call(_m, "AssociateVpcCidrBlock", _param0)
+	ret0, _ := ret[0].(*ec2.AssociateVpcCidrBlockOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) AssociateVpcCidrBlock(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AssociateVpcCidrBlock", arg0)
 }
 
 func (_m *MockEC2API) AttachClassicLinkVpcRequest(_param0 *ec2.AttachClassicLinkVpcInput) (*request.Request, *ec2.AttachClassicLinkVpcOutput) {
@@ -644,6 +710,28 @@ func (_m *MockEC2API) CreateDhcpOptions(_param0 *ec2.CreateDhcpOptionsInput) (*e
 
 func (_mr *_MockEC2APIRecorder) CreateDhcpOptions(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDhcpOptions", arg0)
+}
+
+func (_m *MockEC2API) CreateEgressOnlyInternetGatewayRequest(_param0 *ec2.CreateEgressOnlyInternetGatewayInput) (*request.Request, *ec2.CreateEgressOnlyInternetGatewayOutput) {
+	ret := _m.ctrl.Call(_m, "CreateEgressOnlyInternetGatewayRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.CreateEgressOnlyInternetGatewayOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) CreateEgressOnlyInternetGatewayRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateEgressOnlyInternetGatewayRequest", arg0)
+}
+
+func (_m *MockEC2API) CreateEgressOnlyInternetGateway(_param0 *ec2.CreateEgressOnlyInternetGatewayInput) (*ec2.CreateEgressOnlyInternetGatewayOutput, error) {
+	ret := _m.ctrl.Call(_m, "CreateEgressOnlyInternetGateway", _param0)
+	ret0, _ := ret[0].(*ec2.CreateEgressOnlyInternetGatewayOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) CreateEgressOnlyInternetGateway(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateEgressOnlyInternetGateway", arg0)
 }
 
 func (_m *MockEC2API) CreateFlowLogsRequest(_param0 *ec2.CreateFlowLogsInput) (*request.Request, *ec2.CreateFlowLogsOutput) {
@@ -1238,6 +1326,28 @@ func (_m *MockEC2API) DeleteDhcpOptions(_param0 *ec2.DeleteDhcpOptionsInput) (*e
 
 func (_mr *_MockEC2APIRecorder) DeleteDhcpOptions(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDhcpOptions", arg0)
+}
+
+func (_m *MockEC2API) DeleteEgressOnlyInternetGatewayRequest(_param0 *ec2.DeleteEgressOnlyInternetGatewayInput) (*request.Request, *ec2.DeleteEgressOnlyInternetGatewayOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteEgressOnlyInternetGatewayRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DeleteEgressOnlyInternetGatewayOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) DeleteEgressOnlyInternetGatewayRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteEgressOnlyInternetGatewayRequest", arg0)
+}
+
+func (_m *MockEC2API) DeleteEgressOnlyInternetGateway(_param0 *ec2.DeleteEgressOnlyInternetGatewayInput) (*ec2.DeleteEgressOnlyInternetGatewayOutput, error) {
+	ret := _m.ctrl.Call(_m, "DeleteEgressOnlyInternetGateway", _param0)
+	ret0, _ := ret[0].(*ec2.DeleteEgressOnlyInternetGatewayOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) DeleteEgressOnlyInternetGateway(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteEgressOnlyInternetGateway", arg0)
 }
 
 func (_m *MockEC2API) DeleteFlowLogsRequest(_param0 *ec2.DeleteFlowLogsInput) (*request.Request, *ec2.DeleteFlowLogsOutput) {
@@ -1920,6 +2030,28 @@ func (_m *MockEC2API) DescribeDhcpOptions(_param0 *ec2.DescribeDhcpOptionsInput)
 
 func (_mr *_MockEC2APIRecorder) DescribeDhcpOptions(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDhcpOptions", arg0)
+}
+
+func (_m *MockEC2API) DescribeEgressOnlyInternetGatewaysRequest(_param0 *ec2.DescribeEgressOnlyInternetGatewaysInput) (*request.Request, *ec2.DescribeEgressOnlyInternetGatewaysOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeEgressOnlyInternetGatewaysRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeEgressOnlyInternetGatewaysOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) DescribeEgressOnlyInternetGatewaysRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEgressOnlyInternetGatewaysRequest", arg0)
+}
+
+func (_m *MockEC2API) DescribeEgressOnlyInternetGateways(_param0 *ec2.DescribeEgressOnlyInternetGatewaysInput) (*ec2.DescribeEgressOnlyInternetGatewaysOutput, error) {
+	ret := _m.ctrl.Call(_m, "DescribeEgressOnlyInternetGateways", _param0)
+	ret0, _ := ret[0].(*ec2.DescribeEgressOnlyInternetGatewaysOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) DescribeEgressOnlyInternetGateways(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEgressOnlyInternetGateways", arg0)
 }
 
 func (_m *MockEC2API) DescribeExportTasksRequest(_param0 *ec2.DescribeExportTasksInput) (*request.Request, *ec2.DescribeExportTasksOutput) {
@@ -3474,6 +3606,50 @@ func (_mr *_MockEC2APIRecorder) DisassociateRouteTable(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DisassociateRouteTable", arg0)
 }
 
+func (_m *MockEC2API) DisassociateSubnetCidrBlockRequest(_param0 *ec2.DisassociateSubnetCidrBlockInput) (*request.Request, *ec2.DisassociateSubnetCidrBlockOutput) {
+	ret := _m.ctrl.Call(_m, "DisassociateSubnetCidrBlockRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DisassociateSubnetCidrBlockOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) DisassociateSubnetCidrBlockRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DisassociateSubnetCidrBlockRequest", arg0)
+}
+
+func (_m *MockEC2API) DisassociateSubnetCidrBlock(_param0 *ec2.DisassociateSubnetCidrBlockInput) (*ec2.DisassociateSubnetCidrBlockOutput, error) {
+	ret := _m.ctrl.Call(_m, "DisassociateSubnetCidrBlock", _param0)
+	ret0, _ := ret[0].(*ec2.DisassociateSubnetCidrBlockOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) DisassociateSubnetCidrBlock(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DisassociateSubnetCidrBlock", arg0)
+}
+
+func (_m *MockEC2API) DisassociateVpcCidrBlockRequest(_param0 *ec2.DisassociateVpcCidrBlockInput) (*request.Request, *ec2.DisassociateVpcCidrBlockOutput) {
+	ret := _m.ctrl.Call(_m, "DisassociateVpcCidrBlockRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DisassociateVpcCidrBlockOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) DisassociateVpcCidrBlockRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DisassociateVpcCidrBlockRequest", arg0)
+}
+
+func (_m *MockEC2API) DisassociateVpcCidrBlock(_param0 *ec2.DisassociateVpcCidrBlockInput) (*ec2.DisassociateVpcCidrBlockOutput, error) {
+	ret := _m.ctrl.Call(_m, "DisassociateVpcCidrBlock", _param0)
+	ret0, _ := ret[0].(*ec2.DisassociateVpcCidrBlockOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) DisassociateVpcCidrBlock(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DisassociateVpcCidrBlock", arg0)
+}
+
 func (_m *MockEC2API) EnableVgwRoutePropagationRequest(_param0 *ec2.EnableVgwRoutePropagationInput) (*request.Request, *ec2.EnableVgwRoutePropagationOutput) {
 	ret := _m.ctrl.Call(_m, "EnableVgwRoutePropagationRequest", _param0)
 	ret0, _ := ret[0].(*request.Request)
@@ -4748,6 +4924,28 @@ func (_m *MockEC2API) TerminateInstances(_param0 *ec2.TerminateInstancesInput) (
 
 func (_mr *_MockEC2APIRecorder) TerminateInstances(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "TerminateInstances", arg0)
+}
+
+func (_m *MockEC2API) UnassignIpv6AddressesRequest(_param0 *ec2.UnassignIpv6AddressesInput) (*request.Request, *ec2.UnassignIpv6AddressesOutput) {
+	ret := _m.ctrl.Call(_m, "UnassignIpv6AddressesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.UnassignIpv6AddressesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) UnassignIpv6AddressesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UnassignIpv6AddressesRequest", arg0)
+}
+
+func (_m *MockEC2API) UnassignIpv6Addresses(_param0 *ec2.UnassignIpv6AddressesInput) (*ec2.UnassignIpv6AddressesOutput, error) {
+	ret := _m.ctrl.Call(_m, "UnassignIpv6Addresses", _param0)
+	ret0, _ := ret[0].(*ec2.UnassignIpv6AddressesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) UnassignIpv6Addresses(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UnassignIpv6Addresses", arg0)
 }
 
 func (_m *MockEC2API) UnassignPrivateIpAddressesRequest(_param0 *ec2.UnassignPrivateIpAddressesInput) (*request.Request, *ec2.UnassignPrivateIpAddressesOutput) {

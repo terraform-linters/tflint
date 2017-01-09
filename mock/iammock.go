@@ -404,6 +404,28 @@ func (_mr *_MockIAMAPIRecorder) CreateSAMLProvider(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateSAMLProvider", arg0)
 }
 
+func (_m *MockIAMAPI) CreateServiceSpecificCredentialRequest(_param0 *iam.CreateServiceSpecificCredentialInput) (*request.Request, *iam.CreateServiceSpecificCredentialOutput) {
+	ret := _m.ctrl.Call(_m, "CreateServiceSpecificCredentialRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.CreateServiceSpecificCredentialOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateServiceSpecificCredentialRequest", arg0)
+}
+
+func (_m *MockIAMAPI) CreateServiceSpecificCredential(_param0 *iam.CreateServiceSpecificCredentialInput) (*iam.CreateServiceSpecificCredentialOutput, error) {
+	ret := _m.ctrl.Call(_m, "CreateServiceSpecificCredential", _param0)
+	ret0, _ := ret[0].(*iam.CreateServiceSpecificCredentialOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateServiceSpecificCredential(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateServiceSpecificCredential", arg0)
+}
+
 func (_m *MockIAMAPI) CreateUserRequest(_param0 *iam.CreateUserInput) (*request.Request, *iam.CreateUserOutput) {
 	ret := _m.ctrl.Call(_m, "CreateUserRequest", _param0)
 	ret0, _ := ret[0].(*request.Request)
@@ -798,6 +820,28 @@ func (_m *MockIAMAPI) DeleteServerCertificate(_param0 *iam.DeleteServerCertifica
 
 func (_mr *_MockIAMAPIRecorder) DeleteServerCertificate(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteServerCertificate", arg0)
+}
+
+func (_m *MockIAMAPI) DeleteServiceSpecificCredentialRequest(_param0 *iam.DeleteServiceSpecificCredentialInput) (*request.Request, *iam.DeleteServiceSpecificCredentialOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteServiceSpecificCredentialRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteServiceSpecificCredentialOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteServiceSpecificCredentialRequest", arg0)
+}
+
+func (_m *MockIAMAPI) DeleteServiceSpecificCredential(_param0 *iam.DeleteServiceSpecificCredentialInput) (*iam.DeleteServiceSpecificCredentialOutput, error) {
+	ret := _m.ctrl.Call(_m, "DeleteServiceSpecificCredential", _param0)
+	ret0, _ := ret[0].(*iam.DeleteServiceSpecificCredentialOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteServiceSpecificCredential(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteServiceSpecificCredential", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteSigningCertificateRequest(_param0 *iam.DeleteSigningCertificateInput) (*request.Request, *iam.DeleteSigningCertificateOutput) {
@@ -2100,6 +2144,28 @@ func (_mr *_MockIAMAPIRecorder) ListServerCertificatesPages(arg0, arg1 interface
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListServerCertificatesPages", arg0, arg1)
 }
 
+func (_m *MockIAMAPI) ListServiceSpecificCredentialsRequest(_param0 *iam.ListServiceSpecificCredentialsInput) (*request.Request, *iam.ListServiceSpecificCredentialsOutput) {
+	ret := _m.ctrl.Call(_m, "ListServiceSpecificCredentialsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListServiceSpecificCredentialsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListServiceSpecificCredentialsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListServiceSpecificCredentialsRequest", arg0)
+}
+
+func (_m *MockIAMAPI) ListServiceSpecificCredentials(_param0 *iam.ListServiceSpecificCredentialsInput) (*iam.ListServiceSpecificCredentialsOutput, error) {
+	ret := _m.ctrl.Call(_m, "ListServiceSpecificCredentials", _param0)
+	ret0, _ := ret[0].(*iam.ListServiceSpecificCredentialsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListServiceSpecificCredentials(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListServiceSpecificCredentials", arg0)
+}
+
 func (_m *MockIAMAPI) ListSigningCertificatesRequest(_param0 *iam.ListSigningCertificatesInput) (*request.Request, *iam.ListSigningCertificatesOutput) {
 	ret := _m.ctrl.Call(_m, "ListSigningCertificatesRequest", _param0)
 	ret0, _ := ret[0].(*request.Request)
@@ -2358,6 +2424,28 @@ func (_m *MockIAMAPI) RemoveUserFromGroup(_param0 *iam.RemoveUserFromGroupInput)
 
 func (_mr *_MockIAMAPIRecorder) RemoveUserFromGroup(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveUserFromGroup", arg0)
+}
+
+func (_m *MockIAMAPI) ResetServiceSpecificCredentialRequest(_param0 *iam.ResetServiceSpecificCredentialInput) (*request.Request, *iam.ResetServiceSpecificCredentialOutput) {
+	ret := _m.ctrl.Call(_m, "ResetServiceSpecificCredentialRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ResetServiceSpecificCredentialOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ResetServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetServiceSpecificCredentialRequest", arg0)
+}
+
+func (_m *MockIAMAPI) ResetServiceSpecificCredential(_param0 *iam.ResetServiceSpecificCredentialInput) (*iam.ResetServiceSpecificCredentialOutput, error) {
+	ret := _m.ctrl.Call(_m, "ResetServiceSpecificCredential", _param0)
+	ret0, _ := ret[0].(*iam.ResetServiceSpecificCredentialOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ResetServiceSpecificCredential(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetServiceSpecificCredential", arg0)
 }
 
 func (_m *MockIAMAPI) ResyncMFADeviceRequest(_param0 *iam.ResyncMFADeviceInput) (*request.Request, *iam.ResyncMFADeviceOutput) {
@@ -2664,6 +2752,28 @@ func (_m *MockIAMAPI) UpdateServerCertificate(_param0 *iam.UpdateServerCertifica
 
 func (_mr *_MockIAMAPIRecorder) UpdateServerCertificate(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateServerCertificate", arg0)
+}
+
+func (_m *MockIAMAPI) UpdateServiceSpecificCredentialRequest(_param0 *iam.UpdateServiceSpecificCredentialInput) (*request.Request, *iam.UpdateServiceSpecificCredentialOutput) {
+	ret := _m.ctrl.Call(_m, "UpdateServiceSpecificCredentialRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UpdateServiceSpecificCredentialOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateServiceSpecificCredentialRequest", arg0)
+}
+
+func (_m *MockIAMAPI) UpdateServiceSpecificCredential(_param0 *iam.UpdateServiceSpecificCredentialInput) (*iam.UpdateServiceSpecificCredentialOutput, error) {
+	ret := _m.ctrl.Call(_m, "UpdateServiceSpecificCredential", _param0)
+	ret0, _ := ret[0].(*iam.UpdateServiceSpecificCredentialOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateServiceSpecificCredential(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateServiceSpecificCredential", arg0)
 }
 
 func (_m *MockIAMAPI) UpdateSigningCertificateRequest(_param0 *iam.UpdateSigningCertificateInput) (*request.Request, *iam.UpdateSigningCertificateOutput) {

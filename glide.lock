@@ -1,8 +1,8 @@
-hash: d6e1af5cf6ecefa4a3df1bb90781fc7f1c2adfa359fa0a02feba359a139b783d
-updated: 2016-11-25T03:07:43.166815174+09:00
+hash: d46b6d5163c8947595c7dd54c07cd488480b784604efc57590885b9fde2fc3a8
+updated: 2017-01-09T23:28:09.451188206+09:00
 imports:
 - name: github.com/aws/aws-sdk-go
-  version: 4a6ff995f57ee4f8994db17ae83f01a9c9cc2274
+  version: 63ce630574a5ec05ecd8e8de5cea16332a5a684d
   subpackages:
   - aws
   - aws/awserr
@@ -16,29 +16,36 @@ imports:
   - aws/credentials/stscreds
   - aws/defaults
   - aws/ec2metadata
+  - aws/endpoints
   - aws/request
   - aws/session
   - aws/signer/v4
-  - private/endpoints
   - private/protocol
+  - private/protocol/ec2query
   - private/protocol/query
   - private/protocol/query/queryutil
   - private/protocol/rest
   - private/protocol/xml/xmlutil
   - private/waiter
+  - service/ec2
+  - service/ec2/ec2iface
+  - service/elasticache
+  - service/elasticache/elasticacheiface
   - service/iam
   - service/iam/iamiface
+  - service/rds
+  - service/rds/rdsiface
   - service/sts
 - name: github.com/fatih/color
-  version: dea9d3a26a087187530244679c1cfb3a42937794
+  version: 34e4ee095d12986a2cef5ddb9aeb3b8cfcfea17c
 - name: github.com/go-ini/ini
-  version: 2ba15ac2dc9cdf88c110ec2dc0ced7fa45f5678c
+  version: 6f66b0e091edb3c7b380f7c4f0f884274d550b67
 - name: github.com/golang/mock
   version: bd3c8e81be01eef76d4b503f5e687d2d1354d2d9
   subpackages:
   - gomock
 - name: github.com/hashicorp/hcl
-  version: 7cb7455c285ca3bf3362aa4ba6a06a6d6f5c3ba0
+  version: eb6f65b2d77ed5078887f960ff570fbddbbeb49d
   subpackages:
   - hcl/ast
   - hcl/parser
@@ -49,7 +56,7 @@ imports:
   - json/scanner
   - json/token
 - name: github.com/hashicorp/hil
-  version: 76d6c606283f17780baaad00df4b6ce8e9fca941
+  version: 5b8d13c8c5c2753e109fab25392a1dbfa2db93d2
   subpackages:
   - ast
   - parser
@@ -61,11 +68,11 @@ imports:
 - name: github.com/mattn/go-isatty
   version: 30a891c33c7cde7b02a981314b4228ec99380cca
 - name: github.com/mitchellh/mapstructure
-  version: f3009df150dadf309fdee4a54ed65c124afad715
+  version: bfdb1a85537d60bc7e954e600c250219ea497417
 - name: github.com/mitchellh/reflectwalk
   version: 9ad27c461a633e32a235a061d523aefe8f18571d
 - name: golang.org/x/sys
-  version: 30237cf4eefd639b184d1f2cb77a581ea0be8947
+  version: d75a52659825e75fff6158388dddc6a5b04f9ba5
   subpackages:
   - unix
 testImports: []
