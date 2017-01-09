@@ -1,3 +1,25 @@
+## 0.2.1 (2017-01-10)
+
+Patch version update. This release includes new argument options.
+
+### NewDetectors
+
+- add db instance invalid type detector ([#32](https://github.com/wata727/tflint/pull/32))
+- add rds previous type detector ([#33](https://github.com/wata727/tflint/pull/33))
+- add invalid type detector for elasticache ([#34](https://github.com/wata727/tflint/pull/34))
+- add previous type detector for elasticache ([#35](https://github.com/wata727/tflint/pull/35))
+
+### Enhancements
+
+- Return error code when issue exists ([#31](https://github.com/wata727/tflint/pull/31))
+
+### Others
+
+- fix install version ([#30](https://github.com/wata727/tflint/pull/30))
+- CLI Test By Interface ([#36](https://github.com/wata727/tflint/pull/36))
+- Fix --error-with-issues description ([#37](https://github.com/wata727/tflint/pull/37))
+- glide up ([#38](https://github.com/wata727/tflint/pull/38))
+
 ## 0.2.0 (2016-12-24)
 
 Minor version update. This release includes enhancements and several fixes
