@@ -45,6 +45,7 @@ func (d *AwsInstanceInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
 		"x1.16xlarge": true,
 		"x1.32xlarge": true,
 		"r4.large":    true,
+		"r4.xlarge":   true,
 		"r4.2xlarge":  true,
 		"r4.4xlarge":  true,
 		"r4.8xlarge":  true,
