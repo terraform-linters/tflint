@@ -20,6 +20,7 @@ Issues are classified into the following three types.
     - [aws_db_instance_invalid_type](aws_db_instance_invalid_type.md)
     - [aws_db_instance_previous_type](aws_db_instance_previous_type.md)
     - [aws_db_instance_default_parameter_group](aws_db_instance_default_parameter_group.md)
+    - [aws_db_instance_readable_password](aws_db_instance_readable_password.md)
 - AWS ElastiCache Cluster
     - [aws_elasticache_cluster_invalid_type](aws_elasticache_cluster_invalid_type.md)
     - [aws_elasticache_cluster_previous_type](aws_elasticache_cluster_previous_type.md)
