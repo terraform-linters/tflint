@@ -50,6 +50,7 @@ var detectors = map[string]string{
 	"aws_db_instance_invalid_option_group":            "CreateAwsDBInstanceInvalidOptionGroupDetector",
 	"aws_db_instance_invalid_type":                    "CreateAwsDBInstanceInvalidTypeDetector",
 	"aws_db_instance_previous_type":                   "CreateAwsDBInstancePreviousTypeDetector",
+	"aws_db_instance_readable_password":               "CreateAwsDBInstanceReadablePasswordDetector",
 	"aws_elasticache_cluster_default_parameter_group": "CreateAwsElastiCacheClusterDefaultParameterGroupDetector",
 	"aws_elasticache_cluster_invalid_parameter_group": "CreateAwsElastiCacheClusterInvalidParameterGroupDetector",
 	"aws_elasticache_cluster_invalid_subnet_group":    "CreateAwsElastiCacheClusterInvalidSubnetGroupDetector",
