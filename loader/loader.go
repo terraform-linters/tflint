@@ -15,10 +15,10 @@ import (
 )
 
 type LoaderIF interface {
-	LoadFile(filename string) error
+	LoadTemplate(filename string) error
 	LoadModuleFile(moduleKey string, source string) error
-	LoadAllFile(dir string) error
-	DumpFiles() map[string]*ast.ObjectList
+	LoadAllTemplate(dir string) error
+	Dump() (map[string]*ast.ObjectList, *state.TFState)
 	LoadState()
 }
 
@@ -36,8 +36,8 @@ func NewLoader(debug bool) *Loader {
 	}
 }
 
-func (l *Loader) LoadFile(filename string) error {
-	list, err := load(filename, l.Logger)
+func (l *Loader) LoadTemplate(filename string) error {
+	list, err := loadHCL(filename, l.Logger)
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (l *Loader) LoadModuleFile(moduleKey string, source string) error {
 	}
 
 	for _, file := range files {
-		list, err := load(file, l.Logger)
+		list, err := loadHCL(file, l.Logger)
 		if err != nil {
 			return err
 		}
@@ -72,7 +72,7 @@ func (l *Loader) LoadModuleFile(moduleKey string, source string) error {
 	return nil
 }
 
-func (l *Loader) LoadAllFile(dir string) error {
+func (l *Loader) LoadAllTemplate(dir string) error {
 	if _, err := os.Stat(dir); err != nil {
 		return err
 	}
@@ -83,17 +83,13 @@ func (l *Loader) LoadAllFile(dir string) error {
 	}
 
 	for _, file := range files {
-		err := l.LoadFile(file)
+		err := l.LoadTemplate(file)
 		if err != nil {
 			return err
 		}
 	}
 
 	return nil
-}
-
-func (l *Loader) DumpFiles() map[string]*ast.ObjectList {
-	return l.ListMap
 }
 
 func (l *Loader) LoadState() {
@@ -126,7 +122,11 @@ func (l *Loader) LoadState() {
 	}
 }
 
-func load(filename string, l *logger.Logger) (*ast.ObjectList, error) {
+func (l *Loader) Dump() (map[string]*ast.ObjectList, *state.TFState) {
+	return l.ListMap, l.State
+}
+
+func loadHCL(filename string, l *logger.Logger) (*ast.ObjectList, error) {
 	l.Info(fmt.Sprintf("load `%s`", filename))
 	b, err := ioutil.ReadFile(filename)
 	if err != nil {

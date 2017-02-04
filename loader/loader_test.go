@@ -8,9 +8,10 @@ import (
 
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/logger"
+	"github.com/wata727/tflint/state"
 )
 
-func TestLoad(t *testing.T) {
+func TestLoadHCL(t *testing.T) {
 	cases := []struct {
 		Name  string
 		Input string
@@ -40,7 +41,7 @@ func TestLoad(t *testing.T) {
 		testDir := dir + "/test-fixtures/files"
 		os.Chdir(testDir)
 
-		_, err := load(tc.Input, logger.Init(false))
+		_, err := loadHCL(tc.Input, logger.Init(false))
 		if tc.Error == true && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 		}
@@ -50,7 +51,7 @@ func TestLoad(t *testing.T) {
 	}
 }
 
-func TestLoadFile(t *testing.T) {
+func TestLoadTemplate(t *testing.T) {
 	type Input struct {
 		ListMap map[string]*ast.ObjectList
 		File    string
@@ -87,7 +88,7 @@ func TestLoadFile(t *testing.T) {
 			ListMap: tc.Input.ListMap,
 		}
 
-		load.LoadFile(tc.Input.File)
+		load.LoadTemplate(tc.Input.File)
 		if !reflect.DeepEqual(load.ListMap, tc.Result) {
 			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", load.ListMap, tc.Result, tc.Name)
 		}
@@ -153,7 +154,7 @@ func TestLoadModuleFile(t *testing.T) {
 	}
 }
 
-func TestLoadAllFile(t *testing.T) {
+func TestLoadAllTemplate(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Input  string
@@ -185,7 +186,7 @@ func TestLoadAllFile(t *testing.T) {
 		os.Chdir(testDir)
 		load := NewLoader(false)
 
-		err := load.LoadAllFile(tc.Input)
+		err := load.LoadAllTemplate(tc.Input)
 		if tc.Error == true && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 			continue
@@ -201,15 +202,129 @@ func TestLoadAllFile(t *testing.T) {
 	}
 }
 
-func TestDumpFiles(t *testing.T) {
+func TestLoadState(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Dir    string
+		Result *state.TFState
+	}{
+		{
+			Name: "load local state",
+			Dir:  "local-state",
+			Result: &state.TFState{
+				Modules: []*state.Module{
+					&state.Module{
+						Resources: map[string]*state.Resource{
+							"aws_db_parameter_group.production": &state.Resource{
+								Type:         "aws_db_parameter_group",
+								Dependencies: []string{},
+								Primary: &state.Instance{
+									ID: "production",
+									Attributes: map[string]string{
+										"arn":         "arn:aws:rds:us-east-1:hogehoge:pg:production",
+										"description": "production-db-parameter-group",
+										"family":      "mysql5.6",
+										"id":          "production",
+										"name":        "production",
+										"parameter.#": "0",
+										"tags.%":      "0",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "load remote state",
+			Dir:  "remote-state",
+			Result: &state.TFState{
+				Modules: []*state.Module{
+					&state.Module{
+						Resources: map[string]*state.Resource{
+							"aws_db_parameter_group.staging": &state.Resource{
+								Type:         "aws_db_parameter_group",
+								Dependencies: []string{},
+								Primary: &state.Instance{
+									ID: "staging",
+									Attributes: map[string]string{
+										"arn":         "arn:aws:rds:us-east-1:hogehoge:pg:staging",
+										"description": "staging-db-parameter-group",
+										"family":      "mysql5.6",
+										"id":          "staging",
+										"name":        "staging",
+										"parameter.#": "0",
+										"tags.%":      "0",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name:   "state not found",
+			Dir:    "files",
+			Result: &state.TFState{},
+		},
+	}
+
+	for _, tc := range cases {
+		prev, _ := filepath.Abs(".")
+		dir, _ := os.Getwd()
+		defer os.Chdir(prev)
+		testDir := dir + "/test-fixtures/" + tc.Dir
+		os.Chdir(testDir)
+		load := NewLoader(false)
+
+		load.LoadState()
+		if !reflect.DeepEqual(load.State, tc.Result) {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", load.State, tc.Result, tc.Name)
+		}
+		os.Chdir(prev)
+	}
+}
+
+func TestDump(t *testing.T) {
 	load := NewLoader(false)
 	listMap := map[string]*ast.ObjectList{
 		"main.tf":   &ast.ObjectList{},
 		"output.tf": &ast.ObjectList{},
 	}
+	state := &state.TFState{
+		Modules: []*state.Module{
+			&state.Module{
+				Resources: map[string]*state.Resource{
+					"aws_db_parameter_group.production": &state.Resource{
+						Type:         "aws_db_parameter_group",
+						Dependencies: []string{},
+						Primary: &state.Instance{
+							ID: "production",
+							Attributes: map[string]string{
+								"arn":         "arn:aws:rds:us-east-1:hogehoge:pg:production",
+								"description": "production-db-parameter-group",
+								"family":      "mysql5.6",
+								"id":          "production",
+								"name":        "production",
+								"parameter.#": "0",
+								"tags.%":      "0",
+							},
+						},
+					},
+				},
+			},
+		},
+	}
 	load.ListMap = listMap
+	load.State = state
 
-	if !reflect.DeepEqual(load.DumpFiles(), listMap) {
-		t.Fatalf("Bad: %s\nExpected: %s\n\n", load.DumpFiles(), listMap)
+	dumpListMap, dumpState := load.Dump()
+	if !reflect.DeepEqual(dumpListMap, listMap) {
+		t.Fatalf("Bad: %s\nExpected: %s\n\n", dumpListMap, listMap)
+	}
+	if !reflect.DeepEqual(dumpState, state) {
+		t.Fatalf("Bad: %s\nExpected: %s\n\n", dumpState, state)
 	}
 }

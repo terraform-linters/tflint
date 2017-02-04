@@ -133,9 +133,9 @@ func (cli *CLI) Run(args []string) int {
 	}
 	cli.loader.LoadState()
 	if flags.NArg() > 0 {
-		err = cli.loader.LoadFile(flags.Arg(0))
+		err = cli.loader.LoadTemplate(flags.Arg(0))
 	} else {
-		err = cli.loader.LoadAllFile(".")
+		err = cli.loader.LoadAllTemplate(".")
 	}
 	if err != nil {
 		fmt.Fprintln(cli.errStream, err)
@@ -144,7 +144,8 @@ func (cli *CLI) Run(args []string) int {
 
 	// If disabled test mode, generates real detector
 	if !cli.testMode {
-		cli.detector, err = detector.NewDetector(cli.loader.DumpFiles(), c)
+		listMap, _ := cli.loader.Dump()
+		cli.detector, err = detector.NewDetector(listMap, c)
 	}
 	if err != nil {
 		fmt.Fprintln(cli.errStream, err)

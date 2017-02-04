@@ -26,7 +26,8 @@ func TestCLIRun(t *testing.T) {
 	}
 	var loaderDefaultBehavior = func(ctrl *gomock.Controller) loader.LoaderIF {
 		loader := mock.NewMockLoaderIF(ctrl)
-		loader.EXPECT().LoadAllFile(".").Return(nil)
+		loader.EXPECT().LoadState()
+		loader.EXPECT().LoadAllTemplate(".").Return(nil)
 		return loader
 	}
 	var detectorNoErrorNoIssuesBehavior = func(ctrl *gomock.Controller) detector.DetectorIF {
@@ -153,7 +154,8 @@ func TestCLIRun(t *testing.T) {
 			Command: "./tflint",
 			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
 				loader := mock.NewMockLoaderIF(ctrl)
-				loader.EXPECT().LoadAllFile(".").Return(errors.New("loading error!"))
+				loader.EXPECT().LoadState()
+				loader.EXPECT().LoadAllTemplate(".").Return(errors.New("loading error!"))
 				return loader
 			},
 			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
@@ -186,7 +188,8 @@ func TestCLIRun(t *testing.T) {
 			Command: "./tflint test_template.tf",
 			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
 				loader := mock.NewMockLoaderIF(ctrl)
-				loader.EXPECT().LoadFile("test_template.tf").Return(nil)
+				loader.EXPECT().LoadState()
+				loader.EXPECT().LoadTemplate("test_template.tf").Return(nil)
 				return loader
 			},
 			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
@@ -201,7 +204,8 @@ func TestCLIRun(t *testing.T) {
 			Command: "./tflint test_template.tf",
 			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
 				loader := mock.NewMockLoaderIF(ctrl)
-				loader.EXPECT().LoadFile("test_template.tf").Return(errors.New("loading error!"))
+				loader.EXPECT().LoadState()
+				loader.EXPECT().LoadTemplate("test_template.tf").Return(errors.New("loading error!"))
 				return loader
 			},
 			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
