@@ -131,6 +131,7 @@ func (cli *CLI) Run(args []string) int {
 	if !cli.testMode {
 		cli.loader = loader.NewLoader(c.Debug)
 	}
+	cli.loader.LoadState()
 	if flags.NArg() > 0 {
 		err = cli.loader.LoadFile(flags.Arg(0))
 	} else {

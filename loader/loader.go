@@ -1,6 +1,7 @@
 package loader
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -10,6 +11,7 @@ import (
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/parser"
 	"github.com/wata727/tflint/logger"
+	"github.com/wata727/tflint/state"
 )
 
 type LoaderIF interface {
@@ -17,17 +19,20 @@ type LoaderIF interface {
 	LoadModuleFile(moduleKey string, source string) error
 	LoadAllFile(dir string) error
 	DumpFiles() map[string]*ast.ObjectList
+	LoadState()
 }
 
 type Loader struct {
 	Logger  *logger.Logger
 	ListMap map[string]*ast.ObjectList
+	State   *state.TFState
 }
 
 func NewLoader(debug bool) *Loader {
 	return &Loader{
 		Logger:  logger.Init(debug),
 		ListMap: make(map[string]*ast.ObjectList),
+		State:   &state.TFState{},
 	}
 }
 
@@ -89,6 +94,36 @@ func (l *Loader) LoadAllFile(dir string) error {
 
 func (l *Loader) DumpFiles() map[string]*ast.ObjectList {
 	return l.ListMap
+}
+
+func (l *Loader) LoadState() {
+	l.Logger.Info("Load tfstate...")
+	var statePath string
+	// stat local state
+	if _, err := os.Stat(state.LocalStatePath); err != nil {
+		l.Logger.Error(err)
+		// stat remote state
+		if _, err := os.Stat(state.RemoteStatePath); err != nil {
+			l.Logger.Error(err)
+			return
+		} else {
+			l.Logger.Info("Remote state detected")
+			statePath = state.RemoteStatePath
+		}
+	} else {
+		l.Logger.Info("Local state detected")
+		statePath = state.LocalStatePath
+	}
+
+	jsonBytes, err := ioutil.ReadFile(statePath)
+	if err != nil {
+		l.Logger.Error(err)
+		return
+	}
+	if err := json.Unmarshal(jsonBytes, l.State); err != nil {
+		l.Logger.Error(err)
+		return
+	}
 }
 
 func load(filename string, l *logger.Logger) (*ast.ObjectList, error) {
