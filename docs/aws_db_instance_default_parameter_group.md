@@ -33,5 +33,5 @@ Result: 1 issues  (0 errors , 0 warnings , 1 notices)
 ## Why
 RDS allows you to use a parameter group structure to change setting values ​​such as MySQL and PostgreSQL. However, the default parameter group can not be changed later, and if you want to change it, you need to create and modify a dedicated parameter group.
 
-## How to fix
+## How To Fix
 Please create a dedicated parameter group and change it to that.

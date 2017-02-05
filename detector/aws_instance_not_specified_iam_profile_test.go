@@ -45,6 +45,7 @@ resource "aws_instance" "web" {
 		TestDetectByCreatorName(
 			"CreateAwsInstanceNotSpecifiedIAMProfileDetector",
 			tc.Src,
+			"",
 			config.Init(),
 			config.Init().NewAwsClient(),
 			&issues,

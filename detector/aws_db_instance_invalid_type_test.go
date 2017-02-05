@@ -44,6 +44,7 @@ resource "aws_db_instance" "mysql" {
 		TestDetectByCreatorName(
 			"CreateAwsDBInstanceInvalidTypeDetector",
 			tc.Src,
+			"",
 			config.Init(),
 			config.Init().NewAwsClient(),
 			&issues,

@@ -89,6 +89,7 @@ resource "aws_instance" "web" {
 		TestDetectByCreatorName(
 			"CreateAwsInstanceInvalidVPCSecurityGroupDetector",
 			tc.Src,
+			"",
 			c,
 			awsClient,
 			&issues,

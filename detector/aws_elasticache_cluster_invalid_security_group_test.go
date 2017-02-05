@@ -89,6 +89,7 @@ resource "aws_elasticache_cluster" "redis" {
 		TestDetectByCreatorName(
 			"CreateAwsElastiCacheClusterInvalidSecurityGroupDetector",
 			tc.Src,
+			"",
 			c,
 			awsClient,
 			&issues,

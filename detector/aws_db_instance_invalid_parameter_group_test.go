@@ -80,6 +80,7 @@ resource "aws_db_instance" "mysql" {
 		TestDetectByCreatorName(
 			"CreateAwsDBInstanceInvalidParameterGroupDetector",
 			tc.Src,
+			"",
 			c,
 			awsClient,
 			&issues,

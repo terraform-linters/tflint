@@ -44,6 +44,7 @@ resource "aws_elasticache_cluster" "cache" {
 		TestDetectByCreatorName(
 			"CreateAwsElastiCacheClusterDefaultParameterGroupDetector",
 			tc.Src,
+			"",
 			config.Init(),
 			config.Init().NewAwsClient(),
 			&issues,

@@ -80,6 +80,7 @@ resource "aws_db_instance" "mysql" {
 		TestDetectByCreatorName(
 			"CreateAwsDBInstanceInvalidDBSubnetGroupDetector",
 			tc.Src,
+			"",
 			c,
 			awsClient,
 			&issues,

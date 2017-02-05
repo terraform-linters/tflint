@@ -89,6 +89,7 @@ resource "aws_elb" "balancer" {
 		TestDetectByCreatorName(
 			"CreateAwsELBInvalidSecurityGroupDetector",
 			tc.Src,
+			"",
 			c,
 			awsClient,
 			&issues,

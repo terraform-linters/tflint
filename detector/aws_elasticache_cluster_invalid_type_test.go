@@ -44,6 +44,7 @@ resource "aws_elasticache_cluster" "redis" {
 		TestDetectByCreatorName(
 			"CreateAwsElastiCacheClusterInvalidTypeDetector",
 			tc.Src,
+			"",
 			config.Init(),
 			config.Init().NewAwsClient(),
 			&issues,

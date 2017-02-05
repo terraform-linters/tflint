@@ -90,6 +90,34 @@ module "ec2_instance" {
 	}
 }
 
+func TestHclObjectKeyText(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Src    string
+		Result string
+	}{
+		{
+			Name: "return key name",
+			Src: `
+resource "aws_instance" "web" {
+    instance_type = "t2.micro"
+}`,
+			Result: "web",
+		},
+	}
+
+	for _, tc := range cases {
+		root, _ := parser.Parse([]byte(tc.Src))
+		list, _ := root.Node.(*ast.ObjectList)
+		item := list.Filter("resource", "aws_instance").Items[0]
+
+		result := hclObjectKeyText(item)
+		if result != tc.Result {
+			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+		}
+	}
+}
+
 func TestHclLiteralToken(t *testing.T) {
 	type Input struct {
 		File string

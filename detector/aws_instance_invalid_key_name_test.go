@@ -77,6 +77,7 @@ resource "aws_instance" "web" {
 		TestDetectByCreatorName(
 			"CreateAwsInstanceInvalidKeyNameDetector",
 			tc.Src,
+			"",
 			c,
 			awsClient,
 			&issues,
