@@ -6,6 +6,7 @@ package mock
 import (
 	gomock "github.com/golang/mock/gomock"
 	ast "github.com/hashicorp/hcl/hcl/ast"
+	state "github.com/wata727/tflint/state"
 )
 
 // Mock of LoaderIF interface
@@ -29,14 +30,14 @@ func (_m *MockLoaderIF) EXPECT() *_MockLoaderIFRecorder {
 	return _m.recorder
 }
 
-func (_m *MockLoaderIF) LoadFile(filename string) error {
-	ret := _m.ctrl.Call(_m, "LoadFile", filename)
+func (_m *MockLoaderIF) LoadTemplate(filename string) error {
+	ret := _m.ctrl.Call(_m, "LoadTemplate", filename)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-func (_mr *_MockLoaderIFRecorder) LoadFile(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "LoadFile", arg0)
+func (_mr *_MockLoaderIFRecorder) LoadTemplate(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "LoadTemplate", arg0)
 }
 
 func (_m *MockLoaderIF) LoadModuleFile(moduleKey string, source string) error {
@@ -49,22 +50,31 @@ func (_mr *_MockLoaderIFRecorder) LoadModuleFile(arg0, arg1 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "LoadModuleFile", arg0, arg1)
 }
 
-func (_m *MockLoaderIF) LoadAllFile(dir string) error {
-	ret := _m.ctrl.Call(_m, "LoadAllFile", dir)
+func (_m *MockLoaderIF) LoadAllTemplate(dir string) error {
+	ret := _m.ctrl.Call(_m, "LoadAllTemplate", dir)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-func (_mr *_MockLoaderIFRecorder) LoadAllFile(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "LoadAllFile", arg0)
+func (_mr *_MockLoaderIFRecorder) LoadAllTemplate(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "LoadAllTemplate", arg0)
 }
 
-func (_m *MockLoaderIF) DumpFiles() map[string]*ast.ObjectList {
-	ret := _m.ctrl.Call(_m, "DumpFiles")
+func (_m *MockLoaderIF) Dump() (map[string]*ast.ObjectList, *state.TFState) {
+	ret := _m.ctrl.Call(_m, "Dump")
 	ret0, _ := ret[0].(map[string]*ast.ObjectList)
-	return ret0
+	ret1, _ := ret[1].(*state.TFState)
+	return ret0, ret1
 }
 
-func (_mr *_MockLoaderIFRecorder) DumpFiles() *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DumpFiles")
+func (_mr *_MockLoaderIFRecorder) Dump() *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "Dump")
+}
+
+func (_m *MockLoaderIF) LoadState() {
+	_m.ctrl.Call(_m, "LoadState")
+}
+
+func (_mr *_MockLoaderIFRecorder) LoadState() *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "LoadState")
 }

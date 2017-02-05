@@ -11,6 +11,7 @@ import (
 	"github.com/wata727/tflint/evaluator"
 	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/logger"
+	"github.com/wata727/tflint/state"
 )
 
 type DetectorIF interface {
@@ -20,6 +21,7 @@ type DetectorIF interface {
 
 type Detector struct {
 	ListMap       map[string]*ast.ObjectList
+	State         *state.TFState
 	Config        *config.Config
 	AwsClient     *config.AwsClient
 	EvalConfig    *evaluator.Evaluator
@@ -59,7 +61,7 @@ var detectors = map[string]string{
 	"aws_elasticache_cluster_previous_type":           "CreateAwsElastiCacheClusterPreviousTypeDetector",
 }
 
-func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detector, error) {
+func NewDetector(listMap map[string]*ast.ObjectList, state *state.TFState, c *config.Config) (*Detector, error) {
 	evalConfig, err := evaluator.NewEvaluator(listMap, c)
 	if err != nil {
 		return nil, err
@@ -67,6 +69,7 @@ func NewDetector(listMap map[string]*ast.ObjectList, c *config.Config) (*Detecto
 
 	return &Detector{
 		ListMap:       listMap,
+		State:         state,
 		Config:        c,
 		AwsClient:     c.NewAwsClient(),
 		EvalConfig:    evalConfig,
@@ -142,7 +145,7 @@ func (d *Detector) Detect() []*issue.Issue {
 				continue
 			}
 			d.Logger.Info(fmt.Sprintf("detect module `%s`", name))
-			moduleDetector, err := NewDetector(m.ListMap, d.Config)
+			moduleDetector, err := NewDetector(m.ListMap, d.State, d.Config)
 			if err != nil {
 				d.Logger.Error(err)
 				continue

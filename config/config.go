@@ -32,7 +32,7 @@ func (c *Config) LoadConfig(filename string) error {
 	}
 
 	l := loader.NewLoader(c.Debug)
-	if err := l.LoadFile(filename); err != nil {
+	if err := l.LoadTemplate(filename); err != nil {
 		return nil
 	}
 
