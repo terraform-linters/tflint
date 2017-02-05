@@ -1,6 +1,7 @@
 package detector
 
 import (
+	"encoding/json"
 	"reflect"
 
 	"github.com/hashicorp/hcl/hcl/ast"
@@ -9,6 +10,7 @@ import (
 	"github.com/wata727/tflint/evaluator"
 	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/logger"
+	"github.com/wata727/tflint/state"
 )
 
 type TestDetector struct {
@@ -28,15 +30,19 @@ func (d *TestDetector) Detect(issues *[]*issue.Issue) {
 	})
 }
 
-func TestDetectByCreatorName(creatorMethod string, src string, c *config.Config, awsClient *config.AwsClient, issues *[]*issue.Issue) {
+func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string, c *config.Config, awsClient *config.AwsClient, issues *[]*issue.Issue) {
 	listMap := make(map[string]*ast.ObjectList)
 	root, _ := parser.Parse([]byte(src))
 	list, _ := root.Node.(*ast.ObjectList)
 	listMap["test.tf"] = list
 
+	tfstate := &state.TFState{}
+	json.Unmarshal([]byte(stateJSON), tfstate)
+
 	evalConfig, _ := evaluator.NewEvaluator(listMap, c)
 	creator := reflect.ValueOf(&Detector{
 		ListMap:       listMap,
+		State:         tfstate,
 		EvalConfig:    evalConfig,
 		Config:        c,
 		Logger:        logger.Init(false),

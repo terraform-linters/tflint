@@ -44,6 +44,7 @@ resource "aws_db_instance" "db" {
 		TestDetectByCreatorName(
 			"CreateAwsDBInstanceDefaultParameterGroupDetector",
 			tc.Src,
+			"",
 			config.Init(),
 			config.Init().NewAwsClient(),
 			&issues,

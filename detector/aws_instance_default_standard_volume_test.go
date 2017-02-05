@@ -111,6 +111,7 @@ resource "aws_instance" "web" {
 		TestDetectByCreatorName(
 			"CreateAwsInstanceDefaultStandardVolumeDetector",
 			tc.Src,
+			"",
 			config.Init(),
 			config.Init().NewAwsClient(),
 			&issues,

@@ -77,6 +77,7 @@ resource "aws_instance" "web" {
 		TestDetectByCreatorName(
 			"CreateAwsInstanceInvalidSubnetDetector",
 			tc.Src,
+			"",
 			c,
 			awsClient,
 			&issues,

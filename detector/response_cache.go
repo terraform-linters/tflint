@@ -12,6 +12,7 @@ type ResponseCache struct {
 	DescribeKeyPairsOutput             *ec2.DescribeKeyPairsOutput
 	DescribeSubnetsOutput              *ec2.DescribeSubnetsOutput
 	DescribeSecurityGroupsOutput       *ec2.DescribeSecurityGroupsOutput
+	DescribeVpcsOutput                 *ec2.DescribeVpcsOutput
 	ListInstanceProfilesOutput         *iam.ListInstanceProfilesOutput
 	DescribeInstancesOutput            *ec2.DescribeInstancesOutput
 	DescribeDBSubnetGroupsOutput       *rds.DescribeDBSubnetGroupsOutput

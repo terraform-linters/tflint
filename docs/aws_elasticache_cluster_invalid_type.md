@@ -30,5 +30,5 @@ Result: 1 issues  (1 errors , 0 warnings , 0 notices)
 ## Why
 If an invalid node type is specified, an error will occur at `terraform apply`.
 
-## How to fix
+## How To Fix
 Check the [node type list](https://aws.amazon.com/elasticache/details/) and select a valid node type again.

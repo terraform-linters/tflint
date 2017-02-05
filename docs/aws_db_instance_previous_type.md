@@ -29,5 +29,5 @@ Result: 1 issues  (0 errors , 1 warnings , 0 notices)
 ## Why
 There are two types of instance types, the current generation and the previous generation. The current generation is superior to the previous generation in terms of performance and fee. AWS also officially states that unless there is a special reason, you should use the instance type of the current generation.
 
-## How to fix
+## How To Fix
 Follow the [upgrade paths](https://aws.amazon.com/rds/previous-generation/) and confirm that the instance type of the current generation can be used, then select again.

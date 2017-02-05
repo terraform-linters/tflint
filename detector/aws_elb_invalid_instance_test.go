@@ -93,6 +93,7 @@ resource "aws_elb" "balancer" {
 		TestDetectByCreatorName(
 			"CreateAwsELBInvalidInstanceDetector",
 			tc.Src,
+			"",
 			c,
 			awsClient,
 			&issues,

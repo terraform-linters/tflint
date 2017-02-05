@@ -28,5 +28,5 @@ You can select only one IAM profile at instance setup. However, if you do not se
 
 Even if you think that you do not need an IAM profile, we recommend that you specify a dummy. Then you can change the privilege when you need it, so you can escape the recreate of the instance.
 
-## How to fix
+## How To Fix
 Please add `iam_instance_profile` attribute.

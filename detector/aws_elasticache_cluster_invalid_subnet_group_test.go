@@ -80,6 +80,7 @@ resource "aws_elasticache_cluster" "redis" {
 		TestDetectByCreatorName(
 			"CreateAwsElastiCacheClusterInvalidSubnetGroupDetector",
 			tc.Src,
+			"",
 			c,
 			awsClient,
 			&issues,

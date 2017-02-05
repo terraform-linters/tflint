@@ -89,6 +89,7 @@ resource "aws_alb" "balancer" {
 		TestDetectByCreatorName(
 			"CreateAwsALBInvalidSubnetDetector",
 			tc.Src,
+			"",
 			c,
 			awsClient,
 			&issues,

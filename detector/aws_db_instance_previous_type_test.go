@@ -44,6 +44,7 @@ resource "aws_db_instance" "mysql" {
 		TestDetectByCreatorName(
 			"CreateAwsDBInstancePreviousTypeDetector",
 			tc.Src,
+			"",
 			config.Init(),
 			config.Init().NewAwsClient(),
 			&issues,

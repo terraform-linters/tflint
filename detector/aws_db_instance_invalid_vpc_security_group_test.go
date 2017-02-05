@@ -89,6 +89,7 @@ resource "aws_db_instance" "mysql" {
 		TestDetectByCreatorName(
 			"CreateAwsDBInstanceInvalidVPCSecurityGroupDetector",
 			tc.Src,
+			"",
 			c,
 			awsClient,
 			&issues,

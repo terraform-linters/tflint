@@ -59,6 +59,7 @@ var detectors = map[string]string{
 	"aws_elasticache_cluster_invalid_security_group":  "CreateAwsElastiCacheClusterInvalidSecurityGroupDetector",
 	"aws_elasticache_cluster_invalid_type":            "CreateAwsElastiCacheClusterInvalidTypeDetector",
 	"aws_elasticache_cluster_previous_type":           "CreateAwsElastiCacheClusterPreviousTypeDetector",
+	"aws_security_group_duplicate_name":               "CreateAwsSecurityGroupDuplicateDetector",
 }
 
 func NewDetector(listMap map[string]*ast.ObjectList, state *state.TFState, c *config.Config) (*Detector, error) {
@@ -77,6 +78,10 @@ func NewDetector(listMap map[string]*ast.ObjectList, state *state.TFState, c *co
 		ResponseCache: &ResponseCache{},
 		Error:         false,
 	}, nil
+}
+
+func hclObjectKeyText(item *ast.ObjectItem) string {
+	return strings.Trim(item.Keys[0].Token.Text, "\"")
 }
 
 func hclLiteralToken(item *ast.ObjectItem, k string) (token.Token, error) {

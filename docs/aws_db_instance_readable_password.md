@@ -51,7 +51,7 @@ resource "aws_db_instance" "default" {
 ## Why
 Generally, it is a bad practice to directly embed passwords in source code and templates. One reason why is that there is a fear that it will be unintentionally published when using VCS.
 
-## How to fix
+## How To Fix
 Instead of writing password directly, use environment variables. Terraform provides a way to set variables by environment variables. For example, edit and execute as following:
 
 ```

@@ -80,6 +80,7 @@ resource "aws_instance" "web" {
 		TestDetectByCreatorName(
 			"CreateAwsInstanceInvalidIAMProfileDetector",
 			tc.Src,
+			"",
 			c,
 			awsClient,
 			&issues,

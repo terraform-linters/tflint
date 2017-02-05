@@ -30,5 +30,5 @@ Result: 1 issues  (0 errors , 0 warnings , 1 notices)
 ## Why
 In ElastiCache, parameter groups can be used for tuning setting values ​​such as Redis and Memcached. When creating a cluster for the first time, you can only select the default parameter group. However, the default parameter group can not be changed later, and if you want to change it, you need to change it to another parameter group.
 
-## How to fix
+## How To Fix
 Please create a dedicated parameter group and change it to that.
