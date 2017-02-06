@@ -3,6 +3,7 @@ package detector
 import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/elasticache"
+	"github.com/aws/aws-sdk-go/service/elbv2"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/rds"
 )
@@ -20,4 +21,5 @@ type ResponseCache struct {
 	DescribeOptionGroupsOutput         *rds.DescribeOptionGroupsOutput
 	DescribeCacheParameterGroupsOutput *elasticache.DescribeCacheParameterGroupsOutput
 	DescribeCacheSubnetGroupsOutput    *elasticache.DescribeCacheSubnetGroupsOutput
+	DescribeLoadBalancersOutput        *elbv2.DescribeLoadBalancersOutput
 }

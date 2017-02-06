@@ -57,3 +57,5 @@ Report these issues if you have specified resource ID, name, etc that already ex
 
 - **AWS Security Group**
     - aws_security_group_duplicate_name
+- **AWS ALB**
+    - aws_alb_duplicate_name

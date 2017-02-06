@@ -8,6 +8,8 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2/ec2iface"
 	"github.com/aws/aws-sdk-go/service/elasticache"
 	"github.com/aws/aws-sdk-go/service/elasticache/elasticacheiface"
+	"github.com/aws/aws-sdk-go/service/elbv2"
+	"github.com/aws/aws-sdk-go/service/elbv2/elbv2iface"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/iam/iamiface"
 	"github.com/aws/aws-sdk-go/service/rds"
@@ -20,6 +22,7 @@ type AwsClient struct {
 	Ec2         ec2iface.EC2API
 	Rds         rdsiface.RDSAPI
 	Elasticache elasticacheiface.ElastiCacheAPI
+	Elbv2       elbv2iface.ELBV2API
 }
 
 func (c *Config) NewAwsClient() *AwsClient {
@@ -30,6 +33,7 @@ func (c *Config) NewAwsClient() *AwsClient {
 	client.Ec2 = ec2.New(s)
 	client.Rds = rds.New(s)
 	client.Elasticache = elasticache.New(s)
+	client.Elbv2 = elbv2.New(s)
 
 	return client
 }
