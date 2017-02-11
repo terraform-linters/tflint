@@ -63,3 +63,5 @@ Report these issues if you have specified resource ID, name, etc that already ex
     - aws_elb_duplicate_name
 - **AWS DB Instance**
     - aws_db_instance_duplicate_identifier
+- **AWS ElastiCache Cluster**
+    - aws_elasticache_cluster_duplicate_id

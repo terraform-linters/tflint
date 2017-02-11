@@ -23,6 +23,7 @@ type ResponseCache struct {
 	DescribeDBInstancesOutput          *rds.DescribeDBInstancesOutput
 	DescribeCacheParameterGroupsOutput *elasticache.DescribeCacheParameterGroupsOutput
 	DescribeCacheSubnetGroupsOutput    *elasticache.DescribeCacheSubnetGroupsOutput
+	DescribeCacheClustersOutput        *elasticache.DescribeCacheClustersOutput
 	DescribeLoadBalancersOutput        *elbv2.DescribeLoadBalancersOutput
 	DescribeClassicLoadBalancersOutput *elb.DescribeLoadBalancersOutput
 }
