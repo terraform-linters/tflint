@@ -46,6 +46,7 @@ var detectors = map[string]string{
 	"aws_elb_invalid_security_group":                  "CreateAwsELBInvalidSecurityGroupDetector",
 	"aws_elb_invalid_subnet":                          "CreateAwsELBInvalidSubnetDetector",
 	"aws_elb_invalid_instance":                        "CreateAwsELBInvalidInstanceDetector",
+	"aws_elb_duplicate_name":                          "CreateAwsELBDuplicateNameDetector",
 	"aws_db_instance_default_parameter_group":         "CreateAwsDBInstanceDefaultParameterGroupDetector",
 	"aws_db_instance_invalid_vpc_security_group":      "CreateAwsDBInstanceInvalidVPCSecurityGroupDetector",
 	"aws_db_instance_invalid_db_subnet_group":         "CreateAwsDBInstanceInvalidDBSubnetGroupDetector",
