@@ -20,6 +20,7 @@ type ResponseCache struct {
 	DescribeDBSubnetGroupsOutput       *rds.DescribeDBSubnetGroupsOutput
 	DescribeDBParameterGroupsOutput    *rds.DescribeDBParameterGroupsOutput
 	DescribeOptionGroupsOutput         *rds.DescribeOptionGroupsOutput
+	DescribeDBInstancesOutput          *rds.DescribeDBInstancesOutput
 	DescribeCacheParameterGroupsOutput *elasticache.DescribeCacheParameterGroupsOutput
 	DescribeCacheSubnetGroupsOutput    *elasticache.DescribeCacheSubnetGroupsOutput
 	DescribeLoadBalancersOutput        *elbv2.DescribeLoadBalancersOutput
