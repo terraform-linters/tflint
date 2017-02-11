@@ -62,7 +62,7 @@ resource "aws_elb" "test" {
 		{
 			Name: "omitted name",
 			Src: `
-resource "aws_security_group" "test" {
+resource "aws_elb" "test" {
     instances = ["i-12345abcdf"]
 }`,
 			Issues: []*issue.Issue{},
@@ -147,11 +147,9 @@ resource "aws_elb" "test" {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		elbmock := mock.NewMockELBAPI(ctrl)
-		if tc.Response != nil {
-			elbmock.EXPECT().DescribeLoadBalancers(&elb.DescribeLoadBalancersInput{}).Return(&elb.DescribeLoadBalancersOutput{
-				LoadBalancerDescriptions: tc.Response,
-			}, nil)
-		}
+		elbmock.EXPECT().DescribeLoadBalancers(&elb.DescribeLoadBalancersInput{}).Return(&elb.DescribeLoadBalancersOutput{
+			LoadBalancerDescriptions: tc.Response,
+		}, nil)
 		awsClient.Elb = elbmock
 
 		var issues = []*issue.Issue{}

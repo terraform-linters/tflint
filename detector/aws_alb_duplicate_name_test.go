@@ -62,7 +62,7 @@ resource "aws_alb" "test" {
 		{
 			Name: "omitted name",
 			Src: `
-resource "aws_security_group" "test" {
+resource "aws_alb" "test" {
     name_prefix = "test-alb-tf"
 }`,
 			Issues: []*issue.Issue{},
@@ -131,11 +131,9 @@ resource "aws_alb" "test" {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		elbv2mock := mock.NewMockELBV2API(ctrl)
-		if tc.Response != nil {
-			elbv2mock.EXPECT().DescribeLoadBalancers(&elbv2.DescribeLoadBalancersInput{}).Return(&elbv2.DescribeLoadBalancersOutput{
-				LoadBalancers: tc.Response,
-			}, nil)
-		}
+		elbv2mock.EXPECT().DescribeLoadBalancers(&elbv2.DescribeLoadBalancersInput{}).Return(&elbv2.DescribeLoadBalancersOutput{
+			LoadBalancers: tc.Response,
+		}, nil)
 		awsClient.Elbv2 = elbv2mock
 
 		var issues = []*issue.Issue{}

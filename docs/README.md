@@ -61,3 +61,5 @@ Report these issues if you have specified resource ID, name, etc that already ex
     - aws_alb_duplicate_name
 - **AWS ELB**
     - aws_elb_duplicate_name
+- **AWS DB Instance**
+    - aws_db_instance_duplicate_identifier
