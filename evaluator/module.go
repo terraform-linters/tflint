@@ -1,7 +1,7 @@
 package evaluator
 
 import (
-	"crypto/md5"
+	"crypto/md5" // #nosec
 	"encoding/hex"
 	"fmt"
 
@@ -70,6 +70,6 @@ func detectModules(listMap map[string]*hclast.ObjectList, c *config.Config) (map
 
 func moduleKey(name string, source string) string {
 	base := "root." + name + "-" + source
-	sum := md5.Sum([]byte(base))
+	sum := md5.Sum([]byte(base)) // #nosec
 	return hex.EncodeToString(sum[:])
 }
