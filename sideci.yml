@@ -2,3 +2,4 @@ linter:
   gometalinter:
     options:
       vendor: true
+      config: gometalinter.json

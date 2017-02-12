@@ -135,7 +135,7 @@ resource "aws_elasticache_cluster" "test" {
 		awsClient.Elasticache = elasticachemock
 
 		var issues = []*issue.Issue{}
-		TestDetectByCreatorName(
+		err := TestDetectByCreatorName(
 			"CreateAwsElastiCacheClusterDuplicateIDDetector",
 			tc.Src,
 			tc.State,
@@ -143,6 +143,9 @@ resource "aws_elasticache_cluster" "test" {
 			awsClient,
 			&issues,
 		)
+		if err != nil {
+			t.Fatalf("\nERROR: %s", err)
+		}
 
 		if !reflect.DeepEqual(issues, tc.Issues) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(issues), pp.Sprint(tc.Issues), tc.Name)

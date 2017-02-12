@@ -78,7 +78,7 @@ resource "aws_db_instance" "mysql" {
 		awsClient.Rds = rdsmock
 
 		var issues = []*issue.Issue{}
-		TestDetectByCreatorName(
+		err := TestDetectByCreatorName(
 			"CreateAwsDBInstanceInvalidOptionGroupDetector",
 			tc.Src,
 			"",
@@ -86,6 +86,9 @@ resource "aws_db_instance" "mysql" {
 			awsClient,
 			&issues,
 		)
+		if err != nil {
+			t.Fatalf("\nERROR: %s", err)
+		}
 
 		if !reflect.DeepEqual(issues, tc.Issues) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(issues), pp.Sprint(tc.Issues), tc.Name)

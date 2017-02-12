@@ -43,7 +43,7 @@ resource "aws_instance" "web" {
 
 	for _, tc := range cases {
 		var issues = []*issue.Issue{}
-		TestDetectByCreatorName(
+		err := TestDetectByCreatorName(
 			"CreateAwsInstanceNotSpecifiedIAMProfileDetector",
 			tc.Src,
 			"",
@@ -51,6 +51,9 @@ resource "aws_instance" "web" {
 			config.Init().NewAwsClient(),
 			&issues,
 		)
+		if err != nil {
+			t.Fatalf("\nERROR: %s", err)
+		}
 
 		if !reflect.DeepEqual(issues, tc.Issues) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(issues), pp.Sprint(tc.Issues), tc.Name)

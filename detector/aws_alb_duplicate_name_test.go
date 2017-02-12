@@ -138,7 +138,7 @@ resource "aws_alb" "test" {
 		awsClient.Elbv2 = elbv2mock
 
 		var issues = []*issue.Issue{}
-		TestDetectByCreatorName(
+		err := TestDetectByCreatorName(
 			"CreateAwsALBDuplicateNameDetector",
 			tc.Src,
 			tc.State,
@@ -146,6 +146,9 @@ resource "aws_alb" "test" {
 			awsClient,
 			&issues,
 		)
+		if err != nil {
+			t.Fatalf("\nERROR: %s", err)
+		}
 
 		if !reflect.DeepEqual(issues, tc.Issues) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(issues), pp.Sprint(tc.Issues), tc.Name)

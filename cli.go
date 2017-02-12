@@ -171,7 +171,7 @@ func (cli *CLI) setupConfig(args ConfigurableArgs) (*config.Config, error) {
 	if args.IgnoreRule != "" {
 		c.SetIgnoreRule(args.IgnoreRule)
 	}
-	// If enabled test mode, set config infomation
+	// If enabled test mode, set config information
 	if cli.testMode {
 		cli.TestCLIOptions = TestCLIOptions{
 			Config:     c,

@@ -2,6 +2,7 @@ package detector
 
 import (
 	"encoding/json"
+	"errors"
 	"reflect"
 
 	"github.com/hashicorp/hcl/hcl/ast"
@@ -30,14 +31,16 @@ func (d *TestDetector) Detect(issues *[]*issue.Issue) {
 	})
 }
 
-func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string, c *config.Config, awsClient *config.AwsClient, issues *[]*issue.Issue) {
+func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string, c *config.Config, awsClient *config.AwsClient, issues *[]*issue.Issue) error {
 	listMap := make(map[string]*ast.ObjectList)
 	root, _ := parser.Parse([]byte(src))
 	list, _ := root.Node.(*ast.ObjectList)
 	listMap["test.tf"] = list
 
 	tfstate := &state.TFState{}
-	json.Unmarshal([]byte(stateJSON), tfstate)
+	if err := json.Unmarshal([]byte(stateJSON), tfstate); err != nil && stateJSON != "" {
+		return errors.New("Invalid JSON Syntax!")
+	}
 
 	evalConfig, _ := evaluator.NewEvaluator(listMap, c)
 	creator := reflect.ValueOf(&Detector{
@@ -53,4 +56,5 @@ func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string,
 
 	method := detector.MethodByName("Detect")
 	method.Call([]reflect.Value{reflect.ValueOf(issues)})
+	return nil
 }
