@@ -36,20 +36,23 @@ type TestCLIOptions struct {
 	ConfigFile string
 }
 
+type ConfigurableArgs struct {
+	Debug        bool
+	DeepCheck    bool
+	AwsAccessKey string
+	AwsSecretKey string
+	AwsRegion    string
+	IgnoreModule string
+	IgnoreRule   string
+	ConfigFile   string
+}
+
 // Run invokes the CLI with the given arguments.
 func (cli *CLI) Run(args []string) int {
 	var (
 		version         bool
 		help            bool
-		debug           bool
 		format          string
-		ignoreModule    string
-		ignoreRule      string
-		configFile      string
-		deepCheck       bool
-		awsAccessKey    string
-		awsSecretKey    string
-		awsRegion       string
 		errorWithIssues bool
 	)
 
@@ -57,23 +60,24 @@ func (cli *CLI) Run(args []string) int {
 	flags := flag.NewFlagSet(Name, flag.ContinueOnError)
 	// Do not print default usage message
 	flags.SetOutput(new(bytes.Buffer))
+	configArgs := ConfigurableArgs{}
 
 	flags.BoolVar(&version, "version", false, "print version information.")
 	flags.BoolVar(&version, "v", false, "alias for -version")
 	flags.BoolVar(&help, "help", false, "show usage of TFLint. This page.")
 	flags.BoolVar(&help, "h", false, "alias for --help")
-	flags.BoolVar(&debug, "debug", false, "enable debug mode.")
-	flags.BoolVar(&debug, "d", false, "alias for --debug")
+	flags.BoolVar(&configArgs.Debug, "debug", false, "enable debug mode.")
+	flags.BoolVar(&configArgs.Debug, "d", false, "alias for --debug")
 	flags.StringVar(&format, "format", "default", "choose output format from \"default\" or \"json\"")
 	flags.StringVar(&format, "f", "default", "alias for --format")
-	flags.StringVar(&ignoreModule, "ignore-module", "", "ignore module by specified source.")
-	flags.StringVar(&ignoreRule, "ignore-rule", "", "ignore rules.")
-	flags.StringVar(&configFile, "config", ".tflint.hcl", "specify config file. default is \".tflint.hcl\"")
-	flags.StringVar(&configFile, "c", ".tflint.hcl", "alias for --config")
-	flags.BoolVar(&deepCheck, "deep", false, "enable deep check mode.")
-	flags.StringVar(&awsAccessKey, "aws-access-key", "", "AWS access key used in deep check mode.")
-	flags.StringVar(&awsSecretKey, "aws-secret-key", "", "AWS secret key used in deep check mode.")
-	flags.StringVar(&awsRegion, "aws-region", "", "AWS region used in deep check mode.")
+	flags.StringVar(&configArgs.IgnoreModule, "ignore-module", "", "ignore module by specified source.")
+	flags.StringVar(&configArgs.IgnoreRule, "ignore-rule", "", "ignore rules.")
+	flags.StringVar(&configArgs.ConfigFile, "config", ".tflint.hcl", "specify config file. default is \".tflint.hcl\"")
+	flags.StringVar(&configArgs.ConfigFile, "c", ".tflint.hcl", "alias for --config")
+	flags.BoolVar(&configArgs.DeepCheck, "deep", false, "enable deep check mode.")
+	flags.StringVar(&configArgs.AwsAccessKey, "aws-access-key", "", "AWS access key used in deep check mode.")
+	flags.StringVar(&configArgs.AwsSecretKey, "aws-secret-key", "", "AWS secret key used in deep check mode.")
+	flags.StringVar(&configArgs.AwsRegion, "aws-region", "", "AWS region used in deep check mode.")
 	flags.BoolVar(&errorWithIssues, "error-with-issues", false, "return error code when issue exists.")
 
 	// Parse commandline flag
@@ -99,34 +103,13 @@ func (cli *CLI) Run(args []string) int {
 	}
 
 	// Setup config
-	c := config.Init()
-	if debug {
-		c.Debug = true
-	}
-	if err := c.LoadConfig(configFile); err != nil {
+	c, err := cli.setupConfig(configArgs)
+	if err != nil {
 		fmt.Fprintln(cli.errStream, err)
 		return ExitCodeError
 	}
-	if deepCheck || c.DeepCheck {
-		c.DeepCheck = true
-		c.SetAwsCredentials(awsAccessKey, awsSecretKey, awsRegion)
-	}
-	if ignoreModule != "" {
-		c.SetIgnoreModule(ignoreModule)
-	}
-	if ignoreRule != "" {
-		c.SetIgnoreRule(ignoreRule)
-	}
-	// If enabled test mode, set config infomation
-	if cli.testMode {
-		cli.TestCLIOptions = TestCLIOptions{
-			Config:     c,
-			ConfigFile: configFile,
-		}
-	}
 
 	// Main function
-	var err error
 	// If disabled test mode, generates real loader
 	if !cli.testMode {
 		cli.loader = loader.NewLoader(c.Debug)
@@ -168,4 +151,32 @@ func (cli *CLI) Run(args []string) int {
 	}
 
 	return ExitCodeOK
+}
+
+func (cli *CLI) setupConfig(args ConfigurableArgs) (*config.Config, error) {
+	c := config.Init()
+	if args.Debug {
+		c.Debug = true
+	}
+	if err := c.LoadConfig(args.ConfigFile); err != nil {
+		return nil, err
+	}
+	if args.DeepCheck || c.DeepCheck {
+		c.DeepCheck = true
+		c.SetAwsCredentials(args.AwsAccessKey, args.AwsSecretKey, args.AwsRegion)
+	}
+	if args.IgnoreModule != "" {
+		c.SetIgnoreModule(args.IgnoreModule)
+	}
+	if args.IgnoreRule != "" {
+		c.SetIgnoreRule(args.IgnoreRule)
+	}
+	// If enabled test mode, set config infomation
+	if cli.testMode {
+		cli.TestCLIOptions = TestCLIOptions{
+			Config:     c,
+			ConfigFile: args.ConfigFile,
+		}
+	}
+	return c, nil
 }
