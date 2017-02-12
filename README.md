@@ -24,7 +24,7 @@ If you run `terraform apply` for this template, it will obviously produce an err
 ## Installation
 Download binary built for your architecture from [latest releases](https://github.com/wata727/tflint/releases/latest). After downloading, place the binary on the directory on the PATH. An example of installation by command is as follows.
 ```
-$ wget https://github.com/wata727/tflint/releases/download/v0.2.1/tflint_darwin_amd64.zip
+$ wget https://github.com/wata727/tflint/releases/download/v0.3.0/tflint_darwin_amd64.zip
 $ unzip tflint_darwin_amd64.zip
 Archive:  tflint_darwin_amd64.zip
   inflating: tflint
@@ -71,6 +71,7 @@ Please show `tflint --help`
 --aws-region                            set AWS region used in deep check mode.
 -d, --debug                             enable debug mode.
 --error-with-issues                     return error code when issue exists.
+--fast                                  ignore slow rules. currently, ignore only 'aws_instance_invalid_ami'
 ```
 
 ## Configuration

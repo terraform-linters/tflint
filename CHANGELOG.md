@@ -1,3 +1,31 @@
+## 0.3.0 (2017-02-12)
+
+Minor version update. This relase includes core enhancements for terraform state file.
+
+### NewDetectors
+
+- Add RDS readable password detector ([#46](https://github.com/wata727/tflint/pull/46))
+- Add duplicate security group name detector ([#49](https://github.com/wata727/tflint/pull/49))
+- Add duplicate ALB name detector ([#52](https://github.com/wata727/tflint/pull/52))
+- Add duplicate ELB name detector ([#54](https://github.com/wata727/tflint/pull/54))
+- Add duplicate DB Instance Identifier Detector ([#55](https://github.com/wata727/tflint/pull/55))
+- Add duplicate ElastiCache Cluster ID detector ([#56](https://github.com/wata727/tflint/pull/56))
+
+### Enhancements
+
+- Interpret TFState ([#48](https://github.com/wata727/tflint/pull/48))
+- Add --fast option ([#58](https://github.com/wata727/tflint/pull/58))
+
+### BugFix
+
+- r4.xlarge is valid type ([#43](https://github.com/wata727/tflint/pull/43))
+
+### Others
+
+- Add sideci.yml ([#42](https://github.com/wata727/tflint/pull/42))
+- Update README ([#50](https://github.com/wata727/tflint/pull/50))
+- SideCI Settings ([#57](https://github.com/wata727/tflint/pull/57))
+
 ## 0.2.1 (2017-01-10)
 
 Patch version update. This release includes new argument options.
