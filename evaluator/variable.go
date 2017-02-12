@@ -16,6 +16,10 @@ type hclVariable struct {
 	Fields       []string `hcl:",decodedFields"`
 }
 
+const HCL_STRING_VARTYPE = "string"
+const HCL_LIST_VARTYPE = "list"
+const HCL_MAP_VARTYPE = "map"
+
 func detectVariables(listMap map[string]*hclast.ObjectList) (map[string]hilast.Variable, error) {
 	varMap := make(map[string]hilast.Variable)
 
@@ -41,23 +45,23 @@ func parseVariable(val interface{}, varType string) hilast.Variable {
 	// varType is overwrite invariably. Because, happen panic when used in incorrect type
 	switch reflect.TypeOf(val).Kind() {
 	case reflect.String:
-		varType = "string"
+		varType = HCL_STRING_VARTYPE
 	case reflect.Slice:
-		varType = "list"
+		varType = HCL_LIST_VARTYPE
 	case reflect.Map:
-		varType = "map"
+		varType = HCL_MAP_VARTYPE
 	default:
-		varType = "string"
+		varType = HCL_STRING_VARTYPE
 	}
 
 	var hilVar hilast.Variable
 	switch varType {
-	case "string":
+	case HCL_STRING_VARTYPE:
 		hilVar = hilast.Variable{
 			Type:  hilast.TypeString,
 			Value: val,
 		}
-	case "map":
+	case HCL_MAP_VARTYPE:
 		// When HCL map var convert(parse) to Go var,
 		// get map in slice. following example:
 		//
@@ -87,7 +91,7 @@ func parseVariable(val interface{}, varType string) hilast.Variable {
 		// }
 		//
 		fallthrough
-	case "list":
+	case HCL_LIST_VARTYPE:
 		s := reflect.ValueOf(val)
 
 		switch reflect.TypeOf(s.Index(0).Interface()).Kind() {
