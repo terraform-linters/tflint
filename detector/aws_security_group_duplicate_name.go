@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -46,30 +47,10 @@ func (d *AwsSecurityGroupDuplicateDetector) Detect(issues *[]*issue.Issue) {
 				continue
 			}
 			var vpc string
-			vpcToken, err := hclLiteralToken(item, "vpc_id")
+			vpc, err = d.fetchVpcId(item)
 			if err != nil {
 				d.Logger.Error(err)
-				// "vpc_id" is optional. If omitted, use default vpc_id.
-				if d.ResponseCache.DescribeVpcsOutput == nil {
-					resp, err := d.AwsClient.Ec2.DescribeVpcs(&ec2.DescribeVpcsInput{})
-					if err != nil {
-						d.Logger.Error(err)
-						d.Error = true
-					}
-					d.ResponseCache.DescribeVpcsOutput = resp
-				}
-				for _, vpcResource := range d.ResponseCache.DescribeVpcsOutput.Vpcs {
-					if *vpcResource.IsDefault {
-						vpc = *vpcResource.VpcId
-						break
-					}
-				}
-			} else {
-				vpc, err = d.evalToString(vpcToken.Text)
-				if err != nil {
-					d.Logger.Error(err)
-					continue
-				}
+				continue
 			}
 
 			if existSecuriyGroupNames[vpc+"."+name] && !d.State.Exists("aws_security_group", hclObjectKeyText(item)) {
@@ -83,4 +64,34 @@ func (d *AwsSecurityGroupDuplicateDetector) Detect(issues *[]*issue.Issue) {
 			}
 		}
 	}
+}
+
+func (d *AwsSecurityGroupDuplicateDetector) fetchVpcId(item *ast.ObjectItem) (string, error) {
+	var vpc string
+	vpcToken, err := hclLiteralToken(item, "vpc_id")
+	if err != nil {
+		d.Logger.Error(err)
+		// "vpc_id" is optional. If omitted, use default vpc_id.
+		if d.ResponseCache.DescribeVpcsOutput == nil {
+			resp, err := d.AwsClient.Ec2.DescribeVpcs(&ec2.DescribeVpcsInput{})
+			if err != nil {
+				d.Logger.Error(err)
+				d.Error = true
+			}
+			d.ResponseCache.DescribeVpcsOutput = resp
+		}
+		for _, vpcResource := range d.ResponseCache.DescribeVpcsOutput.Vpcs {
+			if *vpcResource.IsDefault {
+				vpc = *vpcResource.VpcId
+				break
+			}
+		}
+	} else {
+		vpc, err = d.evalToString(vpcToken.Text)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	return vpc, nil
 }

@@ -22,3 +22,5 @@ import:
 - package: github.com/hashicorp/hil
   subpackages:
   - ast
+- package: github.com/k0kubun/pp
+  version: ^2.3.0

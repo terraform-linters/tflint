@@ -1,0 +1,13 @@
+{
+  "Disable": [
+    "aligncheck",
+    "dupl",
+    "errcheck",
+    "goimports",
+    "golint",
+    "gotype",
+    "lll",
+    "vetshadow"
+  ],
+  "Cyclo": 15
+}

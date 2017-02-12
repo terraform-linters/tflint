@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/golang/mock/gomock"
+	"github.com/k0kubun/pp"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/mock"
@@ -159,7 +160,7 @@ resource "aws_db_instance" "test" {
 		awsClient.Rds = rdsmock
 
 		var issues = []*issue.Issue{}
-		TestDetectByCreatorName(
+		err := TestDetectByCreatorName(
 			"CreateAwsDBInstanceDuplicateIdentifierDetector",
 			tc.Src,
 			tc.State,
@@ -167,9 +168,12 @@ resource "aws_db_instance" "test" {
 			awsClient,
 			&issues,
 		)
+		if err != nil {
+			t.Fatalf("\nERROR: %s", err)
+		}
 
 		if !reflect.DeepEqual(issues, tc.Issues) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", issues, tc.Issues, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(issues), pp.Sprint(tc.Issues), tc.Name)
 		}
 	}
 }

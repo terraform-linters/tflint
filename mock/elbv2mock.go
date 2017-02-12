@@ -632,6 +632,28 @@ func (_mr *_MockELBV2APIRecorder) RemoveTags(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveTags", arg0)
 }
 
+func (_m *MockELBV2API) SetIpAddressTypeRequest(_param0 *elbv2.SetIpAddressTypeInput) (*request.Request, *elbv2.SetIpAddressTypeOutput) {
+	ret := _m.ctrl.Call(_m, "SetIpAddressTypeRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elbv2.SetIpAddressTypeOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBV2APIRecorder) SetIpAddressTypeRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetIpAddressTypeRequest", arg0)
+}
+
+func (_m *MockELBV2API) SetIpAddressType(_param0 *elbv2.SetIpAddressTypeInput) (*elbv2.SetIpAddressTypeOutput, error) {
+	ret := _m.ctrl.Call(_m, "SetIpAddressType", _param0)
+	ret0, _ := ret[0].(*elbv2.SetIpAddressTypeOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBV2APIRecorder) SetIpAddressType(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetIpAddressType", arg0)
+}
+
 func (_m *MockELBV2API) SetRulePrioritiesRequest(_param0 *elbv2.SetRulePrioritiesInput) (*request.Request, *elbv2.SetRulePrioritiesOutput) {
 	ret := _m.ctrl.Call(_m, "SetRulePrioritiesRequest", _param0)
 	ret0, _ := ret[0].(*request.Request)

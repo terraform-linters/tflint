@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/k0kubun/pp"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/issue"
 )
@@ -41,7 +42,7 @@ resource "aws_db_instance" "mysql" {
 
 	for _, tc := range cases {
 		var issues = []*issue.Issue{}
-		TestDetectByCreatorName(
+		err := TestDetectByCreatorName(
 			"CreateAwsDBInstancePreviousTypeDetector",
 			tc.Src,
 			"",
@@ -49,9 +50,12 @@ resource "aws_db_instance" "mysql" {
 			config.Init().NewAwsClient(),
 			&issues,
 		)
+		if err != nil {
+			t.Fatalf("\nERROR: %s", err)
+		}
 
 		if !reflect.DeepEqual(issues, tc.Issues) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", issues, tc.Issues, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(issues), pp.Sprint(tc.Issues), tc.Name)
 		}
 	}
 }
