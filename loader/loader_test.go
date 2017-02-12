@@ -42,10 +42,10 @@ func TestLoadHCL(t *testing.T) {
 		os.Chdir(testDir)
 
 		_, err := loadHCL(tc.Input, logger.Init(false))
-		if tc.Error == true && err == nil {
+		if tc.Error && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 		}
-		if tc.Error == false && err != nil {
+		if !tc.Error && err != nil {
 			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}
 	}
@@ -139,11 +139,11 @@ func TestLoadModuleFile(t *testing.T) {
 		load := NewLoader(false)
 
 		err := load.LoadModuleFile(tc.Input.Key, tc.Input.Src)
-		if tc.Error == true && err == nil {
+		if tc.Error && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
-		if tc.Error == false && err != nil {
+		if !tc.Error && err != nil {
 			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}
@@ -187,11 +187,11 @@ func TestLoadAllTemplate(t *testing.T) {
 		load := NewLoader(false)
 
 		err := load.LoadAllTemplate(tc.Input)
-		if tc.Error == true && err == nil {
+		if tc.Error && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
-		if tc.Error == false && err != nil {
+		if !tc.Error && err != nil {
 			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}

@@ -148,11 +148,11 @@ module "ec2_instances" {
 			listMap[k] = list
 		}
 		result, err := detectModules(listMap, config.Init())
-		if tc.Error == true && err == nil {
+		if tc.Error && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
-		if tc.Error == false && err != nil {
+		if !tc.Error && err != nil {
 			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}

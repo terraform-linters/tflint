@@ -198,11 +198,11 @@ resource "aws_instance" "web" {
 		item := list.Filter("resource", "aws_instance").Items[0]
 
 		result, err := hclLiteralToken(item, tc.Input.Key)
-		if tc.Error == true && err == nil {
+		if tc.Error && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
-		if tc.Error == false && err != nil {
+		if !tc.Error && err != nil {
 			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}
@@ -313,11 +313,11 @@ resource "aws_instance" "web" {
 		item := list.Filter("resource", "aws_instance").Items[0]
 
 		result, err := hclLiteralListToken(item, tc.Input.Key)
-		if tc.Error == true && err == nil {
+		if tc.Error && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
-		if tc.Error == false && err != nil {
+		if !tc.Error && err != nil {
 			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}
@@ -445,11 +445,11 @@ resource "aws_instance" "web" {
 		item := list.Filter("resource", "aws_instance").Items[0]
 
 		result, err := hclObjectItems(item, tc.Input.Key)
-		if tc.Error == true && err == nil {
+		if tc.Error && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
-		if tc.Error == false && err != nil {
+		if !tc.Error && err != nil {
 			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}
@@ -567,11 +567,11 @@ variable "text" {
 		}
 
 		result, err := d.evalToString(tc.Input.Src)
-		if tc.Error == true && err == nil {
+		if tc.Error && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
-		if tc.Error == false && err != nil {
+		if !tc.Error && err != nil {
 			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}
@@ -670,11 +670,11 @@ variable "array" {
 		}
 
 		result, err := d.evalToStringTokens(tc.Input.Src)
-		if tc.Error == true && err == nil {
+		if tc.Error && err == nil {
 			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
-		if tc.Error == false && err != nil {
+		if !tc.Error && err != nil {
 			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}
@@ -758,11 +758,11 @@ resource "aws_instance" {
 func TestHasError(t *testing.T) {
 	d := &Detector{Error: false}
 
-	if d.HasError() != false {
+	if d.HasError() {
 		t.Fatal("If no error has occurred, should return false.")
 	}
 	d.Error = true
-	if d.HasError() != true {
+	if !d.HasError() {
 		t.Fatal("If an error has occurred, should return true.")
 	}
 }
