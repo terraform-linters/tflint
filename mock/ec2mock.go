@@ -206,6 +206,28 @@ func (_mr *_MockEC2APIRecorder) AssociateDhcpOptions(arg0 interface{}) *gomock.C
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AssociateDhcpOptions", arg0)
 }
 
+func (_m *MockEC2API) AssociateIamInstanceProfileRequest(_param0 *ec2.AssociateIamInstanceProfileInput) (*request.Request, *ec2.AssociateIamInstanceProfileOutput) {
+	ret := _m.ctrl.Call(_m, "AssociateIamInstanceProfileRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.AssociateIamInstanceProfileOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) AssociateIamInstanceProfileRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AssociateIamInstanceProfileRequest", arg0)
+}
+
+func (_m *MockEC2API) AssociateIamInstanceProfile(_param0 *ec2.AssociateIamInstanceProfileInput) (*ec2.AssociateIamInstanceProfileOutput, error) {
+	ret := _m.ctrl.Call(_m, "AssociateIamInstanceProfile", _param0)
+	ret0, _ := ret[0].(*ec2.AssociateIamInstanceProfileOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) AssociateIamInstanceProfile(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AssociateIamInstanceProfile", arg0)
+}
+
 func (_m *MockEC2API) AssociateRouteTableRequest(_param0 *ec2.AssociateRouteTableInput) (*request.Request, *ec2.AssociateRouteTableOutput) {
 	ret := _m.ctrl.Call(_m, "AssociateRouteTableRequest", _param0)
 	ret0, _ := ret[0].(*request.Request)
@@ -2164,6 +2186,28 @@ func (_mr *_MockEC2APIRecorder) DescribeHosts(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeHosts", arg0)
 }
 
+func (_m *MockEC2API) DescribeIamInstanceProfileAssociationsRequest(_param0 *ec2.DescribeIamInstanceProfileAssociationsInput) (*request.Request, *ec2.DescribeIamInstanceProfileAssociationsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeIamInstanceProfileAssociationsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeIamInstanceProfileAssociationsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) DescribeIamInstanceProfileAssociationsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeIamInstanceProfileAssociationsRequest", arg0)
+}
+
+func (_m *MockEC2API) DescribeIamInstanceProfileAssociations(_param0 *ec2.DescribeIamInstanceProfileAssociationsInput) (*ec2.DescribeIamInstanceProfileAssociationsOutput, error) {
+	ret := _m.ctrl.Call(_m, "DescribeIamInstanceProfileAssociations", _param0)
+	ret0, _ := ret[0].(*ec2.DescribeIamInstanceProfileAssociationsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) DescribeIamInstanceProfileAssociations(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeIamInstanceProfileAssociations", arg0)
+}
+
 func (_m *MockEC2API) DescribeIdFormatRequest(_param0 *ec2.DescribeIdFormatInput) (*request.Request, *ec2.DescribeIdFormatOutput) {
 	ret := _m.ctrl.Call(_m, "DescribeIdFormatRequest", _param0)
 	ret0, _ := ret[0].(*request.Request)
@@ -3584,6 +3628,28 @@ func (_mr *_MockEC2APIRecorder) DisassociateAddress(arg0 interface{}) *gomock.Ca
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DisassociateAddress", arg0)
 }
 
+func (_m *MockEC2API) DisassociateIamInstanceProfileRequest(_param0 *ec2.DisassociateIamInstanceProfileInput) (*request.Request, *ec2.DisassociateIamInstanceProfileOutput) {
+	ret := _m.ctrl.Call(_m, "DisassociateIamInstanceProfileRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DisassociateIamInstanceProfileOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) DisassociateIamInstanceProfileRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DisassociateIamInstanceProfileRequest", arg0)
+}
+
+func (_m *MockEC2API) DisassociateIamInstanceProfile(_param0 *ec2.DisassociateIamInstanceProfileInput) (*ec2.DisassociateIamInstanceProfileOutput, error) {
+	ret := _m.ctrl.Call(_m, "DisassociateIamInstanceProfile", _param0)
+	ret0, _ := ret[0].(*ec2.DisassociateIamInstanceProfileOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) DisassociateIamInstanceProfile(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DisassociateIamInstanceProfile", arg0)
+}
+
 func (_m *MockEC2API) DisassociateRouteTableRequest(_param0 *ec2.DisassociateRouteTableInput) (*request.Request, *ec2.DisassociateRouteTableOutput) {
 	ret := _m.ctrl.Call(_m, "DisassociateRouteTableRequest", _param0)
 	ret0, _ := ret[0].(*request.Request)
@@ -4506,6 +4572,28 @@ func (_m *MockEC2API) ReleaseHosts(_param0 *ec2.ReleaseHostsInput) (*ec2.Release
 
 func (_mr *_MockEC2APIRecorder) ReleaseHosts(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ReleaseHosts", arg0)
+}
+
+func (_m *MockEC2API) ReplaceIamInstanceProfileAssociationRequest(_param0 *ec2.ReplaceIamInstanceProfileAssociationInput) (*request.Request, *ec2.ReplaceIamInstanceProfileAssociationOutput) {
+	ret := _m.ctrl.Call(_m, "ReplaceIamInstanceProfileAssociationRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ReplaceIamInstanceProfileAssociationOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) ReplaceIamInstanceProfileAssociationRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ReplaceIamInstanceProfileAssociationRequest", arg0)
+}
+
+func (_m *MockEC2API) ReplaceIamInstanceProfileAssociation(_param0 *ec2.ReplaceIamInstanceProfileAssociationInput) (*ec2.ReplaceIamInstanceProfileAssociationOutput, error) {
+	ret := _m.ctrl.Call(_m, "ReplaceIamInstanceProfileAssociation", _param0)
+	ret0, _ := ret[0].(*ec2.ReplaceIamInstanceProfileAssociationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) ReplaceIamInstanceProfileAssociation(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ReplaceIamInstanceProfileAssociation", arg0)
 }
 
 func (_m *MockEC2API) ReplaceNetworkAclAssociationRequest(_param0 *ec2.ReplaceNetworkAclAssociationInput) (*request.Request, *ec2.ReplaceNetworkAclAssociationOutput) {

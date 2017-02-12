@@ -1674,6 +1674,28 @@ func (_mr *_MockRDSAPIRecorder) ModifyDBParameterGroup(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBParameterGroup", arg0)
 }
 
+func (_m *MockRDSAPI) ModifyDBSnapshotRequest(_param0 *rds.ModifyDBSnapshotInput) (*request.Request, *rds.ModifyDBSnapshotOutput) {
+	ret := _m.ctrl.Call(_m, "ModifyDBSnapshotRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.ModifyDBSnapshotOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ModifyDBSnapshotRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBSnapshotRequest", arg0)
+}
+
+func (_m *MockRDSAPI) ModifyDBSnapshot(_param0 *rds.ModifyDBSnapshotInput) (*rds.ModifyDBSnapshotOutput, error) {
+	ret := _m.ctrl.Call(_m, "ModifyDBSnapshot", _param0)
+	ret0, _ := ret[0].(*rds.ModifyDBSnapshotOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ModifyDBSnapshot(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBSnapshot", arg0)
+}
+
 func (_m *MockRDSAPI) ModifyDBSnapshotAttributeRequest(_param0 *rds.ModifyDBSnapshotAttributeInput) (*request.Request, *rds.ModifyDBSnapshotAttributeOutput) {
 	ret := _m.ctrl.Call(_m, "ModifyDBSnapshotAttributeRequest", _param0)
 	ret0, _ := ret[0].(*request.Request)

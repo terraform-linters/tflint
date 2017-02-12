@@ -36,4 +36,15 @@ release: test
 clean:
 	rm -rf dist/
 
-.PHONY: default prepare test build install release clean
+mock: prepare
+	mockgen -source detector/detector.go -destination mock/detectormock.go
+	mockgen -source loader/loader.go -destination mock/loadermock.go
+	mockgen -source printer/printer.go -destination mock/printermock.go
+	mockgen -source vendor/github.com/aws/aws-sdk-go/service/ec2/ec2iface/interface.go -destination mock/ec2mock.go
+	mockgen -source vendor/github.com/aws/aws-sdk-go/service/elasticache/elasticacheiface/interface.go --destination mock/elasticachemock.go
+	mockgen -source vendor/github.com/aws/aws-sdk-go/service/elb/elbiface/interface.go -destination mock/elbmock.go
+	mockgen -source vendor/github.com/aws/aws-sdk-go/service/elbv2/elbv2iface/interface.go -destination mock/elbv2mock.go
+	mockgen -source vendor/github.com/aws/aws-sdk-go/service/iam/iamiface/interface.go -destination mock/iammock.go
+	mockgen -source vendor/github.com/aws/aws-sdk-go/service/rds/rdsiface/interface.go -destination mock/rdsmock.go
+
+.PHONY: default prepare test build install release clean mock
