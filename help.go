@@ -17,6 +17,7 @@ Available options:
     --aws-region                            set AWS region used in deep check mode.
     -d, --debug                             enable debug mode.
     --error-with-issues                     return error code when issue exists.
+    --fast                                  ignore slow rules. currently, ignore only 'aws_instance_invalid_ami'
 
 Support aruguments:
     TFLint scans all configuration file of Terraform in current directory by default.

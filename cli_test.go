@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	"github.com/k0kubun/pp"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/detector"
 	"github.com/wata727/tflint/issue"
@@ -467,6 +468,26 @@ func TestCLIRun(t *testing.T) {
 			},
 		},
 		{
+			Name:              "enable fast mode",
+			Command:           "./tflint --fast",
+			LoaderGenerator:   loaderDefaultBehavior,
+			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
+			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
+			Result: Result{
+				Status: ExitCodeOK,
+				CLIOptions: TestCLIOptions{
+					Config: &config.Config{
+						Debug:          false,
+						DeepCheck:      false,
+						AwsCredentials: map[string]string{},
+						IgnoreModule:   map[string]bool{},
+						IgnoreRule:     map[string]bool{"aws_instance_invalid_ami": true},
+					},
+					ConfigFile: ".tflint.hcl",
+				},
+			},
+		},
+		{
 			Name:              "invalid options",
 			Command:           "./tflint --invalid-option",
 			LoaderGenerator:   func(ctrl *gomock.Controller) loader.LoaderIF { return mock.NewMockLoaderIF(ctrl) },
@@ -505,7 +526,7 @@ func TestCLIRun(t *testing.T) {
 			t.Fatalf("\nBad: %s\nExpected Contains: %s\n\ntestcase: %s", errStream.String(), tc.Result.Stderr, tc.Name)
 		}
 		if !reflect.DeepEqual(cli.TestCLIOptions, tc.Result.CLIOptions) {
-			t.Fatalf("\nBad: %+v\nExpected: %+v\n\ntestcase: %s", cli.TestCLIOptions, tc.Result.CLIOptions, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(cli.TestCLIOptions), pp.Sprint(tc.Result.CLIOptions), tc.Name)
 		}
 	}
 }
