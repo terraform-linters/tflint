@@ -30,7 +30,7 @@ func TestValidateFormat(t *testing.T) {
 	for _, tc := range cases {
 		result := ValidateFormat(tc.Input)
 		if result != tc.Result {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %t\nExpected: %t\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}
 	}
 }

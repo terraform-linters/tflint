@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/hcl/hcl/ast"
+	"github.com/k0kubun/pp"
 	"github.com/wata727/tflint/logger"
 	"github.com/wata727/tflint/state"
 )
@@ -43,10 +44,10 @@ func TestLoadHCL(t *testing.T) {
 
 		_, err := loadHCL(tc.Input, logger.Init(false))
 		if tc.Error && err == nil {
-			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
+			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
 		}
 		if !tc.Error && err != nil {
-			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
+			t.Fatalf("\nshould not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}
 	}
 }
@@ -90,7 +91,7 @@ func TestLoadTemplate(t *testing.T) {
 
 		load.LoadTemplate(tc.Input.File)
 		if !reflect.DeepEqual(load.ListMap, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", load.ListMap, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(load.ListMap), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -140,16 +141,16 @@ func TestLoadModuleFile(t *testing.T) {
 
 		err := load.LoadModuleFile(tc.Input.Key, tc.Input.Src)
 		if tc.Error && err == nil {
-			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
+			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
 		if !tc.Error && err != nil {
-			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
+			t.Fatalf("\nshould not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}
 
 		if !reflect.DeepEqual(load.ListMap, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", load.ListMap, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(load.ListMap), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -188,16 +189,16 @@ func TestLoadAllTemplate(t *testing.T) {
 
 		err := load.LoadAllTemplate(tc.Input)
 		if tc.Error && err == nil {
-			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
+			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
 		if !tc.Error && err != nil {
-			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
+			t.Fatalf("\nshould not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}
 
 		if !reflect.DeepEqual(load.ListMap, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", load.ListMap, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(load.ListMap), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -281,7 +282,7 @@ func TestLoadState(t *testing.T) {
 
 		load.LoadState()
 		if !reflect.DeepEqual(load.State, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", load.State, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(load.State), pp.Sprint(tc.Result), tc.Name)
 		}
 		os.Chdir(prev)
 	}
@@ -322,9 +323,9 @@ func TestDump(t *testing.T) {
 
 	dumpListMap, dumpState := load.Dump()
 	if !reflect.DeepEqual(dumpListMap, listMap) {
-		t.Fatalf("Bad: %s\nExpected: %s\n\n", dumpListMap, listMap)
+		t.Fatalf("\nBad: %s\nExpected: %s\n\n", pp.Sprint(dumpListMap), pp.Sprint(listMap))
 	}
 	if !reflect.DeepEqual(dumpState, state) {
-		t.Fatalf("Bad: %s\nExpected: %s\n\n", dumpState, state)
+		t.Fatalf("\nBad: %s\nExpected: %s\n\n", pp.Sprint(dumpState), pp.Sprint(state))
 	}
 }

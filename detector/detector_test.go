@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/parser"
 	"github.com/hashicorp/hcl/hcl/token"
+	"github.com/k0kubun/pp"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/evaluator"
 	"github.com/wata727/tflint/logger"
@@ -85,7 +86,7 @@ module "ec2_instance" {
 
 		issues := d.Detect()
 		if len(issues) != tc.Result {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", len(issues), tc.Result, tc.Name)
+			t.Fatalf("\nBad: %d\nExpected: %d\n\ntestcase: %s", len(issues), tc.Result, tc.Name)
 		}
 	}
 }
@@ -113,7 +114,7 @@ resource "aws_instance" "web" {
 
 		result := hclObjectKeyText(item)
 		if result != tc.Result {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}
 	}
 }
@@ -199,16 +200,16 @@ resource "aws_instance" "web" {
 
 		result, err := hclLiteralToken(item, tc.Input.Key)
 		if tc.Error && err == nil {
-			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
+			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
 		if !tc.Error && err != nil {
-			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
+			t.Fatalf("\nshould not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}
 
 		if result.Text != tc.Result.Text {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -314,16 +315,16 @@ resource "aws_instance" "web" {
 
 		result, err := hclLiteralListToken(item, tc.Input.Key)
 		if tc.Error && err == nil {
-			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
+			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
 		if !tc.Error && err != nil {
-			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
+			t.Fatalf("\nshould not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}
 
 		if !reflect.DeepEqual(result, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -446,16 +447,16 @@ resource "aws_instance" "web" {
 
 		result, err := hclObjectItems(item, tc.Input.Key)
 		if tc.Error && err == nil {
-			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
+			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
 		if !tc.Error && err != nil {
-			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
+			t.Fatalf("\nshould not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}
 
 		if !reflect.DeepEqual(result, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -502,7 +503,7 @@ resource "aws_instance" "web" {
 		result := IsKeyNotFound(item, tc.Input.Key)
 
 		if result != tc.Result {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %t\nExpected: %t\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}
 	}
 }
@@ -568,16 +569,16 @@ variable "text" {
 
 		result, err := d.evalToString(tc.Input.Src)
 		if tc.Error && err == nil {
-			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
+			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
 		if !tc.Error && err != nil {
-			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
+			t.Fatalf("\nshould not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}
 
 		if result != tc.Result {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}
 	}
 }
@@ -671,16 +672,16 @@ variable "array" {
 
 		result, err := d.evalToStringTokens(tc.Input.Src)
 		if tc.Error && err == nil {
-			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
+			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
 		if !tc.Error && err != nil {
-			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
+			t.Fatalf("\nshould not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}
 
 		if !reflect.DeepEqual(result, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -750,7 +751,7 @@ resource "aws_instance" {
 
 		result := d.isDeepCheck(tc.Input.Resources...)
 		if result != tc.Result {
-			t.Fatalf("Bad: %t\nExpected: %t\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %t\nExpected: %t\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}
 	}
 }

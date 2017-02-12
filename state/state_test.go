@@ -87,7 +87,7 @@ func TestExists(t *testing.T) {
 
 		result := tfstate.Exists(tc.Input.Type, tc.Input.ID)
 		if result != tc.Result {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %t\nExpected: %t\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}
 	}
 }

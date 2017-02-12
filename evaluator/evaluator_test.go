@@ -43,8 +43,9 @@ func TestIsEvaluable(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		if isEvaluable(tc.Input) != tc.Result {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", tc.Input, tc.Result, tc.Name)
+		result := isEvaluable(tc.Input)
+		if result != tc.Result {
+			t.Fatalf("\nBad: %t\nExpected: %t\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}
 	}
 }
@@ -128,11 +129,11 @@ variable "name" {
 
 		evaluator, err := NewEvaluator(listmap, config.Init())
 		if err != nil {
-			t.Fatalf("Error: %s\n\ntestcase: %s", err, tc.Name)
+			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}
 		result, _ := evaluator.Eval(tc.Src)
 		if result != tc.Result {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}
 	}
 }
@@ -162,11 +163,11 @@ variable "name" {
 
 		evaluator, err := NewEvaluator(listmap, config.Init())
 		if err != nil {
-			t.Fatalf("Error: %s\n\ntestcase: %s", err, tc.Name)
+			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}
 		result, _ := evaluator.Eval(tc.Src)
 		if !reflect.DeepEqual(result, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}
 	}
 }
@@ -199,11 +200,11 @@ variable "name" {
 
 		evaluator, err := NewEvaluator(listmap, config.Init())
 		if err != nil {
-			t.Fatalf("Error: %s\n\ntestcase: %s", err, tc.Name)
+			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}
 		result, _ := evaluator.Eval(tc.Src)
 		if !reflect.DeepEqual(result, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}
 	}
 }
@@ -233,11 +234,11 @@ func TestEvalReturnNil(t *testing.T) {
 
 		evaluator, err := NewEvaluator(listmap, config.Init())
 		if err != nil {
-			t.Fatalf("Error: %s\n\ntestcase: %s", err, tc.Name)
+			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}
 		result, _ := evaluator.Eval(tc.Src)
 		if result != nil {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, nil, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: nil\n\ntestcase: %s", result, tc.Name)
 		}
 	}
 }

@@ -496,16 +496,16 @@ func TestCLIRun(t *testing.T) {
 
 		status := cli.Run(args)
 		if status != tc.Result.Status {
-			t.Fatalf("Bad: %d\nExpected: %d\n\ntestcase: %s", status, tc.Result.Status, tc.Name)
+			t.Fatalf("˜\nBad: %d\nExpected: %d\n\ntestcase: %s", status, tc.Result.Status, tc.Name)
 		}
 		if !strings.Contains(outStream.String(), tc.Result.Stdout) {
-			t.Fatalf("Bad: %s\nExpected Contains: %s\n\ntestcase: %s", outStream.String(), tc.Result.Stdout, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected Contains: %s\n\ntestcase: %s", outStream.String(), tc.Result.Stdout, tc.Name)
 		}
 		if !strings.Contains(errStream.String(), tc.Result.Stderr) {
-			t.Fatalf("Bad: %s\nExpected Contains: %s\n\ntestcase: %s", errStream.String(), tc.Result.Stderr, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected Contains: %s\n\ntestcase: %s", errStream.String(), tc.Result.Stderr, tc.Name)
 		}
 		if !reflect.DeepEqual(cli.TestCLIOptions, tc.Result.CLIOptions) {
-			t.Fatalf("Bad: %+v\nExpected: %+v\n\ntestcase: %s", cli.TestCLIOptions, tc.Result.CLIOptions, tc.Name)
+			t.Fatalf("\nBad: %+v\nExpected: %+v\n\ntestcase: %s", cli.TestCLIOptions, tc.Result.CLIOptions, tc.Name)
 		}
 	}
 }

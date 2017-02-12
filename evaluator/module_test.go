@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/hcl/hcl/parser"
 	"github.com/hashicorp/hil"
 	hilast "github.com/hashicorp/hil/ast"
+	"github.com/k0kubun/pp"
 	"github.com/wata727/tflint/config"
 )
 
@@ -149,16 +150,16 @@ module "ec2_instances" {
 		}
 		result, err := detectModules(listMap, config.Init())
 		if tc.Error && err == nil {
-			t.Fatalf("should be happen error.\n\ntestcase: %s", tc.Name)
+			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
 			continue
 		}
 		if !tc.Error && err != nil {
-			t.Fatalf("should not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
+			t.Fatalf("\nshould not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
 		}
 
 		if !reflect.DeepEqual(result, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -187,7 +188,7 @@ func TestModuleKey(t *testing.T) {
 	for _, tc := range cases {
 		result := moduleKey(tc.Input.Name, tc.Input.Source)
 		if result != tc.Result {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}
 	}
 }
