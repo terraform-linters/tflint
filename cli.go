@@ -39,6 +39,7 @@ type TestCLIOptions struct {
 type ConfigurableArgs struct {
 	Debug        bool
 	DeepCheck    bool
+	Fast         bool
 	AwsAccessKey string
 	AwsSecretKey string
 	AwsRegion    string
@@ -79,6 +80,7 @@ func (cli *CLI) Run(args []string) int {
 	flags.StringVar(&configArgs.AwsSecretKey, "aws-secret-key", "", "AWS secret key used in deep check mode.")
 	flags.StringVar(&configArgs.AwsRegion, "aws-region", "", "AWS region used in deep check mode.")
 	flags.BoolVar(&errorWithIssues, "error-with-issues", false, "return error code when issue exists.")
+	flags.BoolVar(&configArgs.Fast, "fast", false, "ignore slow rules.")
 
 	// Parse commandline flag
 	if err := flags.Parse(args[1:]); err != nil {
@@ -164,6 +166,10 @@ func (cli *CLI) setupConfig(args ConfigurableArgs) (*config.Config, error) {
 	if args.DeepCheck || c.DeepCheck {
 		c.DeepCheck = true
 		c.SetAwsCredentials(args.AwsAccessKey, args.AwsSecretKey, args.AwsRegion)
+	}
+	// `aws_instance_invalid_ami` is very slow...
+	if args.Fast {
+		c.SetIgnoreRule("aws_instance_invalid_ami")
 	}
 	if args.IgnoreModule != "" {
 		c.SetIgnoreModule(args.IgnoreModule)
