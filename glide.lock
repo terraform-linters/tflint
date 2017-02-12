@@ -1,8 +1,8 @@
-hash: d46b6d5163c8947595c7dd54c07cd488480b784604efc57590885b9fde2fc3a8
-updated: 2017-01-09T23:28:09.451188206+09:00
+hash: a25cd8aa5c6b4c5a9f254cc3a8c831c9450bbc2db33ee1e3c4971c4a5d0c1ad3
+updated: 2017-02-12T16:28:08.925805796+09:00
 imports:
 - name: github.com/aws/aws-sdk-go
-  version: 63ce630574a5ec05ecd8e8de5cea16332a5a684d
+  version: f615b0905b52177eb0efa0fe59340c05c0ea0ed9
   subpackages:
   - aws
   - aws/awserr
@@ -31,13 +31,17 @@ imports:
   - service/ec2/ec2iface
   - service/elasticache
   - service/elasticache/elasticacheiface
+  - service/elb
+  - service/elb/elbiface
+  - service/elbv2
+  - service/elbv2/elbv2iface
   - service/iam
   - service/iam/iamiface
   - service/rds
   - service/rds/rdsiface
   - service/sts
 - name: github.com/fatih/color
-  version: 34e4ee095d12986a2cef5ddb9aeb3b8cfcfea17c
+  version: 5ec5d9d3c2cf82e9688b34e9bc27a94d616a7193
 - name: github.com/go-ini/ini
   version: 6f66b0e091edb3c7b380f7c4f0f884274d550b67
 - name: github.com/golang/mock
@@ -63,6 +67,8 @@ imports:
   - scanner
 - name: github.com/jmespath/go-jmespath
   version: bd40a432e4c76585ef6b72d3fd96fb9b6dc7b68d
+- name: github.com/k0kubun/pp
+  version: 027a6d1765d673d337e687394dbe780dd64e2a1e
 - name: github.com/mattn/go-colorable
   version: d228849504861217f796da67fae4f6e347643f15
 - name: github.com/mattn/go-isatty

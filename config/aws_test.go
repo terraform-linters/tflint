@@ -6,6 +6,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/k0kubun/pp"
 )
 
 func TestNewAwsSession(t *testing.T) {
@@ -38,10 +39,10 @@ func TestNewAwsSession(t *testing.T) {
 	for _, tc := range cases {
 		s := tc.Input.NewAwsSession()
 		if !reflect.DeepEqual(s.Config.Credentials, tc.Result.Credentials) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", s.Config.Credentials, tc.Result.Credentials, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(s.Config.Credentials), pp.Sprint(tc.Result.Credentials), tc.Name)
 		}
 		if !reflect.DeepEqual(s.Config.Region, tc.Result.Region) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", s.Config.Region, tc.Result.Region, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(s.Config.Region), pp.Sprint(tc.Result.Region), tc.Name)
 		}
 	}
 }

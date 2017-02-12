@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 	"reflect"
 	"testing"
+
+	"github.com/k0kubun/pp"
 )
 
 func TestLoadConfig(t *testing.T) {
@@ -49,7 +51,7 @@ func TestLoadConfig(t *testing.T) {
 		c := Init()
 		c.LoadConfig(tc.Input)
 		if !reflect.DeepEqual(c, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", c, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(c), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -112,7 +114,7 @@ func TestSetAwsCredentials(t *testing.T) {
 	for _, tc := range cases {
 		tc.Config.SetAwsCredentials(tc.Input.AccessKey, tc.Input.SecretKey, tc.Input.Region)
 		if !reflect.DeepEqual(tc.Config, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", tc.Config, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(tc.Config), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -144,7 +146,7 @@ func TestHasAwsRegion(t *testing.T) {
 	for _, tc := range cases {
 		result := tc.Input.HasAwsRegion()
 		if !reflect.DeepEqual(result, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -201,7 +203,7 @@ func TestHasAwsCredentials(t *testing.T) {
 	for _, tc := range cases {
 		result := tc.Input.HasAwsCredentials()
 		if !reflect.DeepEqual(result, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -258,7 +260,7 @@ func TestSetIgnoreModule(t *testing.T) {
 	for _, tc := range cases {
 		tc.Config.SetIgnoreModule(tc.Input)
 		if !reflect.DeepEqual(tc.Config, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", tc.Config, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(tc.Config), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -315,7 +317,7 @@ func TestSetIgnoreRule(t *testing.T) {
 	for _, tc := range cases {
 		tc.Config.SetIgnoreRule(tc.Input)
 		if !reflect.DeepEqual(tc.Config, tc.Result) {
-			t.Fatalf("Bad: %s\nExpected: %s\n\ntestcase: %s", tc.Config, tc.Result, tc.Name)
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(tc.Config), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
