@@ -21,7 +21,7 @@ func (p *Printer) DefaultPrint(issues []*issue.Issue) {
 		return
 	}
 
-	sort.Sort(issue.ByFile{issue.Issues(issues)})
+	sort.Sort(issue.ByFile{Issues: issue.Issues(issues)})
 	bIssue := issues[0]
 	sIssues := []*issue.Issue{
 		issues[0],
@@ -44,7 +44,7 @@ func (p *Printer) DefaultPrint(issues []*issue.Issue) {
 }
 
 func (p *Printer) printByLine(issues []*issue.Issue) {
-	sort.Sort(issue.ByLine{issue.Issues(issues)})
+	sort.Sort(issue.ByLine{Issues: issue.Issues(issues)})
 
 	fmt.Fprintf(p.stdout, "%s\n", fileColor(issues[0].File))
 	for _, i := range issues {
