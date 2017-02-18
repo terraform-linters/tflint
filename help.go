@@ -1,10 +1,10 @@
 package main
 
-const Help string = `TFLint is a linter of Terraform.
+const Help string = `TFLint is Terraform linter.
 
 Usage: tflint [<options>] <args>
 
-Available options:
+Available Options:
     -h, --help                              show usage of TFLint. This page.
     -v, --version                           print version information.
     -f, --format <format>                   choose output format from "default" or "json"
@@ -19,7 +19,7 @@ Available options:
     --error-with-issues                     return error code when issue exists.
     --fast                                  ignore slow rules. currently, ignore only 'aws_instance_invalid_ami'
 
-Support aruguments:
+Support Aruguments:
     TFLint scans all configuration file of Terraform in current directory by default.
     If you specified single file path, it scans only this.
 `
