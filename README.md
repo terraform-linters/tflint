@@ -1,12 +1,13 @@
 # TFLint
 [![Build Status](https://travis-ci.org/wata727/tflint.svg?branch=master)](https://travis-ci.org/wata727/tflint)
 [![GitHub release](https://img.shields.io/github/release/wata727/tflint.svg)](https://github.com/wata727/tflint/releases/latest)
+[![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://registry.hub.docker.com/u/gliderlabs/registrator/)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 TFLint is [Terraform](https://www.terraform.io/) linter for detecting errors that can not be detected by `terraform plan`
 
 ## Why TFLint is Required?
-Terraform is a great tool for infrastructure as a code. It generates an execution plan, we can rely on this plan to proceed with development. However, this plan does not verify values used in template. For example, following template is invalid configuration (t1.2xlarge is not exists)
+Terraform is a great tool for infrastructure as a code. It generates an execution plan, we can rely on this plan to proceed with development. However, this plan does not verify values used in template. For example, following template is invalid configuration (t1.2xlarge is invalid instance type)
 
 ```
 resource "aws_instance" "web" {
@@ -34,8 +35,15 @@ $ install tflint /usr/local/tflint/bin
 $ tflint -v
 ```
 
+### Running in Docker
+We provide Docker images for each version on [DockerHub](https://hub.docker.com/r/wata727/tflint/). With docker, you can run TFLint without installing it locally.
+
+```
+$ docker run -v $(pwd):/data --workdir=/data -t wata727/tflint
+```
+
 ## Quick Start
-Try running TFLint under the directory where Terraform is executed. It detect if there is a issue and output the result. For example, we analyze the previous invalid template.
+Try running TFLint under the directory where Terraform is executed. It detect if there is a issue and output the result. For example, run on the previous invalid template.
 
 ```
 $ tflint
@@ -75,7 +83,7 @@ Please show `tflint --help`
 ```
 
 ## Configuration
-By default, TFLint reads `.tflint.hcl` under the current directory. The configuration file is described in [HCL](https://github.com/hashicorp/hcl), and options available on the command line can be described in advance. Following example:
+By default, TFLint loads `.tflint.hcl` under the current directory. The configuration file is described in [HCL](https://github.com/hashicorp/hcl), and options available on the command line can be described in advance. Following example:
 
 ```
 config {
@@ -119,7 +127,7 @@ template.tf
 Result: 2 issues  (2 errors , 0 warnings , 0 notices)
 ```
 
-In the above example, an IAM instance profile that does not actually exist is specified, so it is an error. In order to refer to actual resources, AWS credentials are required. You can use arguments, configuration files, environment variables, shared credentials for these specifications.
+In the above example, an IAM instance profile that does not actually exist is specified, so it is an error. In order to refer to actual resources, AWS credentials are required. You can use command line options, configuration files, environment variables, shared credentials for these specifications.
 
 ## Developing in Your Environment
 If you want to build TFLint at your environment, you can build with the following procedure. [Go](https://golang.org/) 1.7 or more is required.
