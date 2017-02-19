@@ -3,7 +3,6 @@ package detector
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/elasticache"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -21,15 +20,13 @@ func (d *AwsElastiCacheClusterDuplicateIDDetector) Detect(issues *[]*issue.Issue
 	}
 
 	existCacheClusterId := map[string]bool{}
-	if d.ResponseCache.DescribeCacheClustersOutput == nil {
-		resp, err := d.AwsClient.Elasticache.DescribeCacheClusters(&elasticache.DescribeCacheClustersInput{})
-		if err != nil {
-			d.Logger.Error(err)
-			d.Error = true
-		}
-		d.ResponseCache.DescribeCacheClustersOutput = resp
+	resp, err := d.AwsClient.DescribeCacheClusters()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
-	for _, cacheCluster := range d.ResponseCache.DescribeCacheClustersOutput.CacheClusters {
+	for _, cacheCluster := range resp.CacheClusters {
 		existCacheClusterId[*cacheCluster.CacheClusterId] = true
 	}
 

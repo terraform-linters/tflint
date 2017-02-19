@@ -20,14 +20,13 @@ type DetectorIF interface {
 }
 
 type Detector struct {
-	ListMap       map[string]*ast.ObjectList
-	State         *state.TFState
-	Config        *config.Config
-	AwsClient     *config.AwsClient
-	EvalConfig    *evaluator.Evaluator
-	Logger        *logger.Logger
-	ResponseCache *ResponseCache
-	Error         bool
+	ListMap    map[string]*ast.ObjectList
+	State      *state.TFState
+	Config     *config.Config
+	AwsClient  *config.AwsClient
+	EvalConfig *evaluator.Evaluator
+	Logger     *logger.Logger
+	Error      bool
 }
 
 var detectors = map[string]string{
@@ -73,14 +72,13 @@ func NewDetector(listMap map[string]*ast.ObjectList, state *state.TFState, c *co
 	}
 
 	return &Detector{
-		ListMap:       listMap,
-		State:         state,
-		Config:        c,
-		AwsClient:     c.NewAwsClient(),
-		EvalConfig:    evalConfig,
-		Logger:        logger.Init(c.Debug),
-		ResponseCache: &ResponseCache{},
-		Error:         false,
+		ListMap:    listMap,
+		State:      state,
+		Config:     c,
+		AwsClient:  c.NewAwsClient(),
+		EvalConfig: evalConfig,
+		Logger:     logger.Init(c.Debug),
+		Error:      false,
 	}, nil
 }
 
@@ -162,7 +160,6 @@ func (d *Detector) Detect() []*issue.Issue {
 			moduleDetector.EvalConfig = &evaluator.Evaluator{
 				Config: m.Config,
 			}
-			moduleDetector.ResponseCache = d.ResponseCache
 			moduleDetector.Error = d.Error
 			creator := reflect.ValueOf(moduleDetector).MethodByName(creatorMethod)
 			detector := creator.Call([]reflect.Value{})[0]

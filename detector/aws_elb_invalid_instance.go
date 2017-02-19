@@ -3,7 +3,6 @@ package detector
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/hashicorp/hcl/hcl/token"
 	"github.com/wata727/tflint/issue"
 )
@@ -22,15 +21,13 @@ func (d *AwsELBInvalidInstanceDetector) Detect(issues *[]*issue.Issue) {
 	}
 
 	validInstances := map[string]bool{}
-	if d.ResponseCache.DescribeInstancesOutput == nil {
-		resp, err := d.AwsClient.Ec2.DescribeInstances(&ec2.DescribeInstancesInput{})
-		if err != nil {
-			d.Logger.Error(err)
-			d.Error = true
-		}
-		d.ResponseCache.DescribeInstancesOutput = resp
+	resp, err := d.AwsClient.DescribeInstances()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
-	for _, reservation := range d.ResponseCache.DescribeInstancesOutput.Reservations {
+	for _, reservation := range resp.Reservations {
 		for _, instance := range reservation.Instances {
 			validInstances[*instance.InstanceId] = true
 		}

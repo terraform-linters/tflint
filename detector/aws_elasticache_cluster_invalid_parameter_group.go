@@ -3,7 +3,6 @@ package detector
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/elasticache"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -21,15 +20,13 @@ func (d *AwsElastiCacheClusterInvalidParameterGroupDetector) Detect(issues *[]*i
 	}
 
 	validCacheParameterGroups := map[string]bool{}
-	if d.ResponseCache.DescribeCacheParameterGroupsOutput == nil {
-		resp, err := d.AwsClient.Elasticache.DescribeCacheParameterGroups(&elasticache.DescribeCacheParameterGroupsInput{})
-		if err != nil {
-			d.Logger.Error(err)
-			d.Error = true
-		}
-		d.ResponseCache.DescribeCacheParameterGroupsOutput = resp
+	resp, err := d.AwsClient.DescribeCacheParameterGroups()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
-	for _, parameterGroup := range d.ResponseCache.DescribeCacheParameterGroupsOutput.CacheParameterGroups {
+	for _, parameterGroup := range resp.CacheParameterGroups {
 		validCacheParameterGroups[*parameterGroup.CacheParameterGroupName] = true
 	}
 

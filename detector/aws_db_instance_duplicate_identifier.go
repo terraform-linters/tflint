@@ -3,7 +3,6 @@ package detector
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -21,15 +20,13 @@ func (d *AwsDBInstanceDuplicateIdentifierDetector) Detect(issues *[]*issue.Issue
 	}
 
 	existDBIdentifiers := map[string]bool{}
-	if d.ResponseCache.DescribeDBInstancesOutput == nil {
-		resp, err := d.AwsClient.Rds.DescribeDBInstances(&rds.DescribeDBInstancesInput{})
-		if err != nil {
-			d.Logger.Error(err)
-			d.Error = true
-		}
-		d.ResponseCache.DescribeDBInstancesOutput = resp
+	resp, err := d.AwsClient.DescribeDBInstances()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
-	for _, dbInstance := range d.ResponseCache.DescribeDBInstancesOutput.DBInstances {
+	for _, dbInstance := range resp.DBInstances {
 		existDBIdentifiers[*dbInstance.DBInstanceIdentifier] = true
 	}
 

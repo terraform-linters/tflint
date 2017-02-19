@@ -3,7 +3,6 @@ package detector
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/hashicorp/hcl/hcl/token"
 	"github.com/wata727/tflint/issue"
 )
@@ -22,15 +21,13 @@ func (d *AwsInstanceInvalidVPCSecurityGroupDetector) Detect(issues *[]*issue.Iss
 	}
 
 	validSecurityGroups := map[string]bool{}
-	if d.ResponseCache.DescribeSecurityGroupsOutput == nil {
-		resp, err := d.AwsClient.Ec2.DescribeSecurityGroups(&ec2.DescribeSecurityGroupsInput{})
-		if err != nil {
-			d.Logger.Error(err)
-			d.Error = true
-		}
-		d.ResponseCache.DescribeSecurityGroupsOutput = resp
+	resp, err := d.AwsClient.DescribeSecurityGroups()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
-	for _, securityGroup := range d.ResponseCache.DescribeSecurityGroupsOutput.SecurityGroups {
+	for _, securityGroup := range resp.SecurityGroups {
 		validSecurityGroups[*securityGroup.GroupId] = true
 	}
 

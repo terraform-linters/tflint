@@ -3,7 +3,6 @@ package detector
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -21,15 +20,13 @@ func (d *AwsInstanceInvalidIAMProfileDetector) Detect(issues *[]*issue.Issue) {
 	}
 
 	validIamProfiles := map[string]bool{}
-	if d.ResponseCache.ListInstanceProfilesOutput == nil {
-		resp, err := d.AwsClient.Iam.ListInstanceProfiles(&iam.ListInstanceProfilesInput{})
-		if err != nil {
-			d.Logger.Error(err)
-			d.Error = true
-		}
-		d.ResponseCache.ListInstanceProfilesOutput = resp
+	resp, err := d.AwsClient.ListInstanceProfiles()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
-	for _, iamProfile := range d.ResponseCache.ListInstanceProfilesOutput.InstanceProfiles {
+	for _, iamProfile := range resp.InstanceProfiles {
 		validIamProfiles[*iamProfile.InstanceProfileName] = true
 	}
 

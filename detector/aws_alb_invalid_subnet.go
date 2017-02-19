@@ -3,7 +3,6 @@ package detector
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/hashicorp/hcl/hcl/token"
 	"github.com/wata727/tflint/issue"
 )
@@ -22,15 +21,13 @@ func (d *AwsALBInvalidSubnetDetector) Detect(issues *[]*issue.Issue) {
 	}
 
 	validSubnets := map[string]bool{}
-	if d.ResponseCache.DescribeSubnetsOutput == nil {
-		resp, err := d.AwsClient.Ec2.DescribeSubnets(&ec2.DescribeSubnetsInput{})
-		if err != nil {
-			d.Logger.Error(err)
-			d.Error = true
-		}
-		d.ResponseCache.DescribeSubnetsOutput = resp
+	resp, err := d.AwsClient.DescribeSubnets()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
-	for _, subnet := range d.ResponseCache.DescribeSubnetsOutput.Subnets {
+	for _, subnet := range resp.Subnets {
 		validSubnets[*subnet.SubnetId] = true
 	}
 
