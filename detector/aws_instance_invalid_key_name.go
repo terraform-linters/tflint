@@ -3,7 +3,6 @@ package detector
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -21,15 +20,13 @@ func (d *AwsInstanceInvalidKeyNameDetector) Detect(issues *[]*issue.Issue) {
 	}
 
 	validKeyNames := map[string]bool{}
-	if d.ResponseCache.DescribeKeyPairsOutput == nil {
-		resp, err := d.AwsClient.Ec2.DescribeKeyPairs(&ec2.DescribeKeyPairsInput{})
-		if err != nil {
-			d.Logger.Error(err)
-			d.Error = true
-		}
-		d.ResponseCache.DescribeKeyPairsOutput = resp
+	resp, err := d.AwsClient.DescribeKeyPairs()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
-	for _, keyPair := range d.ResponseCache.DescribeKeyPairsOutput.KeyPairs {
+	for _, keyPair := range resp.KeyPairs {
 		validKeyNames[*keyPair.KeyName] = true
 	}
 

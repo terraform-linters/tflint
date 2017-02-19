@@ -3,7 +3,6 @@ package detector
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -21,15 +20,13 @@ func (d *AwsDBInstanceInvalidOptionGroupDetector) Detect(issues *[]*issue.Issue)
 	}
 
 	validOptionGroups := map[string]bool{}
-	if d.ResponseCache.DescribeOptionGroupsOutput == nil {
-		resp, err := d.AwsClient.Rds.DescribeOptionGroups(&rds.DescribeOptionGroupsInput{})
-		if err != nil {
-			d.Logger.Error(err)
-			d.Error = true
-		}
-		d.ResponseCache.DescribeOptionGroupsOutput = resp
+	resp, err := d.AwsClient.DescribeOptionGroups()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
-	for _, optionGroup := range d.ResponseCache.DescribeOptionGroupsOutput.OptionGroupsList {
+	for _, optionGroup := range resp.OptionGroupsList {
 		validOptionGroups[*optionGroup.OptionGroupName] = true
 	}
 

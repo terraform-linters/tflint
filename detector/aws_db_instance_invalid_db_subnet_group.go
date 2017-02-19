@@ -3,7 +3,6 @@ package detector
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -21,15 +20,13 @@ func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) Detect(issues *[]*issue.Issu
 	}
 
 	validDBSubnetGroups := map[string]bool{}
-	if d.ResponseCache.DescribeDBSubnetGroupsOutput == nil {
-		resp, err := d.AwsClient.Rds.DescribeDBSubnetGroups(&rds.DescribeDBSubnetGroupsInput{})
-		if err != nil {
-			d.Logger.Error(err)
-			d.Error = true
-		}
-		d.ResponseCache.DescribeDBSubnetGroupsOutput = resp
+	resp, err := d.AwsClient.DescribeDBSubnetGroups()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
-	for _, subnetGroup := range d.ResponseCache.DescribeDBSubnetGroupsOutput.DBSubnetGroups {
+	for _, subnetGroup := range resp.DBSubnetGroups {
 		validDBSubnetGroups[*subnetGroup.DBSubnetGroupName] = true
 	}
 

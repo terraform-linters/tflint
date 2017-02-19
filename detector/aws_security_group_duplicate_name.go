@@ -3,7 +3,6 @@ package detector
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
@@ -22,15 +21,13 @@ func (d *AwsSecurityGroupDuplicateDetector) Detect(issues *[]*issue.Issue) {
 	}
 
 	existSecuriyGroupNames := map[string]bool{}
-	if d.ResponseCache.DescribeSecurityGroupsOutput == nil {
-		resp, err := d.AwsClient.Ec2.DescribeSecurityGroups(&ec2.DescribeSecurityGroupsInput{})
-		if err != nil {
-			d.Logger.Error(err)
-			d.Error = true
-		}
-		d.ResponseCache.DescribeSecurityGroupsOutput = resp
+	resp, err := d.AwsClient.DescribeSecurityGroups()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
-	for _, securityGroup := range d.ResponseCache.DescribeSecurityGroupsOutput.SecurityGroups {
+	for _, securityGroup := range resp.SecurityGroups {
 		existSecuriyGroupNames[*securityGroup.VpcId+"."+*securityGroup.GroupName] = true
 	}
 
@@ -72,15 +69,11 @@ func (d *AwsSecurityGroupDuplicateDetector) fetchVpcId(item *ast.ObjectItem) (st
 	if err != nil {
 		d.Logger.Error(err)
 		// "vpc_id" is optional. If omitted, use default vpc_id.
-		if d.ResponseCache.DescribeVpcsOutput == nil {
-			resp, err := d.AwsClient.Ec2.DescribeVpcs(&ec2.DescribeVpcsInput{})
-			if err != nil {
-				d.Logger.Error(err)
-				d.Error = true
-			}
-			d.ResponseCache.DescribeVpcsOutput = resp
+		resp, err := d.AwsClient.DescribeVpcs()
+		if err != nil {
+			return "", err
 		}
-		for _, vpcResource := range d.ResponseCache.DescribeVpcsOutput.Vpcs {
+		for _, vpcResource := range resp.Vpcs {
 			if *vpcResource.IsDefault {
 				vpc = *vpcResource.VpcId
 				break

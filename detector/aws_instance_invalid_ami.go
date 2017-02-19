@@ -3,7 +3,6 @@ package detector
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -21,15 +20,13 @@ func (d *AwsInstanceInvalidAMIDetector) Detect(issues *[]*issue.Issue) {
 	}
 
 	validAmi := map[string]bool{}
-	if d.ResponseCache.DescribeImagesOutput == nil {
-		resp, err := d.AwsClient.Ec2.DescribeImages(&ec2.DescribeImagesInput{})
-		if err != nil {
-			d.Logger.Error(err)
-			d.Error = true
-		}
-		d.ResponseCache.DescribeImagesOutput = resp
+	resp, err := d.AwsClient.DescribeImages()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
-	for _, image := range d.ResponseCache.DescribeImagesOutput.Images {
+	for _, image := range resp.Images {
 		validAmi[*image.ImageId] = true
 	}
 

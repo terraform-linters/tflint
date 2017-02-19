@@ -3,7 +3,6 @@ package detector
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/elasticache"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -21,15 +20,13 @@ func (d *AwsElastiCacheClusterInvalidSubnetGroupDetector) Detect(issues *[]*issu
 	}
 
 	validCacheSubnetGroups := map[string]bool{}
-	if d.ResponseCache.DescribeCacheSubnetGroupsOutput == nil {
-		resp, err := d.AwsClient.Elasticache.DescribeCacheSubnetGroups(&elasticache.DescribeCacheSubnetGroupsInput{})
-		if err != nil {
-			d.Logger.Error(err)
-			d.Error = true
-		}
-		d.ResponseCache.DescribeCacheSubnetGroupsOutput = resp
+	resp, err := d.AwsClient.DescribeCacheSubnetGroups()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
-	for _, subnetGroup := range d.ResponseCache.DescribeCacheSubnetGroupsOutput.CacheSubnetGroups {
+	for _, subnetGroup := range resp.CacheSubnetGroups {
 		validCacheSubnetGroups[*subnetGroup.CacheSubnetGroupName] = true
 	}
 

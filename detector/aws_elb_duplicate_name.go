@@ -3,7 +3,6 @@ package detector
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/elb"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -21,15 +20,13 @@ func (d *AwsELBDuplicateNameDetector) Detect(issues *[]*issue.Issue) {
 	}
 
 	existLoadBalancerNames := map[string]bool{}
-	if d.ResponseCache.DescribeClassicLoadBalancersOutput == nil {
-		resp, err := d.AwsClient.Elb.DescribeLoadBalancers(&elb.DescribeLoadBalancersInput{})
-		if err != nil {
-			d.Logger.Error(err)
-			d.Error = true
-		}
-		d.ResponseCache.DescribeClassicLoadBalancersOutput = resp
+	resp, err := d.AwsClient.DescribeClassicLoadBalancers()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
-	for _, loadBalancer := range d.ResponseCache.DescribeClassicLoadBalancersOutput.LoadBalancerDescriptions {
+	for _, loadBalancer := range resp.LoadBalancerDescriptions {
 		existLoadBalancerNames[*loadBalancer.LoadBalancerName] = true
 	}
 

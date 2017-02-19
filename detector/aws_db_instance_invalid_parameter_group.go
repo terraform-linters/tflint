@@ -3,7 +3,6 @@ package detector
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -21,15 +20,13 @@ func (d *AwsDBInstanceInvalidParameterGroupDetector) Detect(issues *[]*issue.Iss
 	}
 
 	validDBParameterGroups := map[string]bool{}
-	if d.ResponseCache.DescribeDBParameterGroupsOutput == nil {
-		resp, err := d.AwsClient.Rds.DescribeDBParameterGroups(&rds.DescribeDBParameterGroupsInput{})
-		if err != nil {
-			d.Logger.Error(err)
-			d.Error = true
-		}
-		d.ResponseCache.DescribeDBParameterGroupsOutput = resp
+	resp, err := d.AwsClient.DescribeDBParameterGroups()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
-	for _, parameterGroup := range d.ResponseCache.DescribeDBParameterGroupsOutput.DBParameterGroups {
+	for _, parameterGroup := range resp.DBParameterGroups {
 		validDBParameterGroups[*parameterGroup.DBParameterGroupName] = true
 	}
 

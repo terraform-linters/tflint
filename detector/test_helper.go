@@ -44,13 +44,12 @@ func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string,
 
 	evalConfig, _ := evaluator.NewEvaluator(listMap, c)
 	creator := reflect.ValueOf(&Detector{
-		ListMap:       listMap,
-		State:         tfstate,
-		EvalConfig:    evalConfig,
-		Config:        c,
-		Logger:        logger.Init(false),
-		AwsClient:     awsClient,
-		ResponseCache: &ResponseCache{},
+		ListMap:    listMap,
+		State:      tfstate,
+		EvalConfig: evalConfig,
+		Config:     c,
+		Logger:     logger.Init(false),
+		AwsClient:  awsClient,
 	}).MethodByName(creatorMethod)
 	detector := creator.Call([]reflect.Value{})[0]
 
