@@ -8,12 +8,18 @@ import (
 
 type AwsElastiCacheClusterPreviousTypeDetector struct {
 	*Detector
+	IssueType         string
+	Target            string
+	DeepCheck         bool
 	previousNodeTypes map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterPreviousTypeDetector() *AwsElastiCacheClusterPreviousTypeDetector {
 	return &AwsElastiCacheClusterPreviousTypeDetector{
 		Detector:          d,
+		IssueType:         issue.WARNING,
+		Target:            "aws_elasticache_cluster",
+		DeepCheck:         false,
 		previousNodeTypes: map[string]bool{},
 	}
 }

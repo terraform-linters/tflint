@@ -8,21 +8,23 @@ import (
 
 type AwsDBInstanceInvalidParameterGroupDetector struct {
 	*Detector
+	IssueType       string
+	Target          string
+	DeepCheck       bool
 	parameterGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstanceInvalidParameterGroupDetector() *AwsDBInstanceInvalidParameterGroupDetector {
 	return &AwsDBInstanceInvalidParameterGroupDetector{
 		Detector:        d,
+		IssueType:       issue.ERROR,
+		Target:          "aws_db_instance",
+		DeepCheck:       true,
 		parameterGroups: map[string]bool{},
 	}
 }
 
 func (d *AwsDBInstanceInvalidParameterGroupDetector) PreProcess() {
-	if d.isSkippable("resource", "aws_db_instance") {
-		return
-	}
-
 	resp, err := d.AwsClient.DescribeDBParameterGroups()
 	if err != nil {
 		d.Logger.Error(err)

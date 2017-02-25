@@ -9,10 +9,18 @@ import (
 
 type AwsElastiCacheClusterDefaultParameterGroupDetector struct {
 	*Detector
+	IssueType string
+	Target    string
+	DeepCheck bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterDefaultParameterGroupDetector() *AwsElastiCacheClusterDefaultParameterGroupDetector {
-	return &AwsElastiCacheClusterDefaultParameterGroupDetector{d}
+	return &AwsElastiCacheClusterDefaultParameterGroupDetector{
+		Detector:  d,
+		IssueType: issue.NOTICE,
+		Target:    "aws_elasticache_cluster",
+		DeepCheck: false,
+	}
 }
 
 func (d *AwsElastiCacheClusterDefaultParameterGroupDetector) Detect(issues *[]*issue.Issue) {

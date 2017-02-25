@@ -8,21 +8,23 @@ import (
 
 type AwsElastiCacheClusterInvalidParameterGroupDetector struct {
 	*Detector
+	IssueType            string
+	Target               string
+	DeepCheck            bool
 	cacheParameterGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterInvalidParameterGroupDetector() *AwsElastiCacheClusterInvalidParameterGroupDetector {
 	return &AwsElastiCacheClusterInvalidParameterGroupDetector{
 		Detector:             d,
+		IssueType:            issue.ERROR,
+		Target:               "aws_elasticache_cluster",
+		DeepCheck:            true,
 		cacheParameterGroups: map[string]bool{},
 	}
 }
 
 func (d *AwsElastiCacheClusterInvalidParameterGroupDetector) PreProcess() {
-	if d.isSkippable("resource", "aws_elasticache_cluster") {
-		return
-	}
-
 	resp, err := d.AwsClient.DescribeCacheParameterGroups()
 	if err != nil {
 		d.Logger.Error(err)

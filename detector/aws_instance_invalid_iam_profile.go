@@ -8,21 +8,23 @@ import (
 
 type AwsInstanceInvalidIAMProfileDetector struct {
 	*Detector
-	profiles map[string]bool
+	IssueType string
+	Target    string
+	DeepCheck bool
+	profiles  map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidIAMProfileDetector() *AwsInstanceInvalidIAMProfileDetector {
 	return &AwsInstanceInvalidIAMProfileDetector{
-		Detector: d,
-		profiles: map[string]bool{},
+		Detector:  d,
+		IssueType: issue.ERROR,
+		Target:    "aws_instance",
+		DeepCheck: true,
+		profiles:  map[string]bool{},
 	}
 }
 
 func (d *AwsInstanceInvalidIAMProfileDetector) PreProcess() {
-	if d.isSkippable("resource", "aws_instance") {
-		return
-	}
-
 	resp, err := d.AwsClient.ListInstanceProfiles()
 	if err != nil {
 		d.Logger.Error(err)

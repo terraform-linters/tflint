@@ -8,21 +8,23 @@ import (
 
 type AwsDBInstanceInvalidOptionGroupDetector struct {
 	*Detector
+	IssueType    string
+	Target       string
+	DeepCheck    bool
 	optionGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstanceInvalidOptionGroupDetector() *AwsDBInstanceInvalidOptionGroupDetector {
 	return &AwsDBInstanceInvalidOptionGroupDetector{
 		Detector:     d,
+		IssueType:    issue.ERROR,
+		Target:       "aws_db_instance",
+		DeepCheck:    true,
 		optionGroups: map[string]bool{},
 	}
 }
 
 func (d *AwsDBInstanceInvalidOptionGroupDetector) PreProcess() {
-	if d.isSkippable("resource", "aws_db_instance") {
-		return
-	}
-
 	resp, err := d.AwsClient.DescribeOptionGroups()
 	if err != nil {
 		d.Logger.Error(err)

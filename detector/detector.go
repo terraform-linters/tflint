@@ -143,6 +143,11 @@ func (d *Detector) Detect() []*issue.Issue {
 		d.Logger.Info(fmt.Sprintf("detect by `%s`", ruleName))
 		creator := reflect.ValueOf(d).MethodByName(creatorMethod)
 		detector := creator.Call([]reflect.Value{})[0]
+
+		if reflect.Indirect(detector).FieldByName("DeepCheck").Bool() && !d.Config.DeepCheck {
+			d.Logger.Info("skip this rule.")
+			continue
+		}
 		if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
 			preprocess.Call([]reflect.Value{})
 		}
@@ -166,6 +171,11 @@ func (d *Detector) Detect() []*issue.Issue {
 			moduleDetector.Error = d.Error
 			creator := reflect.ValueOf(moduleDetector).MethodByName(creatorMethod)
 			detector := creator.Call([]reflect.Value{})[0]
+
+			if reflect.Indirect(detector).FieldByName("DeepCheck").Bool() && !d.Config.DeepCheck {
+				d.Logger.Info("skip this rule.")
+				continue
+			}
 			if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
 				preprocess.Call([]reflect.Value{})
 			}

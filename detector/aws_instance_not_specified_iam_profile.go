@@ -4,10 +4,18 @@ import "github.com/wata727/tflint/issue"
 
 type AwsInstanceNotSpecifiedIAMProfileDetector struct {
 	*Detector
+	IssueType string
+	Target    string
+	DeepCheck bool
 }
 
 func (d *Detector) CreateAwsInstanceNotSpecifiedIAMProfileDetector() *AwsInstanceNotSpecifiedIAMProfileDetector {
-	return &AwsInstanceNotSpecifiedIAMProfileDetector{d}
+	return &AwsInstanceNotSpecifiedIAMProfileDetector{
+		Detector:  d,
+		IssueType: issue.NOTICE,
+		Target:    "aws_instance",
+		DeepCheck: false,
+	}
 }
 
 func (d *AwsInstanceNotSpecifiedIAMProfileDetector) Detect(issues *[]*issue.Issue) {

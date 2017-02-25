@@ -8,21 +8,23 @@ import (
 
 type AwsInstanceInvalidKeyNameDetector struct {
 	*Detector
-	keypairs map[string]bool
+	IssueType string
+	Target    string
+	DeepCheck bool
+	keypairs  map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidKeyNameDetector() *AwsInstanceInvalidKeyNameDetector {
 	return &AwsInstanceInvalidKeyNameDetector{
-		Detector: d,
-		keypairs: map[string]bool{},
+		Detector:  d,
+		IssueType: issue.ERROR,
+		Target:    "aws_instance",
+		DeepCheck: true,
+		keypairs:  map[string]bool{},
 	}
 }
 
 func (d *AwsInstanceInvalidKeyNameDetector) PreProcess() {
-	if d.isSkippable("resource", "aws_instance") {
-		return
-	}
-
 	resp, err := d.AwsClient.DescribeKeyPairs()
 	if err != nil {
 		d.Logger.Error(err)

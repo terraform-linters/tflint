@@ -8,21 +8,23 @@ import (
 
 type AwsDBInstanceInvalidDBSubnetGroupDetector struct {
 	*Detector
+	IssueType    string
+	Target       string
+	DeepCheck    bool
 	subnetGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstanceInvalidDBSubnetGroupDetector() *AwsDBInstanceInvalidDBSubnetGroupDetector {
 	return &AwsDBInstanceInvalidDBSubnetGroupDetector{
 		Detector:     d,
+		IssueType:    issue.ERROR,
+		Target:       "aws_db_instance",
+		DeepCheck:    true,
 		subnetGroups: map[string]bool{},
 	}
 }
 
 func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) PreProcess() {
-	if d.isSkippable("resource", "aws_db_instance") {
-		return
-	}
-
 	resp, err := d.AwsClient.DescribeDBSubnetGroups()
 	if err != nil {
 		d.Logger.Error(err)

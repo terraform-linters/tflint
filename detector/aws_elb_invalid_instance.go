@@ -9,21 +9,23 @@ import (
 
 type AwsELBInvalidInstanceDetector struct {
 	*Detector
+	IssueType string
+	Target    string
+	DeepCheck bool
 	instances map[string]bool
 }
 
 func (d *Detector) CreateAwsELBInvalidInstanceDetector() *AwsELBInvalidInstanceDetector {
 	return &AwsELBInvalidInstanceDetector{
 		Detector:  d,
+		IssueType: issue.ERROR,
+		Target:    "aws_elb",
+		DeepCheck: true,
 		instances: map[string]bool{},
 	}
 }
 
 func (d *AwsELBInvalidInstanceDetector) PreProcess() {
-	if d.isSkippable("resource", "aws_elb") {
-		return
-	}
-
 	resp, err := d.AwsClient.DescribeInstances()
 	if err != nil {
 		d.Logger.Error(err)

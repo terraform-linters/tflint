@@ -9,21 +9,23 @@ import (
 
 type AwsDBInstanceInvalidVPCSecurityGroupDetector struct {
 	*Detector
+	IssueType      string
+	Target         string
+	DeepCheck      bool
 	securityGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstanceInvalidVPCSecurityGroupDetector() *AwsDBInstanceInvalidVPCSecurityGroupDetector {
 	return &AwsDBInstanceInvalidVPCSecurityGroupDetector{
 		Detector:       d,
+		IssueType:      issue.ERROR,
+		Target:         "aws_db_instance",
+		DeepCheck:      true,
 		securityGroups: map[string]bool{},
 	}
 }
 
 func (d *AwsDBInstanceInvalidVPCSecurityGroupDetector) PreProcess() {
-	if d.isSkippable("resource", "aws_db_instance") {
-		return
-	}
-
 	resp, err := d.AwsClient.DescribeSecurityGroups()
 	if err != nil {
 		d.Logger.Error(err)

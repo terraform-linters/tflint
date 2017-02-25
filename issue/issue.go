@@ -7,6 +7,10 @@ type Issue struct {
 	File    string `json:"file"`
 }
 
+const ERROR = "ERROR"
+const WARNING = "WARNING"
+const NOTICE = "NOTICE"
+
 type Issues []*Issue
 
 func (is Issues) Len() int      { return len(is) }

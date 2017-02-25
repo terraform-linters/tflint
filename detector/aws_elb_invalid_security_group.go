@@ -9,21 +9,23 @@ import (
 
 type AwsELBInvalidSecurityGroupDetector struct {
 	*Detector
+	IssueType      string
+	Target         string
+	DeepCheck      bool
 	securityGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsELBInvalidSecurityGroupDetector() *AwsELBInvalidSecurityGroupDetector {
 	return &AwsELBInvalidSecurityGroupDetector{
 		Detector:       d,
+		IssueType:      issue.ERROR,
+		Target:         "aws_elb",
+		DeepCheck:      true,
 		securityGroups: map[string]bool{},
 	}
 }
 
 func (d *AwsELBInvalidSecurityGroupDetector) PreProcess() {
-	if d.isSkippable("resource", "aws_elb") {
-		return
-	}
-
 	resp, err := d.AwsClient.DescribeSecurityGroups()
 	if err != nil {
 		d.Logger.Error(err)

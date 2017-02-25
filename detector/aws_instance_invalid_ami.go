@@ -8,21 +8,23 @@ import (
 
 type AwsInstanceInvalidAMIDetector struct {
 	*Detector
-	amis map[string]bool
+	IssueType string
+	Target    string
+	DeepCheck bool
+	amis      map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidAMIDetector() *AwsInstanceInvalidAMIDetector {
 	return &AwsInstanceInvalidAMIDetector{
-		Detector: d,
-		amis:     map[string]bool{},
+		Detector:  d,
+		IssueType: issue.ERROR,
+		Target:    "aws_instance",
+		DeepCheck: true,
+		amis:      map[string]bool{},
 	}
 }
 
 func (d *AwsInstanceInvalidAMIDetector) PreProcess() {
-	if d.isSkippable("resource", "aws_instance") {
-		return
-	}
-
 	resp, err := d.AwsClient.DescribeImages()
 	if err != nil {
 		d.Logger.Error(err)

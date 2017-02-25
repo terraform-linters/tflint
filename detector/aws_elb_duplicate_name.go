@@ -8,21 +8,23 @@ import (
 
 type AwsELBDuplicateNameDetector struct {
 	*Detector
+	IssueType     string
+	Target        string
+	DeepCheck     bool
 	loadBalancers map[string]bool
 }
 
 func (d *Detector) CreateAwsELBDuplicateNameDetector() *AwsELBDuplicateNameDetector {
 	return &AwsELBDuplicateNameDetector{
 		Detector:      d,
+		IssueType:     issue.ERROR,
+		Target:        "aws_elb",
+		DeepCheck:     true,
 		loadBalancers: map[string]bool{},
 	}
 }
 
 func (d *AwsELBDuplicateNameDetector) PreProcess() {
-	if d.isSkippable("resource", "aws_elb") {
-		return
-	}
-
 	resp, err := d.AwsClient.DescribeClassicLoadBalancers()
 	if err != nil {
 		d.Logger.Error(err)

@@ -8,12 +8,18 @@ import (
 
 type AwsElastiCacheClusterInvalidTypeDetector struct {
 	*Detector
+	IssueType string
+	Target    string
+	DeepCheck bool
 	nodeTypes map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterInvalidTypeDetector() *AwsElastiCacheClusterInvalidTypeDetector {
 	return &AwsElastiCacheClusterInvalidTypeDetector{
 		Detector:  d,
+		IssueType: issue.ERROR,
+		Target:    "aws_elasticache_cluster",
+		DeepCheck: false,
 		nodeTypes: map[string]bool{},
 	}
 }

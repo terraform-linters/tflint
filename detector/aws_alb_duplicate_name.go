@@ -8,21 +8,23 @@ import (
 
 type AwsALBDuplicateNameDetector struct {
 	*Detector
+	IssueType     string
+	Target        string
+	DeepCheck     bool
 	loadBalancers map[string]bool
 }
 
 func (d *Detector) CreateAwsALBDuplicateNameDetector() *AwsALBDuplicateNameDetector {
 	return &AwsALBDuplicateNameDetector{
 		Detector:      d,
+		IssueType:     issue.ERROR,
+		Target:        "aws_alb",
+		DeepCheck:     true,
 		loadBalancers: map[string]bool{},
 	}
 }
 
 func (d *AwsALBDuplicateNameDetector) PreProcess() {
-	if d.isSkippable("resource", "aws_alb") {
-		return
-	}
-
 	resp, err := d.AwsClient.DescribeLoadBalancers()
 	if err != nil {
 		d.Logger.Error(err)

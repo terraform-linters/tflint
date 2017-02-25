@@ -4,10 +4,18 @@ import "github.com/wata727/tflint/issue"
 
 type AwsDBInstanceReadablePasswordDetector struct {
 	*Detector
+	IssueType string
+	Target    string
+	DeepCheck bool
 }
 
 func (d *Detector) CreateAwsDBInstanceReadablePasswordDetector() *AwsDBInstanceReadablePasswordDetector {
-	return &AwsDBInstanceReadablePasswordDetector{d}
+	return &AwsDBInstanceReadablePasswordDetector{
+		Detector:  d,
+		IssueType: issue.WARNING,
+		Target:    "aws_db_instance",
+		DeepCheck: false,
+	}
 }
 
 func (d *AwsDBInstanceReadablePasswordDetector) Detect(issues *[]*issue.Issue) {

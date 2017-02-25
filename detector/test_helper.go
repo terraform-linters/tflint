@@ -16,10 +16,18 @@ import (
 
 type TestDetector struct {
 	*Detector
+	IssueType string
+	Target    string
+	DeepCheck bool
 }
 
 func (d *Detector) CreateTestDetector() *TestDetector {
-	return &TestDetector{d}
+	return &TestDetector{
+		Detector:  d,
+		IssueType: "TEST",
+		Target:    "aws_instance",
+		DeepCheck: false,
+	}
 }
 
 func (d *TestDetector) Detect(issues *[]*issue.Issue) {

@@ -9,21 +9,23 @@ import (
 
 type AwsALBInvalidSubnetDetector struct {
 	*Detector
-	subnets map[string]bool
+	IssueType string
+	Target    string
+	DeepCheck bool
+	subnets   map[string]bool
 }
 
 func (d *Detector) CreateAwsALBInvalidSubnetDetector() *AwsALBInvalidSubnetDetector {
 	return &AwsALBInvalidSubnetDetector{
-		Detector: d,
-		subnets:  map[string]bool{},
+		Detector:  d,
+		IssueType: issue.ERROR,
+		Target:    "aws_alb",
+		DeepCheck: true,
+		subnets:   map[string]bool{},
 	}
 }
 
 func (d *AwsALBInvalidSubnetDetector) PreProcess() {
-	if d.isSkippable("resource", "aws_alb") {
-		return
-	}
-
 	resp, err := d.AwsClient.DescribeSubnets()
 	if err != nil {
 		d.Logger.Error(err)

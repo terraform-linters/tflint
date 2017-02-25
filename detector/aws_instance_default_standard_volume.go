@@ -7,10 +7,18 @@ import (
 
 type AwsInstanceDefaultStandardVolumeDetector struct {
 	*Detector
+	IssueType string
+	Target    string
+	DeepCheck bool
 }
 
 func (d *Detector) CreateAwsInstanceDefaultStandardVolumeDetector() *AwsInstanceDefaultStandardVolumeDetector {
-	return &AwsInstanceDefaultStandardVolumeDetector{d}
+	return &AwsInstanceDefaultStandardVolumeDetector{
+		Detector:  d,
+		IssueType: issue.WARNING,
+		Target:    "aws_instance",
+		DeepCheck: false,
+	}
 }
 
 func (d *AwsInstanceDefaultStandardVolumeDetector) Detect(issues *[]*issue.Issue) {

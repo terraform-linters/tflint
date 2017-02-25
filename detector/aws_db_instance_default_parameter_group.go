@@ -9,10 +9,18 @@ import (
 
 type AwsDBInstanceDefaultParameterGroupDetector struct {
 	*Detector
+	IssueType string
+	Target    string
+	DeepCheck bool
 }
 
 func (d *Detector) CreateAwsDBInstanceDefaultParameterGroupDetector() *AwsDBInstanceDefaultParameterGroupDetector {
-	return &AwsDBInstanceDefaultParameterGroupDetector{d}
+	return &AwsDBInstanceDefaultParameterGroupDetector{
+		Detector:  d,
+		IssueType: issue.NOTICE,
+		Target:    "aws_db_instance",
+		DeepCheck: false,
+	}
 }
 
 func (d *AwsDBInstanceDefaultParameterGroupDetector) Detect(issues *[]*issue.Issue) {
