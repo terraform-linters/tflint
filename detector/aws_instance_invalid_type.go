@@ -8,14 +8,18 @@ import (
 
 type AwsInstanceInvalidTypeDetector struct {
 	*Detector
+	instanceTypes map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidTypeDetector() *AwsInstanceInvalidTypeDetector {
-	return &AwsInstanceInvalidTypeDetector{d}
+	return &AwsInstanceInvalidTypeDetector{
+		Detector:      d,
+		instanceTypes: map[string]bool{},
+	}
 }
 
-func (d *AwsInstanceInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
-	var validInstanceType = map[string]bool{
+func (d *AwsInstanceInvalidTypeDetector) PreProcess() {
+	d.instanceTypes = map[string]bool{
 		"t2.nano":     true,
 		"t2.micro":    true,
 		"t2.small":    true,
@@ -84,7 +88,9 @@ func (d *AwsInstanceInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
 		"hi1.4xlarge": true,
 		"hs1.8xlarge": true,
 	}
+}
 
+func (d *AwsInstanceInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_instance").Items {
 			instanceTypeToken, err := hclLiteralToken(item, "instance_type")
@@ -98,7 +104,7 @@ func (d *AwsInstanceInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
 				continue
 			}
 
-			if !validInstanceType[instanceType] {
+			if !d.instanceTypes[instanceType] {
 				issue := &issue.Issue{
 					Type:    "ERROR",
 					Message: fmt.Sprintf("\"%s\" is invalid instance type.", instanceType),

@@ -8,14 +8,18 @@ import (
 
 type AwsDBInstancePreviousTypeDetector struct {
 	*Detector
+	previousInstanceTypes map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstancePreviousTypeDetector() *AwsDBInstancePreviousTypeDetector {
-	return &AwsDBInstancePreviousTypeDetector{d}
+	return &AwsDBInstancePreviousTypeDetector{
+		Detector:              d,
+		previousInstanceTypes: map[string]bool{},
+	}
 }
 
-func (d *AwsDBInstancePreviousTypeDetector) Detect(issues *[]*issue.Issue) {
-	var previousInstanceType = map[string]bool{
+func (d *AwsDBInstancePreviousTypeDetector) PreProcess() {
+	d.previousInstanceTypes = map[string]bool{
 		"db.t1.micro":    true,
 		"db.m1.small":    true,
 		"db.m1.medium":   true,
@@ -26,7 +30,9 @@ func (d *AwsDBInstancePreviousTypeDetector) Detect(issues *[]*issue.Issue) {
 		"db.m2.4xlarge":  true,
 		"db.cr1.8xlarge": true,
 	}
+}
 
+func (d *AwsDBInstancePreviousTypeDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_db_instance").Items {
 			instanceTypeToken, err := hclLiteralToken(item, "instance_class")
@@ -40,7 +46,7 @@ func (d *AwsDBInstancePreviousTypeDetector) Detect(issues *[]*issue.Issue) {
 				continue
 			}
 
-			if previousInstanceType[instanceType] {
+			if d.previousInstanceTypes[instanceType] {
 				issue := &issue.Issue{
 					Type:    "WARNING",
 					Message: fmt.Sprintf("\"%s\" is previous generation instance type.", instanceType),

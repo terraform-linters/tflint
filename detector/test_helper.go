@@ -53,7 +53,10 @@ func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string,
 	}).MethodByName(creatorMethod)
 	detector := creator.Call([]reflect.Value{})[0]
 
-	method := detector.MethodByName("Detect")
-	method.Call([]reflect.Value{reflect.ValueOf(issues)})
+	if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
+		preprocess.Call([]reflect.Value{})
+	}
+	detect := detector.MethodByName("Detect")
+	detect.Call([]reflect.Value{reflect.ValueOf(issues)})
 	return nil
 }

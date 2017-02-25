@@ -9,28 +9,34 @@ import (
 
 type AwsELBInvalidSubnetDetector struct {
 	*Detector
+	subnets map[string]bool
 }
 
 func (d *Detector) CreateAwsELBInvalidSubnetDetector() *AwsELBInvalidSubnetDetector {
-	return &AwsELBInvalidSubnetDetector{d}
+	return &AwsELBInvalidSubnetDetector{
+		Detector: d,
+		subnets:  map[string]bool{},
+	}
 }
 
-func (d *AwsELBInvalidSubnetDetector) Detect(issues *[]*issue.Issue) {
-	if !d.isDeepCheck("resource", "aws_elb") {
+func (d *AwsELBInvalidSubnetDetector) PreProcess() {
+	if d.isSkippable("resource", "aws_elb") {
 		return
 	}
 
-	validSubnets := map[string]bool{}
 	resp, err := d.AwsClient.DescribeSubnets()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
 		return
 	}
-	for _, subnet := range resp.Subnets {
-		validSubnets[*subnet.SubnetId] = true
-	}
 
+	for _, subnet := range resp.Subnets {
+		d.subnets[*subnet.SubnetId] = true
+	}
+}
+
+func (d *AwsELBInvalidSubnetDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_elb").Items {
 			var varToken token.Token
@@ -58,7 +64,7 @@ func (d *AwsELBInvalidSubnetDetector) Detect(issues *[]*issue.Issue) {
 					continue
 				}
 
-				if !validSubnets[subnet] {
+				if !d.subnets[subnet] {
 					issue := &issue.Issue{
 						Type:    "ERROR",
 						Message: fmt.Sprintf("\"%s\" is invalid subnet ID.", subnet),

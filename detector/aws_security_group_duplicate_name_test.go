@@ -39,6 +39,12 @@ resource "aws_security_group" "test" {
 					VpcId:     aws.String("vpc-1234abcd"),
 				},
 			},
+			Vpcs: []*ec2.Vpc{
+				&ec2.Vpc{
+					VpcId:     aws.String("vpc-1234abcd"),
+					IsDefault: aws.Bool(true),
+				},
+			},
 			Issues: []*issue.Issue{
 				&issue.Issue{
 					Type:    "ERROR",
@@ -65,6 +71,12 @@ resource "aws_security_group" "test" {
 					VpcId:     aws.String("vpc-1234abcd"),
 				},
 			},
+			Vpcs: []*ec2.Vpc{
+				&ec2.Vpc{
+					VpcId:     aws.String("vpc-1234abcd"),
+					IsDefault: aws.Bool(true),
+				},
+			},
 			Issues: []*issue.Issue{},
 		},
 		{
@@ -82,6 +94,12 @@ resource "aws_security_group" "test" {
 				&ec2.SecurityGroup{
 					GroupName: aws.String("custom"),
 					VpcId:     aws.String("vpc-abcd1234"),
+				},
+			},
+			Vpcs: []*ec2.Vpc{
+				&ec2.Vpc{
+					VpcId:     aws.String("vpc-1234abcd"),
+					IsDefault: aws.Bool(true),
 				},
 			},
 			Issues: []*issue.Issue{},
@@ -189,6 +207,12 @@ resource "aws_security_group" "test" {
 					VpcId:     aws.String("vpc-1234abcd"),
 				},
 			},
+			Vpcs: []*ec2.Vpc{
+				&ec2.Vpc{
+					VpcId:     aws.String("vpc-1234abcd"),
+					IsDefault: aws.Bool(true),
+				},
+			},
 			Issues: []*issue.Issue{},
 		},
 	}
@@ -204,11 +228,9 @@ resource "aws_security_group" "test" {
 		ec2mock.EXPECT().DescribeSecurityGroups(&ec2.DescribeSecurityGroupsInput{}).Return(&ec2.DescribeSecurityGroupsOutput{
 			SecurityGroups: tc.SecurityGroups,
 		}, nil)
-		if tc.Vpcs != nil {
-			ec2mock.EXPECT().DescribeVpcs(&ec2.DescribeVpcsInput{}).Return(&ec2.DescribeVpcsOutput{
-				Vpcs: tc.Vpcs,
-			}, nil)
-		}
+		ec2mock.EXPECT().DescribeVpcs(&ec2.DescribeVpcsInput{}).Return(&ec2.DescribeVpcsOutput{
+			Vpcs: tc.Vpcs,
+		}, nil)
 		awsClient.Ec2 = ec2mock
 
 		var issues = []*issue.Issue{}

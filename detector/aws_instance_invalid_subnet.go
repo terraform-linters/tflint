@@ -8,28 +8,34 @@ import (
 
 type AwsInstanceInvalidSubnetDetector struct {
 	*Detector
+	subnets map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidSubnetDetector() *AwsInstanceInvalidSubnetDetector {
-	return &AwsInstanceInvalidSubnetDetector{d}
+	return &AwsInstanceInvalidSubnetDetector{
+		Detector: d,
+		subnets:  map[string]bool{},
+	}
 }
 
-func (d *AwsInstanceInvalidSubnetDetector) Detect(issues *[]*issue.Issue) {
-	if !d.isDeepCheck("resource", "aws_instance") {
+func (d *AwsInstanceInvalidSubnetDetector) PreProcess() {
+	if d.isSkippable("resource", "aws_instance") {
 		return
 	}
 
-	validSubnets := map[string]bool{}
 	resp, err := d.AwsClient.DescribeSubnets()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
 		return
 	}
-	for _, subnet := range resp.Subnets {
-		validSubnets[*subnet.SubnetId] = true
-	}
 
+	for _, subnet := range resp.Subnets {
+		d.subnets[*subnet.SubnetId] = true
+	}
+}
+
+func (d *AwsInstanceInvalidSubnetDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_instance").Items {
 			subnetToken, err := hclLiteralToken(item, "subnet_id")
@@ -43,7 +49,7 @@ func (d *AwsInstanceInvalidSubnetDetector) Detect(issues *[]*issue.Issue) {
 				continue
 			}
 
-			if !validSubnets[subnet] {
+			if !d.subnets[subnet] {
 				issue := &issue.Issue{
 					Type:    "ERROR",
 					Message: fmt.Sprintf("\"%s\" is invalid subnet ID.", subnet),

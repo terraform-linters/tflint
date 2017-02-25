@@ -143,8 +143,11 @@ func (d *Detector) Detect() []*issue.Issue {
 		d.Logger.Info(fmt.Sprintf("detect by `%s`", ruleName))
 		creator := reflect.ValueOf(d).MethodByName(creatorMethod)
 		detector := creator.Call([]reflect.Value{})[0]
-		method := detector.MethodByName("Detect")
-		method.Call([]reflect.Value{reflect.ValueOf(&issues)})
+		if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
+			preprocess.Call([]reflect.Value{})
+		}
+		detect := detector.MethodByName("Detect")
+		detect.Call([]reflect.Value{reflect.ValueOf(&issues)})
 
 		for name, m := range modules {
 			if d.Config.IgnoreModule[m.Source] {
@@ -163,8 +166,11 @@ func (d *Detector) Detect() []*issue.Issue {
 			moduleDetector.Error = d.Error
 			creator := reflect.ValueOf(moduleDetector).MethodByName(creatorMethod)
 			detector := creator.Call([]reflect.Value{})[0]
-			method := detector.MethodByName("Detect")
-			method.Call([]reflect.Value{reflect.ValueOf(&issues)})
+			if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
+				preprocess.Call([]reflect.Value{})
+			}
+			detect := detector.MethodByName("Detect")
+			detect.Call([]reflect.Value{reflect.ValueOf(&issues)})
 		}
 	}
 
@@ -217,18 +223,18 @@ func (d *Detector) evalToStringTokens(t token.Token) ([]token.Token, error) {
 	return tokens, nil
 }
 
-func (d *Detector) isDeepCheck(resources ...string) bool {
+func (d *Detector) isSkippable(resources ...string) bool {
 	if !d.Config.DeepCheck {
 		d.Logger.Info("skip this rule.")
-		return false
+		return true
 	}
-	target_resources := 0
+	targetResources := 0
 	for _, list := range d.ListMap {
-		target_resources += len(list.Filter(resources...).Items)
+		targetResources += len(list.Filter(resources...).Items)
 	}
-	if target_resources == 0 {
+	if targetResources == 0 {
 		d.Logger.Info("target resources are not found.")
-		return false
+		return true
 	}
-	return true
+	return false
 }

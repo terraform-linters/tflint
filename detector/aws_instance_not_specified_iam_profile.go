@@ -25,7 +25,3 @@ func (d *AwsInstanceNotSpecifiedIAMProfileDetector) Detect(issues *[]*issue.Issu
 		}
 	}
 }
-
-func (d *AwsInstanceNotSpecifiedIAMProfileDetector) Inherit(original *AwsInstanceNotSpecifiedIAMProfileDetector) *AwsInstanceNotSpecifiedIAMProfileDetector {
-	return original
-}

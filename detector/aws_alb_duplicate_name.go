@@ -8,28 +8,34 @@ import (
 
 type AwsALBDuplicateNameDetector struct {
 	*Detector
+	loadBalancers map[string]bool
 }
 
 func (d *Detector) CreateAwsALBDuplicateNameDetector() *AwsALBDuplicateNameDetector {
-	return &AwsALBDuplicateNameDetector{d}
+	return &AwsALBDuplicateNameDetector{
+		Detector:      d,
+		loadBalancers: map[string]bool{},
+	}
 }
 
-func (d *AwsALBDuplicateNameDetector) Detect(issues *[]*issue.Issue) {
-	if !d.isDeepCheck("resource", "aws_alb") {
+func (d *AwsALBDuplicateNameDetector) PreProcess() {
+	if d.isSkippable("resource", "aws_alb") {
 		return
 	}
 
-	existLoadBalancerNames := map[string]bool{}
 	resp, err := d.AwsClient.DescribeLoadBalancers()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
 		return
 	}
-	for _, loadBalancer := range resp.LoadBalancers {
-		existLoadBalancerNames[*loadBalancer.LoadBalancerName] = true
-	}
 
+	for _, loadBalancer := range resp.LoadBalancers {
+		d.loadBalancers[*loadBalancer.LoadBalancerName] = true
+	}
+}
+
+func (d *AwsALBDuplicateNameDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_alb").Items {
 			nameToken, err := hclLiteralToken(item, "name")
@@ -43,7 +49,7 @@ func (d *AwsALBDuplicateNameDetector) Detect(issues *[]*issue.Issue) {
 				continue
 			}
 
-			if existLoadBalancerNames[name] && !d.State.Exists("aws_alb", hclObjectKeyText(item)) {
+			if d.loadBalancers[name] && !d.State.Exists("aws_alb", hclObjectKeyText(item)) {
 				issue := &issue.Issue{
 					Type:    "ERROR",
 					Message: fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),

@@ -686,7 +686,7 @@ variable "array" {
 	}
 }
 
-func TestIsDeepCheck(t *testing.T) {
+func TestIsSkippable(t *testing.T) {
 	type Input struct {
 		File      string
 		DeepCheck bool
@@ -699,7 +699,7 @@ func TestIsDeepCheck(t *testing.T) {
 		Result bool
 	}{
 		{
-			Name: "return true when enabled deep checking",
+			Name: "return false when enabled deep checking",
 			Input: Input{
 				File: `
 resource "aws_instance" {
@@ -708,10 +708,10 @@ resource "aws_instance" {
 				DeepCheck: true,
 				Resources: []string{"resource", "aws_instance"},
 			},
-			Result: true,
+			Result: false,
 		},
 		{
-			Name: "return false when disabled deep checking",
+			Name: "return true when disabled deep checking",
 			Input: Input{
 				File: `
 resource "aws_instance" {
@@ -720,10 +720,10 @@ resource "aws_instance" {
 				DeepCheck: false,
 				Resources: []string{"resource", "aws_instance"},
 			},
-			Result: false,
+			Result: true,
 		},
 		{
-			Name: "return false when target resources are not found",
+			Name: "return true when target resources are not found",
 			Input: Input{
 				File: `
 resource "aws_instance" {
@@ -732,7 +732,7 @@ resource "aws_instance" {
 				DeepCheck: true,
 				Resources: []string{"resource", "not_found"},
 			},
-			Result: false,
+			Result: true,
 		},
 	}
 
@@ -749,7 +749,7 @@ resource "aws_instance" {
 		}
 		d.Config.DeepCheck = tc.Input.DeepCheck
 
-		result := d.isDeepCheck(tc.Input.Resources...)
+		result := d.isSkippable(tc.Input.Resources...)
 		if result != tc.Result {
 			t.Fatalf("\nBad: %t\nExpected: %t\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}

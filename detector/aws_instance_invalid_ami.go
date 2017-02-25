@@ -8,28 +8,34 @@ import (
 
 type AwsInstanceInvalidAMIDetector struct {
 	*Detector
+	amis map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidAMIDetector() *AwsInstanceInvalidAMIDetector {
-	return &AwsInstanceInvalidAMIDetector{d}
+	return &AwsInstanceInvalidAMIDetector{
+		Detector: d,
+		amis:     map[string]bool{},
+	}
 }
 
-func (d *AwsInstanceInvalidAMIDetector) Detect(issues *[]*issue.Issue) {
-	if !d.isDeepCheck("resource", "aws_instance") {
+func (d *AwsInstanceInvalidAMIDetector) PreProcess() {
+	if d.isSkippable("resource", "aws_instance") {
 		return
 	}
 
-	validAmi := map[string]bool{}
 	resp, err := d.AwsClient.DescribeImages()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
 		return
 	}
-	for _, image := range resp.Images {
-		validAmi[*image.ImageId] = true
-	}
 
+	for _, image := range resp.Images {
+		d.amis[*image.ImageId] = true
+	}
+}
+
+func (d *AwsInstanceInvalidAMIDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_instance").Items {
 			amiToken, err := hclLiteralToken(item, "ami")
@@ -43,7 +49,7 @@ func (d *AwsInstanceInvalidAMIDetector) Detect(issues *[]*issue.Issue) {
 				continue
 			}
 
-			if !validAmi[ami] {
+			if !d.amis[ami] {
 				issue := &issue.Issue{
 					Type:    "ERROR",
 					Message: fmt.Sprintf("\"%s\" is invalid AMI.", ami),

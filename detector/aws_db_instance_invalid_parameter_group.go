@@ -8,28 +8,34 @@ import (
 
 type AwsDBInstanceInvalidParameterGroupDetector struct {
 	*Detector
+	parameterGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstanceInvalidParameterGroupDetector() *AwsDBInstanceInvalidParameterGroupDetector {
-	return &AwsDBInstanceInvalidParameterGroupDetector{d}
+	return &AwsDBInstanceInvalidParameterGroupDetector{
+		Detector:        d,
+		parameterGroups: map[string]bool{},
+	}
 }
 
-func (d *AwsDBInstanceInvalidParameterGroupDetector) Detect(issues *[]*issue.Issue) {
-	if !d.isDeepCheck("resource", "aws_db_instance") {
+func (d *AwsDBInstanceInvalidParameterGroupDetector) PreProcess() {
+	if d.isSkippable("resource", "aws_db_instance") {
 		return
 	}
 
-	validDBParameterGroups := map[string]bool{}
 	resp, err := d.AwsClient.DescribeDBParameterGroups()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
 		return
 	}
-	for _, parameterGroup := range resp.DBParameterGroups {
-		validDBParameterGroups[*parameterGroup.DBParameterGroupName] = true
-	}
 
+	for _, parameterGroup := range resp.DBParameterGroups {
+		d.parameterGroups[*parameterGroup.DBParameterGroupName] = true
+	}
+}
+
+func (d *AwsDBInstanceInvalidParameterGroupDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_db_instance").Items {
 			parameterGroupToken, err := hclLiteralToken(item, "parameter_group_name")
@@ -43,7 +49,7 @@ func (d *AwsDBInstanceInvalidParameterGroupDetector) Detect(issues *[]*issue.Iss
 				continue
 			}
 
-			if !validDBParameterGroups[parameterGroup] {
+			if !d.parameterGroups[parameterGroup] {
 				issue := &issue.Issue{
 					Type:    "ERROR",
 					Message: fmt.Sprintf("\"%s\" is invalid parameter group name.", parameterGroup),

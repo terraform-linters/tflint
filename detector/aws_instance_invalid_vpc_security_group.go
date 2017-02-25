@@ -9,28 +9,34 @@ import (
 
 type AwsInstanceInvalidVPCSecurityGroupDetector struct {
 	*Detector
+	securityGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidVPCSecurityGroupDetector() *AwsInstanceInvalidVPCSecurityGroupDetector {
-	return &AwsInstanceInvalidVPCSecurityGroupDetector{d}
+	return &AwsInstanceInvalidVPCSecurityGroupDetector{
+		Detector:       d,
+		securityGroups: map[string]bool{},
+	}
 }
 
-func (d *AwsInstanceInvalidVPCSecurityGroupDetector) Detect(issues *[]*issue.Issue) {
-	if !d.isDeepCheck("resource", "aws_instance") {
+func (d *AwsInstanceInvalidVPCSecurityGroupDetector) PreProcess() {
+	if d.isSkippable("resource", "aws_instance") {
 		return
 	}
 
-	validSecurityGroups := map[string]bool{}
 	resp, err := d.AwsClient.DescribeSecurityGroups()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
 		return
 	}
-	for _, securityGroup := range resp.SecurityGroups {
-		validSecurityGroups[*securityGroup.GroupId] = true
-	}
 
+	for _, securityGroup := range resp.SecurityGroups {
+		d.securityGroups[*securityGroup.GroupId] = true
+	}
+}
+
+func (d *AwsInstanceInvalidVPCSecurityGroupDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_instance").Items {
 			var varToken token.Token
@@ -58,7 +64,7 @@ func (d *AwsInstanceInvalidVPCSecurityGroupDetector) Detect(issues *[]*issue.Iss
 					continue
 				}
 
-				if !validSecurityGroups[securityGroup] {
+				if !d.securityGroups[securityGroup] {
 					issue := &issue.Issue{
 						Type:    "ERROR",
 						Message: fmt.Sprintf("\"%s\" is invalid security group.", securityGroup),

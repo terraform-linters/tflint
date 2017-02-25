@@ -8,14 +8,18 @@ import (
 
 type AwsDBInstanceInvalidTypeDetector struct {
 	*Detector
+	instanceTypes map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstanceInvalidTypeDetector() *AwsDBInstanceInvalidTypeDetector {
-	return &AwsDBInstanceInvalidTypeDetector{d}
+	return &AwsDBInstanceInvalidTypeDetector{
+		Detector:      d,
+		instanceTypes: map[string]bool{},
+	}
 }
 
-func (d *AwsDBInstanceInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
-	var validInstanceType = map[string]bool{
+func (d *AwsDBInstanceInvalidTypeDetector) PreProcess() {
+	d.instanceTypes = map[string]bool{
 		"db.t2.micro":    true,
 		"db.t2.small":    true,
 		"db.t2.medium":   true,
@@ -44,7 +48,9 @@ func (d *AwsDBInstanceInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
 		"db.m2.4xlarge":  true,
 		"db.cr1.8xlarge": true,
 	}
+}
 
+func (d *AwsDBInstanceInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_db_instance").Items {
 			instanceTypeToken, err := hclLiteralToken(item, "instance_class")
@@ -58,7 +64,7 @@ func (d *AwsDBInstanceInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
 				continue
 			}
 
-			if !validInstanceType[instanceType] {
+			if !d.instanceTypes[instanceType] {
 				issue := &issue.Issue{
 					Type:    "ERROR",
 					Message: fmt.Sprintf("\"%s\" is invalid instance type.", instanceType),

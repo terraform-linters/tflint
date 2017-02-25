@@ -8,28 +8,34 @@ import (
 
 type AwsDBInstanceInvalidDBSubnetGroupDetector struct {
 	*Detector
+	subnetGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstanceInvalidDBSubnetGroupDetector() *AwsDBInstanceInvalidDBSubnetGroupDetector {
-	return &AwsDBInstanceInvalidDBSubnetGroupDetector{d}
+	return &AwsDBInstanceInvalidDBSubnetGroupDetector{
+		Detector:     d,
+		subnetGroups: map[string]bool{},
+	}
 }
 
-func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) Detect(issues *[]*issue.Issue) {
-	if !d.isDeepCheck("resource", "aws_db_instance") {
+func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) PreProcess() {
+	if d.isSkippable("resource", "aws_db_instance") {
 		return
 	}
 
-	validDBSubnetGroups := map[string]bool{}
 	resp, err := d.AwsClient.DescribeDBSubnetGroups()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
 		return
 	}
-	for _, subnetGroup := range resp.DBSubnetGroups {
-		validDBSubnetGroups[*subnetGroup.DBSubnetGroupName] = true
-	}
 
+	for _, subnetGroup := range resp.DBSubnetGroups {
+		d.subnetGroups[*subnetGroup.DBSubnetGroupName] = true
+	}
+}
+
+func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_db_instance").Items {
 			subnetGroupToken, err := hclLiteralToken(item, "db_subnet_group_name")
@@ -43,7 +49,7 @@ func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) Detect(issues *[]*issue.Issu
 				continue
 			}
 
-			if !validDBSubnetGroups[subnetGroup] {
+			if !d.subnetGroups[subnetGroup] {
 				issue := &issue.Issue{
 					Type:    "ERROR",
 					Message: fmt.Sprintf("\"%s\" is invalid DB subnet group name.", subnetGroup),

@@ -8,28 +8,34 @@ import (
 
 type AwsElastiCacheClusterInvalidSubnetGroupDetector struct {
 	*Detector
+	cacheSubnetGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterInvalidSubnetGroupDetector() *AwsElastiCacheClusterInvalidSubnetGroupDetector {
-	return &AwsElastiCacheClusterInvalidSubnetGroupDetector{d}
+	return &AwsElastiCacheClusterInvalidSubnetGroupDetector{
+		Detector:          d,
+		cacheSubnetGroups: map[string]bool{},
+	}
 }
 
-func (d *AwsElastiCacheClusterInvalidSubnetGroupDetector) Detect(issues *[]*issue.Issue) {
-	if !d.isDeepCheck("resource", "aws_elasticache_cluster") {
+func (d *AwsElastiCacheClusterInvalidSubnetGroupDetector) PreProcess() {
+	if d.isSkippable("resource", "aws_elasticache_cluster") {
 		return
 	}
 
-	validCacheSubnetGroups := map[string]bool{}
 	resp, err := d.AwsClient.DescribeCacheSubnetGroups()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
 		return
 	}
-	for _, subnetGroup := range resp.CacheSubnetGroups {
-		validCacheSubnetGroups[*subnetGroup.CacheSubnetGroupName] = true
-	}
 
+	for _, subnetGroup := range resp.CacheSubnetGroups {
+		d.cacheSubnetGroups[*subnetGroup.CacheSubnetGroupName] = true
+	}
+}
+
+func (d *AwsElastiCacheClusterInvalidSubnetGroupDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_elasticache_cluster").Items {
 			subnetGroupToken, err := hclLiteralToken(item, "subnet_group_name")
@@ -43,7 +49,7 @@ func (d *AwsElastiCacheClusterInvalidSubnetGroupDetector) Detect(issues *[]*issu
 				continue
 			}
 
-			if !validCacheSubnetGroups[subnetGroup] {
+			if !d.cacheSubnetGroups[subnetGroup] {
 				issue := &issue.Issue{
 					Type:    "ERROR",
 					Message: fmt.Sprintf("\"%s\" is invalid subnet group name.", subnetGroup),

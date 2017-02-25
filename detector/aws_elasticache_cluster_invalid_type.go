@@ -8,14 +8,18 @@ import (
 
 type AwsElastiCacheClusterInvalidTypeDetector struct {
 	*Detector
+	nodeTypes map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterInvalidTypeDetector() *AwsElastiCacheClusterInvalidTypeDetector {
-	return &AwsElastiCacheClusterInvalidTypeDetector{d}
+	return &AwsElastiCacheClusterInvalidTypeDetector{
+		Detector:  d,
+		nodeTypes: map[string]bool{},
+	}
 }
 
-func (d *AwsElastiCacheClusterInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
-	var validNodeType = map[string]bool{
+func (d *AwsElastiCacheClusterInvalidTypeDetector) PreProcess() {
+	d.nodeTypes = map[string]bool{
 		"cache.t2.micro":    true,
 		"cache.t2.small":    true,
 		"cache.t2.medium":   true,
@@ -43,7 +47,9 @@ func (d *AwsElastiCacheClusterInvalidTypeDetector) Detect(issues *[]*issue.Issue
 		"cache.c1.xlarge":   true,
 		"cache.t1.micro":    true,
 	}
+}
 
+func (d *AwsElastiCacheClusterInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_elasticache_cluster").Items {
 			nodeTypeToken, err := hclLiteralToken(item, "node_type")
@@ -57,7 +63,7 @@ func (d *AwsElastiCacheClusterInvalidTypeDetector) Detect(issues *[]*issue.Issue
 				continue
 			}
 
-			if !validNodeType[nodeType] {
+			if !d.nodeTypes[nodeType] {
 				issue := &issue.Issue{
 					Type:    "ERROR",
 					Message: fmt.Sprintf("\"%s\" is invalid node type.", nodeType),

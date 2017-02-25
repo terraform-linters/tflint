@@ -9,30 +9,36 @@ import (
 
 type AwsELBInvalidInstanceDetector struct {
 	*Detector
+	instances map[string]bool
 }
 
 func (d *Detector) CreateAwsELBInvalidInstanceDetector() *AwsELBInvalidInstanceDetector {
-	return &AwsELBInvalidInstanceDetector{d}
+	return &AwsELBInvalidInstanceDetector{
+		Detector:  d,
+		instances: map[string]bool{},
+	}
 }
 
-func (d *AwsELBInvalidInstanceDetector) Detect(issues *[]*issue.Issue) {
-	if !d.isDeepCheck("resource", "aws_elb") {
+func (d *AwsELBInvalidInstanceDetector) PreProcess() {
+	if d.isSkippable("resource", "aws_elb") {
 		return
 	}
 
-	validInstances := map[string]bool{}
 	resp, err := d.AwsClient.DescribeInstances()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
 		return
 	}
+
 	for _, reservation := range resp.Reservations {
 		for _, instance := range reservation.Instances {
-			validInstances[*instance.InstanceId] = true
+			d.instances[*instance.InstanceId] = true
 		}
 	}
+}
 
+func (d *AwsELBInvalidInstanceDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_elb").Items {
 			var varToken token.Token
@@ -60,7 +66,7 @@ func (d *AwsELBInvalidInstanceDetector) Detect(issues *[]*issue.Issue) {
 					continue
 				}
 
-				if !validInstances[instance] {
+				if !d.instances[instance] {
 					issue := &issue.Issue{
 						Type:    "ERROR",
 						Message: fmt.Sprintf("\"%s\" is invalid instance.", instance),

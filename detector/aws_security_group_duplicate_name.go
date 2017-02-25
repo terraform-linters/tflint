@@ -9,28 +9,48 @@ import (
 
 type AwsSecurityGroupDuplicateDetector struct {
 	*Detector
+	securiyGroups map[string]bool
+	defaultVpc    string
 }
 
 func (d *Detector) CreateAwsSecurityGroupDuplicateDetector() *AwsSecurityGroupDuplicateDetector {
-	return &AwsSecurityGroupDuplicateDetector{d}
+	return &AwsSecurityGroupDuplicateDetector{
+		Detector:      d,
+		securiyGroups: map[string]bool{},
+		defaultVpc:    "",
+	}
 }
 
-func (d *AwsSecurityGroupDuplicateDetector) Detect(issues *[]*issue.Issue) {
-	if !d.isDeepCheck("resource", "aws_security_group") {
+func (d *AwsSecurityGroupDuplicateDetector) PreProcess() {
+	if d.isSkippable("resource", "aws_security_group") {
 		return
 	}
 
-	existSecuriyGroupNames := map[string]bool{}
-	resp, err := d.AwsClient.DescribeSecurityGroups()
+	securityGroupsResp, err := d.AwsClient.DescribeSecurityGroups()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
 		return
 	}
-	for _, securityGroup := range resp.SecurityGroups {
-		existSecuriyGroupNames[*securityGroup.VpcId+"."+*securityGroup.GroupName] = true
+	vpcsResp, err := d.AwsClient.DescribeVpcs()
+	if err != nil {
+		d.Logger.Error(err)
+		d.Error = true
+		return
 	}
 
+	for _, securityGroup := range securityGroupsResp.SecurityGroups {
+		d.securiyGroups[*securityGroup.VpcId+"."+*securityGroup.GroupName] = true
+	}
+	for _, vpcResource := range vpcsResp.Vpcs {
+		if *vpcResource.IsDefault {
+			d.defaultVpc = *vpcResource.VpcId
+			break
+		}
+	}
+}
+
+func (d *AwsSecurityGroupDuplicateDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_security_group").Items {
 			nameToken, err := hclLiteralToken(item, "name")
@@ -50,7 +70,7 @@ func (d *AwsSecurityGroupDuplicateDetector) Detect(issues *[]*issue.Issue) {
 				continue
 			}
 
-			if existSecuriyGroupNames[vpc+"."+name] && !d.State.Exists("aws_security_group", hclObjectKeyText(item)) {
+			if d.securiyGroups[vpc+"."+name] && !d.State.Exists("aws_security_group", hclObjectKeyText(item)) {
 				issue := &issue.Issue{
 					Type:    "ERROR",
 					Message: fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),
@@ -69,16 +89,7 @@ func (d *AwsSecurityGroupDuplicateDetector) fetchVpcId(item *ast.ObjectItem) (st
 	if err != nil {
 		d.Logger.Error(err)
 		// "vpc_id" is optional. If omitted, use default vpc_id.
-		resp, err := d.AwsClient.DescribeVpcs()
-		if err != nil {
-			return "", err
-		}
-		for _, vpcResource := range resp.Vpcs {
-			if *vpcResource.IsDefault {
-				vpc = *vpcResource.VpcId
-				break
-			}
-		}
+		vpc = d.defaultVpc
 	} else {
 		vpc, err = d.evalToString(vpcToken.Text)
 		if err != nil {

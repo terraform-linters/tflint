@@ -8,14 +8,18 @@ import (
 
 type AwsElastiCacheClusterPreviousTypeDetector struct {
 	*Detector
+	previousNodeTypes map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterPreviousTypeDetector() *AwsElastiCacheClusterPreviousTypeDetector {
-	return &AwsElastiCacheClusterPreviousTypeDetector{d}
+	return &AwsElastiCacheClusterPreviousTypeDetector{
+		Detector:          d,
+		previousNodeTypes: map[string]bool{},
+	}
 }
 
-func (d *AwsElastiCacheClusterPreviousTypeDetector) Detect(issues *[]*issue.Issue) {
-	var previousNodeType = map[string]bool{
+func (d *AwsElastiCacheClusterPreviousTypeDetector) PreProcess() {
+	d.previousNodeTypes = map[string]bool{
 		"cache.m1.small":   true,
 		"cache.m1.medium":  true,
 		"cache.m1.large":   true,
@@ -26,7 +30,9 @@ func (d *AwsElastiCacheClusterPreviousTypeDetector) Detect(issues *[]*issue.Issu
 		"cache.c1.xlarge":  true,
 		"cache.t1.micro":   true,
 	}
+}
 
+func (d *AwsElastiCacheClusterPreviousTypeDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_elasticache_cluster").Items {
 			nodeTypeToken, err := hclLiteralToken(item, "node_type")
@@ -40,7 +46,7 @@ func (d *AwsElastiCacheClusterPreviousTypeDetector) Detect(issues *[]*issue.Issu
 				continue
 			}
 
-			if previousNodeType[nodeType] {
+			if d.previousNodeTypes[nodeType] {
 				issue := &issue.Issue{
 					Type:    "WARNING",
 					Message: fmt.Sprintf("\"%s\" is previous generation node type.", nodeType),

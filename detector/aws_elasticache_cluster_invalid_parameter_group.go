@@ -8,28 +8,34 @@ import (
 
 type AwsElastiCacheClusterInvalidParameterGroupDetector struct {
 	*Detector
+	cacheParameterGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterInvalidParameterGroupDetector() *AwsElastiCacheClusterInvalidParameterGroupDetector {
-	return &AwsElastiCacheClusterInvalidParameterGroupDetector{d}
+	return &AwsElastiCacheClusterInvalidParameterGroupDetector{
+		Detector:             d,
+		cacheParameterGroups: map[string]bool{},
+	}
 }
 
-func (d *AwsElastiCacheClusterInvalidParameterGroupDetector) Detect(issues *[]*issue.Issue) {
-	if !d.isDeepCheck("resource", "aws_elasticache_cluster") {
+func (d *AwsElastiCacheClusterInvalidParameterGroupDetector) PreProcess() {
+	if d.isSkippable("resource", "aws_elasticache_cluster") {
 		return
 	}
 
-	validCacheParameterGroups := map[string]bool{}
 	resp, err := d.AwsClient.DescribeCacheParameterGroups()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
 		return
 	}
-	for _, parameterGroup := range resp.CacheParameterGroups {
-		validCacheParameterGroups[*parameterGroup.CacheParameterGroupName] = true
-	}
 
+	for _, parameterGroup := range resp.CacheParameterGroups {
+		d.cacheParameterGroups[*parameterGroup.CacheParameterGroupName] = true
+	}
+}
+
+func (d *AwsElastiCacheClusterInvalidParameterGroupDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_elasticache_cluster").Items {
 			parameterGroupToken, err := hclLiteralToken(item, "parameter_group_name")
@@ -43,7 +49,7 @@ func (d *AwsElastiCacheClusterInvalidParameterGroupDetector) Detect(issues *[]*i
 				continue
 			}
 
-			if !validCacheParameterGroups[parameterGroup] {
+			if !d.cacheParameterGroups[parameterGroup] {
 				issue := &issue.Issue{
 					Type:    "ERROR",
 					Message: fmt.Sprintf("\"%s\" is invalid parameter group name.", parameterGroup),

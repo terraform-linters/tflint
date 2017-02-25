@@ -8,28 +8,34 @@ import (
 
 type AwsInstanceInvalidKeyNameDetector struct {
 	*Detector
+	keypairs map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidKeyNameDetector() *AwsInstanceInvalidKeyNameDetector {
-	return &AwsInstanceInvalidKeyNameDetector{d}
+	return &AwsInstanceInvalidKeyNameDetector{
+		Detector: d,
+		keypairs: map[string]bool{},
+	}
 }
 
-func (d *AwsInstanceInvalidKeyNameDetector) Detect(issues *[]*issue.Issue) {
-	if !d.isDeepCheck("resource", "aws_instance") {
+func (d *AwsInstanceInvalidKeyNameDetector) PreProcess() {
+	if d.isSkippable("resource", "aws_instance") {
 		return
 	}
 
-	validKeyNames := map[string]bool{}
 	resp, err := d.AwsClient.DescribeKeyPairs()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
 		return
 	}
-	for _, keyPair := range resp.KeyPairs {
-		validKeyNames[*keyPair.KeyName] = true
-	}
 
+	for _, keyPair := range resp.KeyPairs {
+		d.keypairs[*keyPair.KeyName] = true
+	}
+}
+
+func (d *AwsInstanceInvalidKeyNameDetector) Detect(issues *[]*issue.Issue) {
 	for filename, list := range d.ListMap {
 		for _, item := range list.Filter("resource", "aws_instance").Items {
 			keyNameToken, err := hclLiteralToken(item, "key_name")
@@ -43,7 +49,7 @@ func (d *AwsInstanceInvalidKeyNameDetector) Detect(issues *[]*issue.Issue) {
 				continue
 			}
 
-			if !validKeyNames[keyName] {
+			if !d.keypairs[keyName] {
 				issue := &issue.Issue{
 					Type:    "ERROR",
 					Message: fmt.Sprintf("\"%s\" is invalid key name.", keyName),
