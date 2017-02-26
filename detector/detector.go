@@ -144,7 +144,7 @@ func (d *Detector) Detect() []*issue.Issue {
 		creator := reflect.ValueOf(d).MethodByName(creatorMethod)
 		detector := creator.Call([]reflect.Value{})[0]
 
-		if reflect.Indirect(detector).FieldByName("DeepCheck").Bool() && !d.Config.DeepCheck {
+		if d.isSkip(reflect.Indirect(detector).FieldByName("DeepCheck").Bool(), reflect.Indirect(detector).FieldByName("Target").String()) {
 			d.Logger.Info("skip this rule.")
 			continue
 		}
@@ -172,7 +172,7 @@ func (d *Detector) Detect() []*issue.Issue {
 			creator := reflect.ValueOf(moduleDetector).MethodByName(creatorMethod)
 			detector := creator.Call([]reflect.Value{})[0]
 
-			if reflect.Indirect(detector).FieldByName("DeepCheck").Bool() && !d.Config.DeepCheck {
+			if d.isSkip(reflect.Indirect(detector).FieldByName("DeepCheck").Bool(), reflect.Indirect(detector).FieldByName("Target").String()) {
 				d.Logger.Info("skip this rule.")
 				continue
 			}
@@ -233,14 +233,14 @@ func (d *Detector) evalToStringTokens(t token.Token) ([]token.Token, error) {
 	return tokens, nil
 }
 
-func (d *Detector) isSkippable(resources ...string) bool {
-	if !d.Config.DeepCheck {
-		d.Logger.Info("skip this rule.")
+func (d *Detector) isSkip(deepCheck bool, target string) bool {
+	if deepCheck && !d.Config.DeepCheck {
 		return true
 	}
+
 	targetResources := 0
 	for _, list := range d.ListMap {
-		targetResources += len(list.Filter(resources...).Items)
+		targetResources += len(list.Filter("resource", target).Items)
 	}
 	if targetResources == 0 {
 		d.Logger.Info("target resources are not found.")
