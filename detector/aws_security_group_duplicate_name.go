@@ -52,36 +52,32 @@ func (d *AwsSecurityGroupDuplicateDetector) PreProcess() {
 	}
 }
 
-func (d *AwsSecurityGroupDuplicateDetector) Detect(issues *[]*issue.Issue) {
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_security_group").Items {
-			nameToken, err := hclLiteralToken(item, "name")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			name, err := d.evalToString(nameToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			var vpc string
-			vpc, err = d.fetchVpcId(item)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsSecurityGroupDuplicateDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	nameToken, err := hclLiteralToken(item, "name")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	name, err := d.evalToString(nameToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	var vpc string
+	vpc, err = d.fetchVpcId(item)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if d.securiyGroups[vpc+"."+name] && !d.State.Exists("aws_security_group", hclObjectKeyText(item)) {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),
-					Line:    nameToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if d.securiyGroups[vpc+"."+name] && !d.State.Exists(d.Target, hclObjectKeyText(item)) {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),
+			Line:    nameToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }
 

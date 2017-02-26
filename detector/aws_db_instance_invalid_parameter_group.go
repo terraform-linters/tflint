@@ -3,6 +3,7 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -37,29 +38,25 @@ func (d *AwsDBInstanceInvalidParameterGroupDetector) PreProcess() {
 	}
 }
 
-func (d *AwsDBInstanceInvalidParameterGroupDetector) Detect(issues *[]*issue.Issue) {
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_db_instance").Items {
-			parameterGroupToken, err := hclLiteralToken(item, "parameter_group_name")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			parameterGroup, err := d.evalToString(parameterGroupToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsDBInstanceInvalidParameterGroupDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	parameterGroupToken, err := hclLiteralToken(item, "parameter_group_name")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	parameterGroup, err := d.evalToString(parameterGroupToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if !d.parameterGroups[parameterGroup] {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("\"%s\" is invalid parameter group name.", parameterGroup),
-					Line:    parameterGroupToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if !d.parameterGroups[parameterGroup] {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is invalid parameter group name.", parameterGroup),
+			Line:    parameterGroupToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }

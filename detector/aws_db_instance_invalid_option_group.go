@@ -3,6 +3,7 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -37,29 +38,25 @@ func (d *AwsDBInstanceInvalidOptionGroupDetector) PreProcess() {
 	}
 }
 
-func (d *AwsDBInstanceInvalidOptionGroupDetector) Detect(issues *[]*issue.Issue) {
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_db_instance").Items {
-			optionGroupToken, err := hclLiteralToken(item, "option_group_name")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			optionGroup, err := d.evalToString(optionGroupToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsDBInstanceInvalidOptionGroupDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	optionGroupToken, err := hclLiteralToken(item, "option_group_name")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	optionGroup, err := d.evalToString(optionGroupToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if !d.optionGroups[optionGroup] {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("\"%s\" is invalid option group name.", optionGroup),
-					Line:    optionGroupToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if !d.optionGroups[optionGroup] {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is invalid option group name.", optionGroup),
+			Line:    optionGroupToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }

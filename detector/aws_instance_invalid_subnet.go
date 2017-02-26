@@ -3,6 +3,7 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -37,29 +38,25 @@ func (d *AwsInstanceInvalidSubnetDetector) PreProcess() {
 	}
 }
 
-func (d *AwsInstanceInvalidSubnetDetector) Detect(issues *[]*issue.Issue) {
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_instance").Items {
-			subnetToken, err := hclLiteralToken(item, "subnet_id")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			subnet, err := d.evalToString(subnetToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsInstanceInvalidSubnetDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	subnetToken, err := hclLiteralToken(item, "subnet_id")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	subnet, err := d.evalToString(subnetToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if !d.subnets[subnet] {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("\"%s\" is invalid subnet ID.", subnet),
-					Line:    subnetToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if !d.subnets[subnet] {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is invalid subnet ID.", subnet),
+			Line:    subnetToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }

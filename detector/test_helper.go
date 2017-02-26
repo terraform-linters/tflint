@@ -30,12 +30,12 @@ func (d *Detector) CreateTestDetector() *TestDetector {
 	}
 }
 
-func (d *TestDetector) Detect(issues *[]*issue.Issue) {
+func (d *TestDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
 	*issues = append(*issues, &issue.Issue{
-		Type:    "TEST",
+		Type:    d.IssueType,
 		Message: "this is test method",
 		Line:    1,
-		File:    "",
+		File:    file,
 	})
 }
 
@@ -64,7 +64,15 @@ func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string,
 	if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
 		preprocess.Call([]reflect.Value{})
 	}
-	detect := detector.MethodByName("Detect")
-	detect.Call([]reflect.Value{reflect.ValueOf(issues)})
+	for file, list := range listMap {
+		for _, item := range list.Filter("resource", reflect.Indirect(detector).FieldByName("Target").String()).Items {
+			detect := detector.MethodByName("Detect")
+			detect.Call([]reflect.Value{
+				reflect.ValueOf(file),
+				reflect.ValueOf(item),
+				reflect.ValueOf(issues),
+			})
+		}
+	}
 	return nil
 }

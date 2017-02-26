@@ -3,6 +3,7 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -55,29 +56,25 @@ func (d *AwsElastiCacheClusterInvalidTypeDetector) PreProcess() {
 	}
 }
 
-func (d *AwsElastiCacheClusterInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_elasticache_cluster").Items {
-			nodeTypeToken, err := hclLiteralToken(item, "node_type")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			nodeType, err := d.evalToString(nodeTypeToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsElastiCacheClusterInvalidTypeDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	nodeTypeToken, err := hclLiteralToken(item, "node_type")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	nodeType, err := d.evalToString(nodeTypeToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if !d.nodeTypes[nodeType] {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("\"%s\" is invalid node type.", nodeType),
-					Line:    nodeTypeToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if !d.nodeTypes[nodeType] {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is invalid node type.", nodeType),
+			Line:    nodeTypeToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }

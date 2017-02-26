@@ -3,6 +3,7 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -37,29 +38,25 @@ func (d *AwsElastiCacheClusterDuplicateIDDetector) PreProcess() {
 	}
 }
 
-func (d *AwsElastiCacheClusterDuplicateIDDetector) Detect(issues *[]*issue.Issue) {
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_elasticache_cluster").Items {
-			idToken, err := hclLiteralToken(item, "cluster_id")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			id, err := d.evalToString(idToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsElastiCacheClusterDuplicateIDDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	idToken, err := hclLiteralToken(item, "cluster_id")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	id, err := d.evalToString(idToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if d.cacheClusters[id] && !d.State.Exists("aws_elasticache_cluster", hclObjectKeyText(item)) {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("\"%s\" is duplicate Cluster ID. It must be unique.", id),
-					Line:    idToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if d.cacheClusters[id] && !d.State.Exists(d.Target, hclObjectKeyText(item)) {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is duplicate Cluster ID. It must be unique.", id),
+			Line:    idToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }

@@ -3,6 +3,7 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -38,29 +39,25 @@ func (d *AwsElastiCacheClusterPreviousTypeDetector) PreProcess() {
 	}
 }
 
-func (d *AwsElastiCacheClusterPreviousTypeDetector) Detect(issues *[]*issue.Issue) {
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_elasticache_cluster").Items {
-			nodeTypeToken, err := hclLiteralToken(item, "node_type")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			nodeType, err := d.evalToString(nodeTypeToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsElastiCacheClusterPreviousTypeDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	nodeTypeToken, err := hclLiteralToken(item, "node_type")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	nodeType, err := d.evalToString(nodeTypeToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if d.previousNodeTypes[nodeType] {
-				issue := &issue.Issue{
-					Type:    "WARNING",
-					Message: fmt.Sprintf("\"%s\" is previous generation node type.", nodeType),
-					Line:    nodeTypeToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if d.previousNodeTypes[nodeType] {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is previous generation node type.", nodeType),
+			Line:    nodeTypeToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }

@@ -3,6 +3,7 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -96,29 +97,25 @@ func (d *AwsInstanceInvalidTypeDetector) PreProcess() {
 	}
 }
 
-func (d *AwsInstanceInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_instance").Items {
-			instanceTypeToken, err := hclLiteralToken(item, "instance_type")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			instanceType, err := d.evalToString(instanceTypeToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsInstanceInvalidTypeDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	instanceTypeToken, err := hclLiteralToken(item, "instance_type")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	instanceType, err := d.evalToString(instanceTypeToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if !d.instanceTypes[instanceType] {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("\"%s\" is invalid instance type.", instanceType),
-					Line:    instanceTypeToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if !d.instanceTypes[instanceType] {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is invalid instance type.", instanceType),
+			Line:    instanceTypeToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }

@@ -3,6 +3,7 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -37,29 +38,25 @@ func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) PreProcess() {
 	}
 }
 
-func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) Detect(issues *[]*issue.Issue) {
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_db_instance").Items {
-			subnetGroupToken, err := hclLiteralToken(item, "db_subnet_group_name")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			subnetGroup, err := d.evalToString(subnetGroupToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	subnetGroupToken, err := hclLiteralToken(item, "db_subnet_group_name")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	subnetGroup, err := d.evalToString(subnetGroupToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if !d.subnetGroups[subnetGroup] {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("\"%s\" is invalid DB subnet group name.", subnetGroup),
-					Line:    subnetGroupToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if !d.subnetGroups[subnetGroup] {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is invalid DB subnet group name.", subnetGroup),
+			Line:    subnetGroupToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }

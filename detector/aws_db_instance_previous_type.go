@@ -3,6 +3,7 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -38,29 +39,25 @@ func (d *AwsDBInstancePreviousTypeDetector) PreProcess() {
 	}
 }
 
-func (d *AwsDBInstancePreviousTypeDetector) Detect(issues *[]*issue.Issue) {
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_db_instance").Items {
-			instanceTypeToken, err := hclLiteralToken(item, "instance_class")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			instanceType, err := d.evalToString(instanceTypeToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsDBInstancePreviousTypeDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	instanceTypeToken, err := hclLiteralToken(item, "instance_class")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	instanceType, err := d.evalToString(instanceTypeToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if d.previousInstanceTypes[instanceType] {
-				issue := &issue.Issue{
-					Type:    "WARNING",
-					Message: fmt.Sprintf("\"%s\" is previous generation instance type.", instanceType),
-					Line:    instanceTypeToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if d.previousInstanceTypes[instanceType] {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is previous generation instance type.", instanceType),
+			Line:    instanceTypeToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }

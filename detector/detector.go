@@ -151,8 +151,16 @@ func (d *Detector) Detect() []*issue.Issue {
 		if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
 			preprocess.Call([]reflect.Value{})
 		}
-		detect := detector.MethodByName("Detect")
-		detect.Call([]reflect.Value{reflect.ValueOf(&issues)})
+		for file, list := range d.ListMap {
+			for _, item := range list.Filter("resource", reflect.Indirect(detector).FieldByName("Target").String()).Items {
+				detect := detector.MethodByName("Detect")
+				detect.Call([]reflect.Value{
+					reflect.ValueOf(file),
+					reflect.ValueOf(item),
+					reflect.ValueOf(&issues),
+				})
+			}
+		}
 
 		for name, m := range modules {
 			if d.Config.IgnoreModule[m.Source] {
@@ -179,8 +187,16 @@ func (d *Detector) Detect() []*issue.Issue {
 			if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
 				preprocess.Call([]reflect.Value{})
 			}
-			detect := detector.MethodByName("Detect")
-			detect.Call([]reflect.Value{reflect.ValueOf(&issues)})
+			for file, list := range d.ListMap {
+				for _, item := range list.Filter("resource", reflect.Indirect(detector).FieldByName("Target").String()).Items {
+					detect := detector.MethodByName("Detect")
+					detect.Call([]reflect.Value{
+						reflect.ValueOf(file),
+						reflect.ValueOf(item),
+						reflect.ValueOf(&issues),
+					})
+				}
+			}
 		}
 	}
 

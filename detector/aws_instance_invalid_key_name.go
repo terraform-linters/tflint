@@ -3,6 +3,7 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -37,29 +38,25 @@ func (d *AwsInstanceInvalidKeyNameDetector) PreProcess() {
 	}
 }
 
-func (d *AwsInstanceInvalidKeyNameDetector) Detect(issues *[]*issue.Issue) {
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_instance").Items {
-			keyNameToken, err := hclLiteralToken(item, "key_name")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			keyName, err := d.evalToString(keyNameToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsInstanceInvalidKeyNameDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	keyNameToken, err := hclLiteralToken(item, "key_name")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	keyName, err := d.evalToString(keyNameToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if !d.keypairs[keyName] {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("\"%s\" is invalid key name.", keyName),
-					Line:    keyNameToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if !d.keypairs[keyName] {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is invalid key name.", keyName),
+			Line:    keyNameToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }

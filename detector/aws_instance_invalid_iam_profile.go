@@ -3,6 +3,7 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -37,29 +38,25 @@ func (d *AwsInstanceInvalidIAMProfileDetector) PreProcess() {
 	}
 }
 
-func (d *AwsInstanceInvalidIAMProfileDetector) Detect(issues *[]*issue.Issue) {
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_instance").Items {
-			iamProfileToken, err := hclLiteralToken(item, "iam_instance_profile")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			iamProfile, err := d.evalToString(iamProfileToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsInstanceInvalidIAMProfileDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	iamProfileToken, err := hclLiteralToken(item, "iam_instance_profile")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	iamProfile, err := d.evalToString(iamProfileToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if !d.profiles[iamProfile] {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("\"%s\" is invalid IAM profile name.", iamProfile),
-					Line:    iamProfileToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if !d.profiles[iamProfile] {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is invalid IAM profile name.", iamProfile),
+			Line:    iamProfileToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }
