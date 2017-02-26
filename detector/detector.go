@@ -141,26 +141,7 @@ func (d *Detector) Detect() []*issue.Issue {
 			continue
 		}
 		d.Logger.Info(fmt.Sprintf("detect by `%s`", ruleName))
-		creator := reflect.ValueOf(d).MethodByName(creatorMethod)
-		detector := creator.Call([]reflect.Value{})[0]
-
-		if d.isSkip(reflect.Indirect(detector).FieldByName("DeepCheck").Bool(), reflect.Indirect(detector).FieldByName("Target").String()) {
-			d.Logger.Info("skip this rule.")
-			continue
-		}
-		if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
-			preprocess.Call([]reflect.Value{})
-		}
-		for file, list := range d.ListMap {
-			for _, item := range list.Filter("resource", reflect.Indirect(detector).FieldByName("Target").String()).Items {
-				detect := detector.MethodByName("Detect")
-				detect.Call([]reflect.Value{
-					reflect.ValueOf(file),
-					reflect.ValueOf(item),
-					reflect.ValueOf(&issues),
-				})
-			}
-		}
+		d.detect(creatorMethod, &issues)
 
 		for name, m := range modules {
 			if d.Config.IgnoreModule[m.Source] {
@@ -177,26 +158,7 @@ func (d *Detector) Detect() []*issue.Issue {
 				Config: m.Config,
 			}
 			moduleDetector.Error = d.Error
-			creator := reflect.ValueOf(moduleDetector).MethodByName(creatorMethod)
-			detector := creator.Call([]reflect.Value{})[0]
-
-			if d.isSkip(reflect.Indirect(detector).FieldByName("DeepCheck").Bool(), reflect.Indirect(detector).FieldByName("Target").String()) {
-				d.Logger.Info("skip this rule.")
-				continue
-			}
-			if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
-				preprocess.Call([]reflect.Value{})
-			}
-			for file, list := range d.ListMap {
-				for _, item := range list.Filter("resource", reflect.Indirect(detector).FieldByName("Target").String()).Items {
-					detect := detector.MethodByName("Detect")
-					detect.Call([]reflect.Value{
-						reflect.ValueOf(file),
-						reflect.ValueOf(item),
-						reflect.ValueOf(&issues),
-					})
-				}
-			}
+			moduleDetector.detect(creatorMethod, &issues)
 		}
 	}
 
@@ -205,6 +167,29 @@ func (d *Detector) Detect() []*issue.Issue {
 
 func (d *Detector) HasError() bool {
 	return d.Error
+}
+
+func (d *Detector) detect(creatorMethod string, issues *[]*issue.Issue) {
+	creator := reflect.ValueOf(d).MethodByName(creatorMethod)
+	detector := creator.Call([]reflect.Value{})[0]
+
+	if d.isSkip(reflect.Indirect(detector).FieldByName("DeepCheck").Bool(), reflect.Indirect(detector).FieldByName("Target").String()) {
+		d.Logger.Info("skip this rule.")
+		return
+	}
+	if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
+		preprocess.Call([]reflect.Value{})
+	}
+	for file, list := range d.ListMap {
+		for _, item := range list.Filter("resource", reflect.Indirect(detector).FieldByName("Target").String()).Items {
+			detect := detector.MethodByName("Detect")
+			detect.Call([]reflect.Value{
+				reflect.ValueOf(file),
+				reflect.ValueOf(item),
+				reflect.ValueOf(issues),
+			})
+		}
+	}
 }
 
 func (d *Detector) evalToString(v string) (string, error) {
