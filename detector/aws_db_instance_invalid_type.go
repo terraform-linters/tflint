@@ -3,19 +3,30 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
 type AwsDBInstanceInvalidTypeDetector struct {
 	*Detector
+	IssueType     string
+	Target        string
+	DeepCheck     bool
+	instanceTypes map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstanceInvalidTypeDetector() *AwsDBInstanceInvalidTypeDetector {
-	return &AwsDBInstanceInvalidTypeDetector{d}
+	return &AwsDBInstanceInvalidTypeDetector{
+		Detector:      d,
+		IssueType:     issue.ERROR,
+		Target:        "aws_db_instance",
+		DeepCheck:     false,
+		instanceTypes: map[string]bool{},
+	}
 }
 
-func (d *AwsDBInstanceInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
-	var validInstanceType = map[string]bool{
+func (d *AwsDBInstanceInvalidTypeDetector) PreProcess() {
+	d.instanceTypes = map[string]bool{
 		"db.t2.micro":    true,
 		"db.t2.small":    true,
 		"db.t2.medium":   true,
@@ -44,29 +55,27 @@ func (d *AwsDBInstanceInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
 		"db.m2.4xlarge":  true,
 		"db.cr1.8xlarge": true,
 	}
+}
 
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_db_instance").Items {
-			instanceTypeToken, err := hclLiteralToken(item, "instance_class")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			instanceType, err := d.evalToString(instanceTypeToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsDBInstanceInvalidTypeDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	instanceTypeToken, err := hclLiteralToken(item, "instance_class")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	instanceType, err := d.evalToString(instanceTypeToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if !validInstanceType[instanceType] {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("\"%s\" is invalid instance type.", instanceType),
-					Line:    instanceTypeToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if !d.instanceTypes[instanceType] {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is invalid instance type.", instanceType),
+			Line:    instanceTypeToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }

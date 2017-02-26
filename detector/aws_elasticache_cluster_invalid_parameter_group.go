@@ -3,55 +3,60 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
 type AwsElastiCacheClusterInvalidParameterGroupDetector struct {
 	*Detector
+	IssueType            string
+	Target               string
+	DeepCheck            bool
+	cacheParameterGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterInvalidParameterGroupDetector() *AwsElastiCacheClusterInvalidParameterGroupDetector {
-	return &AwsElastiCacheClusterInvalidParameterGroupDetector{d}
+	return &AwsElastiCacheClusterInvalidParameterGroupDetector{
+		Detector:             d,
+		IssueType:            issue.ERROR,
+		Target:               "aws_elasticache_cluster",
+		DeepCheck:            true,
+		cacheParameterGroups: map[string]bool{},
+	}
 }
 
-func (d *AwsElastiCacheClusterInvalidParameterGroupDetector) Detect(issues *[]*issue.Issue) {
-	if !d.isDeepCheck("resource", "aws_elasticache_cluster") {
-		return
-	}
-
-	validCacheParameterGroups := map[string]bool{}
+func (d *AwsElastiCacheClusterInvalidParameterGroupDetector) PreProcess() {
 	resp, err := d.AwsClient.DescribeCacheParameterGroups()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
 		return
 	}
+
 	for _, parameterGroup := range resp.CacheParameterGroups {
-		validCacheParameterGroups[*parameterGroup.CacheParameterGroupName] = true
+		d.cacheParameterGroups[*parameterGroup.CacheParameterGroupName] = true
+	}
+}
+
+func (d *AwsElastiCacheClusterInvalidParameterGroupDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	parameterGroupToken, err := hclLiteralToken(item, "parameter_group_name")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	parameterGroup, err := d.evalToString(parameterGroupToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
 	}
 
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_elasticache_cluster").Items {
-			parameterGroupToken, err := hclLiteralToken(item, "parameter_group_name")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			parameterGroup, err := d.evalToString(parameterGroupToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-
-			if !validCacheParameterGroups[parameterGroup] {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("\"%s\" is invalid parameter group name.", parameterGroup),
-					Line:    parameterGroupToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if !d.cacheParameterGroups[parameterGroup] {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is invalid parameter group name.", parameterGroup),
+			Line:    parameterGroupToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }

@@ -3,55 +3,60 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
 type AwsInstanceInvalidIAMProfileDetector struct {
 	*Detector
+	IssueType string
+	Target    string
+	DeepCheck bool
+	profiles  map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidIAMProfileDetector() *AwsInstanceInvalidIAMProfileDetector {
-	return &AwsInstanceInvalidIAMProfileDetector{d}
+	return &AwsInstanceInvalidIAMProfileDetector{
+		Detector:  d,
+		IssueType: issue.ERROR,
+		Target:    "aws_instance",
+		DeepCheck: true,
+		profiles:  map[string]bool{},
+	}
 }
 
-func (d *AwsInstanceInvalidIAMProfileDetector) Detect(issues *[]*issue.Issue) {
-	if !d.isDeepCheck("resource", "aws_instance") {
-		return
-	}
-
-	validIamProfiles := map[string]bool{}
+func (d *AwsInstanceInvalidIAMProfileDetector) PreProcess() {
 	resp, err := d.AwsClient.ListInstanceProfiles()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
 		return
 	}
+
 	for _, iamProfile := range resp.InstanceProfiles {
-		validIamProfiles[*iamProfile.InstanceProfileName] = true
+		d.profiles[*iamProfile.InstanceProfileName] = true
+	}
+}
+
+func (d *AwsInstanceInvalidIAMProfileDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	iamProfileToken, err := hclLiteralToken(item, "iam_instance_profile")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	iamProfile, err := d.evalToString(iamProfileToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
 	}
 
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_instance").Items {
-			iamProfileToken, err := hclLiteralToken(item, "iam_instance_profile")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			iamProfile, err := d.evalToString(iamProfileToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-
-			if !validIamProfiles[iamProfile] {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("\"%s\" is invalid IAM profile name.", iamProfile),
-					Line:    iamProfileToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if !d.profiles[iamProfile] {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is invalid IAM profile name.", iamProfile),
+			Line:    iamProfileToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }

@@ -65,6 +65,8 @@ func TestDetect(t *testing.T) {
 
 		listMap := make(map[string]*ast.ObjectList)
 		root, _ := parser.Parse([]byte(`
+resource "aws_instance" {}
+
 module "ec2_instance" {
     source = "./tf_aws_ec2_instance"
     ami = "ami-12345"
@@ -686,11 +688,12 @@ variable "array" {
 	}
 }
 
-func TestIsDeepCheck(t *testing.T) {
+func TestIsSkip(t *testing.T) {
 	type Input struct {
-		File      string
-		DeepCheck bool
-		Resources []string
+		File              string
+		DeepCheckMode     bool
+		DeepCheckDetector bool
+		Target            string
 	}
 
 	cases := []struct {
@@ -699,40 +702,69 @@ func TestIsDeepCheck(t *testing.T) {
 		Result bool
 	}{
 		{
-			Name: "return true when enabled deep checking",
+			Name: "return false when enabled deep checking",
 			Input: Input{
 				File: `
 resource "aws_instance" {
     ami = "ami-12345"
 }`,
-				DeepCheck: true,
-				Resources: []string{"resource", "aws_instance"},
+				DeepCheckMode:     true,
+				DeepCheckDetector: true,
+				Target:            "aws_instance",
+			},
+			Result: false,
+		},
+		{
+			Name: "return true when disabled deep checking",
+			Input: Input{
+				File: `
+resource "aws_instance" {
+    ami = "ami-12345"
+}`,
+				DeepCheckMode:     false,
+				DeepCheckDetector: true,
+				Target:            "aws_instance",
 			},
 			Result: true,
 		},
 		{
-			Name: "return false when disabled deep checking",
+			Name: "return false when disabled deep checking but not deep check detector",
 			Input: Input{
 				File: `
 resource "aws_instance" {
     ami = "ami-12345"
 }`,
-				DeepCheck: false,
-				Resources: []string{"resource", "aws_instance"},
+				DeepCheckMode:     false,
+				DeepCheckDetector: false,
+				Target:            "aws_instance",
 			},
 			Result: false,
 		},
 		{
-			Name: "return false when target resources are not found",
+			Name: "return false when enabled deep checking and not deep check detector",
 			Input: Input{
 				File: `
 resource "aws_instance" {
     ami = "ami-12345"
 }`,
-				DeepCheck: true,
-				Resources: []string{"resource", "not_found"},
+				DeepCheckMode:     true,
+				DeepCheckDetector: false,
+				Target:            "aws_instance",
 			},
 			Result: false,
+		},
+		{
+			Name: "return true when target resources are not found",
+			Input: Input{
+				File: `
+resource "aws_instance" {
+    ami = "ami-12345"
+}`,
+				DeepCheckMode:     true,
+				DeepCheckDetector: true,
+				Target:            "aws_db_instance",
+			},
+			Result: true,
 		},
 	}
 
@@ -747,9 +779,9 @@ resource "aws_instance" {
 			Config:  config.Init(),
 			Logger:  logger.Init(false),
 		}
-		d.Config.DeepCheck = tc.Input.DeepCheck
+		d.Config.DeepCheck = tc.Input.DeepCheckMode
 
-		result := d.isDeepCheck(tc.Input.Resources...)
+		result := d.isSkip(tc.Input.DeepCheckDetector, tc.Input.Target)
 		if result != tc.Result {
 			t.Fatalf("\nBad: %t\nExpected: %t\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}

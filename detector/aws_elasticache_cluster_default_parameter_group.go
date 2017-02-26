@@ -4,41 +4,46 @@ import (
 	"fmt"
 	"regexp"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
 type AwsElastiCacheClusterDefaultParameterGroupDetector struct {
 	*Detector
+	IssueType string
+	Target    string
+	DeepCheck bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterDefaultParameterGroupDetector() *AwsElastiCacheClusterDefaultParameterGroupDetector {
-	return &AwsElastiCacheClusterDefaultParameterGroupDetector{d}
+	return &AwsElastiCacheClusterDefaultParameterGroupDetector{
+		Detector:  d,
+		IssueType: issue.NOTICE,
+		Target:    "aws_elasticache_cluster",
+		DeepCheck: false,
+	}
 }
 
-func (d *AwsElastiCacheClusterDefaultParameterGroupDetector) Detect(issues *[]*issue.Issue) {
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_elasticache_cluster").Items {
-			parameterGroupToken, err := hclLiteralToken(item, "parameter_group_name")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			parameterGroup, err := d.evalToString(parameterGroupToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsElastiCacheClusterDefaultParameterGroupDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	parameterGroupToken, err := hclLiteralToken(item, "parameter_group_name")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	parameterGroup, err := d.evalToString(parameterGroupToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if d.isDefaultCacheParameterGroup(parameterGroup) {
-				issue := &issue.Issue{
-					Type:    "NOTICE",
-					Message: fmt.Sprintf("\"%s\" is default parameter group. You cannot edit it.", parameterGroup),
-					Line:    parameterGroupToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if d.isDefaultCacheParameterGroup(parameterGroup) {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is default parameter group. You cannot edit it.", parameterGroup),
+			Line:    parameterGroupToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }
 

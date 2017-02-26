@@ -3,19 +3,30 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
 type AwsElastiCacheClusterInvalidTypeDetector struct {
 	*Detector
+	IssueType string
+	Target    string
+	DeepCheck bool
+	nodeTypes map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterInvalidTypeDetector() *AwsElastiCacheClusterInvalidTypeDetector {
-	return &AwsElastiCacheClusterInvalidTypeDetector{d}
+	return &AwsElastiCacheClusterInvalidTypeDetector{
+		Detector:  d,
+		IssueType: issue.ERROR,
+		Target:    "aws_elasticache_cluster",
+		DeepCheck: false,
+		nodeTypes: map[string]bool{},
+	}
 }
 
-func (d *AwsElastiCacheClusterInvalidTypeDetector) Detect(issues *[]*issue.Issue) {
-	var validNodeType = map[string]bool{
+func (d *AwsElastiCacheClusterInvalidTypeDetector) PreProcess() {
+	d.nodeTypes = map[string]bool{
 		"cache.t2.micro":    true,
 		"cache.t2.small":    true,
 		"cache.t2.medium":   true,
@@ -43,29 +54,27 @@ func (d *AwsElastiCacheClusterInvalidTypeDetector) Detect(issues *[]*issue.Issue
 		"cache.c1.xlarge":   true,
 		"cache.t1.micro":    true,
 	}
+}
 
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_elasticache_cluster").Items {
-			nodeTypeToken, err := hclLiteralToken(item, "node_type")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			nodeType, err := d.evalToString(nodeTypeToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsElastiCacheClusterInvalidTypeDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	nodeTypeToken, err := hclLiteralToken(item, "node_type")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	nodeType, err := d.evalToString(nodeTypeToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if !validNodeType[nodeType] {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("\"%s\" is invalid node type.", nodeType),
-					Line:    nodeTypeToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if !d.nodeTypes[nodeType] {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is invalid node type.", nodeType),
+			Line:    nodeTypeToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }

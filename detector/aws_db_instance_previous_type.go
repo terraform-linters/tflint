@@ -3,19 +3,30 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
 type AwsDBInstancePreviousTypeDetector struct {
 	*Detector
+	IssueType             string
+	Target                string
+	DeepCheck             bool
+	previousInstanceTypes map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstancePreviousTypeDetector() *AwsDBInstancePreviousTypeDetector {
-	return &AwsDBInstancePreviousTypeDetector{d}
+	return &AwsDBInstancePreviousTypeDetector{
+		Detector:              d,
+		IssueType:             issue.WARNING,
+		Target:                "aws_db_instance",
+		DeepCheck:             false,
+		previousInstanceTypes: map[string]bool{},
+	}
 }
 
-func (d *AwsDBInstancePreviousTypeDetector) Detect(issues *[]*issue.Issue) {
-	var previousInstanceType = map[string]bool{
+func (d *AwsDBInstancePreviousTypeDetector) PreProcess() {
+	d.previousInstanceTypes = map[string]bool{
 		"db.t1.micro":    true,
 		"db.m1.small":    true,
 		"db.m1.medium":   true,
@@ -26,29 +37,27 @@ func (d *AwsDBInstancePreviousTypeDetector) Detect(issues *[]*issue.Issue) {
 		"db.m2.4xlarge":  true,
 		"db.cr1.8xlarge": true,
 	}
+}
 
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_db_instance").Items {
-			instanceTypeToken, err := hclLiteralToken(item, "instance_class")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			instanceType, err := d.evalToString(instanceTypeToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
+func (d *AwsDBInstancePreviousTypeDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	instanceTypeToken, err := hclLiteralToken(item, "instance_class")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	instanceType, err := d.evalToString(instanceTypeToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
 
-			if previousInstanceType[instanceType] {
-				issue := &issue.Issue{
-					Type:    "WARNING",
-					Message: fmt.Sprintf("\"%s\" is previous generation instance type.", instanceType),
-					Line:    instanceTypeToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if d.previousInstanceTypes[instanceType] {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is previous generation instance type.", instanceType),
+			Line:    instanceTypeToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }

@@ -3,55 +3,60 @@ package detector
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
 )
 
 type AwsELBDuplicateNameDetector struct {
 	*Detector
+	IssueType     string
+	Target        string
+	DeepCheck     bool
+	loadBalancers map[string]bool
 }
 
 func (d *Detector) CreateAwsELBDuplicateNameDetector() *AwsELBDuplicateNameDetector {
-	return &AwsELBDuplicateNameDetector{d}
+	return &AwsELBDuplicateNameDetector{
+		Detector:      d,
+		IssueType:     issue.ERROR,
+		Target:        "aws_elb",
+		DeepCheck:     true,
+		loadBalancers: map[string]bool{},
+	}
 }
 
-func (d *AwsELBDuplicateNameDetector) Detect(issues *[]*issue.Issue) {
-	if !d.isDeepCheck("resource", "aws_elb") {
-		return
-	}
-
-	existLoadBalancerNames := map[string]bool{}
+func (d *AwsELBDuplicateNameDetector) PreProcess() {
 	resp, err := d.AwsClient.DescribeClassicLoadBalancers()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
 		return
 	}
+
 	for _, loadBalancer := range resp.LoadBalancerDescriptions {
-		existLoadBalancerNames[*loadBalancer.LoadBalancerName] = true
+		d.loadBalancers[*loadBalancer.LoadBalancerName] = true
+	}
+}
+
+func (d *AwsELBDuplicateNameDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+	nameToken, err := hclLiteralToken(item, "name")
+	if err != nil {
+		d.Logger.Error(err)
+		return
+	}
+	name, err := d.evalToString(nameToken.Text)
+	if err != nil {
+		d.Logger.Error(err)
+		return
 	}
 
-	for filename, list := range d.ListMap {
-		for _, item := range list.Filter("resource", "aws_elb").Items {
-			nameToken, err := hclLiteralToken(item, "name")
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			name, err := d.evalToString(nameToken.Text)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-
-			if existLoadBalancerNames[name] && !d.State.Exists("aws_elb", hclObjectKeyText(item)) {
-				issue := &issue.Issue{
-					Type:    "ERROR",
-					Message: fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),
-					Line:    nameToken.Pos.Line,
-					File:    filename,
-				}
-				*issues = append(*issues, issue)
-			}
+	if d.loadBalancers[name] && !d.State.Exists(d.Target, hclObjectKeyText(item)) {
+		issue := &issue.Issue{
+			Type:    d.IssueType,
+			Message: fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),
+			Line:    nameToken.Pos.Line,
+			File:    file,
 		}
+		*issues = append(*issues, issue)
 	}
 }
