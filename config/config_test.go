@@ -32,6 +32,7 @@ func TestLoadConfig(t *testing.T) {
 				IgnoreModule: map[string]bool{
 					"github.com/wata727/example-module": true,
 				},
+				Varfile: []string{},
 			},
 		},
 		{

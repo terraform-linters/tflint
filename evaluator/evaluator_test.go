@@ -127,7 +127,7 @@ variable "name" {
 		list, _ := root.Node.(*ast.ObjectList)
 		listmap := map[string]*ast.ObjectList{"testfile": list}
 
-		evaluator, err := NewEvaluator(listmap, config.Init())
+		evaluator, err := NewEvaluator(listmap, map[string]*ast.File{}, config.Init())
 		if err != nil {
 			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}
@@ -161,7 +161,7 @@ variable "name" {
 		list, _ := root.Node.(*ast.ObjectList)
 		listmap := map[string]*ast.ObjectList{"testfile": list}
 
-		evaluator, err := NewEvaluator(listmap, config.Init())
+		evaluator, err := NewEvaluator(listmap, map[string]*ast.File{}, config.Init())
 		if err != nil {
 			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}
@@ -198,7 +198,7 @@ variable "name" {
 		list, _ := root.Node.(*ast.ObjectList)
 		listmap := map[string]*ast.ObjectList{"testfile": list}
 
-		evaluator, err := NewEvaluator(listmap, config.Init())
+		evaluator, err := NewEvaluator(listmap, map[string]*ast.File{}, config.Init())
 		if err != nil {
 			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}
@@ -232,7 +232,7 @@ func TestEvalReturnNil(t *testing.T) {
 		list, _ := root.Node.(*ast.ObjectList)
 		listmap := map[string]*ast.ObjectList{"testfile": list}
 
-		evaluator, err := NewEvaluator(listmap, config.Init())
+		evaluator, err := NewEvaluator(listmap, map[string]*ast.File{}, config.Init())
 		if err != nil {
 			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}

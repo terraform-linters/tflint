@@ -321,7 +321,7 @@ func TestDump(t *testing.T) {
 	load.ListMap = listMap
 	load.State = state
 
-	dumpListMap, dumpState := load.Dump()
+	dumpListMap, dumpState, _ := load.Dump()
 	if !reflect.DeepEqual(dumpListMap, listMap) {
 		t.Fatalf("\nBad: %s\nExpected: %s\n\n", pp.Sprint(dumpListMap), pp.Sprint(listMap))
 	}

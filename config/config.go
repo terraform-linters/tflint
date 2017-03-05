@@ -14,6 +14,7 @@ type Config struct {
 	AwsCredentials map[string]string `hcl:"aws_credentials"`
 	IgnoreModule   map[string]bool   `hcl:"ignore_module"`
 	IgnoreRule     map[string]bool   `hcl:"ignore_rule"`
+	Varfile        []string          `hcl:"varfile"`
 }
 
 func Init() *Config {
@@ -23,6 +24,7 @@ func Init() *Config {
 		AwsCredentials: map[string]string{},
 		IgnoreModule:   map[string]bool{},
 		IgnoreRule:     map[string]bool{},
+		Varfile:        []string{},
 	}
 }
 
@@ -82,5 +84,18 @@ func (c *Config) SetIgnoreRule(ignoreRule string) {
 
 	for _, r := range ignoreRules {
 		c.IgnoreRule[r] = true
+	}
+}
+
+func (c *Config) SetVarfile(varfile string) {
+	// Automatically, `terraform.tfvars` loaded
+	c.Varfile = append(c.Varfile, "terraform.tfvars")
+
+	if varfile == "" {
+		return
+	}
+	varfiles := strings.Split(varfile, ",")
+	for _, v := range varfiles {
+		c.Varfile = append(c.Varfile, v)
 	}
 }

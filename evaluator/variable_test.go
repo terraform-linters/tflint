@@ -86,7 +86,7 @@ variable "stat" {
 			listMap[k] = list
 		}
 
-		result, err := detectVariables(listMap)
+		result, err := detectVariables(listMap, map[string]*hclast.File{})
 		if tc.Error && err == nil {
 			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
 			continue

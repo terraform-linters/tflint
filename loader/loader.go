@@ -9,7 +9,8 @@ import (
 	"strings"
 
 	"github.com/hashicorp/hcl/hcl/ast"
-	"github.com/hashicorp/hcl/hcl/parser"
+	hclParser "github.com/hashicorp/hcl/hcl/parser"
+	jsonParser "github.com/hashicorp/hcl/json/parser"
 	"github.com/wata727/tflint/logger"
 	"github.com/wata727/tflint/state"
 )
@@ -18,14 +19,16 @@ type LoaderIF interface {
 	LoadTemplate(filename string) error
 	LoadModuleFile(moduleKey string, source string) error
 	LoadAllTemplate(dir string) error
-	Dump() (map[string]*ast.ObjectList, *state.TFState)
+	Dump() (map[string]*ast.ObjectList, *state.TFState, map[string]*ast.File)
 	LoadState()
+	LoadTFVars([]string)
 }
 
 type Loader struct {
 	Logger  *logger.Logger
 	ListMap map[string]*ast.ObjectList
 	State   *state.TFState
+	TFVars  map[string]*ast.File
 }
 
 func NewLoader(debug bool) *Loader {
@@ -33,6 +36,7 @@ func NewLoader(debug bool) *Loader {
 		Logger:  logger.Init(debug),
 		ListMap: make(map[string]*ast.ObjectList),
 		State:   &state.TFState{},
+		TFVars:  make(map[string]*ast.File),
 	}
 }
 
@@ -122,18 +126,44 @@ func (l *Loader) LoadState() {
 	}
 }
 
-func (l *Loader) Dump() (map[string]*ast.ObjectList, *state.TFState) {
-	return l.ListMap, l.State
+func (l *Loader) LoadTFVars(varfile []string) {
+	l.Logger.Info("Load tfvars...")
+
+	for _, file := range varfile {
+		l.Logger.Info(fmt.Sprintf("Load `%s`", file))
+		if _, err := os.Stat(file); err != nil {
+			l.Logger.Error(err)
+			continue
+		}
+
+		var tfvars *ast.File
+		var err error
+		tfvars, err = loadHCLFile(file, l.Logger)
+		if err != nil {
+			l.Logger.Error(err)
+			tfvars, err = loadJSON(file, l.Logger)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+		}
+
+		l.TFVars[file] = tfvars
+	}
+}
+
+func (l *Loader) Dump() (map[string]*ast.ObjectList, *state.TFState, map[string]*ast.File) {
+	return l.ListMap, l.State, l.TFVars
 }
 
 func loadHCL(filename string, l *logger.Logger) (*ast.ObjectList, error) {
-	l.Info(fmt.Sprintf("load `%s`", filename))
+	l.Info(fmt.Sprintf("Load HCL file: `%s`", filename))
 	b, err := ioutil.ReadFile(filename)
 	if err != nil {
 		l.Error(err)
 		return nil, fmt.Errorf("ERROR: Cannot open file %s", filename)
 	}
-	root, err := parser.Parse(b)
+	root, err := hclParser.Parse(b)
 	if err != nil {
 		l.Error(err)
 		return nil, fmt.Errorf("ERROR: Parse error occurred by %s", filename)
@@ -141,4 +171,37 @@ func loadHCL(filename string, l *logger.Logger) (*ast.ObjectList, error) {
 
 	list, _ := root.Node.(*ast.ObjectList)
 	return list, nil
+}
+
+// TODO: Delete `loadHCL` or this function
+func loadHCLFile(filename string, l *logger.Logger) (*ast.File, error) {
+	l.Info(fmt.Sprintf("Load HCL file: `%s`", filename))
+	b, err := ioutil.ReadFile(filename)
+	if err != nil {
+		l.Error(err)
+		return nil, fmt.Errorf("ERROR: Cannot open file %s", filename)
+	}
+	root, err := hclParser.Parse(b)
+	if err != nil {
+		l.Error(err)
+		return nil, fmt.Errorf("ERROR: Parse error occurred by %s", filename)
+	}
+
+	return root, nil
+}
+
+func loadJSON(filename string, l *logger.Logger) (*ast.File, error) {
+	l.Info(fmt.Sprintf("load JSON file: `%s`", filename))
+	b, err := ioutil.ReadFile(filename)
+	if err != nil {
+		l.Error(err)
+		return nil, fmt.Errorf("ERROR: Cannot open file %s", filename)
+	}
+	root, err := jsonParser.Parse(b)
+	if err != nil {
+		l.Error(err)
+		return nil, fmt.Errorf("ERROR: Parse error occurred by %s", filename)
+	}
+
+	return root, nil
 }

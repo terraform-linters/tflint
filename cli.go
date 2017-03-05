@@ -45,6 +45,7 @@ type ConfigurableArgs struct {
 	AwsRegion    string
 	IgnoreModule string
 	IgnoreRule   string
+	Varfile      string
 	ConfigFile   string
 }
 
@@ -81,6 +82,7 @@ func (cli *CLI) Run(args []string) int {
 	flags.StringVar(&configArgs.AwsRegion, "aws-region", "", "AWS region used in deep check mode.")
 	flags.BoolVar(&errorWithIssues, "error-with-issues", false, "return error code when issue exists.")
 	flags.BoolVar(&configArgs.Fast, "fast", false, "ignore slow rules.")
+	flags.StringVar(&configArgs.Varfile, "var-file", "", "terraform variable files")
 
 	// Parse commandline flag
 	if err := flags.Parse(args[1:]); err != nil {
@@ -117,6 +119,7 @@ func (cli *CLI) Run(args []string) int {
 		cli.loader = loader.NewLoader(c.Debug)
 	}
 	cli.loader.LoadState()
+	cli.loader.LoadTFVars(c.Varfile)
 	if flags.NArg() > 0 {
 		err = cli.loader.LoadTemplate(flags.Arg(0))
 	} else {
@@ -129,8 +132,8 @@ func (cli *CLI) Run(args []string) int {
 
 	// If disabled test mode, generates real detector
 	if !cli.testMode {
-		listMap, state := cli.loader.Dump()
-		cli.detector, err = detector.NewDetector(listMap, state, c)
+		listMap, state, tfvars := cli.loader.Dump()
+		cli.detector, err = detector.NewDetector(listMap, state, tfvars, c)
 	}
 	if err != nil {
 		fmt.Fprintln(cli.errStream, err)
@@ -171,12 +174,9 @@ func (cli *CLI) setupConfig(args ConfigurableArgs) (*config.Config, error) {
 	if args.Fast {
 		c.SetIgnoreRule("aws_instance_invalid_ami")
 	}
-	if args.IgnoreModule != "" {
-		c.SetIgnoreModule(args.IgnoreModule)
-	}
-	if args.IgnoreRule != "" {
-		c.SetIgnoreRule(args.IgnoreRule)
-	}
+	c.SetIgnoreModule(args.IgnoreModule)
+	c.SetIgnoreRule(args.IgnoreRule)
+	c.SetVarfile(args.Varfile)
 	// If enabled test mode, set config information
 	if cli.testMode {
 		cli.TestCLIOptions = TestCLIOptions{
