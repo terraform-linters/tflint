@@ -28,6 +28,7 @@ func TestCLIRun(t *testing.T) {
 	var loaderDefaultBehavior = func(ctrl *gomock.Controller) loader.LoaderIF {
 		loader := mock.NewMockLoaderIF(ctrl)
 		loader.EXPECT().LoadState()
+		loader.EXPECT().LoadTFVars([]string{"terraform.tfvars"})
 		loader.EXPECT().LoadAllTemplate(".").Return(nil)
 		return loader
 	}
@@ -49,6 +50,7 @@ func TestCLIRun(t *testing.T) {
 			AwsCredentials: map[string]string{},
 			IgnoreModule:   map[string]bool{},
 			IgnoreRule:     map[string]bool{},
+			Varfile:        []string{"terraform.tfvars"},
 		},
 		ConfigFile: ".tflint.hcl",
 	}
@@ -156,6 +158,7 @@ func TestCLIRun(t *testing.T) {
 			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
 				loader := mock.NewMockLoaderIF(ctrl)
 				loader.EXPECT().LoadState()
+				loader.EXPECT().LoadTFVars([]string{"terraform.tfvars"})
 				loader.EXPECT().LoadAllTemplate(".").Return(errors.New("loading error!"))
 				return loader
 			},
@@ -190,6 +193,7 @@ func TestCLIRun(t *testing.T) {
 			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
 				loader := mock.NewMockLoaderIF(ctrl)
 				loader.EXPECT().LoadState()
+				loader.EXPECT().LoadTFVars([]string{"terraform.tfvars"})
 				loader.EXPECT().LoadTemplate("test_template.tf").Return(nil)
 				return loader
 			},
@@ -206,6 +210,7 @@ func TestCLIRun(t *testing.T) {
 			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
 				loader := mock.NewMockLoaderIF(ctrl)
 				loader.EXPECT().LoadState()
+				loader.EXPECT().LoadTFVars([]string{"terraform.tfvars"})
 				loader.EXPECT().LoadTemplate("test_template.tf").Return(errors.New("loading error!"))
 				return loader
 			},
@@ -232,6 +237,7 @@ func TestCLIRun(t *testing.T) {
 						AwsCredentials: map[string]string{},
 						IgnoreModule:   map[string]bool{},
 						IgnoreRule:     map[string]bool{},
+						Varfile:        []string{"terraform.tfvars"},
 					},
 					ConfigFile: ".tflint.hcl",
 				},
@@ -252,6 +258,7 @@ func TestCLIRun(t *testing.T) {
 						AwsCredentials: map[string]string{},
 						IgnoreModule:   map[string]bool{},
 						IgnoreRule:     map[string]bool{},
+						Varfile:        []string{"terraform.tfvars"},
 					},
 					ConfigFile: ".tflint.hcl",
 				},
@@ -313,6 +320,7 @@ func TestCLIRun(t *testing.T) {
 						AwsCredentials: map[string]string{},
 						IgnoreModule:   map[string]bool{},
 						IgnoreRule:     map[string]bool{"rule1": true, "rule2": true},
+						Varfile:        []string{"terraform.tfvars"},
 					},
 					ConfigFile: ".tflint.hcl",
 				},
@@ -333,6 +341,7 @@ func TestCLIRun(t *testing.T) {
 						AwsCredentials: map[string]string{},
 						IgnoreModule:   map[string]bool{"module1": true, "module2": true},
 						IgnoreRule:     map[string]bool{},
+						Varfile:        []string{"terraform.tfvars"},
 					},
 					ConfigFile: ".tflint.hcl",
 				},
@@ -353,6 +362,7 @@ func TestCLIRun(t *testing.T) {
 						AwsCredentials: map[string]string{},
 						IgnoreModule:   map[string]bool{},
 						IgnoreRule:     map[string]bool{},
+						Varfile:        []string{"terraform.tfvars"},
 					},
 					ConfigFile: ".tflint.example.hcl",
 				},
@@ -373,6 +383,7 @@ func TestCLIRun(t *testing.T) {
 						AwsCredentials: map[string]string{},
 						IgnoreModule:   map[string]bool{},
 						IgnoreRule:     map[string]bool{},
+						Varfile:        []string{"terraform.tfvars"},
 					},
 					ConfigFile: ".tflint.example.hcl",
 				},
@@ -393,6 +404,7 @@ func TestCLIRun(t *testing.T) {
 						AwsCredentials: map[string]string{},
 						IgnoreModule:   map[string]bool{},
 						IgnoreRule:     map[string]bool{},
+						Varfile:        []string{"terraform.tfvars"},
 					},
 					ConfigFile: ".tflint.hcl",
 				},
@@ -417,6 +429,7 @@ func TestCLIRun(t *testing.T) {
 						},
 						IgnoreModule: map[string]bool{},
 						IgnoreRule:   map[string]bool{},
+						Varfile:      []string{"terraform.tfvars"},
 					},
 					ConfigFile: ".tflint.hcl",
 				},
@@ -482,6 +495,7 @@ func TestCLIRun(t *testing.T) {
 						AwsCredentials: map[string]string{},
 						IgnoreModule:   map[string]bool{},
 						IgnoreRule:     map[string]bool{"aws_instance_invalid_ami": true},
+						Varfile:        []string{"terraform.tfvars"},
 					},
 					ConfigFile: ".tflint.hcl",
 				},
