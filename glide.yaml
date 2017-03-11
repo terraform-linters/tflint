@@ -24,3 +24,6 @@ import:
   - ast
 - package: github.com/k0kubun/pp
   version: ^2.3.0
+- package: github.com/hashicorp/terraform
+  subpackages:
+  - helper/variables

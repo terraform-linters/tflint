@@ -1,8 +1,8 @@
-hash: a25cd8aa5c6b4c5a9f254cc3a8c831c9450bbc2db33ee1e3c4971c4a5d0c1ad3
-updated: 2017-02-12T16:28:08.925805796+09:00
+hash: 4aef4f429212ac9c057b0f6b729f15833652affa5f2cabdb11a4b68dbfeb33fe
+updated: 2017-03-11T21:16:51.160273956+09:00
 imports:
 - name: github.com/aws/aws-sdk-go
-  version: f615b0905b52177eb0efa0fe59340c05c0ea0ed9
+  version: 819b71cf8430e434c1eee7e7e8b0f2b8870be899
   subpackages:
   - aws
   - aws/awserr
@@ -41,7 +41,7 @@ imports:
   - service/rds/rdsiface
   - service/sts
 - name: github.com/fatih/color
-  version: 5ec5d9d3c2cf82e9688b34e9bc27a94d616a7193
+  version: 9131ab34cf20d2f6d83fdc67168a5430d1c7dc23
 - name: github.com/go-ini/ini
   version: 6f66b0e091edb3c7b380f7c4f0f884274d550b67
 - name: github.com/golang/mock
@@ -65,6 +65,10 @@ imports:
   - ast
   - parser
   - scanner
+- name: github.com/hashicorp/terraform
+  version: 1daac2f5c72c507f74a129bcf356af7b047bd74c
+  subpackages:
+  - helper/variables
 - name: github.com/jmespath/go-jmespath
   version: bd40a432e4c76585ef6b72d3fd96fb9b6dc7b68d
 - name: github.com/k0kubun/pp
@@ -73,6 +77,8 @@ imports:
   version: d228849504861217f796da67fae4f6e347643f15
 - name: github.com/mattn/go-isatty
   version: 30a891c33c7cde7b02a981314b4228ec99380cca
+- name: github.com/mitchellh/go-homedir
+  version: b8bc1bf767474819792c23f32d8286a45736f1c6
 - name: github.com/mitchellh/mapstructure
   version: bfdb1a85537d60bc7e954e600c250219ea497417
 - name: github.com/mitchellh/reflectwalk
