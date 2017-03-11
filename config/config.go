@@ -95,7 +95,5 @@ func (c *Config) SetVarfile(varfile string) {
 		return
 	}
 	varfiles := strings.Split(varfile, ",")
-	for _, v := range varfiles {
-		c.Varfile = append(c.Varfile, v)
-	}
+	c.Varfile = append(c.Varfile, varfiles...)
 }
