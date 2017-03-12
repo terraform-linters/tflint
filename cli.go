@@ -132,8 +132,8 @@ func (cli *CLI) Run(args []string) int {
 
 	// If disabled test mode, generates real detector
 	if !cli.testMode {
-		listMap, state, tfvars := cli.loader.Dump()
-		cli.detector, err = detector.NewDetector(listMap, state, tfvars, c)
+		templates, state, tfvars := cli.loader.Dump()
+		cli.detector, err = detector.NewDetector(templates, state, tfvars, c)
 	}
 	if err != nil {
 		fmt.Fprintln(cli.errStream, err)

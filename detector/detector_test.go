@@ -63,8 +63,8 @@ func TestDetect(t *testing.T) {
 		testDir := dir + "/test-fixtures"
 		os.Chdir(testDir)
 
-		listMap := make(map[string]*ast.ObjectList)
-		root, _ := parser.Parse([]byte(`
+		templates := make(map[string]*ast.File)
+		templates["text.tf"], _ = parser.Parse([]byte(`
 resource "aws_instance" {}
 
 module "ec2_instance" {
@@ -72,15 +72,13 @@ module "ec2_instance" {
     ami = "ami-12345"
     num = "1"
 }`))
-		list, _ := root.Node.(*ast.ObjectList)
-		listMap["text.tf"] = list
 
 		c := config.Init()
 		c.SetIgnoreRule(tc.Config.IgnoreRule)
 		c.SetIgnoreModule(tc.Config.IgnoreModule)
-		evalConfig, _ := evaluator.NewEvaluator(listMap, []*ast.File{}, c)
+		evalConfig, _ := evaluator.NewEvaluator(templates, []*ast.File{}, c)
 		d := &Detector{
-			ListMap:    listMap,
+			Templates:  templates,
 			Config:     c,
 			EvalConfig: evalConfig,
 			Logger:     logger.Init(false),
@@ -111,8 +109,7 @@ resource "aws_instance" "web" {
 
 	for _, tc := range cases {
 		root, _ := parser.Parse([]byte(tc.Src))
-		list, _ := root.Node.(*ast.ObjectList)
-		item := list.Filter("resource", "aws_instance").Items[0]
+		item := root.Node.(*ast.ObjectList).Filter("resource", "aws_instance").Items[0]
 
 		result := hclObjectKeyText(item)
 		if result != tc.Result {
@@ -197,8 +194,7 @@ resource "aws_instance" "web" {
 
 	for _, tc := range cases {
 		root, _ := parser.Parse([]byte(tc.Input.File))
-		list, _ := root.Node.(*ast.ObjectList)
-		item := list.Filter("resource", "aws_instance").Items[0]
+		item := root.Node.(*ast.ObjectList).Filter("resource", "aws_instance").Items[0]
 
 		result, err := hclLiteralToken(item, tc.Input.Key)
 		if tc.Error && err == nil {
@@ -241,7 +237,7 @@ resource "aws_instance" "web" {
 				Key: "vpc_security_group_ids",
 			},
 			Result: []token.Token{
-				token.Token{
+				{
 					Type: 9,
 					Pos: token.Pos{
 						Filename: "",
@@ -252,7 +248,7 @@ resource "aws_instance" "web" {
 					Text: "\"sg-1234abcd\"",
 					JSON: false,
 				},
-				token.Token{
+				{
 					Type: 9,
 					Pos: token.Pos{
 						Filename: "",
@@ -312,8 +308,7 @@ resource "aws_instance" "web" {
 
 	for _, tc := range cases {
 		root, _ := parser.Parse([]byte(tc.Input.File))
-		list, _ := root.Node.(*ast.ObjectList)
-		item := list.Filter("resource", "aws_instance").Items[0]
+		item := root.Node.(*ast.ObjectList).Filter("resource", "aws_instance").Items[0]
 
 		result, err := hclLiteralListToken(item, tc.Input.Key)
 		if tc.Error && err == nil {
@@ -355,7 +350,7 @@ resource "aws_instance" "web" {
 				Key: "root_block_device",
 			},
 			Result: []*ast.ObjectItem{
-				&ast.ObjectItem{
+				{
 					Keys: []*ast.ObjectKey{},
 					Assign: token.Pos{
 						Filename: "",
@@ -378,9 +373,9 @@ resource "aws_instance" "web" {
 						},
 						List: &ast.ObjectList{
 							Items: []*ast.ObjectItem{
-								&ast.ObjectItem{
+								{
 									Keys: []*ast.ObjectKey{
-										&ast.ObjectKey{
+										{
 											Token: token.Token{
 												Type: 4,
 												Pos: token.Pos{
@@ -444,8 +439,7 @@ resource "aws_instance" "web" {
 
 	for _, tc := range cases {
 		root, _ := parser.Parse([]byte(tc.Input.File))
-		list, _ := root.Node.(*ast.ObjectList)
-		item := list.Filter("resource", "aws_instance").Items[0]
+		item := root.Node.(*ast.ObjectList).Filter("resource", "aws_instance").Items[0]
 
 		result, err := hclObjectItems(item, tc.Input.Key)
 		if tc.Error && err == nil {
@@ -500,8 +494,7 @@ resource "aws_instance" "web" {
 
 	for _, tc := range cases {
 		root, _ := parser.Parse([]byte(tc.Input.File))
-		list, _ := root.Node.(*ast.ObjectList)
-		item := list.Filter("resource", "aws_instance").Items[0]
+		item := root.Node.(*ast.ObjectList).Filter("resource", "aws_instance").Items[0]
 		result := IsKeyNotFound(item, tc.Input.Key)
 
 		if result != tc.Result {
@@ -558,14 +551,12 @@ variable "text" {
 	}
 
 	for _, tc := range cases {
-		listMap := make(map[string]*ast.ObjectList)
-		root, _ := parser.Parse([]byte(tc.Input.File))
-		list, _ := root.Node.(*ast.ObjectList)
-		listMap["text.tf"] = list
+		templates := make(map[string]*ast.File)
+		templates["text.tf"], _ = parser.Parse([]byte(tc.Input.File))
 
-		evalConfig, _ := evaluator.NewEvaluator(listMap, []*ast.File{}, config.Init())
+		evalConfig, _ := evaluator.NewEvaluator(templates, []*ast.File{}, config.Init())
 		d := &Detector{
-			ListMap:    listMap,
+			Templates:  templates,
 			EvalConfig: evalConfig,
 		}
 
@@ -612,13 +603,13 @@ variable "array" {
 }`,
 			},
 			Result: []token.Token{
-				token.Token{
+				{
 					Text: "result1",
 					Pos: token.Pos{
 						Line: 14,
 					},
 				},
-				token.Token{
+				{
 					Text: "result2",
 					Pos: token.Pos{
 						Line: 14,
@@ -661,14 +652,12 @@ variable "array" {
 	}
 
 	for _, tc := range cases {
-		listMap := make(map[string]*ast.ObjectList)
-		root, _ := parser.Parse([]byte(tc.Input.File))
-		list, _ := root.Node.(*ast.ObjectList)
-		listMap["text.tf"] = list
+		templates := make(map[string]*ast.File)
+		templates["text.tf"], _ = parser.Parse([]byte(tc.Input.File))
 
-		evalConfig, _ := evaluator.NewEvaluator(listMap, []*ast.File{}, config.Init())
+		evalConfig, _ := evaluator.NewEvaluator(templates, []*ast.File{}, config.Init())
 		d := &Detector{
-			ListMap:    listMap,
+			Templates:  templates,
 			EvalConfig: evalConfig,
 		}
 
@@ -769,15 +758,13 @@ resource "aws_instance" {
 	}
 
 	for _, tc := range cases {
-		listMap := make(map[string]*ast.ObjectList)
-		root, _ := parser.Parse([]byte(tc.Input.File))
-		list, _ := root.Node.(*ast.ObjectList)
-		listMap["text.tf"] = list
+		templates := make(map[string]*ast.File)
+		templates["text.tf"], _ = parser.Parse([]byte(tc.Input.File))
 
 		d := &Detector{
-			ListMap: listMap,
-			Config:  config.Init(),
-			Logger:  logger.Init(false),
+			Templates: templates,
+			Config:    config.Init(),
+			Logger:    logger.Init(false),
 		}
 		d.Config.DeepCheck = tc.Input.DeepCheckMode
 

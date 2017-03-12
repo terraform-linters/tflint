@@ -20,7 +20,7 @@ type DetectorIF interface {
 }
 
 type Detector struct {
-	ListMap    map[string]*ast.ObjectList
+	Templates  map[string]*ast.File
 	State      *state.TFState
 	Config     *config.Config
 	AwsClient  *config.AwsClient
@@ -65,14 +65,14 @@ var detectors = map[string]string{
 	"aws_security_group_duplicate_name":               "CreateAwsSecurityGroupDuplicateDetector",
 }
 
-func NewDetector(listMap map[string]*ast.ObjectList, state *state.TFState, tfvars []*ast.File, c *config.Config) (*Detector, error) {
-	evalConfig, err := evaluator.NewEvaluator(listMap, tfvars, c)
+func NewDetector(templates map[string]*ast.File, state *state.TFState, tfvars []*ast.File, c *config.Config) (*Detector, error) {
+	evalConfig, err := evaluator.NewEvaluator(templates, tfvars, c)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Detector{
-		ListMap:    listMap,
+		Templates:  templates,
 		State:      state,
 		Config:     c,
 		AwsClient:  c.NewAwsClient(),
@@ -149,7 +149,7 @@ func (d *Detector) Detect() []*issue.Issue {
 				continue
 			}
 			d.Logger.Info(fmt.Sprintf("detect module `%s`", name))
-			moduleDetector, err := NewDetector(m.ListMap, d.State, []*ast.File{}, d.Config)
+			moduleDetector, err := NewDetector(m.Templates, d.State, []*ast.File{}, d.Config)
 			if err != nil {
 				d.Logger.Error(err)
 				continue
@@ -180,8 +180,8 @@ func (d *Detector) detect(creatorMethod string, issues *[]*issue.Issue) {
 	if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
 		preprocess.Call([]reflect.Value{})
 	}
-	for file, list := range d.ListMap {
-		for _, item := range list.Filter("resource", reflect.Indirect(detector).FieldByName("Target").String()).Items {
+	for file, template := range d.Templates {
+		for _, item := range template.Node.(*ast.ObjectList).Filter("resource", reflect.Indirect(detector).FieldByName("Target").String()).Items {
 			detect := detector.MethodByName("Detect")
 			detect.Call([]reflect.Value{
 				reflect.ValueOf(file),
@@ -240,8 +240,8 @@ func (d *Detector) isSkip(deepCheck bool, target string) bool {
 	}
 
 	targetResources := 0
-	for _, list := range d.ListMap {
-		targetResources += len(list.Filter("resource", target).Items)
+	for _, template := range d.Templates {
+		targetResources += len(template.Node.(*ast.ObjectList).Filter("resource", target).Items)
 	}
 	if targetResources == 0 {
 		d.Logger.Info("target resources are not found.")

@@ -32,24 +32,24 @@ module "ec2_instance" {
 }`,
 			},
 			Result: map[string]*hclModule{
-				"960d94c2f60d34845dc3051edfad76e1": &hclModule{
+				"960d94c2f60d34845dc3051edfad76e1": {
 					Name:   "ec2_instance",
 					Source: "./tf_aws_ec2_instance",
 					Config: hil.EvalConfig{
 						GlobalScope: &hilast.BasicScope{
 							VarMap: map[string]hilast.Variable{
-								"var.ami": hilast.Variable{
+								"var.ami": {
 									Type:  hilast.TypeString,
 									Value: "ami-12345",
 								},
-								"var.num": hilast.Variable{
+								"var.num": {
 									Type:  hilast.TypeString,
 									Value: "1",
 								},
 							},
 						},
 					},
-					ListMap: map[string]*hclast.ObjectList{},
+					Templates: map[string]*hclast.File{},
 				},
 			},
 			Error: false,
@@ -70,39 +70,39 @@ module "ec2_instance" {
 }`,
 			},
 			Result: map[string]*hclModule{
-				"960d94c2f60d34845dc3051edfad76e1": &hclModule{
+				"960d94c2f60d34845dc3051edfad76e1": {
 					Name:   "ec2_instance",
 					Source: "./tf_aws_ec2_instance",
 					Config: hil.EvalConfig{
 						GlobalScope: &hilast.BasicScope{
 							VarMap: map[string]hilast.Variable{
-								"var.ami": hilast.Variable{
+								"var.ami": {
 									Type:  hilast.TypeString,
 									Value: "ami-12345",
 								},
-								"var.num": hilast.Variable{
+								"var.num": {
 									Type:  hilast.TypeString,
 									Value: "1",
 								},
 							},
 						},
 					},
-					ListMap: map[string]*hclast.ObjectList{},
+					Templates: map[string]*hclast.File{},
 				},
-				"0cf2d4dab02de8de33c7058799b6f81e": &hclModule{
+				"0cf2d4dab02de8de33c7058799b6f81e": {
 					Name:   "ec2_instance",
 					Source: "github.com/wata727/example-module",
 					Config: hil.EvalConfig{
 						GlobalScope: &hilast.BasicScope{
 							VarMap: map[string]hilast.Variable{
-								"var.ami": hilast.Variable{
+								"var.ami": {
 									Type:  hilast.TypeString,
 									Value: "ami-54321",
 								},
 							},
 						},
 					},
-					ListMap: map[string]*hclast.ObjectList{},
+					Templates: map[string]*hclast.File{},
 				},
 			},
 			Error: false,
@@ -142,13 +142,11 @@ module "ec2_instances" {
 		testDir := dir + "/test-fixtures"
 		os.Chdir(testDir)
 
-		listMap := make(map[string]*hclast.ObjectList)
+		templates := make(map[string]*hclast.File)
 		for k, v := range tc.Input {
-			root, _ := parser.Parse([]byte(v))
-			list, _ := root.Node.(*hclast.ObjectList)
-			listMap[k] = list
+			templates[k], _ = parser.Parse([]byte(v))
 		}
-		result, err := detectModules(listMap, config.Init())
+		result, err := detectModules(templates, config.Init())
 		if tc.Error && err == nil {
 			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
 			continue

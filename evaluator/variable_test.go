@@ -28,7 +28,7 @@ variable "type" {
 			},
 			Varfile: map[string]string{},
 			Result: map[string]hilast.Variable{
-				"var.type": hilast.Variable{
+				"var.type": {
 					Type:  hilast.TypeString,
 					Value: "name",
 				},
@@ -70,11 +70,11 @@ variable "stat" {
 			},
 			Varfile: map[string]string{},
 			Result: map[string]hilast.Variable{
-				"var.type": hilast.Variable{
+				"var.type": {
 					Type:  hilast.TypeString,
 					Value: "name",
 				},
-				"var.stat": hilast.Variable{
+				"var.stat": {
 					Type:  hilast.TypeString,
 					Value: "usage",
 				},
@@ -92,11 +92,11 @@ variable "stat" {
 				"example.tfvars":   `mode = "complex"`,
 			},
 			Result: map[string]hilast.Variable{
-				"var.type": hilast.Variable{
+				"var.type": {
 					Type:  hilast.TypeString,
 					Value: "t2.micro",
 				},
-				"var.mode": hilast.Variable{
+				"var.mode": {
 					Type:  hilast.TypeString,
 					Value: "complex",
 				},
@@ -117,19 +117,17 @@ variable "stat" {
 	}
 
 	for _, tc := range cases {
-		listMap := make(map[string]*hclast.ObjectList)
+		templates := make(map[string]*hclast.File)
 		varfile := []*hclast.File{}
 		for k, v := range tc.Input {
-			root, _ := parser.Parse([]byte(v))
-			list, _ := root.Node.(*hclast.ObjectList)
-			listMap[k] = list
+			templates[k], _ = parser.Parse([]byte(v))
 		}
 		for _, v := range tc.Varfile {
 			root, _ := parser.Parse([]byte(v))
 			varfile = append(varfile, root)
 		}
 
-		result, err := detectVariables(listMap, varfile)
+		result, err := detectVariables(templates, varfile)
 		if tc.Error && err == nil {
 			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
 			continue
@@ -363,11 +361,11 @@ func TestParseVariable(t *testing.T) {
 			Result: hilast.Variable{
 				Type: hilast.TypeList,
 				Value: []hilast.Variable{
-					hilast.Variable{
+					{
 						Type:  hilast.TypeString,
 						Value: "test1",
 					},
-					hilast.Variable{
+					{
 						Type:  hilast.TypeString,
 						Value: "test2",
 					},
@@ -378,17 +376,17 @@ func TestParseVariable(t *testing.T) {
 			Name: "parse map with correct type",
 			Input: Input{
 				// HCL map variable is map in slice in Go.
-				Val:  []map[string]string{map[string]string{"test1": "test2", "test3": "test4"}},
+				Val:  []map[string]string{{"test1": "test2", "test3": "test4"}},
 				Type: "map",
 			},
 			Result: hilast.Variable{
 				Type: hilast.TypeMap,
 				Value: map[string]hilast.Variable{
-					"test1": hilast.Variable{
+					"test1": {
 						Type:  hilast.TypeString,
 						Value: "test2",
 					},
-					"test3": hilast.Variable{
+					"test3": {
 						Type:  hilast.TypeString,
 						Value: "test4",
 					},
@@ -415,11 +413,11 @@ func TestParseVariable(t *testing.T) {
 			Result: hilast.Variable{
 				Type: hilast.TypeList,
 				Value: []hilast.Variable{
-					hilast.Variable{
+					{
 						Type:  hilast.TypeString,
 						Value: "test1",
 					},
-					hilast.Variable{
+					{
 						Type:  hilast.TypeString,
 						Value: "test2",
 					},
@@ -429,17 +427,17 @@ func TestParseVariable(t *testing.T) {
 		{
 			Name: "parse map with unknown type",
 			Input: Input{
-				Val:  []map[string]string{map[string]string{"test1": "test2", "test3": "test4"}},
+				Val:  []map[string]string{{"test1": "test2", "test3": "test4"}},
 				Type: "",
 			},
 			Result: hilast.Variable{
 				Type: hilast.TypeMap,
 				Value: map[string]hilast.Variable{
-					"test1": hilast.Variable{
+					"test1": {
 						Type:  hilast.TypeString,
 						Value: "test2",
 					},
-					"test3": hilast.Variable{
+					"test3": {
 						Type:  hilast.TypeString,
 						Value: "test4",
 					},
@@ -466,11 +464,11 @@ func TestParseVariable(t *testing.T) {
 			Result: hilast.Variable{
 				Type: hilast.TypeList,
 				Value: []hilast.Variable{
-					hilast.Variable{
+					{
 						Type:  hilast.TypeString,
 						Value: "test1",
 					},
-					hilast.Variable{
+					{
 						Type:  hilast.TypeString,
 						Value: "test2",
 					},
@@ -480,17 +478,17 @@ func TestParseVariable(t *testing.T) {
 		{
 			Name: "parse map with incorrect type",
 			Input: Input{
-				Val:  []map[string]string{map[string]string{"test1": "test2", "test3": "test4"}},
+				Val:  []map[string]string{{"test1": "test2", "test3": "test4"}},
 				Type: "slice",
 			},
 			Result: hilast.Variable{
 				Type: hilast.TypeMap,
 				Value: map[string]hilast.Variable{
-					"test1": hilast.Variable{
+					"test1": {
 						Type:  hilast.TypeString,
 						Value: "test2",
 					},
-					"test3": hilast.Variable{
+					"test3": {
 						Type:  hilast.TypeString,
 						Value: "test4",
 					},
@@ -510,10 +508,10 @@ func TestParseVariable(t *testing.T) {
 			// ```
 			Input: Input{
 				Val: []map[string]interface{}{
-					map[string]interface{}{
+					{
 						"a": []string{"test1", "test2"},
 						"b": []map[string]int{
-							map[string]int{
+							{
 								"test3": 1,
 								"test4": 10,
 							},
@@ -524,27 +522,27 @@ func TestParseVariable(t *testing.T) {
 			Result: hilast.Variable{
 				Type: hilast.TypeMap,
 				Value: map[string]hilast.Variable{
-					"a": hilast.Variable{
+					"a": {
 						Type: hilast.TypeList,
 						Value: []hilast.Variable{
-							hilast.Variable{
+							{
 								Type:  hilast.TypeString,
 								Value: "test1",
 							},
-							hilast.Variable{
+							{
 								Type:  hilast.TypeString,
 								Value: "test2",
 							},
 						},
 					},
-					"b": hilast.Variable{
+					"b": {
 						Type: hilast.TypeMap,
 						Value: map[string]hilast.Variable{
-							"test3": hilast.Variable{
+							"test3": {
 								Type:  hilast.TypeString,
 								Value: 1,
 							},
-							"test4": hilast.Variable{
+							"test4": {
 								Type:  hilast.TypeString,
 								Value: 10,
 							},

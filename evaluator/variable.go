@@ -21,12 +21,12 @@ const HCL_STRING_VARTYPE = "string"
 const HCL_LIST_VARTYPE = "list"
 const HCL_MAP_VARTYPE = "map"
 
-func detectVariables(listMap map[string]*hclast.ObjectList, varfile []*hclast.File) (map[string]hilast.Variable, error) {
+func detectVariables(templates map[string]*hclast.File, varfile []*hclast.File) (map[string]hilast.Variable, error) {
 	varMap := make(map[string]hilast.Variable)
 
-	for _, list := range listMap {
+	for _, template := range templates {
 		var variables []*hclVariable
-		if err := hcl.DecodeObject(&variables, list.Filter("variable")); err != nil {
+		if err := hcl.DecodeObject(&variables, template.Node.(*hclast.ObjectList).Filter("variable")); err != nil {
 			return nil, err
 		}
 		tfvars, err := decodeTFVars(varfile)

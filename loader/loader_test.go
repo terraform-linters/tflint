@@ -54,26 +54,26 @@ func TestLoadHCL(t *testing.T) {
 
 func TestLoadTemplate(t *testing.T) {
 	type Input struct {
-		ListMap map[string]*ast.ObjectList
-		File    string
+		Templates map[string]*ast.File
+		File      string
 	}
 
 	cases := []struct {
 		Name   string
 		Input  Input
-		Result map[string]*ast.ObjectList
+		Result map[string]*ast.File
 	}{
 		{
 			Name: "add file list",
 			Input: Input{
-				ListMap: map[string]*ast.ObjectList{
-					"example.tf": &ast.ObjectList{},
+				Templates: map[string]*ast.File{
+					"example.tf": {},
 				},
 				File: "empty.tf",
 			},
-			Result: map[string]*ast.ObjectList{
-				"example.tf": &ast.ObjectList{},
-				"empty.tf":   &ast.ObjectList{},
+			Result: map[string]*ast.File{
+				"example.tf": {},
+				"empty.tf":   {Node: &ast.ObjectList{}},
 			},
 		},
 	}
@@ -85,13 +85,13 @@ func TestLoadTemplate(t *testing.T) {
 		testDir := dir + "/test-fixtures/files"
 		os.Chdir(testDir)
 		load := &Loader{
-			Logger:  logger.Init(false),
-			ListMap: tc.Input.ListMap,
+			Logger:    logger.Init(false),
+			Templates: tc.Input.Templates,
 		}
 
 		load.LoadTemplate(tc.Input.File)
-		if !reflect.DeepEqual(load.ListMap, tc.Result) {
-			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(load.ListMap), pp.Sprint(tc.Result), tc.Name)
+		if !reflect.DeepEqual(load.Templates, tc.Result) {
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(load.Templates), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -105,7 +105,7 @@ func TestLoadModuleFile(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Input  Input
-		Result map[string]*ast.ObjectList
+		Result map[string]*ast.File
 		Error  bool
 	}{
 		{
@@ -114,9 +114,9 @@ func TestLoadModuleFile(t *testing.T) {
 				Key: "example",
 				Src: "github.com/wata727/example-module",
 			},
-			Result: map[string]*ast.ObjectList{
-				"github.com/wata727/example-module/main.tf":   &ast.ObjectList{},
-				"github.com/wata727/example-module/output.tf": &ast.ObjectList{},
+			Result: map[string]*ast.File{
+				"github.com/wata727/example-module/main.tf":   {Node: &ast.ObjectList{}},
+				"github.com/wata727/example-module/output.tf": {Node: &ast.ObjectList{}},
 			},
 			Error: false,
 		},
@@ -126,7 +126,7 @@ func TestLoadModuleFile(t *testing.T) {
 				Key: "not_found",
 				Src: "github.com/wata727/example-module",
 			},
-			Result: make(map[string]*ast.ObjectList),
+			Result: make(map[string]*ast.File),
 			Error:  true,
 		},
 	}
@@ -149,8 +149,8 @@ func TestLoadModuleFile(t *testing.T) {
 			continue
 		}
 
-		if !reflect.DeepEqual(load.ListMap, tc.Result) {
-			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(load.ListMap), pp.Sprint(tc.Result), tc.Name)
+		if !reflect.DeepEqual(load.Templates, tc.Result) {
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(load.Templates), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -159,22 +159,22 @@ func TestLoadAllTemplate(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Input  string
-		Result map[string]*ast.ObjectList
+		Result map[string]*ast.File
 		Error  bool
 	}{
 		{
 			Name:  "load all files",
 			Input: "all-files",
-			Result: map[string]*ast.ObjectList{
-				"all-files/main.tf":   &ast.ObjectList{},
-				"all-files/output.tf": &ast.ObjectList{},
+			Result: map[string]*ast.File{
+				"all-files/main.tf":   {Node: &ast.ObjectList{}},
+				"all-files/output.tf": {Node: &ast.ObjectList{}},
 			},
 			Error: false,
 		},
 		{
 			Name:   "dir not found",
 			Input:  "not_found",
-			Result: make(map[string]*ast.ObjectList),
+			Result: make(map[string]*ast.File),
 			Error:  true,
 		},
 	}
@@ -197,8 +197,8 @@ func TestLoadAllTemplate(t *testing.T) {
 			continue
 		}
 
-		if !reflect.DeepEqual(load.ListMap, tc.Result) {
-			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(load.ListMap), pp.Sprint(tc.Result), tc.Name)
+		if !reflect.DeepEqual(load.Templates, tc.Result) {
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(load.Templates), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
@@ -214,9 +214,9 @@ func TestLoadState(t *testing.T) {
 			Dir:  "local-state",
 			Result: &state.TFState{
 				Modules: []*state.Module{
-					&state.Module{
+					{
 						Resources: map[string]*state.Resource{
-							"aws_db_parameter_group.production": &state.Resource{
+							"aws_db_parameter_group.production": {
 								Type:         "aws_db_parameter_group",
 								Dependencies: []string{},
 								Primary: &state.Instance{
@@ -242,9 +242,9 @@ func TestLoadState(t *testing.T) {
 			Dir:  "remote-state",
 			Result: &state.TFState{
 				Modules: []*state.Module{
-					&state.Module{
+					{
 						Resources: map[string]*state.Resource{
-							"aws_db_parameter_group.staging": &state.Resource{
+							"aws_db_parameter_group.staging": {
 								Type:         "aws_db_parameter_group",
 								Dependencies: []string{},
 								Primary: &state.Instance{
@@ -290,15 +290,15 @@ func TestLoadState(t *testing.T) {
 
 func TestDump(t *testing.T) {
 	load := NewLoader(false)
-	listMap := map[string]*ast.ObjectList{
-		"main.tf":   &ast.ObjectList{},
-		"output.tf": &ast.ObjectList{},
+	templates := map[string]*ast.File{
+		"main.tf":   {},
+		"output.tf": {},
 	}
 	state := &state.TFState{
 		Modules: []*state.Module{
-			&state.Module{
+			{
 				Resources: map[string]*state.Resource{
-					"aws_db_parameter_group.production": &state.Resource{
+					"aws_db_parameter_group.production": {
 						Type:         "aws_db_parameter_group",
 						Dependencies: []string{},
 						Primary: &state.Instance{
@@ -318,12 +318,12 @@ func TestDump(t *testing.T) {
 			},
 		},
 	}
-	load.ListMap = listMap
+	load.Templates = templates
 	load.State = state
 
-	dumpListMap, dumpState, _ := load.Dump()
-	if !reflect.DeepEqual(dumpListMap, listMap) {
-		t.Fatalf("\nBad: %s\nExpected: %s\n\n", pp.Sprint(dumpListMap), pp.Sprint(listMap))
+	dumpTemplates, dumpState, _ := load.Dump()
+	if !reflect.DeepEqual(dumpTemplates, templates) {
+		t.Fatalf("\nBad: %s\nExpected: %s\n\n", pp.Sprint(dumpTemplates), pp.Sprint(templates))
 	}
 	if !reflect.DeepEqual(dumpState, state) {
 		t.Fatalf("\nBad: %s\nExpected: %s\n\n", pp.Sprint(dumpState), pp.Sprint(state))

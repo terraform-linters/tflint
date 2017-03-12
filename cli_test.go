@@ -453,7 +453,7 @@ func TestCLIRun(t *testing.T) {
 			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF {
 				detector := mock.NewMockDetectorIF(ctrl)
 				detector.EXPECT().Detect().Return([]*issue.Issue{
-					&issue.Issue{
+					{
 						Type:    "TEST",
 						Message: "this is test method",
 						Line:    1,
@@ -466,7 +466,7 @@ func TestCLIRun(t *testing.T) {
 			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF {
 				printer := mock.NewMockPrinterIF(ctrl)
 				printer.EXPECT().Print([]*issue.Issue{
-					&issue.Issue{
+					{
 						Type:    "TEST",
 						Message: "this is test method",
 						Line:    1,

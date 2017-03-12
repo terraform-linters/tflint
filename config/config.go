@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/hcl"
+	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/loader"
 )
 
@@ -38,7 +39,7 @@ func (c *Config) LoadConfig(filename string) error {
 		return nil
 	}
 
-	if err := hcl.DecodeObject(c, l.ListMap[filename].Filter("config").Items[0]); err != nil {
+	if err := hcl.DecodeObject(c, l.Templates[filename].Node.(*ast.ObjectList).Filter("config").Items[0]); err != nil {
 		return err
 	}
 
