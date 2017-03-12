@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/hcl/hcl/ast"
+	"github.com/hashicorp/hcl/hcl/token"
 	"github.com/k0kubun/pp"
 	"github.com/wata727/tflint/logger"
 	"github.com/wata727/tflint/state"
@@ -43,6 +44,46 @@ func TestLoadHCL(t *testing.T) {
 		os.Chdir(testDir)
 
 		_, err := loadHCL(tc.Input, logger.Init(false))
+		if tc.Error && err == nil {
+			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
+		}
+		if !tc.Error && err != nil {
+			t.Fatalf("\nshould not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
+		}
+	}
+}
+
+func TestLoadJSON(t *testing.T) {
+	cases := []struct {
+		Name  string
+		Input string
+		Error bool
+	}{
+		{
+			Name:  "return parsed object",
+			Input: "template.json",
+			Error: false,
+		},
+		{
+			Name:  "file not found",
+			Input: "not_found.json",
+			Error: true,
+		},
+		{
+			Name:  "invalid syntax file",
+			Input: "invalid.json",
+			Error: true,
+		},
+	}
+
+	for _, tc := range cases {
+		prev, _ := filepath.Abs(".")
+		dir, _ := os.Getwd()
+		defer os.Chdir(prev)
+		testDir := dir + "/test-fixtures/files"
+		os.Chdir(testDir)
+
+		_, err := loadJSON(tc.Input, logger.Init(false))
 		if tc.Error && err == nil {
 			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
 		}
@@ -288,6 +329,106 @@ func TestLoadState(t *testing.T) {
 	}
 }
 
+func TestLoadTFVars(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Input  []string
+		Result []*ast.File
+	}{
+		{
+			Name:  "Load multi tfvars",
+			Input: []string{"terraform.tfvars", "tfvars.json"},
+			Result: []*ast.File{
+				{
+					Node: &ast.ObjectList{
+						Items: []*ast.ObjectItem{
+							{
+								Keys: []*ast.ObjectKey{
+									{
+										Token: token.Token{
+											Type: 4,
+											Pos: token.Pos{
+												Line:   1,
+												Column: 1,
+											},
+											Text: "type",
+											JSON: false,
+										},
+									},
+								},
+								Assign: token.Pos{
+									Offset: 5,
+									Line:   1,
+									Column: 6,
+								},
+								Val: &ast.LiteralType{
+									Token: token.Token{
+										Type: 9,
+										Pos: token.Pos{
+											Offset: 7,
+											Line:   1,
+											Column: 8,
+										},
+										Text: "\"t2.micro\"",
+										JSON: false,
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Node: &ast.ObjectList{
+						Items: []*ast.ObjectItem{
+							{
+								Keys: []*ast.ObjectKey{
+									{
+										Token: token.Token{
+											Type: 9,
+											Pos:  token.Pos{},
+											Text: "\"name\"",
+											JSON: true,
+										},
+									},
+								},
+								Assign: token.Pos{
+									Offset: 10,
+									Line:   2,
+									Column: 9,
+								},
+								Val: &ast.LiteralType{
+									Token: token.Token{
+										Type: 9,
+										Pos:  token.Pos{},
+										Text: "\"awesome-app\"",
+										JSON: true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	for _, tc := range cases {
+		prev, _ := filepath.Abs(".")
+		dir, _ := os.Getwd()
+		defer os.Chdir(prev)
+		testDir := dir + "/test-fixtures/tfvars"
+		os.Chdir(testDir)
+		load := &Loader{
+			Logger: logger.Init(false),
+		}
+
+		load.LoadTFVars(tc.Input)
+		if !reflect.DeepEqual(load.TFVars, tc.Result) {
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(load.TFVars), pp.Sprint(tc.Result), tc.Name)
+		}
+	}
+}
+
 func TestDump(t *testing.T) {
 	load := NewLoader(false)
 	templates := map[string]*ast.File{
@@ -318,14 +459,23 @@ func TestDump(t *testing.T) {
 			},
 		},
 	}
+	tfvars := []*ast.File{
+		{
+			Node: &ast.ObjectList{},
+		},
+	}
 	load.Templates = templates
 	load.State = state
+	load.TFVars = tfvars
 
-	dumpTemplates, dumpState, _ := load.Dump()
+	dumpTemplates, dumpState, dumpTFvars := load.Dump()
 	if !reflect.DeepEqual(dumpTemplates, templates) {
 		t.Fatalf("\nBad: %s\nExpected: %s\n\n", pp.Sprint(dumpTemplates), pp.Sprint(templates))
 	}
 	if !reflect.DeepEqual(dumpState, state) {
 		t.Fatalf("\nBad: %s\nExpected: %s\n\n", pp.Sprint(dumpState), pp.Sprint(state))
+	}
+	if !reflect.DeepEqual(dumpTFvars, tfvars) {
+		t.Fatalf("\nBad: %s\nExpected: %s\n\n", pp.Sprint(dumpTFvars), pp.Sprint(tfvars))
 	}
 }
