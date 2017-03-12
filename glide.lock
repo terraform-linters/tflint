@@ -1,5 +1,5 @@
-hash: 4aef4f429212ac9c057b0f6b729f15833652affa5f2cabdb11a4b68dbfeb33fe
-updated: 2017-03-11T21:16:51.160273956+09:00
+hash: 9c6d780bc448a108b457770e8ca5d2448d52d90b8a3b2308caa4a79436f48d13
+updated: 2017-03-12T22:23:49.595299074+09:00
 imports:
 - name: github.com/aws/aws-sdk-go
   version: 819b71cf8430e434c1eee7e7e8b0f2b8870be899
@@ -43,13 +43,13 @@ imports:
 - name: github.com/fatih/color
   version: 9131ab34cf20d2f6d83fdc67168a5430d1c7dc23
 - name: github.com/go-ini/ini
-  version: 6f66b0e091edb3c7b380f7c4f0f884274d550b67
+  version: 7e015cd18f007383aa571cc413bd2ec09cff7f2d
 - name: github.com/golang/mock
   version: bd3c8e81be01eef76d4b503f5e687d2d1354d2d9
   subpackages:
   - gomock
 - name: github.com/hashicorp/hcl
-  version: eb6f65b2d77ed5078887f960ff570fbddbbeb49d
+  version: 630949a3c5fa3c613328e1b8256052cbc2327c9b
   subpackages:
   - hcl/ast
   - hcl/parser
@@ -66,7 +66,7 @@ imports:
   - parser
   - scanner
 - name: github.com/hashicorp/terraform
-  version: 1daac2f5c72c507f74a129bcf356af7b047bd74c
+  version: cbfb29cd8f52065ef3ef0361c3a2a254d7f185bc
   subpackages:
   - helper/variables
 - name: github.com/jmespath/go-jmespath
@@ -74,17 +74,20 @@ imports:
 - name: github.com/k0kubun/pp
   version: 027a6d1765d673d337e687394dbe780dd64e2a1e
 - name: github.com/mattn/go-colorable
-  version: d228849504861217f796da67fae4f6e347643f15
+  version: 5411d3eea5978e6cdc258b30de592b60df6aba96
+  repo: https://github.com/mattn/go-colorable
 - name: github.com/mattn/go-isatty
-  version: 30a891c33c7cde7b02a981314b4228ec99380cca
+  version: 57fdcb988a5c543893cc61bce354a6e24ab70022
+  repo: https://github.com/mattn/go-isatty
 - name: github.com/mitchellh/go-homedir
   version: b8bc1bf767474819792c23f32d8286a45736f1c6
 - name: github.com/mitchellh/mapstructure
-  version: bfdb1a85537d60bc7e954e600c250219ea497417
+  version: 53818660ed4955e899c0bcafa97299a388bd7c8e
 - name: github.com/mitchellh/reflectwalk
-  version: 9ad27c461a633e32a235a061d523aefe8f18571d
+  version: 417edcfd99a4d472c262e58f22b4bfe97580f03e
 - name: golang.org/x/sys
-  version: d75a52659825e75fff6158388dddc6a5b04f9ba5
+  version: e24f485414aeafb646f6fca458b0bf869c0880a1
+  repo: https://go.googlesource.com/sys
   subpackages:
   - unix
 testImports: []
