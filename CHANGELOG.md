@@ -1,6 +1,25 @@
+## 0.3.1 (2017-03-12)
+
+Minor version update. This release includes support for tfvars.
+
+### Enhancements
+
+- Support I3 instance types ([#66](https://github.com/wata727/tflint/pull/66))
+- Support TFVars ([#67](https://github.com/wata727/tflint/pull/67))
+
+### Others
+
+- Add Dockerfile ([#59](https://github.com/wata727/tflint/pull/59))
+- Fix link ([#60](https://github.com/wata727/tflint/pull/60))
+- Update help message ([#61](https://github.com/wata727/tflint/pull/61))
+- Move cache from detector to awsclient ([#62](https://github.com/wata727/tflint/pull/62))
+- Refactoring detector ([#65](https://github.com/wata727/tflint/pull/65))
+- glide up ([#68](https://github.com/wata727/tflint/pull/68))
+- Update go version ([#69](https://github.com/wata727/tflint/pull/69))
+
 ## 0.3.0 (2017-02-12)
 
-Minor version update. This relase includes core enhancements for terraform state file.
+Minor version update. This release includes core enhancements for terraform state file.
 
 ### NewDetectors
 
