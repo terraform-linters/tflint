@@ -322,3 +322,50 @@ func TestSetIgnoreRule(t *testing.T) {
 		}
 	}
 }
+
+func TestSetVarfile(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Config *Config
+		Input  string
+		Result *Config
+	}{
+		{
+			Name: "set varfiles",
+			Config: &Config{
+				Varfile: []string{},
+			},
+			Input: "example1.tfvars,example2.tfvars",
+			Result: &Config{
+				Varfile: []string{"terraform.tfvars", "example1.tfvars", "example2.tfvars"},
+			},
+		},
+		{
+			Name: "not set",
+			Config: &Config{
+				Varfile: []string{},
+			},
+			Input: "",
+			Result: &Config{
+				Varfile: []string{"terraform.tfvars"},
+			},
+		},
+		{
+			Name: "append varfile",
+			Config: &Config{
+				Varfile: []string{"example1.tf"},
+			},
+			Input: "example2.tf",
+			Result: &Config{
+				Varfile: []string{"example1.tf", "terraform.tfvars", "example2.tf"},
+			},
+		},
+	}
+
+	for _, tc := range cases {
+		tc.Config.SetVarfile(tc.Input)
+		if !reflect.DeepEqual(tc.Config, tc.Result) {
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(tc.Config), pp.Sprint(tc.Result), tc.Name)
+		}
+	}
+}

@@ -12,10 +12,11 @@ import (
 
 func TestDetectVariables(t *testing.T) {
 	cases := []struct {
-		Name   string
-		Input  map[string]string
-		Result map[string]hilast.Variable
-		Error  bool
+		Name    string
+		Input   map[string]string
+		Varfile map[string]string
+		Result  map[string]hilast.Variable
+		Error   bool
 	}{
 		{
 			Name: "return hil variable from hcl object list",
@@ -25,6 +26,7 @@ variable "type" {
 	default = "name"
 }`,
 			},
+			Varfile: map[string]string{},
 			Result: map[string]hilast.Variable{
 				"var.type": hilast.Variable{
 					Type:  hilast.TypeString,
@@ -38,8 +40,9 @@ variable "type" {
 			Input: map[string]string{
 				"variable.tf": `variable "type" {}`,
 			},
-			Result: map[string]hilast.Variable{},
-			Error:  false,
+			Varfile: map[string]string{},
+			Result:  map[string]hilast.Variable{},
+			Error:   false,
 		},
 		{
 			Name: "return empty from hcl object list when variable not found",
@@ -49,8 +52,9 @@ provider "aws" {
 	region = "us-east-1"
 }`,
 			},
-			Result: map[string]hilast.Variable{},
-			Error:  false,
+			Varfile: map[string]string{},
+			Result:  map[string]hilast.Variable{},
+			Error:   false,
 		},
 		{
 			Name: "return hil variables from multi hcl object list",
@@ -64,6 +68,7 @@ variable "stat" {
 	default = "usage"
 }`,
 			},
+			Varfile: map[string]string{},
 			Result: map[string]hilast.Variable{
 				"var.type": hilast.Variable{
 					Type:  hilast.TypeString,
@@ -76,17 +81,55 @@ variable "stat" {
 			},
 			Error: false,
 		},
+		{
+			Name: "return hil variables from multi hcl object lists when use multi tfvars",
+			Input: map[string]string{
+				"variable1.tf": `variable "type" {}`,
+				"variable2.tf": `variable "mode" {}`,
+			},
+			Varfile: map[string]string{
+				"terraform.tfvars": `type = "t2.micro"`,
+				"example.tfvars":   `mode = "complex"`,
+			},
+			Result: map[string]hilast.Variable{
+				"var.type": hilast.Variable{
+					Type:  hilast.TypeString,
+					Value: "t2.micro",
+				},
+				"var.mode": hilast.Variable{
+					Type:  hilast.TypeString,
+					Value: "complex",
+				},
+			},
+			Error: false,
+		},
+		{
+			Name: "return empty when set in tfvars but not set in tf",
+			Input: map[string]string{
+				"variable.tf": `variable "type" {}`,
+			},
+			Varfile: map[string]string{
+				"terraform.tfvars": `new_type = "name"`,
+			},
+			Result: map[string]hilast.Variable{},
+			Error:  false,
+		},
 	}
 
 	for _, tc := range cases {
 		listMap := make(map[string]*hclast.ObjectList)
+		varfile := make(map[string]*hclast.File)
 		for k, v := range tc.Input {
 			root, _ := parser.Parse([]byte(v))
 			list, _ := root.Node.(*hclast.ObjectList)
 			listMap[k] = list
 		}
+		for k, v := range tc.Varfile {
+			root, _ := parser.Parse([]byte(v))
+			varfile[k] = root
+		}
 
-		result, err := detectVariables(listMap, map[string]*hclast.File{})
+		result, err := detectVariables(listMap, varfile)
 		if tc.Error && err == nil {
 			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
 			continue
@@ -98,6 +141,193 @@ variable "stat" {
 
 		if !reflect.DeepEqual(result, tc.Result) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
+		}
+	}
+}
+
+func TestDecodeTFVars(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Input  map[string]string
+		Result map[string]map[string]interface{}
+		Error  bool
+	}{
+		{
+			Name: "decode multi tfvars",
+			Input: map[string]string{
+				"terraform.tfvars": `type = "t2.micro"`,
+				"example.tfvars":   `name = "test"`,
+			},
+			Result: map[string]map[string]interface{}{
+				"terraform.tfvars": {
+					"type": "t2.micro",
+				},
+				"example.tfvars": {
+					"name": "test",
+				},
+			},
+			Error: false,
+		},
+		{
+			Name: "decode complex tfvars",
+			Input: map[string]string{
+				"terraform.tfvars": `
+types = ["t2.nano", "t2.micro"]
+complex = {
+  foo = "bar"
+  baz = {
+    nest = true
+    list = ["attr"]
+  }
+}
+`,
+			},
+			Result: map[string]map[string]interface{}{
+				"terraform.tfvars": {
+					"types": []interface{}{"t2.nano", "t2.micro"},
+					"complex": []map[string]interface{}{
+						{
+							"foo": "bar",
+							"baz": []map[string]interface{}{
+								{
+									"nest": true,
+									"list": []interface{}{"attr"},
+								},
+							},
+						},
+					},
+				},
+			},
+			Error: false,
+		},
+	}
+
+	for _, tc := range cases {
+		varfile := make(map[string]*hclast.File)
+		for k, v := range tc.Input {
+			root, _ := parser.Parse([]byte(v))
+			varfile[k] = root
+		}
+
+		result, err := decodeTFVars(varfile)
+		if tc.Error && err == nil {
+			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
+			continue
+		}
+		if !tc.Error && err != nil {
+			t.Fatalf("\nshould not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
+			continue
+		}
+
+		if !reflect.DeepEqual(result, tc.Result) {
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
+		}
+	}
+}
+
+func TestOverriddenVariable(t *testing.T) {
+	cases := []struct {
+		Name             string
+		Input            *hclVariable
+		DecodedVariables map[string]map[string]interface{}
+		Result           interface{}
+	}{
+		{
+			Name: "overridden variable when not set default",
+			Input: &hclVariable{
+				Name:    "type",
+				Default: nil,
+			},
+			DecodedVariables: map[string]map[string]interface{}{
+				"terraform.tfvars": {
+					"type": "t2.micro",
+				},
+			},
+			Result: "t2.micro",
+		},
+		{
+			Name: "overridden variable when already set default",
+			Input: &hclVariable{
+				Name:    "type",
+				Default: "t2.micro",
+			},
+			DecodedVariables: map[string]map[string]interface{}{
+				"terraform.tfvars": {
+					"type": "t2.nano",
+				},
+			},
+			Result: "t2.nano",
+		},
+		{
+			Name: "overridden variable by last specfied varfile when conflict variables",
+			Input: &hclVariable{
+				Name:    "type",
+				Default: nil,
+			},
+			DecodedVariables: map[string]map[string]interface{}{
+				"terraform.tfvars": {
+					"type": "t2.nano",
+				},
+				"example.tfvars": {
+					"type": "m4.large",
+				},
+			},
+			Result: "m4.large",
+		},
+		{
+			Name: "merge and overridden complex variable when conflict variables",
+			Input: &hclVariable{
+				Name:    "complex",
+				Default: nil,
+			},
+			DecodedVariables: map[string]map[string]interface{}{
+				"terraform.tfvars": {
+					"complex": []map[string]interface{}{
+						{
+							"foo": "bar",
+							"baz": []map[string]interface{}{
+								{
+									"nest": true,
+									"list": []interface{}{"attr"},
+								},
+							},
+						},
+					},
+				},
+				"example.tfvars": {
+					"complex": []map[string]interface{}{
+						{
+							"foo":  "baz",
+							"nest": true,
+							"baz": []map[string]interface{}{
+								{
+									"list":  []interface{}{"value"},
+									"merge": true,
+								},
+							},
+						},
+					},
+				},
+			},
+			Result: []map[string]interface{}{
+				{
+					"foo":  "baz",
+					"nest": true,
+					"baz": []map[string]interface{}{
+						{
+							"list":  []interface{}{"value"},
+							"merge": true,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	for _, tc := range cases {
+		overriddenVariable(tc.Input, tc.DecodedVariables)
+		if !reflect.DeepEqual(tc.Input.Default, tc.Result) {
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(tc.Input.Default), pp.Sprint(tc.Result), tc.Name)
 		}
 	}
 }
