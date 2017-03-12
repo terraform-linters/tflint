@@ -16,12 +16,12 @@ type Evaluator struct {
 	ModuleConfig map[string]*hclModule
 }
 
-func NewEvaluator(listMap map[string]*hclast.ObjectList, c *config.Config) (*Evaluator, error) {
-	varMap, err := detectVariables(listMap)
+func NewEvaluator(templates map[string]*hclast.File, varfile []*hclast.File, c *config.Config) (*Evaluator, error) {
+	varMap, err := detectVariables(templates, varfile)
 	if err != nil {
 		return nil, err
 	}
-	moduleMap, err := detectModules(listMap, c)
+	moduleMap, err := detectModules(templates, c)
 	if err != nil {
 		return nil, err
 	}

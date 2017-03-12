@@ -14,17 +14,17 @@ import (
 )
 
 type hclModule struct {
-	Name    string
-	Source  string
-	Config  hil.EvalConfig
-	ListMap map[string]*hclast.ObjectList
+	Name      string
+	Source    string
+	Config    hil.EvalConfig
+	Templates map[string]*hclast.File
 }
 
-func detectModules(listMap map[string]*hclast.ObjectList, c *config.Config) (map[string]*hclModule, error) {
+func detectModules(templates map[string]*hclast.File, c *config.Config) (map[string]*hclModule, error) {
 	moduleMap := make(map[string]*hclModule)
 
-	for file, list := range listMap {
-		for _, item := range list.Filter("module").Items {
+	for file, template := range templates {
+		for _, item := range template.Node.(*hclast.ObjectList).Filter("module").Items {
 			name, ok := item.Keys[0].Token.Value().(string)
 			if !ok {
 				return nil, fmt.Errorf("ERROR: Invalid module syntax in %s", file)
@@ -60,7 +60,7 @@ func detectModules(listMap map[string]*hclast.ObjectList, c *config.Config) (map
 						VarMap: varMap,
 					},
 				},
-				ListMap: load.ListMap,
+				Templates: load.Templates,
 			}
 		}
 	}

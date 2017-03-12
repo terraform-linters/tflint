@@ -32,6 +32,7 @@ func TestLoadConfig(t *testing.T) {
 				IgnoreModule: map[string]bool{
 					"github.com/wata727/example-module": true,
 				},
+				Varfile: []string{},
 			},
 		},
 		{
@@ -316,6 +317,53 @@ func TestSetIgnoreRule(t *testing.T) {
 
 	for _, tc := range cases {
 		tc.Config.SetIgnoreRule(tc.Input)
+		if !reflect.DeepEqual(tc.Config, tc.Result) {
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(tc.Config), pp.Sprint(tc.Result), tc.Name)
+		}
+	}
+}
+
+func TestSetVarfile(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Config *Config
+		Input  string
+		Result *Config
+	}{
+		{
+			Name: "set varfiles",
+			Config: &Config{
+				Varfile: []string{},
+			},
+			Input: "example1.tfvars,example2.tfvars",
+			Result: &Config{
+				Varfile: []string{"terraform.tfvars", "example1.tfvars", "example2.tfvars"},
+			},
+		},
+		{
+			Name: "not set",
+			Config: &Config{
+				Varfile: []string{},
+			},
+			Input: "",
+			Result: &Config{
+				Varfile: []string{"terraform.tfvars"},
+			},
+		},
+		{
+			Name: "append varfile",
+			Config: &Config{
+				Varfile: []string{"example1.tfvars"},
+			},
+			Input: "example2.tfvars",
+			Result: &Config{
+				Varfile: []string{"terraform.tfvars", "example1.tfvars", "example2.tfvars"},
+			},
+		},
+	}
+
+	for _, tc := range cases {
+		tc.Config.SetVarfile(tc.Input)
 		if !reflect.DeepEqual(tc.Config, tc.Result) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(tc.Config), pp.Sprint(tc.Result), tc.Name)
 		}

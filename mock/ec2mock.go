@@ -2514,6 +2514,16 @@ func (_mr *_MockEC2APIRecorder) DescribeNatGateways(arg0 interface{}) *gomock.Ca
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeNatGateways", arg0)
 }
 
+func (_m *MockEC2API) DescribeNatGatewaysPages(_param0 *ec2.DescribeNatGatewaysInput, _param1 func(*ec2.DescribeNatGatewaysOutput, bool) bool) error {
+	ret := _m.ctrl.Call(_m, "DescribeNatGatewaysPages", _param0, _param1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockEC2APIRecorder) DescribeNatGatewaysPages(arg0, arg1 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeNatGatewaysPages", arg0, arg1)
+}
+
 func (_m *MockEC2API) DescribeNetworkAclsRequest(_param0 *ec2.DescribeNetworkAclsInput) (*request.Request, *ec2.DescribeNetworkAclsOutput) {
 	ret := _m.ctrl.Call(_m, "DescribeNetworkAclsRequest", _param0)
 	ret0, _ := ret[0].(*request.Request)
@@ -3230,6 +3240,28 @@ func (_m *MockEC2API) DescribeVolumesPages(_param0 *ec2.DescribeVolumesInput, _p
 
 func (_mr *_MockEC2APIRecorder) DescribeVolumesPages(arg0, arg1 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeVolumesPages", arg0, arg1)
+}
+
+func (_m *MockEC2API) DescribeVolumesModificationsRequest(_param0 *ec2.DescribeVolumesModificationsInput) (*request.Request, *ec2.DescribeVolumesModificationsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeVolumesModificationsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeVolumesModificationsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) DescribeVolumesModificationsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeVolumesModificationsRequest", arg0)
+}
+
+func (_m *MockEC2API) DescribeVolumesModifications(_param0 *ec2.DescribeVolumesModificationsInput) (*ec2.DescribeVolumesModificationsOutput, error) {
+	ret := _m.ctrl.Call(_m, "DescribeVolumesModifications", _param0)
+	ret0, _ := ret[0].(*ec2.DescribeVolumesModificationsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) DescribeVolumesModifications(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeVolumesModifications", arg0)
 }
 
 func (_m *MockEC2API) DescribeVpcAttributeRequest(_param0 *ec2.DescribeVpcAttributeInput) (*request.Request, *ec2.DescribeVpcAttributeOutput) {
@@ -4264,6 +4296,28 @@ func (_m *MockEC2API) ModifySubnetAttribute(_param0 *ec2.ModifySubnetAttributeIn
 
 func (_mr *_MockEC2APIRecorder) ModifySubnetAttribute(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifySubnetAttribute", arg0)
+}
+
+func (_m *MockEC2API) ModifyVolumeRequest(_param0 *ec2.ModifyVolumeInput) (*request.Request, *ec2.ModifyVolumeOutput) {
+	ret := _m.ctrl.Call(_m, "ModifyVolumeRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ModifyVolumeOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) ModifyVolumeRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyVolumeRequest", arg0)
+}
+
+func (_m *MockEC2API) ModifyVolume(_param0 *ec2.ModifyVolumeInput) (*ec2.ModifyVolumeOutput, error) {
+	ret := _m.ctrl.Call(_m, "ModifyVolume", _param0)
+	ret0, _ := ret[0].(*ec2.ModifyVolumeOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockEC2APIRecorder) ModifyVolume(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyVolume", arg0)
 }
 
 func (_m *MockEC2API) ModifyVolumeAttributeRequest(_param0 *ec2.ModifyVolumeAttributeInput) (*request.Request, *ec2.ModifyVolumeAttributeOutput) {
@@ -5348,6 +5402,16 @@ func (_m *MockEC2API) WaitUntilVpcExists(_param0 *ec2.DescribeVpcsInput) error {
 
 func (_mr *_MockEC2APIRecorder) WaitUntilVpcExists(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilVpcExists", arg0)
+}
+
+func (_m *MockEC2API) WaitUntilVpcPeeringConnectionDeleted(_param0 *ec2.DescribeVpcPeeringConnectionsInput) error {
+	ret := _m.ctrl.Call(_m, "WaitUntilVpcPeeringConnectionDeleted", _param0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockEC2APIRecorder) WaitUntilVpcPeeringConnectionDeleted(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilVpcPeeringConnectionDeleted", arg0)
 }
 
 func (_m *MockEC2API) WaitUntilVpcPeeringConnectionExists(_param0 *ec2.DescribeVpcPeeringConnectionsInput) error {

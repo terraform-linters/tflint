@@ -124,10 +124,9 @@ variable "name" {
 
 	for _, tc := range cases {
 		root, _ := parser.Parse([]byte(tc.Input))
-		list, _ := root.Node.(*ast.ObjectList)
-		listmap := map[string]*ast.ObjectList{"testfile": list}
+		template := map[string]*ast.File{"testfile": root}
 
-		evaluator, err := NewEvaluator(listmap, config.Init())
+		evaluator, err := NewEvaluator(template, []*ast.File{}, config.Init())
 		if err != nil {
 			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}
@@ -158,10 +157,9 @@ variable "name" {
 
 	for _, tc := range cases {
 		root, _ := parser.Parse([]byte(tc.Input))
-		list, _ := root.Node.(*ast.ObjectList)
-		listmap := map[string]*ast.ObjectList{"testfile": list}
+		template := map[string]*ast.File{"testfile": root}
 
-		evaluator, err := NewEvaluator(listmap, config.Init())
+		evaluator, err := NewEvaluator(template, []*ast.File{}, config.Init())
 		if err != nil {
 			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}
@@ -195,10 +193,9 @@ variable "name" {
 
 	for _, tc := range cases {
 		root, _ := parser.Parse([]byte(tc.Input))
-		list, _ := root.Node.(*ast.ObjectList)
-		listmap := map[string]*ast.ObjectList{"testfile": list}
+		template := map[string]*ast.File{"testfile": root}
 
-		evaluator, err := NewEvaluator(listmap, config.Init())
+		evaluator, err := NewEvaluator(template, []*ast.File{}, config.Init())
 		if err != nil {
 			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}
@@ -229,10 +226,9 @@ func TestEvalReturnNil(t *testing.T) {
 
 	for _, tc := range cases {
 		root, _ := parser.Parse([]byte(tc.Input))
-		list, _ := root.Node.(*ast.ObjectList)
-		listmap := map[string]*ast.ObjectList{"testfile": list}
+		template := map[string]*ast.File{"testfile": root}
 
-		evaluator, err := NewEvaluator(listmap, config.Init())
+		evaluator, err := NewEvaluator(template, []*ast.File{}, config.Init())
 		if err != nil {
 			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}

@@ -40,19 +40,17 @@ func (d *TestDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issu
 }
 
 func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string, c *config.Config, awsClient *config.AwsClient, issues *[]*issue.Issue) error {
-	listMap := make(map[string]*ast.ObjectList)
-	root, _ := parser.Parse([]byte(src))
-	list, _ := root.Node.(*ast.ObjectList)
-	listMap["test.tf"] = list
+	templates := make(map[string]*ast.File)
+	templates["test.tf"], _ = parser.Parse([]byte(src))
 
 	tfstate := &state.TFState{}
 	if err := json.Unmarshal([]byte(stateJSON), tfstate); err != nil && stateJSON != "" {
 		return errors.New("Invalid JSON Syntax!")
 	}
 
-	evalConfig, _ := evaluator.NewEvaluator(listMap, c)
+	evalConfig, _ := evaluator.NewEvaluator(templates, []*ast.File{}, c)
 	creator := reflect.ValueOf(&Detector{
-		ListMap:    listMap,
+		Templates:  templates,
 		State:      tfstate,
 		EvalConfig: evalConfig,
 		Config:     c,
@@ -64,8 +62,8 @@ func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string,
 	if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
 		preprocess.Call([]reflect.Value{})
 	}
-	for file, list := range listMap {
-		for _, item := range list.Filter("resource", reflect.Indirect(detector).FieldByName("Target").String()).Items {
+	for file, template := range templates {
+		for _, item := range template.Node.(*ast.ObjectList).Filter("resource", reflect.Indirect(detector).FieldByName("Target").String()).Items {
 			detect := detector.MethodByName("Detect")
 			detect.Call([]reflect.Value{
 				reflect.ValueOf(file),

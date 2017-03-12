@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/hcl"
 	hclast "github.com/hashicorp/hcl/hcl/ast"
 	hilast "github.com/hashicorp/hil/ast"
+	"github.com/hashicorp/terraform/helper/variables"
 )
 
 type hclVariable struct {
@@ -20,17 +21,21 @@ const HCL_STRING_VARTYPE = "string"
 const HCL_LIST_VARTYPE = "list"
 const HCL_MAP_VARTYPE = "map"
 
-func detectVariables(listMap map[string]*hclast.ObjectList) (map[string]hilast.Variable, error) {
+func detectVariables(templates map[string]*hclast.File, varfile []*hclast.File) (map[string]hilast.Variable, error) {
 	varMap := make(map[string]hilast.Variable)
 
-	for _, list := range listMap {
+	for _, template := range templates {
 		var variables []*hclVariable
-		if err := hcl.DecodeObject(&variables, list.Filter("variable")); err != nil {
+		if err := hcl.DecodeObject(&variables, template.Node.(*hclast.ObjectList).Filter("variable")); err != nil {
+			return nil, err
+		}
+		tfvars, err := decodeTFVars(varfile)
+		if err != nil {
 			return nil, err
 		}
 
 		for _, v := range variables {
-			if v.Default == nil {
+			if overriddenVariable(v, tfvars); v.Default == nil {
 				continue
 			}
 			varName := "var." + v.Name
@@ -39,6 +44,41 @@ func detectVariables(listMap map[string]*hclast.ObjectList) (map[string]hilast.V
 	}
 
 	return varMap, nil
+}
+
+func decodeTFVars(varfile []*hclast.File) ([]map[string]interface{}, error) {
+	result := []map[string]interface{}{}
+
+	for _, vars := range varfile {
+		var r map[string]interface{}
+		if err := hcl.DecodeObject(&r, vars.Node); err != nil {
+			return nil, err
+		}
+		result = append(result, r)
+	}
+	return result, nil
+}
+
+func overriddenVariable(v *hclVariable, tfvars []map[string]interface{}) {
+	for _, vars := range tfvars {
+		val := vars[v.Name]
+		if val == nil {
+			continue
+		}
+
+		switch reflect.TypeOf(val).Kind() {
+		case reflect.String:
+			fallthrough
+		case reflect.Slice:
+			v.Default = val
+		case reflect.Map:
+			if d, ok := v.Default.(map[string]interface{}); ok {
+				v.Default = variables.Merge(d, val.(map[string]interface{}))
+			} else {
+				v.Default = val
+			}
+		}
+	}
 }
 
 func parseVariable(val interface{}, varType string) hilast.Variable {
