@@ -11,6 +11,7 @@ Available Options:
     -c, --config <file>                     specify config file. default is ".tflint.hcl"
     --ignore-module <source1,source2...>    ignore module by specified source.
     --ignore-rule <rule1,rule2...>          ignore rules.
+    --var-file <file1,file2...>             specify terraform variable files.
     --deep                                  enable deep check mode.
     --aws-access-key                        set AWS access key used in deep check mode.
     --aws-secret-key                        set AWS secret key used in deep check mode.

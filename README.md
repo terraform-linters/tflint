@@ -73,6 +73,7 @@ Please show `tflint --help`
 -c, --config <file>                     specify config file. default is ".tflint.hcl"
 --ignore-module <source1,source2...>    ignore module by specified source.
 --ignore-rule <rule1,rule2...>          ignore rules.
+--var-file <file1,file2...>             specify terraform variable files.
 --deep                                  enable deep check mode.
 --aws-access-key                        set AWS access key used in deep check mode.
 --aws-secret-key                        set AWS secret key used in deep check mode.
@@ -103,6 +104,8 @@ config {
   ignore_module = {
     "github.com/wata727/example-module" = true
   }
+
+  varfile = ["example1.tfvars", "example2.tfvars"]
 }
 ```
 
@@ -114,6 +117,9 @@ $ tflint --config other_config.hcl
 
 ## Interpolation Syntax Support
 TFLint can interpret part of [interpolation syntax](https://www.terraform.io/docs/configuration/interpolation.html). We now support only variables. So you cannot use attributes of resource, outputs of modules and built-in functions. If you are using them, TFLint ignores it. You can check what is ignored by executing it with `--debug` option.
+
+### Variable Files
+If you use [variable files](https://www.terraform.io/docs/configuration/variables.html#variable-files), Please specify it by arguments or configuration file. TFLint interprets variables as well as Terraform. In other words, when variables are conflicting, It will be overridden or merged correctly.
 
 ## Deep Check
 Deep check is an option that you can actually search resources on AWS and check invalid references and duplicate resources. You can activate it by executing it with `--deep` option as following:
@@ -129,7 +135,7 @@ Result: 2 issues  (2 errors , 0 warnings , 0 notices)
 
 In the above example, an IAM instance profile that does not actually exist is specified, so it is an error. In order to refer to actual resources, AWS credentials are required. You can use command line options, configuration files, environment variables, shared credentials for these specifications.
 
-## Developing in Your Environment
+## Developing
 If you want to build TFLint at your environment, you can build with the following procedure. [Go](https://golang.org/) 1.7 or more is required.
 
 ```
