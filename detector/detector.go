@@ -65,7 +65,7 @@ var detectors = map[string]string{
 	"aws_security_group_duplicate_name":               "CreateAwsSecurityGroupDuplicateDetector",
 }
 
-func NewDetector(listMap map[string]*ast.ObjectList, state *state.TFState, tfvars map[string]*ast.File, c *config.Config) (*Detector, error) {
+func NewDetector(listMap map[string]*ast.ObjectList, state *state.TFState, tfvars []*ast.File, c *config.Config) (*Detector, error) {
 	evalConfig, err := evaluator.NewEvaluator(listMap, tfvars, c)
 	if err != nil {
 		return nil, err
@@ -149,7 +149,7 @@ func (d *Detector) Detect() []*issue.Issue {
 				continue
 			}
 			d.Logger.Info(fmt.Sprintf("detect module `%s`", name))
-			moduleDetector, err := NewDetector(m.ListMap, d.State, map[string]*ast.File{}, d.Config)
+			moduleDetector, err := NewDetector(m.ListMap, d.State, []*ast.File{}, d.Config)
 			if err != nil {
 				d.Logger.Error(err)
 				continue

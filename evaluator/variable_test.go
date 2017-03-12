@@ -118,15 +118,15 @@ variable "stat" {
 
 	for _, tc := range cases {
 		listMap := make(map[string]*hclast.ObjectList)
-		varfile := make(map[string]*hclast.File)
+		varfile := []*hclast.File{}
 		for k, v := range tc.Input {
 			root, _ := parser.Parse([]byte(v))
 			list, _ := root.Node.(*hclast.ObjectList)
 			listMap[k] = list
 		}
-		for k, v := range tc.Varfile {
+		for _, v := range tc.Varfile {
 			root, _ := parser.Parse([]byte(v))
-			varfile[k] = root
+			varfile = append(varfile, root)
 		}
 
 		result, err := detectVariables(listMap, varfile)
@@ -149,7 +149,7 @@ func TestDecodeTFVars(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Input  map[string]string
-		Result map[string]map[string]interface{}
+		Result []map[string]interface{}
 		Error  bool
 	}{
 		{
@@ -158,11 +158,11 @@ func TestDecodeTFVars(t *testing.T) {
 				"terraform.tfvars": `type = "t2.micro"`,
 				"example.tfvars":   `name = "test"`,
 			},
-			Result: map[string]map[string]interface{}{
-				"terraform.tfvars": {
+			Result: []map[string]interface{}{
+				{
 					"type": "t2.micro",
 				},
-				"example.tfvars": {
+				{
 					"name": "test",
 				},
 			},
@@ -182,8 +182,8 @@ complex = {
 }
 `,
 			},
-			Result: map[string]map[string]interface{}{
-				"terraform.tfvars": {
+			Result: []map[string]interface{}{
+				{
 					"types": []interface{}{"t2.nano", "t2.micro"},
 					"complex": []map[string]interface{}{
 						{
@@ -203,10 +203,10 @@ complex = {
 	}
 
 	for _, tc := range cases {
-		varfile := make(map[string]*hclast.File)
-		for k, v := range tc.Input {
+		varfile := []*hclast.File{}
+		for _, v := range tc.Input {
 			root, _ := parser.Parse([]byte(v))
-			varfile[k] = root
+			varfile = append(varfile, root)
 		}
 
 		result, err := decodeTFVars(varfile)
@@ -229,7 +229,7 @@ func TestOverriddenVariable(t *testing.T) {
 	cases := []struct {
 		Name             string
 		Input            *hclVariable
-		DecodedVariables map[string]map[string]interface{}
+		DecodedVariables []map[string]interface{}
 		Result           interface{}
 	}{
 		{
@@ -238,8 +238,8 @@ func TestOverriddenVariable(t *testing.T) {
 				Name:    "type",
 				Default: nil,
 			},
-			DecodedVariables: map[string]map[string]interface{}{
-				"terraform.tfvars": {
+			DecodedVariables: []map[string]interface{}{
+				{
 					"type": "t2.micro",
 				},
 			},
@@ -251,8 +251,8 @@ func TestOverriddenVariable(t *testing.T) {
 				Name:    "type",
 				Default: "t2.micro",
 			},
-			DecodedVariables: map[string]map[string]interface{}{
-				"terraform.tfvars": {
+			DecodedVariables: []map[string]interface{}{
+				{
 					"type": "t2.nano",
 				},
 			},
@@ -264,11 +264,11 @@ func TestOverriddenVariable(t *testing.T) {
 				Name:    "type",
 				Default: nil,
 			},
-			DecodedVariables: map[string]map[string]interface{}{
-				"terraform.tfvars": {
+			DecodedVariables: []map[string]interface{}{
+				{
 					"type": "t2.nano",
 				},
-				"example.tfvars": {
+				{
 					"type": "m4.large",
 				},
 			},
@@ -280,8 +280,8 @@ func TestOverriddenVariable(t *testing.T) {
 				Name:    "complex",
 				Default: nil,
 			},
-			DecodedVariables: map[string]map[string]interface{}{
-				"terraform.tfvars": {
+			DecodedVariables: []map[string]interface{}{
+				{
 					"complex": []map[string]interface{}{
 						{
 							"foo": "bar",
@@ -294,7 +294,7 @@ func TestOverriddenVariable(t *testing.T) {
 						},
 					},
 				},
-				"example.tfvars": {
+				{
 					"complex": []map[string]interface{}{
 						{
 							"foo":  "baz",

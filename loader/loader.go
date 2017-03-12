@@ -19,7 +19,7 @@ type LoaderIF interface {
 	LoadTemplate(filename string) error
 	LoadModuleFile(moduleKey string, source string) error
 	LoadAllTemplate(dir string) error
-	Dump() (map[string]*ast.ObjectList, *state.TFState, map[string]*ast.File)
+	Dump() (map[string]*ast.ObjectList, *state.TFState, []*ast.File)
 	LoadState()
 	LoadTFVars([]string)
 }
@@ -28,7 +28,7 @@ type Loader struct {
 	Logger  *logger.Logger
 	ListMap map[string]*ast.ObjectList
 	State   *state.TFState
-	TFVars  map[string]*ast.File
+	TFVars  []*ast.File
 }
 
 func NewLoader(debug bool) *Loader {
@@ -36,7 +36,7 @@ func NewLoader(debug bool) *Loader {
 		Logger:  logger.Init(debug),
 		ListMap: make(map[string]*ast.ObjectList),
 		State:   &state.TFState{},
-		TFVars:  make(map[string]*ast.File),
+		TFVars:  []*ast.File{},
 	}
 }
 
@@ -148,11 +148,11 @@ func (l *Loader) LoadTFVars(varfile []string) {
 			}
 		}
 
-		l.TFVars[file] = tfvars
+		l.TFVars = append(l.TFVars, tfvars)
 	}
 }
 
-func (l *Loader) Dump() (map[string]*ast.ObjectList, *state.TFState, map[string]*ast.File) {
+func (l *Loader) Dump() (map[string]*ast.ObjectList, *state.TFState, []*ast.File) {
 	return l.ListMap, l.State, l.TFVars
 }
 

@@ -21,7 +21,7 @@ const HCL_STRING_VARTYPE = "string"
 const HCL_LIST_VARTYPE = "list"
 const HCL_MAP_VARTYPE = "map"
 
-func detectVariables(listMap map[string]*hclast.ObjectList, varfile map[string]*hclast.File) (map[string]hilast.Variable, error) {
+func detectVariables(listMap map[string]*hclast.ObjectList, varfile []*hclast.File) (map[string]hilast.Variable, error) {
 	varMap := make(map[string]hilast.Variable)
 
 	for _, list := range listMap {
@@ -46,20 +46,20 @@ func detectVariables(listMap map[string]*hclast.ObjectList, varfile map[string]*
 	return varMap, nil
 }
 
-func decodeTFVars(varfile map[string]*hclast.File) (map[string]map[string]interface{}, error) {
-	result := map[string]map[string]interface{}{}
+func decodeTFVars(varfile []*hclast.File) ([]map[string]interface{}, error) {
+	result := []map[string]interface{}{}
 
-	for filename, vars := range varfile {
+	for _, vars := range varfile {
 		var r map[string]interface{}
 		if err := hcl.DecodeObject(&r, vars.Node); err != nil {
 			return nil, err
 		}
-		result[filename] = r
+		result = append(result, r)
 	}
 	return result, nil
 }
 
-func overriddenVariable(v *hclVariable, tfvars map[string]map[string]interface{}) {
+func overriddenVariable(v *hclVariable, tfvars []map[string]interface{}) {
 	for _, vars := range tfvars {
 		val := vars[v.Name]
 		if val == nil {

@@ -78,7 +78,7 @@ module "ec2_instance" {
 		c := config.Init()
 		c.SetIgnoreRule(tc.Config.IgnoreRule)
 		c.SetIgnoreModule(tc.Config.IgnoreModule)
-		evalConfig, _ := evaluator.NewEvaluator(listMap, map[string]*ast.File{}, c)
+		evalConfig, _ := evaluator.NewEvaluator(listMap, []*ast.File{}, c)
 		d := &Detector{
 			ListMap:    listMap,
 			Config:     c,
@@ -563,7 +563,7 @@ variable "text" {
 		list, _ := root.Node.(*ast.ObjectList)
 		listMap["text.tf"] = list
 
-		evalConfig, _ := evaluator.NewEvaluator(listMap, map[string]*ast.File{}, config.Init())
+		evalConfig, _ := evaluator.NewEvaluator(listMap, []*ast.File{}, config.Init())
 		d := &Detector{
 			ListMap:    listMap,
 			EvalConfig: evalConfig,
@@ -666,7 +666,7 @@ variable "array" {
 		list, _ := root.Node.(*ast.ObjectList)
 		listMap["text.tf"] = list
 
-		evalConfig, _ := evaluator.NewEvaluator(listMap, map[string]*ast.File{}, config.Init())
+		evalConfig, _ := evaluator.NewEvaluator(listMap, []*ast.File{}, config.Init())
 		d := &Detector{
 			ListMap:    listMap,
 			EvalConfig: evalConfig,

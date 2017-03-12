@@ -50,7 +50,7 @@ func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string,
 		return errors.New("Invalid JSON Syntax!")
 	}
 
-	evalConfig, _ := evaluator.NewEvaluator(listMap, map[string]*ast.File{}, c)
+	evalConfig, _ := evaluator.NewEvaluator(listMap, []*ast.File{}, c)
 	creator := reflect.ValueOf(&Detector{
 		ListMap:    listMap,
 		State:      tfstate,
