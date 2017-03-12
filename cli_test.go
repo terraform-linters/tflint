@@ -348,6 +348,33 @@ func TestCLIRun(t *testing.T) {
 			},
 		},
 		{
+			Name:    "variable file",
+			Command: "./tflint --var-file example1.tfvars,example2.tfvars",
+			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
+				loader := mock.NewMockLoaderIF(ctrl)
+				loader.EXPECT().LoadState()
+				loader.EXPECT().LoadTFVars([]string{"terraform.tfvars", "example1.tfvars", "example2.tfvars"})
+				loader.EXPECT().LoadAllTemplate(".").Return(nil)
+				return loader
+			},
+			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
+			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
+			Result: Result{
+				Status: ExitCodeOK,
+				CLIOptions: TestCLIOptions{
+					Config: &config.Config{
+						Debug:          false,
+						DeepCheck:      false,
+						AwsCredentials: map[string]string{},
+						IgnoreModule:   map[string]bool{},
+						IgnoreRule:     map[string]bool{},
+						Varfile:        []string{"terraform.tfvars", "example1.tfvars", "example2.tfvars"},
+					},
+					ConfigFile: ".tflint.hcl",
+				},
+			},
+		},
+		{
 			Name:              "specify config gile",
 			Command:           "./tflint --config .tflint.example.hcl",
 			LoaderGenerator:   loaderDefaultBehavior,
