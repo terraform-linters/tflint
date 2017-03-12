@@ -353,11 +353,11 @@ func TestSetVarfile(t *testing.T) {
 		{
 			Name: "append varfile",
 			Config: &Config{
-				Varfile: []string{"example1.tf"},
+				Varfile: []string{"example1.tfvars"},
 			},
-			Input: "example2.tf",
+			Input: "example2.tfvars",
 			Result: &Config{
-				Varfile: []string{"example1.tf", "terraform.tfvars", "example2.tf"},
+				Varfile: []string{"terraform.tfvars", "example1.tfvars", "example2.tfvars"},
 			},
 		},
 	}

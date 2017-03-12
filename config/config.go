@@ -88,8 +88,8 @@ func (c *Config) SetIgnoreRule(ignoreRule string) {
 }
 
 func (c *Config) SetVarfile(varfile string) {
-	// Automatically, `terraform.tfvars` loaded
-	c.Varfile = append(c.Varfile, "terraform.tfvars")
+	// Automatically, `terraform.tfvars` loaded, this priority is the lowest because insert it at the beginning.
+	c.Varfile = append([]string{"terraform.tfvars"}, c.Varfile...)
 
 	if varfile == "" {
 		return
