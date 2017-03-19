@@ -146,15 +146,15 @@ variable "stat" {
 func TestDecodeTFVars(t *testing.T) {
 	cases := []struct {
 		Name   string
-		Input  map[string]string
+		Input  []string
 		Result []map[string]interface{}
 		Error  bool
 	}{
 		{
 			Name: "decode multi tfvars",
-			Input: map[string]string{
-				"terraform.tfvars": `type = "t2.micro"`,
-				"example.tfvars":   `name = "test"`,
+			Input: []string{
+				`type = "t2.micro"`,
+				`name = "test"`,
 			},
 			Result: []map[string]interface{}{
 				{
@@ -168,8 +168,7 @@ func TestDecodeTFVars(t *testing.T) {
 		},
 		{
 			Name: "decode complex tfvars",
-			Input: map[string]string{
-				"terraform.tfvars": `
+			Input: []string{`
 types = ["t2.nano", "t2.micro"]
 complex = {
   foo = "bar"
