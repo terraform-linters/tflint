@@ -35,6 +35,15 @@ $ install tflint /usr/local/tflint/bin
 $ tflint -v
 ```
 
+### Homebrew
+
+macOS users can also use [Homebrew](https://brew.sh) to install TFLint:
+
+```
+$ brew tap hakamadare/tflint
+$ brew install tflint
+```
+
 ### Running in Docker
 We provide Docker images for each version on [DockerHub](https://hub.docker.com/r/wata727/tflint/). With docker, you can run TFLint without installing it locally.
 
