@@ -1,8 +1,8 @@
-hash: 9c6d780bc448a108b457770e8ca5d2448d52d90b8a3b2308caa4a79436f48d13
-updated: 2017-03-12T22:23:49.595299074+09:00
+hash: a221ec3e41af391aa494ffc92408f3ad5785207ede47c1c73462b0156b593539
+updated: 2017-03-25T22:04:15.372373828+09:00
 imports:
 - name: github.com/aws/aws-sdk-go
-  version: 819b71cf8430e434c1eee7e7e8b0f2b8870be899
+  version: d122c9c0e1d875585918c85cf6eba7e5e43f221d
   subpackages:
   - aws
   - aws/awserr
@@ -26,7 +26,6 @@ imports:
   - private/protocol/query/queryutil
   - private/protocol/rest
   - private/protocol/xml/xmlutil
-  - private/waiter
   - service/ec2
   - service/ec2/ec2iface
   - service/elasticache
