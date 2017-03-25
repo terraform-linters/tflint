@@ -550,6 +550,17 @@ func TestParseVariable(t *testing.T) {
 				},
 			},
 		},
+		{
+			Name: "parse empty list",
+			Input: Input{
+				Val:  []string{},
+				Type: "list",
+			},
+			Result: hilast.Variable{
+				Type:  hilast.TypeList,
+				Value: []hilast.Variable{},
+			},
+		},
 	}
 
 	for _, tc := range cases {
