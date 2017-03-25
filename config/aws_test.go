@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/k0kubun/pp"
+	homedir "github.com/mitchellh/go-homedir"
 )
 
 func TestNewAwsSession(t *testing.T) {
@@ -14,6 +15,7 @@ func TestNewAwsSession(t *testing.T) {
 		Credentials *credentials.Credentials
 		Region      *string
 	}
+	path, _ := homedir.Expand("~/.aws/credentials")
 
 	cases := []struct {
 		Name   string
@@ -21,7 +23,7 @@ func TestNewAwsSession(t *testing.T) {
 		Result Result
 	}{
 		{
-			Name: "set credentials",
+			Name: "set static credentials",
 			Input: &Config{
 				AwsCredentials: map[string]string{
 					"access_key": "AWS_ACCESS_KEY",
@@ -31,6 +33,19 @@ func TestNewAwsSession(t *testing.T) {
 			},
 			Result: Result{
 				Credentials: credentials.NewStaticCredentials("AWS_ACCESS_KEY", "AWS_SECRET_KEY", ""),
+				Region:      aws.String("us-east-1"),
+			},
+		},
+		{
+			Name: "set shared credentials",
+			Input: &Config{
+				AwsCredentials: map[string]string{
+					"profile": "account1",
+					"region":  "us-east-1",
+				},
+			},
+			Result: Result{
+				Credentials: credentials.NewSharedCredentials(path, "account1"),
 				Region:      aws.String("us-east-1"),
 			},
 		},

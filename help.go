@@ -15,6 +15,7 @@ Available Options:
     --deep                                  enable deep check mode.
     --aws-access-key                        set AWS access key used in deep check mode.
     --aws-secret-key                        set AWS secret key used in deep check mode.
+    --aws-profile                           set AWS shared credential profile name in deep check mode.
     --aws-region                            set AWS region used in deep check mode.
     -d, --debug                             enable debug mode.
     --error-with-issues                     return error code when issue exists.

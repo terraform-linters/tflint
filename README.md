@@ -86,6 +86,7 @@ Please show `tflint --help`
 --deep                                  enable deep check mode.
 --aws-access-key                        set AWS access key used in deep check mode.
 --aws-secret-key                        set AWS secret key used in deep check mode.
+--aws-profile                           set AWS shared credential profile name in deep check mode.
 --aws-region                            set AWS region used in deep check mode.
 -d, --debug                             enable debug mode.
 --error-with-issues                     return error code when issue exists.
@@ -122,6 +123,55 @@ If you want to create a configuration file with a different name, specify the fi
 
 ```
 $ tflint --config other_config.hcl
+```
+
+### Credentials
+TFLint supports various credential providers. It is used with the following priority:
+
+- Static credentials
+- Shared credentials
+- Environment credentials
+- Default shared credentials
+
+#### Static Credentials
+If you have access key and secret key, you can specify these credentials.
+
+```
+$ tflint --aws-access-key AWS_ACCESS_KEY --aws-secret-key AWS_SECRET_KEY --aws-region us-east-1
+```
+
+```
+config {
+  aws_credentials = {
+    access_key = "AWS_ACCESS_KEY"
+    secret_key = "AWS_SECRET_KEY"
+    region     = "us-east-1"
+  }
+}
+```
+
+#### Shared Credentials
+If you have [shared credentials](https://aws.amazon.com/jp/blogs/security/a-new-and-standardized-way-to-manage-credentials-in-the-aws-sdks/), you can specify credentials profile name. However TFLint supports only `~/.aws/credentials` as shared credentials location.
+
+```
+$ tflint --aws-profile AWS_PROFILE --aws-region us-east-1
+```
+
+```
+config {
+  aws_credentials = {
+    profile = "AWS_PROFILE"
+    region  = "us-east-1"
+  }
+}
+```
+
+#### Environment Credentials
+TFLint looks `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, `AWS_REGION` environment values. This is useful when you do not want to explicitly specify credentials.
+
+```
+$ export AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY
+$ export AWS_SECRET_ACCESS_KEY=AWS_SECRET_KEY
 ```
 
 ## Interpolation Syntax Support

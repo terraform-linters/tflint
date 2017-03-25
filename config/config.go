@@ -46,12 +46,15 @@ func (c *Config) LoadConfig(filename string) error {
 	return nil
 }
 
-func (c *Config) SetAwsCredentials(accessKey string, secretKey string, region string) {
+func (c *Config) SetAwsCredentials(accessKey string, secretKey string, profile string, region string) {
 	if accessKey != "" {
 		c.AwsCredentials["access_key"] = accessKey
 	}
 	if secretKey != "" {
 		c.AwsCredentials["secret_key"] = secretKey
+	}
+	if profile != "" {
+		c.AwsCredentials["profile"] = profile
 	}
 	if region != "" {
 		c.AwsCredentials["region"] = region
@@ -62,7 +65,11 @@ func (c *Config) HasAwsRegion() bool {
 	return c.AwsCredentials["region"] != ""
 }
 
-func (c *Config) HasAwsCredentials() bool {
+func (c *Config) HasAwsSharedCredentials() bool {
+	return c.AwsCredentials["profile"] != "" && c.AwsCredentials["region"] != ""
+}
+
+func (c *Config) HasAwsStaticCredentials() bool {
 	return c.AwsCredentials["access_key"] != "" && c.AwsCredentials["secret_key"] != "" && c.AwsCredentials["region"] != ""
 }
 
