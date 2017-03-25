@@ -1,6 +1,19 @@
+## 0.3.2 (2017-03-25)
+
+Patch version update. This release includes hotfix.
+
+### BugFix
+
+- Fix panic when parsing empty list ([#78](https://github.com/wata727/tflint/pull/78))
+
+### Others
+
+- Fix unstable test ([#74](https://github.com/wata727/tflint/pull/74))
+- Update README to reference Homebrew tap ([#75](https://github.com/wata727/tflint/pull/75))
+
 ## 0.3.1 (2017-03-12)
 
-Minor version update. This release includes support for tfvars.
+Patch version update. This release includes support for tfvars.
 
 ### Enhancements
 
