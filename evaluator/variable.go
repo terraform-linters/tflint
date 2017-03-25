@@ -134,30 +134,37 @@ func parseVariable(val interface{}, varType string) hilast.Variable {
 	case HCL_LIST_VARTYPE:
 		s := reflect.ValueOf(val)
 
-		switch reflect.TypeOf(s.Index(0).Interface()).Kind() {
-		case reflect.Map:
-			var variables map[string]hilast.Variable
-			variables = map[string]hilast.Variable{}
-			for i := 0; i < s.Len(); i++ {
-				ms := reflect.ValueOf(s.Index(i).Interface())
-				for _, k := range ms.MapKeys() {
-					key := k.Interface().(string)
-					value := ms.MapIndex(reflect.ValueOf(key)).Interface()
-					variables[key] = parseVariable(value, "")
-				}
-			}
-			hilVar = hilast.Variable{
-				Type:  hilast.TypeMap,
-				Value: variables,
-			}
-		default:
-			var variables []hilast.Variable
-			for i := 0; i < s.Len(); i++ {
-				variables = append(variables, parseVariable(s.Index(i).Interface(), ""))
-			}
+		if s.Len() == 0 {
 			hilVar = hilast.Variable{
 				Type:  hilast.TypeList,
-				Value: variables,
+				Value: []hilast.Variable{},
+			}
+		} else {
+			switch reflect.TypeOf(s.Index(0).Interface()).Kind() {
+			case reflect.Map:
+				var variables map[string]hilast.Variable
+				variables = map[string]hilast.Variable{}
+				for i := 0; i < s.Len(); i++ {
+					ms := reflect.ValueOf(s.Index(i).Interface())
+					for _, k := range ms.MapKeys() {
+						key := k.Interface().(string)
+						value := ms.MapIndex(reflect.ValueOf(key)).Interface()
+						variables[key] = parseVariable(value, "")
+					}
+				}
+				hilVar = hilast.Variable{
+					Type:  hilast.TypeMap,
+					Value: variables,
+				}
+			default:
+				var variables []hilast.Variable
+				for i := 0; i < s.Len(); i++ {
+					variables = append(variables, parseVariable(s.Index(i).Interface(), ""))
+				}
+				hilVar = hilast.Variable{
+					Type:  hilast.TypeList,
+					Value: variables,
+				}
 			}
 		}
 	}
