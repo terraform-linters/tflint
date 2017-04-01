@@ -438,7 +438,7 @@ func TestCLIRun(t *testing.T) {
 			},
 		},
 		{
-			Name:              "set aws credentials",
+			Name:              "set aws static credentials",
 			Command:           "./tflint --deep --aws-access-key AWS_ACCESS_KEY_ID --aws-secret-key AWS_SECRET_ACCESS_KEY --aws-region us-east-1",
 			LoaderGenerator:   loaderDefaultBehavior,
 			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
@@ -453,6 +453,30 @@ func TestCLIRun(t *testing.T) {
 							"access_key": "AWS_ACCESS_KEY_ID",
 							"secret_key": "AWS_SECRET_ACCESS_KEY",
 							"region":     "us-east-1",
+						},
+						IgnoreModule: map[string]bool{},
+						IgnoreRule:   map[string]bool{},
+						Varfile:      []string{"terraform.tfvars"},
+					},
+					ConfigFile: ".tflint.hcl",
+				},
+			},
+		},
+		{
+			Name:              "set aws shared credentials",
+			Command:           "./tflint --deep --aws-profile account1 --aws-region us-east-1",
+			LoaderGenerator:   loaderDefaultBehavior,
+			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
+			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
+			Result: Result{
+				Status: ExitCodeOK,
+				CLIOptions: TestCLIOptions{
+					Config: &config.Config{
+						Debug:     false,
+						DeepCheck: true,
+						AwsCredentials: map[string]string{
+							"profile": "account1",
+							"region":  "us-east-1",
 						},
 						IgnoreModule: map[string]bool{},
 						IgnoreRule:   map[string]bool{},

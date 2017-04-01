@@ -43,6 +43,7 @@ type ConfigurableArgs struct {
 	AwsAccessKey string
 	AwsSecretKey string
 	AwsRegion    string
+	AwsProfile   string
 	IgnoreModule string
 	IgnoreRule   string
 	Varfile      string
@@ -79,6 +80,7 @@ func (cli *CLI) Run(args []string) int {
 	flags.BoolVar(&configArgs.DeepCheck, "deep", false, "enable deep check mode.")
 	flags.StringVar(&configArgs.AwsAccessKey, "aws-access-key", "", "AWS access key used in deep check mode.")
 	flags.StringVar(&configArgs.AwsSecretKey, "aws-secret-key", "", "AWS secret key used in deep check mode.")
+	flags.StringVar(&configArgs.AwsProfile, "aws-profile", "", "AWS shared credential profile name used in deep check mode")
 	flags.StringVar(&configArgs.AwsRegion, "aws-region", "", "AWS region used in deep check mode.")
 	flags.BoolVar(&errorWithIssues, "error-with-issues", false, "return error code when issue exists.")
 	flags.BoolVar(&configArgs.Fast, "fast", false, "ignore slow rules.")
@@ -168,7 +170,7 @@ func (cli *CLI) setupConfig(args ConfigurableArgs) (*config.Config, error) {
 	}
 	if args.DeepCheck || c.DeepCheck {
 		c.DeepCheck = true
-		c.SetAwsCredentials(args.AwsAccessKey, args.AwsSecretKey, args.AwsRegion)
+		c.SetAwsCredentials(args.AwsAccessKey, args.AwsSecretKey, args.AwsProfile, args.AwsRegion)
 	}
 	// `aws_instance_invalid_ami` is very slow...
 	if args.Fast {

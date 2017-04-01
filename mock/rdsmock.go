@@ -4,6 +4,7 @@
 package mock
 
 import (
+	aws "github.com/aws/aws-sdk-go/aws"
 	request "github.com/aws/aws-sdk-go/aws/request"
 	rds "github.com/aws/aws-sdk-go/service/rds"
 	gomock "github.com/golang/mock/gomock"
@@ -30,17 +31,6 @@ func (_m *MockRDSAPI) EXPECT() *_MockRDSAPIRecorder {
 	return _m.recorder
 }
 
-func (_m *MockRDSAPI) AddRoleToDBClusterRequest(_param0 *rds.AddRoleToDBClusterInput) (*request.Request, *rds.AddRoleToDBClusterOutput) {
-	ret := _m.ctrl.Call(_m, "AddRoleToDBClusterRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.AddRoleToDBClusterOutput)
-	return ret0, ret1
-}
-
-func (_mr *_MockRDSAPIRecorder) AddRoleToDBClusterRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddRoleToDBClusterRequest", arg0)
-}
-
 func (_m *MockRDSAPI) AddRoleToDBCluster(_param0 *rds.AddRoleToDBClusterInput) (*rds.AddRoleToDBClusterOutput, error) {
 	ret := _m.ctrl.Call(_m, "AddRoleToDBCluster", _param0)
 	ret0, _ := ret[0].(*rds.AddRoleToDBClusterOutput)
@@ -52,15 +42,31 @@ func (_mr *_MockRDSAPIRecorder) AddRoleToDBCluster(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddRoleToDBCluster", arg0)
 }
 
-func (_m *MockRDSAPI) AddSourceIdentifierToSubscriptionRequest(_param0 *rds.AddSourceIdentifierToSubscriptionInput) (*request.Request, *rds.AddSourceIdentifierToSubscriptionOutput) {
-	ret := _m.ctrl.Call(_m, "AddSourceIdentifierToSubscriptionRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.AddSourceIdentifierToSubscriptionOutput)
+func (_m *MockRDSAPI) AddRoleToDBClusterWithContext(_param0 aws.Context, _param1 *rds.AddRoleToDBClusterInput, _param2 ...request.Option) (*rds.AddRoleToDBClusterOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "AddRoleToDBClusterWithContext", _s...)
+	ret0, _ := ret[0].(*rds.AddRoleToDBClusterOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) AddSourceIdentifierToSubscriptionRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddSourceIdentifierToSubscriptionRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) AddRoleToDBClusterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddRoleToDBClusterWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) AddRoleToDBClusterRequest(_param0 *rds.AddRoleToDBClusterInput) (*request.Request, *rds.AddRoleToDBClusterOutput) {
+	ret := _m.ctrl.Call(_m, "AddRoleToDBClusterRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.AddRoleToDBClusterOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) AddRoleToDBClusterRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddRoleToDBClusterRequest", arg0)
 }
 
 func (_m *MockRDSAPI) AddSourceIdentifierToSubscription(_param0 *rds.AddSourceIdentifierToSubscriptionInput) (*rds.AddSourceIdentifierToSubscriptionOutput, error) {
@@ -74,15 +80,31 @@ func (_mr *_MockRDSAPIRecorder) AddSourceIdentifierToSubscription(arg0 interface
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddSourceIdentifierToSubscription", arg0)
 }
 
-func (_m *MockRDSAPI) AddTagsToResourceRequest(_param0 *rds.AddTagsToResourceInput) (*request.Request, *rds.AddTagsToResourceOutput) {
-	ret := _m.ctrl.Call(_m, "AddTagsToResourceRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.AddTagsToResourceOutput)
+func (_m *MockRDSAPI) AddSourceIdentifierToSubscriptionWithContext(_param0 aws.Context, _param1 *rds.AddSourceIdentifierToSubscriptionInput, _param2 ...request.Option) (*rds.AddSourceIdentifierToSubscriptionOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "AddSourceIdentifierToSubscriptionWithContext", _s...)
+	ret0, _ := ret[0].(*rds.AddSourceIdentifierToSubscriptionOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) AddTagsToResourceRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddTagsToResourceRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) AddSourceIdentifierToSubscriptionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddSourceIdentifierToSubscriptionWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) AddSourceIdentifierToSubscriptionRequest(_param0 *rds.AddSourceIdentifierToSubscriptionInput) (*request.Request, *rds.AddSourceIdentifierToSubscriptionOutput) {
+	ret := _m.ctrl.Call(_m, "AddSourceIdentifierToSubscriptionRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.AddSourceIdentifierToSubscriptionOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) AddSourceIdentifierToSubscriptionRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddSourceIdentifierToSubscriptionRequest", arg0)
 }
 
 func (_m *MockRDSAPI) AddTagsToResource(_param0 *rds.AddTagsToResourceInput) (*rds.AddTagsToResourceOutput, error) {
@@ -96,15 +118,31 @@ func (_mr *_MockRDSAPIRecorder) AddTagsToResource(arg0 interface{}) *gomock.Call
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddTagsToResource", arg0)
 }
 
-func (_m *MockRDSAPI) ApplyPendingMaintenanceActionRequest(_param0 *rds.ApplyPendingMaintenanceActionInput) (*request.Request, *rds.ApplyPendingMaintenanceActionOutput) {
-	ret := _m.ctrl.Call(_m, "ApplyPendingMaintenanceActionRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.ApplyPendingMaintenanceActionOutput)
+func (_m *MockRDSAPI) AddTagsToResourceWithContext(_param0 aws.Context, _param1 *rds.AddTagsToResourceInput, _param2 ...request.Option) (*rds.AddTagsToResourceOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "AddTagsToResourceWithContext", _s...)
+	ret0, _ := ret[0].(*rds.AddTagsToResourceOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) ApplyPendingMaintenanceActionRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ApplyPendingMaintenanceActionRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) AddTagsToResourceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddTagsToResourceWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) AddTagsToResourceRequest(_param0 *rds.AddTagsToResourceInput) (*request.Request, *rds.AddTagsToResourceOutput) {
+	ret := _m.ctrl.Call(_m, "AddTagsToResourceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.AddTagsToResourceOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) AddTagsToResourceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddTagsToResourceRequest", arg0)
 }
 
 func (_m *MockRDSAPI) ApplyPendingMaintenanceAction(_param0 *rds.ApplyPendingMaintenanceActionInput) (*rds.ApplyPendingMaintenanceActionOutput, error) {
@@ -118,15 +156,31 @@ func (_mr *_MockRDSAPIRecorder) ApplyPendingMaintenanceAction(arg0 interface{}) 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ApplyPendingMaintenanceAction", arg0)
 }
 
-func (_m *MockRDSAPI) AuthorizeDBSecurityGroupIngressRequest(_param0 *rds.AuthorizeDBSecurityGroupIngressInput) (*request.Request, *rds.AuthorizeDBSecurityGroupIngressOutput) {
-	ret := _m.ctrl.Call(_m, "AuthorizeDBSecurityGroupIngressRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.AuthorizeDBSecurityGroupIngressOutput)
+func (_m *MockRDSAPI) ApplyPendingMaintenanceActionWithContext(_param0 aws.Context, _param1 *rds.ApplyPendingMaintenanceActionInput, _param2 ...request.Option) (*rds.ApplyPendingMaintenanceActionOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ApplyPendingMaintenanceActionWithContext", _s...)
+	ret0, _ := ret[0].(*rds.ApplyPendingMaintenanceActionOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) AuthorizeDBSecurityGroupIngressRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "AuthorizeDBSecurityGroupIngressRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) ApplyPendingMaintenanceActionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ApplyPendingMaintenanceActionWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) ApplyPendingMaintenanceActionRequest(_param0 *rds.ApplyPendingMaintenanceActionInput) (*request.Request, *rds.ApplyPendingMaintenanceActionOutput) {
+	ret := _m.ctrl.Call(_m, "ApplyPendingMaintenanceActionRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.ApplyPendingMaintenanceActionOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ApplyPendingMaintenanceActionRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ApplyPendingMaintenanceActionRequest", arg0)
 }
 
 func (_m *MockRDSAPI) AuthorizeDBSecurityGroupIngress(_param0 *rds.AuthorizeDBSecurityGroupIngressInput) (*rds.AuthorizeDBSecurityGroupIngressOutput, error) {
@@ -140,15 +194,31 @@ func (_mr *_MockRDSAPIRecorder) AuthorizeDBSecurityGroupIngress(arg0 interface{}
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AuthorizeDBSecurityGroupIngress", arg0)
 }
 
-func (_m *MockRDSAPI) CopyDBClusterParameterGroupRequest(_param0 *rds.CopyDBClusterParameterGroupInput) (*request.Request, *rds.CopyDBClusterParameterGroupOutput) {
-	ret := _m.ctrl.Call(_m, "CopyDBClusterParameterGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CopyDBClusterParameterGroupOutput)
+func (_m *MockRDSAPI) AuthorizeDBSecurityGroupIngressWithContext(_param0 aws.Context, _param1 *rds.AuthorizeDBSecurityGroupIngressInput, _param2 ...request.Option) (*rds.AuthorizeDBSecurityGroupIngressOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "AuthorizeDBSecurityGroupIngressWithContext", _s...)
+	ret0, _ := ret[0].(*rds.AuthorizeDBSecurityGroupIngressOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CopyDBClusterParameterGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBClusterParameterGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) AuthorizeDBSecurityGroupIngressWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AuthorizeDBSecurityGroupIngressWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) AuthorizeDBSecurityGroupIngressRequest(_param0 *rds.AuthorizeDBSecurityGroupIngressInput) (*request.Request, *rds.AuthorizeDBSecurityGroupIngressOutput) {
+	ret := _m.ctrl.Call(_m, "AuthorizeDBSecurityGroupIngressRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.AuthorizeDBSecurityGroupIngressOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) AuthorizeDBSecurityGroupIngressRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AuthorizeDBSecurityGroupIngressRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CopyDBClusterParameterGroup(_param0 *rds.CopyDBClusterParameterGroupInput) (*rds.CopyDBClusterParameterGroupOutput, error) {
@@ -162,15 +232,31 @@ func (_mr *_MockRDSAPIRecorder) CopyDBClusterParameterGroup(arg0 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBClusterParameterGroup", arg0)
 }
 
-func (_m *MockRDSAPI) CopyDBClusterSnapshotRequest(_param0 *rds.CopyDBClusterSnapshotInput) (*request.Request, *rds.CopyDBClusterSnapshotOutput) {
-	ret := _m.ctrl.Call(_m, "CopyDBClusterSnapshotRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CopyDBClusterSnapshotOutput)
+func (_m *MockRDSAPI) CopyDBClusterParameterGroupWithContext(_param0 aws.Context, _param1 *rds.CopyDBClusterParameterGroupInput, _param2 ...request.Option) (*rds.CopyDBClusterParameterGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CopyDBClusterParameterGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CopyDBClusterParameterGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CopyDBClusterSnapshotRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBClusterSnapshotRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CopyDBClusterParameterGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBClusterParameterGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CopyDBClusterParameterGroupRequest(_param0 *rds.CopyDBClusterParameterGroupInput) (*request.Request, *rds.CopyDBClusterParameterGroupOutput) {
+	ret := _m.ctrl.Call(_m, "CopyDBClusterParameterGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CopyDBClusterParameterGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CopyDBClusterParameterGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBClusterParameterGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CopyDBClusterSnapshot(_param0 *rds.CopyDBClusterSnapshotInput) (*rds.CopyDBClusterSnapshotOutput, error) {
@@ -184,15 +270,31 @@ func (_mr *_MockRDSAPIRecorder) CopyDBClusterSnapshot(arg0 interface{}) *gomock.
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBClusterSnapshot", arg0)
 }
 
-func (_m *MockRDSAPI) CopyDBParameterGroupRequest(_param0 *rds.CopyDBParameterGroupInput) (*request.Request, *rds.CopyDBParameterGroupOutput) {
-	ret := _m.ctrl.Call(_m, "CopyDBParameterGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CopyDBParameterGroupOutput)
+func (_m *MockRDSAPI) CopyDBClusterSnapshotWithContext(_param0 aws.Context, _param1 *rds.CopyDBClusterSnapshotInput, _param2 ...request.Option) (*rds.CopyDBClusterSnapshotOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CopyDBClusterSnapshotWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CopyDBClusterSnapshotOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CopyDBParameterGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBParameterGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CopyDBClusterSnapshotWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBClusterSnapshotWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CopyDBClusterSnapshotRequest(_param0 *rds.CopyDBClusterSnapshotInput) (*request.Request, *rds.CopyDBClusterSnapshotOutput) {
+	ret := _m.ctrl.Call(_m, "CopyDBClusterSnapshotRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CopyDBClusterSnapshotOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CopyDBClusterSnapshotRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBClusterSnapshotRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CopyDBParameterGroup(_param0 *rds.CopyDBParameterGroupInput) (*rds.CopyDBParameterGroupOutput, error) {
@@ -206,15 +308,31 @@ func (_mr *_MockRDSAPIRecorder) CopyDBParameterGroup(arg0 interface{}) *gomock.C
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBParameterGroup", arg0)
 }
 
-func (_m *MockRDSAPI) CopyDBSnapshotRequest(_param0 *rds.CopyDBSnapshotInput) (*request.Request, *rds.CopyDBSnapshotOutput) {
-	ret := _m.ctrl.Call(_m, "CopyDBSnapshotRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CopyDBSnapshotOutput)
+func (_m *MockRDSAPI) CopyDBParameterGroupWithContext(_param0 aws.Context, _param1 *rds.CopyDBParameterGroupInput, _param2 ...request.Option) (*rds.CopyDBParameterGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CopyDBParameterGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CopyDBParameterGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CopyDBSnapshotRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBSnapshotRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CopyDBParameterGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBParameterGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CopyDBParameterGroupRequest(_param0 *rds.CopyDBParameterGroupInput) (*request.Request, *rds.CopyDBParameterGroupOutput) {
+	ret := _m.ctrl.Call(_m, "CopyDBParameterGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CopyDBParameterGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CopyDBParameterGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBParameterGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CopyDBSnapshot(_param0 *rds.CopyDBSnapshotInput) (*rds.CopyDBSnapshotOutput, error) {
@@ -228,15 +346,31 @@ func (_mr *_MockRDSAPIRecorder) CopyDBSnapshot(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBSnapshot", arg0)
 }
 
-func (_m *MockRDSAPI) CopyOptionGroupRequest(_param0 *rds.CopyOptionGroupInput) (*request.Request, *rds.CopyOptionGroupOutput) {
-	ret := _m.ctrl.Call(_m, "CopyOptionGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CopyOptionGroupOutput)
+func (_m *MockRDSAPI) CopyDBSnapshotWithContext(_param0 aws.Context, _param1 *rds.CopyDBSnapshotInput, _param2 ...request.Option) (*rds.CopyDBSnapshotOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CopyDBSnapshotWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CopyDBSnapshotOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CopyOptionGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyOptionGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CopyDBSnapshotWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBSnapshotWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CopyDBSnapshotRequest(_param0 *rds.CopyDBSnapshotInput) (*request.Request, *rds.CopyDBSnapshotOutput) {
+	ret := _m.ctrl.Call(_m, "CopyDBSnapshotRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CopyDBSnapshotOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CopyDBSnapshotRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyDBSnapshotRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CopyOptionGroup(_param0 *rds.CopyOptionGroupInput) (*rds.CopyOptionGroupOutput, error) {
@@ -250,15 +384,31 @@ func (_mr *_MockRDSAPIRecorder) CopyOptionGroup(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyOptionGroup", arg0)
 }
 
-func (_m *MockRDSAPI) CreateDBClusterRequest(_param0 *rds.CreateDBClusterInput) (*request.Request, *rds.CreateDBClusterOutput) {
-	ret := _m.ctrl.Call(_m, "CreateDBClusterRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CreateDBClusterOutput)
+func (_m *MockRDSAPI) CopyOptionGroupWithContext(_param0 aws.Context, _param1 *rds.CopyOptionGroupInput, _param2 ...request.Option) (*rds.CopyOptionGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CopyOptionGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CopyOptionGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CreateDBClusterRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBClusterRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CopyOptionGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyOptionGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CopyOptionGroupRequest(_param0 *rds.CopyOptionGroupInput) (*request.Request, *rds.CopyOptionGroupOutput) {
+	ret := _m.ctrl.Call(_m, "CopyOptionGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CopyOptionGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CopyOptionGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopyOptionGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CreateDBCluster(_param0 *rds.CreateDBClusterInput) (*rds.CreateDBClusterOutput, error) {
@@ -272,15 +422,31 @@ func (_mr *_MockRDSAPIRecorder) CreateDBCluster(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBCluster", arg0)
 }
 
-func (_m *MockRDSAPI) CreateDBClusterParameterGroupRequest(_param0 *rds.CreateDBClusterParameterGroupInput) (*request.Request, *rds.CreateDBClusterParameterGroupOutput) {
-	ret := _m.ctrl.Call(_m, "CreateDBClusterParameterGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CreateDBClusterParameterGroupOutput)
+func (_m *MockRDSAPI) CreateDBClusterWithContext(_param0 aws.Context, _param1 *rds.CreateDBClusterInput, _param2 ...request.Option) (*rds.CreateDBClusterOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateDBClusterWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CreateDBClusterOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CreateDBClusterParameterGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBClusterParameterGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CreateDBClusterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBClusterWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CreateDBClusterRequest(_param0 *rds.CreateDBClusterInput) (*request.Request, *rds.CreateDBClusterOutput) {
+	ret := _m.ctrl.Call(_m, "CreateDBClusterRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CreateDBClusterOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CreateDBClusterRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBClusterRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CreateDBClusterParameterGroup(_param0 *rds.CreateDBClusterParameterGroupInput) (*rds.CreateDBClusterParameterGroupOutput, error) {
@@ -294,15 +460,31 @@ func (_mr *_MockRDSAPIRecorder) CreateDBClusterParameterGroup(arg0 interface{}) 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBClusterParameterGroup", arg0)
 }
 
-func (_m *MockRDSAPI) CreateDBClusterSnapshotRequest(_param0 *rds.CreateDBClusterSnapshotInput) (*request.Request, *rds.CreateDBClusterSnapshotOutput) {
-	ret := _m.ctrl.Call(_m, "CreateDBClusterSnapshotRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CreateDBClusterSnapshotOutput)
+func (_m *MockRDSAPI) CreateDBClusterParameterGroupWithContext(_param0 aws.Context, _param1 *rds.CreateDBClusterParameterGroupInput, _param2 ...request.Option) (*rds.CreateDBClusterParameterGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateDBClusterParameterGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CreateDBClusterParameterGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CreateDBClusterSnapshotRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBClusterSnapshotRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CreateDBClusterParameterGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBClusterParameterGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CreateDBClusterParameterGroupRequest(_param0 *rds.CreateDBClusterParameterGroupInput) (*request.Request, *rds.CreateDBClusterParameterGroupOutput) {
+	ret := _m.ctrl.Call(_m, "CreateDBClusterParameterGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CreateDBClusterParameterGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CreateDBClusterParameterGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBClusterParameterGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CreateDBClusterSnapshot(_param0 *rds.CreateDBClusterSnapshotInput) (*rds.CreateDBClusterSnapshotOutput, error) {
@@ -316,15 +498,31 @@ func (_mr *_MockRDSAPIRecorder) CreateDBClusterSnapshot(arg0 interface{}) *gomoc
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBClusterSnapshot", arg0)
 }
 
-func (_m *MockRDSAPI) CreateDBInstanceRequest(_param0 *rds.CreateDBInstanceInput) (*request.Request, *rds.CreateDBInstanceOutput) {
-	ret := _m.ctrl.Call(_m, "CreateDBInstanceRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CreateDBInstanceOutput)
+func (_m *MockRDSAPI) CreateDBClusterSnapshotWithContext(_param0 aws.Context, _param1 *rds.CreateDBClusterSnapshotInput, _param2 ...request.Option) (*rds.CreateDBClusterSnapshotOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateDBClusterSnapshotWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CreateDBClusterSnapshotOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CreateDBInstanceRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBInstanceRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CreateDBClusterSnapshotWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBClusterSnapshotWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CreateDBClusterSnapshotRequest(_param0 *rds.CreateDBClusterSnapshotInput) (*request.Request, *rds.CreateDBClusterSnapshotOutput) {
+	ret := _m.ctrl.Call(_m, "CreateDBClusterSnapshotRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CreateDBClusterSnapshotOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CreateDBClusterSnapshotRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBClusterSnapshotRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CreateDBInstance(_param0 *rds.CreateDBInstanceInput) (*rds.CreateDBInstanceOutput, error) {
@@ -338,15 +536,31 @@ func (_mr *_MockRDSAPIRecorder) CreateDBInstance(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBInstance", arg0)
 }
 
-func (_m *MockRDSAPI) CreateDBInstanceReadReplicaRequest(_param0 *rds.CreateDBInstanceReadReplicaInput) (*request.Request, *rds.CreateDBInstanceReadReplicaOutput) {
-	ret := _m.ctrl.Call(_m, "CreateDBInstanceReadReplicaRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CreateDBInstanceReadReplicaOutput)
+func (_m *MockRDSAPI) CreateDBInstanceWithContext(_param0 aws.Context, _param1 *rds.CreateDBInstanceInput, _param2 ...request.Option) (*rds.CreateDBInstanceOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateDBInstanceWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CreateDBInstanceOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CreateDBInstanceReadReplicaRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBInstanceReadReplicaRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CreateDBInstanceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBInstanceWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CreateDBInstanceRequest(_param0 *rds.CreateDBInstanceInput) (*request.Request, *rds.CreateDBInstanceOutput) {
+	ret := _m.ctrl.Call(_m, "CreateDBInstanceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CreateDBInstanceOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CreateDBInstanceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBInstanceRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CreateDBInstanceReadReplica(_param0 *rds.CreateDBInstanceReadReplicaInput) (*rds.CreateDBInstanceReadReplicaOutput, error) {
@@ -360,15 +574,31 @@ func (_mr *_MockRDSAPIRecorder) CreateDBInstanceReadReplica(arg0 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBInstanceReadReplica", arg0)
 }
 
-func (_m *MockRDSAPI) CreateDBParameterGroupRequest(_param0 *rds.CreateDBParameterGroupInput) (*request.Request, *rds.CreateDBParameterGroupOutput) {
-	ret := _m.ctrl.Call(_m, "CreateDBParameterGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CreateDBParameterGroupOutput)
+func (_m *MockRDSAPI) CreateDBInstanceReadReplicaWithContext(_param0 aws.Context, _param1 *rds.CreateDBInstanceReadReplicaInput, _param2 ...request.Option) (*rds.CreateDBInstanceReadReplicaOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateDBInstanceReadReplicaWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CreateDBInstanceReadReplicaOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CreateDBParameterGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBParameterGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CreateDBInstanceReadReplicaWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBInstanceReadReplicaWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CreateDBInstanceReadReplicaRequest(_param0 *rds.CreateDBInstanceReadReplicaInput) (*request.Request, *rds.CreateDBInstanceReadReplicaOutput) {
+	ret := _m.ctrl.Call(_m, "CreateDBInstanceReadReplicaRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CreateDBInstanceReadReplicaOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CreateDBInstanceReadReplicaRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBInstanceReadReplicaRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CreateDBParameterGroup(_param0 *rds.CreateDBParameterGroupInput) (*rds.CreateDBParameterGroupOutput, error) {
@@ -382,15 +612,31 @@ func (_mr *_MockRDSAPIRecorder) CreateDBParameterGroup(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBParameterGroup", arg0)
 }
 
-func (_m *MockRDSAPI) CreateDBSecurityGroupRequest(_param0 *rds.CreateDBSecurityGroupInput) (*request.Request, *rds.CreateDBSecurityGroupOutput) {
-	ret := _m.ctrl.Call(_m, "CreateDBSecurityGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CreateDBSecurityGroupOutput)
+func (_m *MockRDSAPI) CreateDBParameterGroupWithContext(_param0 aws.Context, _param1 *rds.CreateDBParameterGroupInput, _param2 ...request.Option) (*rds.CreateDBParameterGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateDBParameterGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CreateDBParameterGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CreateDBSecurityGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBSecurityGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CreateDBParameterGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBParameterGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CreateDBParameterGroupRequest(_param0 *rds.CreateDBParameterGroupInput) (*request.Request, *rds.CreateDBParameterGroupOutput) {
+	ret := _m.ctrl.Call(_m, "CreateDBParameterGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CreateDBParameterGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CreateDBParameterGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBParameterGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CreateDBSecurityGroup(_param0 *rds.CreateDBSecurityGroupInput) (*rds.CreateDBSecurityGroupOutput, error) {
@@ -404,15 +650,31 @@ func (_mr *_MockRDSAPIRecorder) CreateDBSecurityGroup(arg0 interface{}) *gomock.
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBSecurityGroup", arg0)
 }
 
-func (_m *MockRDSAPI) CreateDBSnapshotRequest(_param0 *rds.CreateDBSnapshotInput) (*request.Request, *rds.CreateDBSnapshotOutput) {
-	ret := _m.ctrl.Call(_m, "CreateDBSnapshotRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CreateDBSnapshotOutput)
+func (_m *MockRDSAPI) CreateDBSecurityGroupWithContext(_param0 aws.Context, _param1 *rds.CreateDBSecurityGroupInput, _param2 ...request.Option) (*rds.CreateDBSecurityGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateDBSecurityGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CreateDBSecurityGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CreateDBSnapshotRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBSnapshotRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CreateDBSecurityGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBSecurityGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CreateDBSecurityGroupRequest(_param0 *rds.CreateDBSecurityGroupInput) (*request.Request, *rds.CreateDBSecurityGroupOutput) {
+	ret := _m.ctrl.Call(_m, "CreateDBSecurityGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CreateDBSecurityGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CreateDBSecurityGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBSecurityGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CreateDBSnapshot(_param0 *rds.CreateDBSnapshotInput) (*rds.CreateDBSnapshotOutput, error) {
@@ -426,15 +688,31 @@ func (_mr *_MockRDSAPIRecorder) CreateDBSnapshot(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBSnapshot", arg0)
 }
 
-func (_m *MockRDSAPI) CreateDBSubnetGroupRequest(_param0 *rds.CreateDBSubnetGroupInput) (*request.Request, *rds.CreateDBSubnetGroupOutput) {
-	ret := _m.ctrl.Call(_m, "CreateDBSubnetGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CreateDBSubnetGroupOutput)
+func (_m *MockRDSAPI) CreateDBSnapshotWithContext(_param0 aws.Context, _param1 *rds.CreateDBSnapshotInput, _param2 ...request.Option) (*rds.CreateDBSnapshotOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateDBSnapshotWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CreateDBSnapshotOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CreateDBSubnetGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBSubnetGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CreateDBSnapshotWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBSnapshotWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CreateDBSnapshotRequest(_param0 *rds.CreateDBSnapshotInput) (*request.Request, *rds.CreateDBSnapshotOutput) {
+	ret := _m.ctrl.Call(_m, "CreateDBSnapshotRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CreateDBSnapshotOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CreateDBSnapshotRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBSnapshotRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CreateDBSubnetGroup(_param0 *rds.CreateDBSubnetGroupInput) (*rds.CreateDBSubnetGroupOutput, error) {
@@ -448,15 +726,31 @@ func (_mr *_MockRDSAPIRecorder) CreateDBSubnetGroup(arg0 interface{}) *gomock.Ca
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBSubnetGroup", arg0)
 }
 
-func (_m *MockRDSAPI) CreateEventSubscriptionRequest(_param0 *rds.CreateEventSubscriptionInput) (*request.Request, *rds.CreateEventSubscriptionOutput) {
-	ret := _m.ctrl.Call(_m, "CreateEventSubscriptionRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CreateEventSubscriptionOutput)
+func (_m *MockRDSAPI) CreateDBSubnetGroupWithContext(_param0 aws.Context, _param1 *rds.CreateDBSubnetGroupInput, _param2 ...request.Option) (*rds.CreateDBSubnetGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateDBSubnetGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CreateDBSubnetGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CreateEventSubscriptionRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateEventSubscriptionRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CreateDBSubnetGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBSubnetGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CreateDBSubnetGroupRequest(_param0 *rds.CreateDBSubnetGroupInput) (*request.Request, *rds.CreateDBSubnetGroupOutput) {
+	ret := _m.ctrl.Call(_m, "CreateDBSubnetGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CreateDBSubnetGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CreateDBSubnetGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateDBSubnetGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CreateEventSubscription(_param0 *rds.CreateEventSubscriptionInput) (*rds.CreateEventSubscriptionOutput, error) {
@@ -470,15 +764,31 @@ func (_mr *_MockRDSAPIRecorder) CreateEventSubscription(arg0 interface{}) *gomoc
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateEventSubscription", arg0)
 }
 
-func (_m *MockRDSAPI) CreateOptionGroupRequest(_param0 *rds.CreateOptionGroupInput) (*request.Request, *rds.CreateOptionGroupOutput) {
-	ret := _m.ctrl.Call(_m, "CreateOptionGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.CreateOptionGroupOutput)
+func (_m *MockRDSAPI) CreateEventSubscriptionWithContext(_param0 aws.Context, _param1 *rds.CreateEventSubscriptionInput, _param2 ...request.Option) (*rds.CreateEventSubscriptionOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateEventSubscriptionWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CreateEventSubscriptionOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) CreateOptionGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateOptionGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CreateEventSubscriptionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateEventSubscriptionWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CreateEventSubscriptionRequest(_param0 *rds.CreateEventSubscriptionInput) (*request.Request, *rds.CreateEventSubscriptionOutput) {
+	ret := _m.ctrl.Call(_m, "CreateEventSubscriptionRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CreateEventSubscriptionOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CreateEventSubscriptionRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateEventSubscriptionRequest", arg0)
 }
 
 func (_m *MockRDSAPI) CreateOptionGroup(_param0 *rds.CreateOptionGroupInput) (*rds.CreateOptionGroupOutput, error) {
@@ -492,15 +802,31 @@ func (_mr *_MockRDSAPIRecorder) CreateOptionGroup(arg0 interface{}) *gomock.Call
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateOptionGroup", arg0)
 }
 
-func (_m *MockRDSAPI) DeleteDBClusterRequest(_param0 *rds.DeleteDBClusterInput) (*request.Request, *rds.DeleteDBClusterOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteDBClusterRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DeleteDBClusterOutput)
+func (_m *MockRDSAPI) CreateOptionGroupWithContext(_param0 aws.Context, _param1 *rds.CreateOptionGroupInput, _param2 ...request.Option) (*rds.CreateOptionGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateOptionGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.CreateOptionGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DeleteDBClusterRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBClusterRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) CreateOptionGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateOptionGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) CreateOptionGroupRequest(_param0 *rds.CreateOptionGroupInput) (*request.Request, *rds.CreateOptionGroupOutput) {
+	ret := _m.ctrl.Call(_m, "CreateOptionGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CreateOptionGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) CreateOptionGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateOptionGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DeleteDBCluster(_param0 *rds.DeleteDBClusterInput) (*rds.DeleteDBClusterOutput, error) {
@@ -514,15 +840,31 @@ func (_mr *_MockRDSAPIRecorder) DeleteDBCluster(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBCluster", arg0)
 }
 
-func (_m *MockRDSAPI) DeleteDBClusterParameterGroupRequest(_param0 *rds.DeleteDBClusterParameterGroupInput) (*request.Request, *rds.DeleteDBClusterParameterGroupOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteDBClusterParameterGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DeleteDBClusterParameterGroupOutput)
+func (_m *MockRDSAPI) DeleteDBClusterWithContext(_param0 aws.Context, _param1 *rds.DeleteDBClusterInput, _param2 ...request.Option) (*rds.DeleteDBClusterOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteDBClusterWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DeleteDBClusterOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DeleteDBClusterParameterGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBClusterParameterGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DeleteDBClusterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBClusterWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DeleteDBClusterRequest(_param0 *rds.DeleteDBClusterInput) (*request.Request, *rds.DeleteDBClusterOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteDBClusterRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DeleteDBClusterOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DeleteDBClusterRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBClusterRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DeleteDBClusterParameterGroup(_param0 *rds.DeleteDBClusterParameterGroupInput) (*rds.DeleteDBClusterParameterGroupOutput, error) {
@@ -536,15 +878,31 @@ func (_mr *_MockRDSAPIRecorder) DeleteDBClusterParameterGroup(arg0 interface{}) 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBClusterParameterGroup", arg0)
 }
 
-func (_m *MockRDSAPI) DeleteDBClusterSnapshotRequest(_param0 *rds.DeleteDBClusterSnapshotInput) (*request.Request, *rds.DeleteDBClusterSnapshotOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteDBClusterSnapshotRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DeleteDBClusterSnapshotOutput)
+func (_m *MockRDSAPI) DeleteDBClusterParameterGroupWithContext(_param0 aws.Context, _param1 *rds.DeleteDBClusterParameterGroupInput, _param2 ...request.Option) (*rds.DeleteDBClusterParameterGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteDBClusterParameterGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DeleteDBClusterParameterGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DeleteDBClusterSnapshotRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBClusterSnapshotRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DeleteDBClusterParameterGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBClusterParameterGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DeleteDBClusterParameterGroupRequest(_param0 *rds.DeleteDBClusterParameterGroupInput) (*request.Request, *rds.DeleteDBClusterParameterGroupOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteDBClusterParameterGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DeleteDBClusterParameterGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DeleteDBClusterParameterGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBClusterParameterGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DeleteDBClusterSnapshot(_param0 *rds.DeleteDBClusterSnapshotInput) (*rds.DeleteDBClusterSnapshotOutput, error) {
@@ -558,15 +916,31 @@ func (_mr *_MockRDSAPIRecorder) DeleteDBClusterSnapshot(arg0 interface{}) *gomoc
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBClusterSnapshot", arg0)
 }
 
-func (_m *MockRDSAPI) DeleteDBInstanceRequest(_param0 *rds.DeleteDBInstanceInput) (*request.Request, *rds.DeleteDBInstanceOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteDBInstanceRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DeleteDBInstanceOutput)
+func (_m *MockRDSAPI) DeleteDBClusterSnapshotWithContext(_param0 aws.Context, _param1 *rds.DeleteDBClusterSnapshotInput, _param2 ...request.Option) (*rds.DeleteDBClusterSnapshotOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteDBClusterSnapshotWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DeleteDBClusterSnapshotOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DeleteDBInstanceRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBInstanceRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DeleteDBClusterSnapshotWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBClusterSnapshotWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DeleteDBClusterSnapshotRequest(_param0 *rds.DeleteDBClusterSnapshotInput) (*request.Request, *rds.DeleteDBClusterSnapshotOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteDBClusterSnapshotRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DeleteDBClusterSnapshotOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DeleteDBClusterSnapshotRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBClusterSnapshotRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DeleteDBInstance(_param0 *rds.DeleteDBInstanceInput) (*rds.DeleteDBInstanceOutput, error) {
@@ -580,15 +954,31 @@ func (_mr *_MockRDSAPIRecorder) DeleteDBInstance(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBInstance", arg0)
 }
 
-func (_m *MockRDSAPI) DeleteDBParameterGroupRequest(_param0 *rds.DeleteDBParameterGroupInput) (*request.Request, *rds.DeleteDBParameterGroupOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteDBParameterGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DeleteDBParameterGroupOutput)
+func (_m *MockRDSAPI) DeleteDBInstanceWithContext(_param0 aws.Context, _param1 *rds.DeleteDBInstanceInput, _param2 ...request.Option) (*rds.DeleteDBInstanceOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteDBInstanceWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DeleteDBInstanceOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DeleteDBParameterGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBParameterGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DeleteDBInstanceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBInstanceWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DeleteDBInstanceRequest(_param0 *rds.DeleteDBInstanceInput) (*request.Request, *rds.DeleteDBInstanceOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteDBInstanceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DeleteDBInstanceOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DeleteDBInstanceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBInstanceRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DeleteDBParameterGroup(_param0 *rds.DeleteDBParameterGroupInput) (*rds.DeleteDBParameterGroupOutput, error) {
@@ -602,15 +992,31 @@ func (_mr *_MockRDSAPIRecorder) DeleteDBParameterGroup(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBParameterGroup", arg0)
 }
 
-func (_m *MockRDSAPI) DeleteDBSecurityGroupRequest(_param0 *rds.DeleteDBSecurityGroupInput) (*request.Request, *rds.DeleteDBSecurityGroupOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteDBSecurityGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DeleteDBSecurityGroupOutput)
+func (_m *MockRDSAPI) DeleteDBParameterGroupWithContext(_param0 aws.Context, _param1 *rds.DeleteDBParameterGroupInput, _param2 ...request.Option) (*rds.DeleteDBParameterGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteDBParameterGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DeleteDBParameterGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DeleteDBSecurityGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBSecurityGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DeleteDBParameterGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBParameterGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DeleteDBParameterGroupRequest(_param0 *rds.DeleteDBParameterGroupInput) (*request.Request, *rds.DeleteDBParameterGroupOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteDBParameterGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DeleteDBParameterGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DeleteDBParameterGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBParameterGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DeleteDBSecurityGroup(_param0 *rds.DeleteDBSecurityGroupInput) (*rds.DeleteDBSecurityGroupOutput, error) {
@@ -624,15 +1030,31 @@ func (_mr *_MockRDSAPIRecorder) DeleteDBSecurityGroup(arg0 interface{}) *gomock.
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBSecurityGroup", arg0)
 }
 
-func (_m *MockRDSAPI) DeleteDBSnapshotRequest(_param0 *rds.DeleteDBSnapshotInput) (*request.Request, *rds.DeleteDBSnapshotOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteDBSnapshotRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DeleteDBSnapshotOutput)
+func (_m *MockRDSAPI) DeleteDBSecurityGroupWithContext(_param0 aws.Context, _param1 *rds.DeleteDBSecurityGroupInput, _param2 ...request.Option) (*rds.DeleteDBSecurityGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteDBSecurityGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DeleteDBSecurityGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DeleteDBSnapshotRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBSnapshotRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DeleteDBSecurityGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBSecurityGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DeleteDBSecurityGroupRequest(_param0 *rds.DeleteDBSecurityGroupInput) (*request.Request, *rds.DeleteDBSecurityGroupOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteDBSecurityGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DeleteDBSecurityGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DeleteDBSecurityGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBSecurityGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DeleteDBSnapshot(_param0 *rds.DeleteDBSnapshotInput) (*rds.DeleteDBSnapshotOutput, error) {
@@ -646,15 +1068,31 @@ func (_mr *_MockRDSAPIRecorder) DeleteDBSnapshot(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBSnapshot", arg0)
 }
 
-func (_m *MockRDSAPI) DeleteDBSubnetGroupRequest(_param0 *rds.DeleteDBSubnetGroupInput) (*request.Request, *rds.DeleteDBSubnetGroupOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteDBSubnetGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DeleteDBSubnetGroupOutput)
+func (_m *MockRDSAPI) DeleteDBSnapshotWithContext(_param0 aws.Context, _param1 *rds.DeleteDBSnapshotInput, _param2 ...request.Option) (*rds.DeleteDBSnapshotOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteDBSnapshotWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DeleteDBSnapshotOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DeleteDBSubnetGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBSubnetGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DeleteDBSnapshotWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBSnapshotWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DeleteDBSnapshotRequest(_param0 *rds.DeleteDBSnapshotInput) (*request.Request, *rds.DeleteDBSnapshotOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteDBSnapshotRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DeleteDBSnapshotOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DeleteDBSnapshotRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBSnapshotRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DeleteDBSubnetGroup(_param0 *rds.DeleteDBSubnetGroupInput) (*rds.DeleteDBSubnetGroupOutput, error) {
@@ -668,15 +1106,31 @@ func (_mr *_MockRDSAPIRecorder) DeleteDBSubnetGroup(arg0 interface{}) *gomock.Ca
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBSubnetGroup", arg0)
 }
 
-func (_m *MockRDSAPI) DeleteEventSubscriptionRequest(_param0 *rds.DeleteEventSubscriptionInput) (*request.Request, *rds.DeleteEventSubscriptionOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteEventSubscriptionRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DeleteEventSubscriptionOutput)
+func (_m *MockRDSAPI) DeleteDBSubnetGroupWithContext(_param0 aws.Context, _param1 *rds.DeleteDBSubnetGroupInput, _param2 ...request.Option) (*rds.DeleteDBSubnetGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteDBSubnetGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DeleteDBSubnetGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DeleteEventSubscriptionRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteEventSubscriptionRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DeleteDBSubnetGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBSubnetGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DeleteDBSubnetGroupRequest(_param0 *rds.DeleteDBSubnetGroupInput) (*request.Request, *rds.DeleteDBSubnetGroupOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteDBSubnetGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DeleteDBSubnetGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DeleteDBSubnetGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteDBSubnetGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DeleteEventSubscription(_param0 *rds.DeleteEventSubscriptionInput) (*rds.DeleteEventSubscriptionOutput, error) {
@@ -690,15 +1144,31 @@ func (_mr *_MockRDSAPIRecorder) DeleteEventSubscription(arg0 interface{}) *gomoc
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteEventSubscription", arg0)
 }
 
-func (_m *MockRDSAPI) DeleteOptionGroupRequest(_param0 *rds.DeleteOptionGroupInput) (*request.Request, *rds.DeleteOptionGroupOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteOptionGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DeleteOptionGroupOutput)
+func (_m *MockRDSAPI) DeleteEventSubscriptionWithContext(_param0 aws.Context, _param1 *rds.DeleteEventSubscriptionInput, _param2 ...request.Option) (*rds.DeleteEventSubscriptionOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteEventSubscriptionWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DeleteEventSubscriptionOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DeleteOptionGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteOptionGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DeleteEventSubscriptionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteEventSubscriptionWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DeleteEventSubscriptionRequest(_param0 *rds.DeleteEventSubscriptionInput) (*request.Request, *rds.DeleteEventSubscriptionOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteEventSubscriptionRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DeleteEventSubscriptionOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DeleteEventSubscriptionRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteEventSubscriptionRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DeleteOptionGroup(_param0 *rds.DeleteOptionGroupInput) (*rds.DeleteOptionGroupOutput, error) {
@@ -712,15 +1182,31 @@ func (_mr *_MockRDSAPIRecorder) DeleteOptionGroup(arg0 interface{}) *gomock.Call
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteOptionGroup", arg0)
 }
 
-func (_m *MockRDSAPI) DescribeAccountAttributesRequest(_param0 *rds.DescribeAccountAttributesInput) (*request.Request, *rds.DescribeAccountAttributesOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeAccountAttributesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeAccountAttributesOutput)
+func (_m *MockRDSAPI) DeleteOptionGroupWithContext(_param0 aws.Context, _param1 *rds.DeleteOptionGroupInput, _param2 ...request.Option) (*rds.DeleteOptionGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteOptionGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DeleteOptionGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeAccountAttributesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeAccountAttributesRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DeleteOptionGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteOptionGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DeleteOptionGroupRequest(_param0 *rds.DeleteOptionGroupInput) (*request.Request, *rds.DeleteOptionGroupOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteOptionGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DeleteOptionGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DeleteOptionGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteOptionGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DescribeAccountAttributes(_param0 *rds.DescribeAccountAttributesInput) (*rds.DescribeAccountAttributesOutput, error) {
@@ -734,15 +1220,31 @@ func (_mr *_MockRDSAPIRecorder) DescribeAccountAttributes(arg0 interface{}) *gom
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeAccountAttributes", arg0)
 }
 
-func (_m *MockRDSAPI) DescribeCertificatesRequest(_param0 *rds.DescribeCertificatesInput) (*request.Request, *rds.DescribeCertificatesOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeCertificatesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeCertificatesOutput)
+func (_m *MockRDSAPI) DescribeAccountAttributesWithContext(_param0 aws.Context, _param1 *rds.DescribeAccountAttributesInput, _param2 ...request.Option) (*rds.DescribeAccountAttributesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeAccountAttributesWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeAccountAttributesOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeCertificatesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCertificatesRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeAccountAttributesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeAccountAttributesWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeAccountAttributesRequest(_param0 *rds.DescribeAccountAttributesInput) (*request.Request, *rds.DescribeAccountAttributesOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeAccountAttributesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeAccountAttributesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeAccountAttributesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeAccountAttributesRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DescribeCertificates(_param0 *rds.DescribeCertificatesInput) (*rds.DescribeCertificatesOutput, error) {
@@ -756,15 +1258,31 @@ func (_mr *_MockRDSAPIRecorder) DescribeCertificates(arg0 interface{}) *gomock.C
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCertificates", arg0)
 }
 
-func (_m *MockRDSAPI) DescribeDBClusterParameterGroupsRequest(_param0 *rds.DescribeDBClusterParameterGroupsInput) (*request.Request, *rds.DescribeDBClusterParameterGroupsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeDBClusterParameterGroupsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeDBClusterParameterGroupsOutput)
+func (_m *MockRDSAPI) DescribeCertificatesWithContext(_param0 aws.Context, _param1 *rds.DescribeCertificatesInput, _param2 ...request.Option) (*rds.DescribeCertificatesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeCertificatesWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeCertificatesOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeDBClusterParameterGroupsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterParameterGroupsRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeCertificatesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCertificatesWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeCertificatesRequest(_param0 *rds.DescribeCertificatesInput) (*request.Request, *rds.DescribeCertificatesOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeCertificatesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeCertificatesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeCertificatesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCertificatesRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DescribeDBClusterParameterGroups(_param0 *rds.DescribeDBClusterParameterGroupsInput) (*rds.DescribeDBClusterParameterGroupsOutput, error) {
@@ -778,15 +1296,31 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBClusterParameterGroups(arg0 interface{
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterParameterGroups", arg0)
 }
 
-func (_m *MockRDSAPI) DescribeDBClusterParametersRequest(_param0 *rds.DescribeDBClusterParametersInput) (*request.Request, *rds.DescribeDBClusterParametersOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeDBClusterParametersRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeDBClusterParametersOutput)
+func (_m *MockRDSAPI) DescribeDBClusterParameterGroupsWithContext(_param0 aws.Context, _param1 *rds.DescribeDBClusterParameterGroupsInput, _param2 ...request.Option) (*rds.DescribeDBClusterParameterGroupsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBClusterParameterGroupsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeDBClusterParameterGroupsOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeDBClusterParametersRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterParametersRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeDBClusterParameterGroupsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterParameterGroupsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeDBClusterParameterGroupsRequest(_param0 *rds.DescribeDBClusterParameterGroupsInput) (*request.Request, *rds.DescribeDBClusterParameterGroupsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeDBClusterParameterGroupsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBClusterParameterGroupsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBClusterParameterGroupsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterParameterGroupsRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DescribeDBClusterParameters(_param0 *rds.DescribeDBClusterParametersInput) (*rds.DescribeDBClusterParametersOutput, error) {
@@ -800,15 +1334,31 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBClusterParameters(arg0 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterParameters", arg0)
 }
 
-func (_m *MockRDSAPI) DescribeDBClusterSnapshotAttributesRequest(_param0 *rds.DescribeDBClusterSnapshotAttributesInput) (*request.Request, *rds.DescribeDBClusterSnapshotAttributesOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeDBClusterSnapshotAttributesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeDBClusterSnapshotAttributesOutput)
+func (_m *MockRDSAPI) DescribeDBClusterParametersWithContext(_param0 aws.Context, _param1 *rds.DescribeDBClusterParametersInput, _param2 ...request.Option) (*rds.DescribeDBClusterParametersOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBClusterParametersWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeDBClusterParametersOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeDBClusterSnapshotAttributesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterSnapshotAttributesRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeDBClusterParametersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterParametersWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeDBClusterParametersRequest(_param0 *rds.DescribeDBClusterParametersInput) (*request.Request, *rds.DescribeDBClusterParametersOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeDBClusterParametersRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBClusterParametersOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBClusterParametersRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterParametersRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DescribeDBClusterSnapshotAttributes(_param0 *rds.DescribeDBClusterSnapshotAttributesInput) (*rds.DescribeDBClusterSnapshotAttributesOutput, error) {
@@ -822,15 +1372,31 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBClusterSnapshotAttributes(arg0 interfa
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterSnapshotAttributes", arg0)
 }
 
-func (_m *MockRDSAPI) DescribeDBClusterSnapshotsRequest(_param0 *rds.DescribeDBClusterSnapshotsInput) (*request.Request, *rds.DescribeDBClusterSnapshotsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeDBClusterSnapshotsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeDBClusterSnapshotsOutput)
+func (_m *MockRDSAPI) DescribeDBClusterSnapshotAttributesWithContext(_param0 aws.Context, _param1 *rds.DescribeDBClusterSnapshotAttributesInput, _param2 ...request.Option) (*rds.DescribeDBClusterSnapshotAttributesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBClusterSnapshotAttributesWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeDBClusterSnapshotAttributesOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeDBClusterSnapshotsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterSnapshotsRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeDBClusterSnapshotAttributesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterSnapshotAttributesWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeDBClusterSnapshotAttributesRequest(_param0 *rds.DescribeDBClusterSnapshotAttributesInput) (*request.Request, *rds.DescribeDBClusterSnapshotAttributesOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeDBClusterSnapshotAttributesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBClusterSnapshotAttributesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBClusterSnapshotAttributesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterSnapshotAttributesRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DescribeDBClusterSnapshots(_param0 *rds.DescribeDBClusterSnapshotsInput) (*rds.DescribeDBClusterSnapshotsOutput, error) {
@@ -844,15 +1410,31 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBClusterSnapshots(arg0 interface{}) *go
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterSnapshots", arg0)
 }
 
-func (_m *MockRDSAPI) DescribeDBClustersRequest(_param0 *rds.DescribeDBClustersInput) (*request.Request, *rds.DescribeDBClustersOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeDBClustersRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeDBClustersOutput)
+func (_m *MockRDSAPI) DescribeDBClusterSnapshotsWithContext(_param0 aws.Context, _param1 *rds.DescribeDBClusterSnapshotsInput, _param2 ...request.Option) (*rds.DescribeDBClusterSnapshotsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBClusterSnapshotsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeDBClusterSnapshotsOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeDBClustersRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClustersRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeDBClusterSnapshotsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterSnapshotsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeDBClusterSnapshotsRequest(_param0 *rds.DescribeDBClusterSnapshotsInput) (*request.Request, *rds.DescribeDBClusterSnapshotsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeDBClusterSnapshotsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBClusterSnapshotsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBClusterSnapshotsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusterSnapshotsRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DescribeDBClusters(_param0 *rds.DescribeDBClustersInput) (*rds.DescribeDBClustersOutput, error) {
@@ -866,15 +1448,31 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBClusters(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClusters", arg0)
 }
 
-func (_m *MockRDSAPI) DescribeDBEngineVersionsRequest(_param0 *rds.DescribeDBEngineVersionsInput) (*request.Request, *rds.DescribeDBEngineVersionsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeDBEngineVersionsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeDBEngineVersionsOutput)
+func (_m *MockRDSAPI) DescribeDBClustersWithContext(_param0 aws.Context, _param1 *rds.DescribeDBClustersInput, _param2 ...request.Option) (*rds.DescribeDBClustersOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBClustersWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeDBClustersOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeDBEngineVersionsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBEngineVersionsRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeDBClustersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClustersWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeDBClustersRequest(_param0 *rds.DescribeDBClustersInput) (*request.Request, *rds.DescribeDBClustersOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeDBClustersRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBClustersOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBClustersRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBClustersRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DescribeDBEngineVersions(_param0 *rds.DescribeDBEngineVersionsInput) (*rds.DescribeDBEngineVersionsOutput, error) {
@@ -888,6 +1486,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBEngineVersions(arg0 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBEngineVersions", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeDBEngineVersionsWithContext(_param0 aws.Context, _param1 *rds.DescribeDBEngineVersionsInput, _param2 ...request.Option) (*rds.DescribeDBEngineVersionsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBEngineVersionsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeDBEngineVersionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBEngineVersionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBEngineVersionsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeDBEngineVersionsRequest(_param0 *rds.DescribeDBEngineVersionsInput) (*request.Request, *rds.DescribeDBEngineVersionsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeDBEngineVersionsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBEngineVersionsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBEngineVersionsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBEngineVersionsRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeDBEngineVersionsPages(_param0 *rds.DescribeDBEngineVersionsInput, _param1 func(*rds.DescribeDBEngineVersionsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeDBEngineVersionsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -898,15 +1523,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBEngineVersionsPages(arg0, arg1 interfa
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBEngineVersionsPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribeDBInstancesRequest(_param0 *rds.DescribeDBInstancesInput) (*request.Request, *rds.DescribeDBInstancesOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeDBInstancesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeDBInstancesOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeDBEngineVersionsPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeDBEngineVersionsInput, _param2 func(*rds.DescribeDBEngineVersionsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBEngineVersionsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeDBInstancesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBInstancesRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeDBEngineVersionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBEngineVersionsPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribeDBInstances(_param0 *rds.DescribeDBInstancesInput) (*rds.DescribeDBInstancesOutput, error) {
@@ -920,6 +1549,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBInstances(arg0 interface{}) *gomock.Ca
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBInstances", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeDBInstancesWithContext(_param0 aws.Context, _param1 *rds.DescribeDBInstancesInput, _param2 ...request.Option) (*rds.DescribeDBInstancesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBInstancesWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeDBInstancesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBInstancesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBInstancesWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeDBInstancesRequest(_param0 *rds.DescribeDBInstancesInput) (*request.Request, *rds.DescribeDBInstancesOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeDBInstancesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBInstancesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBInstancesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBInstancesRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeDBInstancesPages(_param0 *rds.DescribeDBInstancesInput, _param1 func(*rds.DescribeDBInstancesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeDBInstancesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -930,15 +1586,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBInstancesPages(arg0, arg1 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBInstancesPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribeDBLogFilesRequest(_param0 *rds.DescribeDBLogFilesInput) (*request.Request, *rds.DescribeDBLogFilesOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeDBLogFilesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeDBLogFilesOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeDBInstancesPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeDBInstancesInput, _param2 func(*rds.DescribeDBInstancesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBInstancesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeDBLogFilesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBLogFilesRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeDBInstancesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBInstancesPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribeDBLogFiles(_param0 *rds.DescribeDBLogFilesInput) (*rds.DescribeDBLogFilesOutput, error) {
@@ -952,6 +1612,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBLogFiles(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBLogFiles", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeDBLogFilesWithContext(_param0 aws.Context, _param1 *rds.DescribeDBLogFilesInput, _param2 ...request.Option) (*rds.DescribeDBLogFilesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBLogFilesWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeDBLogFilesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBLogFilesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBLogFilesWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeDBLogFilesRequest(_param0 *rds.DescribeDBLogFilesInput) (*request.Request, *rds.DescribeDBLogFilesOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeDBLogFilesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBLogFilesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBLogFilesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBLogFilesRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeDBLogFilesPages(_param0 *rds.DescribeDBLogFilesInput, _param1 func(*rds.DescribeDBLogFilesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeDBLogFilesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -962,15 +1649,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBLogFilesPages(arg0, arg1 interface{}) 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBLogFilesPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribeDBParameterGroupsRequest(_param0 *rds.DescribeDBParameterGroupsInput) (*request.Request, *rds.DescribeDBParameterGroupsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeDBParameterGroupsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeDBParameterGroupsOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeDBLogFilesPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeDBLogFilesInput, _param2 func(*rds.DescribeDBLogFilesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBLogFilesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeDBParameterGroupsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBParameterGroupsRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeDBLogFilesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBLogFilesPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribeDBParameterGroups(_param0 *rds.DescribeDBParameterGroupsInput) (*rds.DescribeDBParameterGroupsOutput, error) {
@@ -984,6 +1675,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBParameterGroups(arg0 interface{}) *gom
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBParameterGroups", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeDBParameterGroupsWithContext(_param0 aws.Context, _param1 *rds.DescribeDBParameterGroupsInput, _param2 ...request.Option) (*rds.DescribeDBParameterGroupsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBParameterGroupsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeDBParameterGroupsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBParameterGroupsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBParameterGroupsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeDBParameterGroupsRequest(_param0 *rds.DescribeDBParameterGroupsInput) (*request.Request, *rds.DescribeDBParameterGroupsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeDBParameterGroupsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBParameterGroupsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBParameterGroupsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBParameterGroupsRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeDBParameterGroupsPages(_param0 *rds.DescribeDBParameterGroupsInput, _param1 func(*rds.DescribeDBParameterGroupsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeDBParameterGroupsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -994,15 +1712,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBParameterGroupsPages(arg0, arg1 interf
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBParameterGroupsPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribeDBParametersRequest(_param0 *rds.DescribeDBParametersInput) (*request.Request, *rds.DescribeDBParametersOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeDBParametersRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeDBParametersOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeDBParameterGroupsPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeDBParameterGroupsInput, _param2 func(*rds.DescribeDBParameterGroupsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBParameterGroupsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeDBParametersRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBParametersRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeDBParameterGroupsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBParameterGroupsPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribeDBParameters(_param0 *rds.DescribeDBParametersInput) (*rds.DescribeDBParametersOutput, error) {
@@ -1016,6 +1738,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBParameters(arg0 interface{}) *gomock.C
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBParameters", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeDBParametersWithContext(_param0 aws.Context, _param1 *rds.DescribeDBParametersInput, _param2 ...request.Option) (*rds.DescribeDBParametersOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBParametersWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeDBParametersOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBParametersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBParametersWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeDBParametersRequest(_param0 *rds.DescribeDBParametersInput) (*request.Request, *rds.DescribeDBParametersOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeDBParametersRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBParametersOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBParametersRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBParametersRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeDBParametersPages(_param0 *rds.DescribeDBParametersInput, _param1 func(*rds.DescribeDBParametersOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeDBParametersPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1026,15 +1775,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBParametersPages(arg0, arg1 interface{}
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBParametersPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribeDBSecurityGroupsRequest(_param0 *rds.DescribeDBSecurityGroupsInput) (*request.Request, *rds.DescribeDBSecurityGroupsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeDBSecurityGroupsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeDBSecurityGroupsOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeDBParametersPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeDBParametersInput, _param2 func(*rds.DescribeDBParametersOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBParametersPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeDBSecurityGroupsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSecurityGroupsRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeDBParametersPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBParametersPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribeDBSecurityGroups(_param0 *rds.DescribeDBSecurityGroupsInput) (*rds.DescribeDBSecurityGroupsOutput, error) {
@@ -1048,6 +1801,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBSecurityGroups(arg0 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSecurityGroups", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeDBSecurityGroupsWithContext(_param0 aws.Context, _param1 *rds.DescribeDBSecurityGroupsInput, _param2 ...request.Option) (*rds.DescribeDBSecurityGroupsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBSecurityGroupsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeDBSecurityGroupsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBSecurityGroupsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSecurityGroupsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeDBSecurityGroupsRequest(_param0 *rds.DescribeDBSecurityGroupsInput) (*request.Request, *rds.DescribeDBSecurityGroupsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeDBSecurityGroupsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBSecurityGroupsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBSecurityGroupsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSecurityGroupsRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeDBSecurityGroupsPages(_param0 *rds.DescribeDBSecurityGroupsInput, _param1 func(*rds.DescribeDBSecurityGroupsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeDBSecurityGroupsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1058,15 +1838,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBSecurityGroupsPages(arg0, arg1 interfa
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSecurityGroupsPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribeDBSnapshotAttributesRequest(_param0 *rds.DescribeDBSnapshotAttributesInput) (*request.Request, *rds.DescribeDBSnapshotAttributesOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeDBSnapshotAttributesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeDBSnapshotAttributesOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeDBSecurityGroupsPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeDBSecurityGroupsInput, _param2 func(*rds.DescribeDBSecurityGroupsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBSecurityGroupsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeDBSnapshotAttributesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSnapshotAttributesRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeDBSecurityGroupsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSecurityGroupsPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribeDBSnapshotAttributes(_param0 *rds.DescribeDBSnapshotAttributesInput) (*rds.DescribeDBSnapshotAttributesOutput, error) {
@@ -1080,15 +1864,31 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBSnapshotAttributes(arg0 interface{}) *
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSnapshotAttributes", arg0)
 }
 
-func (_m *MockRDSAPI) DescribeDBSnapshotsRequest(_param0 *rds.DescribeDBSnapshotsInput) (*request.Request, *rds.DescribeDBSnapshotsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeDBSnapshotsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeDBSnapshotsOutput)
+func (_m *MockRDSAPI) DescribeDBSnapshotAttributesWithContext(_param0 aws.Context, _param1 *rds.DescribeDBSnapshotAttributesInput, _param2 ...request.Option) (*rds.DescribeDBSnapshotAttributesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBSnapshotAttributesWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeDBSnapshotAttributesOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeDBSnapshotsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSnapshotsRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeDBSnapshotAttributesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSnapshotAttributesWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeDBSnapshotAttributesRequest(_param0 *rds.DescribeDBSnapshotAttributesInput) (*request.Request, *rds.DescribeDBSnapshotAttributesOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeDBSnapshotAttributesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBSnapshotAttributesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBSnapshotAttributesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSnapshotAttributesRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DescribeDBSnapshots(_param0 *rds.DescribeDBSnapshotsInput) (*rds.DescribeDBSnapshotsOutput, error) {
@@ -1102,6 +1902,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBSnapshots(arg0 interface{}) *gomock.Ca
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSnapshots", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeDBSnapshotsWithContext(_param0 aws.Context, _param1 *rds.DescribeDBSnapshotsInput, _param2 ...request.Option) (*rds.DescribeDBSnapshotsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBSnapshotsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeDBSnapshotsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBSnapshotsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSnapshotsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeDBSnapshotsRequest(_param0 *rds.DescribeDBSnapshotsInput) (*request.Request, *rds.DescribeDBSnapshotsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeDBSnapshotsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBSnapshotsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBSnapshotsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSnapshotsRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeDBSnapshotsPages(_param0 *rds.DescribeDBSnapshotsInput, _param1 func(*rds.DescribeDBSnapshotsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeDBSnapshotsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1112,15 +1939,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBSnapshotsPages(arg0, arg1 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSnapshotsPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribeDBSubnetGroupsRequest(_param0 *rds.DescribeDBSubnetGroupsInput) (*request.Request, *rds.DescribeDBSubnetGroupsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeDBSubnetGroupsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeDBSubnetGroupsOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeDBSnapshotsPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeDBSnapshotsInput, _param2 func(*rds.DescribeDBSnapshotsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBSnapshotsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeDBSubnetGroupsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSubnetGroupsRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeDBSnapshotsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSnapshotsPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribeDBSubnetGroups(_param0 *rds.DescribeDBSubnetGroupsInput) (*rds.DescribeDBSubnetGroupsOutput, error) {
@@ -1134,6 +1965,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBSubnetGroups(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSubnetGroups", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeDBSubnetGroupsWithContext(_param0 aws.Context, _param1 *rds.DescribeDBSubnetGroupsInput, _param2 ...request.Option) (*rds.DescribeDBSubnetGroupsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBSubnetGroupsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeDBSubnetGroupsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBSubnetGroupsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSubnetGroupsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeDBSubnetGroupsRequest(_param0 *rds.DescribeDBSubnetGroupsInput) (*request.Request, *rds.DescribeDBSubnetGroupsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeDBSubnetGroupsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBSubnetGroupsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeDBSubnetGroupsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSubnetGroupsRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeDBSubnetGroupsPages(_param0 *rds.DescribeDBSubnetGroupsInput, _param1 func(*rds.DescribeDBSubnetGroupsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeDBSubnetGroupsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1144,15 +2002,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeDBSubnetGroupsPages(arg0, arg1 interface
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSubnetGroupsPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribeEngineDefaultClusterParametersRequest(_param0 *rds.DescribeEngineDefaultClusterParametersInput) (*request.Request, *rds.DescribeEngineDefaultClusterParametersOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeEngineDefaultClusterParametersRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeEngineDefaultClusterParametersOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeDBSubnetGroupsPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeDBSubnetGroupsInput, _param2 func(*rds.DescribeDBSubnetGroupsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeDBSubnetGroupsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeEngineDefaultClusterParametersRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultClusterParametersRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeDBSubnetGroupsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeDBSubnetGroupsPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribeEngineDefaultClusterParameters(_param0 *rds.DescribeEngineDefaultClusterParametersInput) (*rds.DescribeEngineDefaultClusterParametersOutput, error) {
@@ -1166,15 +2028,31 @@ func (_mr *_MockRDSAPIRecorder) DescribeEngineDefaultClusterParameters(arg0 inte
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultClusterParameters", arg0)
 }
 
-func (_m *MockRDSAPI) DescribeEngineDefaultParametersRequest(_param0 *rds.DescribeEngineDefaultParametersInput) (*request.Request, *rds.DescribeEngineDefaultParametersOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeEngineDefaultParametersRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeEngineDefaultParametersOutput)
+func (_m *MockRDSAPI) DescribeEngineDefaultClusterParametersWithContext(_param0 aws.Context, _param1 *rds.DescribeEngineDefaultClusterParametersInput, _param2 ...request.Option) (*rds.DescribeEngineDefaultClusterParametersOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeEngineDefaultClusterParametersWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeEngineDefaultClusterParametersOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeEngineDefaultParametersRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultParametersRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeEngineDefaultClusterParametersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultClusterParametersWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeEngineDefaultClusterParametersRequest(_param0 *rds.DescribeEngineDefaultClusterParametersInput) (*request.Request, *rds.DescribeEngineDefaultClusterParametersOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeEngineDefaultClusterParametersRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeEngineDefaultClusterParametersOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeEngineDefaultClusterParametersRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultClusterParametersRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DescribeEngineDefaultParameters(_param0 *rds.DescribeEngineDefaultParametersInput) (*rds.DescribeEngineDefaultParametersOutput, error) {
@@ -1188,6 +2066,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeEngineDefaultParameters(arg0 interface{}
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultParameters", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeEngineDefaultParametersWithContext(_param0 aws.Context, _param1 *rds.DescribeEngineDefaultParametersInput, _param2 ...request.Option) (*rds.DescribeEngineDefaultParametersOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeEngineDefaultParametersWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeEngineDefaultParametersOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeEngineDefaultParametersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultParametersWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeEngineDefaultParametersRequest(_param0 *rds.DescribeEngineDefaultParametersInput) (*request.Request, *rds.DescribeEngineDefaultParametersOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeEngineDefaultParametersRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeEngineDefaultParametersOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeEngineDefaultParametersRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultParametersRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeEngineDefaultParametersPages(_param0 *rds.DescribeEngineDefaultParametersInput, _param1 func(*rds.DescribeEngineDefaultParametersOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeEngineDefaultParametersPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1198,15 +2103,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeEngineDefaultParametersPages(arg0, arg1 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultParametersPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribeEventCategoriesRequest(_param0 *rds.DescribeEventCategoriesInput) (*request.Request, *rds.DescribeEventCategoriesOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeEventCategoriesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeEventCategoriesOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeEngineDefaultParametersPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeEngineDefaultParametersInput, _param2 func(*rds.DescribeEngineDefaultParametersOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeEngineDefaultParametersPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeEventCategoriesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventCategoriesRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeEngineDefaultParametersPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultParametersPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribeEventCategories(_param0 *rds.DescribeEventCategoriesInput) (*rds.DescribeEventCategoriesOutput, error) {
@@ -1220,15 +2129,31 @@ func (_mr *_MockRDSAPIRecorder) DescribeEventCategories(arg0 interface{}) *gomoc
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventCategories", arg0)
 }
 
-func (_m *MockRDSAPI) DescribeEventSubscriptionsRequest(_param0 *rds.DescribeEventSubscriptionsInput) (*request.Request, *rds.DescribeEventSubscriptionsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeEventSubscriptionsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeEventSubscriptionsOutput)
+func (_m *MockRDSAPI) DescribeEventCategoriesWithContext(_param0 aws.Context, _param1 *rds.DescribeEventCategoriesInput, _param2 ...request.Option) (*rds.DescribeEventCategoriesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeEventCategoriesWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeEventCategoriesOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeEventSubscriptionsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventSubscriptionsRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeEventCategoriesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventCategoriesWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeEventCategoriesRequest(_param0 *rds.DescribeEventCategoriesInput) (*request.Request, *rds.DescribeEventCategoriesOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeEventCategoriesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeEventCategoriesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeEventCategoriesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventCategoriesRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DescribeEventSubscriptions(_param0 *rds.DescribeEventSubscriptionsInput) (*rds.DescribeEventSubscriptionsOutput, error) {
@@ -1242,6 +2167,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeEventSubscriptions(arg0 interface{}) *go
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventSubscriptions", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeEventSubscriptionsWithContext(_param0 aws.Context, _param1 *rds.DescribeEventSubscriptionsInput, _param2 ...request.Option) (*rds.DescribeEventSubscriptionsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeEventSubscriptionsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeEventSubscriptionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeEventSubscriptionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventSubscriptionsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeEventSubscriptionsRequest(_param0 *rds.DescribeEventSubscriptionsInput) (*request.Request, *rds.DescribeEventSubscriptionsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeEventSubscriptionsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeEventSubscriptionsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeEventSubscriptionsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventSubscriptionsRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeEventSubscriptionsPages(_param0 *rds.DescribeEventSubscriptionsInput, _param1 func(*rds.DescribeEventSubscriptionsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeEventSubscriptionsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1252,15 +2204,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeEventSubscriptionsPages(arg0, arg1 inter
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventSubscriptionsPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribeEventsRequest(_param0 *rds.DescribeEventsInput) (*request.Request, *rds.DescribeEventsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeEventsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeEventsOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeEventSubscriptionsPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeEventSubscriptionsInput, _param2 func(*rds.DescribeEventSubscriptionsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeEventSubscriptionsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeEventsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventsRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeEventSubscriptionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventSubscriptionsPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribeEvents(_param0 *rds.DescribeEventsInput) (*rds.DescribeEventsOutput, error) {
@@ -1274,6 +2230,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeEvents(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEvents", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeEventsWithContext(_param0 aws.Context, _param1 *rds.DescribeEventsInput, _param2 ...request.Option) (*rds.DescribeEventsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeEventsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeEventsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeEventsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeEventsRequest(_param0 *rds.DescribeEventsInput) (*request.Request, *rds.DescribeEventsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeEventsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeEventsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeEventsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventsRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeEventsPages(_param0 *rds.DescribeEventsInput, _param1 func(*rds.DescribeEventsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeEventsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1284,15 +2267,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeEventsPages(arg0, arg1 interface{}) *gom
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventsPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribeOptionGroupOptionsRequest(_param0 *rds.DescribeOptionGroupOptionsInput) (*request.Request, *rds.DescribeOptionGroupOptionsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeOptionGroupOptionsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeOptionGroupOptionsOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeEventsPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeEventsInput, _param2 func(*rds.DescribeEventsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeEventsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeOptionGroupOptionsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOptionGroupOptionsRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeEventsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventsPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribeOptionGroupOptions(_param0 *rds.DescribeOptionGroupOptionsInput) (*rds.DescribeOptionGroupOptionsOutput, error) {
@@ -1306,6 +2293,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeOptionGroupOptions(arg0 interface{}) *go
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOptionGroupOptions", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeOptionGroupOptionsWithContext(_param0 aws.Context, _param1 *rds.DescribeOptionGroupOptionsInput, _param2 ...request.Option) (*rds.DescribeOptionGroupOptionsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeOptionGroupOptionsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeOptionGroupOptionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeOptionGroupOptionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOptionGroupOptionsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeOptionGroupOptionsRequest(_param0 *rds.DescribeOptionGroupOptionsInput) (*request.Request, *rds.DescribeOptionGroupOptionsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeOptionGroupOptionsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeOptionGroupOptionsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeOptionGroupOptionsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOptionGroupOptionsRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeOptionGroupOptionsPages(_param0 *rds.DescribeOptionGroupOptionsInput, _param1 func(*rds.DescribeOptionGroupOptionsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeOptionGroupOptionsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1316,15 +2330,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeOptionGroupOptionsPages(arg0, arg1 inter
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOptionGroupOptionsPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribeOptionGroupsRequest(_param0 *rds.DescribeOptionGroupsInput) (*request.Request, *rds.DescribeOptionGroupsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeOptionGroupsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeOptionGroupsOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeOptionGroupOptionsPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeOptionGroupOptionsInput, _param2 func(*rds.DescribeOptionGroupOptionsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeOptionGroupOptionsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeOptionGroupsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOptionGroupsRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeOptionGroupOptionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOptionGroupOptionsPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribeOptionGroups(_param0 *rds.DescribeOptionGroupsInput) (*rds.DescribeOptionGroupsOutput, error) {
@@ -1338,6 +2356,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeOptionGroups(arg0 interface{}) *gomock.C
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOptionGroups", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeOptionGroupsWithContext(_param0 aws.Context, _param1 *rds.DescribeOptionGroupsInput, _param2 ...request.Option) (*rds.DescribeOptionGroupsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeOptionGroupsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeOptionGroupsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeOptionGroupsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOptionGroupsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeOptionGroupsRequest(_param0 *rds.DescribeOptionGroupsInput) (*request.Request, *rds.DescribeOptionGroupsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeOptionGroupsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeOptionGroupsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeOptionGroupsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOptionGroupsRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeOptionGroupsPages(_param0 *rds.DescribeOptionGroupsInput, _param1 func(*rds.DescribeOptionGroupsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeOptionGroupsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1348,15 +2393,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeOptionGroupsPages(arg0, arg1 interface{}
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOptionGroupsPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribeOrderableDBInstanceOptionsRequest(_param0 *rds.DescribeOrderableDBInstanceOptionsInput) (*request.Request, *rds.DescribeOrderableDBInstanceOptionsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeOrderableDBInstanceOptionsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeOrderableDBInstanceOptionsOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeOptionGroupsPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeOptionGroupsInput, _param2 func(*rds.DescribeOptionGroupsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeOptionGroupsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeOrderableDBInstanceOptionsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOrderableDBInstanceOptionsRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeOptionGroupsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOptionGroupsPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribeOrderableDBInstanceOptions(_param0 *rds.DescribeOrderableDBInstanceOptionsInput) (*rds.DescribeOrderableDBInstanceOptionsOutput, error) {
@@ -1370,6 +2419,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeOrderableDBInstanceOptions(arg0 interfac
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOrderableDBInstanceOptions", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeOrderableDBInstanceOptionsWithContext(_param0 aws.Context, _param1 *rds.DescribeOrderableDBInstanceOptionsInput, _param2 ...request.Option) (*rds.DescribeOrderableDBInstanceOptionsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeOrderableDBInstanceOptionsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeOrderableDBInstanceOptionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeOrderableDBInstanceOptionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOrderableDBInstanceOptionsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeOrderableDBInstanceOptionsRequest(_param0 *rds.DescribeOrderableDBInstanceOptionsInput) (*request.Request, *rds.DescribeOrderableDBInstanceOptionsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeOrderableDBInstanceOptionsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeOrderableDBInstanceOptionsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeOrderableDBInstanceOptionsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOrderableDBInstanceOptionsRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeOrderableDBInstanceOptionsPages(_param0 *rds.DescribeOrderableDBInstanceOptionsInput, _param1 func(*rds.DescribeOrderableDBInstanceOptionsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeOrderableDBInstanceOptionsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1380,15 +2456,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeOrderableDBInstanceOptionsPages(arg0, ar
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOrderableDBInstanceOptionsPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribePendingMaintenanceActionsRequest(_param0 *rds.DescribePendingMaintenanceActionsInput) (*request.Request, *rds.DescribePendingMaintenanceActionsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribePendingMaintenanceActionsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribePendingMaintenanceActionsOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeOrderableDBInstanceOptionsPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeOrderableDBInstanceOptionsInput, _param2 func(*rds.DescribeOrderableDBInstanceOptionsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeOrderableDBInstanceOptionsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribePendingMaintenanceActionsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribePendingMaintenanceActionsRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeOrderableDBInstanceOptionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeOrderableDBInstanceOptionsPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribePendingMaintenanceActions(_param0 *rds.DescribePendingMaintenanceActionsInput) (*rds.DescribePendingMaintenanceActionsOutput, error) {
@@ -1402,15 +2482,31 @@ func (_mr *_MockRDSAPIRecorder) DescribePendingMaintenanceActions(arg0 interface
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribePendingMaintenanceActions", arg0)
 }
 
-func (_m *MockRDSAPI) DescribeReservedDBInstancesRequest(_param0 *rds.DescribeReservedDBInstancesInput) (*request.Request, *rds.DescribeReservedDBInstancesOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeReservedDBInstancesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeReservedDBInstancesOutput)
+func (_m *MockRDSAPI) DescribePendingMaintenanceActionsWithContext(_param0 aws.Context, _param1 *rds.DescribePendingMaintenanceActionsInput, _param2 ...request.Option) (*rds.DescribePendingMaintenanceActionsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribePendingMaintenanceActionsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribePendingMaintenanceActionsOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeReservedDBInstancesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedDBInstancesRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribePendingMaintenanceActionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribePendingMaintenanceActionsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribePendingMaintenanceActionsRequest(_param0 *rds.DescribePendingMaintenanceActionsInput) (*request.Request, *rds.DescribePendingMaintenanceActionsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribePendingMaintenanceActionsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribePendingMaintenanceActionsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribePendingMaintenanceActionsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribePendingMaintenanceActionsRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DescribeReservedDBInstances(_param0 *rds.DescribeReservedDBInstancesInput) (*rds.DescribeReservedDBInstancesOutput, error) {
@@ -1424,6 +2520,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeReservedDBInstances(arg0 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedDBInstances", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeReservedDBInstancesWithContext(_param0 aws.Context, _param1 *rds.DescribeReservedDBInstancesInput, _param2 ...request.Option) (*rds.DescribeReservedDBInstancesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeReservedDBInstancesWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeReservedDBInstancesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeReservedDBInstancesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedDBInstancesWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeReservedDBInstancesRequest(_param0 *rds.DescribeReservedDBInstancesInput) (*request.Request, *rds.DescribeReservedDBInstancesOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeReservedDBInstancesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeReservedDBInstancesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeReservedDBInstancesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedDBInstancesRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeReservedDBInstancesPages(_param0 *rds.DescribeReservedDBInstancesInput, _param1 func(*rds.DescribeReservedDBInstancesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeReservedDBInstancesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1434,15 +2557,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeReservedDBInstancesPages(arg0, arg1 inte
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedDBInstancesPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribeReservedDBInstancesOfferingsRequest(_param0 *rds.DescribeReservedDBInstancesOfferingsInput) (*request.Request, *rds.DescribeReservedDBInstancesOfferingsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeReservedDBInstancesOfferingsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeReservedDBInstancesOfferingsOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeReservedDBInstancesPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeReservedDBInstancesInput, _param2 func(*rds.DescribeReservedDBInstancesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeReservedDBInstancesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeReservedDBInstancesOfferingsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedDBInstancesOfferingsRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeReservedDBInstancesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedDBInstancesPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribeReservedDBInstancesOfferings(_param0 *rds.DescribeReservedDBInstancesOfferingsInput) (*rds.DescribeReservedDBInstancesOfferingsOutput, error) {
@@ -1456,6 +2583,33 @@ func (_mr *_MockRDSAPIRecorder) DescribeReservedDBInstancesOfferings(arg0 interf
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedDBInstancesOfferings", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeReservedDBInstancesOfferingsWithContext(_param0 aws.Context, _param1 *rds.DescribeReservedDBInstancesOfferingsInput, _param2 ...request.Option) (*rds.DescribeReservedDBInstancesOfferingsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeReservedDBInstancesOfferingsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeReservedDBInstancesOfferingsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeReservedDBInstancesOfferingsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedDBInstancesOfferingsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeReservedDBInstancesOfferingsRequest(_param0 *rds.DescribeReservedDBInstancesOfferingsInput) (*request.Request, *rds.DescribeReservedDBInstancesOfferingsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeReservedDBInstancesOfferingsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeReservedDBInstancesOfferingsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeReservedDBInstancesOfferingsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedDBInstancesOfferingsRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DescribeReservedDBInstancesOfferingsPages(_param0 *rds.DescribeReservedDBInstancesOfferingsInput, _param1 func(*rds.DescribeReservedDBInstancesOfferingsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeReservedDBInstancesOfferingsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1466,15 +2620,19 @@ func (_mr *_MockRDSAPIRecorder) DescribeReservedDBInstancesOfferingsPages(arg0, 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedDBInstancesOfferingsPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) DescribeSourceRegionsRequest(_param0 *rds.DescribeSourceRegionsInput) (*request.Request, *rds.DescribeSourceRegionsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeSourceRegionsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DescribeSourceRegionsOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DescribeReservedDBInstancesOfferingsPagesWithContext(_param0 aws.Context, _param1 *rds.DescribeReservedDBInstancesOfferingsInput, _param2 func(*rds.DescribeReservedDBInstancesOfferingsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeReservedDBInstancesOfferingsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) DescribeSourceRegionsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeSourceRegionsRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeReservedDBInstancesOfferingsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedDBInstancesOfferingsPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) DescribeSourceRegions(_param0 *rds.DescribeSourceRegionsInput) (*rds.DescribeSourceRegionsOutput, error) {
@@ -1488,15 +2646,31 @@ func (_mr *_MockRDSAPIRecorder) DescribeSourceRegions(arg0 interface{}) *gomock.
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeSourceRegions", arg0)
 }
 
-func (_m *MockRDSAPI) DownloadDBLogFilePortionRequest(_param0 *rds.DownloadDBLogFilePortionInput) (*request.Request, *rds.DownloadDBLogFilePortionOutput) {
-	ret := _m.ctrl.Call(_m, "DownloadDBLogFilePortionRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DownloadDBLogFilePortionOutput)
+func (_m *MockRDSAPI) DescribeSourceRegionsWithContext(_param0 aws.Context, _param1 *rds.DescribeSourceRegionsInput, _param2 ...request.Option) (*rds.DescribeSourceRegionsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeSourceRegionsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeSourceRegionsOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) DownloadDBLogFilePortionRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DownloadDBLogFilePortionRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DescribeSourceRegionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeSourceRegionsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeSourceRegionsRequest(_param0 *rds.DescribeSourceRegionsInput) (*request.Request, *rds.DescribeSourceRegionsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeSourceRegionsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeSourceRegionsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeSourceRegionsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeSourceRegionsRequest", arg0)
 }
 
 func (_m *MockRDSAPI) DownloadDBLogFilePortion(_param0 *rds.DownloadDBLogFilePortionInput) (*rds.DownloadDBLogFilePortionOutput, error) {
@@ -1510,6 +2684,33 @@ func (_mr *_MockRDSAPIRecorder) DownloadDBLogFilePortion(arg0 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DownloadDBLogFilePortion", arg0)
 }
 
+func (_m *MockRDSAPI) DownloadDBLogFilePortionWithContext(_param0 aws.Context, _param1 *rds.DownloadDBLogFilePortionInput, _param2 ...request.Option) (*rds.DownloadDBLogFilePortionOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DownloadDBLogFilePortionWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DownloadDBLogFilePortionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DownloadDBLogFilePortionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DownloadDBLogFilePortionWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DownloadDBLogFilePortionRequest(_param0 *rds.DownloadDBLogFilePortionInput) (*request.Request, *rds.DownloadDBLogFilePortionOutput) {
+	ret := _m.ctrl.Call(_m, "DownloadDBLogFilePortionRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DownloadDBLogFilePortionOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DownloadDBLogFilePortionRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DownloadDBLogFilePortionRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DownloadDBLogFilePortionPages(_param0 *rds.DownloadDBLogFilePortionInput, _param1 func(*rds.DownloadDBLogFilePortionOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DownloadDBLogFilePortionPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1520,15 +2721,19 @@ func (_mr *_MockRDSAPIRecorder) DownloadDBLogFilePortionPages(arg0, arg1 interfa
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DownloadDBLogFilePortionPages", arg0, arg1)
 }
 
-func (_m *MockRDSAPI) FailoverDBClusterRequest(_param0 *rds.FailoverDBClusterInput) (*request.Request, *rds.FailoverDBClusterOutput) {
-	ret := _m.ctrl.Call(_m, "FailoverDBClusterRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.FailoverDBClusterOutput)
-	return ret0, ret1
+func (_m *MockRDSAPI) DownloadDBLogFilePortionPagesWithContext(_param0 aws.Context, _param1 *rds.DownloadDBLogFilePortionInput, _param2 func(*rds.DownloadDBLogFilePortionOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DownloadDBLogFilePortionPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockRDSAPIRecorder) FailoverDBClusterRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "FailoverDBClusterRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) DownloadDBLogFilePortionPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DownloadDBLogFilePortionPagesWithContext", _s...)
 }
 
 func (_m *MockRDSAPI) FailoverDBCluster(_param0 *rds.FailoverDBClusterInput) (*rds.FailoverDBClusterOutput, error) {
@@ -1542,15 +2747,31 @@ func (_mr *_MockRDSAPIRecorder) FailoverDBCluster(arg0 interface{}) *gomock.Call
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "FailoverDBCluster", arg0)
 }
 
-func (_m *MockRDSAPI) ListTagsForResourceRequest(_param0 *rds.ListTagsForResourceInput) (*request.Request, *rds.ListTagsForResourceOutput) {
-	ret := _m.ctrl.Call(_m, "ListTagsForResourceRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.ListTagsForResourceOutput)
+func (_m *MockRDSAPI) FailoverDBClusterWithContext(_param0 aws.Context, _param1 *rds.FailoverDBClusterInput, _param2 ...request.Option) (*rds.FailoverDBClusterOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "FailoverDBClusterWithContext", _s...)
+	ret0, _ := ret[0].(*rds.FailoverDBClusterOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) ListTagsForResourceRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListTagsForResourceRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) FailoverDBClusterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "FailoverDBClusterWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) FailoverDBClusterRequest(_param0 *rds.FailoverDBClusterInput) (*request.Request, *rds.FailoverDBClusterOutput) {
+	ret := _m.ctrl.Call(_m, "FailoverDBClusterRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.FailoverDBClusterOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) FailoverDBClusterRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "FailoverDBClusterRequest", arg0)
 }
 
 func (_m *MockRDSAPI) ListTagsForResource(_param0 *rds.ListTagsForResourceInput) (*rds.ListTagsForResourceOutput, error) {
@@ -1564,15 +2785,31 @@ func (_mr *_MockRDSAPIRecorder) ListTagsForResource(arg0 interface{}) *gomock.Ca
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListTagsForResource", arg0)
 }
 
-func (_m *MockRDSAPI) ModifyDBClusterRequest(_param0 *rds.ModifyDBClusterInput) (*request.Request, *rds.ModifyDBClusterOutput) {
-	ret := _m.ctrl.Call(_m, "ModifyDBClusterRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.ModifyDBClusterOutput)
+func (_m *MockRDSAPI) ListTagsForResourceWithContext(_param0 aws.Context, _param1 *rds.ListTagsForResourceInput, _param2 ...request.Option) (*rds.ListTagsForResourceOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListTagsForResourceWithContext", _s...)
+	ret0, _ := ret[0].(*rds.ListTagsForResourceOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) ModifyDBClusterRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBClusterRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) ListTagsForResourceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListTagsForResourceWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) ListTagsForResourceRequest(_param0 *rds.ListTagsForResourceInput) (*request.Request, *rds.ListTagsForResourceOutput) {
+	ret := _m.ctrl.Call(_m, "ListTagsForResourceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.ListTagsForResourceOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ListTagsForResourceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListTagsForResourceRequest", arg0)
 }
 
 func (_m *MockRDSAPI) ModifyDBCluster(_param0 *rds.ModifyDBClusterInput) (*rds.ModifyDBClusterOutput, error) {
@@ -1586,15 +2823,31 @@ func (_mr *_MockRDSAPIRecorder) ModifyDBCluster(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBCluster", arg0)
 }
 
-func (_m *MockRDSAPI) ModifyDBClusterParameterGroupRequest(_param0 *rds.ModifyDBClusterParameterGroupInput) (*request.Request, *rds.DBClusterParameterGroupNameMessage) {
-	ret := _m.ctrl.Call(_m, "ModifyDBClusterParameterGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DBClusterParameterGroupNameMessage)
+func (_m *MockRDSAPI) ModifyDBClusterWithContext(_param0 aws.Context, _param1 *rds.ModifyDBClusterInput, _param2 ...request.Option) (*rds.ModifyDBClusterOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyDBClusterWithContext", _s...)
+	ret0, _ := ret[0].(*rds.ModifyDBClusterOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) ModifyDBClusterParameterGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBClusterParameterGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) ModifyDBClusterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBClusterWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) ModifyDBClusterRequest(_param0 *rds.ModifyDBClusterInput) (*request.Request, *rds.ModifyDBClusterOutput) {
+	ret := _m.ctrl.Call(_m, "ModifyDBClusterRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.ModifyDBClusterOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ModifyDBClusterRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBClusterRequest", arg0)
 }
 
 func (_m *MockRDSAPI) ModifyDBClusterParameterGroup(_param0 *rds.ModifyDBClusterParameterGroupInput) (*rds.DBClusterParameterGroupNameMessage, error) {
@@ -1608,15 +2861,31 @@ func (_mr *_MockRDSAPIRecorder) ModifyDBClusterParameterGroup(arg0 interface{}) 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBClusterParameterGroup", arg0)
 }
 
-func (_m *MockRDSAPI) ModifyDBClusterSnapshotAttributeRequest(_param0 *rds.ModifyDBClusterSnapshotAttributeInput) (*request.Request, *rds.ModifyDBClusterSnapshotAttributeOutput) {
-	ret := _m.ctrl.Call(_m, "ModifyDBClusterSnapshotAttributeRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.ModifyDBClusterSnapshotAttributeOutput)
+func (_m *MockRDSAPI) ModifyDBClusterParameterGroupWithContext(_param0 aws.Context, _param1 *rds.ModifyDBClusterParameterGroupInput, _param2 ...request.Option) (*rds.DBClusterParameterGroupNameMessage, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyDBClusterParameterGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DBClusterParameterGroupNameMessage)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) ModifyDBClusterSnapshotAttributeRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBClusterSnapshotAttributeRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) ModifyDBClusterParameterGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBClusterParameterGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) ModifyDBClusterParameterGroupRequest(_param0 *rds.ModifyDBClusterParameterGroupInput) (*request.Request, *rds.DBClusterParameterGroupNameMessage) {
+	ret := _m.ctrl.Call(_m, "ModifyDBClusterParameterGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DBClusterParameterGroupNameMessage)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ModifyDBClusterParameterGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBClusterParameterGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) ModifyDBClusterSnapshotAttribute(_param0 *rds.ModifyDBClusterSnapshotAttributeInput) (*rds.ModifyDBClusterSnapshotAttributeOutput, error) {
@@ -1630,15 +2899,31 @@ func (_mr *_MockRDSAPIRecorder) ModifyDBClusterSnapshotAttribute(arg0 interface{
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBClusterSnapshotAttribute", arg0)
 }
 
-func (_m *MockRDSAPI) ModifyDBInstanceRequest(_param0 *rds.ModifyDBInstanceInput) (*request.Request, *rds.ModifyDBInstanceOutput) {
-	ret := _m.ctrl.Call(_m, "ModifyDBInstanceRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.ModifyDBInstanceOutput)
+func (_m *MockRDSAPI) ModifyDBClusterSnapshotAttributeWithContext(_param0 aws.Context, _param1 *rds.ModifyDBClusterSnapshotAttributeInput, _param2 ...request.Option) (*rds.ModifyDBClusterSnapshotAttributeOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyDBClusterSnapshotAttributeWithContext", _s...)
+	ret0, _ := ret[0].(*rds.ModifyDBClusterSnapshotAttributeOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) ModifyDBInstanceRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBInstanceRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) ModifyDBClusterSnapshotAttributeWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBClusterSnapshotAttributeWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) ModifyDBClusterSnapshotAttributeRequest(_param0 *rds.ModifyDBClusterSnapshotAttributeInput) (*request.Request, *rds.ModifyDBClusterSnapshotAttributeOutput) {
+	ret := _m.ctrl.Call(_m, "ModifyDBClusterSnapshotAttributeRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.ModifyDBClusterSnapshotAttributeOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ModifyDBClusterSnapshotAttributeRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBClusterSnapshotAttributeRequest", arg0)
 }
 
 func (_m *MockRDSAPI) ModifyDBInstance(_param0 *rds.ModifyDBInstanceInput) (*rds.ModifyDBInstanceOutput, error) {
@@ -1652,15 +2937,31 @@ func (_mr *_MockRDSAPIRecorder) ModifyDBInstance(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBInstance", arg0)
 }
 
-func (_m *MockRDSAPI) ModifyDBParameterGroupRequest(_param0 *rds.ModifyDBParameterGroupInput) (*request.Request, *rds.DBParameterGroupNameMessage) {
-	ret := _m.ctrl.Call(_m, "ModifyDBParameterGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DBParameterGroupNameMessage)
+func (_m *MockRDSAPI) ModifyDBInstanceWithContext(_param0 aws.Context, _param1 *rds.ModifyDBInstanceInput, _param2 ...request.Option) (*rds.ModifyDBInstanceOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyDBInstanceWithContext", _s...)
+	ret0, _ := ret[0].(*rds.ModifyDBInstanceOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) ModifyDBParameterGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBParameterGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) ModifyDBInstanceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBInstanceWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) ModifyDBInstanceRequest(_param0 *rds.ModifyDBInstanceInput) (*request.Request, *rds.ModifyDBInstanceOutput) {
+	ret := _m.ctrl.Call(_m, "ModifyDBInstanceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.ModifyDBInstanceOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ModifyDBInstanceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBInstanceRequest", arg0)
 }
 
 func (_m *MockRDSAPI) ModifyDBParameterGroup(_param0 *rds.ModifyDBParameterGroupInput) (*rds.DBParameterGroupNameMessage, error) {
@@ -1674,15 +2975,31 @@ func (_mr *_MockRDSAPIRecorder) ModifyDBParameterGroup(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBParameterGroup", arg0)
 }
 
-func (_m *MockRDSAPI) ModifyDBSnapshotRequest(_param0 *rds.ModifyDBSnapshotInput) (*request.Request, *rds.ModifyDBSnapshotOutput) {
-	ret := _m.ctrl.Call(_m, "ModifyDBSnapshotRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.ModifyDBSnapshotOutput)
+func (_m *MockRDSAPI) ModifyDBParameterGroupWithContext(_param0 aws.Context, _param1 *rds.ModifyDBParameterGroupInput, _param2 ...request.Option) (*rds.DBParameterGroupNameMessage, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyDBParameterGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DBParameterGroupNameMessage)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) ModifyDBSnapshotRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBSnapshotRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) ModifyDBParameterGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBParameterGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) ModifyDBParameterGroupRequest(_param0 *rds.ModifyDBParameterGroupInput) (*request.Request, *rds.DBParameterGroupNameMessage) {
+	ret := _m.ctrl.Call(_m, "ModifyDBParameterGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DBParameterGroupNameMessage)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ModifyDBParameterGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBParameterGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) ModifyDBSnapshot(_param0 *rds.ModifyDBSnapshotInput) (*rds.ModifyDBSnapshotOutput, error) {
@@ -1696,15 +3013,31 @@ func (_mr *_MockRDSAPIRecorder) ModifyDBSnapshot(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBSnapshot", arg0)
 }
 
-func (_m *MockRDSAPI) ModifyDBSnapshotAttributeRequest(_param0 *rds.ModifyDBSnapshotAttributeInput) (*request.Request, *rds.ModifyDBSnapshotAttributeOutput) {
-	ret := _m.ctrl.Call(_m, "ModifyDBSnapshotAttributeRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.ModifyDBSnapshotAttributeOutput)
+func (_m *MockRDSAPI) ModifyDBSnapshotWithContext(_param0 aws.Context, _param1 *rds.ModifyDBSnapshotInput, _param2 ...request.Option) (*rds.ModifyDBSnapshotOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyDBSnapshotWithContext", _s...)
+	ret0, _ := ret[0].(*rds.ModifyDBSnapshotOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) ModifyDBSnapshotAttributeRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBSnapshotAttributeRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) ModifyDBSnapshotWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBSnapshotWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) ModifyDBSnapshotRequest(_param0 *rds.ModifyDBSnapshotInput) (*request.Request, *rds.ModifyDBSnapshotOutput) {
+	ret := _m.ctrl.Call(_m, "ModifyDBSnapshotRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.ModifyDBSnapshotOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ModifyDBSnapshotRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBSnapshotRequest", arg0)
 }
 
 func (_m *MockRDSAPI) ModifyDBSnapshotAttribute(_param0 *rds.ModifyDBSnapshotAttributeInput) (*rds.ModifyDBSnapshotAttributeOutput, error) {
@@ -1718,15 +3051,31 @@ func (_mr *_MockRDSAPIRecorder) ModifyDBSnapshotAttribute(arg0 interface{}) *gom
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBSnapshotAttribute", arg0)
 }
 
-func (_m *MockRDSAPI) ModifyDBSubnetGroupRequest(_param0 *rds.ModifyDBSubnetGroupInput) (*request.Request, *rds.ModifyDBSubnetGroupOutput) {
-	ret := _m.ctrl.Call(_m, "ModifyDBSubnetGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.ModifyDBSubnetGroupOutput)
+func (_m *MockRDSAPI) ModifyDBSnapshotAttributeWithContext(_param0 aws.Context, _param1 *rds.ModifyDBSnapshotAttributeInput, _param2 ...request.Option) (*rds.ModifyDBSnapshotAttributeOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyDBSnapshotAttributeWithContext", _s...)
+	ret0, _ := ret[0].(*rds.ModifyDBSnapshotAttributeOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) ModifyDBSubnetGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBSubnetGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) ModifyDBSnapshotAttributeWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBSnapshotAttributeWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) ModifyDBSnapshotAttributeRequest(_param0 *rds.ModifyDBSnapshotAttributeInput) (*request.Request, *rds.ModifyDBSnapshotAttributeOutput) {
+	ret := _m.ctrl.Call(_m, "ModifyDBSnapshotAttributeRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.ModifyDBSnapshotAttributeOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ModifyDBSnapshotAttributeRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBSnapshotAttributeRequest", arg0)
 }
 
 func (_m *MockRDSAPI) ModifyDBSubnetGroup(_param0 *rds.ModifyDBSubnetGroupInput) (*rds.ModifyDBSubnetGroupOutput, error) {
@@ -1740,15 +3089,31 @@ func (_mr *_MockRDSAPIRecorder) ModifyDBSubnetGroup(arg0 interface{}) *gomock.Ca
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBSubnetGroup", arg0)
 }
 
-func (_m *MockRDSAPI) ModifyEventSubscriptionRequest(_param0 *rds.ModifyEventSubscriptionInput) (*request.Request, *rds.ModifyEventSubscriptionOutput) {
-	ret := _m.ctrl.Call(_m, "ModifyEventSubscriptionRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.ModifyEventSubscriptionOutput)
+func (_m *MockRDSAPI) ModifyDBSubnetGroupWithContext(_param0 aws.Context, _param1 *rds.ModifyDBSubnetGroupInput, _param2 ...request.Option) (*rds.ModifyDBSubnetGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyDBSubnetGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.ModifyDBSubnetGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) ModifyEventSubscriptionRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyEventSubscriptionRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) ModifyDBSubnetGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBSubnetGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) ModifyDBSubnetGroupRequest(_param0 *rds.ModifyDBSubnetGroupInput) (*request.Request, *rds.ModifyDBSubnetGroupOutput) {
+	ret := _m.ctrl.Call(_m, "ModifyDBSubnetGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.ModifyDBSubnetGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ModifyDBSubnetGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyDBSubnetGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) ModifyEventSubscription(_param0 *rds.ModifyEventSubscriptionInput) (*rds.ModifyEventSubscriptionOutput, error) {
@@ -1762,15 +3127,31 @@ func (_mr *_MockRDSAPIRecorder) ModifyEventSubscription(arg0 interface{}) *gomoc
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyEventSubscription", arg0)
 }
 
-func (_m *MockRDSAPI) ModifyOptionGroupRequest(_param0 *rds.ModifyOptionGroupInput) (*request.Request, *rds.ModifyOptionGroupOutput) {
-	ret := _m.ctrl.Call(_m, "ModifyOptionGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.ModifyOptionGroupOutput)
+func (_m *MockRDSAPI) ModifyEventSubscriptionWithContext(_param0 aws.Context, _param1 *rds.ModifyEventSubscriptionInput, _param2 ...request.Option) (*rds.ModifyEventSubscriptionOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyEventSubscriptionWithContext", _s...)
+	ret0, _ := ret[0].(*rds.ModifyEventSubscriptionOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) ModifyOptionGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyOptionGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) ModifyEventSubscriptionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyEventSubscriptionWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) ModifyEventSubscriptionRequest(_param0 *rds.ModifyEventSubscriptionInput) (*request.Request, *rds.ModifyEventSubscriptionOutput) {
+	ret := _m.ctrl.Call(_m, "ModifyEventSubscriptionRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.ModifyEventSubscriptionOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ModifyEventSubscriptionRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyEventSubscriptionRequest", arg0)
 }
 
 func (_m *MockRDSAPI) ModifyOptionGroup(_param0 *rds.ModifyOptionGroupInput) (*rds.ModifyOptionGroupOutput, error) {
@@ -1784,15 +3165,31 @@ func (_mr *_MockRDSAPIRecorder) ModifyOptionGroup(arg0 interface{}) *gomock.Call
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyOptionGroup", arg0)
 }
 
-func (_m *MockRDSAPI) PromoteReadReplicaRequest(_param0 *rds.PromoteReadReplicaInput) (*request.Request, *rds.PromoteReadReplicaOutput) {
-	ret := _m.ctrl.Call(_m, "PromoteReadReplicaRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.PromoteReadReplicaOutput)
+func (_m *MockRDSAPI) ModifyOptionGroupWithContext(_param0 aws.Context, _param1 *rds.ModifyOptionGroupInput, _param2 ...request.Option) (*rds.ModifyOptionGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyOptionGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.ModifyOptionGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) PromoteReadReplicaRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "PromoteReadReplicaRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) ModifyOptionGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyOptionGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) ModifyOptionGroupRequest(_param0 *rds.ModifyOptionGroupInput) (*request.Request, *rds.ModifyOptionGroupOutput) {
+	ret := _m.ctrl.Call(_m, "ModifyOptionGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.ModifyOptionGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ModifyOptionGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyOptionGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) PromoteReadReplica(_param0 *rds.PromoteReadReplicaInput) (*rds.PromoteReadReplicaOutput, error) {
@@ -1806,15 +3203,31 @@ func (_mr *_MockRDSAPIRecorder) PromoteReadReplica(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "PromoteReadReplica", arg0)
 }
 
-func (_m *MockRDSAPI) PromoteReadReplicaDBClusterRequest(_param0 *rds.PromoteReadReplicaDBClusterInput) (*request.Request, *rds.PromoteReadReplicaDBClusterOutput) {
-	ret := _m.ctrl.Call(_m, "PromoteReadReplicaDBClusterRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.PromoteReadReplicaDBClusterOutput)
+func (_m *MockRDSAPI) PromoteReadReplicaWithContext(_param0 aws.Context, _param1 *rds.PromoteReadReplicaInput, _param2 ...request.Option) (*rds.PromoteReadReplicaOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "PromoteReadReplicaWithContext", _s...)
+	ret0, _ := ret[0].(*rds.PromoteReadReplicaOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) PromoteReadReplicaDBClusterRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "PromoteReadReplicaDBClusterRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) PromoteReadReplicaWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PromoteReadReplicaWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) PromoteReadReplicaRequest(_param0 *rds.PromoteReadReplicaInput) (*request.Request, *rds.PromoteReadReplicaOutput) {
+	ret := _m.ctrl.Call(_m, "PromoteReadReplicaRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.PromoteReadReplicaOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) PromoteReadReplicaRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PromoteReadReplicaRequest", arg0)
 }
 
 func (_m *MockRDSAPI) PromoteReadReplicaDBCluster(_param0 *rds.PromoteReadReplicaDBClusterInput) (*rds.PromoteReadReplicaDBClusterOutput, error) {
@@ -1828,15 +3241,31 @@ func (_mr *_MockRDSAPIRecorder) PromoteReadReplicaDBCluster(arg0 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "PromoteReadReplicaDBCluster", arg0)
 }
 
-func (_m *MockRDSAPI) PurchaseReservedDBInstancesOfferingRequest(_param0 *rds.PurchaseReservedDBInstancesOfferingInput) (*request.Request, *rds.PurchaseReservedDBInstancesOfferingOutput) {
-	ret := _m.ctrl.Call(_m, "PurchaseReservedDBInstancesOfferingRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.PurchaseReservedDBInstancesOfferingOutput)
+func (_m *MockRDSAPI) PromoteReadReplicaDBClusterWithContext(_param0 aws.Context, _param1 *rds.PromoteReadReplicaDBClusterInput, _param2 ...request.Option) (*rds.PromoteReadReplicaDBClusterOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "PromoteReadReplicaDBClusterWithContext", _s...)
+	ret0, _ := ret[0].(*rds.PromoteReadReplicaDBClusterOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) PurchaseReservedDBInstancesOfferingRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "PurchaseReservedDBInstancesOfferingRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) PromoteReadReplicaDBClusterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PromoteReadReplicaDBClusterWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) PromoteReadReplicaDBClusterRequest(_param0 *rds.PromoteReadReplicaDBClusterInput) (*request.Request, *rds.PromoteReadReplicaDBClusterOutput) {
+	ret := _m.ctrl.Call(_m, "PromoteReadReplicaDBClusterRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.PromoteReadReplicaDBClusterOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) PromoteReadReplicaDBClusterRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PromoteReadReplicaDBClusterRequest", arg0)
 }
 
 func (_m *MockRDSAPI) PurchaseReservedDBInstancesOffering(_param0 *rds.PurchaseReservedDBInstancesOfferingInput) (*rds.PurchaseReservedDBInstancesOfferingOutput, error) {
@@ -1850,15 +3279,31 @@ func (_mr *_MockRDSAPIRecorder) PurchaseReservedDBInstancesOffering(arg0 interfa
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "PurchaseReservedDBInstancesOffering", arg0)
 }
 
-func (_m *MockRDSAPI) RebootDBInstanceRequest(_param0 *rds.RebootDBInstanceInput) (*request.Request, *rds.RebootDBInstanceOutput) {
-	ret := _m.ctrl.Call(_m, "RebootDBInstanceRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.RebootDBInstanceOutput)
+func (_m *MockRDSAPI) PurchaseReservedDBInstancesOfferingWithContext(_param0 aws.Context, _param1 *rds.PurchaseReservedDBInstancesOfferingInput, _param2 ...request.Option) (*rds.PurchaseReservedDBInstancesOfferingOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "PurchaseReservedDBInstancesOfferingWithContext", _s...)
+	ret0, _ := ret[0].(*rds.PurchaseReservedDBInstancesOfferingOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) RebootDBInstanceRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RebootDBInstanceRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) PurchaseReservedDBInstancesOfferingWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PurchaseReservedDBInstancesOfferingWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) PurchaseReservedDBInstancesOfferingRequest(_param0 *rds.PurchaseReservedDBInstancesOfferingInput) (*request.Request, *rds.PurchaseReservedDBInstancesOfferingOutput) {
+	ret := _m.ctrl.Call(_m, "PurchaseReservedDBInstancesOfferingRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.PurchaseReservedDBInstancesOfferingOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) PurchaseReservedDBInstancesOfferingRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PurchaseReservedDBInstancesOfferingRequest", arg0)
 }
 
 func (_m *MockRDSAPI) RebootDBInstance(_param0 *rds.RebootDBInstanceInput) (*rds.RebootDBInstanceOutput, error) {
@@ -1872,15 +3317,31 @@ func (_mr *_MockRDSAPIRecorder) RebootDBInstance(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RebootDBInstance", arg0)
 }
 
-func (_m *MockRDSAPI) RemoveRoleFromDBClusterRequest(_param0 *rds.RemoveRoleFromDBClusterInput) (*request.Request, *rds.RemoveRoleFromDBClusterOutput) {
-	ret := _m.ctrl.Call(_m, "RemoveRoleFromDBClusterRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.RemoveRoleFromDBClusterOutput)
+func (_m *MockRDSAPI) RebootDBInstanceWithContext(_param0 aws.Context, _param1 *rds.RebootDBInstanceInput, _param2 ...request.Option) (*rds.RebootDBInstanceOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RebootDBInstanceWithContext", _s...)
+	ret0, _ := ret[0].(*rds.RebootDBInstanceOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) RemoveRoleFromDBClusterRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveRoleFromDBClusterRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) RebootDBInstanceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RebootDBInstanceWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) RebootDBInstanceRequest(_param0 *rds.RebootDBInstanceInput) (*request.Request, *rds.RebootDBInstanceOutput) {
+	ret := _m.ctrl.Call(_m, "RebootDBInstanceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.RebootDBInstanceOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) RebootDBInstanceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RebootDBInstanceRequest", arg0)
 }
 
 func (_m *MockRDSAPI) RemoveRoleFromDBCluster(_param0 *rds.RemoveRoleFromDBClusterInput) (*rds.RemoveRoleFromDBClusterOutput, error) {
@@ -1894,15 +3355,31 @@ func (_mr *_MockRDSAPIRecorder) RemoveRoleFromDBCluster(arg0 interface{}) *gomoc
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveRoleFromDBCluster", arg0)
 }
 
-func (_m *MockRDSAPI) RemoveSourceIdentifierFromSubscriptionRequest(_param0 *rds.RemoveSourceIdentifierFromSubscriptionInput) (*request.Request, *rds.RemoveSourceIdentifierFromSubscriptionOutput) {
-	ret := _m.ctrl.Call(_m, "RemoveSourceIdentifierFromSubscriptionRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.RemoveSourceIdentifierFromSubscriptionOutput)
+func (_m *MockRDSAPI) RemoveRoleFromDBClusterWithContext(_param0 aws.Context, _param1 *rds.RemoveRoleFromDBClusterInput, _param2 ...request.Option) (*rds.RemoveRoleFromDBClusterOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RemoveRoleFromDBClusterWithContext", _s...)
+	ret0, _ := ret[0].(*rds.RemoveRoleFromDBClusterOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) RemoveSourceIdentifierFromSubscriptionRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveSourceIdentifierFromSubscriptionRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) RemoveRoleFromDBClusterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveRoleFromDBClusterWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) RemoveRoleFromDBClusterRequest(_param0 *rds.RemoveRoleFromDBClusterInput) (*request.Request, *rds.RemoveRoleFromDBClusterOutput) {
+	ret := _m.ctrl.Call(_m, "RemoveRoleFromDBClusterRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.RemoveRoleFromDBClusterOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) RemoveRoleFromDBClusterRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveRoleFromDBClusterRequest", arg0)
 }
 
 func (_m *MockRDSAPI) RemoveSourceIdentifierFromSubscription(_param0 *rds.RemoveSourceIdentifierFromSubscriptionInput) (*rds.RemoveSourceIdentifierFromSubscriptionOutput, error) {
@@ -1916,15 +3393,31 @@ func (_mr *_MockRDSAPIRecorder) RemoveSourceIdentifierFromSubscription(arg0 inte
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveSourceIdentifierFromSubscription", arg0)
 }
 
-func (_m *MockRDSAPI) RemoveTagsFromResourceRequest(_param0 *rds.RemoveTagsFromResourceInput) (*request.Request, *rds.RemoveTagsFromResourceOutput) {
-	ret := _m.ctrl.Call(_m, "RemoveTagsFromResourceRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.RemoveTagsFromResourceOutput)
+func (_m *MockRDSAPI) RemoveSourceIdentifierFromSubscriptionWithContext(_param0 aws.Context, _param1 *rds.RemoveSourceIdentifierFromSubscriptionInput, _param2 ...request.Option) (*rds.RemoveSourceIdentifierFromSubscriptionOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RemoveSourceIdentifierFromSubscriptionWithContext", _s...)
+	ret0, _ := ret[0].(*rds.RemoveSourceIdentifierFromSubscriptionOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) RemoveTagsFromResourceRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveTagsFromResourceRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) RemoveSourceIdentifierFromSubscriptionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveSourceIdentifierFromSubscriptionWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) RemoveSourceIdentifierFromSubscriptionRequest(_param0 *rds.RemoveSourceIdentifierFromSubscriptionInput) (*request.Request, *rds.RemoveSourceIdentifierFromSubscriptionOutput) {
+	ret := _m.ctrl.Call(_m, "RemoveSourceIdentifierFromSubscriptionRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.RemoveSourceIdentifierFromSubscriptionOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) RemoveSourceIdentifierFromSubscriptionRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveSourceIdentifierFromSubscriptionRequest", arg0)
 }
 
 func (_m *MockRDSAPI) RemoveTagsFromResource(_param0 *rds.RemoveTagsFromResourceInput) (*rds.RemoveTagsFromResourceOutput, error) {
@@ -1938,15 +3431,31 @@ func (_mr *_MockRDSAPIRecorder) RemoveTagsFromResource(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveTagsFromResource", arg0)
 }
 
-func (_m *MockRDSAPI) ResetDBClusterParameterGroupRequest(_param0 *rds.ResetDBClusterParameterGroupInput) (*request.Request, *rds.DBClusterParameterGroupNameMessage) {
-	ret := _m.ctrl.Call(_m, "ResetDBClusterParameterGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DBClusterParameterGroupNameMessage)
+func (_m *MockRDSAPI) RemoveTagsFromResourceWithContext(_param0 aws.Context, _param1 *rds.RemoveTagsFromResourceInput, _param2 ...request.Option) (*rds.RemoveTagsFromResourceOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RemoveTagsFromResourceWithContext", _s...)
+	ret0, _ := ret[0].(*rds.RemoveTagsFromResourceOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) ResetDBClusterParameterGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetDBClusterParameterGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) RemoveTagsFromResourceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveTagsFromResourceWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) RemoveTagsFromResourceRequest(_param0 *rds.RemoveTagsFromResourceInput) (*request.Request, *rds.RemoveTagsFromResourceOutput) {
+	ret := _m.ctrl.Call(_m, "RemoveTagsFromResourceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.RemoveTagsFromResourceOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) RemoveTagsFromResourceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveTagsFromResourceRequest", arg0)
 }
 
 func (_m *MockRDSAPI) ResetDBClusterParameterGroup(_param0 *rds.ResetDBClusterParameterGroupInput) (*rds.DBClusterParameterGroupNameMessage, error) {
@@ -1960,15 +3469,31 @@ func (_mr *_MockRDSAPIRecorder) ResetDBClusterParameterGroup(arg0 interface{}) *
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetDBClusterParameterGroup", arg0)
 }
 
-func (_m *MockRDSAPI) ResetDBParameterGroupRequest(_param0 *rds.ResetDBParameterGroupInput) (*request.Request, *rds.DBParameterGroupNameMessage) {
-	ret := _m.ctrl.Call(_m, "ResetDBParameterGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.DBParameterGroupNameMessage)
+func (_m *MockRDSAPI) ResetDBClusterParameterGroupWithContext(_param0 aws.Context, _param1 *rds.ResetDBClusterParameterGroupInput, _param2 ...request.Option) (*rds.DBClusterParameterGroupNameMessage, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ResetDBClusterParameterGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DBClusterParameterGroupNameMessage)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) ResetDBParameterGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetDBParameterGroupRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) ResetDBClusterParameterGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetDBClusterParameterGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) ResetDBClusterParameterGroupRequest(_param0 *rds.ResetDBClusterParameterGroupInput) (*request.Request, *rds.DBClusterParameterGroupNameMessage) {
+	ret := _m.ctrl.Call(_m, "ResetDBClusterParameterGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DBClusterParameterGroupNameMessage)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ResetDBClusterParameterGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetDBClusterParameterGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) ResetDBParameterGroup(_param0 *rds.ResetDBParameterGroupInput) (*rds.DBParameterGroupNameMessage, error) {
@@ -1982,15 +3507,31 @@ func (_mr *_MockRDSAPIRecorder) ResetDBParameterGroup(arg0 interface{}) *gomock.
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetDBParameterGroup", arg0)
 }
 
-func (_m *MockRDSAPI) RestoreDBClusterFromS3Request(_param0 *rds.RestoreDBClusterFromS3Input) (*request.Request, *rds.RestoreDBClusterFromS3Output) {
-	ret := _m.ctrl.Call(_m, "RestoreDBClusterFromS3Request", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.RestoreDBClusterFromS3Output)
+func (_m *MockRDSAPI) ResetDBParameterGroupWithContext(_param0 aws.Context, _param1 *rds.ResetDBParameterGroupInput, _param2 ...request.Option) (*rds.DBParameterGroupNameMessage, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ResetDBParameterGroupWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DBParameterGroupNameMessage)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) RestoreDBClusterFromS3Request(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBClusterFromS3Request", arg0)
+func (_mr *_MockRDSAPIRecorder) ResetDBParameterGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetDBParameterGroupWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) ResetDBParameterGroupRequest(_param0 *rds.ResetDBParameterGroupInput) (*request.Request, *rds.DBParameterGroupNameMessage) {
+	ret := _m.ctrl.Call(_m, "ResetDBParameterGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DBParameterGroupNameMessage)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) ResetDBParameterGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetDBParameterGroupRequest", arg0)
 }
 
 func (_m *MockRDSAPI) RestoreDBClusterFromS3(_param0 *rds.RestoreDBClusterFromS3Input) (*rds.RestoreDBClusterFromS3Output, error) {
@@ -2004,15 +3545,31 @@ func (_mr *_MockRDSAPIRecorder) RestoreDBClusterFromS3(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBClusterFromS3", arg0)
 }
 
-func (_m *MockRDSAPI) RestoreDBClusterFromSnapshotRequest(_param0 *rds.RestoreDBClusterFromSnapshotInput) (*request.Request, *rds.RestoreDBClusterFromSnapshotOutput) {
-	ret := _m.ctrl.Call(_m, "RestoreDBClusterFromSnapshotRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.RestoreDBClusterFromSnapshotOutput)
+func (_m *MockRDSAPI) RestoreDBClusterFromS3WithContext(_param0 aws.Context, _param1 *rds.RestoreDBClusterFromS3Input, _param2 ...request.Option) (*rds.RestoreDBClusterFromS3Output, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RestoreDBClusterFromS3WithContext", _s...)
+	ret0, _ := ret[0].(*rds.RestoreDBClusterFromS3Output)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) RestoreDBClusterFromSnapshotRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBClusterFromSnapshotRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) RestoreDBClusterFromS3WithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBClusterFromS3WithContext", _s...)
+}
+
+func (_m *MockRDSAPI) RestoreDBClusterFromS3Request(_param0 *rds.RestoreDBClusterFromS3Input) (*request.Request, *rds.RestoreDBClusterFromS3Output) {
+	ret := _m.ctrl.Call(_m, "RestoreDBClusterFromS3Request", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.RestoreDBClusterFromS3Output)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) RestoreDBClusterFromS3Request(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBClusterFromS3Request", arg0)
 }
 
 func (_m *MockRDSAPI) RestoreDBClusterFromSnapshot(_param0 *rds.RestoreDBClusterFromSnapshotInput) (*rds.RestoreDBClusterFromSnapshotOutput, error) {
@@ -2026,15 +3583,31 @@ func (_mr *_MockRDSAPIRecorder) RestoreDBClusterFromSnapshot(arg0 interface{}) *
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBClusterFromSnapshot", arg0)
 }
 
-func (_m *MockRDSAPI) RestoreDBClusterToPointInTimeRequest(_param0 *rds.RestoreDBClusterToPointInTimeInput) (*request.Request, *rds.RestoreDBClusterToPointInTimeOutput) {
-	ret := _m.ctrl.Call(_m, "RestoreDBClusterToPointInTimeRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.RestoreDBClusterToPointInTimeOutput)
+func (_m *MockRDSAPI) RestoreDBClusterFromSnapshotWithContext(_param0 aws.Context, _param1 *rds.RestoreDBClusterFromSnapshotInput, _param2 ...request.Option) (*rds.RestoreDBClusterFromSnapshotOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RestoreDBClusterFromSnapshotWithContext", _s...)
+	ret0, _ := ret[0].(*rds.RestoreDBClusterFromSnapshotOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) RestoreDBClusterToPointInTimeRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBClusterToPointInTimeRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) RestoreDBClusterFromSnapshotWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBClusterFromSnapshotWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) RestoreDBClusterFromSnapshotRequest(_param0 *rds.RestoreDBClusterFromSnapshotInput) (*request.Request, *rds.RestoreDBClusterFromSnapshotOutput) {
+	ret := _m.ctrl.Call(_m, "RestoreDBClusterFromSnapshotRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.RestoreDBClusterFromSnapshotOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) RestoreDBClusterFromSnapshotRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBClusterFromSnapshotRequest", arg0)
 }
 
 func (_m *MockRDSAPI) RestoreDBClusterToPointInTime(_param0 *rds.RestoreDBClusterToPointInTimeInput) (*rds.RestoreDBClusterToPointInTimeOutput, error) {
@@ -2048,15 +3621,31 @@ func (_mr *_MockRDSAPIRecorder) RestoreDBClusterToPointInTime(arg0 interface{}) 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBClusterToPointInTime", arg0)
 }
 
-func (_m *MockRDSAPI) RestoreDBInstanceFromDBSnapshotRequest(_param0 *rds.RestoreDBInstanceFromDBSnapshotInput) (*request.Request, *rds.RestoreDBInstanceFromDBSnapshotOutput) {
-	ret := _m.ctrl.Call(_m, "RestoreDBInstanceFromDBSnapshotRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.RestoreDBInstanceFromDBSnapshotOutput)
+func (_m *MockRDSAPI) RestoreDBClusterToPointInTimeWithContext(_param0 aws.Context, _param1 *rds.RestoreDBClusterToPointInTimeInput, _param2 ...request.Option) (*rds.RestoreDBClusterToPointInTimeOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RestoreDBClusterToPointInTimeWithContext", _s...)
+	ret0, _ := ret[0].(*rds.RestoreDBClusterToPointInTimeOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) RestoreDBInstanceFromDBSnapshotRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBInstanceFromDBSnapshotRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) RestoreDBClusterToPointInTimeWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBClusterToPointInTimeWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) RestoreDBClusterToPointInTimeRequest(_param0 *rds.RestoreDBClusterToPointInTimeInput) (*request.Request, *rds.RestoreDBClusterToPointInTimeOutput) {
+	ret := _m.ctrl.Call(_m, "RestoreDBClusterToPointInTimeRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.RestoreDBClusterToPointInTimeOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) RestoreDBClusterToPointInTimeRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBClusterToPointInTimeRequest", arg0)
 }
 
 func (_m *MockRDSAPI) RestoreDBInstanceFromDBSnapshot(_param0 *rds.RestoreDBInstanceFromDBSnapshotInput) (*rds.RestoreDBInstanceFromDBSnapshotOutput, error) {
@@ -2070,15 +3659,31 @@ func (_mr *_MockRDSAPIRecorder) RestoreDBInstanceFromDBSnapshot(arg0 interface{}
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBInstanceFromDBSnapshot", arg0)
 }
 
-func (_m *MockRDSAPI) RestoreDBInstanceToPointInTimeRequest(_param0 *rds.RestoreDBInstanceToPointInTimeInput) (*request.Request, *rds.RestoreDBInstanceToPointInTimeOutput) {
-	ret := _m.ctrl.Call(_m, "RestoreDBInstanceToPointInTimeRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.RestoreDBInstanceToPointInTimeOutput)
+func (_m *MockRDSAPI) RestoreDBInstanceFromDBSnapshotWithContext(_param0 aws.Context, _param1 *rds.RestoreDBInstanceFromDBSnapshotInput, _param2 ...request.Option) (*rds.RestoreDBInstanceFromDBSnapshotOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RestoreDBInstanceFromDBSnapshotWithContext", _s...)
+	ret0, _ := ret[0].(*rds.RestoreDBInstanceFromDBSnapshotOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) RestoreDBInstanceToPointInTimeRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBInstanceToPointInTimeRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) RestoreDBInstanceFromDBSnapshotWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBInstanceFromDBSnapshotWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) RestoreDBInstanceFromDBSnapshotRequest(_param0 *rds.RestoreDBInstanceFromDBSnapshotInput) (*request.Request, *rds.RestoreDBInstanceFromDBSnapshotOutput) {
+	ret := _m.ctrl.Call(_m, "RestoreDBInstanceFromDBSnapshotRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.RestoreDBInstanceFromDBSnapshotOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) RestoreDBInstanceFromDBSnapshotRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBInstanceFromDBSnapshotRequest", arg0)
 }
 
 func (_m *MockRDSAPI) RestoreDBInstanceToPointInTime(_param0 *rds.RestoreDBInstanceToPointInTimeInput) (*rds.RestoreDBInstanceToPointInTimeOutput, error) {
@@ -2092,15 +3697,31 @@ func (_mr *_MockRDSAPIRecorder) RestoreDBInstanceToPointInTime(arg0 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBInstanceToPointInTime", arg0)
 }
 
-func (_m *MockRDSAPI) RevokeDBSecurityGroupIngressRequest(_param0 *rds.RevokeDBSecurityGroupIngressInput) (*request.Request, *rds.RevokeDBSecurityGroupIngressOutput) {
-	ret := _m.ctrl.Call(_m, "RevokeDBSecurityGroupIngressRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*rds.RevokeDBSecurityGroupIngressOutput)
+func (_m *MockRDSAPI) RestoreDBInstanceToPointInTimeWithContext(_param0 aws.Context, _param1 *rds.RestoreDBInstanceToPointInTimeInput, _param2 ...request.Option) (*rds.RestoreDBInstanceToPointInTimeOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RestoreDBInstanceToPointInTimeWithContext", _s...)
+	ret0, _ := ret[0].(*rds.RestoreDBInstanceToPointInTimeOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockRDSAPIRecorder) RevokeDBSecurityGroupIngressRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RevokeDBSecurityGroupIngressRequest", arg0)
+func (_mr *_MockRDSAPIRecorder) RestoreDBInstanceToPointInTimeWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBInstanceToPointInTimeWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) RestoreDBInstanceToPointInTimeRequest(_param0 *rds.RestoreDBInstanceToPointInTimeInput) (*request.Request, *rds.RestoreDBInstanceToPointInTimeOutput) {
+	ret := _m.ctrl.Call(_m, "RestoreDBInstanceToPointInTimeRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.RestoreDBInstanceToPointInTimeOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) RestoreDBInstanceToPointInTimeRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestoreDBInstanceToPointInTimeRequest", arg0)
 }
 
 func (_m *MockRDSAPI) RevokeDBSecurityGroupIngress(_param0 *rds.RevokeDBSecurityGroupIngressInput) (*rds.RevokeDBSecurityGroupIngressOutput, error) {
@@ -2114,6 +3735,33 @@ func (_mr *_MockRDSAPIRecorder) RevokeDBSecurityGroupIngress(arg0 interface{}) *
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RevokeDBSecurityGroupIngress", arg0)
 }
 
+func (_m *MockRDSAPI) RevokeDBSecurityGroupIngressWithContext(_param0 aws.Context, _param1 *rds.RevokeDBSecurityGroupIngressInput, _param2 ...request.Option) (*rds.RevokeDBSecurityGroupIngressOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RevokeDBSecurityGroupIngressWithContext", _s...)
+	ret0, _ := ret[0].(*rds.RevokeDBSecurityGroupIngressOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) RevokeDBSecurityGroupIngressWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RevokeDBSecurityGroupIngressWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) RevokeDBSecurityGroupIngressRequest(_param0 *rds.RevokeDBSecurityGroupIngressInput) (*request.Request, *rds.RevokeDBSecurityGroupIngressOutput) {
+	ret := _m.ctrl.Call(_m, "RevokeDBSecurityGroupIngressRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.RevokeDBSecurityGroupIngressOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) RevokeDBSecurityGroupIngressRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RevokeDBSecurityGroupIngressRequest", arg0)
+}
+
 func (_m *MockRDSAPI) WaitUntilDBInstanceAvailable(_param0 *rds.DescribeDBInstancesInput) error {
 	ret := _m.ctrl.Call(_m, "WaitUntilDBInstanceAvailable", _param0)
 	ret0, _ := ret[0].(error)
@@ -2124,6 +3772,21 @@ func (_mr *_MockRDSAPIRecorder) WaitUntilDBInstanceAvailable(arg0 interface{}) *
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilDBInstanceAvailable", arg0)
 }
 
+func (_m *MockRDSAPI) WaitUntilDBInstanceAvailableWithContext(_param0 aws.Context, _param1 *rds.DescribeDBInstancesInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilDBInstanceAvailableWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockRDSAPIRecorder) WaitUntilDBInstanceAvailableWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilDBInstanceAvailableWithContext", _s...)
+}
+
 func (_m *MockRDSAPI) WaitUntilDBInstanceDeleted(_param0 *rds.DescribeDBInstancesInput) error {
 	ret := _m.ctrl.Call(_m, "WaitUntilDBInstanceDeleted", _param0)
 	ret0, _ := ret[0].(error)
@@ -2132,4 +3795,19 @@ func (_m *MockRDSAPI) WaitUntilDBInstanceDeleted(_param0 *rds.DescribeDBInstance
 
 func (_mr *_MockRDSAPIRecorder) WaitUntilDBInstanceDeleted(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilDBInstanceDeleted", arg0)
+}
+
+func (_m *MockRDSAPI) WaitUntilDBInstanceDeletedWithContext(_param0 aws.Context, _param1 *rds.DescribeDBInstancesInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilDBInstanceDeletedWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockRDSAPIRecorder) WaitUntilDBInstanceDeletedWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilDBInstanceDeletedWithContext", _s...)
 }

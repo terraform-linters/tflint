@@ -16,6 +16,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/iam/iamiface"
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/aws/aws-sdk-go/service/rds/rdsiface"
+	homedir "github.com/mitchellh/go-homedir"
 	"github.com/wata727/tflint/logger"
 )
 
@@ -55,7 +56,18 @@ func (c *Config) NewAwsSession() *session.Session {
 			Region: aws.String(c.AwsCredentials["region"]),
 		})
 	}
-	if c.HasAwsCredentials() {
+	if c.HasAwsSharedCredentials() {
+		l.Info("set AWS shared credentials")
+		path, err := homedir.Expand("~/.aws/credentials")
+		if err != nil {
+			l.Error(err)
+		}
+		s = session.New(&aws.Config{
+			Credentials: credentials.NewSharedCredentials(path, c.AwsCredentials["profile"]),
+			Region:      aws.String(c.AwsCredentials["region"]),
+		})
+	}
+	if c.HasAwsStaticCredentials() {
 		l.Info("set AWS credentials")
 		s = session.New(&aws.Config{
 			Credentials: credentials.NewStaticCredentials(c.AwsCredentials["access_key"], c.AwsCredentials["secret_key"], ""),

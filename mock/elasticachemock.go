@@ -4,6 +4,7 @@
 package mock
 
 import (
+	aws "github.com/aws/aws-sdk-go/aws"
 	request "github.com/aws/aws-sdk-go/aws/request"
 	elasticache "github.com/aws/aws-sdk-go/service/elasticache"
 	gomock "github.com/golang/mock/gomock"
@@ -30,17 +31,6 @@ func (_m *MockElastiCacheAPI) EXPECT() *_MockElastiCacheAPIRecorder {
 	return _m.recorder
 }
 
-func (_m *MockElastiCacheAPI) AddTagsToResourceRequest(_param0 *elasticache.AddTagsToResourceInput) (*request.Request, *elasticache.TagListMessage) {
-	ret := _m.ctrl.Call(_m, "AddTagsToResourceRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.TagListMessage)
-	return ret0, ret1
-}
-
-func (_mr *_MockElastiCacheAPIRecorder) AddTagsToResourceRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddTagsToResourceRequest", arg0)
-}
-
 func (_m *MockElastiCacheAPI) AddTagsToResource(_param0 *elasticache.AddTagsToResourceInput) (*elasticache.TagListMessage, error) {
 	ret := _m.ctrl.Call(_m, "AddTagsToResource", _param0)
 	ret0, _ := ret[0].(*elasticache.TagListMessage)
@@ -52,15 +42,31 @@ func (_mr *_MockElastiCacheAPIRecorder) AddTagsToResource(arg0 interface{}) *gom
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddTagsToResource", arg0)
 }
 
-func (_m *MockElastiCacheAPI) AuthorizeCacheSecurityGroupIngressRequest(_param0 *elasticache.AuthorizeCacheSecurityGroupIngressInput) (*request.Request, *elasticache.AuthorizeCacheSecurityGroupIngressOutput) {
-	ret := _m.ctrl.Call(_m, "AuthorizeCacheSecurityGroupIngressRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.AuthorizeCacheSecurityGroupIngressOutput)
+func (_m *MockElastiCacheAPI) AddTagsToResourceWithContext(_param0 aws.Context, _param1 *elasticache.AddTagsToResourceInput, _param2 ...request.Option) (*elasticache.TagListMessage, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "AddTagsToResourceWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.TagListMessage)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) AuthorizeCacheSecurityGroupIngressRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "AuthorizeCacheSecurityGroupIngressRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) AddTagsToResourceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddTagsToResourceWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) AddTagsToResourceRequest(_param0 *elasticache.AddTagsToResourceInput) (*request.Request, *elasticache.TagListMessage) {
+	ret := _m.ctrl.Call(_m, "AddTagsToResourceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.TagListMessage)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) AddTagsToResourceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddTagsToResourceRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) AuthorizeCacheSecurityGroupIngress(_param0 *elasticache.AuthorizeCacheSecurityGroupIngressInput) (*elasticache.AuthorizeCacheSecurityGroupIngressOutput, error) {
@@ -74,15 +80,31 @@ func (_mr *_MockElastiCacheAPIRecorder) AuthorizeCacheSecurityGroupIngress(arg0 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AuthorizeCacheSecurityGroupIngress", arg0)
 }
 
-func (_m *MockElastiCacheAPI) CopySnapshotRequest(_param0 *elasticache.CopySnapshotInput) (*request.Request, *elasticache.CopySnapshotOutput) {
-	ret := _m.ctrl.Call(_m, "CopySnapshotRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.CopySnapshotOutput)
+func (_m *MockElastiCacheAPI) AuthorizeCacheSecurityGroupIngressWithContext(_param0 aws.Context, _param1 *elasticache.AuthorizeCacheSecurityGroupIngressInput, _param2 ...request.Option) (*elasticache.AuthorizeCacheSecurityGroupIngressOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "AuthorizeCacheSecurityGroupIngressWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.AuthorizeCacheSecurityGroupIngressOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) CopySnapshotRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopySnapshotRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) AuthorizeCacheSecurityGroupIngressWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AuthorizeCacheSecurityGroupIngressWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) AuthorizeCacheSecurityGroupIngressRequest(_param0 *elasticache.AuthorizeCacheSecurityGroupIngressInput) (*request.Request, *elasticache.AuthorizeCacheSecurityGroupIngressOutput) {
+	ret := _m.ctrl.Call(_m, "AuthorizeCacheSecurityGroupIngressRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.AuthorizeCacheSecurityGroupIngressOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) AuthorizeCacheSecurityGroupIngressRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AuthorizeCacheSecurityGroupIngressRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) CopySnapshot(_param0 *elasticache.CopySnapshotInput) (*elasticache.CopySnapshotOutput, error) {
@@ -96,15 +118,31 @@ func (_mr *_MockElastiCacheAPIRecorder) CopySnapshot(arg0 interface{}) *gomock.C
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopySnapshot", arg0)
 }
 
-func (_m *MockElastiCacheAPI) CreateCacheClusterRequest(_param0 *elasticache.CreateCacheClusterInput) (*request.Request, *elasticache.CreateCacheClusterOutput) {
-	ret := _m.ctrl.Call(_m, "CreateCacheClusterRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.CreateCacheClusterOutput)
+func (_m *MockElastiCacheAPI) CopySnapshotWithContext(_param0 aws.Context, _param1 *elasticache.CopySnapshotInput, _param2 ...request.Option) (*elasticache.CopySnapshotOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CopySnapshotWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.CopySnapshotOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) CreateCacheClusterRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheClusterRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) CopySnapshotWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopySnapshotWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) CopySnapshotRequest(_param0 *elasticache.CopySnapshotInput) (*request.Request, *elasticache.CopySnapshotOutput) {
+	ret := _m.ctrl.Call(_m, "CopySnapshotRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.CopySnapshotOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) CopySnapshotRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CopySnapshotRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) CreateCacheCluster(_param0 *elasticache.CreateCacheClusterInput) (*elasticache.CreateCacheClusterOutput, error) {
@@ -118,15 +156,31 @@ func (_mr *_MockElastiCacheAPIRecorder) CreateCacheCluster(arg0 interface{}) *go
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheCluster", arg0)
 }
 
-func (_m *MockElastiCacheAPI) CreateCacheParameterGroupRequest(_param0 *elasticache.CreateCacheParameterGroupInput) (*request.Request, *elasticache.CreateCacheParameterGroupOutput) {
-	ret := _m.ctrl.Call(_m, "CreateCacheParameterGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.CreateCacheParameterGroupOutput)
+func (_m *MockElastiCacheAPI) CreateCacheClusterWithContext(_param0 aws.Context, _param1 *elasticache.CreateCacheClusterInput, _param2 ...request.Option) (*elasticache.CreateCacheClusterOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateCacheClusterWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.CreateCacheClusterOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) CreateCacheParameterGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheParameterGroupRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) CreateCacheClusterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheClusterWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) CreateCacheClusterRequest(_param0 *elasticache.CreateCacheClusterInput) (*request.Request, *elasticache.CreateCacheClusterOutput) {
+	ret := _m.ctrl.Call(_m, "CreateCacheClusterRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.CreateCacheClusterOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) CreateCacheClusterRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheClusterRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) CreateCacheParameterGroup(_param0 *elasticache.CreateCacheParameterGroupInput) (*elasticache.CreateCacheParameterGroupOutput, error) {
@@ -140,15 +194,31 @@ func (_mr *_MockElastiCacheAPIRecorder) CreateCacheParameterGroup(arg0 interface
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheParameterGroup", arg0)
 }
 
-func (_m *MockElastiCacheAPI) CreateCacheSecurityGroupRequest(_param0 *elasticache.CreateCacheSecurityGroupInput) (*request.Request, *elasticache.CreateCacheSecurityGroupOutput) {
-	ret := _m.ctrl.Call(_m, "CreateCacheSecurityGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.CreateCacheSecurityGroupOutput)
+func (_m *MockElastiCacheAPI) CreateCacheParameterGroupWithContext(_param0 aws.Context, _param1 *elasticache.CreateCacheParameterGroupInput, _param2 ...request.Option) (*elasticache.CreateCacheParameterGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateCacheParameterGroupWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.CreateCacheParameterGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) CreateCacheSecurityGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheSecurityGroupRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) CreateCacheParameterGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheParameterGroupWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) CreateCacheParameterGroupRequest(_param0 *elasticache.CreateCacheParameterGroupInput) (*request.Request, *elasticache.CreateCacheParameterGroupOutput) {
+	ret := _m.ctrl.Call(_m, "CreateCacheParameterGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.CreateCacheParameterGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) CreateCacheParameterGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheParameterGroupRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) CreateCacheSecurityGroup(_param0 *elasticache.CreateCacheSecurityGroupInput) (*elasticache.CreateCacheSecurityGroupOutput, error) {
@@ -162,15 +232,31 @@ func (_mr *_MockElastiCacheAPIRecorder) CreateCacheSecurityGroup(arg0 interface{
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheSecurityGroup", arg0)
 }
 
-func (_m *MockElastiCacheAPI) CreateCacheSubnetGroupRequest(_param0 *elasticache.CreateCacheSubnetGroupInput) (*request.Request, *elasticache.CreateCacheSubnetGroupOutput) {
-	ret := _m.ctrl.Call(_m, "CreateCacheSubnetGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.CreateCacheSubnetGroupOutput)
+func (_m *MockElastiCacheAPI) CreateCacheSecurityGroupWithContext(_param0 aws.Context, _param1 *elasticache.CreateCacheSecurityGroupInput, _param2 ...request.Option) (*elasticache.CreateCacheSecurityGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateCacheSecurityGroupWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.CreateCacheSecurityGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) CreateCacheSubnetGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheSubnetGroupRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) CreateCacheSecurityGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheSecurityGroupWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) CreateCacheSecurityGroupRequest(_param0 *elasticache.CreateCacheSecurityGroupInput) (*request.Request, *elasticache.CreateCacheSecurityGroupOutput) {
+	ret := _m.ctrl.Call(_m, "CreateCacheSecurityGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.CreateCacheSecurityGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) CreateCacheSecurityGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheSecurityGroupRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) CreateCacheSubnetGroup(_param0 *elasticache.CreateCacheSubnetGroupInput) (*elasticache.CreateCacheSubnetGroupOutput, error) {
@@ -184,15 +270,31 @@ func (_mr *_MockElastiCacheAPIRecorder) CreateCacheSubnetGroup(arg0 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheSubnetGroup", arg0)
 }
 
-func (_m *MockElastiCacheAPI) CreateReplicationGroupRequest(_param0 *elasticache.CreateReplicationGroupInput) (*request.Request, *elasticache.CreateReplicationGroupOutput) {
-	ret := _m.ctrl.Call(_m, "CreateReplicationGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.CreateReplicationGroupOutput)
+func (_m *MockElastiCacheAPI) CreateCacheSubnetGroupWithContext(_param0 aws.Context, _param1 *elasticache.CreateCacheSubnetGroupInput, _param2 ...request.Option) (*elasticache.CreateCacheSubnetGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateCacheSubnetGroupWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.CreateCacheSubnetGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) CreateReplicationGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateReplicationGroupRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) CreateCacheSubnetGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheSubnetGroupWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) CreateCacheSubnetGroupRequest(_param0 *elasticache.CreateCacheSubnetGroupInput) (*request.Request, *elasticache.CreateCacheSubnetGroupOutput) {
+	ret := _m.ctrl.Call(_m, "CreateCacheSubnetGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.CreateCacheSubnetGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) CreateCacheSubnetGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateCacheSubnetGroupRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) CreateReplicationGroup(_param0 *elasticache.CreateReplicationGroupInput) (*elasticache.CreateReplicationGroupOutput, error) {
@@ -206,15 +308,31 @@ func (_mr *_MockElastiCacheAPIRecorder) CreateReplicationGroup(arg0 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateReplicationGroup", arg0)
 }
 
-func (_m *MockElastiCacheAPI) CreateSnapshotRequest(_param0 *elasticache.CreateSnapshotInput) (*request.Request, *elasticache.CreateSnapshotOutput) {
-	ret := _m.ctrl.Call(_m, "CreateSnapshotRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.CreateSnapshotOutput)
+func (_m *MockElastiCacheAPI) CreateReplicationGroupWithContext(_param0 aws.Context, _param1 *elasticache.CreateReplicationGroupInput, _param2 ...request.Option) (*elasticache.CreateReplicationGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateReplicationGroupWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.CreateReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) CreateSnapshotRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateSnapshotRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) CreateReplicationGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateReplicationGroupWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) CreateReplicationGroupRequest(_param0 *elasticache.CreateReplicationGroupInput) (*request.Request, *elasticache.CreateReplicationGroupOutput) {
+	ret := _m.ctrl.Call(_m, "CreateReplicationGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.CreateReplicationGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) CreateReplicationGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateReplicationGroupRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) CreateSnapshot(_param0 *elasticache.CreateSnapshotInput) (*elasticache.CreateSnapshotOutput, error) {
@@ -228,15 +346,31 @@ func (_mr *_MockElastiCacheAPIRecorder) CreateSnapshot(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateSnapshot", arg0)
 }
 
-func (_m *MockElastiCacheAPI) DeleteCacheClusterRequest(_param0 *elasticache.DeleteCacheClusterInput) (*request.Request, *elasticache.DeleteCacheClusterOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteCacheClusterRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DeleteCacheClusterOutput)
+func (_m *MockElastiCacheAPI) CreateSnapshotWithContext(_param0 aws.Context, _param1 *elasticache.CreateSnapshotInput, _param2 ...request.Option) (*elasticache.CreateSnapshotOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateSnapshotWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.CreateSnapshotOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheClusterRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheClusterRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) CreateSnapshotWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateSnapshotWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) CreateSnapshotRequest(_param0 *elasticache.CreateSnapshotInput) (*request.Request, *elasticache.CreateSnapshotOutput) {
+	ret := _m.ctrl.Call(_m, "CreateSnapshotRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.CreateSnapshotOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) CreateSnapshotRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateSnapshotRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) DeleteCacheCluster(_param0 *elasticache.DeleteCacheClusterInput) (*elasticache.DeleteCacheClusterOutput, error) {
@@ -250,15 +384,31 @@ func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheCluster(arg0 interface{}) *go
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheCluster", arg0)
 }
 
-func (_m *MockElastiCacheAPI) DeleteCacheParameterGroupRequest(_param0 *elasticache.DeleteCacheParameterGroupInput) (*request.Request, *elasticache.DeleteCacheParameterGroupOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteCacheParameterGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DeleteCacheParameterGroupOutput)
+func (_m *MockElastiCacheAPI) DeleteCacheClusterWithContext(_param0 aws.Context, _param1 *elasticache.DeleteCacheClusterInput, _param2 ...request.Option) (*elasticache.DeleteCacheClusterOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteCacheClusterWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DeleteCacheClusterOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheParameterGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheParameterGroupRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheClusterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheClusterWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DeleteCacheClusterRequest(_param0 *elasticache.DeleteCacheClusterInput) (*request.Request, *elasticache.DeleteCacheClusterOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteCacheClusterRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DeleteCacheClusterOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheClusterRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheClusterRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) DeleteCacheParameterGroup(_param0 *elasticache.DeleteCacheParameterGroupInput) (*elasticache.DeleteCacheParameterGroupOutput, error) {
@@ -272,15 +422,31 @@ func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheParameterGroup(arg0 interface
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheParameterGroup", arg0)
 }
 
-func (_m *MockElastiCacheAPI) DeleteCacheSecurityGroupRequest(_param0 *elasticache.DeleteCacheSecurityGroupInput) (*request.Request, *elasticache.DeleteCacheSecurityGroupOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteCacheSecurityGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DeleteCacheSecurityGroupOutput)
+func (_m *MockElastiCacheAPI) DeleteCacheParameterGroupWithContext(_param0 aws.Context, _param1 *elasticache.DeleteCacheParameterGroupInput, _param2 ...request.Option) (*elasticache.DeleteCacheParameterGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteCacheParameterGroupWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DeleteCacheParameterGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheSecurityGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheSecurityGroupRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheParameterGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheParameterGroupWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DeleteCacheParameterGroupRequest(_param0 *elasticache.DeleteCacheParameterGroupInput) (*request.Request, *elasticache.DeleteCacheParameterGroupOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteCacheParameterGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DeleteCacheParameterGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheParameterGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheParameterGroupRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) DeleteCacheSecurityGroup(_param0 *elasticache.DeleteCacheSecurityGroupInput) (*elasticache.DeleteCacheSecurityGroupOutput, error) {
@@ -294,15 +460,31 @@ func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheSecurityGroup(arg0 interface{
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheSecurityGroup", arg0)
 }
 
-func (_m *MockElastiCacheAPI) DeleteCacheSubnetGroupRequest(_param0 *elasticache.DeleteCacheSubnetGroupInput) (*request.Request, *elasticache.DeleteCacheSubnetGroupOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteCacheSubnetGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DeleteCacheSubnetGroupOutput)
+func (_m *MockElastiCacheAPI) DeleteCacheSecurityGroupWithContext(_param0 aws.Context, _param1 *elasticache.DeleteCacheSecurityGroupInput, _param2 ...request.Option) (*elasticache.DeleteCacheSecurityGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteCacheSecurityGroupWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DeleteCacheSecurityGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheSubnetGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheSubnetGroupRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheSecurityGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheSecurityGroupWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DeleteCacheSecurityGroupRequest(_param0 *elasticache.DeleteCacheSecurityGroupInput) (*request.Request, *elasticache.DeleteCacheSecurityGroupOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteCacheSecurityGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DeleteCacheSecurityGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheSecurityGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheSecurityGroupRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) DeleteCacheSubnetGroup(_param0 *elasticache.DeleteCacheSubnetGroupInput) (*elasticache.DeleteCacheSubnetGroupOutput, error) {
@@ -316,15 +498,31 @@ func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheSubnetGroup(arg0 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheSubnetGroup", arg0)
 }
 
-func (_m *MockElastiCacheAPI) DeleteReplicationGroupRequest(_param0 *elasticache.DeleteReplicationGroupInput) (*request.Request, *elasticache.DeleteReplicationGroupOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteReplicationGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DeleteReplicationGroupOutput)
+func (_m *MockElastiCacheAPI) DeleteCacheSubnetGroupWithContext(_param0 aws.Context, _param1 *elasticache.DeleteCacheSubnetGroupInput, _param2 ...request.Option) (*elasticache.DeleteCacheSubnetGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteCacheSubnetGroupWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DeleteCacheSubnetGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DeleteReplicationGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteReplicationGroupRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheSubnetGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheSubnetGroupWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DeleteCacheSubnetGroupRequest(_param0 *elasticache.DeleteCacheSubnetGroupInput) (*request.Request, *elasticache.DeleteCacheSubnetGroupOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteCacheSubnetGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DeleteCacheSubnetGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DeleteCacheSubnetGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteCacheSubnetGroupRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) DeleteReplicationGroup(_param0 *elasticache.DeleteReplicationGroupInput) (*elasticache.DeleteReplicationGroupOutput, error) {
@@ -338,15 +536,31 @@ func (_mr *_MockElastiCacheAPIRecorder) DeleteReplicationGroup(arg0 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteReplicationGroup", arg0)
 }
 
-func (_m *MockElastiCacheAPI) DeleteSnapshotRequest(_param0 *elasticache.DeleteSnapshotInput) (*request.Request, *elasticache.DeleteSnapshotOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteSnapshotRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DeleteSnapshotOutput)
+func (_m *MockElastiCacheAPI) DeleteReplicationGroupWithContext(_param0 aws.Context, _param1 *elasticache.DeleteReplicationGroupInput, _param2 ...request.Option) (*elasticache.DeleteReplicationGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteReplicationGroupWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DeleteReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DeleteSnapshotRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSnapshotRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DeleteReplicationGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteReplicationGroupWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DeleteReplicationGroupRequest(_param0 *elasticache.DeleteReplicationGroupInput) (*request.Request, *elasticache.DeleteReplicationGroupOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteReplicationGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DeleteReplicationGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DeleteReplicationGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteReplicationGroupRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) DeleteSnapshot(_param0 *elasticache.DeleteSnapshotInput) (*elasticache.DeleteSnapshotOutput, error) {
@@ -360,15 +574,31 @@ func (_mr *_MockElastiCacheAPIRecorder) DeleteSnapshot(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSnapshot", arg0)
 }
 
-func (_m *MockElastiCacheAPI) DescribeCacheClustersRequest(_param0 *elasticache.DescribeCacheClustersInput) (*request.Request, *elasticache.DescribeCacheClustersOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeCacheClustersRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DescribeCacheClustersOutput)
+func (_m *MockElastiCacheAPI) DeleteSnapshotWithContext(_param0 aws.Context, _param1 *elasticache.DeleteSnapshotInput, _param2 ...request.Option) (*elasticache.DeleteSnapshotOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteSnapshotWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DeleteSnapshotOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheClustersRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheClustersRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DeleteSnapshotWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSnapshotWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DeleteSnapshotRequest(_param0 *elasticache.DeleteSnapshotInput) (*request.Request, *elasticache.DeleteSnapshotOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteSnapshotRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DeleteSnapshotOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DeleteSnapshotRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSnapshotRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) DescribeCacheClusters(_param0 *elasticache.DescribeCacheClustersInput) (*elasticache.DescribeCacheClustersOutput, error) {
@@ -382,6 +612,33 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheClusters(arg0 interface{}) 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheClusters", arg0)
 }
 
+func (_m *MockElastiCacheAPI) DescribeCacheClustersWithContext(_param0 aws.Context, _param1 *elasticache.DescribeCacheClustersInput, _param2 ...request.Option) (*elasticache.DescribeCacheClustersOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeCacheClustersWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DescribeCacheClustersOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheClustersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheClustersWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DescribeCacheClustersRequest(_param0 *elasticache.DescribeCacheClustersInput) (*request.Request, *elasticache.DescribeCacheClustersOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeCacheClustersRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DescribeCacheClustersOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheClustersRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheClustersRequest", arg0)
+}
+
 func (_m *MockElastiCacheAPI) DescribeCacheClustersPages(_param0 *elasticache.DescribeCacheClustersInput, _param1 func(*elasticache.DescribeCacheClustersOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeCacheClustersPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -392,15 +649,19 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheClustersPages(arg0, arg1 in
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheClustersPages", arg0, arg1)
 }
 
-func (_m *MockElastiCacheAPI) DescribeCacheEngineVersionsRequest(_param0 *elasticache.DescribeCacheEngineVersionsInput) (*request.Request, *elasticache.DescribeCacheEngineVersionsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeCacheEngineVersionsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DescribeCacheEngineVersionsOutput)
-	return ret0, ret1
+func (_m *MockElastiCacheAPI) DescribeCacheClustersPagesWithContext(_param0 aws.Context, _param1 *elasticache.DescribeCacheClustersInput, _param2 func(*elasticache.DescribeCacheClustersOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeCacheClustersPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheEngineVersionsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheEngineVersionsRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheClustersPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheClustersPagesWithContext", _s...)
 }
 
 func (_m *MockElastiCacheAPI) DescribeCacheEngineVersions(_param0 *elasticache.DescribeCacheEngineVersionsInput) (*elasticache.DescribeCacheEngineVersionsOutput, error) {
@@ -414,6 +675,33 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheEngineVersions(arg0 interfa
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheEngineVersions", arg0)
 }
 
+func (_m *MockElastiCacheAPI) DescribeCacheEngineVersionsWithContext(_param0 aws.Context, _param1 *elasticache.DescribeCacheEngineVersionsInput, _param2 ...request.Option) (*elasticache.DescribeCacheEngineVersionsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeCacheEngineVersionsWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DescribeCacheEngineVersionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheEngineVersionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheEngineVersionsWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DescribeCacheEngineVersionsRequest(_param0 *elasticache.DescribeCacheEngineVersionsInput) (*request.Request, *elasticache.DescribeCacheEngineVersionsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeCacheEngineVersionsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DescribeCacheEngineVersionsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheEngineVersionsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheEngineVersionsRequest", arg0)
+}
+
 func (_m *MockElastiCacheAPI) DescribeCacheEngineVersionsPages(_param0 *elasticache.DescribeCacheEngineVersionsInput, _param1 func(*elasticache.DescribeCacheEngineVersionsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeCacheEngineVersionsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -424,15 +712,19 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheEngineVersionsPages(arg0, a
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheEngineVersionsPages", arg0, arg1)
 }
 
-func (_m *MockElastiCacheAPI) DescribeCacheParameterGroupsRequest(_param0 *elasticache.DescribeCacheParameterGroupsInput) (*request.Request, *elasticache.DescribeCacheParameterGroupsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeCacheParameterGroupsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DescribeCacheParameterGroupsOutput)
-	return ret0, ret1
+func (_m *MockElastiCacheAPI) DescribeCacheEngineVersionsPagesWithContext(_param0 aws.Context, _param1 *elasticache.DescribeCacheEngineVersionsInput, _param2 func(*elasticache.DescribeCacheEngineVersionsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeCacheEngineVersionsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheParameterGroupsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheParameterGroupsRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheEngineVersionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheEngineVersionsPagesWithContext", _s...)
 }
 
 func (_m *MockElastiCacheAPI) DescribeCacheParameterGroups(_param0 *elasticache.DescribeCacheParameterGroupsInput) (*elasticache.DescribeCacheParameterGroupsOutput, error) {
@@ -446,6 +738,33 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheParameterGroups(arg0 interf
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheParameterGroups", arg0)
 }
 
+func (_m *MockElastiCacheAPI) DescribeCacheParameterGroupsWithContext(_param0 aws.Context, _param1 *elasticache.DescribeCacheParameterGroupsInput, _param2 ...request.Option) (*elasticache.DescribeCacheParameterGroupsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeCacheParameterGroupsWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DescribeCacheParameterGroupsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheParameterGroupsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheParameterGroupsWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DescribeCacheParameterGroupsRequest(_param0 *elasticache.DescribeCacheParameterGroupsInput) (*request.Request, *elasticache.DescribeCacheParameterGroupsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeCacheParameterGroupsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DescribeCacheParameterGroupsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheParameterGroupsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheParameterGroupsRequest", arg0)
+}
+
 func (_m *MockElastiCacheAPI) DescribeCacheParameterGroupsPages(_param0 *elasticache.DescribeCacheParameterGroupsInput, _param1 func(*elasticache.DescribeCacheParameterGroupsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeCacheParameterGroupsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -456,15 +775,19 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheParameterGroupsPages(arg0, 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheParameterGroupsPages", arg0, arg1)
 }
 
-func (_m *MockElastiCacheAPI) DescribeCacheParametersRequest(_param0 *elasticache.DescribeCacheParametersInput) (*request.Request, *elasticache.DescribeCacheParametersOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeCacheParametersRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DescribeCacheParametersOutput)
-	return ret0, ret1
+func (_m *MockElastiCacheAPI) DescribeCacheParameterGroupsPagesWithContext(_param0 aws.Context, _param1 *elasticache.DescribeCacheParameterGroupsInput, _param2 func(*elasticache.DescribeCacheParameterGroupsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeCacheParameterGroupsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheParametersRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheParametersRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheParameterGroupsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheParameterGroupsPagesWithContext", _s...)
 }
 
 func (_m *MockElastiCacheAPI) DescribeCacheParameters(_param0 *elasticache.DescribeCacheParametersInput) (*elasticache.DescribeCacheParametersOutput, error) {
@@ -478,6 +801,33 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheParameters(arg0 interface{}
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheParameters", arg0)
 }
 
+func (_m *MockElastiCacheAPI) DescribeCacheParametersWithContext(_param0 aws.Context, _param1 *elasticache.DescribeCacheParametersInput, _param2 ...request.Option) (*elasticache.DescribeCacheParametersOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeCacheParametersWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DescribeCacheParametersOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheParametersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheParametersWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DescribeCacheParametersRequest(_param0 *elasticache.DescribeCacheParametersInput) (*request.Request, *elasticache.DescribeCacheParametersOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeCacheParametersRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DescribeCacheParametersOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheParametersRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheParametersRequest", arg0)
+}
+
 func (_m *MockElastiCacheAPI) DescribeCacheParametersPages(_param0 *elasticache.DescribeCacheParametersInput, _param1 func(*elasticache.DescribeCacheParametersOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeCacheParametersPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -488,15 +838,19 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheParametersPages(arg0, arg1 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheParametersPages", arg0, arg1)
 }
 
-func (_m *MockElastiCacheAPI) DescribeCacheSecurityGroupsRequest(_param0 *elasticache.DescribeCacheSecurityGroupsInput) (*request.Request, *elasticache.DescribeCacheSecurityGroupsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeCacheSecurityGroupsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DescribeCacheSecurityGroupsOutput)
-	return ret0, ret1
+func (_m *MockElastiCacheAPI) DescribeCacheParametersPagesWithContext(_param0 aws.Context, _param1 *elasticache.DescribeCacheParametersInput, _param2 func(*elasticache.DescribeCacheParametersOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeCacheParametersPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheSecurityGroupsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheSecurityGroupsRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheParametersPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheParametersPagesWithContext", _s...)
 }
 
 func (_m *MockElastiCacheAPI) DescribeCacheSecurityGroups(_param0 *elasticache.DescribeCacheSecurityGroupsInput) (*elasticache.DescribeCacheSecurityGroupsOutput, error) {
@@ -510,6 +864,33 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheSecurityGroups(arg0 interfa
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheSecurityGroups", arg0)
 }
 
+func (_m *MockElastiCacheAPI) DescribeCacheSecurityGroupsWithContext(_param0 aws.Context, _param1 *elasticache.DescribeCacheSecurityGroupsInput, _param2 ...request.Option) (*elasticache.DescribeCacheSecurityGroupsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeCacheSecurityGroupsWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DescribeCacheSecurityGroupsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheSecurityGroupsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheSecurityGroupsWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DescribeCacheSecurityGroupsRequest(_param0 *elasticache.DescribeCacheSecurityGroupsInput) (*request.Request, *elasticache.DescribeCacheSecurityGroupsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeCacheSecurityGroupsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DescribeCacheSecurityGroupsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheSecurityGroupsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheSecurityGroupsRequest", arg0)
+}
+
 func (_m *MockElastiCacheAPI) DescribeCacheSecurityGroupsPages(_param0 *elasticache.DescribeCacheSecurityGroupsInput, _param1 func(*elasticache.DescribeCacheSecurityGroupsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeCacheSecurityGroupsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -520,15 +901,19 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheSecurityGroupsPages(arg0, a
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheSecurityGroupsPages", arg0, arg1)
 }
 
-func (_m *MockElastiCacheAPI) DescribeCacheSubnetGroupsRequest(_param0 *elasticache.DescribeCacheSubnetGroupsInput) (*request.Request, *elasticache.DescribeCacheSubnetGroupsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeCacheSubnetGroupsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DescribeCacheSubnetGroupsOutput)
-	return ret0, ret1
+func (_m *MockElastiCacheAPI) DescribeCacheSecurityGroupsPagesWithContext(_param0 aws.Context, _param1 *elasticache.DescribeCacheSecurityGroupsInput, _param2 func(*elasticache.DescribeCacheSecurityGroupsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeCacheSecurityGroupsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheSubnetGroupsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheSubnetGroupsRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheSecurityGroupsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheSecurityGroupsPagesWithContext", _s...)
 }
 
 func (_m *MockElastiCacheAPI) DescribeCacheSubnetGroups(_param0 *elasticache.DescribeCacheSubnetGroupsInput) (*elasticache.DescribeCacheSubnetGroupsOutput, error) {
@@ -542,6 +927,33 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheSubnetGroups(arg0 interface
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheSubnetGroups", arg0)
 }
 
+func (_m *MockElastiCacheAPI) DescribeCacheSubnetGroupsWithContext(_param0 aws.Context, _param1 *elasticache.DescribeCacheSubnetGroupsInput, _param2 ...request.Option) (*elasticache.DescribeCacheSubnetGroupsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeCacheSubnetGroupsWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DescribeCacheSubnetGroupsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheSubnetGroupsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheSubnetGroupsWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DescribeCacheSubnetGroupsRequest(_param0 *elasticache.DescribeCacheSubnetGroupsInput) (*request.Request, *elasticache.DescribeCacheSubnetGroupsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeCacheSubnetGroupsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DescribeCacheSubnetGroupsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheSubnetGroupsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheSubnetGroupsRequest", arg0)
+}
+
 func (_m *MockElastiCacheAPI) DescribeCacheSubnetGroupsPages(_param0 *elasticache.DescribeCacheSubnetGroupsInput, _param1 func(*elasticache.DescribeCacheSubnetGroupsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeCacheSubnetGroupsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -552,15 +964,19 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheSubnetGroupsPages(arg0, arg
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheSubnetGroupsPages", arg0, arg1)
 }
 
-func (_m *MockElastiCacheAPI) DescribeEngineDefaultParametersRequest(_param0 *elasticache.DescribeEngineDefaultParametersInput) (*request.Request, *elasticache.DescribeEngineDefaultParametersOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeEngineDefaultParametersRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DescribeEngineDefaultParametersOutput)
-	return ret0, ret1
+func (_m *MockElastiCacheAPI) DescribeCacheSubnetGroupsPagesWithContext(_param0 aws.Context, _param1 *elasticache.DescribeCacheSubnetGroupsInput, _param2 func(*elasticache.DescribeCacheSubnetGroupsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeCacheSubnetGroupsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DescribeEngineDefaultParametersRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultParametersRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DescribeCacheSubnetGroupsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeCacheSubnetGroupsPagesWithContext", _s...)
 }
 
 func (_m *MockElastiCacheAPI) DescribeEngineDefaultParameters(_param0 *elasticache.DescribeEngineDefaultParametersInput) (*elasticache.DescribeEngineDefaultParametersOutput, error) {
@@ -574,6 +990,33 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeEngineDefaultParameters(arg0 int
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultParameters", arg0)
 }
 
+func (_m *MockElastiCacheAPI) DescribeEngineDefaultParametersWithContext(_param0 aws.Context, _param1 *elasticache.DescribeEngineDefaultParametersInput, _param2 ...request.Option) (*elasticache.DescribeEngineDefaultParametersOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeEngineDefaultParametersWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DescribeEngineDefaultParametersOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeEngineDefaultParametersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultParametersWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DescribeEngineDefaultParametersRequest(_param0 *elasticache.DescribeEngineDefaultParametersInput) (*request.Request, *elasticache.DescribeEngineDefaultParametersOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeEngineDefaultParametersRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DescribeEngineDefaultParametersOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeEngineDefaultParametersRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultParametersRequest", arg0)
+}
+
 func (_m *MockElastiCacheAPI) DescribeEngineDefaultParametersPages(_param0 *elasticache.DescribeEngineDefaultParametersInput, _param1 func(*elasticache.DescribeEngineDefaultParametersOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeEngineDefaultParametersPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -584,15 +1027,19 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeEngineDefaultParametersPages(arg
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultParametersPages", arg0, arg1)
 }
 
-func (_m *MockElastiCacheAPI) DescribeEventsRequest(_param0 *elasticache.DescribeEventsInput) (*request.Request, *elasticache.DescribeEventsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeEventsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DescribeEventsOutput)
-	return ret0, ret1
+func (_m *MockElastiCacheAPI) DescribeEngineDefaultParametersPagesWithContext(_param0 aws.Context, _param1 *elasticache.DescribeEngineDefaultParametersInput, _param2 func(*elasticache.DescribeEngineDefaultParametersOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeEngineDefaultParametersPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DescribeEventsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventsRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DescribeEngineDefaultParametersPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEngineDefaultParametersPagesWithContext", _s...)
 }
 
 func (_m *MockElastiCacheAPI) DescribeEvents(_param0 *elasticache.DescribeEventsInput) (*elasticache.DescribeEventsOutput, error) {
@@ -606,6 +1053,33 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeEvents(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEvents", arg0)
 }
 
+func (_m *MockElastiCacheAPI) DescribeEventsWithContext(_param0 aws.Context, _param1 *elasticache.DescribeEventsInput, _param2 ...request.Option) (*elasticache.DescribeEventsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeEventsWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DescribeEventsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeEventsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventsWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DescribeEventsRequest(_param0 *elasticache.DescribeEventsInput) (*request.Request, *elasticache.DescribeEventsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeEventsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DescribeEventsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeEventsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventsRequest", arg0)
+}
+
 func (_m *MockElastiCacheAPI) DescribeEventsPages(_param0 *elasticache.DescribeEventsInput, _param1 func(*elasticache.DescribeEventsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeEventsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -616,15 +1090,19 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeEventsPages(arg0, arg1 interface
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventsPages", arg0, arg1)
 }
 
-func (_m *MockElastiCacheAPI) DescribeReplicationGroupsRequest(_param0 *elasticache.DescribeReplicationGroupsInput) (*request.Request, *elasticache.DescribeReplicationGroupsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeReplicationGroupsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DescribeReplicationGroupsOutput)
-	return ret0, ret1
+func (_m *MockElastiCacheAPI) DescribeEventsPagesWithContext(_param0 aws.Context, _param1 *elasticache.DescribeEventsInput, _param2 func(*elasticache.DescribeEventsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeEventsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DescribeReplicationGroupsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReplicationGroupsRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DescribeEventsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeEventsPagesWithContext", _s...)
 }
 
 func (_m *MockElastiCacheAPI) DescribeReplicationGroups(_param0 *elasticache.DescribeReplicationGroupsInput) (*elasticache.DescribeReplicationGroupsOutput, error) {
@@ -638,6 +1116,33 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeReplicationGroups(arg0 interface
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReplicationGroups", arg0)
 }
 
+func (_m *MockElastiCacheAPI) DescribeReplicationGroupsWithContext(_param0 aws.Context, _param1 *elasticache.DescribeReplicationGroupsInput, _param2 ...request.Option) (*elasticache.DescribeReplicationGroupsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeReplicationGroupsWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DescribeReplicationGroupsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeReplicationGroupsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReplicationGroupsWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DescribeReplicationGroupsRequest(_param0 *elasticache.DescribeReplicationGroupsInput) (*request.Request, *elasticache.DescribeReplicationGroupsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeReplicationGroupsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DescribeReplicationGroupsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeReplicationGroupsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReplicationGroupsRequest", arg0)
+}
+
 func (_m *MockElastiCacheAPI) DescribeReplicationGroupsPages(_param0 *elasticache.DescribeReplicationGroupsInput, _param1 func(*elasticache.DescribeReplicationGroupsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeReplicationGroupsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -648,15 +1153,19 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeReplicationGroupsPages(arg0, arg
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReplicationGroupsPages", arg0, arg1)
 }
 
-func (_m *MockElastiCacheAPI) DescribeReservedCacheNodesRequest(_param0 *elasticache.DescribeReservedCacheNodesInput) (*request.Request, *elasticache.DescribeReservedCacheNodesOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeReservedCacheNodesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DescribeReservedCacheNodesOutput)
-	return ret0, ret1
+func (_m *MockElastiCacheAPI) DescribeReplicationGroupsPagesWithContext(_param0 aws.Context, _param1 *elasticache.DescribeReplicationGroupsInput, _param2 func(*elasticache.DescribeReplicationGroupsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeReplicationGroupsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DescribeReservedCacheNodesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedCacheNodesRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DescribeReplicationGroupsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReplicationGroupsPagesWithContext", _s...)
 }
 
 func (_m *MockElastiCacheAPI) DescribeReservedCacheNodes(_param0 *elasticache.DescribeReservedCacheNodesInput) (*elasticache.DescribeReservedCacheNodesOutput, error) {
@@ -670,6 +1179,33 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeReservedCacheNodes(arg0 interfac
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedCacheNodes", arg0)
 }
 
+func (_m *MockElastiCacheAPI) DescribeReservedCacheNodesWithContext(_param0 aws.Context, _param1 *elasticache.DescribeReservedCacheNodesInput, _param2 ...request.Option) (*elasticache.DescribeReservedCacheNodesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeReservedCacheNodesWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DescribeReservedCacheNodesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeReservedCacheNodesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedCacheNodesWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DescribeReservedCacheNodesRequest(_param0 *elasticache.DescribeReservedCacheNodesInput) (*request.Request, *elasticache.DescribeReservedCacheNodesOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeReservedCacheNodesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DescribeReservedCacheNodesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeReservedCacheNodesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedCacheNodesRequest", arg0)
+}
+
 func (_m *MockElastiCacheAPI) DescribeReservedCacheNodesPages(_param0 *elasticache.DescribeReservedCacheNodesInput, _param1 func(*elasticache.DescribeReservedCacheNodesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeReservedCacheNodesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -680,15 +1216,19 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeReservedCacheNodesPages(arg0, ar
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedCacheNodesPages", arg0, arg1)
 }
 
-func (_m *MockElastiCacheAPI) DescribeReservedCacheNodesOfferingsRequest(_param0 *elasticache.DescribeReservedCacheNodesOfferingsInput) (*request.Request, *elasticache.DescribeReservedCacheNodesOfferingsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeReservedCacheNodesOfferingsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DescribeReservedCacheNodesOfferingsOutput)
-	return ret0, ret1
+func (_m *MockElastiCacheAPI) DescribeReservedCacheNodesPagesWithContext(_param0 aws.Context, _param1 *elasticache.DescribeReservedCacheNodesInput, _param2 func(*elasticache.DescribeReservedCacheNodesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeReservedCacheNodesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DescribeReservedCacheNodesOfferingsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedCacheNodesOfferingsRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DescribeReservedCacheNodesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedCacheNodesPagesWithContext", _s...)
 }
 
 func (_m *MockElastiCacheAPI) DescribeReservedCacheNodesOfferings(_param0 *elasticache.DescribeReservedCacheNodesOfferingsInput) (*elasticache.DescribeReservedCacheNodesOfferingsOutput, error) {
@@ -702,6 +1242,33 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeReservedCacheNodesOfferings(arg0
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedCacheNodesOfferings", arg0)
 }
 
+func (_m *MockElastiCacheAPI) DescribeReservedCacheNodesOfferingsWithContext(_param0 aws.Context, _param1 *elasticache.DescribeReservedCacheNodesOfferingsInput, _param2 ...request.Option) (*elasticache.DescribeReservedCacheNodesOfferingsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeReservedCacheNodesOfferingsWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DescribeReservedCacheNodesOfferingsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeReservedCacheNodesOfferingsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedCacheNodesOfferingsWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DescribeReservedCacheNodesOfferingsRequest(_param0 *elasticache.DescribeReservedCacheNodesOfferingsInput) (*request.Request, *elasticache.DescribeReservedCacheNodesOfferingsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeReservedCacheNodesOfferingsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DescribeReservedCacheNodesOfferingsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeReservedCacheNodesOfferingsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedCacheNodesOfferingsRequest", arg0)
+}
+
 func (_m *MockElastiCacheAPI) DescribeReservedCacheNodesOfferingsPages(_param0 *elasticache.DescribeReservedCacheNodesOfferingsInput, _param1 func(*elasticache.DescribeReservedCacheNodesOfferingsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeReservedCacheNodesOfferingsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -712,15 +1279,19 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeReservedCacheNodesOfferingsPages
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedCacheNodesOfferingsPages", arg0, arg1)
 }
 
-func (_m *MockElastiCacheAPI) DescribeSnapshotsRequest(_param0 *elasticache.DescribeSnapshotsInput) (*request.Request, *elasticache.DescribeSnapshotsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeSnapshotsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.DescribeSnapshotsOutput)
-	return ret0, ret1
+func (_m *MockElastiCacheAPI) DescribeReservedCacheNodesOfferingsPagesWithContext(_param0 aws.Context, _param1 *elasticache.DescribeReservedCacheNodesOfferingsInput, _param2 func(*elasticache.DescribeReservedCacheNodesOfferingsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeReservedCacheNodesOfferingsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) DescribeSnapshotsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeSnapshotsRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DescribeReservedCacheNodesOfferingsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeReservedCacheNodesOfferingsPagesWithContext", _s...)
 }
 
 func (_m *MockElastiCacheAPI) DescribeSnapshots(_param0 *elasticache.DescribeSnapshotsInput) (*elasticache.DescribeSnapshotsOutput, error) {
@@ -734,6 +1305,33 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeSnapshots(arg0 interface{}) *gom
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeSnapshots", arg0)
 }
 
+func (_m *MockElastiCacheAPI) DescribeSnapshotsWithContext(_param0 aws.Context, _param1 *elasticache.DescribeSnapshotsInput, _param2 ...request.Option) (*elasticache.DescribeSnapshotsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeSnapshotsWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.DescribeSnapshotsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeSnapshotsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeSnapshotsWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) DescribeSnapshotsRequest(_param0 *elasticache.DescribeSnapshotsInput) (*request.Request, *elasticache.DescribeSnapshotsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeSnapshotsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DescribeSnapshotsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) DescribeSnapshotsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeSnapshotsRequest", arg0)
+}
+
 func (_m *MockElastiCacheAPI) DescribeSnapshotsPages(_param0 *elasticache.DescribeSnapshotsInput, _param1 func(*elasticache.DescribeSnapshotsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeSnapshotsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -744,15 +1342,19 @@ func (_mr *_MockElastiCacheAPIRecorder) DescribeSnapshotsPages(arg0, arg1 interf
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeSnapshotsPages", arg0, arg1)
 }
 
-func (_m *MockElastiCacheAPI) ListAllowedNodeTypeModificationsRequest(_param0 *elasticache.ListAllowedNodeTypeModificationsInput) (*request.Request, *elasticache.ListAllowedNodeTypeModificationsOutput) {
-	ret := _m.ctrl.Call(_m, "ListAllowedNodeTypeModificationsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.ListAllowedNodeTypeModificationsOutput)
-	return ret0, ret1
+func (_m *MockElastiCacheAPI) DescribeSnapshotsPagesWithContext(_param0 aws.Context, _param1 *elasticache.DescribeSnapshotsInput, _param2 func(*elasticache.DescribeSnapshotsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeSnapshotsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) ListAllowedNodeTypeModificationsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAllowedNodeTypeModificationsRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) DescribeSnapshotsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeSnapshotsPagesWithContext", _s...)
 }
 
 func (_m *MockElastiCacheAPI) ListAllowedNodeTypeModifications(_param0 *elasticache.ListAllowedNodeTypeModificationsInput) (*elasticache.ListAllowedNodeTypeModificationsOutput, error) {
@@ -766,15 +1368,31 @@ func (_mr *_MockElastiCacheAPIRecorder) ListAllowedNodeTypeModifications(arg0 in
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAllowedNodeTypeModifications", arg0)
 }
 
-func (_m *MockElastiCacheAPI) ListTagsForResourceRequest(_param0 *elasticache.ListTagsForResourceInput) (*request.Request, *elasticache.TagListMessage) {
-	ret := _m.ctrl.Call(_m, "ListTagsForResourceRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.TagListMessage)
+func (_m *MockElastiCacheAPI) ListAllowedNodeTypeModificationsWithContext(_param0 aws.Context, _param1 *elasticache.ListAllowedNodeTypeModificationsInput, _param2 ...request.Option) (*elasticache.ListAllowedNodeTypeModificationsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListAllowedNodeTypeModificationsWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.ListAllowedNodeTypeModificationsOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) ListTagsForResourceRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListTagsForResourceRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) ListAllowedNodeTypeModificationsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAllowedNodeTypeModificationsWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) ListAllowedNodeTypeModificationsRequest(_param0 *elasticache.ListAllowedNodeTypeModificationsInput) (*request.Request, *elasticache.ListAllowedNodeTypeModificationsOutput) {
+	ret := _m.ctrl.Call(_m, "ListAllowedNodeTypeModificationsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.ListAllowedNodeTypeModificationsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) ListAllowedNodeTypeModificationsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAllowedNodeTypeModificationsRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) ListTagsForResource(_param0 *elasticache.ListTagsForResourceInput) (*elasticache.TagListMessage, error) {
@@ -788,15 +1406,31 @@ func (_mr *_MockElastiCacheAPIRecorder) ListTagsForResource(arg0 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListTagsForResource", arg0)
 }
 
-func (_m *MockElastiCacheAPI) ModifyCacheClusterRequest(_param0 *elasticache.ModifyCacheClusterInput) (*request.Request, *elasticache.ModifyCacheClusterOutput) {
-	ret := _m.ctrl.Call(_m, "ModifyCacheClusterRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.ModifyCacheClusterOutput)
+func (_m *MockElastiCacheAPI) ListTagsForResourceWithContext(_param0 aws.Context, _param1 *elasticache.ListTagsForResourceInput, _param2 ...request.Option) (*elasticache.TagListMessage, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListTagsForResourceWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.TagListMessage)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) ModifyCacheClusterRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyCacheClusterRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) ListTagsForResourceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListTagsForResourceWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) ListTagsForResourceRequest(_param0 *elasticache.ListTagsForResourceInput) (*request.Request, *elasticache.TagListMessage) {
+	ret := _m.ctrl.Call(_m, "ListTagsForResourceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.TagListMessage)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) ListTagsForResourceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListTagsForResourceRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) ModifyCacheCluster(_param0 *elasticache.ModifyCacheClusterInput) (*elasticache.ModifyCacheClusterOutput, error) {
@@ -810,15 +1444,31 @@ func (_mr *_MockElastiCacheAPIRecorder) ModifyCacheCluster(arg0 interface{}) *go
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyCacheCluster", arg0)
 }
 
-func (_m *MockElastiCacheAPI) ModifyCacheParameterGroupRequest(_param0 *elasticache.ModifyCacheParameterGroupInput) (*request.Request, *elasticache.CacheParameterGroupNameMessage) {
-	ret := _m.ctrl.Call(_m, "ModifyCacheParameterGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.CacheParameterGroupNameMessage)
+func (_m *MockElastiCacheAPI) ModifyCacheClusterWithContext(_param0 aws.Context, _param1 *elasticache.ModifyCacheClusterInput, _param2 ...request.Option) (*elasticache.ModifyCacheClusterOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyCacheClusterWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.ModifyCacheClusterOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) ModifyCacheParameterGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyCacheParameterGroupRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) ModifyCacheClusterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyCacheClusterWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) ModifyCacheClusterRequest(_param0 *elasticache.ModifyCacheClusterInput) (*request.Request, *elasticache.ModifyCacheClusterOutput) {
+	ret := _m.ctrl.Call(_m, "ModifyCacheClusterRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.ModifyCacheClusterOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) ModifyCacheClusterRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyCacheClusterRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) ModifyCacheParameterGroup(_param0 *elasticache.ModifyCacheParameterGroupInput) (*elasticache.CacheParameterGroupNameMessage, error) {
@@ -832,15 +1482,31 @@ func (_mr *_MockElastiCacheAPIRecorder) ModifyCacheParameterGroup(arg0 interface
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyCacheParameterGroup", arg0)
 }
 
-func (_m *MockElastiCacheAPI) ModifyCacheSubnetGroupRequest(_param0 *elasticache.ModifyCacheSubnetGroupInput) (*request.Request, *elasticache.ModifyCacheSubnetGroupOutput) {
-	ret := _m.ctrl.Call(_m, "ModifyCacheSubnetGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.ModifyCacheSubnetGroupOutput)
+func (_m *MockElastiCacheAPI) ModifyCacheParameterGroupWithContext(_param0 aws.Context, _param1 *elasticache.ModifyCacheParameterGroupInput, _param2 ...request.Option) (*elasticache.CacheParameterGroupNameMessage, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyCacheParameterGroupWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.CacheParameterGroupNameMessage)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) ModifyCacheSubnetGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyCacheSubnetGroupRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) ModifyCacheParameterGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyCacheParameterGroupWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) ModifyCacheParameterGroupRequest(_param0 *elasticache.ModifyCacheParameterGroupInput) (*request.Request, *elasticache.CacheParameterGroupNameMessage) {
+	ret := _m.ctrl.Call(_m, "ModifyCacheParameterGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.CacheParameterGroupNameMessage)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) ModifyCacheParameterGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyCacheParameterGroupRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) ModifyCacheSubnetGroup(_param0 *elasticache.ModifyCacheSubnetGroupInput) (*elasticache.ModifyCacheSubnetGroupOutput, error) {
@@ -854,15 +1520,31 @@ func (_mr *_MockElastiCacheAPIRecorder) ModifyCacheSubnetGroup(arg0 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyCacheSubnetGroup", arg0)
 }
 
-func (_m *MockElastiCacheAPI) ModifyReplicationGroupRequest(_param0 *elasticache.ModifyReplicationGroupInput) (*request.Request, *elasticache.ModifyReplicationGroupOutput) {
-	ret := _m.ctrl.Call(_m, "ModifyReplicationGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.ModifyReplicationGroupOutput)
+func (_m *MockElastiCacheAPI) ModifyCacheSubnetGroupWithContext(_param0 aws.Context, _param1 *elasticache.ModifyCacheSubnetGroupInput, _param2 ...request.Option) (*elasticache.ModifyCacheSubnetGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyCacheSubnetGroupWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.ModifyCacheSubnetGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) ModifyReplicationGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyReplicationGroupRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) ModifyCacheSubnetGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyCacheSubnetGroupWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) ModifyCacheSubnetGroupRequest(_param0 *elasticache.ModifyCacheSubnetGroupInput) (*request.Request, *elasticache.ModifyCacheSubnetGroupOutput) {
+	ret := _m.ctrl.Call(_m, "ModifyCacheSubnetGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.ModifyCacheSubnetGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) ModifyCacheSubnetGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyCacheSubnetGroupRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) ModifyReplicationGroup(_param0 *elasticache.ModifyReplicationGroupInput) (*elasticache.ModifyReplicationGroupOutput, error) {
@@ -876,15 +1558,31 @@ func (_mr *_MockElastiCacheAPIRecorder) ModifyReplicationGroup(arg0 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyReplicationGroup", arg0)
 }
 
-func (_m *MockElastiCacheAPI) PurchaseReservedCacheNodesOfferingRequest(_param0 *elasticache.PurchaseReservedCacheNodesOfferingInput) (*request.Request, *elasticache.PurchaseReservedCacheNodesOfferingOutput) {
-	ret := _m.ctrl.Call(_m, "PurchaseReservedCacheNodesOfferingRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.PurchaseReservedCacheNodesOfferingOutput)
+func (_m *MockElastiCacheAPI) ModifyReplicationGroupWithContext(_param0 aws.Context, _param1 *elasticache.ModifyReplicationGroupInput, _param2 ...request.Option) (*elasticache.ModifyReplicationGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyReplicationGroupWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.ModifyReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) PurchaseReservedCacheNodesOfferingRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "PurchaseReservedCacheNodesOfferingRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) ModifyReplicationGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyReplicationGroupWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) ModifyReplicationGroupRequest(_param0 *elasticache.ModifyReplicationGroupInput) (*request.Request, *elasticache.ModifyReplicationGroupOutput) {
+	ret := _m.ctrl.Call(_m, "ModifyReplicationGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.ModifyReplicationGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) ModifyReplicationGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyReplicationGroupRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) PurchaseReservedCacheNodesOffering(_param0 *elasticache.PurchaseReservedCacheNodesOfferingInput) (*elasticache.PurchaseReservedCacheNodesOfferingOutput, error) {
@@ -898,15 +1596,31 @@ func (_mr *_MockElastiCacheAPIRecorder) PurchaseReservedCacheNodesOffering(arg0 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "PurchaseReservedCacheNodesOffering", arg0)
 }
 
-func (_m *MockElastiCacheAPI) RebootCacheClusterRequest(_param0 *elasticache.RebootCacheClusterInput) (*request.Request, *elasticache.RebootCacheClusterOutput) {
-	ret := _m.ctrl.Call(_m, "RebootCacheClusterRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.RebootCacheClusterOutput)
+func (_m *MockElastiCacheAPI) PurchaseReservedCacheNodesOfferingWithContext(_param0 aws.Context, _param1 *elasticache.PurchaseReservedCacheNodesOfferingInput, _param2 ...request.Option) (*elasticache.PurchaseReservedCacheNodesOfferingOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "PurchaseReservedCacheNodesOfferingWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.PurchaseReservedCacheNodesOfferingOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) RebootCacheClusterRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RebootCacheClusterRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) PurchaseReservedCacheNodesOfferingWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PurchaseReservedCacheNodesOfferingWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) PurchaseReservedCacheNodesOfferingRequest(_param0 *elasticache.PurchaseReservedCacheNodesOfferingInput) (*request.Request, *elasticache.PurchaseReservedCacheNodesOfferingOutput) {
+	ret := _m.ctrl.Call(_m, "PurchaseReservedCacheNodesOfferingRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.PurchaseReservedCacheNodesOfferingOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) PurchaseReservedCacheNodesOfferingRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PurchaseReservedCacheNodesOfferingRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) RebootCacheCluster(_param0 *elasticache.RebootCacheClusterInput) (*elasticache.RebootCacheClusterOutput, error) {
@@ -920,15 +1634,31 @@ func (_mr *_MockElastiCacheAPIRecorder) RebootCacheCluster(arg0 interface{}) *go
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RebootCacheCluster", arg0)
 }
 
-func (_m *MockElastiCacheAPI) RemoveTagsFromResourceRequest(_param0 *elasticache.RemoveTagsFromResourceInput) (*request.Request, *elasticache.TagListMessage) {
-	ret := _m.ctrl.Call(_m, "RemoveTagsFromResourceRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.TagListMessage)
+func (_m *MockElastiCacheAPI) RebootCacheClusterWithContext(_param0 aws.Context, _param1 *elasticache.RebootCacheClusterInput, _param2 ...request.Option) (*elasticache.RebootCacheClusterOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RebootCacheClusterWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.RebootCacheClusterOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) RemoveTagsFromResourceRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveTagsFromResourceRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) RebootCacheClusterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RebootCacheClusterWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) RebootCacheClusterRequest(_param0 *elasticache.RebootCacheClusterInput) (*request.Request, *elasticache.RebootCacheClusterOutput) {
+	ret := _m.ctrl.Call(_m, "RebootCacheClusterRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.RebootCacheClusterOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) RebootCacheClusterRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RebootCacheClusterRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) RemoveTagsFromResource(_param0 *elasticache.RemoveTagsFromResourceInput) (*elasticache.TagListMessage, error) {
@@ -942,15 +1672,31 @@ func (_mr *_MockElastiCacheAPIRecorder) RemoveTagsFromResource(arg0 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveTagsFromResource", arg0)
 }
 
-func (_m *MockElastiCacheAPI) ResetCacheParameterGroupRequest(_param0 *elasticache.ResetCacheParameterGroupInput) (*request.Request, *elasticache.CacheParameterGroupNameMessage) {
-	ret := _m.ctrl.Call(_m, "ResetCacheParameterGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.CacheParameterGroupNameMessage)
+func (_m *MockElastiCacheAPI) RemoveTagsFromResourceWithContext(_param0 aws.Context, _param1 *elasticache.RemoveTagsFromResourceInput, _param2 ...request.Option) (*elasticache.TagListMessage, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RemoveTagsFromResourceWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.TagListMessage)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) ResetCacheParameterGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetCacheParameterGroupRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) RemoveTagsFromResourceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveTagsFromResourceWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) RemoveTagsFromResourceRequest(_param0 *elasticache.RemoveTagsFromResourceInput) (*request.Request, *elasticache.TagListMessage) {
+	ret := _m.ctrl.Call(_m, "RemoveTagsFromResourceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.TagListMessage)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) RemoveTagsFromResourceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveTagsFromResourceRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) ResetCacheParameterGroup(_param0 *elasticache.ResetCacheParameterGroupInput) (*elasticache.CacheParameterGroupNameMessage, error) {
@@ -964,15 +1710,31 @@ func (_mr *_MockElastiCacheAPIRecorder) ResetCacheParameterGroup(arg0 interface{
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetCacheParameterGroup", arg0)
 }
 
-func (_m *MockElastiCacheAPI) RevokeCacheSecurityGroupIngressRequest(_param0 *elasticache.RevokeCacheSecurityGroupIngressInput) (*request.Request, *elasticache.RevokeCacheSecurityGroupIngressOutput) {
-	ret := _m.ctrl.Call(_m, "RevokeCacheSecurityGroupIngressRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elasticache.RevokeCacheSecurityGroupIngressOutput)
+func (_m *MockElastiCacheAPI) ResetCacheParameterGroupWithContext(_param0 aws.Context, _param1 *elasticache.ResetCacheParameterGroupInput, _param2 ...request.Option) (*elasticache.CacheParameterGroupNameMessage, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ResetCacheParameterGroupWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.CacheParameterGroupNameMessage)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockElastiCacheAPIRecorder) RevokeCacheSecurityGroupIngressRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RevokeCacheSecurityGroupIngressRequest", arg0)
+func (_mr *_MockElastiCacheAPIRecorder) ResetCacheParameterGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetCacheParameterGroupWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) ResetCacheParameterGroupRequest(_param0 *elasticache.ResetCacheParameterGroupInput) (*request.Request, *elasticache.CacheParameterGroupNameMessage) {
+	ret := _m.ctrl.Call(_m, "ResetCacheParameterGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.CacheParameterGroupNameMessage)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) ResetCacheParameterGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetCacheParameterGroupRequest", arg0)
 }
 
 func (_m *MockElastiCacheAPI) RevokeCacheSecurityGroupIngress(_param0 *elasticache.RevokeCacheSecurityGroupIngressInput) (*elasticache.RevokeCacheSecurityGroupIngressOutput, error) {
@@ -986,6 +1748,33 @@ func (_mr *_MockElastiCacheAPIRecorder) RevokeCacheSecurityGroupIngress(arg0 int
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RevokeCacheSecurityGroupIngress", arg0)
 }
 
+func (_m *MockElastiCacheAPI) RevokeCacheSecurityGroupIngressWithContext(_param0 aws.Context, _param1 *elasticache.RevokeCacheSecurityGroupIngressInput, _param2 ...request.Option) (*elasticache.RevokeCacheSecurityGroupIngressOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RevokeCacheSecurityGroupIngressWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.RevokeCacheSecurityGroupIngressOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) RevokeCacheSecurityGroupIngressWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RevokeCacheSecurityGroupIngressWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) RevokeCacheSecurityGroupIngressRequest(_param0 *elasticache.RevokeCacheSecurityGroupIngressInput) (*request.Request, *elasticache.RevokeCacheSecurityGroupIngressOutput) {
+	ret := _m.ctrl.Call(_m, "RevokeCacheSecurityGroupIngressRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.RevokeCacheSecurityGroupIngressOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) RevokeCacheSecurityGroupIngressRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RevokeCacheSecurityGroupIngressRequest", arg0)
+}
+
 func (_m *MockElastiCacheAPI) WaitUntilCacheClusterAvailable(_param0 *elasticache.DescribeCacheClustersInput) error {
 	ret := _m.ctrl.Call(_m, "WaitUntilCacheClusterAvailable", _param0)
 	ret0, _ := ret[0].(error)
@@ -994,6 +1783,21 @@ func (_m *MockElastiCacheAPI) WaitUntilCacheClusterAvailable(_param0 *elasticach
 
 func (_mr *_MockElastiCacheAPIRecorder) WaitUntilCacheClusterAvailable(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilCacheClusterAvailable", arg0)
+}
+
+func (_m *MockElastiCacheAPI) WaitUntilCacheClusterAvailableWithContext(_param0 aws.Context, _param1 *elasticache.DescribeCacheClustersInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilCacheClusterAvailableWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) WaitUntilCacheClusterAvailableWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilCacheClusterAvailableWithContext", _s...)
 }
 
 func (_m *MockElastiCacheAPI) WaitUntilCacheClusterDeleted(_param0 *elasticache.DescribeCacheClustersInput) error {
@@ -1006,6 +1810,21 @@ func (_mr *_MockElastiCacheAPIRecorder) WaitUntilCacheClusterDeleted(arg0 interf
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilCacheClusterDeleted", arg0)
 }
 
+func (_m *MockElastiCacheAPI) WaitUntilCacheClusterDeletedWithContext(_param0 aws.Context, _param1 *elasticache.DescribeCacheClustersInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilCacheClusterDeletedWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) WaitUntilCacheClusterDeletedWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilCacheClusterDeletedWithContext", _s...)
+}
+
 func (_m *MockElastiCacheAPI) WaitUntilReplicationGroupAvailable(_param0 *elasticache.DescribeReplicationGroupsInput) error {
 	ret := _m.ctrl.Call(_m, "WaitUntilReplicationGroupAvailable", _param0)
 	ret0, _ := ret[0].(error)
@@ -1016,6 +1835,21 @@ func (_mr *_MockElastiCacheAPIRecorder) WaitUntilReplicationGroupAvailable(arg0 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilReplicationGroupAvailable", arg0)
 }
 
+func (_m *MockElastiCacheAPI) WaitUntilReplicationGroupAvailableWithContext(_param0 aws.Context, _param1 *elasticache.DescribeReplicationGroupsInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilReplicationGroupAvailableWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) WaitUntilReplicationGroupAvailableWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilReplicationGroupAvailableWithContext", _s...)
+}
+
 func (_m *MockElastiCacheAPI) WaitUntilReplicationGroupDeleted(_param0 *elasticache.DescribeReplicationGroupsInput) error {
 	ret := _m.ctrl.Call(_m, "WaitUntilReplicationGroupDeleted", _param0)
 	ret0, _ := ret[0].(error)
@@ -1024,4 +1858,19 @@ func (_m *MockElastiCacheAPI) WaitUntilReplicationGroupDeleted(_param0 *elastica
 
 func (_mr *_MockElastiCacheAPIRecorder) WaitUntilReplicationGroupDeleted(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilReplicationGroupDeleted", arg0)
+}
+
+func (_m *MockElastiCacheAPI) WaitUntilReplicationGroupDeletedWithContext(_param0 aws.Context, _param1 *elasticache.DescribeReplicationGroupsInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilReplicationGroupDeletedWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) WaitUntilReplicationGroupDeletedWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilReplicationGroupDeletedWithContext", _s...)
 }

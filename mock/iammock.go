@@ -4,6 +4,7 @@
 package mock
 
 import (
+	aws "github.com/aws/aws-sdk-go/aws"
 	request "github.com/aws/aws-sdk-go/aws/request"
 	iam "github.com/aws/aws-sdk-go/service/iam"
 	gomock "github.com/golang/mock/gomock"
@@ -30,17 +31,6 @@ func (_m *MockIAMAPI) EXPECT() *_MockIAMAPIRecorder {
 	return _m.recorder
 }
 
-func (_m *MockIAMAPI) AddClientIDToOpenIDConnectProviderRequest(_param0 *iam.AddClientIDToOpenIDConnectProviderInput) (*request.Request, *iam.AddClientIDToOpenIDConnectProviderOutput) {
-	ret := _m.ctrl.Call(_m, "AddClientIDToOpenIDConnectProviderRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.AddClientIDToOpenIDConnectProviderOutput)
-	return ret0, ret1
-}
-
-func (_mr *_MockIAMAPIRecorder) AddClientIDToOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddClientIDToOpenIDConnectProviderRequest", arg0)
-}
-
 func (_m *MockIAMAPI) AddClientIDToOpenIDConnectProvider(_param0 *iam.AddClientIDToOpenIDConnectProviderInput) (*iam.AddClientIDToOpenIDConnectProviderOutput, error) {
 	ret := _m.ctrl.Call(_m, "AddClientIDToOpenIDConnectProvider", _param0)
 	ret0, _ := ret[0].(*iam.AddClientIDToOpenIDConnectProviderOutput)
@@ -52,15 +42,31 @@ func (_mr *_MockIAMAPIRecorder) AddClientIDToOpenIDConnectProvider(arg0 interfac
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddClientIDToOpenIDConnectProvider", arg0)
 }
 
-func (_m *MockIAMAPI) AddRoleToInstanceProfileRequest(_param0 *iam.AddRoleToInstanceProfileInput) (*request.Request, *iam.AddRoleToInstanceProfileOutput) {
-	ret := _m.ctrl.Call(_m, "AddRoleToInstanceProfileRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.AddRoleToInstanceProfileOutput)
+func (_m *MockIAMAPI) AddClientIDToOpenIDConnectProviderWithContext(_param0 aws.Context, _param1 *iam.AddClientIDToOpenIDConnectProviderInput, _param2 ...request.Option) (*iam.AddClientIDToOpenIDConnectProviderOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "AddClientIDToOpenIDConnectProviderWithContext", _s...)
+	ret0, _ := ret[0].(*iam.AddClientIDToOpenIDConnectProviderOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) AddRoleToInstanceProfileRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddRoleToInstanceProfileRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) AddClientIDToOpenIDConnectProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddClientIDToOpenIDConnectProviderWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) AddClientIDToOpenIDConnectProviderRequest(_param0 *iam.AddClientIDToOpenIDConnectProviderInput) (*request.Request, *iam.AddClientIDToOpenIDConnectProviderOutput) {
+	ret := _m.ctrl.Call(_m, "AddClientIDToOpenIDConnectProviderRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.AddClientIDToOpenIDConnectProviderOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) AddClientIDToOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddClientIDToOpenIDConnectProviderRequest", arg0)
 }
 
 func (_m *MockIAMAPI) AddRoleToInstanceProfile(_param0 *iam.AddRoleToInstanceProfileInput) (*iam.AddRoleToInstanceProfileOutput, error) {
@@ -74,15 +80,31 @@ func (_mr *_MockIAMAPIRecorder) AddRoleToInstanceProfile(arg0 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddRoleToInstanceProfile", arg0)
 }
 
-func (_m *MockIAMAPI) AddUserToGroupRequest(_param0 *iam.AddUserToGroupInput) (*request.Request, *iam.AddUserToGroupOutput) {
-	ret := _m.ctrl.Call(_m, "AddUserToGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.AddUserToGroupOutput)
+func (_m *MockIAMAPI) AddRoleToInstanceProfileWithContext(_param0 aws.Context, _param1 *iam.AddRoleToInstanceProfileInput, _param2 ...request.Option) (*iam.AddRoleToInstanceProfileOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "AddRoleToInstanceProfileWithContext", _s...)
+	ret0, _ := ret[0].(*iam.AddRoleToInstanceProfileOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) AddUserToGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddUserToGroupRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) AddRoleToInstanceProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddRoleToInstanceProfileWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) AddRoleToInstanceProfileRequest(_param0 *iam.AddRoleToInstanceProfileInput) (*request.Request, *iam.AddRoleToInstanceProfileOutput) {
+	ret := _m.ctrl.Call(_m, "AddRoleToInstanceProfileRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.AddRoleToInstanceProfileOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) AddRoleToInstanceProfileRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddRoleToInstanceProfileRequest", arg0)
 }
 
 func (_m *MockIAMAPI) AddUserToGroup(_param0 *iam.AddUserToGroupInput) (*iam.AddUserToGroupOutput, error) {
@@ -96,15 +118,31 @@ func (_mr *_MockIAMAPIRecorder) AddUserToGroup(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddUserToGroup", arg0)
 }
 
-func (_m *MockIAMAPI) AttachGroupPolicyRequest(_param0 *iam.AttachGroupPolicyInput) (*request.Request, *iam.AttachGroupPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "AttachGroupPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.AttachGroupPolicyOutput)
+func (_m *MockIAMAPI) AddUserToGroupWithContext(_param0 aws.Context, _param1 *iam.AddUserToGroupInput, _param2 ...request.Option) (*iam.AddUserToGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "AddUserToGroupWithContext", _s...)
+	ret0, _ := ret[0].(*iam.AddUserToGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) AttachGroupPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachGroupPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) AddUserToGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddUserToGroupWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) AddUserToGroupRequest(_param0 *iam.AddUserToGroupInput) (*request.Request, *iam.AddUserToGroupOutput) {
+	ret := _m.ctrl.Call(_m, "AddUserToGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.AddUserToGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) AddUserToGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddUserToGroupRequest", arg0)
 }
 
 func (_m *MockIAMAPI) AttachGroupPolicy(_param0 *iam.AttachGroupPolicyInput) (*iam.AttachGroupPolicyOutput, error) {
@@ -118,15 +156,31 @@ func (_mr *_MockIAMAPIRecorder) AttachGroupPolicy(arg0 interface{}) *gomock.Call
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachGroupPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) AttachRolePolicyRequest(_param0 *iam.AttachRolePolicyInput) (*request.Request, *iam.AttachRolePolicyOutput) {
-	ret := _m.ctrl.Call(_m, "AttachRolePolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.AttachRolePolicyOutput)
+func (_m *MockIAMAPI) AttachGroupPolicyWithContext(_param0 aws.Context, _param1 *iam.AttachGroupPolicyInput, _param2 ...request.Option) (*iam.AttachGroupPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "AttachGroupPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.AttachGroupPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) AttachRolePolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachRolePolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) AttachGroupPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachGroupPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) AttachGroupPolicyRequest(_param0 *iam.AttachGroupPolicyInput) (*request.Request, *iam.AttachGroupPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "AttachGroupPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.AttachGroupPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) AttachGroupPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachGroupPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) AttachRolePolicy(_param0 *iam.AttachRolePolicyInput) (*iam.AttachRolePolicyOutput, error) {
@@ -140,15 +194,31 @@ func (_mr *_MockIAMAPIRecorder) AttachRolePolicy(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachRolePolicy", arg0)
 }
 
-func (_m *MockIAMAPI) AttachUserPolicyRequest(_param0 *iam.AttachUserPolicyInput) (*request.Request, *iam.AttachUserPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "AttachUserPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.AttachUserPolicyOutput)
+func (_m *MockIAMAPI) AttachRolePolicyWithContext(_param0 aws.Context, _param1 *iam.AttachRolePolicyInput, _param2 ...request.Option) (*iam.AttachRolePolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "AttachRolePolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.AttachRolePolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) AttachUserPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachUserPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) AttachRolePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachRolePolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) AttachRolePolicyRequest(_param0 *iam.AttachRolePolicyInput) (*request.Request, *iam.AttachRolePolicyOutput) {
+	ret := _m.ctrl.Call(_m, "AttachRolePolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.AttachRolePolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) AttachRolePolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachRolePolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) AttachUserPolicy(_param0 *iam.AttachUserPolicyInput) (*iam.AttachUserPolicyOutput, error) {
@@ -162,15 +232,31 @@ func (_mr *_MockIAMAPIRecorder) AttachUserPolicy(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachUserPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) ChangePasswordRequest(_param0 *iam.ChangePasswordInput) (*request.Request, *iam.ChangePasswordOutput) {
-	ret := _m.ctrl.Call(_m, "ChangePasswordRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ChangePasswordOutput)
+func (_m *MockIAMAPI) AttachUserPolicyWithContext(_param0 aws.Context, _param1 *iam.AttachUserPolicyInput, _param2 ...request.Option) (*iam.AttachUserPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "AttachUserPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.AttachUserPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) ChangePasswordRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ChangePasswordRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) AttachUserPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachUserPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) AttachUserPolicyRequest(_param0 *iam.AttachUserPolicyInput) (*request.Request, *iam.AttachUserPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "AttachUserPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.AttachUserPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) AttachUserPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachUserPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) ChangePassword(_param0 *iam.ChangePasswordInput) (*iam.ChangePasswordOutput, error) {
@@ -184,15 +270,31 @@ func (_mr *_MockIAMAPIRecorder) ChangePassword(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ChangePassword", arg0)
 }
 
-func (_m *MockIAMAPI) CreateAccessKeyRequest(_param0 *iam.CreateAccessKeyInput) (*request.Request, *iam.CreateAccessKeyOutput) {
-	ret := _m.ctrl.Call(_m, "CreateAccessKeyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.CreateAccessKeyOutput)
+func (_m *MockIAMAPI) ChangePasswordWithContext(_param0 aws.Context, _param1 *iam.ChangePasswordInput, _param2 ...request.Option) (*iam.ChangePasswordOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ChangePasswordWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ChangePasswordOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) CreateAccessKeyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateAccessKeyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ChangePasswordWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ChangePasswordWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ChangePasswordRequest(_param0 *iam.ChangePasswordInput) (*request.Request, *iam.ChangePasswordOutput) {
+	ret := _m.ctrl.Call(_m, "ChangePasswordRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ChangePasswordOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ChangePasswordRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ChangePasswordRequest", arg0)
 }
 
 func (_m *MockIAMAPI) CreateAccessKey(_param0 *iam.CreateAccessKeyInput) (*iam.CreateAccessKeyOutput, error) {
@@ -206,15 +308,31 @@ func (_mr *_MockIAMAPIRecorder) CreateAccessKey(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateAccessKey", arg0)
 }
 
-func (_m *MockIAMAPI) CreateAccountAliasRequest(_param0 *iam.CreateAccountAliasInput) (*request.Request, *iam.CreateAccountAliasOutput) {
-	ret := _m.ctrl.Call(_m, "CreateAccountAliasRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.CreateAccountAliasOutput)
+func (_m *MockIAMAPI) CreateAccessKeyWithContext(_param0 aws.Context, _param1 *iam.CreateAccessKeyInput, _param2 ...request.Option) (*iam.CreateAccessKeyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateAccessKeyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.CreateAccessKeyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) CreateAccountAliasRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateAccountAliasRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) CreateAccessKeyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateAccessKeyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) CreateAccessKeyRequest(_param0 *iam.CreateAccessKeyInput) (*request.Request, *iam.CreateAccessKeyOutput) {
+	ret := _m.ctrl.Call(_m, "CreateAccessKeyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.CreateAccessKeyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateAccessKeyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateAccessKeyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) CreateAccountAlias(_param0 *iam.CreateAccountAliasInput) (*iam.CreateAccountAliasOutput, error) {
@@ -228,15 +346,31 @@ func (_mr *_MockIAMAPIRecorder) CreateAccountAlias(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateAccountAlias", arg0)
 }
 
-func (_m *MockIAMAPI) CreateGroupRequest(_param0 *iam.CreateGroupInput) (*request.Request, *iam.CreateGroupOutput) {
-	ret := _m.ctrl.Call(_m, "CreateGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.CreateGroupOutput)
+func (_m *MockIAMAPI) CreateAccountAliasWithContext(_param0 aws.Context, _param1 *iam.CreateAccountAliasInput, _param2 ...request.Option) (*iam.CreateAccountAliasOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateAccountAliasWithContext", _s...)
+	ret0, _ := ret[0].(*iam.CreateAccountAliasOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) CreateGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateGroupRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) CreateAccountAliasWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateAccountAliasWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) CreateAccountAliasRequest(_param0 *iam.CreateAccountAliasInput) (*request.Request, *iam.CreateAccountAliasOutput) {
+	ret := _m.ctrl.Call(_m, "CreateAccountAliasRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.CreateAccountAliasOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateAccountAliasRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateAccountAliasRequest", arg0)
 }
 
 func (_m *MockIAMAPI) CreateGroup(_param0 *iam.CreateGroupInput) (*iam.CreateGroupOutput, error) {
@@ -250,15 +384,31 @@ func (_mr *_MockIAMAPIRecorder) CreateGroup(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateGroup", arg0)
 }
 
-func (_m *MockIAMAPI) CreateInstanceProfileRequest(_param0 *iam.CreateInstanceProfileInput) (*request.Request, *iam.CreateInstanceProfileOutput) {
-	ret := _m.ctrl.Call(_m, "CreateInstanceProfileRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.CreateInstanceProfileOutput)
+func (_m *MockIAMAPI) CreateGroupWithContext(_param0 aws.Context, _param1 *iam.CreateGroupInput, _param2 ...request.Option) (*iam.CreateGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateGroupWithContext", _s...)
+	ret0, _ := ret[0].(*iam.CreateGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) CreateInstanceProfileRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateInstanceProfileRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) CreateGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateGroupWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) CreateGroupRequest(_param0 *iam.CreateGroupInput) (*request.Request, *iam.CreateGroupOutput) {
+	ret := _m.ctrl.Call(_m, "CreateGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.CreateGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateGroupRequest", arg0)
 }
 
 func (_m *MockIAMAPI) CreateInstanceProfile(_param0 *iam.CreateInstanceProfileInput) (*iam.CreateInstanceProfileOutput, error) {
@@ -272,15 +422,31 @@ func (_mr *_MockIAMAPIRecorder) CreateInstanceProfile(arg0 interface{}) *gomock.
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateInstanceProfile", arg0)
 }
 
-func (_m *MockIAMAPI) CreateLoginProfileRequest(_param0 *iam.CreateLoginProfileInput) (*request.Request, *iam.CreateLoginProfileOutput) {
-	ret := _m.ctrl.Call(_m, "CreateLoginProfileRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.CreateLoginProfileOutput)
+func (_m *MockIAMAPI) CreateInstanceProfileWithContext(_param0 aws.Context, _param1 *iam.CreateInstanceProfileInput, _param2 ...request.Option) (*iam.CreateInstanceProfileOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateInstanceProfileWithContext", _s...)
+	ret0, _ := ret[0].(*iam.CreateInstanceProfileOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) CreateLoginProfileRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoginProfileRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) CreateInstanceProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateInstanceProfileWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) CreateInstanceProfileRequest(_param0 *iam.CreateInstanceProfileInput) (*request.Request, *iam.CreateInstanceProfileOutput) {
+	ret := _m.ctrl.Call(_m, "CreateInstanceProfileRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.CreateInstanceProfileOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateInstanceProfileRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateInstanceProfileRequest", arg0)
 }
 
 func (_m *MockIAMAPI) CreateLoginProfile(_param0 *iam.CreateLoginProfileInput) (*iam.CreateLoginProfileOutput, error) {
@@ -294,15 +460,31 @@ func (_mr *_MockIAMAPIRecorder) CreateLoginProfile(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoginProfile", arg0)
 }
 
-func (_m *MockIAMAPI) CreateOpenIDConnectProviderRequest(_param0 *iam.CreateOpenIDConnectProviderInput) (*request.Request, *iam.CreateOpenIDConnectProviderOutput) {
-	ret := _m.ctrl.Call(_m, "CreateOpenIDConnectProviderRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.CreateOpenIDConnectProviderOutput)
+func (_m *MockIAMAPI) CreateLoginProfileWithContext(_param0 aws.Context, _param1 *iam.CreateLoginProfileInput, _param2 ...request.Option) (*iam.CreateLoginProfileOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateLoginProfileWithContext", _s...)
+	ret0, _ := ret[0].(*iam.CreateLoginProfileOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) CreateOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateOpenIDConnectProviderRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) CreateLoginProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoginProfileWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) CreateLoginProfileRequest(_param0 *iam.CreateLoginProfileInput) (*request.Request, *iam.CreateLoginProfileOutput) {
+	ret := _m.ctrl.Call(_m, "CreateLoginProfileRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.CreateLoginProfileOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateLoginProfileRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoginProfileRequest", arg0)
 }
 
 func (_m *MockIAMAPI) CreateOpenIDConnectProvider(_param0 *iam.CreateOpenIDConnectProviderInput) (*iam.CreateOpenIDConnectProviderOutput, error) {
@@ -316,15 +498,31 @@ func (_mr *_MockIAMAPIRecorder) CreateOpenIDConnectProvider(arg0 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateOpenIDConnectProvider", arg0)
 }
 
-func (_m *MockIAMAPI) CreatePolicyRequest(_param0 *iam.CreatePolicyInput) (*request.Request, *iam.CreatePolicyOutput) {
-	ret := _m.ctrl.Call(_m, "CreatePolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.CreatePolicyOutput)
+func (_m *MockIAMAPI) CreateOpenIDConnectProviderWithContext(_param0 aws.Context, _param1 *iam.CreateOpenIDConnectProviderInput, _param2 ...request.Option) (*iam.CreateOpenIDConnectProviderOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateOpenIDConnectProviderWithContext", _s...)
+	ret0, _ := ret[0].(*iam.CreateOpenIDConnectProviderOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) CreatePolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreatePolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) CreateOpenIDConnectProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateOpenIDConnectProviderWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) CreateOpenIDConnectProviderRequest(_param0 *iam.CreateOpenIDConnectProviderInput) (*request.Request, *iam.CreateOpenIDConnectProviderOutput) {
+	ret := _m.ctrl.Call(_m, "CreateOpenIDConnectProviderRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.CreateOpenIDConnectProviderOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateOpenIDConnectProviderRequest", arg0)
 }
 
 func (_m *MockIAMAPI) CreatePolicy(_param0 *iam.CreatePolicyInput) (*iam.CreatePolicyOutput, error) {
@@ -338,15 +536,31 @@ func (_mr *_MockIAMAPIRecorder) CreatePolicy(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreatePolicy", arg0)
 }
 
-func (_m *MockIAMAPI) CreatePolicyVersionRequest(_param0 *iam.CreatePolicyVersionInput) (*request.Request, *iam.CreatePolicyVersionOutput) {
-	ret := _m.ctrl.Call(_m, "CreatePolicyVersionRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.CreatePolicyVersionOutput)
+func (_m *MockIAMAPI) CreatePolicyWithContext(_param0 aws.Context, _param1 *iam.CreatePolicyInput, _param2 ...request.Option) (*iam.CreatePolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreatePolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.CreatePolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) CreatePolicyVersionRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreatePolicyVersionRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) CreatePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreatePolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) CreatePolicyRequest(_param0 *iam.CreatePolicyInput) (*request.Request, *iam.CreatePolicyOutput) {
+	ret := _m.ctrl.Call(_m, "CreatePolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.CreatePolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreatePolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreatePolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) CreatePolicyVersion(_param0 *iam.CreatePolicyVersionInput) (*iam.CreatePolicyVersionOutput, error) {
@@ -360,15 +574,31 @@ func (_mr *_MockIAMAPIRecorder) CreatePolicyVersion(arg0 interface{}) *gomock.Ca
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreatePolicyVersion", arg0)
 }
 
-func (_m *MockIAMAPI) CreateRoleRequest(_param0 *iam.CreateRoleInput) (*request.Request, *iam.CreateRoleOutput) {
-	ret := _m.ctrl.Call(_m, "CreateRoleRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.CreateRoleOutput)
+func (_m *MockIAMAPI) CreatePolicyVersionWithContext(_param0 aws.Context, _param1 *iam.CreatePolicyVersionInput, _param2 ...request.Option) (*iam.CreatePolicyVersionOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreatePolicyVersionWithContext", _s...)
+	ret0, _ := ret[0].(*iam.CreatePolicyVersionOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) CreateRoleRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateRoleRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) CreatePolicyVersionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreatePolicyVersionWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) CreatePolicyVersionRequest(_param0 *iam.CreatePolicyVersionInput) (*request.Request, *iam.CreatePolicyVersionOutput) {
+	ret := _m.ctrl.Call(_m, "CreatePolicyVersionRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.CreatePolicyVersionOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreatePolicyVersionRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreatePolicyVersionRequest", arg0)
 }
 
 func (_m *MockIAMAPI) CreateRole(_param0 *iam.CreateRoleInput) (*iam.CreateRoleOutput, error) {
@@ -382,15 +612,31 @@ func (_mr *_MockIAMAPIRecorder) CreateRole(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateRole", arg0)
 }
 
-func (_m *MockIAMAPI) CreateSAMLProviderRequest(_param0 *iam.CreateSAMLProviderInput) (*request.Request, *iam.CreateSAMLProviderOutput) {
-	ret := _m.ctrl.Call(_m, "CreateSAMLProviderRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.CreateSAMLProviderOutput)
+func (_m *MockIAMAPI) CreateRoleWithContext(_param0 aws.Context, _param1 *iam.CreateRoleInput, _param2 ...request.Option) (*iam.CreateRoleOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateRoleWithContext", _s...)
+	ret0, _ := ret[0].(*iam.CreateRoleOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) CreateSAMLProviderRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateSAMLProviderRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) CreateRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateRoleWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) CreateRoleRequest(_param0 *iam.CreateRoleInput) (*request.Request, *iam.CreateRoleOutput) {
+	ret := _m.ctrl.Call(_m, "CreateRoleRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.CreateRoleOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateRoleRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateRoleRequest", arg0)
 }
 
 func (_m *MockIAMAPI) CreateSAMLProvider(_param0 *iam.CreateSAMLProviderInput) (*iam.CreateSAMLProviderOutput, error) {
@@ -404,15 +650,31 @@ func (_mr *_MockIAMAPIRecorder) CreateSAMLProvider(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateSAMLProvider", arg0)
 }
 
-func (_m *MockIAMAPI) CreateServiceSpecificCredentialRequest(_param0 *iam.CreateServiceSpecificCredentialInput) (*request.Request, *iam.CreateServiceSpecificCredentialOutput) {
-	ret := _m.ctrl.Call(_m, "CreateServiceSpecificCredentialRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.CreateServiceSpecificCredentialOutput)
+func (_m *MockIAMAPI) CreateSAMLProviderWithContext(_param0 aws.Context, _param1 *iam.CreateSAMLProviderInput, _param2 ...request.Option) (*iam.CreateSAMLProviderOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateSAMLProviderWithContext", _s...)
+	ret0, _ := ret[0].(*iam.CreateSAMLProviderOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) CreateServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateServiceSpecificCredentialRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) CreateSAMLProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateSAMLProviderWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) CreateSAMLProviderRequest(_param0 *iam.CreateSAMLProviderInput) (*request.Request, *iam.CreateSAMLProviderOutput) {
+	ret := _m.ctrl.Call(_m, "CreateSAMLProviderRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.CreateSAMLProviderOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateSAMLProviderRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateSAMLProviderRequest", arg0)
 }
 
 func (_m *MockIAMAPI) CreateServiceSpecificCredential(_param0 *iam.CreateServiceSpecificCredentialInput) (*iam.CreateServiceSpecificCredentialOutput, error) {
@@ -426,15 +688,31 @@ func (_mr *_MockIAMAPIRecorder) CreateServiceSpecificCredential(arg0 interface{}
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateServiceSpecificCredential", arg0)
 }
 
-func (_m *MockIAMAPI) CreateUserRequest(_param0 *iam.CreateUserInput) (*request.Request, *iam.CreateUserOutput) {
-	ret := _m.ctrl.Call(_m, "CreateUserRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.CreateUserOutput)
+func (_m *MockIAMAPI) CreateServiceSpecificCredentialWithContext(_param0 aws.Context, _param1 *iam.CreateServiceSpecificCredentialInput, _param2 ...request.Option) (*iam.CreateServiceSpecificCredentialOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateServiceSpecificCredentialWithContext", _s...)
+	ret0, _ := ret[0].(*iam.CreateServiceSpecificCredentialOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) CreateUserRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateUserRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) CreateServiceSpecificCredentialWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateServiceSpecificCredentialWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) CreateServiceSpecificCredentialRequest(_param0 *iam.CreateServiceSpecificCredentialInput) (*request.Request, *iam.CreateServiceSpecificCredentialOutput) {
+	ret := _m.ctrl.Call(_m, "CreateServiceSpecificCredentialRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.CreateServiceSpecificCredentialOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateServiceSpecificCredentialRequest", arg0)
 }
 
 func (_m *MockIAMAPI) CreateUser(_param0 *iam.CreateUserInput) (*iam.CreateUserOutput, error) {
@@ -448,15 +726,31 @@ func (_mr *_MockIAMAPIRecorder) CreateUser(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateUser", arg0)
 }
 
-func (_m *MockIAMAPI) CreateVirtualMFADeviceRequest(_param0 *iam.CreateVirtualMFADeviceInput) (*request.Request, *iam.CreateVirtualMFADeviceOutput) {
-	ret := _m.ctrl.Call(_m, "CreateVirtualMFADeviceRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.CreateVirtualMFADeviceOutput)
+func (_m *MockIAMAPI) CreateUserWithContext(_param0 aws.Context, _param1 *iam.CreateUserInput, _param2 ...request.Option) (*iam.CreateUserOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateUserWithContext", _s...)
+	ret0, _ := ret[0].(*iam.CreateUserOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) CreateVirtualMFADeviceRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateVirtualMFADeviceRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) CreateUserWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateUserWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) CreateUserRequest(_param0 *iam.CreateUserInput) (*request.Request, *iam.CreateUserOutput) {
+	ret := _m.ctrl.Call(_m, "CreateUserRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.CreateUserOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateUserRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateUserRequest", arg0)
 }
 
 func (_m *MockIAMAPI) CreateVirtualMFADevice(_param0 *iam.CreateVirtualMFADeviceInput) (*iam.CreateVirtualMFADeviceOutput, error) {
@@ -470,15 +764,31 @@ func (_mr *_MockIAMAPIRecorder) CreateVirtualMFADevice(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateVirtualMFADevice", arg0)
 }
 
-func (_m *MockIAMAPI) DeactivateMFADeviceRequest(_param0 *iam.DeactivateMFADeviceInput) (*request.Request, *iam.DeactivateMFADeviceOutput) {
-	ret := _m.ctrl.Call(_m, "DeactivateMFADeviceRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeactivateMFADeviceOutput)
+func (_m *MockIAMAPI) CreateVirtualMFADeviceWithContext(_param0 aws.Context, _param1 *iam.CreateVirtualMFADeviceInput, _param2 ...request.Option) (*iam.CreateVirtualMFADeviceOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateVirtualMFADeviceWithContext", _s...)
+	ret0, _ := ret[0].(*iam.CreateVirtualMFADeviceOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeactivateMFADeviceRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeactivateMFADeviceRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) CreateVirtualMFADeviceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateVirtualMFADeviceWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) CreateVirtualMFADeviceRequest(_param0 *iam.CreateVirtualMFADeviceInput) (*request.Request, *iam.CreateVirtualMFADeviceOutput) {
+	ret := _m.ctrl.Call(_m, "CreateVirtualMFADeviceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.CreateVirtualMFADeviceOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateVirtualMFADeviceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateVirtualMFADeviceRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeactivateMFADevice(_param0 *iam.DeactivateMFADeviceInput) (*iam.DeactivateMFADeviceOutput, error) {
@@ -492,15 +802,31 @@ func (_mr *_MockIAMAPIRecorder) DeactivateMFADevice(arg0 interface{}) *gomock.Ca
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeactivateMFADevice", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteAccessKeyRequest(_param0 *iam.DeleteAccessKeyInput) (*request.Request, *iam.DeleteAccessKeyOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteAccessKeyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteAccessKeyOutput)
+func (_m *MockIAMAPI) DeactivateMFADeviceWithContext(_param0 aws.Context, _param1 *iam.DeactivateMFADeviceInput, _param2 ...request.Option) (*iam.DeactivateMFADeviceOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeactivateMFADeviceWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeactivateMFADeviceOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteAccessKeyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteAccessKeyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeactivateMFADeviceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeactivateMFADeviceWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeactivateMFADeviceRequest(_param0 *iam.DeactivateMFADeviceInput) (*request.Request, *iam.DeactivateMFADeviceOutput) {
+	ret := _m.ctrl.Call(_m, "DeactivateMFADeviceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeactivateMFADeviceOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeactivateMFADeviceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeactivateMFADeviceRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteAccessKey(_param0 *iam.DeleteAccessKeyInput) (*iam.DeleteAccessKeyOutput, error) {
@@ -514,15 +840,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteAccessKey(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteAccessKey", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteAccountAliasRequest(_param0 *iam.DeleteAccountAliasInput) (*request.Request, *iam.DeleteAccountAliasOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteAccountAliasRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteAccountAliasOutput)
+func (_m *MockIAMAPI) DeleteAccessKeyWithContext(_param0 aws.Context, _param1 *iam.DeleteAccessKeyInput, _param2 ...request.Option) (*iam.DeleteAccessKeyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteAccessKeyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteAccessKeyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteAccountAliasRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteAccountAliasRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteAccessKeyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteAccessKeyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteAccessKeyRequest(_param0 *iam.DeleteAccessKeyInput) (*request.Request, *iam.DeleteAccessKeyOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteAccessKeyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteAccessKeyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteAccessKeyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteAccessKeyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteAccountAlias(_param0 *iam.DeleteAccountAliasInput) (*iam.DeleteAccountAliasOutput, error) {
@@ -536,15 +878,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteAccountAlias(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteAccountAlias", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteAccountPasswordPolicyRequest(_param0 *iam.DeleteAccountPasswordPolicyInput) (*request.Request, *iam.DeleteAccountPasswordPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteAccountPasswordPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteAccountPasswordPolicyOutput)
+func (_m *MockIAMAPI) DeleteAccountAliasWithContext(_param0 aws.Context, _param1 *iam.DeleteAccountAliasInput, _param2 ...request.Option) (*iam.DeleteAccountAliasOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteAccountAliasWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteAccountAliasOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteAccountPasswordPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteAccountPasswordPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteAccountAliasWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteAccountAliasWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteAccountAliasRequest(_param0 *iam.DeleteAccountAliasInput) (*request.Request, *iam.DeleteAccountAliasOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteAccountAliasRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteAccountAliasOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteAccountAliasRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteAccountAliasRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteAccountPasswordPolicy(_param0 *iam.DeleteAccountPasswordPolicyInput) (*iam.DeleteAccountPasswordPolicyOutput, error) {
@@ -558,15 +916,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteAccountPasswordPolicy(arg0 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteAccountPasswordPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteGroupRequest(_param0 *iam.DeleteGroupInput) (*request.Request, *iam.DeleteGroupOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteGroupOutput)
+func (_m *MockIAMAPI) DeleteAccountPasswordPolicyWithContext(_param0 aws.Context, _param1 *iam.DeleteAccountPasswordPolicyInput, _param2 ...request.Option) (*iam.DeleteAccountPasswordPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteAccountPasswordPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteAccountPasswordPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteGroupRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteAccountPasswordPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteAccountPasswordPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteAccountPasswordPolicyRequest(_param0 *iam.DeleteAccountPasswordPolicyInput) (*request.Request, *iam.DeleteAccountPasswordPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteAccountPasswordPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteAccountPasswordPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteAccountPasswordPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteAccountPasswordPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteGroup(_param0 *iam.DeleteGroupInput) (*iam.DeleteGroupOutput, error) {
@@ -580,15 +954,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteGroup(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteGroup", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteGroupPolicyRequest(_param0 *iam.DeleteGroupPolicyInput) (*request.Request, *iam.DeleteGroupPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteGroupPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteGroupPolicyOutput)
+func (_m *MockIAMAPI) DeleteGroupWithContext(_param0 aws.Context, _param1 *iam.DeleteGroupInput, _param2 ...request.Option) (*iam.DeleteGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteGroupWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteGroupPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteGroupPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteGroupWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteGroupRequest(_param0 *iam.DeleteGroupInput) (*request.Request, *iam.DeleteGroupOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteGroupRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteGroupPolicy(_param0 *iam.DeleteGroupPolicyInput) (*iam.DeleteGroupPolicyOutput, error) {
@@ -602,15 +992,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteGroupPolicy(arg0 interface{}) *gomock.Call
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteGroupPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteInstanceProfileRequest(_param0 *iam.DeleteInstanceProfileInput) (*request.Request, *iam.DeleteInstanceProfileOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteInstanceProfileRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteInstanceProfileOutput)
+func (_m *MockIAMAPI) DeleteGroupPolicyWithContext(_param0 aws.Context, _param1 *iam.DeleteGroupPolicyInput, _param2 ...request.Option) (*iam.DeleteGroupPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteGroupPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteGroupPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteInstanceProfileRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteInstanceProfileRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteGroupPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteGroupPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteGroupPolicyRequest(_param0 *iam.DeleteGroupPolicyInput) (*request.Request, *iam.DeleteGroupPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteGroupPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteGroupPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteGroupPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteGroupPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteInstanceProfile(_param0 *iam.DeleteInstanceProfileInput) (*iam.DeleteInstanceProfileOutput, error) {
@@ -624,15 +1030,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteInstanceProfile(arg0 interface{}) *gomock.
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteInstanceProfile", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteLoginProfileRequest(_param0 *iam.DeleteLoginProfileInput) (*request.Request, *iam.DeleteLoginProfileOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteLoginProfileRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteLoginProfileOutput)
+func (_m *MockIAMAPI) DeleteInstanceProfileWithContext(_param0 aws.Context, _param1 *iam.DeleteInstanceProfileInput, _param2 ...request.Option) (*iam.DeleteInstanceProfileOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteInstanceProfileWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteInstanceProfileOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteLoginProfileRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoginProfileRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteInstanceProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteInstanceProfileWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteInstanceProfileRequest(_param0 *iam.DeleteInstanceProfileInput) (*request.Request, *iam.DeleteInstanceProfileOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteInstanceProfileRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteInstanceProfileOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteInstanceProfileRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteInstanceProfileRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteLoginProfile(_param0 *iam.DeleteLoginProfileInput) (*iam.DeleteLoginProfileOutput, error) {
@@ -646,15 +1068,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteLoginProfile(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoginProfile", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteOpenIDConnectProviderRequest(_param0 *iam.DeleteOpenIDConnectProviderInput) (*request.Request, *iam.DeleteOpenIDConnectProviderOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteOpenIDConnectProviderRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteOpenIDConnectProviderOutput)
+func (_m *MockIAMAPI) DeleteLoginProfileWithContext(_param0 aws.Context, _param1 *iam.DeleteLoginProfileInput, _param2 ...request.Option) (*iam.DeleteLoginProfileOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteLoginProfileWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteLoginProfileOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteOpenIDConnectProviderRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteLoginProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoginProfileWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteLoginProfileRequest(_param0 *iam.DeleteLoginProfileInput) (*request.Request, *iam.DeleteLoginProfileOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteLoginProfileRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteLoginProfileOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteLoginProfileRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoginProfileRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteOpenIDConnectProvider(_param0 *iam.DeleteOpenIDConnectProviderInput) (*iam.DeleteOpenIDConnectProviderOutput, error) {
@@ -668,15 +1106,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteOpenIDConnectProvider(arg0 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteOpenIDConnectProvider", arg0)
 }
 
-func (_m *MockIAMAPI) DeletePolicyRequest(_param0 *iam.DeletePolicyInput) (*request.Request, *iam.DeletePolicyOutput) {
-	ret := _m.ctrl.Call(_m, "DeletePolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeletePolicyOutput)
+func (_m *MockIAMAPI) DeleteOpenIDConnectProviderWithContext(_param0 aws.Context, _param1 *iam.DeleteOpenIDConnectProviderInput, _param2 ...request.Option) (*iam.DeleteOpenIDConnectProviderOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteOpenIDConnectProviderWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteOpenIDConnectProviderOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeletePolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeletePolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteOpenIDConnectProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteOpenIDConnectProviderWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteOpenIDConnectProviderRequest(_param0 *iam.DeleteOpenIDConnectProviderInput) (*request.Request, *iam.DeleteOpenIDConnectProviderOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteOpenIDConnectProviderRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteOpenIDConnectProviderOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteOpenIDConnectProviderRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeletePolicy(_param0 *iam.DeletePolicyInput) (*iam.DeletePolicyOutput, error) {
@@ -690,15 +1144,31 @@ func (_mr *_MockIAMAPIRecorder) DeletePolicy(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeletePolicy", arg0)
 }
 
-func (_m *MockIAMAPI) DeletePolicyVersionRequest(_param0 *iam.DeletePolicyVersionInput) (*request.Request, *iam.DeletePolicyVersionOutput) {
-	ret := _m.ctrl.Call(_m, "DeletePolicyVersionRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeletePolicyVersionOutput)
+func (_m *MockIAMAPI) DeletePolicyWithContext(_param0 aws.Context, _param1 *iam.DeletePolicyInput, _param2 ...request.Option) (*iam.DeletePolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeletePolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeletePolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeletePolicyVersionRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeletePolicyVersionRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeletePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeletePolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeletePolicyRequest(_param0 *iam.DeletePolicyInput) (*request.Request, *iam.DeletePolicyOutput) {
+	ret := _m.ctrl.Call(_m, "DeletePolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeletePolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeletePolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeletePolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeletePolicyVersion(_param0 *iam.DeletePolicyVersionInput) (*iam.DeletePolicyVersionOutput, error) {
@@ -712,15 +1182,31 @@ func (_mr *_MockIAMAPIRecorder) DeletePolicyVersion(arg0 interface{}) *gomock.Ca
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeletePolicyVersion", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteRoleRequest(_param0 *iam.DeleteRoleInput) (*request.Request, *iam.DeleteRoleOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteRoleRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteRoleOutput)
+func (_m *MockIAMAPI) DeletePolicyVersionWithContext(_param0 aws.Context, _param1 *iam.DeletePolicyVersionInput, _param2 ...request.Option) (*iam.DeletePolicyVersionOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeletePolicyVersionWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeletePolicyVersionOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteRoleRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteRoleRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeletePolicyVersionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeletePolicyVersionWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeletePolicyVersionRequest(_param0 *iam.DeletePolicyVersionInput) (*request.Request, *iam.DeletePolicyVersionOutput) {
+	ret := _m.ctrl.Call(_m, "DeletePolicyVersionRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeletePolicyVersionOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeletePolicyVersionRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeletePolicyVersionRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteRole(_param0 *iam.DeleteRoleInput) (*iam.DeleteRoleOutput, error) {
@@ -734,15 +1220,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteRole(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteRole", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteRolePolicyRequest(_param0 *iam.DeleteRolePolicyInput) (*request.Request, *iam.DeleteRolePolicyOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteRolePolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteRolePolicyOutput)
+func (_m *MockIAMAPI) DeleteRoleWithContext(_param0 aws.Context, _param1 *iam.DeleteRoleInput, _param2 ...request.Option) (*iam.DeleteRoleOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteRoleWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteRoleOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteRolePolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteRolePolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteRoleWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteRoleRequest(_param0 *iam.DeleteRoleInput) (*request.Request, *iam.DeleteRoleOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteRoleRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteRoleOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteRoleRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteRoleRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteRolePolicy(_param0 *iam.DeleteRolePolicyInput) (*iam.DeleteRolePolicyOutput, error) {
@@ -756,15 +1258,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteRolePolicy(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteRolePolicy", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteSAMLProviderRequest(_param0 *iam.DeleteSAMLProviderInput) (*request.Request, *iam.DeleteSAMLProviderOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteSAMLProviderRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteSAMLProviderOutput)
+func (_m *MockIAMAPI) DeleteRolePolicyWithContext(_param0 aws.Context, _param1 *iam.DeleteRolePolicyInput, _param2 ...request.Option) (*iam.DeleteRolePolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteRolePolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteRolePolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteSAMLProviderRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSAMLProviderRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteRolePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteRolePolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteRolePolicyRequest(_param0 *iam.DeleteRolePolicyInput) (*request.Request, *iam.DeleteRolePolicyOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteRolePolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteRolePolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteRolePolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteRolePolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteSAMLProvider(_param0 *iam.DeleteSAMLProviderInput) (*iam.DeleteSAMLProviderOutput, error) {
@@ -778,15 +1296,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteSAMLProvider(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSAMLProvider", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteSSHPublicKeyRequest(_param0 *iam.DeleteSSHPublicKeyInput) (*request.Request, *iam.DeleteSSHPublicKeyOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteSSHPublicKeyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteSSHPublicKeyOutput)
+func (_m *MockIAMAPI) DeleteSAMLProviderWithContext(_param0 aws.Context, _param1 *iam.DeleteSAMLProviderInput, _param2 ...request.Option) (*iam.DeleteSAMLProviderOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteSAMLProviderWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteSAMLProviderOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteSSHPublicKeyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSSHPublicKeyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteSAMLProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSAMLProviderWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteSAMLProviderRequest(_param0 *iam.DeleteSAMLProviderInput) (*request.Request, *iam.DeleteSAMLProviderOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteSAMLProviderRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteSAMLProviderOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteSAMLProviderRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSAMLProviderRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteSSHPublicKey(_param0 *iam.DeleteSSHPublicKeyInput) (*iam.DeleteSSHPublicKeyOutput, error) {
@@ -800,15 +1334,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteSSHPublicKey(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSSHPublicKey", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteServerCertificateRequest(_param0 *iam.DeleteServerCertificateInput) (*request.Request, *iam.DeleteServerCertificateOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteServerCertificateRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteServerCertificateOutput)
+func (_m *MockIAMAPI) DeleteSSHPublicKeyWithContext(_param0 aws.Context, _param1 *iam.DeleteSSHPublicKeyInput, _param2 ...request.Option) (*iam.DeleteSSHPublicKeyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteSSHPublicKeyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteSSHPublicKeyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteServerCertificateRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteServerCertificateRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteSSHPublicKeyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSSHPublicKeyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteSSHPublicKeyRequest(_param0 *iam.DeleteSSHPublicKeyInput) (*request.Request, *iam.DeleteSSHPublicKeyOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteSSHPublicKeyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteSSHPublicKeyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteSSHPublicKeyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSSHPublicKeyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteServerCertificate(_param0 *iam.DeleteServerCertificateInput) (*iam.DeleteServerCertificateOutput, error) {
@@ -822,15 +1372,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteServerCertificate(arg0 interface{}) *gomoc
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteServerCertificate", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteServiceSpecificCredentialRequest(_param0 *iam.DeleteServiceSpecificCredentialInput) (*request.Request, *iam.DeleteServiceSpecificCredentialOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteServiceSpecificCredentialRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteServiceSpecificCredentialOutput)
+func (_m *MockIAMAPI) DeleteServerCertificateWithContext(_param0 aws.Context, _param1 *iam.DeleteServerCertificateInput, _param2 ...request.Option) (*iam.DeleteServerCertificateOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteServerCertificateWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteServerCertificateOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteServiceSpecificCredentialRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteServerCertificateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteServerCertificateWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteServerCertificateRequest(_param0 *iam.DeleteServerCertificateInput) (*request.Request, *iam.DeleteServerCertificateOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteServerCertificateRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteServerCertificateOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteServerCertificateRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteServerCertificateRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteServiceSpecificCredential(_param0 *iam.DeleteServiceSpecificCredentialInput) (*iam.DeleteServiceSpecificCredentialOutput, error) {
@@ -844,15 +1410,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteServiceSpecificCredential(arg0 interface{}
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteServiceSpecificCredential", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteSigningCertificateRequest(_param0 *iam.DeleteSigningCertificateInput) (*request.Request, *iam.DeleteSigningCertificateOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteSigningCertificateRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteSigningCertificateOutput)
+func (_m *MockIAMAPI) DeleteServiceSpecificCredentialWithContext(_param0 aws.Context, _param1 *iam.DeleteServiceSpecificCredentialInput, _param2 ...request.Option) (*iam.DeleteServiceSpecificCredentialOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteServiceSpecificCredentialWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteServiceSpecificCredentialOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteSigningCertificateRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSigningCertificateRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteServiceSpecificCredentialWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteServiceSpecificCredentialWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteServiceSpecificCredentialRequest(_param0 *iam.DeleteServiceSpecificCredentialInput) (*request.Request, *iam.DeleteServiceSpecificCredentialOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteServiceSpecificCredentialRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteServiceSpecificCredentialOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteServiceSpecificCredentialRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteSigningCertificate(_param0 *iam.DeleteSigningCertificateInput) (*iam.DeleteSigningCertificateOutput, error) {
@@ -866,15 +1448,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteSigningCertificate(arg0 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSigningCertificate", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteUserRequest(_param0 *iam.DeleteUserInput) (*request.Request, *iam.DeleteUserOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteUserRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteUserOutput)
+func (_m *MockIAMAPI) DeleteSigningCertificateWithContext(_param0 aws.Context, _param1 *iam.DeleteSigningCertificateInput, _param2 ...request.Option) (*iam.DeleteSigningCertificateOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteSigningCertificateWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteSigningCertificateOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteUserRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteUserRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteSigningCertificateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSigningCertificateWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteSigningCertificateRequest(_param0 *iam.DeleteSigningCertificateInput) (*request.Request, *iam.DeleteSigningCertificateOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteSigningCertificateRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteSigningCertificateOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteSigningCertificateRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteSigningCertificateRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteUser(_param0 *iam.DeleteUserInput) (*iam.DeleteUserOutput, error) {
@@ -888,15 +1486,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteUser(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteUser", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteUserPolicyRequest(_param0 *iam.DeleteUserPolicyInput) (*request.Request, *iam.DeleteUserPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteUserPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteUserPolicyOutput)
+func (_m *MockIAMAPI) DeleteUserWithContext(_param0 aws.Context, _param1 *iam.DeleteUserInput, _param2 ...request.Option) (*iam.DeleteUserOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteUserWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteUserOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteUserPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteUserPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteUserWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteUserWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteUserRequest(_param0 *iam.DeleteUserInput) (*request.Request, *iam.DeleteUserOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteUserRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteUserOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteUserRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteUserRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteUserPolicy(_param0 *iam.DeleteUserPolicyInput) (*iam.DeleteUserPolicyOutput, error) {
@@ -910,15 +1524,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteUserPolicy(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteUserPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) DeleteVirtualMFADeviceRequest(_param0 *iam.DeleteVirtualMFADeviceInput) (*request.Request, *iam.DeleteVirtualMFADeviceOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteVirtualMFADeviceRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DeleteVirtualMFADeviceOutput)
+func (_m *MockIAMAPI) DeleteUserPolicyWithContext(_param0 aws.Context, _param1 *iam.DeleteUserPolicyInput, _param2 ...request.Option) (*iam.DeleteUserPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteUserPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteUserPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DeleteVirtualMFADeviceRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteVirtualMFADeviceRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteUserPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteUserPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteUserPolicyRequest(_param0 *iam.DeleteUserPolicyInput) (*request.Request, *iam.DeleteUserPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteUserPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteUserPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteUserPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteUserPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DeleteVirtualMFADevice(_param0 *iam.DeleteVirtualMFADeviceInput) (*iam.DeleteVirtualMFADeviceOutput, error) {
@@ -932,15 +1562,31 @@ func (_mr *_MockIAMAPIRecorder) DeleteVirtualMFADevice(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteVirtualMFADevice", arg0)
 }
 
-func (_m *MockIAMAPI) DetachGroupPolicyRequest(_param0 *iam.DetachGroupPolicyInput) (*request.Request, *iam.DetachGroupPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "DetachGroupPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DetachGroupPolicyOutput)
+func (_m *MockIAMAPI) DeleteVirtualMFADeviceWithContext(_param0 aws.Context, _param1 *iam.DeleteVirtualMFADeviceInput, _param2 ...request.Option) (*iam.DeleteVirtualMFADeviceOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteVirtualMFADeviceWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteVirtualMFADeviceOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DetachGroupPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachGroupPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DeleteVirtualMFADeviceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteVirtualMFADeviceWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteVirtualMFADeviceRequest(_param0 *iam.DeleteVirtualMFADeviceInput) (*request.Request, *iam.DeleteVirtualMFADeviceOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteVirtualMFADeviceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteVirtualMFADeviceOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteVirtualMFADeviceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteVirtualMFADeviceRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DetachGroupPolicy(_param0 *iam.DetachGroupPolicyInput) (*iam.DetachGroupPolicyOutput, error) {
@@ -954,15 +1600,31 @@ func (_mr *_MockIAMAPIRecorder) DetachGroupPolicy(arg0 interface{}) *gomock.Call
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachGroupPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) DetachRolePolicyRequest(_param0 *iam.DetachRolePolicyInput) (*request.Request, *iam.DetachRolePolicyOutput) {
-	ret := _m.ctrl.Call(_m, "DetachRolePolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DetachRolePolicyOutput)
+func (_m *MockIAMAPI) DetachGroupPolicyWithContext(_param0 aws.Context, _param1 *iam.DetachGroupPolicyInput, _param2 ...request.Option) (*iam.DetachGroupPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DetachGroupPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DetachGroupPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DetachRolePolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachRolePolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DetachGroupPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachGroupPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DetachGroupPolicyRequest(_param0 *iam.DetachGroupPolicyInput) (*request.Request, *iam.DetachGroupPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "DetachGroupPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DetachGroupPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DetachGroupPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachGroupPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DetachRolePolicy(_param0 *iam.DetachRolePolicyInput) (*iam.DetachRolePolicyOutput, error) {
@@ -976,15 +1638,31 @@ func (_mr *_MockIAMAPIRecorder) DetachRolePolicy(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachRolePolicy", arg0)
 }
 
-func (_m *MockIAMAPI) DetachUserPolicyRequest(_param0 *iam.DetachUserPolicyInput) (*request.Request, *iam.DetachUserPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "DetachUserPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.DetachUserPolicyOutput)
+func (_m *MockIAMAPI) DetachRolePolicyWithContext(_param0 aws.Context, _param1 *iam.DetachRolePolicyInput, _param2 ...request.Option) (*iam.DetachRolePolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DetachRolePolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DetachRolePolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) DetachUserPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachUserPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DetachRolePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachRolePolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DetachRolePolicyRequest(_param0 *iam.DetachRolePolicyInput) (*request.Request, *iam.DetachRolePolicyOutput) {
+	ret := _m.ctrl.Call(_m, "DetachRolePolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DetachRolePolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DetachRolePolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachRolePolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) DetachUserPolicy(_param0 *iam.DetachUserPolicyInput) (*iam.DetachUserPolicyOutput, error) {
@@ -998,15 +1676,31 @@ func (_mr *_MockIAMAPIRecorder) DetachUserPolicy(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachUserPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) EnableMFADeviceRequest(_param0 *iam.EnableMFADeviceInput) (*request.Request, *iam.EnableMFADeviceOutput) {
-	ret := _m.ctrl.Call(_m, "EnableMFADeviceRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.EnableMFADeviceOutput)
+func (_m *MockIAMAPI) DetachUserPolicyWithContext(_param0 aws.Context, _param1 *iam.DetachUserPolicyInput, _param2 ...request.Option) (*iam.DetachUserPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DetachUserPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DetachUserPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) EnableMFADeviceRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "EnableMFADeviceRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) DetachUserPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachUserPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DetachUserPolicyRequest(_param0 *iam.DetachUserPolicyInput) (*request.Request, *iam.DetachUserPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "DetachUserPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DetachUserPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DetachUserPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachUserPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) EnableMFADevice(_param0 *iam.EnableMFADeviceInput) (*iam.EnableMFADeviceOutput, error) {
@@ -1020,15 +1714,31 @@ func (_mr *_MockIAMAPIRecorder) EnableMFADevice(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "EnableMFADevice", arg0)
 }
 
-func (_m *MockIAMAPI) GenerateCredentialReportRequest(_param0 *iam.GenerateCredentialReportInput) (*request.Request, *iam.GenerateCredentialReportOutput) {
-	ret := _m.ctrl.Call(_m, "GenerateCredentialReportRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GenerateCredentialReportOutput)
+func (_m *MockIAMAPI) EnableMFADeviceWithContext(_param0 aws.Context, _param1 *iam.EnableMFADeviceInput, _param2 ...request.Option) (*iam.EnableMFADeviceOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "EnableMFADeviceWithContext", _s...)
+	ret0, _ := ret[0].(*iam.EnableMFADeviceOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GenerateCredentialReportRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GenerateCredentialReportRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) EnableMFADeviceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "EnableMFADeviceWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) EnableMFADeviceRequest(_param0 *iam.EnableMFADeviceInput) (*request.Request, *iam.EnableMFADeviceOutput) {
+	ret := _m.ctrl.Call(_m, "EnableMFADeviceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.EnableMFADeviceOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) EnableMFADeviceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "EnableMFADeviceRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GenerateCredentialReport(_param0 *iam.GenerateCredentialReportInput) (*iam.GenerateCredentialReportOutput, error) {
@@ -1042,15 +1752,31 @@ func (_mr *_MockIAMAPIRecorder) GenerateCredentialReport(arg0 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GenerateCredentialReport", arg0)
 }
 
-func (_m *MockIAMAPI) GetAccessKeyLastUsedRequest(_param0 *iam.GetAccessKeyLastUsedInput) (*request.Request, *iam.GetAccessKeyLastUsedOutput) {
-	ret := _m.ctrl.Call(_m, "GetAccessKeyLastUsedRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetAccessKeyLastUsedOutput)
+func (_m *MockIAMAPI) GenerateCredentialReportWithContext(_param0 aws.Context, _param1 *iam.GenerateCredentialReportInput, _param2 ...request.Option) (*iam.GenerateCredentialReportOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GenerateCredentialReportWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GenerateCredentialReportOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetAccessKeyLastUsedRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccessKeyLastUsedRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GenerateCredentialReportWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GenerateCredentialReportWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GenerateCredentialReportRequest(_param0 *iam.GenerateCredentialReportInput) (*request.Request, *iam.GenerateCredentialReportOutput) {
+	ret := _m.ctrl.Call(_m, "GenerateCredentialReportRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GenerateCredentialReportOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GenerateCredentialReportRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GenerateCredentialReportRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetAccessKeyLastUsed(_param0 *iam.GetAccessKeyLastUsedInput) (*iam.GetAccessKeyLastUsedOutput, error) {
@@ -1064,15 +1790,31 @@ func (_mr *_MockIAMAPIRecorder) GetAccessKeyLastUsed(arg0 interface{}) *gomock.C
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccessKeyLastUsed", arg0)
 }
 
-func (_m *MockIAMAPI) GetAccountAuthorizationDetailsRequest(_param0 *iam.GetAccountAuthorizationDetailsInput) (*request.Request, *iam.GetAccountAuthorizationDetailsOutput) {
-	ret := _m.ctrl.Call(_m, "GetAccountAuthorizationDetailsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetAccountAuthorizationDetailsOutput)
+func (_m *MockIAMAPI) GetAccessKeyLastUsedWithContext(_param0 aws.Context, _param1 *iam.GetAccessKeyLastUsedInput, _param2 ...request.Option) (*iam.GetAccessKeyLastUsedOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetAccessKeyLastUsedWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetAccessKeyLastUsedOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetAccountAuthorizationDetailsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccountAuthorizationDetailsRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetAccessKeyLastUsedWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccessKeyLastUsedWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetAccessKeyLastUsedRequest(_param0 *iam.GetAccessKeyLastUsedInput) (*request.Request, *iam.GetAccessKeyLastUsedOutput) {
+	ret := _m.ctrl.Call(_m, "GetAccessKeyLastUsedRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetAccessKeyLastUsedOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetAccessKeyLastUsedRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccessKeyLastUsedRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetAccountAuthorizationDetails(_param0 *iam.GetAccountAuthorizationDetailsInput) (*iam.GetAccountAuthorizationDetailsOutput, error) {
@@ -1086,6 +1828,33 @@ func (_mr *_MockIAMAPIRecorder) GetAccountAuthorizationDetails(arg0 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccountAuthorizationDetails", arg0)
 }
 
+func (_m *MockIAMAPI) GetAccountAuthorizationDetailsWithContext(_param0 aws.Context, _param1 *iam.GetAccountAuthorizationDetailsInput, _param2 ...request.Option) (*iam.GetAccountAuthorizationDetailsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetAccountAuthorizationDetailsWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetAccountAuthorizationDetailsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetAccountAuthorizationDetailsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccountAuthorizationDetailsWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetAccountAuthorizationDetailsRequest(_param0 *iam.GetAccountAuthorizationDetailsInput) (*request.Request, *iam.GetAccountAuthorizationDetailsOutput) {
+	ret := _m.ctrl.Call(_m, "GetAccountAuthorizationDetailsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetAccountAuthorizationDetailsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetAccountAuthorizationDetailsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccountAuthorizationDetailsRequest", arg0)
+}
+
 func (_m *MockIAMAPI) GetAccountAuthorizationDetailsPages(_param0 *iam.GetAccountAuthorizationDetailsInput, _param1 func(*iam.GetAccountAuthorizationDetailsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "GetAccountAuthorizationDetailsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1096,15 +1865,19 @@ func (_mr *_MockIAMAPIRecorder) GetAccountAuthorizationDetailsPages(arg0, arg1 i
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccountAuthorizationDetailsPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) GetAccountPasswordPolicyRequest(_param0 *iam.GetAccountPasswordPolicyInput) (*request.Request, *iam.GetAccountPasswordPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "GetAccountPasswordPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetAccountPasswordPolicyOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) GetAccountAuthorizationDetailsPagesWithContext(_param0 aws.Context, _param1 *iam.GetAccountAuthorizationDetailsInput, _param2 func(*iam.GetAccountAuthorizationDetailsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetAccountAuthorizationDetailsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) GetAccountPasswordPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccountPasswordPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetAccountAuthorizationDetailsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccountAuthorizationDetailsPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) GetAccountPasswordPolicy(_param0 *iam.GetAccountPasswordPolicyInput) (*iam.GetAccountPasswordPolicyOutput, error) {
@@ -1118,15 +1891,31 @@ func (_mr *_MockIAMAPIRecorder) GetAccountPasswordPolicy(arg0 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccountPasswordPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) GetAccountSummaryRequest(_param0 *iam.GetAccountSummaryInput) (*request.Request, *iam.GetAccountSummaryOutput) {
-	ret := _m.ctrl.Call(_m, "GetAccountSummaryRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetAccountSummaryOutput)
+func (_m *MockIAMAPI) GetAccountPasswordPolicyWithContext(_param0 aws.Context, _param1 *iam.GetAccountPasswordPolicyInput, _param2 ...request.Option) (*iam.GetAccountPasswordPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetAccountPasswordPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetAccountPasswordPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetAccountSummaryRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccountSummaryRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetAccountPasswordPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccountPasswordPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetAccountPasswordPolicyRequest(_param0 *iam.GetAccountPasswordPolicyInput) (*request.Request, *iam.GetAccountPasswordPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "GetAccountPasswordPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetAccountPasswordPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetAccountPasswordPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccountPasswordPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetAccountSummary(_param0 *iam.GetAccountSummaryInput) (*iam.GetAccountSummaryOutput, error) {
@@ -1140,15 +1929,31 @@ func (_mr *_MockIAMAPIRecorder) GetAccountSummary(arg0 interface{}) *gomock.Call
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccountSummary", arg0)
 }
 
-func (_m *MockIAMAPI) GetContextKeysForCustomPolicyRequest(_param0 *iam.GetContextKeysForCustomPolicyInput) (*request.Request, *iam.GetContextKeysForPolicyResponse) {
-	ret := _m.ctrl.Call(_m, "GetContextKeysForCustomPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetContextKeysForPolicyResponse)
+func (_m *MockIAMAPI) GetAccountSummaryWithContext(_param0 aws.Context, _param1 *iam.GetAccountSummaryInput, _param2 ...request.Option) (*iam.GetAccountSummaryOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetAccountSummaryWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetAccountSummaryOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetContextKeysForCustomPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetContextKeysForCustomPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetAccountSummaryWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccountSummaryWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetAccountSummaryRequest(_param0 *iam.GetAccountSummaryInput) (*request.Request, *iam.GetAccountSummaryOutput) {
+	ret := _m.ctrl.Call(_m, "GetAccountSummaryRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetAccountSummaryOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetAccountSummaryRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetAccountSummaryRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetContextKeysForCustomPolicy(_param0 *iam.GetContextKeysForCustomPolicyInput) (*iam.GetContextKeysForPolicyResponse, error) {
@@ -1162,15 +1967,31 @@ func (_mr *_MockIAMAPIRecorder) GetContextKeysForCustomPolicy(arg0 interface{}) 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetContextKeysForCustomPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) GetContextKeysForPrincipalPolicyRequest(_param0 *iam.GetContextKeysForPrincipalPolicyInput) (*request.Request, *iam.GetContextKeysForPolicyResponse) {
-	ret := _m.ctrl.Call(_m, "GetContextKeysForPrincipalPolicyRequest", _param0)
+func (_m *MockIAMAPI) GetContextKeysForCustomPolicyWithContext(_param0 aws.Context, _param1 *iam.GetContextKeysForCustomPolicyInput, _param2 ...request.Option) (*iam.GetContextKeysForPolicyResponse, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetContextKeysForCustomPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetContextKeysForPolicyResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetContextKeysForCustomPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetContextKeysForCustomPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetContextKeysForCustomPolicyRequest(_param0 *iam.GetContextKeysForCustomPolicyInput) (*request.Request, *iam.GetContextKeysForPolicyResponse) {
+	ret := _m.ctrl.Call(_m, "GetContextKeysForCustomPolicyRequest", _param0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetContextKeysForPolicyResponse)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetContextKeysForPrincipalPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetContextKeysForPrincipalPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetContextKeysForCustomPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetContextKeysForCustomPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetContextKeysForPrincipalPolicy(_param0 *iam.GetContextKeysForPrincipalPolicyInput) (*iam.GetContextKeysForPolicyResponse, error) {
@@ -1184,15 +2005,31 @@ func (_mr *_MockIAMAPIRecorder) GetContextKeysForPrincipalPolicy(arg0 interface{
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetContextKeysForPrincipalPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) GetCredentialReportRequest(_param0 *iam.GetCredentialReportInput) (*request.Request, *iam.GetCredentialReportOutput) {
-	ret := _m.ctrl.Call(_m, "GetCredentialReportRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetCredentialReportOutput)
+func (_m *MockIAMAPI) GetContextKeysForPrincipalPolicyWithContext(_param0 aws.Context, _param1 *iam.GetContextKeysForPrincipalPolicyInput, _param2 ...request.Option) (*iam.GetContextKeysForPolicyResponse, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetContextKeysForPrincipalPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetContextKeysForPolicyResponse)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetCredentialReportRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetCredentialReportRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetContextKeysForPrincipalPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetContextKeysForPrincipalPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetContextKeysForPrincipalPolicyRequest(_param0 *iam.GetContextKeysForPrincipalPolicyInput) (*request.Request, *iam.GetContextKeysForPolicyResponse) {
+	ret := _m.ctrl.Call(_m, "GetContextKeysForPrincipalPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetContextKeysForPolicyResponse)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetContextKeysForPrincipalPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetContextKeysForPrincipalPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetCredentialReport(_param0 *iam.GetCredentialReportInput) (*iam.GetCredentialReportOutput, error) {
@@ -1206,15 +2043,31 @@ func (_mr *_MockIAMAPIRecorder) GetCredentialReport(arg0 interface{}) *gomock.Ca
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetCredentialReport", arg0)
 }
 
-func (_m *MockIAMAPI) GetGroupRequest(_param0 *iam.GetGroupInput) (*request.Request, *iam.GetGroupOutput) {
-	ret := _m.ctrl.Call(_m, "GetGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetGroupOutput)
+func (_m *MockIAMAPI) GetCredentialReportWithContext(_param0 aws.Context, _param1 *iam.GetCredentialReportInput, _param2 ...request.Option) (*iam.GetCredentialReportOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetCredentialReportWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetCredentialReportOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetGroupRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetCredentialReportWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetCredentialReportWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetCredentialReportRequest(_param0 *iam.GetCredentialReportInput) (*request.Request, *iam.GetCredentialReportOutput) {
+	ret := _m.ctrl.Call(_m, "GetCredentialReportRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetCredentialReportOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetCredentialReportRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetCredentialReportRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetGroup(_param0 *iam.GetGroupInput) (*iam.GetGroupOutput, error) {
@@ -1228,6 +2081,33 @@ func (_mr *_MockIAMAPIRecorder) GetGroup(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetGroup", arg0)
 }
 
+func (_m *MockIAMAPI) GetGroupWithContext(_param0 aws.Context, _param1 *iam.GetGroupInput, _param2 ...request.Option) (*iam.GetGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetGroupWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetGroupWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetGroupRequest(_param0 *iam.GetGroupInput) (*request.Request, *iam.GetGroupOutput) {
+	ret := _m.ctrl.Call(_m, "GetGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetGroupRequest", arg0)
+}
+
 func (_m *MockIAMAPI) GetGroupPages(_param0 *iam.GetGroupInput, _param1 func(*iam.GetGroupOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "GetGroupPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1238,15 +2118,19 @@ func (_mr *_MockIAMAPIRecorder) GetGroupPages(arg0, arg1 interface{}) *gomock.Ca
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetGroupPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) GetGroupPolicyRequest(_param0 *iam.GetGroupPolicyInput) (*request.Request, *iam.GetGroupPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "GetGroupPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetGroupPolicyOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) GetGroupPagesWithContext(_param0 aws.Context, _param1 *iam.GetGroupInput, _param2 func(*iam.GetGroupOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetGroupPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) GetGroupPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetGroupPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetGroupPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetGroupPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) GetGroupPolicy(_param0 *iam.GetGroupPolicyInput) (*iam.GetGroupPolicyOutput, error) {
@@ -1260,15 +2144,31 @@ func (_mr *_MockIAMAPIRecorder) GetGroupPolicy(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetGroupPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) GetInstanceProfileRequest(_param0 *iam.GetInstanceProfileInput) (*request.Request, *iam.GetInstanceProfileOutput) {
-	ret := _m.ctrl.Call(_m, "GetInstanceProfileRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetInstanceProfileOutput)
+func (_m *MockIAMAPI) GetGroupPolicyWithContext(_param0 aws.Context, _param1 *iam.GetGroupPolicyInput, _param2 ...request.Option) (*iam.GetGroupPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetGroupPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetGroupPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetInstanceProfileRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetInstanceProfileRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetGroupPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetGroupPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetGroupPolicyRequest(_param0 *iam.GetGroupPolicyInput) (*request.Request, *iam.GetGroupPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "GetGroupPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetGroupPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetGroupPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetGroupPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetInstanceProfile(_param0 *iam.GetInstanceProfileInput) (*iam.GetInstanceProfileOutput, error) {
@@ -1282,15 +2182,31 @@ func (_mr *_MockIAMAPIRecorder) GetInstanceProfile(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetInstanceProfile", arg0)
 }
 
-func (_m *MockIAMAPI) GetLoginProfileRequest(_param0 *iam.GetLoginProfileInput) (*request.Request, *iam.GetLoginProfileOutput) {
-	ret := _m.ctrl.Call(_m, "GetLoginProfileRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetLoginProfileOutput)
+func (_m *MockIAMAPI) GetInstanceProfileWithContext(_param0 aws.Context, _param1 *iam.GetInstanceProfileInput, _param2 ...request.Option) (*iam.GetInstanceProfileOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetInstanceProfileWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetInstanceProfileOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetLoginProfileRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetLoginProfileRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetInstanceProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetInstanceProfileWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetInstanceProfileRequest(_param0 *iam.GetInstanceProfileInput) (*request.Request, *iam.GetInstanceProfileOutput) {
+	ret := _m.ctrl.Call(_m, "GetInstanceProfileRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetInstanceProfileOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetInstanceProfileRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetInstanceProfileRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetLoginProfile(_param0 *iam.GetLoginProfileInput) (*iam.GetLoginProfileOutput, error) {
@@ -1304,15 +2220,31 @@ func (_mr *_MockIAMAPIRecorder) GetLoginProfile(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetLoginProfile", arg0)
 }
 
-func (_m *MockIAMAPI) GetOpenIDConnectProviderRequest(_param0 *iam.GetOpenIDConnectProviderInput) (*request.Request, *iam.GetOpenIDConnectProviderOutput) {
-	ret := _m.ctrl.Call(_m, "GetOpenIDConnectProviderRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetOpenIDConnectProviderOutput)
+func (_m *MockIAMAPI) GetLoginProfileWithContext(_param0 aws.Context, _param1 *iam.GetLoginProfileInput, _param2 ...request.Option) (*iam.GetLoginProfileOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetLoginProfileWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetLoginProfileOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetOpenIDConnectProviderRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetLoginProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetLoginProfileWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetLoginProfileRequest(_param0 *iam.GetLoginProfileInput) (*request.Request, *iam.GetLoginProfileOutput) {
+	ret := _m.ctrl.Call(_m, "GetLoginProfileRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetLoginProfileOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetLoginProfileRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetLoginProfileRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetOpenIDConnectProvider(_param0 *iam.GetOpenIDConnectProviderInput) (*iam.GetOpenIDConnectProviderOutput, error) {
@@ -1326,15 +2258,31 @@ func (_mr *_MockIAMAPIRecorder) GetOpenIDConnectProvider(arg0 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetOpenIDConnectProvider", arg0)
 }
 
-func (_m *MockIAMAPI) GetPolicyRequest(_param0 *iam.GetPolicyInput) (*request.Request, *iam.GetPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "GetPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetPolicyOutput)
+func (_m *MockIAMAPI) GetOpenIDConnectProviderWithContext(_param0 aws.Context, _param1 *iam.GetOpenIDConnectProviderInput, _param2 ...request.Option) (*iam.GetOpenIDConnectProviderOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetOpenIDConnectProviderWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetOpenIDConnectProviderOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetOpenIDConnectProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetOpenIDConnectProviderWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetOpenIDConnectProviderRequest(_param0 *iam.GetOpenIDConnectProviderInput) (*request.Request, *iam.GetOpenIDConnectProviderOutput) {
+	ret := _m.ctrl.Call(_m, "GetOpenIDConnectProviderRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetOpenIDConnectProviderOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetOpenIDConnectProviderRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetPolicy(_param0 *iam.GetPolicyInput) (*iam.GetPolicyOutput, error) {
@@ -1348,15 +2296,31 @@ func (_mr *_MockIAMAPIRecorder) GetPolicy(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) GetPolicyVersionRequest(_param0 *iam.GetPolicyVersionInput) (*request.Request, *iam.GetPolicyVersionOutput) {
-	ret := _m.ctrl.Call(_m, "GetPolicyVersionRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetPolicyVersionOutput)
+func (_m *MockIAMAPI) GetPolicyWithContext(_param0 aws.Context, _param1 *iam.GetPolicyInput, _param2 ...request.Option) (*iam.GetPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetPolicyVersionRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetPolicyVersionRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetPolicyRequest(_param0 *iam.GetPolicyInput) (*request.Request, *iam.GetPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "GetPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetPolicyVersion(_param0 *iam.GetPolicyVersionInput) (*iam.GetPolicyVersionOutput, error) {
@@ -1370,15 +2334,31 @@ func (_mr *_MockIAMAPIRecorder) GetPolicyVersion(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetPolicyVersion", arg0)
 }
 
-func (_m *MockIAMAPI) GetRoleRequest(_param0 *iam.GetRoleInput) (*request.Request, *iam.GetRoleOutput) {
-	ret := _m.ctrl.Call(_m, "GetRoleRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetRoleOutput)
+func (_m *MockIAMAPI) GetPolicyVersionWithContext(_param0 aws.Context, _param1 *iam.GetPolicyVersionInput, _param2 ...request.Option) (*iam.GetPolicyVersionOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetPolicyVersionWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetPolicyVersionOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetRoleRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetRoleRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetPolicyVersionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetPolicyVersionWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetPolicyVersionRequest(_param0 *iam.GetPolicyVersionInput) (*request.Request, *iam.GetPolicyVersionOutput) {
+	ret := _m.ctrl.Call(_m, "GetPolicyVersionRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetPolicyVersionOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetPolicyVersionRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetPolicyVersionRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetRole(_param0 *iam.GetRoleInput) (*iam.GetRoleOutput, error) {
@@ -1392,15 +2372,31 @@ func (_mr *_MockIAMAPIRecorder) GetRole(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetRole", arg0)
 }
 
-func (_m *MockIAMAPI) GetRolePolicyRequest(_param0 *iam.GetRolePolicyInput) (*request.Request, *iam.GetRolePolicyOutput) {
-	ret := _m.ctrl.Call(_m, "GetRolePolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetRolePolicyOutput)
+func (_m *MockIAMAPI) GetRoleWithContext(_param0 aws.Context, _param1 *iam.GetRoleInput, _param2 ...request.Option) (*iam.GetRoleOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetRoleWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetRoleOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetRolePolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetRolePolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetRoleWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetRoleRequest(_param0 *iam.GetRoleInput) (*request.Request, *iam.GetRoleOutput) {
+	ret := _m.ctrl.Call(_m, "GetRoleRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetRoleOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetRoleRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetRoleRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetRolePolicy(_param0 *iam.GetRolePolicyInput) (*iam.GetRolePolicyOutput, error) {
@@ -1414,15 +2410,31 @@ func (_mr *_MockIAMAPIRecorder) GetRolePolicy(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetRolePolicy", arg0)
 }
 
-func (_m *MockIAMAPI) GetSAMLProviderRequest(_param0 *iam.GetSAMLProviderInput) (*request.Request, *iam.GetSAMLProviderOutput) {
-	ret := _m.ctrl.Call(_m, "GetSAMLProviderRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetSAMLProviderOutput)
+func (_m *MockIAMAPI) GetRolePolicyWithContext(_param0 aws.Context, _param1 *iam.GetRolePolicyInput, _param2 ...request.Option) (*iam.GetRolePolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetRolePolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetRolePolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetSAMLProviderRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetSAMLProviderRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetRolePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetRolePolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetRolePolicyRequest(_param0 *iam.GetRolePolicyInput) (*request.Request, *iam.GetRolePolicyOutput) {
+	ret := _m.ctrl.Call(_m, "GetRolePolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetRolePolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetRolePolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetRolePolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetSAMLProvider(_param0 *iam.GetSAMLProviderInput) (*iam.GetSAMLProviderOutput, error) {
@@ -1436,15 +2448,31 @@ func (_mr *_MockIAMAPIRecorder) GetSAMLProvider(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetSAMLProvider", arg0)
 }
 
-func (_m *MockIAMAPI) GetSSHPublicKeyRequest(_param0 *iam.GetSSHPublicKeyInput) (*request.Request, *iam.GetSSHPublicKeyOutput) {
-	ret := _m.ctrl.Call(_m, "GetSSHPublicKeyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetSSHPublicKeyOutput)
+func (_m *MockIAMAPI) GetSAMLProviderWithContext(_param0 aws.Context, _param1 *iam.GetSAMLProviderInput, _param2 ...request.Option) (*iam.GetSAMLProviderOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetSAMLProviderWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetSAMLProviderOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetSSHPublicKeyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetSSHPublicKeyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetSAMLProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetSAMLProviderWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetSAMLProviderRequest(_param0 *iam.GetSAMLProviderInput) (*request.Request, *iam.GetSAMLProviderOutput) {
+	ret := _m.ctrl.Call(_m, "GetSAMLProviderRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetSAMLProviderOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetSAMLProviderRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetSAMLProviderRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetSSHPublicKey(_param0 *iam.GetSSHPublicKeyInput) (*iam.GetSSHPublicKeyOutput, error) {
@@ -1458,15 +2486,31 @@ func (_mr *_MockIAMAPIRecorder) GetSSHPublicKey(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetSSHPublicKey", arg0)
 }
 
-func (_m *MockIAMAPI) GetServerCertificateRequest(_param0 *iam.GetServerCertificateInput) (*request.Request, *iam.GetServerCertificateOutput) {
-	ret := _m.ctrl.Call(_m, "GetServerCertificateRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetServerCertificateOutput)
+func (_m *MockIAMAPI) GetSSHPublicKeyWithContext(_param0 aws.Context, _param1 *iam.GetSSHPublicKeyInput, _param2 ...request.Option) (*iam.GetSSHPublicKeyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetSSHPublicKeyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetSSHPublicKeyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetServerCertificateRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetServerCertificateRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetSSHPublicKeyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetSSHPublicKeyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetSSHPublicKeyRequest(_param0 *iam.GetSSHPublicKeyInput) (*request.Request, *iam.GetSSHPublicKeyOutput) {
+	ret := _m.ctrl.Call(_m, "GetSSHPublicKeyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetSSHPublicKeyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetSSHPublicKeyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetSSHPublicKeyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetServerCertificate(_param0 *iam.GetServerCertificateInput) (*iam.GetServerCertificateOutput, error) {
@@ -1480,15 +2524,31 @@ func (_mr *_MockIAMAPIRecorder) GetServerCertificate(arg0 interface{}) *gomock.C
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetServerCertificate", arg0)
 }
 
-func (_m *MockIAMAPI) GetUserRequest(_param0 *iam.GetUserInput) (*request.Request, *iam.GetUserOutput) {
-	ret := _m.ctrl.Call(_m, "GetUserRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetUserOutput)
+func (_m *MockIAMAPI) GetServerCertificateWithContext(_param0 aws.Context, _param1 *iam.GetServerCertificateInput, _param2 ...request.Option) (*iam.GetServerCertificateOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetServerCertificateWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetServerCertificateOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetUserRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetUserRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetServerCertificateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetServerCertificateWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetServerCertificateRequest(_param0 *iam.GetServerCertificateInput) (*request.Request, *iam.GetServerCertificateOutput) {
+	ret := _m.ctrl.Call(_m, "GetServerCertificateRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetServerCertificateOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetServerCertificateRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetServerCertificateRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetUser(_param0 *iam.GetUserInput) (*iam.GetUserOutput, error) {
@@ -1502,15 +2562,31 @@ func (_mr *_MockIAMAPIRecorder) GetUser(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetUser", arg0)
 }
 
-func (_m *MockIAMAPI) GetUserPolicyRequest(_param0 *iam.GetUserPolicyInput) (*request.Request, *iam.GetUserPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "GetUserPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.GetUserPolicyOutput)
+func (_m *MockIAMAPI) GetUserWithContext(_param0 aws.Context, _param1 *iam.GetUserInput, _param2 ...request.Option) (*iam.GetUserOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetUserWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetUserOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) GetUserPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetUserPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetUserWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetUserWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetUserRequest(_param0 *iam.GetUserInput) (*request.Request, *iam.GetUserOutput) {
+	ret := _m.ctrl.Call(_m, "GetUserRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetUserOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetUserRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetUserRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetUserPolicy(_param0 *iam.GetUserPolicyInput) (*iam.GetUserPolicyOutput, error) {
@@ -1524,15 +2600,31 @@ func (_mr *_MockIAMAPIRecorder) GetUserPolicy(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetUserPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) ListAccessKeysRequest(_param0 *iam.ListAccessKeysInput) (*request.Request, *iam.ListAccessKeysOutput) {
-	ret := _m.ctrl.Call(_m, "ListAccessKeysRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListAccessKeysOutput)
+func (_m *MockIAMAPI) GetUserPolicyWithContext(_param0 aws.Context, _param1 *iam.GetUserPolicyInput, _param2 ...request.Option) (*iam.GetUserPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetUserPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetUserPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) ListAccessKeysRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAccessKeysRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) GetUserPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetUserPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetUserPolicyRequest(_param0 *iam.GetUserPolicyInput) (*request.Request, *iam.GetUserPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "GetUserPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetUserPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetUserPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetUserPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) ListAccessKeys(_param0 *iam.ListAccessKeysInput) (*iam.ListAccessKeysOutput, error) {
@@ -1546,6 +2638,33 @@ func (_mr *_MockIAMAPIRecorder) ListAccessKeys(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAccessKeys", arg0)
 }
 
+func (_m *MockIAMAPI) ListAccessKeysWithContext(_param0 aws.Context, _param1 *iam.ListAccessKeysInput, _param2 ...request.Option) (*iam.ListAccessKeysOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListAccessKeysWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListAccessKeysOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListAccessKeysWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAccessKeysWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListAccessKeysRequest(_param0 *iam.ListAccessKeysInput) (*request.Request, *iam.ListAccessKeysOutput) {
+	ret := _m.ctrl.Call(_m, "ListAccessKeysRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListAccessKeysOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListAccessKeysRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAccessKeysRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListAccessKeysPages(_param0 *iam.ListAccessKeysInput, _param1 func(*iam.ListAccessKeysOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListAccessKeysPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1556,15 +2675,19 @@ func (_mr *_MockIAMAPIRecorder) ListAccessKeysPages(arg0, arg1 interface{}) *gom
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAccessKeysPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListAccountAliasesRequest(_param0 *iam.ListAccountAliasesInput) (*request.Request, *iam.ListAccountAliasesOutput) {
-	ret := _m.ctrl.Call(_m, "ListAccountAliasesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListAccountAliasesOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListAccessKeysPagesWithContext(_param0 aws.Context, _param1 *iam.ListAccessKeysInput, _param2 func(*iam.ListAccessKeysOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListAccessKeysPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListAccountAliasesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAccountAliasesRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListAccessKeysPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAccessKeysPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListAccountAliases(_param0 *iam.ListAccountAliasesInput) (*iam.ListAccountAliasesOutput, error) {
@@ -1578,6 +2701,33 @@ func (_mr *_MockIAMAPIRecorder) ListAccountAliases(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAccountAliases", arg0)
 }
 
+func (_m *MockIAMAPI) ListAccountAliasesWithContext(_param0 aws.Context, _param1 *iam.ListAccountAliasesInput, _param2 ...request.Option) (*iam.ListAccountAliasesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListAccountAliasesWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListAccountAliasesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListAccountAliasesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAccountAliasesWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListAccountAliasesRequest(_param0 *iam.ListAccountAliasesInput) (*request.Request, *iam.ListAccountAliasesOutput) {
+	ret := _m.ctrl.Call(_m, "ListAccountAliasesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListAccountAliasesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListAccountAliasesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAccountAliasesRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListAccountAliasesPages(_param0 *iam.ListAccountAliasesInput, _param1 func(*iam.ListAccountAliasesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListAccountAliasesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1588,15 +2738,19 @@ func (_mr *_MockIAMAPIRecorder) ListAccountAliasesPages(arg0, arg1 interface{}) 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAccountAliasesPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListAttachedGroupPoliciesRequest(_param0 *iam.ListAttachedGroupPoliciesInput) (*request.Request, *iam.ListAttachedGroupPoliciesOutput) {
-	ret := _m.ctrl.Call(_m, "ListAttachedGroupPoliciesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListAttachedGroupPoliciesOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListAccountAliasesPagesWithContext(_param0 aws.Context, _param1 *iam.ListAccountAliasesInput, _param2 func(*iam.ListAccountAliasesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListAccountAliasesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListAttachedGroupPoliciesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedGroupPoliciesRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListAccountAliasesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAccountAliasesPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListAttachedGroupPolicies(_param0 *iam.ListAttachedGroupPoliciesInput) (*iam.ListAttachedGroupPoliciesOutput, error) {
@@ -1610,6 +2764,33 @@ func (_mr *_MockIAMAPIRecorder) ListAttachedGroupPolicies(arg0 interface{}) *gom
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedGroupPolicies", arg0)
 }
 
+func (_m *MockIAMAPI) ListAttachedGroupPoliciesWithContext(_param0 aws.Context, _param1 *iam.ListAttachedGroupPoliciesInput, _param2 ...request.Option) (*iam.ListAttachedGroupPoliciesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListAttachedGroupPoliciesWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListAttachedGroupPoliciesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListAttachedGroupPoliciesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedGroupPoliciesWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListAttachedGroupPoliciesRequest(_param0 *iam.ListAttachedGroupPoliciesInput) (*request.Request, *iam.ListAttachedGroupPoliciesOutput) {
+	ret := _m.ctrl.Call(_m, "ListAttachedGroupPoliciesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListAttachedGroupPoliciesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListAttachedGroupPoliciesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedGroupPoliciesRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListAttachedGroupPoliciesPages(_param0 *iam.ListAttachedGroupPoliciesInput, _param1 func(*iam.ListAttachedGroupPoliciesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListAttachedGroupPoliciesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1620,15 +2801,19 @@ func (_mr *_MockIAMAPIRecorder) ListAttachedGroupPoliciesPages(arg0, arg1 interf
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedGroupPoliciesPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListAttachedRolePoliciesRequest(_param0 *iam.ListAttachedRolePoliciesInput) (*request.Request, *iam.ListAttachedRolePoliciesOutput) {
-	ret := _m.ctrl.Call(_m, "ListAttachedRolePoliciesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListAttachedRolePoliciesOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListAttachedGroupPoliciesPagesWithContext(_param0 aws.Context, _param1 *iam.ListAttachedGroupPoliciesInput, _param2 func(*iam.ListAttachedGroupPoliciesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListAttachedGroupPoliciesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListAttachedRolePoliciesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedRolePoliciesRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListAttachedGroupPoliciesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedGroupPoliciesPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListAttachedRolePolicies(_param0 *iam.ListAttachedRolePoliciesInput) (*iam.ListAttachedRolePoliciesOutput, error) {
@@ -1642,6 +2827,33 @@ func (_mr *_MockIAMAPIRecorder) ListAttachedRolePolicies(arg0 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedRolePolicies", arg0)
 }
 
+func (_m *MockIAMAPI) ListAttachedRolePoliciesWithContext(_param0 aws.Context, _param1 *iam.ListAttachedRolePoliciesInput, _param2 ...request.Option) (*iam.ListAttachedRolePoliciesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListAttachedRolePoliciesWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListAttachedRolePoliciesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListAttachedRolePoliciesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedRolePoliciesWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListAttachedRolePoliciesRequest(_param0 *iam.ListAttachedRolePoliciesInput) (*request.Request, *iam.ListAttachedRolePoliciesOutput) {
+	ret := _m.ctrl.Call(_m, "ListAttachedRolePoliciesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListAttachedRolePoliciesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListAttachedRolePoliciesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedRolePoliciesRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListAttachedRolePoliciesPages(_param0 *iam.ListAttachedRolePoliciesInput, _param1 func(*iam.ListAttachedRolePoliciesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListAttachedRolePoliciesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1652,15 +2864,19 @@ func (_mr *_MockIAMAPIRecorder) ListAttachedRolePoliciesPages(arg0, arg1 interfa
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedRolePoliciesPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListAttachedUserPoliciesRequest(_param0 *iam.ListAttachedUserPoliciesInput) (*request.Request, *iam.ListAttachedUserPoliciesOutput) {
-	ret := _m.ctrl.Call(_m, "ListAttachedUserPoliciesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListAttachedUserPoliciesOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListAttachedRolePoliciesPagesWithContext(_param0 aws.Context, _param1 *iam.ListAttachedRolePoliciesInput, _param2 func(*iam.ListAttachedRolePoliciesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListAttachedRolePoliciesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListAttachedUserPoliciesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedUserPoliciesRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListAttachedRolePoliciesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedRolePoliciesPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListAttachedUserPolicies(_param0 *iam.ListAttachedUserPoliciesInput) (*iam.ListAttachedUserPoliciesOutput, error) {
@@ -1674,6 +2890,33 @@ func (_mr *_MockIAMAPIRecorder) ListAttachedUserPolicies(arg0 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedUserPolicies", arg0)
 }
 
+func (_m *MockIAMAPI) ListAttachedUserPoliciesWithContext(_param0 aws.Context, _param1 *iam.ListAttachedUserPoliciesInput, _param2 ...request.Option) (*iam.ListAttachedUserPoliciesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListAttachedUserPoliciesWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListAttachedUserPoliciesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListAttachedUserPoliciesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedUserPoliciesWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListAttachedUserPoliciesRequest(_param0 *iam.ListAttachedUserPoliciesInput) (*request.Request, *iam.ListAttachedUserPoliciesOutput) {
+	ret := _m.ctrl.Call(_m, "ListAttachedUserPoliciesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListAttachedUserPoliciesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListAttachedUserPoliciesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedUserPoliciesRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListAttachedUserPoliciesPages(_param0 *iam.ListAttachedUserPoliciesInput, _param1 func(*iam.ListAttachedUserPoliciesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListAttachedUserPoliciesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1684,15 +2927,19 @@ func (_mr *_MockIAMAPIRecorder) ListAttachedUserPoliciesPages(arg0, arg1 interfa
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedUserPoliciesPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListEntitiesForPolicyRequest(_param0 *iam.ListEntitiesForPolicyInput) (*request.Request, *iam.ListEntitiesForPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "ListEntitiesForPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListEntitiesForPolicyOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListAttachedUserPoliciesPagesWithContext(_param0 aws.Context, _param1 *iam.ListAttachedUserPoliciesInput, _param2 func(*iam.ListAttachedUserPoliciesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListAttachedUserPoliciesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListEntitiesForPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListEntitiesForPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListAttachedUserPoliciesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListAttachedUserPoliciesPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListEntitiesForPolicy(_param0 *iam.ListEntitiesForPolicyInput) (*iam.ListEntitiesForPolicyOutput, error) {
@@ -1706,6 +2953,33 @@ func (_mr *_MockIAMAPIRecorder) ListEntitiesForPolicy(arg0 interface{}) *gomock.
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListEntitiesForPolicy", arg0)
 }
 
+func (_m *MockIAMAPI) ListEntitiesForPolicyWithContext(_param0 aws.Context, _param1 *iam.ListEntitiesForPolicyInput, _param2 ...request.Option) (*iam.ListEntitiesForPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListEntitiesForPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListEntitiesForPolicyOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListEntitiesForPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListEntitiesForPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListEntitiesForPolicyRequest(_param0 *iam.ListEntitiesForPolicyInput) (*request.Request, *iam.ListEntitiesForPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "ListEntitiesForPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListEntitiesForPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListEntitiesForPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListEntitiesForPolicyRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListEntitiesForPolicyPages(_param0 *iam.ListEntitiesForPolicyInput, _param1 func(*iam.ListEntitiesForPolicyOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListEntitiesForPolicyPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1716,15 +2990,19 @@ func (_mr *_MockIAMAPIRecorder) ListEntitiesForPolicyPages(arg0, arg1 interface{
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListEntitiesForPolicyPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListGroupPoliciesRequest(_param0 *iam.ListGroupPoliciesInput) (*request.Request, *iam.ListGroupPoliciesOutput) {
-	ret := _m.ctrl.Call(_m, "ListGroupPoliciesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListGroupPoliciesOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListEntitiesForPolicyPagesWithContext(_param0 aws.Context, _param1 *iam.ListEntitiesForPolicyInput, _param2 func(*iam.ListEntitiesForPolicyOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListEntitiesForPolicyPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListGroupPoliciesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupPoliciesRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListEntitiesForPolicyPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListEntitiesForPolicyPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListGroupPolicies(_param0 *iam.ListGroupPoliciesInput) (*iam.ListGroupPoliciesOutput, error) {
@@ -1738,6 +3016,33 @@ func (_mr *_MockIAMAPIRecorder) ListGroupPolicies(arg0 interface{}) *gomock.Call
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupPolicies", arg0)
 }
 
+func (_m *MockIAMAPI) ListGroupPoliciesWithContext(_param0 aws.Context, _param1 *iam.ListGroupPoliciesInput, _param2 ...request.Option) (*iam.ListGroupPoliciesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListGroupPoliciesWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListGroupPoliciesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListGroupPoliciesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupPoliciesWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListGroupPoliciesRequest(_param0 *iam.ListGroupPoliciesInput) (*request.Request, *iam.ListGroupPoliciesOutput) {
+	ret := _m.ctrl.Call(_m, "ListGroupPoliciesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListGroupPoliciesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListGroupPoliciesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupPoliciesRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListGroupPoliciesPages(_param0 *iam.ListGroupPoliciesInput, _param1 func(*iam.ListGroupPoliciesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListGroupPoliciesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1748,15 +3053,19 @@ func (_mr *_MockIAMAPIRecorder) ListGroupPoliciesPages(arg0, arg1 interface{}) *
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupPoliciesPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListGroupsRequest(_param0 *iam.ListGroupsInput) (*request.Request, *iam.ListGroupsOutput) {
-	ret := _m.ctrl.Call(_m, "ListGroupsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListGroupsOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListGroupPoliciesPagesWithContext(_param0 aws.Context, _param1 *iam.ListGroupPoliciesInput, _param2 func(*iam.ListGroupPoliciesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListGroupPoliciesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListGroupsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupsRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListGroupPoliciesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupPoliciesPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListGroups(_param0 *iam.ListGroupsInput) (*iam.ListGroupsOutput, error) {
@@ -1770,6 +3079,33 @@ func (_mr *_MockIAMAPIRecorder) ListGroups(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroups", arg0)
 }
 
+func (_m *MockIAMAPI) ListGroupsWithContext(_param0 aws.Context, _param1 *iam.ListGroupsInput, _param2 ...request.Option) (*iam.ListGroupsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListGroupsWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListGroupsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListGroupsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupsWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListGroupsRequest(_param0 *iam.ListGroupsInput) (*request.Request, *iam.ListGroupsOutput) {
+	ret := _m.ctrl.Call(_m, "ListGroupsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListGroupsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListGroupsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupsRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListGroupsPages(_param0 *iam.ListGroupsInput, _param1 func(*iam.ListGroupsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListGroupsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1780,15 +3116,19 @@ func (_mr *_MockIAMAPIRecorder) ListGroupsPages(arg0, arg1 interface{}) *gomock.
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupsPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListGroupsForUserRequest(_param0 *iam.ListGroupsForUserInput) (*request.Request, *iam.ListGroupsForUserOutput) {
-	ret := _m.ctrl.Call(_m, "ListGroupsForUserRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListGroupsForUserOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListGroupsPagesWithContext(_param0 aws.Context, _param1 *iam.ListGroupsInput, _param2 func(*iam.ListGroupsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListGroupsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListGroupsForUserRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupsForUserRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListGroupsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupsPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListGroupsForUser(_param0 *iam.ListGroupsForUserInput) (*iam.ListGroupsForUserOutput, error) {
@@ -1802,6 +3142,33 @@ func (_mr *_MockIAMAPIRecorder) ListGroupsForUser(arg0 interface{}) *gomock.Call
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupsForUser", arg0)
 }
 
+func (_m *MockIAMAPI) ListGroupsForUserWithContext(_param0 aws.Context, _param1 *iam.ListGroupsForUserInput, _param2 ...request.Option) (*iam.ListGroupsForUserOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListGroupsForUserWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListGroupsForUserOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListGroupsForUserWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupsForUserWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListGroupsForUserRequest(_param0 *iam.ListGroupsForUserInput) (*request.Request, *iam.ListGroupsForUserOutput) {
+	ret := _m.ctrl.Call(_m, "ListGroupsForUserRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListGroupsForUserOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListGroupsForUserRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupsForUserRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListGroupsForUserPages(_param0 *iam.ListGroupsForUserInput, _param1 func(*iam.ListGroupsForUserOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListGroupsForUserPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1812,15 +3179,19 @@ func (_mr *_MockIAMAPIRecorder) ListGroupsForUserPages(arg0, arg1 interface{}) *
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupsForUserPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListInstanceProfilesRequest(_param0 *iam.ListInstanceProfilesInput) (*request.Request, *iam.ListInstanceProfilesOutput) {
-	ret := _m.ctrl.Call(_m, "ListInstanceProfilesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListInstanceProfilesOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListGroupsForUserPagesWithContext(_param0 aws.Context, _param1 *iam.ListGroupsForUserInput, _param2 func(*iam.ListGroupsForUserOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListGroupsForUserPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListInstanceProfilesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListInstanceProfilesRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListGroupsForUserPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListGroupsForUserPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListInstanceProfiles(_param0 *iam.ListInstanceProfilesInput) (*iam.ListInstanceProfilesOutput, error) {
@@ -1834,6 +3205,33 @@ func (_mr *_MockIAMAPIRecorder) ListInstanceProfiles(arg0 interface{}) *gomock.C
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListInstanceProfiles", arg0)
 }
 
+func (_m *MockIAMAPI) ListInstanceProfilesWithContext(_param0 aws.Context, _param1 *iam.ListInstanceProfilesInput, _param2 ...request.Option) (*iam.ListInstanceProfilesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListInstanceProfilesWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListInstanceProfilesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListInstanceProfilesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListInstanceProfilesWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListInstanceProfilesRequest(_param0 *iam.ListInstanceProfilesInput) (*request.Request, *iam.ListInstanceProfilesOutput) {
+	ret := _m.ctrl.Call(_m, "ListInstanceProfilesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListInstanceProfilesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListInstanceProfilesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListInstanceProfilesRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListInstanceProfilesPages(_param0 *iam.ListInstanceProfilesInput, _param1 func(*iam.ListInstanceProfilesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListInstanceProfilesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1844,15 +3242,19 @@ func (_mr *_MockIAMAPIRecorder) ListInstanceProfilesPages(arg0, arg1 interface{}
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListInstanceProfilesPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListInstanceProfilesForRoleRequest(_param0 *iam.ListInstanceProfilesForRoleInput) (*request.Request, *iam.ListInstanceProfilesForRoleOutput) {
-	ret := _m.ctrl.Call(_m, "ListInstanceProfilesForRoleRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListInstanceProfilesForRoleOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListInstanceProfilesPagesWithContext(_param0 aws.Context, _param1 *iam.ListInstanceProfilesInput, _param2 func(*iam.ListInstanceProfilesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListInstanceProfilesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListInstanceProfilesForRoleRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListInstanceProfilesForRoleRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListInstanceProfilesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListInstanceProfilesPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListInstanceProfilesForRole(_param0 *iam.ListInstanceProfilesForRoleInput) (*iam.ListInstanceProfilesForRoleOutput, error) {
@@ -1866,6 +3268,33 @@ func (_mr *_MockIAMAPIRecorder) ListInstanceProfilesForRole(arg0 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListInstanceProfilesForRole", arg0)
 }
 
+func (_m *MockIAMAPI) ListInstanceProfilesForRoleWithContext(_param0 aws.Context, _param1 *iam.ListInstanceProfilesForRoleInput, _param2 ...request.Option) (*iam.ListInstanceProfilesForRoleOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListInstanceProfilesForRoleWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListInstanceProfilesForRoleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListInstanceProfilesForRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListInstanceProfilesForRoleWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListInstanceProfilesForRoleRequest(_param0 *iam.ListInstanceProfilesForRoleInput) (*request.Request, *iam.ListInstanceProfilesForRoleOutput) {
+	ret := _m.ctrl.Call(_m, "ListInstanceProfilesForRoleRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListInstanceProfilesForRoleOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListInstanceProfilesForRoleRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListInstanceProfilesForRoleRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListInstanceProfilesForRolePages(_param0 *iam.ListInstanceProfilesForRoleInput, _param1 func(*iam.ListInstanceProfilesForRoleOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListInstanceProfilesForRolePages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1876,15 +3305,19 @@ func (_mr *_MockIAMAPIRecorder) ListInstanceProfilesForRolePages(arg0, arg1 inte
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListInstanceProfilesForRolePages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListMFADevicesRequest(_param0 *iam.ListMFADevicesInput) (*request.Request, *iam.ListMFADevicesOutput) {
-	ret := _m.ctrl.Call(_m, "ListMFADevicesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListMFADevicesOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListInstanceProfilesForRolePagesWithContext(_param0 aws.Context, _param1 *iam.ListInstanceProfilesForRoleInput, _param2 func(*iam.ListInstanceProfilesForRoleOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListInstanceProfilesForRolePagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListMFADevicesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListMFADevicesRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListInstanceProfilesForRolePagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListInstanceProfilesForRolePagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListMFADevices(_param0 *iam.ListMFADevicesInput) (*iam.ListMFADevicesOutput, error) {
@@ -1898,6 +3331,33 @@ func (_mr *_MockIAMAPIRecorder) ListMFADevices(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListMFADevices", arg0)
 }
 
+func (_m *MockIAMAPI) ListMFADevicesWithContext(_param0 aws.Context, _param1 *iam.ListMFADevicesInput, _param2 ...request.Option) (*iam.ListMFADevicesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListMFADevicesWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListMFADevicesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListMFADevicesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListMFADevicesWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListMFADevicesRequest(_param0 *iam.ListMFADevicesInput) (*request.Request, *iam.ListMFADevicesOutput) {
+	ret := _m.ctrl.Call(_m, "ListMFADevicesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListMFADevicesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListMFADevicesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListMFADevicesRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListMFADevicesPages(_param0 *iam.ListMFADevicesInput, _param1 func(*iam.ListMFADevicesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListMFADevicesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1908,15 +3368,19 @@ func (_mr *_MockIAMAPIRecorder) ListMFADevicesPages(arg0, arg1 interface{}) *gom
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListMFADevicesPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListOpenIDConnectProvidersRequest(_param0 *iam.ListOpenIDConnectProvidersInput) (*request.Request, *iam.ListOpenIDConnectProvidersOutput) {
-	ret := _m.ctrl.Call(_m, "ListOpenIDConnectProvidersRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListOpenIDConnectProvidersOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListMFADevicesPagesWithContext(_param0 aws.Context, _param1 *iam.ListMFADevicesInput, _param2 func(*iam.ListMFADevicesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListMFADevicesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListOpenIDConnectProvidersRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListOpenIDConnectProvidersRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListMFADevicesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListMFADevicesPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListOpenIDConnectProviders(_param0 *iam.ListOpenIDConnectProvidersInput) (*iam.ListOpenIDConnectProvidersOutput, error) {
@@ -1930,15 +3394,31 @@ func (_mr *_MockIAMAPIRecorder) ListOpenIDConnectProviders(arg0 interface{}) *go
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListOpenIDConnectProviders", arg0)
 }
 
-func (_m *MockIAMAPI) ListPoliciesRequest(_param0 *iam.ListPoliciesInput) (*request.Request, *iam.ListPoliciesOutput) {
-	ret := _m.ctrl.Call(_m, "ListPoliciesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListPoliciesOutput)
+func (_m *MockIAMAPI) ListOpenIDConnectProvidersWithContext(_param0 aws.Context, _param1 *iam.ListOpenIDConnectProvidersInput, _param2 ...request.Option) (*iam.ListOpenIDConnectProvidersOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListOpenIDConnectProvidersWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListOpenIDConnectProvidersOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) ListPoliciesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListPoliciesRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListOpenIDConnectProvidersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListOpenIDConnectProvidersWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListOpenIDConnectProvidersRequest(_param0 *iam.ListOpenIDConnectProvidersInput) (*request.Request, *iam.ListOpenIDConnectProvidersOutput) {
+	ret := _m.ctrl.Call(_m, "ListOpenIDConnectProvidersRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListOpenIDConnectProvidersOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListOpenIDConnectProvidersRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListOpenIDConnectProvidersRequest", arg0)
 }
 
 func (_m *MockIAMAPI) ListPolicies(_param0 *iam.ListPoliciesInput) (*iam.ListPoliciesOutput, error) {
@@ -1952,6 +3432,33 @@ func (_mr *_MockIAMAPIRecorder) ListPolicies(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListPolicies", arg0)
 }
 
+func (_m *MockIAMAPI) ListPoliciesWithContext(_param0 aws.Context, _param1 *iam.ListPoliciesInput, _param2 ...request.Option) (*iam.ListPoliciesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListPoliciesWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListPoliciesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListPoliciesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListPoliciesWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListPoliciesRequest(_param0 *iam.ListPoliciesInput) (*request.Request, *iam.ListPoliciesOutput) {
+	ret := _m.ctrl.Call(_m, "ListPoliciesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListPoliciesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListPoliciesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListPoliciesRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListPoliciesPages(_param0 *iam.ListPoliciesInput, _param1 func(*iam.ListPoliciesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListPoliciesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1962,15 +3469,19 @@ func (_mr *_MockIAMAPIRecorder) ListPoliciesPages(arg0, arg1 interface{}) *gomoc
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListPoliciesPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListPolicyVersionsRequest(_param0 *iam.ListPolicyVersionsInput) (*request.Request, *iam.ListPolicyVersionsOutput) {
-	ret := _m.ctrl.Call(_m, "ListPolicyVersionsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListPolicyVersionsOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListPoliciesPagesWithContext(_param0 aws.Context, _param1 *iam.ListPoliciesInput, _param2 func(*iam.ListPoliciesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListPoliciesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListPolicyVersionsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListPolicyVersionsRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListPoliciesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListPoliciesPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListPolicyVersions(_param0 *iam.ListPolicyVersionsInput) (*iam.ListPolicyVersionsOutput, error) {
@@ -1984,6 +3495,33 @@ func (_mr *_MockIAMAPIRecorder) ListPolicyVersions(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListPolicyVersions", arg0)
 }
 
+func (_m *MockIAMAPI) ListPolicyVersionsWithContext(_param0 aws.Context, _param1 *iam.ListPolicyVersionsInput, _param2 ...request.Option) (*iam.ListPolicyVersionsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListPolicyVersionsWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListPolicyVersionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListPolicyVersionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListPolicyVersionsWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListPolicyVersionsRequest(_param0 *iam.ListPolicyVersionsInput) (*request.Request, *iam.ListPolicyVersionsOutput) {
+	ret := _m.ctrl.Call(_m, "ListPolicyVersionsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListPolicyVersionsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListPolicyVersionsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListPolicyVersionsRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListPolicyVersionsPages(_param0 *iam.ListPolicyVersionsInput, _param1 func(*iam.ListPolicyVersionsOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListPolicyVersionsPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -1994,15 +3532,19 @@ func (_mr *_MockIAMAPIRecorder) ListPolicyVersionsPages(arg0, arg1 interface{}) 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListPolicyVersionsPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListRolePoliciesRequest(_param0 *iam.ListRolePoliciesInput) (*request.Request, *iam.ListRolePoliciesOutput) {
-	ret := _m.ctrl.Call(_m, "ListRolePoliciesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListRolePoliciesOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListPolicyVersionsPagesWithContext(_param0 aws.Context, _param1 *iam.ListPolicyVersionsInput, _param2 func(*iam.ListPolicyVersionsOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListPolicyVersionsPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListRolePoliciesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListRolePoliciesRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListPolicyVersionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListPolicyVersionsPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListRolePolicies(_param0 *iam.ListRolePoliciesInput) (*iam.ListRolePoliciesOutput, error) {
@@ -2016,6 +3558,33 @@ func (_mr *_MockIAMAPIRecorder) ListRolePolicies(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListRolePolicies", arg0)
 }
 
+func (_m *MockIAMAPI) ListRolePoliciesWithContext(_param0 aws.Context, _param1 *iam.ListRolePoliciesInput, _param2 ...request.Option) (*iam.ListRolePoliciesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListRolePoliciesWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListRolePoliciesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListRolePoliciesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListRolePoliciesWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListRolePoliciesRequest(_param0 *iam.ListRolePoliciesInput) (*request.Request, *iam.ListRolePoliciesOutput) {
+	ret := _m.ctrl.Call(_m, "ListRolePoliciesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListRolePoliciesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListRolePoliciesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListRolePoliciesRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListRolePoliciesPages(_param0 *iam.ListRolePoliciesInput, _param1 func(*iam.ListRolePoliciesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListRolePoliciesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -2026,15 +3595,19 @@ func (_mr *_MockIAMAPIRecorder) ListRolePoliciesPages(arg0, arg1 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListRolePoliciesPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListRolesRequest(_param0 *iam.ListRolesInput) (*request.Request, *iam.ListRolesOutput) {
-	ret := _m.ctrl.Call(_m, "ListRolesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListRolesOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListRolePoliciesPagesWithContext(_param0 aws.Context, _param1 *iam.ListRolePoliciesInput, _param2 func(*iam.ListRolePoliciesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListRolePoliciesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListRolesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListRolesRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListRolePoliciesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListRolePoliciesPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListRoles(_param0 *iam.ListRolesInput) (*iam.ListRolesOutput, error) {
@@ -2048,6 +3621,33 @@ func (_mr *_MockIAMAPIRecorder) ListRoles(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListRoles", arg0)
 }
 
+func (_m *MockIAMAPI) ListRolesWithContext(_param0 aws.Context, _param1 *iam.ListRolesInput, _param2 ...request.Option) (*iam.ListRolesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListRolesWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListRolesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListRolesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListRolesWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListRolesRequest(_param0 *iam.ListRolesInput) (*request.Request, *iam.ListRolesOutput) {
+	ret := _m.ctrl.Call(_m, "ListRolesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListRolesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListRolesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListRolesRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListRolesPages(_param0 *iam.ListRolesInput, _param1 func(*iam.ListRolesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListRolesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -2058,15 +3658,19 @@ func (_mr *_MockIAMAPIRecorder) ListRolesPages(arg0, arg1 interface{}) *gomock.C
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListRolesPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListSAMLProvidersRequest(_param0 *iam.ListSAMLProvidersInput) (*request.Request, *iam.ListSAMLProvidersOutput) {
-	ret := _m.ctrl.Call(_m, "ListSAMLProvidersRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListSAMLProvidersOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListRolesPagesWithContext(_param0 aws.Context, _param1 *iam.ListRolesInput, _param2 func(*iam.ListRolesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListRolesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListSAMLProvidersRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSAMLProvidersRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListRolesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListRolesPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListSAMLProviders(_param0 *iam.ListSAMLProvidersInput) (*iam.ListSAMLProvidersOutput, error) {
@@ -2080,15 +3684,31 @@ func (_mr *_MockIAMAPIRecorder) ListSAMLProviders(arg0 interface{}) *gomock.Call
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSAMLProviders", arg0)
 }
 
-func (_m *MockIAMAPI) ListSSHPublicKeysRequest(_param0 *iam.ListSSHPublicKeysInput) (*request.Request, *iam.ListSSHPublicKeysOutput) {
-	ret := _m.ctrl.Call(_m, "ListSSHPublicKeysRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListSSHPublicKeysOutput)
+func (_m *MockIAMAPI) ListSAMLProvidersWithContext(_param0 aws.Context, _param1 *iam.ListSAMLProvidersInput, _param2 ...request.Option) (*iam.ListSAMLProvidersOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListSAMLProvidersWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListSAMLProvidersOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) ListSSHPublicKeysRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSSHPublicKeysRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListSAMLProvidersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSAMLProvidersWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListSAMLProvidersRequest(_param0 *iam.ListSAMLProvidersInput) (*request.Request, *iam.ListSAMLProvidersOutput) {
+	ret := _m.ctrl.Call(_m, "ListSAMLProvidersRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListSAMLProvidersOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListSAMLProvidersRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSAMLProvidersRequest", arg0)
 }
 
 func (_m *MockIAMAPI) ListSSHPublicKeys(_param0 *iam.ListSSHPublicKeysInput) (*iam.ListSSHPublicKeysOutput, error) {
@@ -2102,6 +3722,33 @@ func (_mr *_MockIAMAPIRecorder) ListSSHPublicKeys(arg0 interface{}) *gomock.Call
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSSHPublicKeys", arg0)
 }
 
+func (_m *MockIAMAPI) ListSSHPublicKeysWithContext(_param0 aws.Context, _param1 *iam.ListSSHPublicKeysInput, _param2 ...request.Option) (*iam.ListSSHPublicKeysOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListSSHPublicKeysWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListSSHPublicKeysOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListSSHPublicKeysWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSSHPublicKeysWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListSSHPublicKeysRequest(_param0 *iam.ListSSHPublicKeysInput) (*request.Request, *iam.ListSSHPublicKeysOutput) {
+	ret := _m.ctrl.Call(_m, "ListSSHPublicKeysRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListSSHPublicKeysOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListSSHPublicKeysRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSSHPublicKeysRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListSSHPublicKeysPages(_param0 *iam.ListSSHPublicKeysInput, _param1 func(*iam.ListSSHPublicKeysOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListSSHPublicKeysPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -2112,15 +3759,19 @@ func (_mr *_MockIAMAPIRecorder) ListSSHPublicKeysPages(arg0, arg1 interface{}) *
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSSHPublicKeysPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListServerCertificatesRequest(_param0 *iam.ListServerCertificatesInput) (*request.Request, *iam.ListServerCertificatesOutput) {
-	ret := _m.ctrl.Call(_m, "ListServerCertificatesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListServerCertificatesOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListSSHPublicKeysPagesWithContext(_param0 aws.Context, _param1 *iam.ListSSHPublicKeysInput, _param2 func(*iam.ListSSHPublicKeysOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListSSHPublicKeysPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListServerCertificatesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListServerCertificatesRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListSSHPublicKeysPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSSHPublicKeysPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListServerCertificates(_param0 *iam.ListServerCertificatesInput) (*iam.ListServerCertificatesOutput, error) {
@@ -2134,6 +3785,33 @@ func (_mr *_MockIAMAPIRecorder) ListServerCertificates(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListServerCertificates", arg0)
 }
 
+func (_m *MockIAMAPI) ListServerCertificatesWithContext(_param0 aws.Context, _param1 *iam.ListServerCertificatesInput, _param2 ...request.Option) (*iam.ListServerCertificatesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListServerCertificatesWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListServerCertificatesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListServerCertificatesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListServerCertificatesWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListServerCertificatesRequest(_param0 *iam.ListServerCertificatesInput) (*request.Request, *iam.ListServerCertificatesOutput) {
+	ret := _m.ctrl.Call(_m, "ListServerCertificatesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListServerCertificatesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListServerCertificatesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListServerCertificatesRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListServerCertificatesPages(_param0 *iam.ListServerCertificatesInput, _param1 func(*iam.ListServerCertificatesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListServerCertificatesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -2144,15 +3822,19 @@ func (_mr *_MockIAMAPIRecorder) ListServerCertificatesPages(arg0, arg1 interface
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListServerCertificatesPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListServiceSpecificCredentialsRequest(_param0 *iam.ListServiceSpecificCredentialsInput) (*request.Request, *iam.ListServiceSpecificCredentialsOutput) {
-	ret := _m.ctrl.Call(_m, "ListServiceSpecificCredentialsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListServiceSpecificCredentialsOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListServerCertificatesPagesWithContext(_param0 aws.Context, _param1 *iam.ListServerCertificatesInput, _param2 func(*iam.ListServerCertificatesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListServerCertificatesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListServiceSpecificCredentialsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListServiceSpecificCredentialsRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListServerCertificatesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListServerCertificatesPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListServiceSpecificCredentials(_param0 *iam.ListServiceSpecificCredentialsInput) (*iam.ListServiceSpecificCredentialsOutput, error) {
@@ -2166,15 +3848,31 @@ func (_mr *_MockIAMAPIRecorder) ListServiceSpecificCredentials(arg0 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListServiceSpecificCredentials", arg0)
 }
 
-func (_m *MockIAMAPI) ListSigningCertificatesRequest(_param0 *iam.ListSigningCertificatesInput) (*request.Request, *iam.ListSigningCertificatesOutput) {
-	ret := _m.ctrl.Call(_m, "ListSigningCertificatesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListSigningCertificatesOutput)
+func (_m *MockIAMAPI) ListServiceSpecificCredentialsWithContext(_param0 aws.Context, _param1 *iam.ListServiceSpecificCredentialsInput, _param2 ...request.Option) (*iam.ListServiceSpecificCredentialsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListServiceSpecificCredentialsWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListServiceSpecificCredentialsOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) ListSigningCertificatesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSigningCertificatesRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListServiceSpecificCredentialsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListServiceSpecificCredentialsWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListServiceSpecificCredentialsRequest(_param0 *iam.ListServiceSpecificCredentialsInput) (*request.Request, *iam.ListServiceSpecificCredentialsOutput) {
+	ret := _m.ctrl.Call(_m, "ListServiceSpecificCredentialsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListServiceSpecificCredentialsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListServiceSpecificCredentialsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListServiceSpecificCredentialsRequest", arg0)
 }
 
 func (_m *MockIAMAPI) ListSigningCertificates(_param0 *iam.ListSigningCertificatesInput) (*iam.ListSigningCertificatesOutput, error) {
@@ -2188,6 +3886,33 @@ func (_mr *_MockIAMAPIRecorder) ListSigningCertificates(arg0 interface{}) *gomoc
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSigningCertificates", arg0)
 }
 
+func (_m *MockIAMAPI) ListSigningCertificatesWithContext(_param0 aws.Context, _param1 *iam.ListSigningCertificatesInput, _param2 ...request.Option) (*iam.ListSigningCertificatesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListSigningCertificatesWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListSigningCertificatesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListSigningCertificatesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSigningCertificatesWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListSigningCertificatesRequest(_param0 *iam.ListSigningCertificatesInput) (*request.Request, *iam.ListSigningCertificatesOutput) {
+	ret := _m.ctrl.Call(_m, "ListSigningCertificatesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListSigningCertificatesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListSigningCertificatesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSigningCertificatesRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListSigningCertificatesPages(_param0 *iam.ListSigningCertificatesInput, _param1 func(*iam.ListSigningCertificatesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListSigningCertificatesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -2198,15 +3923,19 @@ func (_mr *_MockIAMAPIRecorder) ListSigningCertificatesPages(arg0, arg1 interfac
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSigningCertificatesPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListUserPoliciesRequest(_param0 *iam.ListUserPoliciesInput) (*request.Request, *iam.ListUserPoliciesOutput) {
-	ret := _m.ctrl.Call(_m, "ListUserPoliciesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListUserPoliciesOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListSigningCertificatesPagesWithContext(_param0 aws.Context, _param1 *iam.ListSigningCertificatesInput, _param2 func(*iam.ListSigningCertificatesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListSigningCertificatesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListUserPoliciesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListUserPoliciesRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListSigningCertificatesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListSigningCertificatesPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListUserPolicies(_param0 *iam.ListUserPoliciesInput) (*iam.ListUserPoliciesOutput, error) {
@@ -2220,6 +3949,33 @@ func (_mr *_MockIAMAPIRecorder) ListUserPolicies(arg0 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListUserPolicies", arg0)
 }
 
+func (_m *MockIAMAPI) ListUserPoliciesWithContext(_param0 aws.Context, _param1 *iam.ListUserPoliciesInput, _param2 ...request.Option) (*iam.ListUserPoliciesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListUserPoliciesWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListUserPoliciesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListUserPoliciesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListUserPoliciesWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListUserPoliciesRequest(_param0 *iam.ListUserPoliciesInput) (*request.Request, *iam.ListUserPoliciesOutput) {
+	ret := _m.ctrl.Call(_m, "ListUserPoliciesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListUserPoliciesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListUserPoliciesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListUserPoliciesRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListUserPoliciesPages(_param0 *iam.ListUserPoliciesInput, _param1 func(*iam.ListUserPoliciesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListUserPoliciesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -2230,15 +3986,19 @@ func (_mr *_MockIAMAPIRecorder) ListUserPoliciesPages(arg0, arg1 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListUserPoliciesPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListUsersRequest(_param0 *iam.ListUsersInput) (*request.Request, *iam.ListUsersOutput) {
-	ret := _m.ctrl.Call(_m, "ListUsersRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListUsersOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListUserPoliciesPagesWithContext(_param0 aws.Context, _param1 *iam.ListUserPoliciesInput, _param2 func(*iam.ListUserPoliciesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListUserPoliciesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListUsersRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListUsersRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListUserPoliciesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListUserPoliciesPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListUsers(_param0 *iam.ListUsersInput) (*iam.ListUsersOutput, error) {
@@ -2252,6 +4012,33 @@ func (_mr *_MockIAMAPIRecorder) ListUsers(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListUsers", arg0)
 }
 
+func (_m *MockIAMAPI) ListUsersWithContext(_param0 aws.Context, _param1 *iam.ListUsersInput, _param2 ...request.Option) (*iam.ListUsersOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListUsersWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListUsersOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListUsersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListUsersWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListUsersRequest(_param0 *iam.ListUsersInput) (*request.Request, *iam.ListUsersOutput) {
+	ret := _m.ctrl.Call(_m, "ListUsersRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListUsersOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListUsersRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListUsersRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListUsersPages(_param0 *iam.ListUsersInput, _param1 func(*iam.ListUsersOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListUsersPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -2262,15 +4049,19 @@ func (_mr *_MockIAMAPIRecorder) ListUsersPages(arg0, arg1 interface{}) *gomock.C
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListUsersPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) ListVirtualMFADevicesRequest(_param0 *iam.ListVirtualMFADevicesInput) (*request.Request, *iam.ListVirtualMFADevicesOutput) {
-	ret := _m.ctrl.Call(_m, "ListVirtualMFADevicesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ListVirtualMFADevicesOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListUsersPagesWithContext(_param0 aws.Context, _param1 *iam.ListUsersInput, _param2 func(*iam.ListUsersOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListUsersPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) ListVirtualMFADevicesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListVirtualMFADevicesRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListUsersPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListUsersPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) ListVirtualMFADevices(_param0 *iam.ListVirtualMFADevicesInput) (*iam.ListVirtualMFADevicesOutput, error) {
@@ -2284,6 +4075,33 @@ func (_mr *_MockIAMAPIRecorder) ListVirtualMFADevices(arg0 interface{}) *gomock.
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListVirtualMFADevices", arg0)
 }
 
+func (_m *MockIAMAPI) ListVirtualMFADevicesWithContext(_param0 aws.Context, _param1 *iam.ListVirtualMFADevicesInput, _param2 ...request.Option) (*iam.ListVirtualMFADevicesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListVirtualMFADevicesWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ListVirtualMFADevicesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListVirtualMFADevicesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListVirtualMFADevicesWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ListVirtualMFADevicesRequest(_param0 *iam.ListVirtualMFADevicesInput) (*request.Request, *iam.ListVirtualMFADevicesOutput) {
+	ret := _m.ctrl.Call(_m, "ListVirtualMFADevicesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ListVirtualMFADevicesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ListVirtualMFADevicesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListVirtualMFADevicesRequest", arg0)
+}
+
 func (_m *MockIAMAPI) ListVirtualMFADevicesPages(_param0 *iam.ListVirtualMFADevicesInput, _param1 func(*iam.ListVirtualMFADevicesOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "ListVirtualMFADevicesPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -2294,15 +4112,19 @@ func (_mr *_MockIAMAPIRecorder) ListVirtualMFADevicesPages(arg0, arg1 interface{
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListVirtualMFADevicesPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) PutGroupPolicyRequest(_param0 *iam.PutGroupPolicyInput) (*request.Request, *iam.PutGroupPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "PutGroupPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.PutGroupPolicyOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) ListVirtualMFADevicesPagesWithContext(_param0 aws.Context, _param1 *iam.ListVirtualMFADevicesInput, _param2 func(*iam.ListVirtualMFADevicesOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ListVirtualMFADevicesPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) PutGroupPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "PutGroupPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ListVirtualMFADevicesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ListVirtualMFADevicesPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) PutGroupPolicy(_param0 *iam.PutGroupPolicyInput) (*iam.PutGroupPolicyOutput, error) {
@@ -2316,15 +4138,31 @@ func (_mr *_MockIAMAPIRecorder) PutGroupPolicy(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "PutGroupPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) PutRolePolicyRequest(_param0 *iam.PutRolePolicyInput) (*request.Request, *iam.PutRolePolicyOutput) {
-	ret := _m.ctrl.Call(_m, "PutRolePolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.PutRolePolicyOutput)
+func (_m *MockIAMAPI) PutGroupPolicyWithContext(_param0 aws.Context, _param1 *iam.PutGroupPolicyInput, _param2 ...request.Option) (*iam.PutGroupPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "PutGroupPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.PutGroupPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) PutRolePolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "PutRolePolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) PutGroupPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PutGroupPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) PutGroupPolicyRequest(_param0 *iam.PutGroupPolicyInput) (*request.Request, *iam.PutGroupPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "PutGroupPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.PutGroupPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) PutGroupPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PutGroupPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) PutRolePolicy(_param0 *iam.PutRolePolicyInput) (*iam.PutRolePolicyOutput, error) {
@@ -2338,15 +4176,31 @@ func (_mr *_MockIAMAPIRecorder) PutRolePolicy(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "PutRolePolicy", arg0)
 }
 
-func (_m *MockIAMAPI) PutUserPolicyRequest(_param0 *iam.PutUserPolicyInput) (*request.Request, *iam.PutUserPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "PutUserPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.PutUserPolicyOutput)
+func (_m *MockIAMAPI) PutRolePolicyWithContext(_param0 aws.Context, _param1 *iam.PutRolePolicyInput, _param2 ...request.Option) (*iam.PutRolePolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "PutRolePolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.PutRolePolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) PutUserPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "PutUserPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) PutRolePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PutRolePolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) PutRolePolicyRequest(_param0 *iam.PutRolePolicyInput) (*request.Request, *iam.PutRolePolicyOutput) {
+	ret := _m.ctrl.Call(_m, "PutRolePolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.PutRolePolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) PutRolePolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PutRolePolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) PutUserPolicy(_param0 *iam.PutUserPolicyInput) (*iam.PutUserPolicyOutput, error) {
@@ -2360,15 +4214,31 @@ func (_mr *_MockIAMAPIRecorder) PutUserPolicy(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "PutUserPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) RemoveClientIDFromOpenIDConnectProviderRequest(_param0 *iam.RemoveClientIDFromOpenIDConnectProviderInput) (*request.Request, *iam.RemoveClientIDFromOpenIDConnectProviderOutput) {
-	ret := _m.ctrl.Call(_m, "RemoveClientIDFromOpenIDConnectProviderRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.RemoveClientIDFromOpenIDConnectProviderOutput)
+func (_m *MockIAMAPI) PutUserPolicyWithContext(_param0 aws.Context, _param1 *iam.PutUserPolicyInput, _param2 ...request.Option) (*iam.PutUserPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "PutUserPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.PutUserPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) RemoveClientIDFromOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveClientIDFromOpenIDConnectProviderRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) PutUserPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PutUserPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) PutUserPolicyRequest(_param0 *iam.PutUserPolicyInput) (*request.Request, *iam.PutUserPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "PutUserPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.PutUserPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) PutUserPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PutUserPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) RemoveClientIDFromOpenIDConnectProvider(_param0 *iam.RemoveClientIDFromOpenIDConnectProviderInput) (*iam.RemoveClientIDFromOpenIDConnectProviderOutput, error) {
@@ -2382,15 +4252,31 @@ func (_mr *_MockIAMAPIRecorder) RemoveClientIDFromOpenIDConnectProvider(arg0 int
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveClientIDFromOpenIDConnectProvider", arg0)
 }
 
-func (_m *MockIAMAPI) RemoveRoleFromInstanceProfileRequest(_param0 *iam.RemoveRoleFromInstanceProfileInput) (*request.Request, *iam.RemoveRoleFromInstanceProfileOutput) {
-	ret := _m.ctrl.Call(_m, "RemoveRoleFromInstanceProfileRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.RemoveRoleFromInstanceProfileOutput)
+func (_m *MockIAMAPI) RemoveClientIDFromOpenIDConnectProviderWithContext(_param0 aws.Context, _param1 *iam.RemoveClientIDFromOpenIDConnectProviderInput, _param2 ...request.Option) (*iam.RemoveClientIDFromOpenIDConnectProviderOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RemoveClientIDFromOpenIDConnectProviderWithContext", _s...)
+	ret0, _ := ret[0].(*iam.RemoveClientIDFromOpenIDConnectProviderOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) RemoveRoleFromInstanceProfileRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveRoleFromInstanceProfileRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) RemoveClientIDFromOpenIDConnectProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveClientIDFromOpenIDConnectProviderWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) RemoveClientIDFromOpenIDConnectProviderRequest(_param0 *iam.RemoveClientIDFromOpenIDConnectProviderInput) (*request.Request, *iam.RemoveClientIDFromOpenIDConnectProviderOutput) {
+	ret := _m.ctrl.Call(_m, "RemoveClientIDFromOpenIDConnectProviderRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.RemoveClientIDFromOpenIDConnectProviderOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) RemoveClientIDFromOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveClientIDFromOpenIDConnectProviderRequest", arg0)
 }
 
 func (_m *MockIAMAPI) RemoveRoleFromInstanceProfile(_param0 *iam.RemoveRoleFromInstanceProfileInput) (*iam.RemoveRoleFromInstanceProfileOutput, error) {
@@ -2404,15 +4290,31 @@ func (_mr *_MockIAMAPIRecorder) RemoveRoleFromInstanceProfile(arg0 interface{}) 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveRoleFromInstanceProfile", arg0)
 }
 
-func (_m *MockIAMAPI) RemoveUserFromGroupRequest(_param0 *iam.RemoveUserFromGroupInput) (*request.Request, *iam.RemoveUserFromGroupOutput) {
-	ret := _m.ctrl.Call(_m, "RemoveUserFromGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.RemoveUserFromGroupOutput)
+func (_m *MockIAMAPI) RemoveRoleFromInstanceProfileWithContext(_param0 aws.Context, _param1 *iam.RemoveRoleFromInstanceProfileInput, _param2 ...request.Option) (*iam.RemoveRoleFromInstanceProfileOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RemoveRoleFromInstanceProfileWithContext", _s...)
+	ret0, _ := ret[0].(*iam.RemoveRoleFromInstanceProfileOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) RemoveUserFromGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveUserFromGroupRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) RemoveRoleFromInstanceProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveRoleFromInstanceProfileWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) RemoveRoleFromInstanceProfileRequest(_param0 *iam.RemoveRoleFromInstanceProfileInput) (*request.Request, *iam.RemoveRoleFromInstanceProfileOutput) {
+	ret := _m.ctrl.Call(_m, "RemoveRoleFromInstanceProfileRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.RemoveRoleFromInstanceProfileOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) RemoveRoleFromInstanceProfileRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveRoleFromInstanceProfileRequest", arg0)
 }
 
 func (_m *MockIAMAPI) RemoveUserFromGroup(_param0 *iam.RemoveUserFromGroupInput) (*iam.RemoveUserFromGroupOutput, error) {
@@ -2426,15 +4328,31 @@ func (_mr *_MockIAMAPIRecorder) RemoveUserFromGroup(arg0 interface{}) *gomock.Ca
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveUserFromGroup", arg0)
 }
 
-func (_m *MockIAMAPI) ResetServiceSpecificCredentialRequest(_param0 *iam.ResetServiceSpecificCredentialInput) (*request.Request, *iam.ResetServiceSpecificCredentialOutput) {
-	ret := _m.ctrl.Call(_m, "ResetServiceSpecificCredentialRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ResetServiceSpecificCredentialOutput)
+func (_m *MockIAMAPI) RemoveUserFromGroupWithContext(_param0 aws.Context, _param1 *iam.RemoveUserFromGroupInput, _param2 ...request.Option) (*iam.RemoveUserFromGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RemoveUserFromGroupWithContext", _s...)
+	ret0, _ := ret[0].(*iam.RemoveUserFromGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) ResetServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetServiceSpecificCredentialRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) RemoveUserFromGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveUserFromGroupWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) RemoveUserFromGroupRequest(_param0 *iam.RemoveUserFromGroupInput) (*request.Request, *iam.RemoveUserFromGroupOutput) {
+	ret := _m.ctrl.Call(_m, "RemoveUserFromGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.RemoveUserFromGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) RemoveUserFromGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveUserFromGroupRequest", arg0)
 }
 
 func (_m *MockIAMAPI) ResetServiceSpecificCredential(_param0 *iam.ResetServiceSpecificCredentialInput) (*iam.ResetServiceSpecificCredentialOutput, error) {
@@ -2448,15 +4366,31 @@ func (_mr *_MockIAMAPIRecorder) ResetServiceSpecificCredential(arg0 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetServiceSpecificCredential", arg0)
 }
 
-func (_m *MockIAMAPI) ResyncMFADeviceRequest(_param0 *iam.ResyncMFADeviceInput) (*request.Request, *iam.ResyncMFADeviceOutput) {
-	ret := _m.ctrl.Call(_m, "ResyncMFADeviceRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.ResyncMFADeviceOutput)
+func (_m *MockIAMAPI) ResetServiceSpecificCredentialWithContext(_param0 aws.Context, _param1 *iam.ResetServiceSpecificCredentialInput, _param2 ...request.Option) (*iam.ResetServiceSpecificCredentialOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ResetServiceSpecificCredentialWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ResetServiceSpecificCredentialOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) ResyncMFADeviceRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResyncMFADeviceRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ResetServiceSpecificCredentialWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetServiceSpecificCredentialWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ResetServiceSpecificCredentialRequest(_param0 *iam.ResetServiceSpecificCredentialInput) (*request.Request, *iam.ResetServiceSpecificCredentialOutput) {
+	ret := _m.ctrl.Call(_m, "ResetServiceSpecificCredentialRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ResetServiceSpecificCredentialOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ResetServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResetServiceSpecificCredentialRequest", arg0)
 }
 
 func (_m *MockIAMAPI) ResyncMFADevice(_param0 *iam.ResyncMFADeviceInput) (*iam.ResyncMFADeviceOutput, error) {
@@ -2470,15 +4404,31 @@ func (_mr *_MockIAMAPIRecorder) ResyncMFADevice(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResyncMFADevice", arg0)
 }
 
-func (_m *MockIAMAPI) SetDefaultPolicyVersionRequest(_param0 *iam.SetDefaultPolicyVersionInput) (*request.Request, *iam.SetDefaultPolicyVersionOutput) {
-	ret := _m.ctrl.Call(_m, "SetDefaultPolicyVersionRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.SetDefaultPolicyVersionOutput)
+func (_m *MockIAMAPI) ResyncMFADeviceWithContext(_param0 aws.Context, _param1 *iam.ResyncMFADeviceInput, _param2 ...request.Option) (*iam.ResyncMFADeviceOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ResyncMFADeviceWithContext", _s...)
+	ret0, _ := ret[0].(*iam.ResyncMFADeviceOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) SetDefaultPolicyVersionRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetDefaultPolicyVersionRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) ResyncMFADeviceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResyncMFADeviceWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) ResyncMFADeviceRequest(_param0 *iam.ResyncMFADeviceInput) (*request.Request, *iam.ResyncMFADeviceOutput) {
+	ret := _m.ctrl.Call(_m, "ResyncMFADeviceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.ResyncMFADeviceOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) ResyncMFADeviceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ResyncMFADeviceRequest", arg0)
 }
 
 func (_m *MockIAMAPI) SetDefaultPolicyVersion(_param0 *iam.SetDefaultPolicyVersionInput) (*iam.SetDefaultPolicyVersionOutput, error) {
@@ -2492,15 +4442,31 @@ func (_mr *_MockIAMAPIRecorder) SetDefaultPolicyVersion(arg0 interface{}) *gomoc
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetDefaultPolicyVersion", arg0)
 }
 
-func (_m *MockIAMAPI) SimulateCustomPolicyRequest(_param0 *iam.SimulateCustomPolicyInput) (*request.Request, *iam.SimulatePolicyResponse) {
-	ret := _m.ctrl.Call(_m, "SimulateCustomPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.SimulatePolicyResponse)
+func (_m *MockIAMAPI) SetDefaultPolicyVersionWithContext(_param0 aws.Context, _param1 *iam.SetDefaultPolicyVersionInput, _param2 ...request.Option) (*iam.SetDefaultPolicyVersionOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "SetDefaultPolicyVersionWithContext", _s...)
+	ret0, _ := ret[0].(*iam.SetDefaultPolicyVersionOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) SimulateCustomPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "SimulateCustomPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) SetDefaultPolicyVersionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetDefaultPolicyVersionWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) SetDefaultPolicyVersionRequest(_param0 *iam.SetDefaultPolicyVersionInput) (*request.Request, *iam.SetDefaultPolicyVersionOutput) {
+	ret := _m.ctrl.Call(_m, "SetDefaultPolicyVersionRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.SetDefaultPolicyVersionOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) SetDefaultPolicyVersionRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetDefaultPolicyVersionRequest", arg0)
 }
 
 func (_m *MockIAMAPI) SimulateCustomPolicy(_param0 *iam.SimulateCustomPolicyInput) (*iam.SimulatePolicyResponse, error) {
@@ -2514,6 +4480,33 @@ func (_mr *_MockIAMAPIRecorder) SimulateCustomPolicy(arg0 interface{}) *gomock.C
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "SimulateCustomPolicy", arg0)
 }
 
+func (_m *MockIAMAPI) SimulateCustomPolicyWithContext(_param0 aws.Context, _param1 *iam.SimulateCustomPolicyInput, _param2 ...request.Option) (*iam.SimulatePolicyResponse, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "SimulateCustomPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.SimulatePolicyResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) SimulateCustomPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SimulateCustomPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) SimulateCustomPolicyRequest(_param0 *iam.SimulateCustomPolicyInput) (*request.Request, *iam.SimulatePolicyResponse) {
+	ret := _m.ctrl.Call(_m, "SimulateCustomPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.SimulatePolicyResponse)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) SimulateCustomPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SimulateCustomPolicyRequest", arg0)
+}
+
 func (_m *MockIAMAPI) SimulateCustomPolicyPages(_param0 *iam.SimulateCustomPolicyInput, _param1 func(*iam.SimulatePolicyResponse, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "SimulateCustomPolicyPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -2524,15 +4517,19 @@ func (_mr *_MockIAMAPIRecorder) SimulateCustomPolicyPages(arg0, arg1 interface{}
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "SimulateCustomPolicyPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) SimulatePrincipalPolicyRequest(_param0 *iam.SimulatePrincipalPolicyInput) (*request.Request, *iam.SimulatePolicyResponse) {
-	ret := _m.ctrl.Call(_m, "SimulatePrincipalPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.SimulatePolicyResponse)
-	return ret0, ret1
+func (_m *MockIAMAPI) SimulateCustomPolicyPagesWithContext(_param0 aws.Context, _param1 *iam.SimulateCustomPolicyInput, _param2 func(*iam.SimulatePolicyResponse, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "SimulateCustomPolicyPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) SimulatePrincipalPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "SimulatePrincipalPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) SimulateCustomPolicyPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SimulateCustomPolicyPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) SimulatePrincipalPolicy(_param0 *iam.SimulatePrincipalPolicyInput) (*iam.SimulatePolicyResponse, error) {
@@ -2546,6 +4543,33 @@ func (_mr *_MockIAMAPIRecorder) SimulatePrincipalPolicy(arg0 interface{}) *gomoc
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "SimulatePrincipalPolicy", arg0)
 }
 
+func (_m *MockIAMAPI) SimulatePrincipalPolicyWithContext(_param0 aws.Context, _param1 *iam.SimulatePrincipalPolicyInput, _param2 ...request.Option) (*iam.SimulatePolicyResponse, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "SimulatePrincipalPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.SimulatePolicyResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) SimulatePrincipalPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SimulatePrincipalPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) SimulatePrincipalPolicyRequest(_param0 *iam.SimulatePrincipalPolicyInput) (*request.Request, *iam.SimulatePolicyResponse) {
+	ret := _m.ctrl.Call(_m, "SimulatePrincipalPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.SimulatePolicyResponse)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) SimulatePrincipalPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SimulatePrincipalPolicyRequest", arg0)
+}
+
 func (_m *MockIAMAPI) SimulatePrincipalPolicyPages(_param0 *iam.SimulatePrincipalPolicyInput, _param1 func(*iam.SimulatePolicyResponse, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "SimulatePrincipalPolicyPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -2556,15 +4580,19 @@ func (_mr *_MockIAMAPIRecorder) SimulatePrincipalPolicyPages(arg0, arg1 interfac
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "SimulatePrincipalPolicyPages", arg0, arg1)
 }
 
-func (_m *MockIAMAPI) UpdateAccessKeyRequest(_param0 *iam.UpdateAccessKeyInput) (*request.Request, *iam.UpdateAccessKeyOutput) {
-	ret := _m.ctrl.Call(_m, "UpdateAccessKeyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.UpdateAccessKeyOutput)
-	return ret0, ret1
+func (_m *MockIAMAPI) SimulatePrincipalPolicyPagesWithContext(_param0 aws.Context, _param1 *iam.SimulatePrincipalPolicyInput, _param2 func(*iam.SimulatePolicyResponse, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "SimulatePrincipalPolicyPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockIAMAPIRecorder) UpdateAccessKeyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateAccessKeyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) SimulatePrincipalPolicyPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SimulatePrincipalPolicyPagesWithContext", _s...)
 }
 
 func (_m *MockIAMAPI) UpdateAccessKey(_param0 *iam.UpdateAccessKeyInput) (*iam.UpdateAccessKeyOutput, error) {
@@ -2578,15 +4606,31 @@ func (_mr *_MockIAMAPIRecorder) UpdateAccessKey(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateAccessKey", arg0)
 }
 
-func (_m *MockIAMAPI) UpdateAccountPasswordPolicyRequest(_param0 *iam.UpdateAccountPasswordPolicyInput) (*request.Request, *iam.UpdateAccountPasswordPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "UpdateAccountPasswordPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.UpdateAccountPasswordPolicyOutput)
+func (_m *MockIAMAPI) UpdateAccessKeyWithContext(_param0 aws.Context, _param1 *iam.UpdateAccessKeyInput, _param2 ...request.Option) (*iam.UpdateAccessKeyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UpdateAccessKeyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UpdateAccessKeyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) UpdateAccountPasswordPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateAccountPasswordPolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) UpdateAccessKeyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateAccessKeyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UpdateAccessKeyRequest(_param0 *iam.UpdateAccessKeyInput) (*request.Request, *iam.UpdateAccessKeyOutput) {
+	ret := _m.ctrl.Call(_m, "UpdateAccessKeyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UpdateAccessKeyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateAccessKeyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateAccessKeyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) UpdateAccountPasswordPolicy(_param0 *iam.UpdateAccountPasswordPolicyInput) (*iam.UpdateAccountPasswordPolicyOutput, error) {
@@ -2600,15 +4644,31 @@ func (_mr *_MockIAMAPIRecorder) UpdateAccountPasswordPolicy(arg0 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateAccountPasswordPolicy", arg0)
 }
 
-func (_m *MockIAMAPI) UpdateAssumeRolePolicyRequest(_param0 *iam.UpdateAssumeRolePolicyInput) (*request.Request, *iam.UpdateAssumeRolePolicyOutput) {
-	ret := _m.ctrl.Call(_m, "UpdateAssumeRolePolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.UpdateAssumeRolePolicyOutput)
+func (_m *MockIAMAPI) UpdateAccountPasswordPolicyWithContext(_param0 aws.Context, _param1 *iam.UpdateAccountPasswordPolicyInput, _param2 ...request.Option) (*iam.UpdateAccountPasswordPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UpdateAccountPasswordPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UpdateAccountPasswordPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) UpdateAssumeRolePolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateAssumeRolePolicyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) UpdateAccountPasswordPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateAccountPasswordPolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UpdateAccountPasswordPolicyRequest(_param0 *iam.UpdateAccountPasswordPolicyInput) (*request.Request, *iam.UpdateAccountPasswordPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "UpdateAccountPasswordPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UpdateAccountPasswordPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateAccountPasswordPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateAccountPasswordPolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) UpdateAssumeRolePolicy(_param0 *iam.UpdateAssumeRolePolicyInput) (*iam.UpdateAssumeRolePolicyOutput, error) {
@@ -2622,15 +4682,31 @@ func (_mr *_MockIAMAPIRecorder) UpdateAssumeRolePolicy(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateAssumeRolePolicy", arg0)
 }
 
-func (_m *MockIAMAPI) UpdateGroupRequest(_param0 *iam.UpdateGroupInput) (*request.Request, *iam.UpdateGroupOutput) {
-	ret := _m.ctrl.Call(_m, "UpdateGroupRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.UpdateGroupOutput)
+func (_m *MockIAMAPI) UpdateAssumeRolePolicyWithContext(_param0 aws.Context, _param1 *iam.UpdateAssumeRolePolicyInput, _param2 ...request.Option) (*iam.UpdateAssumeRolePolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UpdateAssumeRolePolicyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UpdateAssumeRolePolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) UpdateGroupRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateGroupRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) UpdateAssumeRolePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateAssumeRolePolicyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UpdateAssumeRolePolicyRequest(_param0 *iam.UpdateAssumeRolePolicyInput) (*request.Request, *iam.UpdateAssumeRolePolicyOutput) {
+	ret := _m.ctrl.Call(_m, "UpdateAssumeRolePolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UpdateAssumeRolePolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateAssumeRolePolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateAssumeRolePolicyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) UpdateGroup(_param0 *iam.UpdateGroupInput) (*iam.UpdateGroupOutput, error) {
@@ -2644,15 +4720,31 @@ func (_mr *_MockIAMAPIRecorder) UpdateGroup(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateGroup", arg0)
 }
 
-func (_m *MockIAMAPI) UpdateLoginProfileRequest(_param0 *iam.UpdateLoginProfileInput) (*request.Request, *iam.UpdateLoginProfileOutput) {
-	ret := _m.ctrl.Call(_m, "UpdateLoginProfileRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.UpdateLoginProfileOutput)
+func (_m *MockIAMAPI) UpdateGroupWithContext(_param0 aws.Context, _param1 *iam.UpdateGroupInput, _param2 ...request.Option) (*iam.UpdateGroupOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UpdateGroupWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UpdateGroupOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) UpdateLoginProfileRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateLoginProfileRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) UpdateGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateGroupWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UpdateGroupRequest(_param0 *iam.UpdateGroupInput) (*request.Request, *iam.UpdateGroupOutput) {
+	ret := _m.ctrl.Call(_m, "UpdateGroupRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UpdateGroupOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateGroupRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateGroupRequest", arg0)
 }
 
 func (_m *MockIAMAPI) UpdateLoginProfile(_param0 *iam.UpdateLoginProfileInput) (*iam.UpdateLoginProfileOutput, error) {
@@ -2666,15 +4758,31 @@ func (_mr *_MockIAMAPIRecorder) UpdateLoginProfile(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateLoginProfile", arg0)
 }
 
-func (_m *MockIAMAPI) UpdateOpenIDConnectProviderThumbprintRequest(_param0 *iam.UpdateOpenIDConnectProviderThumbprintInput) (*request.Request, *iam.UpdateOpenIDConnectProviderThumbprintOutput) {
-	ret := _m.ctrl.Call(_m, "UpdateOpenIDConnectProviderThumbprintRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.UpdateOpenIDConnectProviderThumbprintOutput)
+func (_m *MockIAMAPI) UpdateLoginProfileWithContext(_param0 aws.Context, _param1 *iam.UpdateLoginProfileInput, _param2 ...request.Option) (*iam.UpdateLoginProfileOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UpdateLoginProfileWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UpdateLoginProfileOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) UpdateOpenIDConnectProviderThumbprintRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateOpenIDConnectProviderThumbprintRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) UpdateLoginProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateLoginProfileWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UpdateLoginProfileRequest(_param0 *iam.UpdateLoginProfileInput) (*request.Request, *iam.UpdateLoginProfileOutput) {
+	ret := _m.ctrl.Call(_m, "UpdateLoginProfileRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UpdateLoginProfileOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateLoginProfileRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateLoginProfileRequest", arg0)
 }
 
 func (_m *MockIAMAPI) UpdateOpenIDConnectProviderThumbprint(_param0 *iam.UpdateOpenIDConnectProviderThumbprintInput) (*iam.UpdateOpenIDConnectProviderThumbprintOutput, error) {
@@ -2688,15 +4796,31 @@ func (_mr *_MockIAMAPIRecorder) UpdateOpenIDConnectProviderThumbprint(arg0 inter
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateOpenIDConnectProviderThumbprint", arg0)
 }
 
-func (_m *MockIAMAPI) UpdateSAMLProviderRequest(_param0 *iam.UpdateSAMLProviderInput) (*request.Request, *iam.UpdateSAMLProviderOutput) {
-	ret := _m.ctrl.Call(_m, "UpdateSAMLProviderRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.UpdateSAMLProviderOutput)
+func (_m *MockIAMAPI) UpdateOpenIDConnectProviderThumbprintWithContext(_param0 aws.Context, _param1 *iam.UpdateOpenIDConnectProviderThumbprintInput, _param2 ...request.Option) (*iam.UpdateOpenIDConnectProviderThumbprintOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UpdateOpenIDConnectProviderThumbprintWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UpdateOpenIDConnectProviderThumbprintOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) UpdateSAMLProviderRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateSAMLProviderRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) UpdateOpenIDConnectProviderThumbprintWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateOpenIDConnectProviderThumbprintWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UpdateOpenIDConnectProviderThumbprintRequest(_param0 *iam.UpdateOpenIDConnectProviderThumbprintInput) (*request.Request, *iam.UpdateOpenIDConnectProviderThumbprintOutput) {
+	ret := _m.ctrl.Call(_m, "UpdateOpenIDConnectProviderThumbprintRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UpdateOpenIDConnectProviderThumbprintOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateOpenIDConnectProviderThumbprintRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateOpenIDConnectProviderThumbprintRequest", arg0)
 }
 
 func (_m *MockIAMAPI) UpdateSAMLProvider(_param0 *iam.UpdateSAMLProviderInput) (*iam.UpdateSAMLProviderOutput, error) {
@@ -2710,15 +4834,31 @@ func (_mr *_MockIAMAPIRecorder) UpdateSAMLProvider(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateSAMLProvider", arg0)
 }
 
-func (_m *MockIAMAPI) UpdateSSHPublicKeyRequest(_param0 *iam.UpdateSSHPublicKeyInput) (*request.Request, *iam.UpdateSSHPublicKeyOutput) {
-	ret := _m.ctrl.Call(_m, "UpdateSSHPublicKeyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.UpdateSSHPublicKeyOutput)
+func (_m *MockIAMAPI) UpdateSAMLProviderWithContext(_param0 aws.Context, _param1 *iam.UpdateSAMLProviderInput, _param2 ...request.Option) (*iam.UpdateSAMLProviderOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UpdateSAMLProviderWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UpdateSAMLProviderOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) UpdateSSHPublicKeyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateSSHPublicKeyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) UpdateSAMLProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateSAMLProviderWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UpdateSAMLProviderRequest(_param0 *iam.UpdateSAMLProviderInput) (*request.Request, *iam.UpdateSAMLProviderOutput) {
+	ret := _m.ctrl.Call(_m, "UpdateSAMLProviderRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UpdateSAMLProviderOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateSAMLProviderRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateSAMLProviderRequest", arg0)
 }
 
 func (_m *MockIAMAPI) UpdateSSHPublicKey(_param0 *iam.UpdateSSHPublicKeyInput) (*iam.UpdateSSHPublicKeyOutput, error) {
@@ -2732,15 +4872,31 @@ func (_mr *_MockIAMAPIRecorder) UpdateSSHPublicKey(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateSSHPublicKey", arg0)
 }
 
-func (_m *MockIAMAPI) UpdateServerCertificateRequest(_param0 *iam.UpdateServerCertificateInput) (*request.Request, *iam.UpdateServerCertificateOutput) {
-	ret := _m.ctrl.Call(_m, "UpdateServerCertificateRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.UpdateServerCertificateOutput)
+func (_m *MockIAMAPI) UpdateSSHPublicKeyWithContext(_param0 aws.Context, _param1 *iam.UpdateSSHPublicKeyInput, _param2 ...request.Option) (*iam.UpdateSSHPublicKeyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UpdateSSHPublicKeyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UpdateSSHPublicKeyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) UpdateServerCertificateRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateServerCertificateRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) UpdateSSHPublicKeyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateSSHPublicKeyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UpdateSSHPublicKeyRequest(_param0 *iam.UpdateSSHPublicKeyInput) (*request.Request, *iam.UpdateSSHPublicKeyOutput) {
+	ret := _m.ctrl.Call(_m, "UpdateSSHPublicKeyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UpdateSSHPublicKeyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateSSHPublicKeyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateSSHPublicKeyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) UpdateServerCertificate(_param0 *iam.UpdateServerCertificateInput) (*iam.UpdateServerCertificateOutput, error) {
@@ -2754,15 +4910,31 @@ func (_mr *_MockIAMAPIRecorder) UpdateServerCertificate(arg0 interface{}) *gomoc
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateServerCertificate", arg0)
 }
 
-func (_m *MockIAMAPI) UpdateServiceSpecificCredentialRequest(_param0 *iam.UpdateServiceSpecificCredentialInput) (*request.Request, *iam.UpdateServiceSpecificCredentialOutput) {
-	ret := _m.ctrl.Call(_m, "UpdateServiceSpecificCredentialRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.UpdateServiceSpecificCredentialOutput)
+func (_m *MockIAMAPI) UpdateServerCertificateWithContext(_param0 aws.Context, _param1 *iam.UpdateServerCertificateInput, _param2 ...request.Option) (*iam.UpdateServerCertificateOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UpdateServerCertificateWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UpdateServerCertificateOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) UpdateServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateServiceSpecificCredentialRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) UpdateServerCertificateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateServerCertificateWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UpdateServerCertificateRequest(_param0 *iam.UpdateServerCertificateInput) (*request.Request, *iam.UpdateServerCertificateOutput) {
+	ret := _m.ctrl.Call(_m, "UpdateServerCertificateRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UpdateServerCertificateOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateServerCertificateRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateServerCertificateRequest", arg0)
 }
 
 func (_m *MockIAMAPI) UpdateServiceSpecificCredential(_param0 *iam.UpdateServiceSpecificCredentialInput) (*iam.UpdateServiceSpecificCredentialOutput, error) {
@@ -2776,15 +4948,31 @@ func (_mr *_MockIAMAPIRecorder) UpdateServiceSpecificCredential(arg0 interface{}
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateServiceSpecificCredential", arg0)
 }
 
-func (_m *MockIAMAPI) UpdateSigningCertificateRequest(_param0 *iam.UpdateSigningCertificateInput) (*request.Request, *iam.UpdateSigningCertificateOutput) {
-	ret := _m.ctrl.Call(_m, "UpdateSigningCertificateRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.UpdateSigningCertificateOutput)
+func (_m *MockIAMAPI) UpdateServiceSpecificCredentialWithContext(_param0 aws.Context, _param1 *iam.UpdateServiceSpecificCredentialInput, _param2 ...request.Option) (*iam.UpdateServiceSpecificCredentialOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UpdateServiceSpecificCredentialWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UpdateServiceSpecificCredentialOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) UpdateSigningCertificateRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateSigningCertificateRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) UpdateServiceSpecificCredentialWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateServiceSpecificCredentialWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UpdateServiceSpecificCredentialRequest(_param0 *iam.UpdateServiceSpecificCredentialInput) (*request.Request, *iam.UpdateServiceSpecificCredentialOutput) {
+	ret := _m.ctrl.Call(_m, "UpdateServiceSpecificCredentialRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UpdateServiceSpecificCredentialOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateServiceSpecificCredentialRequest", arg0)
 }
 
 func (_m *MockIAMAPI) UpdateSigningCertificate(_param0 *iam.UpdateSigningCertificateInput) (*iam.UpdateSigningCertificateOutput, error) {
@@ -2798,15 +4986,31 @@ func (_mr *_MockIAMAPIRecorder) UpdateSigningCertificate(arg0 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateSigningCertificate", arg0)
 }
 
-func (_m *MockIAMAPI) UpdateUserRequest(_param0 *iam.UpdateUserInput) (*request.Request, *iam.UpdateUserOutput) {
-	ret := _m.ctrl.Call(_m, "UpdateUserRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.UpdateUserOutput)
+func (_m *MockIAMAPI) UpdateSigningCertificateWithContext(_param0 aws.Context, _param1 *iam.UpdateSigningCertificateInput, _param2 ...request.Option) (*iam.UpdateSigningCertificateOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UpdateSigningCertificateWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UpdateSigningCertificateOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) UpdateUserRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateUserRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) UpdateSigningCertificateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateSigningCertificateWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UpdateSigningCertificateRequest(_param0 *iam.UpdateSigningCertificateInput) (*request.Request, *iam.UpdateSigningCertificateOutput) {
+	ret := _m.ctrl.Call(_m, "UpdateSigningCertificateRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UpdateSigningCertificateOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateSigningCertificateRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateSigningCertificateRequest", arg0)
 }
 
 func (_m *MockIAMAPI) UpdateUser(_param0 *iam.UpdateUserInput) (*iam.UpdateUserOutput, error) {
@@ -2820,15 +5024,31 @@ func (_mr *_MockIAMAPIRecorder) UpdateUser(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateUser", arg0)
 }
 
-func (_m *MockIAMAPI) UploadSSHPublicKeyRequest(_param0 *iam.UploadSSHPublicKeyInput) (*request.Request, *iam.UploadSSHPublicKeyOutput) {
-	ret := _m.ctrl.Call(_m, "UploadSSHPublicKeyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.UploadSSHPublicKeyOutput)
+func (_m *MockIAMAPI) UpdateUserWithContext(_param0 aws.Context, _param1 *iam.UpdateUserInput, _param2 ...request.Option) (*iam.UpdateUserOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UpdateUserWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UpdateUserOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) UploadSSHPublicKeyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "UploadSSHPublicKeyRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) UpdateUserWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateUserWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UpdateUserRequest(_param0 *iam.UpdateUserInput) (*request.Request, *iam.UpdateUserOutput) {
+	ret := _m.ctrl.Call(_m, "UpdateUserRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UpdateUserOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateUserRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateUserRequest", arg0)
 }
 
 func (_m *MockIAMAPI) UploadSSHPublicKey(_param0 *iam.UploadSSHPublicKeyInput) (*iam.UploadSSHPublicKeyOutput, error) {
@@ -2842,15 +5062,31 @@ func (_mr *_MockIAMAPIRecorder) UploadSSHPublicKey(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UploadSSHPublicKey", arg0)
 }
 
-func (_m *MockIAMAPI) UploadServerCertificateRequest(_param0 *iam.UploadServerCertificateInput) (*request.Request, *iam.UploadServerCertificateOutput) {
-	ret := _m.ctrl.Call(_m, "UploadServerCertificateRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.UploadServerCertificateOutput)
+func (_m *MockIAMAPI) UploadSSHPublicKeyWithContext(_param0 aws.Context, _param1 *iam.UploadSSHPublicKeyInput, _param2 ...request.Option) (*iam.UploadSSHPublicKeyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UploadSSHPublicKeyWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UploadSSHPublicKeyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) UploadServerCertificateRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "UploadServerCertificateRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) UploadSSHPublicKeyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UploadSSHPublicKeyWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UploadSSHPublicKeyRequest(_param0 *iam.UploadSSHPublicKeyInput) (*request.Request, *iam.UploadSSHPublicKeyOutput) {
+	ret := _m.ctrl.Call(_m, "UploadSSHPublicKeyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UploadSSHPublicKeyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UploadSSHPublicKeyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UploadSSHPublicKeyRequest", arg0)
 }
 
 func (_m *MockIAMAPI) UploadServerCertificate(_param0 *iam.UploadServerCertificateInput) (*iam.UploadServerCertificateOutput, error) {
@@ -2864,15 +5100,31 @@ func (_mr *_MockIAMAPIRecorder) UploadServerCertificate(arg0 interface{}) *gomoc
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UploadServerCertificate", arg0)
 }
 
-func (_m *MockIAMAPI) UploadSigningCertificateRequest(_param0 *iam.UploadSigningCertificateInput) (*request.Request, *iam.UploadSigningCertificateOutput) {
-	ret := _m.ctrl.Call(_m, "UploadSigningCertificateRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*iam.UploadSigningCertificateOutput)
+func (_m *MockIAMAPI) UploadServerCertificateWithContext(_param0 aws.Context, _param1 *iam.UploadServerCertificateInput, _param2 ...request.Option) (*iam.UploadServerCertificateOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UploadServerCertificateWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UploadServerCertificateOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockIAMAPIRecorder) UploadSigningCertificateRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "UploadSigningCertificateRequest", arg0)
+func (_mr *_MockIAMAPIRecorder) UploadServerCertificateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UploadServerCertificateWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UploadServerCertificateRequest(_param0 *iam.UploadServerCertificateInput) (*request.Request, *iam.UploadServerCertificateOutput) {
+	ret := _m.ctrl.Call(_m, "UploadServerCertificateRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UploadServerCertificateOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UploadServerCertificateRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UploadServerCertificateRequest", arg0)
 }
 
 func (_m *MockIAMAPI) UploadSigningCertificate(_param0 *iam.UploadSigningCertificateInput) (*iam.UploadSigningCertificateOutput, error) {
@@ -2886,6 +5138,33 @@ func (_mr *_MockIAMAPIRecorder) UploadSigningCertificate(arg0 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UploadSigningCertificate", arg0)
 }
 
+func (_m *MockIAMAPI) UploadSigningCertificateWithContext(_param0 aws.Context, _param1 *iam.UploadSigningCertificateInput, _param2 ...request.Option) (*iam.UploadSigningCertificateOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UploadSigningCertificateWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UploadSigningCertificateOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UploadSigningCertificateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UploadSigningCertificateWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UploadSigningCertificateRequest(_param0 *iam.UploadSigningCertificateInput) (*request.Request, *iam.UploadSigningCertificateOutput) {
+	ret := _m.ctrl.Call(_m, "UploadSigningCertificateRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UploadSigningCertificateOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UploadSigningCertificateRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UploadSigningCertificateRequest", arg0)
+}
+
 func (_m *MockIAMAPI) WaitUntilInstanceProfileExists(_param0 *iam.GetInstanceProfileInput) error {
 	ret := _m.ctrl.Call(_m, "WaitUntilInstanceProfileExists", _param0)
 	ret0, _ := ret[0].(error)
@@ -2896,6 +5175,21 @@ func (_mr *_MockIAMAPIRecorder) WaitUntilInstanceProfileExists(arg0 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilInstanceProfileExists", arg0)
 }
 
+func (_m *MockIAMAPI) WaitUntilInstanceProfileExistsWithContext(_param0 aws.Context, _param1 *iam.GetInstanceProfileInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilInstanceProfileExistsWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockIAMAPIRecorder) WaitUntilInstanceProfileExistsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilInstanceProfileExistsWithContext", _s...)
+}
+
 func (_m *MockIAMAPI) WaitUntilUserExists(_param0 *iam.GetUserInput) error {
 	ret := _m.ctrl.Call(_m, "WaitUntilUserExists", _param0)
 	ret0, _ := ret[0].(error)
@@ -2904,4 +5198,19 @@ func (_m *MockIAMAPI) WaitUntilUserExists(_param0 *iam.GetUserInput) error {
 
 func (_mr *_MockIAMAPIRecorder) WaitUntilUserExists(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilUserExists", arg0)
+}
+
+func (_m *MockIAMAPI) WaitUntilUserExistsWithContext(_param0 aws.Context, _param1 *iam.GetUserInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilUserExistsWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockIAMAPIRecorder) WaitUntilUserExistsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilUserExistsWithContext", _s...)
 }

@@ -4,6 +4,7 @@
 package mock
 
 import (
+	aws "github.com/aws/aws-sdk-go/aws"
 	request "github.com/aws/aws-sdk-go/aws/request"
 	elb "github.com/aws/aws-sdk-go/service/elb"
 	gomock "github.com/golang/mock/gomock"
@@ -30,17 +31,6 @@ func (_m *MockELBAPI) EXPECT() *_MockELBAPIRecorder {
 	return _m.recorder
 }
 
-func (_m *MockELBAPI) AddTagsRequest(_param0 *elb.AddTagsInput) (*request.Request, *elb.AddTagsOutput) {
-	ret := _m.ctrl.Call(_m, "AddTagsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.AddTagsOutput)
-	return ret0, ret1
-}
-
-func (_mr *_MockELBAPIRecorder) AddTagsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddTagsRequest", arg0)
-}
-
 func (_m *MockELBAPI) AddTags(_param0 *elb.AddTagsInput) (*elb.AddTagsOutput, error) {
 	ret := _m.ctrl.Call(_m, "AddTags", _param0)
 	ret0, _ := ret[0].(*elb.AddTagsOutput)
@@ -52,15 +42,31 @@ func (_mr *_MockELBAPIRecorder) AddTags(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddTags", arg0)
 }
 
-func (_m *MockELBAPI) ApplySecurityGroupsToLoadBalancerRequest(_param0 *elb.ApplySecurityGroupsToLoadBalancerInput) (*request.Request, *elb.ApplySecurityGroupsToLoadBalancerOutput) {
-	ret := _m.ctrl.Call(_m, "ApplySecurityGroupsToLoadBalancerRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.ApplySecurityGroupsToLoadBalancerOutput)
+func (_m *MockELBAPI) AddTagsWithContext(_param0 aws.Context, _param1 *elb.AddTagsInput, _param2 ...request.Option) (*elb.AddTagsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "AddTagsWithContext", _s...)
+	ret0, _ := ret[0].(*elb.AddTagsOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) ApplySecurityGroupsToLoadBalancerRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ApplySecurityGroupsToLoadBalancerRequest", arg0)
+func (_mr *_MockELBAPIRecorder) AddTagsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddTagsWithContext", _s...)
+}
+
+func (_m *MockELBAPI) AddTagsRequest(_param0 *elb.AddTagsInput) (*request.Request, *elb.AddTagsOutput) {
+	ret := _m.ctrl.Call(_m, "AddTagsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.AddTagsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) AddTagsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddTagsRequest", arg0)
 }
 
 func (_m *MockELBAPI) ApplySecurityGroupsToLoadBalancer(_param0 *elb.ApplySecurityGroupsToLoadBalancerInput) (*elb.ApplySecurityGroupsToLoadBalancerOutput, error) {
@@ -74,15 +80,31 @@ func (_mr *_MockELBAPIRecorder) ApplySecurityGroupsToLoadBalancer(arg0 interface
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ApplySecurityGroupsToLoadBalancer", arg0)
 }
 
-func (_m *MockELBAPI) AttachLoadBalancerToSubnetsRequest(_param0 *elb.AttachLoadBalancerToSubnetsInput) (*request.Request, *elb.AttachLoadBalancerToSubnetsOutput) {
-	ret := _m.ctrl.Call(_m, "AttachLoadBalancerToSubnetsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.AttachLoadBalancerToSubnetsOutput)
+func (_m *MockELBAPI) ApplySecurityGroupsToLoadBalancerWithContext(_param0 aws.Context, _param1 *elb.ApplySecurityGroupsToLoadBalancerInput, _param2 ...request.Option) (*elb.ApplySecurityGroupsToLoadBalancerOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ApplySecurityGroupsToLoadBalancerWithContext", _s...)
+	ret0, _ := ret[0].(*elb.ApplySecurityGroupsToLoadBalancerOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) AttachLoadBalancerToSubnetsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachLoadBalancerToSubnetsRequest", arg0)
+func (_mr *_MockELBAPIRecorder) ApplySecurityGroupsToLoadBalancerWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ApplySecurityGroupsToLoadBalancerWithContext", _s...)
+}
+
+func (_m *MockELBAPI) ApplySecurityGroupsToLoadBalancerRequest(_param0 *elb.ApplySecurityGroupsToLoadBalancerInput) (*request.Request, *elb.ApplySecurityGroupsToLoadBalancerOutput) {
+	ret := _m.ctrl.Call(_m, "ApplySecurityGroupsToLoadBalancerRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.ApplySecurityGroupsToLoadBalancerOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) ApplySecurityGroupsToLoadBalancerRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ApplySecurityGroupsToLoadBalancerRequest", arg0)
 }
 
 func (_m *MockELBAPI) AttachLoadBalancerToSubnets(_param0 *elb.AttachLoadBalancerToSubnetsInput) (*elb.AttachLoadBalancerToSubnetsOutput, error) {
@@ -96,15 +118,31 @@ func (_mr *_MockELBAPIRecorder) AttachLoadBalancerToSubnets(arg0 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachLoadBalancerToSubnets", arg0)
 }
 
-func (_m *MockELBAPI) ConfigureHealthCheckRequest(_param0 *elb.ConfigureHealthCheckInput) (*request.Request, *elb.ConfigureHealthCheckOutput) {
-	ret := _m.ctrl.Call(_m, "ConfigureHealthCheckRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.ConfigureHealthCheckOutput)
+func (_m *MockELBAPI) AttachLoadBalancerToSubnetsWithContext(_param0 aws.Context, _param1 *elb.AttachLoadBalancerToSubnetsInput, _param2 ...request.Option) (*elb.AttachLoadBalancerToSubnetsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "AttachLoadBalancerToSubnetsWithContext", _s...)
+	ret0, _ := ret[0].(*elb.AttachLoadBalancerToSubnetsOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) ConfigureHealthCheckRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ConfigureHealthCheckRequest", arg0)
+func (_mr *_MockELBAPIRecorder) AttachLoadBalancerToSubnetsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachLoadBalancerToSubnetsWithContext", _s...)
+}
+
+func (_m *MockELBAPI) AttachLoadBalancerToSubnetsRequest(_param0 *elb.AttachLoadBalancerToSubnetsInput) (*request.Request, *elb.AttachLoadBalancerToSubnetsOutput) {
+	ret := _m.ctrl.Call(_m, "AttachLoadBalancerToSubnetsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.AttachLoadBalancerToSubnetsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) AttachLoadBalancerToSubnetsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AttachLoadBalancerToSubnetsRequest", arg0)
 }
 
 func (_m *MockELBAPI) ConfigureHealthCheck(_param0 *elb.ConfigureHealthCheckInput) (*elb.ConfigureHealthCheckOutput, error) {
@@ -118,15 +156,31 @@ func (_mr *_MockELBAPIRecorder) ConfigureHealthCheck(arg0 interface{}) *gomock.C
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ConfigureHealthCheck", arg0)
 }
 
-func (_m *MockELBAPI) CreateAppCookieStickinessPolicyRequest(_param0 *elb.CreateAppCookieStickinessPolicyInput) (*request.Request, *elb.CreateAppCookieStickinessPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "CreateAppCookieStickinessPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.CreateAppCookieStickinessPolicyOutput)
+func (_m *MockELBAPI) ConfigureHealthCheckWithContext(_param0 aws.Context, _param1 *elb.ConfigureHealthCheckInput, _param2 ...request.Option) (*elb.ConfigureHealthCheckOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ConfigureHealthCheckWithContext", _s...)
+	ret0, _ := ret[0].(*elb.ConfigureHealthCheckOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) CreateAppCookieStickinessPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateAppCookieStickinessPolicyRequest", arg0)
+func (_mr *_MockELBAPIRecorder) ConfigureHealthCheckWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ConfigureHealthCheckWithContext", _s...)
+}
+
+func (_m *MockELBAPI) ConfigureHealthCheckRequest(_param0 *elb.ConfigureHealthCheckInput) (*request.Request, *elb.ConfigureHealthCheckOutput) {
+	ret := _m.ctrl.Call(_m, "ConfigureHealthCheckRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.ConfigureHealthCheckOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) ConfigureHealthCheckRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ConfigureHealthCheckRequest", arg0)
 }
 
 func (_m *MockELBAPI) CreateAppCookieStickinessPolicy(_param0 *elb.CreateAppCookieStickinessPolicyInput) (*elb.CreateAppCookieStickinessPolicyOutput, error) {
@@ -140,15 +194,31 @@ func (_mr *_MockELBAPIRecorder) CreateAppCookieStickinessPolicy(arg0 interface{}
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateAppCookieStickinessPolicy", arg0)
 }
 
-func (_m *MockELBAPI) CreateLBCookieStickinessPolicyRequest(_param0 *elb.CreateLBCookieStickinessPolicyInput) (*request.Request, *elb.CreateLBCookieStickinessPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "CreateLBCookieStickinessPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.CreateLBCookieStickinessPolicyOutput)
+func (_m *MockELBAPI) CreateAppCookieStickinessPolicyWithContext(_param0 aws.Context, _param1 *elb.CreateAppCookieStickinessPolicyInput, _param2 ...request.Option) (*elb.CreateAppCookieStickinessPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateAppCookieStickinessPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*elb.CreateAppCookieStickinessPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) CreateLBCookieStickinessPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLBCookieStickinessPolicyRequest", arg0)
+func (_mr *_MockELBAPIRecorder) CreateAppCookieStickinessPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateAppCookieStickinessPolicyWithContext", _s...)
+}
+
+func (_m *MockELBAPI) CreateAppCookieStickinessPolicyRequest(_param0 *elb.CreateAppCookieStickinessPolicyInput) (*request.Request, *elb.CreateAppCookieStickinessPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "CreateAppCookieStickinessPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.CreateAppCookieStickinessPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) CreateAppCookieStickinessPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateAppCookieStickinessPolicyRequest", arg0)
 }
 
 func (_m *MockELBAPI) CreateLBCookieStickinessPolicy(_param0 *elb.CreateLBCookieStickinessPolicyInput) (*elb.CreateLBCookieStickinessPolicyOutput, error) {
@@ -162,15 +232,31 @@ func (_mr *_MockELBAPIRecorder) CreateLBCookieStickinessPolicy(arg0 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLBCookieStickinessPolicy", arg0)
 }
 
-func (_m *MockELBAPI) CreateLoadBalancerRequest(_param0 *elb.CreateLoadBalancerInput) (*request.Request, *elb.CreateLoadBalancerOutput) {
-	ret := _m.ctrl.Call(_m, "CreateLoadBalancerRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.CreateLoadBalancerOutput)
+func (_m *MockELBAPI) CreateLBCookieStickinessPolicyWithContext(_param0 aws.Context, _param1 *elb.CreateLBCookieStickinessPolicyInput, _param2 ...request.Option) (*elb.CreateLBCookieStickinessPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateLBCookieStickinessPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*elb.CreateLBCookieStickinessPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) CreateLoadBalancerRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoadBalancerRequest", arg0)
+func (_mr *_MockELBAPIRecorder) CreateLBCookieStickinessPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLBCookieStickinessPolicyWithContext", _s...)
+}
+
+func (_m *MockELBAPI) CreateLBCookieStickinessPolicyRequest(_param0 *elb.CreateLBCookieStickinessPolicyInput) (*request.Request, *elb.CreateLBCookieStickinessPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "CreateLBCookieStickinessPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.CreateLBCookieStickinessPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) CreateLBCookieStickinessPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLBCookieStickinessPolicyRequest", arg0)
 }
 
 func (_m *MockELBAPI) CreateLoadBalancer(_param0 *elb.CreateLoadBalancerInput) (*elb.CreateLoadBalancerOutput, error) {
@@ -184,15 +270,31 @@ func (_mr *_MockELBAPIRecorder) CreateLoadBalancer(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoadBalancer", arg0)
 }
 
-func (_m *MockELBAPI) CreateLoadBalancerListenersRequest(_param0 *elb.CreateLoadBalancerListenersInput) (*request.Request, *elb.CreateLoadBalancerListenersOutput) {
-	ret := _m.ctrl.Call(_m, "CreateLoadBalancerListenersRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.CreateLoadBalancerListenersOutput)
+func (_m *MockELBAPI) CreateLoadBalancerWithContext(_param0 aws.Context, _param1 *elb.CreateLoadBalancerInput, _param2 ...request.Option) (*elb.CreateLoadBalancerOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateLoadBalancerWithContext", _s...)
+	ret0, _ := ret[0].(*elb.CreateLoadBalancerOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) CreateLoadBalancerListenersRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoadBalancerListenersRequest", arg0)
+func (_mr *_MockELBAPIRecorder) CreateLoadBalancerWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoadBalancerWithContext", _s...)
+}
+
+func (_m *MockELBAPI) CreateLoadBalancerRequest(_param0 *elb.CreateLoadBalancerInput) (*request.Request, *elb.CreateLoadBalancerOutput) {
+	ret := _m.ctrl.Call(_m, "CreateLoadBalancerRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.CreateLoadBalancerOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) CreateLoadBalancerRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoadBalancerRequest", arg0)
 }
 
 func (_m *MockELBAPI) CreateLoadBalancerListeners(_param0 *elb.CreateLoadBalancerListenersInput) (*elb.CreateLoadBalancerListenersOutput, error) {
@@ -206,15 +308,31 @@ func (_mr *_MockELBAPIRecorder) CreateLoadBalancerListeners(arg0 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoadBalancerListeners", arg0)
 }
 
-func (_m *MockELBAPI) CreateLoadBalancerPolicyRequest(_param0 *elb.CreateLoadBalancerPolicyInput) (*request.Request, *elb.CreateLoadBalancerPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "CreateLoadBalancerPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.CreateLoadBalancerPolicyOutput)
+func (_m *MockELBAPI) CreateLoadBalancerListenersWithContext(_param0 aws.Context, _param1 *elb.CreateLoadBalancerListenersInput, _param2 ...request.Option) (*elb.CreateLoadBalancerListenersOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateLoadBalancerListenersWithContext", _s...)
+	ret0, _ := ret[0].(*elb.CreateLoadBalancerListenersOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) CreateLoadBalancerPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoadBalancerPolicyRequest", arg0)
+func (_mr *_MockELBAPIRecorder) CreateLoadBalancerListenersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoadBalancerListenersWithContext", _s...)
+}
+
+func (_m *MockELBAPI) CreateLoadBalancerListenersRequest(_param0 *elb.CreateLoadBalancerListenersInput) (*request.Request, *elb.CreateLoadBalancerListenersOutput) {
+	ret := _m.ctrl.Call(_m, "CreateLoadBalancerListenersRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.CreateLoadBalancerListenersOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) CreateLoadBalancerListenersRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoadBalancerListenersRequest", arg0)
 }
 
 func (_m *MockELBAPI) CreateLoadBalancerPolicy(_param0 *elb.CreateLoadBalancerPolicyInput) (*elb.CreateLoadBalancerPolicyOutput, error) {
@@ -228,15 +346,31 @@ func (_mr *_MockELBAPIRecorder) CreateLoadBalancerPolicy(arg0 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoadBalancerPolicy", arg0)
 }
 
-func (_m *MockELBAPI) DeleteLoadBalancerRequest(_param0 *elb.DeleteLoadBalancerInput) (*request.Request, *elb.DeleteLoadBalancerOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteLoadBalancerRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.DeleteLoadBalancerOutput)
+func (_m *MockELBAPI) CreateLoadBalancerPolicyWithContext(_param0 aws.Context, _param1 *elb.CreateLoadBalancerPolicyInput, _param2 ...request.Option) (*elb.CreateLoadBalancerPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateLoadBalancerPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*elb.CreateLoadBalancerPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) DeleteLoadBalancerRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoadBalancerRequest", arg0)
+func (_mr *_MockELBAPIRecorder) CreateLoadBalancerPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoadBalancerPolicyWithContext", _s...)
+}
+
+func (_m *MockELBAPI) CreateLoadBalancerPolicyRequest(_param0 *elb.CreateLoadBalancerPolicyInput) (*request.Request, *elb.CreateLoadBalancerPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "CreateLoadBalancerPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.CreateLoadBalancerPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) CreateLoadBalancerPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateLoadBalancerPolicyRequest", arg0)
 }
 
 func (_m *MockELBAPI) DeleteLoadBalancer(_param0 *elb.DeleteLoadBalancerInput) (*elb.DeleteLoadBalancerOutput, error) {
@@ -250,15 +384,31 @@ func (_mr *_MockELBAPIRecorder) DeleteLoadBalancer(arg0 interface{}) *gomock.Cal
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoadBalancer", arg0)
 }
 
-func (_m *MockELBAPI) DeleteLoadBalancerListenersRequest(_param0 *elb.DeleteLoadBalancerListenersInput) (*request.Request, *elb.DeleteLoadBalancerListenersOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteLoadBalancerListenersRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.DeleteLoadBalancerListenersOutput)
+func (_m *MockELBAPI) DeleteLoadBalancerWithContext(_param0 aws.Context, _param1 *elb.DeleteLoadBalancerInput, _param2 ...request.Option) (*elb.DeleteLoadBalancerOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteLoadBalancerWithContext", _s...)
+	ret0, _ := ret[0].(*elb.DeleteLoadBalancerOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) DeleteLoadBalancerListenersRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoadBalancerListenersRequest", arg0)
+func (_mr *_MockELBAPIRecorder) DeleteLoadBalancerWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoadBalancerWithContext", _s...)
+}
+
+func (_m *MockELBAPI) DeleteLoadBalancerRequest(_param0 *elb.DeleteLoadBalancerInput) (*request.Request, *elb.DeleteLoadBalancerOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteLoadBalancerRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.DeleteLoadBalancerOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DeleteLoadBalancerRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoadBalancerRequest", arg0)
 }
 
 func (_m *MockELBAPI) DeleteLoadBalancerListeners(_param0 *elb.DeleteLoadBalancerListenersInput) (*elb.DeleteLoadBalancerListenersOutput, error) {
@@ -272,15 +422,31 @@ func (_mr *_MockELBAPIRecorder) DeleteLoadBalancerListeners(arg0 interface{}) *g
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoadBalancerListeners", arg0)
 }
 
-func (_m *MockELBAPI) DeleteLoadBalancerPolicyRequest(_param0 *elb.DeleteLoadBalancerPolicyInput) (*request.Request, *elb.DeleteLoadBalancerPolicyOutput) {
-	ret := _m.ctrl.Call(_m, "DeleteLoadBalancerPolicyRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.DeleteLoadBalancerPolicyOutput)
+func (_m *MockELBAPI) DeleteLoadBalancerListenersWithContext(_param0 aws.Context, _param1 *elb.DeleteLoadBalancerListenersInput, _param2 ...request.Option) (*elb.DeleteLoadBalancerListenersOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteLoadBalancerListenersWithContext", _s...)
+	ret0, _ := ret[0].(*elb.DeleteLoadBalancerListenersOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) DeleteLoadBalancerPolicyRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoadBalancerPolicyRequest", arg0)
+func (_mr *_MockELBAPIRecorder) DeleteLoadBalancerListenersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoadBalancerListenersWithContext", _s...)
+}
+
+func (_m *MockELBAPI) DeleteLoadBalancerListenersRequest(_param0 *elb.DeleteLoadBalancerListenersInput) (*request.Request, *elb.DeleteLoadBalancerListenersOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteLoadBalancerListenersRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.DeleteLoadBalancerListenersOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DeleteLoadBalancerListenersRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoadBalancerListenersRequest", arg0)
 }
 
 func (_m *MockELBAPI) DeleteLoadBalancerPolicy(_param0 *elb.DeleteLoadBalancerPolicyInput) (*elb.DeleteLoadBalancerPolicyOutput, error) {
@@ -294,15 +460,31 @@ func (_mr *_MockELBAPIRecorder) DeleteLoadBalancerPolicy(arg0 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoadBalancerPolicy", arg0)
 }
 
-func (_m *MockELBAPI) DeregisterInstancesFromLoadBalancerRequest(_param0 *elb.DeregisterInstancesFromLoadBalancerInput) (*request.Request, *elb.DeregisterInstancesFromLoadBalancerOutput) {
-	ret := _m.ctrl.Call(_m, "DeregisterInstancesFromLoadBalancerRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.DeregisterInstancesFromLoadBalancerOutput)
+func (_m *MockELBAPI) DeleteLoadBalancerPolicyWithContext(_param0 aws.Context, _param1 *elb.DeleteLoadBalancerPolicyInput, _param2 ...request.Option) (*elb.DeleteLoadBalancerPolicyOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteLoadBalancerPolicyWithContext", _s...)
+	ret0, _ := ret[0].(*elb.DeleteLoadBalancerPolicyOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) DeregisterInstancesFromLoadBalancerRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeregisterInstancesFromLoadBalancerRequest", arg0)
+func (_mr *_MockELBAPIRecorder) DeleteLoadBalancerPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoadBalancerPolicyWithContext", _s...)
+}
+
+func (_m *MockELBAPI) DeleteLoadBalancerPolicyRequest(_param0 *elb.DeleteLoadBalancerPolicyInput) (*request.Request, *elb.DeleteLoadBalancerPolicyOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteLoadBalancerPolicyRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.DeleteLoadBalancerPolicyOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DeleteLoadBalancerPolicyRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteLoadBalancerPolicyRequest", arg0)
 }
 
 func (_m *MockELBAPI) DeregisterInstancesFromLoadBalancer(_param0 *elb.DeregisterInstancesFromLoadBalancerInput) (*elb.DeregisterInstancesFromLoadBalancerOutput, error) {
@@ -316,15 +498,31 @@ func (_mr *_MockELBAPIRecorder) DeregisterInstancesFromLoadBalancer(arg0 interfa
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeregisterInstancesFromLoadBalancer", arg0)
 }
 
-func (_m *MockELBAPI) DescribeInstanceHealthRequest(_param0 *elb.DescribeInstanceHealthInput) (*request.Request, *elb.DescribeInstanceHealthOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeInstanceHealthRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.DescribeInstanceHealthOutput)
+func (_m *MockELBAPI) DeregisterInstancesFromLoadBalancerWithContext(_param0 aws.Context, _param1 *elb.DeregisterInstancesFromLoadBalancerInput, _param2 ...request.Option) (*elb.DeregisterInstancesFromLoadBalancerOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeregisterInstancesFromLoadBalancerWithContext", _s...)
+	ret0, _ := ret[0].(*elb.DeregisterInstancesFromLoadBalancerOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) DescribeInstanceHealthRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeInstanceHealthRequest", arg0)
+func (_mr *_MockELBAPIRecorder) DeregisterInstancesFromLoadBalancerWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeregisterInstancesFromLoadBalancerWithContext", _s...)
+}
+
+func (_m *MockELBAPI) DeregisterInstancesFromLoadBalancerRequest(_param0 *elb.DeregisterInstancesFromLoadBalancerInput) (*request.Request, *elb.DeregisterInstancesFromLoadBalancerOutput) {
+	ret := _m.ctrl.Call(_m, "DeregisterInstancesFromLoadBalancerRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.DeregisterInstancesFromLoadBalancerOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DeregisterInstancesFromLoadBalancerRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeregisterInstancesFromLoadBalancerRequest", arg0)
 }
 
 func (_m *MockELBAPI) DescribeInstanceHealth(_param0 *elb.DescribeInstanceHealthInput) (*elb.DescribeInstanceHealthOutput, error) {
@@ -338,15 +536,31 @@ func (_mr *_MockELBAPIRecorder) DescribeInstanceHealth(arg0 interface{}) *gomock
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeInstanceHealth", arg0)
 }
 
-func (_m *MockELBAPI) DescribeLoadBalancerAttributesRequest(_param0 *elb.DescribeLoadBalancerAttributesInput) (*request.Request, *elb.DescribeLoadBalancerAttributesOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeLoadBalancerAttributesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.DescribeLoadBalancerAttributesOutput)
+func (_m *MockELBAPI) DescribeInstanceHealthWithContext(_param0 aws.Context, _param1 *elb.DescribeInstanceHealthInput, _param2 ...request.Option) (*elb.DescribeInstanceHealthOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeInstanceHealthWithContext", _s...)
+	ret0, _ := ret[0].(*elb.DescribeInstanceHealthOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) DescribeLoadBalancerAttributesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancerAttributesRequest", arg0)
+func (_mr *_MockELBAPIRecorder) DescribeInstanceHealthWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeInstanceHealthWithContext", _s...)
+}
+
+func (_m *MockELBAPI) DescribeInstanceHealthRequest(_param0 *elb.DescribeInstanceHealthInput) (*request.Request, *elb.DescribeInstanceHealthOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeInstanceHealthRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.DescribeInstanceHealthOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DescribeInstanceHealthRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeInstanceHealthRequest", arg0)
 }
 
 func (_m *MockELBAPI) DescribeLoadBalancerAttributes(_param0 *elb.DescribeLoadBalancerAttributesInput) (*elb.DescribeLoadBalancerAttributesOutput, error) {
@@ -360,15 +574,31 @@ func (_mr *_MockELBAPIRecorder) DescribeLoadBalancerAttributes(arg0 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancerAttributes", arg0)
 }
 
-func (_m *MockELBAPI) DescribeLoadBalancerPoliciesRequest(_param0 *elb.DescribeLoadBalancerPoliciesInput) (*request.Request, *elb.DescribeLoadBalancerPoliciesOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeLoadBalancerPoliciesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.DescribeLoadBalancerPoliciesOutput)
+func (_m *MockELBAPI) DescribeLoadBalancerAttributesWithContext(_param0 aws.Context, _param1 *elb.DescribeLoadBalancerAttributesInput, _param2 ...request.Option) (*elb.DescribeLoadBalancerAttributesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeLoadBalancerAttributesWithContext", _s...)
+	ret0, _ := ret[0].(*elb.DescribeLoadBalancerAttributesOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) DescribeLoadBalancerPoliciesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancerPoliciesRequest", arg0)
+func (_mr *_MockELBAPIRecorder) DescribeLoadBalancerAttributesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancerAttributesWithContext", _s...)
+}
+
+func (_m *MockELBAPI) DescribeLoadBalancerAttributesRequest(_param0 *elb.DescribeLoadBalancerAttributesInput) (*request.Request, *elb.DescribeLoadBalancerAttributesOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeLoadBalancerAttributesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.DescribeLoadBalancerAttributesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DescribeLoadBalancerAttributesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancerAttributesRequest", arg0)
 }
 
 func (_m *MockELBAPI) DescribeLoadBalancerPolicies(_param0 *elb.DescribeLoadBalancerPoliciesInput) (*elb.DescribeLoadBalancerPoliciesOutput, error) {
@@ -382,15 +612,31 @@ func (_mr *_MockELBAPIRecorder) DescribeLoadBalancerPolicies(arg0 interface{}) *
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancerPolicies", arg0)
 }
 
-func (_m *MockELBAPI) DescribeLoadBalancerPolicyTypesRequest(_param0 *elb.DescribeLoadBalancerPolicyTypesInput) (*request.Request, *elb.DescribeLoadBalancerPolicyTypesOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeLoadBalancerPolicyTypesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.DescribeLoadBalancerPolicyTypesOutput)
+func (_m *MockELBAPI) DescribeLoadBalancerPoliciesWithContext(_param0 aws.Context, _param1 *elb.DescribeLoadBalancerPoliciesInput, _param2 ...request.Option) (*elb.DescribeLoadBalancerPoliciesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeLoadBalancerPoliciesWithContext", _s...)
+	ret0, _ := ret[0].(*elb.DescribeLoadBalancerPoliciesOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) DescribeLoadBalancerPolicyTypesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancerPolicyTypesRequest", arg0)
+func (_mr *_MockELBAPIRecorder) DescribeLoadBalancerPoliciesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancerPoliciesWithContext", _s...)
+}
+
+func (_m *MockELBAPI) DescribeLoadBalancerPoliciesRequest(_param0 *elb.DescribeLoadBalancerPoliciesInput) (*request.Request, *elb.DescribeLoadBalancerPoliciesOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeLoadBalancerPoliciesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.DescribeLoadBalancerPoliciesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DescribeLoadBalancerPoliciesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancerPoliciesRequest", arg0)
 }
 
 func (_m *MockELBAPI) DescribeLoadBalancerPolicyTypes(_param0 *elb.DescribeLoadBalancerPolicyTypesInput) (*elb.DescribeLoadBalancerPolicyTypesOutput, error) {
@@ -404,15 +650,31 @@ func (_mr *_MockELBAPIRecorder) DescribeLoadBalancerPolicyTypes(arg0 interface{}
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancerPolicyTypes", arg0)
 }
 
-func (_m *MockELBAPI) DescribeLoadBalancersRequest(_param0 *elb.DescribeLoadBalancersInput) (*request.Request, *elb.DescribeLoadBalancersOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeLoadBalancersRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.DescribeLoadBalancersOutput)
+func (_m *MockELBAPI) DescribeLoadBalancerPolicyTypesWithContext(_param0 aws.Context, _param1 *elb.DescribeLoadBalancerPolicyTypesInput, _param2 ...request.Option) (*elb.DescribeLoadBalancerPolicyTypesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeLoadBalancerPolicyTypesWithContext", _s...)
+	ret0, _ := ret[0].(*elb.DescribeLoadBalancerPolicyTypesOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) DescribeLoadBalancersRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancersRequest", arg0)
+func (_mr *_MockELBAPIRecorder) DescribeLoadBalancerPolicyTypesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancerPolicyTypesWithContext", _s...)
+}
+
+func (_m *MockELBAPI) DescribeLoadBalancerPolicyTypesRequest(_param0 *elb.DescribeLoadBalancerPolicyTypesInput) (*request.Request, *elb.DescribeLoadBalancerPolicyTypesOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeLoadBalancerPolicyTypesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.DescribeLoadBalancerPolicyTypesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DescribeLoadBalancerPolicyTypesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancerPolicyTypesRequest", arg0)
 }
 
 func (_m *MockELBAPI) DescribeLoadBalancers(_param0 *elb.DescribeLoadBalancersInput) (*elb.DescribeLoadBalancersOutput, error) {
@@ -426,6 +688,33 @@ func (_mr *_MockELBAPIRecorder) DescribeLoadBalancers(arg0 interface{}) *gomock.
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancers", arg0)
 }
 
+func (_m *MockELBAPI) DescribeLoadBalancersWithContext(_param0 aws.Context, _param1 *elb.DescribeLoadBalancersInput, _param2 ...request.Option) (*elb.DescribeLoadBalancersOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeLoadBalancersWithContext", _s...)
+	ret0, _ := ret[0].(*elb.DescribeLoadBalancersOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DescribeLoadBalancersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancersWithContext", _s...)
+}
+
+func (_m *MockELBAPI) DescribeLoadBalancersRequest(_param0 *elb.DescribeLoadBalancersInput) (*request.Request, *elb.DescribeLoadBalancersOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeLoadBalancersRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.DescribeLoadBalancersOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DescribeLoadBalancersRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancersRequest", arg0)
+}
+
 func (_m *MockELBAPI) DescribeLoadBalancersPages(_param0 *elb.DescribeLoadBalancersInput, _param1 func(*elb.DescribeLoadBalancersOutput, bool) bool) error {
 	ret := _m.ctrl.Call(_m, "DescribeLoadBalancersPages", _param0, _param1)
 	ret0, _ := ret[0].(error)
@@ -436,15 +725,19 @@ func (_mr *_MockELBAPIRecorder) DescribeLoadBalancersPages(arg0, arg1 interface{
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancersPages", arg0, arg1)
 }
 
-func (_m *MockELBAPI) DescribeTagsRequest(_param0 *elb.DescribeTagsInput) (*request.Request, *elb.DescribeTagsOutput) {
-	ret := _m.ctrl.Call(_m, "DescribeTagsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.DescribeTagsOutput)
-	return ret0, ret1
+func (_m *MockELBAPI) DescribeLoadBalancersPagesWithContext(_param0 aws.Context, _param1 *elb.DescribeLoadBalancersInput, _param2 func(*elb.DescribeLoadBalancersOutput, bool) bool, _param3 ...request.Option) error {
+	_s := []interface{}{_param0, _param1, _param2}
+	for _, _x := range _param3 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeLoadBalancersPagesWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
-func (_mr *_MockELBAPIRecorder) DescribeTagsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeTagsRequest", arg0)
+func (_mr *_MockELBAPIRecorder) DescribeLoadBalancersPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeLoadBalancersPagesWithContext", _s...)
 }
 
 func (_m *MockELBAPI) DescribeTags(_param0 *elb.DescribeTagsInput) (*elb.DescribeTagsOutput, error) {
@@ -458,15 +751,31 @@ func (_mr *_MockELBAPIRecorder) DescribeTags(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeTags", arg0)
 }
 
-func (_m *MockELBAPI) DetachLoadBalancerFromSubnetsRequest(_param0 *elb.DetachLoadBalancerFromSubnetsInput) (*request.Request, *elb.DetachLoadBalancerFromSubnetsOutput) {
-	ret := _m.ctrl.Call(_m, "DetachLoadBalancerFromSubnetsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.DetachLoadBalancerFromSubnetsOutput)
+func (_m *MockELBAPI) DescribeTagsWithContext(_param0 aws.Context, _param1 *elb.DescribeTagsInput, _param2 ...request.Option) (*elb.DescribeTagsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeTagsWithContext", _s...)
+	ret0, _ := ret[0].(*elb.DescribeTagsOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) DetachLoadBalancerFromSubnetsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachLoadBalancerFromSubnetsRequest", arg0)
+func (_mr *_MockELBAPIRecorder) DescribeTagsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeTagsWithContext", _s...)
+}
+
+func (_m *MockELBAPI) DescribeTagsRequest(_param0 *elb.DescribeTagsInput) (*request.Request, *elb.DescribeTagsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeTagsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.DescribeTagsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DescribeTagsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeTagsRequest", arg0)
 }
 
 func (_m *MockELBAPI) DetachLoadBalancerFromSubnets(_param0 *elb.DetachLoadBalancerFromSubnetsInput) (*elb.DetachLoadBalancerFromSubnetsOutput, error) {
@@ -480,15 +789,31 @@ func (_mr *_MockELBAPIRecorder) DetachLoadBalancerFromSubnets(arg0 interface{}) 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachLoadBalancerFromSubnets", arg0)
 }
 
-func (_m *MockELBAPI) DisableAvailabilityZonesForLoadBalancerRequest(_param0 *elb.DisableAvailabilityZonesForLoadBalancerInput) (*request.Request, *elb.DisableAvailabilityZonesForLoadBalancerOutput) {
-	ret := _m.ctrl.Call(_m, "DisableAvailabilityZonesForLoadBalancerRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.DisableAvailabilityZonesForLoadBalancerOutput)
+func (_m *MockELBAPI) DetachLoadBalancerFromSubnetsWithContext(_param0 aws.Context, _param1 *elb.DetachLoadBalancerFromSubnetsInput, _param2 ...request.Option) (*elb.DetachLoadBalancerFromSubnetsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DetachLoadBalancerFromSubnetsWithContext", _s...)
+	ret0, _ := ret[0].(*elb.DetachLoadBalancerFromSubnetsOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) DisableAvailabilityZonesForLoadBalancerRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "DisableAvailabilityZonesForLoadBalancerRequest", arg0)
+func (_mr *_MockELBAPIRecorder) DetachLoadBalancerFromSubnetsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachLoadBalancerFromSubnetsWithContext", _s...)
+}
+
+func (_m *MockELBAPI) DetachLoadBalancerFromSubnetsRequest(_param0 *elb.DetachLoadBalancerFromSubnetsInput) (*request.Request, *elb.DetachLoadBalancerFromSubnetsOutput) {
+	ret := _m.ctrl.Call(_m, "DetachLoadBalancerFromSubnetsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.DetachLoadBalancerFromSubnetsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DetachLoadBalancerFromSubnetsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DetachLoadBalancerFromSubnetsRequest", arg0)
 }
 
 func (_m *MockELBAPI) DisableAvailabilityZonesForLoadBalancer(_param0 *elb.DisableAvailabilityZonesForLoadBalancerInput) (*elb.DisableAvailabilityZonesForLoadBalancerOutput, error) {
@@ -502,15 +827,31 @@ func (_mr *_MockELBAPIRecorder) DisableAvailabilityZonesForLoadBalancer(arg0 int
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DisableAvailabilityZonesForLoadBalancer", arg0)
 }
 
-func (_m *MockELBAPI) EnableAvailabilityZonesForLoadBalancerRequest(_param0 *elb.EnableAvailabilityZonesForLoadBalancerInput) (*request.Request, *elb.EnableAvailabilityZonesForLoadBalancerOutput) {
-	ret := _m.ctrl.Call(_m, "EnableAvailabilityZonesForLoadBalancerRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.EnableAvailabilityZonesForLoadBalancerOutput)
+func (_m *MockELBAPI) DisableAvailabilityZonesForLoadBalancerWithContext(_param0 aws.Context, _param1 *elb.DisableAvailabilityZonesForLoadBalancerInput, _param2 ...request.Option) (*elb.DisableAvailabilityZonesForLoadBalancerOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DisableAvailabilityZonesForLoadBalancerWithContext", _s...)
+	ret0, _ := ret[0].(*elb.DisableAvailabilityZonesForLoadBalancerOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) EnableAvailabilityZonesForLoadBalancerRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "EnableAvailabilityZonesForLoadBalancerRequest", arg0)
+func (_mr *_MockELBAPIRecorder) DisableAvailabilityZonesForLoadBalancerWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DisableAvailabilityZonesForLoadBalancerWithContext", _s...)
+}
+
+func (_m *MockELBAPI) DisableAvailabilityZonesForLoadBalancerRequest(_param0 *elb.DisableAvailabilityZonesForLoadBalancerInput) (*request.Request, *elb.DisableAvailabilityZonesForLoadBalancerOutput) {
+	ret := _m.ctrl.Call(_m, "DisableAvailabilityZonesForLoadBalancerRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.DisableAvailabilityZonesForLoadBalancerOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DisableAvailabilityZonesForLoadBalancerRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DisableAvailabilityZonesForLoadBalancerRequest", arg0)
 }
 
 func (_m *MockELBAPI) EnableAvailabilityZonesForLoadBalancer(_param0 *elb.EnableAvailabilityZonesForLoadBalancerInput) (*elb.EnableAvailabilityZonesForLoadBalancerOutput, error) {
@@ -524,15 +865,31 @@ func (_mr *_MockELBAPIRecorder) EnableAvailabilityZonesForLoadBalancer(arg0 inte
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "EnableAvailabilityZonesForLoadBalancer", arg0)
 }
 
-func (_m *MockELBAPI) ModifyLoadBalancerAttributesRequest(_param0 *elb.ModifyLoadBalancerAttributesInput) (*request.Request, *elb.ModifyLoadBalancerAttributesOutput) {
-	ret := _m.ctrl.Call(_m, "ModifyLoadBalancerAttributesRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.ModifyLoadBalancerAttributesOutput)
+func (_m *MockELBAPI) EnableAvailabilityZonesForLoadBalancerWithContext(_param0 aws.Context, _param1 *elb.EnableAvailabilityZonesForLoadBalancerInput, _param2 ...request.Option) (*elb.EnableAvailabilityZonesForLoadBalancerOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "EnableAvailabilityZonesForLoadBalancerWithContext", _s...)
+	ret0, _ := ret[0].(*elb.EnableAvailabilityZonesForLoadBalancerOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) ModifyLoadBalancerAttributesRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyLoadBalancerAttributesRequest", arg0)
+func (_mr *_MockELBAPIRecorder) EnableAvailabilityZonesForLoadBalancerWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "EnableAvailabilityZonesForLoadBalancerWithContext", _s...)
+}
+
+func (_m *MockELBAPI) EnableAvailabilityZonesForLoadBalancerRequest(_param0 *elb.EnableAvailabilityZonesForLoadBalancerInput) (*request.Request, *elb.EnableAvailabilityZonesForLoadBalancerOutput) {
+	ret := _m.ctrl.Call(_m, "EnableAvailabilityZonesForLoadBalancerRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.EnableAvailabilityZonesForLoadBalancerOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) EnableAvailabilityZonesForLoadBalancerRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "EnableAvailabilityZonesForLoadBalancerRequest", arg0)
 }
 
 func (_m *MockELBAPI) ModifyLoadBalancerAttributes(_param0 *elb.ModifyLoadBalancerAttributesInput) (*elb.ModifyLoadBalancerAttributesOutput, error) {
@@ -546,15 +903,31 @@ func (_mr *_MockELBAPIRecorder) ModifyLoadBalancerAttributes(arg0 interface{}) *
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyLoadBalancerAttributes", arg0)
 }
 
-func (_m *MockELBAPI) RegisterInstancesWithLoadBalancerRequest(_param0 *elb.RegisterInstancesWithLoadBalancerInput) (*request.Request, *elb.RegisterInstancesWithLoadBalancerOutput) {
-	ret := _m.ctrl.Call(_m, "RegisterInstancesWithLoadBalancerRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.RegisterInstancesWithLoadBalancerOutput)
+func (_m *MockELBAPI) ModifyLoadBalancerAttributesWithContext(_param0 aws.Context, _param1 *elb.ModifyLoadBalancerAttributesInput, _param2 ...request.Option) (*elb.ModifyLoadBalancerAttributesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyLoadBalancerAttributesWithContext", _s...)
+	ret0, _ := ret[0].(*elb.ModifyLoadBalancerAttributesOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) RegisterInstancesWithLoadBalancerRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RegisterInstancesWithLoadBalancerRequest", arg0)
+func (_mr *_MockELBAPIRecorder) ModifyLoadBalancerAttributesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyLoadBalancerAttributesWithContext", _s...)
+}
+
+func (_m *MockELBAPI) ModifyLoadBalancerAttributesRequest(_param0 *elb.ModifyLoadBalancerAttributesInput) (*request.Request, *elb.ModifyLoadBalancerAttributesOutput) {
+	ret := _m.ctrl.Call(_m, "ModifyLoadBalancerAttributesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.ModifyLoadBalancerAttributesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) ModifyLoadBalancerAttributesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyLoadBalancerAttributesRequest", arg0)
 }
 
 func (_m *MockELBAPI) RegisterInstancesWithLoadBalancer(_param0 *elb.RegisterInstancesWithLoadBalancerInput) (*elb.RegisterInstancesWithLoadBalancerOutput, error) {
@@ -568,15 +941,31 @@ func (_mr *_MockELBAPIRecorder) RegisterInstancesWithLoadBalancer(arg0 interface
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RegisterInstancesWithLoadBalancer", arg0)
 }
 
-func (_m *MockELBAPI) RemoveTagsRequest(_param0 *elb.RemoveTagsInput) (*request.Request, *elb.RemoveTagsOutput) {
-	ret := _m.ctrl.Call(_m, "RemoveTagsRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.RemoveTagsOutput)
+func (_m *MockELBAPI) RegisterInstancesWithLoadBalancerWithContext(_param0 aws.Context, _param1 *elb.RegisterInstancesWithLoadBalancerInput, _param2 ...request.Option) (*elb.RegisterInstancesWithLoadBalancerOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RegisterInstancesWithLoadBalancerWithContext", _s...)
+	ret0, _ := ret[0].(*elb.RegisterInstancesWithLoadBalancerOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) RemoveTagsRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveTagsRequest", arg0)
+func (_mr *_MockELBAPIRecorder) RegisterInstancesWithLoadBalancerWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RegisterInstancesWithLoadBalancerWithContext", _s...)
+}
+
+func (_m *MockELBAPI) RegisterInstancesWithLoadBalancerRequest(_param0 *elb.RegisterInstancesWithLoadBalancerInput) (*request.Request, *elb.RegisterInstancesWithLoadBalancerOutput) {
+	ret := _m.ctrl.Call(_m, "RegisterInstancesWithLoadBalancerRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.RegisterInstancesWithLoadBalancerOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) RegisterInstancesWithLoadBalancerRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RegisterInstancesWithLoadBalancerRequest", arg0)
 }
 
 func (_m *MockELBAPI) RemoveTags(_param0 *elb.RemoveTagsInput) (*elb.RemoveTagsOutput, error) {
@@ -590,15 +979,31 @@ func (_mr *_MockELBAPIRecorder) RemoveTags(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveTags", arg0)
 }
 
-func (_m *MockELBAPI) SetLoadBalancerListenerSSLCertificateRequest(_param0 *elb.SetLoadBalancerListenerSSLCertificateInput) (*request.Request, *elb.SetLoadBalancerListenerSSLCertificateOutput) {
-	ret := _m.ctrl.Call(_m, "SetLoadBalancerListenerSSLCertificateRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.SetLoadBalancerListenerSSLCertificateOutput)
+func (_m *MockELBAPI) RemoveTagsWithContext(_param0 aws.Context, _param1 *elb.RemoveTagsInput, _param2 ...request.Option) (*elb.RemoveTagsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RemoveTagsWithContext", _s...)
+	ret0, _ := ret[0].(*elb.RemoveTagsOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) SetLoadBalancerListenerSSLCertificateRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetLoadBalancerListenerSSLCertificateRequest", arg0)
+func (_mr *_MockELBAPIRecorder) RemoveTagsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveTagsWithContext", _s...)
+}
+
+func (_m *MockELBAPI) RemoveTagsRequest(_param0 *elb.RemoveTagsInput) (*request.Request, *elb.RemoveTagsOutput) {
+	ret := _m.ctrl.Call(_m, "RemoveTagsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.RemoveTagsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) RemoveTagsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveTagsRequest", arg0)
 }
 
 func (_m *MockELBAPI) SetLoadBalancerListenerSSLCertificate(_param0 *elb.SetLoadBalancerListenerSSLCertificateInput) (*elb.SetLoadBalancerListenerSSLCertificateOutput, error) {
@@ -612,15 +1017,31 @@ func (_mr *_MockELBAPIRecorder) SetLoadBalancerListenerSSLCertificate(arg0 inter
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetLoadBalancerListenerSSLCertificate", arg0)
 }
 
-func (_m *MockELBAPI) SetLoadBalancerPoliciesForBackendServerRequest(_param0 *elb.SetLoadBalancerPoliciesForBackendServerInput) (*request.Request, *elb.SetLoadBalancerPoliciesForBackendServerOutput) {
-	ret := _m.ctrl.Call(_m, "SetLoadBalancerPoliciesForBackendServerRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.SetLoadBalancerPoliciesForBackendServerOutput)
+func (_m *MockELBAPI) SetLoadBalancerListenerSSLCertificateWithContext(_param0 aws.Context, _param1 *elb.SetLoadBalancerListenerSSLCertificateInput, _param2 ...request.Option) (*elb.SetLoadBalancerListenerSSLCertificateOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "SetLoadBalancerListenerSSLCertificateWithContext", _s...)
+	ret0, _ := ret[0].(*elb.SetLoadBalancerListenerSSLCertificateOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) SetLoadBalancerPoliciesForBackendServerRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetLoadBalancerPoliciesForBackendServerRequest", arg0)
+func (_mr *_MockELBAPIRecorder) SetLoadBalancerListenerSSLCertificateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetLoadBalancerListenerSSLCertificateWithContext", _s...)
+}
+
+func (_m *MockELBAPI) SetLoadBalancerListenerSSLCertificateRequest(_param0 *elb.SetLoadBalancerListenerSSLCertificateInput) (*request.Request, *elb.SetLoadBalancerListenerSSLCertificateOutput) {
+	ret := _m.ctrl.Call(_m, "SetLoadBalancerListenerSSLCertificateRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.SetLoadBalancerListenerSSLCertificateOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) SetLoadBalancerListenerSSLCertificateRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetLoadBalancerListenerSSLCertificateRequest", arg0)
 }
 
 func (_m *MockELBAPI) SetLoadBalancerPoliciesForBackendServer(_param0 *elb.SetLoadBalancerPoliciesForBackendServerInput) (*elb.SetLoadBalancerPoliciesForBackendServerOutput, error) {
@@ -634,15 +1055,31 @@ func (_mr *_MockELBAPIRecorder) SetLoadBalancerPoliciesForBackendServer(arg0 int
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetLoadBalancerPoliciesForBackendServer", arg0)
 }
 
-func (_m *MockELBAPI) SetLoadBalancerPoliciesOfListenerRequest(_param0 *elb.SetLoadBalancerPoliciesOfListenerInput) (*request.Request, *elb.SetLoadBalancerPoliciesOfListenerOutput) {
-	ret := _m.ctrl.Call(_m, "SetLoadBalancerPoliciesOfListenerRequest", _param0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*elb.SetLoadBalancerPoliciesOfListenerOutput)
+func (_m *MockELBAPI) SetLoadBalancerPoliciesForBackendServerWithContext(_param0 aws.Context, _param1 *elb.SetLoadBalancerPoliciesForBackendServerInput, _param2 ...request.Option) (*elb.SetLoadBalancerPoliciesForBackendServerOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "SetLoadBalancerPoliciesForBackendServerWithContext", _s...)
+	ret0, _ := ret[0].(*elb.SetLoadBalancerPoliciesForBackendServerOutput)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (_mr *_MockELBAPIRecorder) SetLoadBalancerPoliciesOfListenerRequest(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetLoadBalancerPoliciesOfListenerRequest", arg0)
+func (_mr *_MockELBAPIRecorder) SetLoadBalancerPoliciesForBackendServerWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetLoadBalancerPoliciesForBackendServerWithContext", _s...)
+}
+
+func (_m *MockELBAPI) SetLoadBalancerPoliciesForBackendServerRequest(_param0 *elb.SetLoadBalancerPoliciesForBackendServerInput) (*request.Request, *elb.SetLoadBalancerPoliciesForBackendServerOutput) {
+	ret := _m.ctrl.Call(_m, "SetLoadBalancerPoliciesForBackendServerRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.SetLoadBalancerPoliciesForBackendServerOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) SetLoadBalancerPoliciesForBackendServerRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetLoadBalancerPoliciesForBackendServerRequest", arg0)
 }
 
 func (_m *MockELBAPI) SetLoadBalancerPoliciesOfListener(_param0 *elb.SetLoadBalancerPoliciesOfListenerInput) (*elb.SetLoadBalancerPoliciesOfListenerOutput, error) {
@@ -656,6 +1093,33 @@ func (_mr *_MockELBAPIRecorder) SetLoadBalancerPoliciesOfListener(arg0 interface
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetLoadBalancerPoliciesOfListener", arg0)
 }
 
+func (_m *MockELBAPI) SetLoadBalancerPoliciesOfListenerWithContext(_param0 aws.Context, _param1 *elb.SetLoadBalancerPoliciesOfListenerInput, _param2 ...request.Option) (*elb.SetLoadBalancerPoliciesOfListenerOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "SetLoadBalancerPoliciesOfListenerWithContext", _s...)
+	ret0, _ := ret[0].(*elb.SetLoadBalancerPoliciesOfListenerOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) SetLoadBalancerPoliciesOfListenerWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetLoadBalancerPoliciesOfListenerWithContext", _s...)
+}
+
+func (_m *MockELBAPI) SetLoadBalancerPoliciesOfListenerRequest(_param0 *elb.SetLoadBalancerPoliciesOfListenerInput) (*request.Request, *elb.SetLoadBalancerPoliciesOfListenerOutput) {
+	ret := _m.ctrl.Call(_m, "SetLoadBalancerPoliciesOfListenerRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.SetLoadBalancerPoliciesOfListenerOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) SetLoadBalancerPoliciesOfListenerRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "SetLoadBalancerPoliciesOfListenerRequest", arg0)
+}
+
 func (_m *MockELBAPI) WaitUntilAnyInstanceInService(_param0 *elb.DescribeInstanceHealthInput) error {
 	ret := _m.ctrl.Call(_m, "WaitUntilAnyInstanceInService", _param0)
 	ret0, _ := ret[0].(error)
@@ -664,6 +1128,21 @@ func (_m *MockELBAPI) WaitUntilAnyInstanceInService(_param0 *elb.DescribeInstanc
 
 func (_mr *_MockELBAPIRecorder) WaitUntilAnyInstanceInService(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilAnyInstanceInService", arg0)
+}
+
+func (_m *MockELBAPI) WaitUntilAnyInstanceInServiceWithContext(_param0 aws.Context, _param1 *elb.DescribeInstanceHealthInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilAnyInstanceInServiceWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockELBAPIRecorder) WaitUntilAnyInstanceInServiceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilAnyInstanceInServiceWithContext", _s...)
 }
 
 func (_m *MockELBAPI) WaitUntilInstanceDeregistered(_param0 *elb.DescribeInstanceHealthInput) error {
@@ -676,6 +1155,21 @@ func (_mr *_MockELBAPIRecorder) WaitUntilInstanceDeregistered(arg0 interface{}) 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilInstanceDeregistered", arg0)
 }
 
+func (_m *MockELBAPI) WaitUntilInstanceDeregisteredWithContext(_param0 aws.Context, _param1 *elb.DescribeInstanceHealthInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilInstanceDeregisteredWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockELBAPIRecorder) WaitUntilInstanceDeregisteredWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilInstanceDeregisteredWithContext", _s...)
+}
+
 func (_m *MockELBAPI) WaitUntilInstanceInService(_param0 *elb.DescribeInstanceHealthInput) error {
 	ret := _m.ctrl.Call(_m, "WaitUntilInstanceInService", _param0)
 	ret0, _ := ret[0].(error)
@@ -684,4 +1178,19 @@ func (_m *MockELBAPI) WaitUntilInstanceInService(_param0 *elb.DescribeInstanceHe
 
 func (_mr *_MockELBAPIRecorder) WaitUntilInstanceInService(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilInstanceInService", arg0)
+}
+
+func (_m *MockELBAPI) WaitUntilInstanceInServiceWithContext(_param0 aws.Context, _param1 *elb.DescribeInstanceHealthInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilInstanceInServiceWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockELBAPIRecorder) WaitUntilInstanceInServiceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilInstanceInServiceWithContext", _s...)
 }

@@ -61,6 +61,7 @@ func TestSetAwsCredentials(t *testing.T) {
 	type Input struct {
 		AccessKey string
 		SecretKey string
+		Profile   string
 		Region    string
 	}
 
@@ -78,12 +79,14 @@ func TestSetAwsCredentials(t *testing.T) {
 			Input: Input{
 				AccessKey: "AWS_ACCESS_KEY",
 				SecretKey: "AWS_SECRET_KEY",
+				Profile:   "account1",
 				Region:    "us-east-1",
 			},
 			Result: &Config{
 				AwsCredentials: map[string]string{
 					"access_key": "AWS_ACCESS_KEY",
 					"secret_key": "AWS_SECRET_KEY",
+					"profile":    "account1",
 					"region":     "us-east-1",
 				},
 			},
@@ -94,6 +97,7 @@ func TestSetAwsCredentials(t *testing.T) {
 				AwsCredentials: map[string]string{
 					"access_key": "AWS_ACCESS_KEY",
 					"secret_key": "AWS_SECRET_KEY",
+					"profile":    "account1",
 					"region":     "us-east-1",
 				},
 			},
@@ -106,6 +110,7 @@ func TestSetAwsCredentials(t *testing.T) {
 				AwsCredentials: map[string]string{
 					"access_key": "AWS_ACCESS_KEY",
 					"secret_key": "AWS_SECRET_KEY",
+					"profile":    "account1",
 					"region":     "us-east-1",
 				},
 			},
@@ -113,7 +118,7 @@ func TestSetAwsCredentials(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc.Config.SetAwsCredentials(tc.Input.AccessKey, tc.Input.SecretKey, tc.Input.Region)
+		tc.Config.SetAwsCredentials(tc.Input.AccessKey, tc.Input.SecretKey, tc.Input.Profile, tc.Input.Region)
 		if !reflect.DeepEqual(tc.Config, tc.Result) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(tc.Config), pp.Sprint(tc.Result), tc.Name)
 		}
@@ -152,7 +157,51 @@ func TestHasAwsRegion(t *testing.T) {
 	}
 }
 
-func TestHasAwsCredentials(t *testing.T) {
+func TestHasAwsSharedCredentials(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Input  *Config
+		Result bool
+	}{
+		{
+			Name: "has credentials",
+			Input: &Config{
+				AwsCredentials: map[string]string{
+					"profile": "account1",
+					"region":  "us-east-1",
+				},
+			},
+			Result: true,
+		},
+		{
+			Name: "does not have profile",
+			Input: &Config{
+				AwsCredentials: map[string]string{
+					"region": "us-east-1",
+				},
+			},
+			Result: false,
+		},
+		{
+			Name: "does not have region",
+			Input: &Config{
+				AwsCredentials: map[string]string{
+					"profile": "account1",
+				},
+			},
+			Result: false,
+		},
+	}
+
+	for _, tc := range cases {
+		result := tc.Input.HasAwsSharedCredentials()
+		if !reflect.DeepEqual(result, tc.Result) {
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
+		}
+	}
+}
+
+func TestHasAwsStaticCredentials(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Input  *Config
@@ -202,7 +251,7 @@ func TestHasAwsCredentials(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		result := tc.Input.HasAwsCredentials()
+		result := tc.Input.HasAwsStaticCredentials()
 		if !reflect.DeepEqual(result, tc.Result) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
 		}

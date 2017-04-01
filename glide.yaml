@@ -27,3 +27,4 @@ import:
 - package: github.com/hashicorp/terraform
   subpackages:
   - helper/variables
+- package: github.com/mitchellh/go-homedir
