@@ -57,7 +57,7 @@ Try running TFLint under the directory where Terraform is executed. It detect if
 ```
 $ tflint
 template.tf
-        NOTICE:1 "iam_instance_profile" is not specified. If you want to change it, you need to recreate it
+        NOTICE:1 "iam_instance_profile" is not specified. If you want to change it, you need to recreate instance. (Only less than Terraform 0.8.8)
         ERROR:3 "t1.2xlarge" is invalid instance type.
 
 Result: 2 issues  (1 errors , 0 warnings , 1 notices)

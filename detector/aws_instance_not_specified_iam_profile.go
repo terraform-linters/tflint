@@ -25,7 +25,7 @@ func (d *AwsInstanceNotSpecifiedIAMProfileDetector) Detect(file string, item *as
 	if IsKeyNotFound(item, "iam_instance_profile") {
 		issue := &issue.Issue{
 			Type:    d.IssueType,
-			Message: "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate it",
+			Message: "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate instance. (Only less than Terraform 0.8.8)",
 			Line:    item.Pos().Line,
 			File:    file,
 		}

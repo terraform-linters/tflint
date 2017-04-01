@@ -24,7 +24,7 @@ resource "aws_instance" "web" {
 			Issues: []*issue.Issue{
 				&issue.Issue{
 					Type:    "NOTICE",
-					Message: "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate it",
+					Message: "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate instance. (Only less than Terraform 0.8.8)",
 					Line:    2,
 					File:    "test.tf",
 				},
