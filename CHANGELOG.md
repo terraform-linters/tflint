@@ -1,3 +1,17 @@
+## 0.3.3 (2017-04-02)
+
+Patch version update. This release includes support for shared credentials.
+
+### Enhancements
+
+- Support shared credentials ([#79](https://github.com/wata727/tflint/pull/79))
+- Add checkstyle format ([#82](https://github.com/wata727/tflint/pull/82))
+
+### Others
+
+- Add NOTE to aws_instance_not_specified_iam_profile ([#81](https://github.com/wata727/tflint/pull/81))
+- Refactoring for default printer ([#83](https://github.com/wata727/tflint/pull/83))
+
 ## 0.3.2 (2017-03-25)
 
 Patch version update. This release includes hotfix.
