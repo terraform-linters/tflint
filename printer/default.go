@@ -22,24 +22,16 @@ func (p *Printer) DefaultPrint(issues []*issue.Issue) {
 	}
 
 	sort.Sort(issue.ByFile{Issues: issue.Issues(issues)})
-	bIssue := issues[0]
-	sIssues := []*issue.Issue{
-		issues[0],
-	}
+	issuesByFile := []*issue.Issue{}
 
-	for _, is := range issues[1:] {
-		if bIssue.File != is.File {
-			p.printByLine(sIssues)
-			sIssues = nil
+	for _, i := range issues {
+		if len(issuesByFile) != 0 && issuesByFile[len(issuesByFile)-1].File != i.File {
+			p.printByLine(issuesByFile)
+			issuesByFile = nil
 		}
-
-		sIssues = append(sIssues, is)
-		bIssue = is
+		issuesByFile = append(issuesByFile, i)
 	}
-	if sIssues != nil {
-		p.printByLine(sIssues)
-	}
-
+	p.printByLine(issuesByFile)
 	p.printSummary(issues)
 }
 
