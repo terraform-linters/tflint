@@ -1,9 +1,8 @@
 package printer
 
 import (
-	"testing"
-
 	"bytes"
+	"testing"
 
 	"github.com/wata727/tflint/issue"
 )
