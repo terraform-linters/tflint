@@ -71,7 +71,7 @@ func (cli *CLI) Run(args []string) int {
 	flags.BoolVar(&help, "h", false, "alias for --help")
 	flags.BoolVar(&configArgs.Debug, "debug", false, "enable debug mode.")
 	flags.BoolVar(&configArgs.Debug, "d", false, "alias for --debug")
-	flags.StringVar(&format, "format", "default", "choose output format from \"default\" or \"json\"")
+	flags.StringVar(&format, "format", "default", "choose output format from \"default\", \"json\" or \"checkstyle\"")
 	flags.StringVar(&format, "f", "default", "alias for --format")
 	flags.StringVar(&configArgs.IgnoreModule, "ignore-module", "", "ignore module by specified source.")
 	flags.StringVar(&configArgs.IgnoreRule, "ignore-rule", "", "ignore rules.")

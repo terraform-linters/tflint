@@ -21,6 +21,11 @@ func TestValidateFormat(t *testing.T) {
 			Result: true,
 		},
 		{
+			Name:   "checkstyle is valid format",
+			Input:  "checkstyle",
+			Result: true,
+		},
+		{
 			Name:   "yaml is invalid format",
 			Input:  "yaml",
 			Result: false,

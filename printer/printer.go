@@ -16,8 +16,9 @@ type Printer struct {
 }
 
 var validFormat = map[string]bool{
-	"default": true,
-	"json":    true,
+	"default":    true,
+	"json":       true,
+	"checkstyle": true,
 }
 
 func NewPrinter(stdout io.Writer, stderr io.Writer) *Printer {
@@ -37,6 +38,8 @@ func (p *Printer) Print(issues []*issue.Issue, format string) {
 		p.DefaultPrint(issues)
 	case "json":
 		p.JSONPrint(issues)
+	case "checkstyle":
+		p.CheckstylePrint(issues)
 	default:
 		p.DefaultPrint(issues)
 	}
