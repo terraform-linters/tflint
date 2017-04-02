@@ -280,6 +280,21 @@ func TestCLIRun(t *testing.T) {
 			},
 		},
 		{
+			Name:              "specify checkstyle format",
+			Command:           "./tflint --format checkstyle",
+			LoaderGenerator:   loaderDefaultBehavior,
+			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
+			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF {
+				printer := mock.NewMockPrinterIF(ctrl)
+				printer.EXPECT().Print([]*issue.Issue{}, "checkstyle")
+				return printer
+			},
+			Result: Result{
+				Status:     ExitCodeOK,
+				CLIOptions: defaultCLIOptions,
+			},
+		},
+		{
 			Name:              "specify invalid format",
 			Command:           "./tflint --format awesome",
 			LoaderGenerator:   func(ctrl *gomock.Controller) loader.LoaderIF { return mock.NewMockLoaderIF(ctrl) },

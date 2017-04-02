@@ -78,7 +78,7 @@ Please show `tflint --help`
 ```
 -h, --help                              show usage of TFLint. This page.
 -v, --version                           print version information.
--f, --format <format>                   choose output format from "default" or "json"
+-f, --format <format>                   choose output format from "default", "json" or "checkstyle"
 -c, --config <file>                     specify config file. default is ".tflint.hcl"
 --ignore-module <source1,source2...>    ignore module by specified source.
 --ignore-rule <rule1,rule2...>          ignore rules.
