@@ -40,7 +40,7 @@ $ tflint -v
 macOS users can also use [Homebrew](https://brew.sh) to install TFLint:
 
 ```
-$ brew tap hakamadare/tflint
+$ brew tap wata727/tflint
 $ brew install tflint
 ```
 
