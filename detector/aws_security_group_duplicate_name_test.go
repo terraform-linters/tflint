@@ -279,6 +279,50 @@ resource "aws_security_group" "test" {
 			},
 			Issues: []*issue.Issue{},
 		},
+		{
+			Name: "security group name is duplicate when omitted vpc_id on EC2-Classic",
+			Src: `
+resource "aws_security_group" "test" {
+    name   = "default"
+}`,
+			SecurityGroups: []*ec2.SecurityGroup{
+				{
+					GroupName: aws.String("default"),
+				},
+				{
+					GroupName: aws.String("custom"),
+				},
+			},
+			AccountAttributes: []*ec2.AccountAttribute{
+				{
+					AttributeName: aws.String("supported-platforms"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("EC2"),
+						},
+						{
+							AttributeValue: aws.String("VPC"),
+						},
+					},
+				},
+				{
+					AttributeName: aws.String("default-vpc"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("none"),
+						},
+					},
+				},
+			},
+			Issues: []*issue.Issue{
+				{
+					Type:    "ERROR",
+					Message: "\"default\" is duplicate name. It must be unique.",
+					Line:    3,
+					File:    "test.tf",
+				},
+			},
+		},
 	}
 
 	for _, tc := range cases {
