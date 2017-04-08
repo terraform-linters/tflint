@@ -85,6 +85,7 @@ type ResponseCache struct {
 	DescribeSecurityGroupsOutput       *ec2.DescribeSecurityGroupsOutput
 	DescribeVpcsOutput                 *ec2.DescribeVpcsOutput
 	DescribeInstancesOutput            *ec2.DescribeInstancesOutput
+	DescribeAccountAttributesOutput    *ec2.DescribeAccountAttributesOutput
 	ListInstanceProfilesOutput         *iam.ListInstanceProfilesOutput
 	DescribeDBSubnetGroupsOutput       *rds.DescribeDBSubnetGroupsOutput
 	DescribeDBParameterGroupsOutput    *rds.DescribeDBParameterGroupsOutput
@@ -161,6 +162,17 @@ func (c *AwsClient) DescribeInstances() (*ec2.DescribeInstancesOutput, error) {
 		c.Cache.DescribeInstancesOutput = resp
 	}
 	return c.Cache.DescribeInstancesOutput, nil
+}
+
+func (c AwsClient) DescribeAccountAttributes() (*ec2.DescribeAccountAttributesOutput, error) {
+	if c.Cache.DescribeAccountAttributesOutput == nil {
+		resp, err := c.Ec2.DescribeAccountAttributes(&ec2.DescribeAccountAttributesInput{})
+		if err != nil {
+			return nil, err
+		}
+		c.Cache.DescribeAccountAttributesOutput = resp
+	}
+	return c.Cache.DescribeAccountAttributesOutput, nil
 }
 
 func (c *AwsClient) ListInstanceProfiles() (*iam.ListInstanceProfilesOutput, error) {
