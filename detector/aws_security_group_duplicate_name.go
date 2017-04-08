@@ -34,7 +34,7 @@ func (d *AwsSecurityGroupDuplicateDetector) PreProcess() {
 		d.Error = true
 		return
 	}
-	vpcsResp, err := d.AwsClient.DescribeVpcs()
+	attrsResp, err := d.AwsClient.DescribeAccountAttributes()
 	if err != nil {
 		d.Logger.Error(err)
 		d.Error = true
@@ -44,9 +44,9 @@ func (d *AwsSecurityGroupDuplicateDetector) PreProcess() {
 	for _, securityGroup := range securityGroupsResp.SecurityGroups {
 		d.securiyGroups[*securityGroup.VpcId+"."+*securityGroup.GroupName] = true
 	}
-	for _, vpcResource := range vpcsResp.Vpcs {
-		if *vpcResource.IsDefault {
-			d.defaultVpc = *vpcResource.VpcId
+	for _, attr := range attrsResp.AccountAttributes {
+		if *attr.AttributeName == "default-vpc" {
+			d.defaultVpc = *attr.AttributeValues[0].AttributeValue
 			break
 		}
 	}
