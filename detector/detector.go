@@ -63,6 +63,7 @@ var detectors = map[string]string{
 	"aws_elasticache_cluster_previous_type":           "CreateAwsElastiCacheClusterPreviousTypeDetector",
 	"aws_elasticache_cluster_duplicate_id":            "CreateAwsElastiCacheClusterDuplicateIDDetector",
 	"aws_security_group_duplicate_name":               "CreateAwsSecurityGroupDuplicateDetector",
+	"aws_route_invalid_route_table":                   "CreateAwsRouteInvalidRouteTableDetector",
 }
 
 func NewDetector(templates map[string]*ast.File, state *state.TFState, tfvars []*ast.File, c *config.Config) (*Detector, error) {
