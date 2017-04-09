@@ -66,6 +66,7 @@ var detectors = map[string]string{
 	"aws_route_invalid_route_table":                   "CreateAwsRouteInvalidRouteTableDetector",
 	"aws_route_not_specified_target":                  "CreateAwsRouteNotSpecifiedTargetDetector",
 	"aws_route_specified_multiple_targets":            "CreateAwsRouteSpecifiedMultipleTargetsDetector",
+	"aws_route_invalid_gateway":                       "CreateAwsRouteInvalidGatewayDetector",
 }
 
 func NewDetector(templates map[string]*ast.File, state *state.TFState, tfvars []*ast.File, c *config.Config) (*Detector, error) {
