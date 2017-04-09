@@ -90,6 +90,7 @@ type ResponseCache struct {
 	DescribeInternetGatewaysOutput           *ec2.DescribeInternetGatewaysOutput
 	DescribeEgressOnlyInternetGatewaysOutput *ec2.DescribeEgressOnlyInternetGatewaysOutput
 	DescribeNatGatewaysOutput                *ec2.DescribeNatGatewaysOutput
+	DescribeVpcPeeringConnectionsOutput      *ec2.DescribeVpcPeeringConnectionsOutput
 	ListInstanceProfilesOutput               *iam.ListInstanceProfilesOutput
 	DescribeDBSubnetGroupsOutput             *rds.DescribeDBSubnetGroupsOutput
 	DescribeDBParameterGroupsOutput          *rds.DescribeDBParameterGroupsOutput
@@ -221,6 +222,17 @@ func (c AwsClient) DescribeNatGateways() (*ec2.DescribeNatGatewaysOutput, error)
 		c.Cache.DescribeNatGatewaysOutput = resp
 	}
 	return c.Cache.DescribeNatGatewaysOutput, nil
+}
+
+func (c AwsClient) DescribeVpcPeeringConnections() (*ec2.DescribeVpcPeeringConnectionsOutput, error) {
+	if c.Cache.DescribeVpcPeeringConnectionsOutput == nil {
+		resp, err := c.Ec2.DescribeVpcPeeringConnections(&ec2.DescribeVpcPeeringConnectionsInput{})
+		if err != nil {
+			return nil, err
+		}
+		c.Cache.DescribeVpcPeeringConnectionsOutput = resp
+	}
+	return c.Cache.DescribeVpcPeeringConnectionsOutput, nil
 }
 
 func (c *AwsClient) ListInstanceProfiles() (*iam.ListInstanceProfilesOutput, error) {

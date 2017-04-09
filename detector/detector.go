@@ -69,6 +69,7 @@ var detectors = map[string]string{
 	"aws_route_invalid_gateway":                       "CreateAwsRouteInvalidGatewayDetector",
 	"aws_route_invalid_egress_only_gateway":           "CreateAwsRouteInvalidEgressOnlyGatewayDetector",
 	"aws_route_invalid_nat_gateway":                   "CreateAwsRouteInvalidNatGatewayDetector",
+	"aws_route_invalid_vpc_peering_connection":        "CreateAwsRouteInvalidVpcPeeringConnectionDetector",
 }
 
 func NewDetector(templates map[string]*ast.File, state *state.TFState, tfvars []*ast.File, c *config.Config) (*Detector, error) {
