@@ -42,13 +42,11 @@ func (d *AwsRouteInvalidVpcPeeringConnectionDetector) Detect(file string, item *
 	vpcPeeringConnectionToken, err := hclLiteralToken(item, "vpc_peering_connection_id")
 	if err != nil {
 		d.Logger.Error(err)
-		d.Error = true
 		return
 	}
 	vpcPeeringConnection, err := d.evalToString(vpcPeeringConnectionToken.Text)
 	if err != nil {
 		d.Logger.Error(err)
-		d.Error = true
 		return
 	}
 
