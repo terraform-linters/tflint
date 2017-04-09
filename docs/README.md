@@ -57,6 +57,7 @@ Report these issues if you have specified invalid resource ID, name, etc. All is
 - **AWS Route**
     - aws_route_invalid_route_table
     - aws_route_invalid_gateway
+    - aws_route_invalid_egress_only_gateway
 
 ### Duplicate Resource Issue
 Report these issues if you have specified resource ID, name, etc that already existed and must be unique. All issues are reported as ERROR. These issues are reported when enabled deep check. For example, it happens when resources with the same name is already created. Please check the actual resources again.
