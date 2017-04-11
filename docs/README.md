@@ -25,6 +25,8 @@ Issues are classified into the following three types.
     - [aws_elasticache_cluster_invalid_type](aws_elasticache_cluster_invalid_type.md)
     - [aws_elasticache_cluster_previous_type](aws_elasticache_cluster_previous_type.md)
     - [aws_elasticache_cluster_default_parameter_group](aws_elasticache_cluster_default_parameter_group.md)
+- Terraform
+    - [module_pinned_source](module_pinned_source.md)
 
 ### Invalid Reference Issue
 Report these issues if you have specified invalid resource ID, name, etc. All issues are reported as ERROR. These issues are reported when enabled deep check. In many cases, an incorrect value is specified, so please fix it.
