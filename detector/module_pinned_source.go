@@ -33,23 +33,23 @@ func NewModulePinnedSourceDetector(detector *Detector, file string, item *ast.Ob
 	}
 }
 
-func (d *ModulePinnedSourceDetector) DetectPinnedModuleRef(issues *[]*issue.Issue) {
+func (d *ModulePinnedSourceDetector) DetectPinnedModuleSource(issues *[]*issue.Issue) {
 	lower := strings.ToLower(d.source)
 
 	if strings.Contains(lower, "git") || strings.Contains(lower, "bitbucket") {
-		if issue := d.detectGitRef(d.source); issue != nil {
+		if issue := d.detectGitSource(d.source); issue != nil {
 			tmp := append(*issues, issue)
 			*issues = tmp
 		}
 	} else if strings.HasPrefix(lower, "hg:") {
-		if issue := d.detectMercurialRef(d.source); issue != nil {
+		if issue := d.detectMercurialSource(d.source); issue != nil {
 			tmp := append(*issues, issue)
 			*issues = tmp
 		}
 	}
 }
 
-func (d *ModulePinnedSourceDetector) detectGitRef(source string) *issue.Issue {
+func (d *ModulePinnedSourceDetector) detectGitSource(source string) *issue.Issue {
 	if strings.Contains(source, "ref=") {
 		if strings.Contains(source, "ref=master") {
 			return &issue.Issue{
@@ -71,7 +71,7 @@ func (d *ModulePinnedSourceDetector) detectGitRef(source string) *issue.Issue {
 	return nil
 }
 
-func (d *ModulePinnedSourceDetector) detectMercurialRef(source string) *issue.Issue {
+func (d *ModulePinnedSourceDetector) detectMercurialSource(source string) *issue.Issue {
 	if strings.Contains(source, "rev=") {
 		if strings.Contains(source, "rev=default") {
 			return &issue.Issue{

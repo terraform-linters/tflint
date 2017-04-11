@@ -175,7 +175,7 @@ func (d *Detector) Detect() []*issue.Issue {
 		}
 		d.Logger.Info(fmt.Sprintf("run module linter `%s`", name))
 		modulePinnedSourceDetector := NewModulePinnedSourceDetector(d, m.File, m.ObjectItem)
-		modulePinnedSourceDetector.DetectPinnedModuleRef(&issues)
+		modulePinnedSourceDetector.DetectPinnedModuleSource(&issues)
 	}
 
 	return issues
