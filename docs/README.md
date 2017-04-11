@@ -25,7 +25,7 @@ Issues are classified into the following three types.
     - [aws_elasticache_cluster_invalid_type](aws_elasticache_cluster_invalid_type.md)
     - [aws_elasticache_cluster_previous_type](aws_elasticache_cluster_previous_type.md)
     - [aws_elasticache_cluster_default_parameter_group](aws_elasticache_cluster_default_parameter_group.md)
-- Terraform
+- **Terraform**
     - [module_pinned_source](module_pinned_source.md)
 
 ### Invalid Reference Issue
