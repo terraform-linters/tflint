@@ -35,6 +35,7 @@ module "ec2_instance" {
 				"960d94c2f60d34845dc3051edfad76e1": {
 					Name:   "ec2_instance",
 					Source: "./tf_aws_ec2_instance",
+					File:   "module.tf",
 					Config: hil.EvalConfig{
 						GlobalScope: &hilast.BasicScope{
 							VarMap: map[string]hilast.Variable{
@@ -73,6 +74,7 @@ module "ec2_instance" {
 				"960d94c2f60d34845dc3051edfad76e1": {
 					Name:   "ec2_instance",
 					Source: "./tf_aws_ec2_instance",
+					File:   "module1.tf",
 					Config: hil.EvalConfig{
 						GlobalScope: &hilast.BasicScope{
 							VarMap: map[string]hilast.Variable{
@@ -92,6 +94,7 @@ module "ec2_instance" {
 				"0cf2d4dab02de8de33c7058799b6f81e": {
 					Name:   "ec2_instance",
 					Source: "github.com/wata727/example-module",
+					File:   "module2.tf",
 					Config: hil.EvalConfig{
 						GlobalScope: &hilast.BasicScope{
 							VarMap: map[string]hilast.Variable{
@@ -141,7 +144,6 @@ module "ec2_instances" {
 		defer os.Chdir(prev)
 		testDir := dir + "/test-fixtures"
 		os.Chdir(testDir)
-
 		templates := make(map[string]*hclast.File)
 		for k, v := range tc.Input {
 			templates[k], _ = parser.Parse([]byte(v))
@@ -154,6 +156,10 @@ module "ec2_instances" {
 		if !tc.Error && err != nil {
 			t.Fatalf("\nshould not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
 			continue
+		}
+		// We don't care how the ObjectItem was created
+		for _, module := range result {
+			module.ObjectItem = nil
 		}
 
 		if !reflect.DeepEqual(result, tc.Result) {

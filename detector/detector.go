@@ -159,6 +159,15 @@ func (d *Detector) Detect() []*issue.Issue {
 			}
 			moduleDetector.Error = d.Error
 			moduleDetector.detect(creatorMethod, &issues)
+
+			// Special case for module_pinned_source rule
+			modulePinnedSourceRule := "module_pinned_source"
+			if d.Config.IgnoreModule[modulePinnedSourceRule] {
+				d.Logger.Info(fmt.Sprintf("ignore module `%s`", modulePinnedSourceRule))
+				continue
+			}
+			modulePinnedSourceDetector := NewModulePinnedSourceDetector(d, m.File, m.ObjectItem)
+			modulePinnedSourceDetector.DetectPinnedModuleRef(&issues)
 		}
 	}
 
