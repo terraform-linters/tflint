@@ -79,22 +79,29 @@ func (c *Config) NewAwsSession() *session.Session {
 }
 
 type ResponseCache struct {
-	DescribeImagesOutput               *ec2.DescribeImagesOutput
-	DescribeKeyPairsOutput             *ec2.DescribeKeyPairsOutput
-	DescribeSubnetsOutput              *ec2.DescribeSubnetsOutput
-	DescribeSecurityGroupsOutput       *ec2.DescribeSecurityGroupsOutput
-	DescribeVpcsOutput                 *ec2.DescribeVpcsOutput
-	DescribeInstancesOutput            *ec2.DescribeInstancesOutput
-	ListInstanceProfilesOutput         *iam.ListInstanceProfilesOutput
-	DescribeDBSubnetGroupsOutput       *rds.DescribeDBSubnetGroupsOutput
-	DescribeDBParameterGroupsOutput    *rds.DescribeDBParameterGroupsOutput
-	DescribeOptionGroupsOutput         *rds.DescribeOptionGroupsOutput
-	DescribeDBInstancesOutput          *rds.DescribeDBInstancesOutput
-	DescribeCacheParameterGroupsOutput *elasticache.DescribeCacheParameterGroupsOutput
-	DescribeCacheSubnetGroupsOutput    *elasticache.DescribeCacheSubnetGroupsOutput
-	DescribeCacheClustersOutput        *elasticache.DescribeCacheClustersOutput
-	DescribeLoadBalancersOutput        *elbv2.DescribeLoadBalancersOutput
-	DescribeClassicLoadBalancersOutput *elb.DescribeLoadBalancersOutput
+	DescribeImagesOutput                     *ec2.DescribeImagesOutput
+	DescribeKeyPairsOutput                   *ec2.DescribeKeyPairsOutput
+	DescribeSubnetsOutput                    *ec2.DescribeSubnetsOutput
+	DescribeSecurityGroupsOutput             *ec2.DescribeSecurityGroupsOutput
+	DescribeVpcsOutput                       *ec2.DescribeVpcsOutput
+	DescribeInstancesOutput                  *ec2.DescribeInstancesOutput
+	DescribeAccountAttributesOutput          *ec2.DescribeAccountAttributesOutput
+	DescribeRouteTablesOutput                *ec2.DescribeRouteTablesOutput
+	DescribeInternetGatewaysOutput           *ec2.DescribeInternetGatewaysOutput
+	DescribeEgressOnlyInternetGatewaysOutput *ec2.DescribeEgressOnlyInternetGatewaysOutput
+	DescribeNatGatewaysOutput                *ec2.DescribeNatGatewaysOutput
+	DescribeVpcPeeringConnectionsOutput      *ec2.DescribeVpcPeeringConnectionsOutput
+	DescribeNetworkInterfacesOutput          *ec2.DescribeNetworkInterfacesOutput
+	ListInstanceProfilesOutput               *iam.ListInstanceProfilesOutput
+	DescribeDBSubnetGroupsOutput             *rds.DescribeDBSubnetGroupsOutput
+	DescribeDBParameterGroupsOutput          *rds.DescribeDBParameterGroupsOutput
+	DescribeOptionGroupsOutput               *rds.DescribeOptionGroupsOutput
+	DescribeDBInstancesOutput                *rds.DescribeDBInstancesOutput
+	DescribeCacheParameterGroupsOutput       *elasticache.DescribeCacheParameterGroupsOutput
+	DescribeCacheSubnetGroupsOutput          *elasticache.DescribeCacheSubnetGroupsOutput
+	DescribeCacheClustersOutput              *elasticache.DescribeCacheClustersOutput
+	DescribeLoadBalancersOutput              *elbv2.DescribeLoadBalancersOutput
+	DescribeClassicLoadBalancersOutput       *elb.DescribeLoadBalancersOutput
 }
 
 func (c *AwsClient) DescribeImages() (*ec2.DescribeImagesOutput, error) {
@@ -161,6 +168,83 @@ func (c *AwsClient) DescribeInstances() (*ec2.DescribeInstancesOutput, error) {
 		c.Cache.DescribeInstancesOutput = resp
 	}
 	return c.Cache.DescribeInstancesOutput, nil
+}
+
+func (c AwsClient) DescribeAccountAttributes() (*ec2.DescribeAccountAttributesOutput, error) {
+	if c.Cache.DescribeAccountAttributesOutput == nil {
+		resp, err := c.Ec2.DescribeAccountAttributes(&ec2.DescribeAccountAttributesInput{})
+		if err != nil {
+			return nil, err
+		}
+		c.Cache.DescribeAccountAttributesOutput = resp
+	}
+	return c.Cache.DescribeAccountAttributesOutput, nil
+}
+
+func (c AwsClient) DescribeRouteTables() (*ec2.DescribeRouteTablesOutput, error) {
+	if c.Cache.DescribeRouteTablesOutput == nil {
+		resp, err := c.Ec2.DescribeRouteTables(&ec2.DescribeRouteTablesInput{})
+		if err != nil {
+			return nil, err
+		}
+		c.Cache.DescribeRouteTablesOutput = resp
+	}
+	return c.Cache.DescribeRouteTablesOutput, nil
+}
+
+func (c AwsClient) DescribeInternetGateways() (*ec2.DescribeInternetGatewaysOutput, error) {
+	if c.Cache.DescribeInternetGatewaysOutput == nil {
+		resp, err := c.Ec2.DescribeInternetGateways(&ec2.DescribeInternetGatewaysInput{})
+		if err != nil {
+			return nil, err
+		}
+		c.Cache.DescribeInternetGatewaysOutput = resp
+	}
+	return c.Cache.DescribeInternetGatewaysOutput, nil
+}
+
+func (c AwsClient) DescribeEgressOnlyInternetGateways() (*ec2.DescribeEgressOnlyInternetGatewaysOutput, error) {
+	if c.Cache.DescribeEgressOnlyInternetGatewaysOutput == nil {
+		resp, err := c.Ec2.DescribeEgressOnlyInternetGateways(&ec2.DescribeEgressOnlyInternetGatewaysInput{})
+		if err != nil {
+			return nil, err
+		}
+		c.Cache.DescribeEgressOnlyInternetGatewaysOutput = resp
+	}
+	return c.Cache.DescribeEgressOnlyInternetGatewaysOutput, nil
+}
+
+func (c AwsClient) DescribeNatGateways() (*ec2.DescribeNatGatewaysOutput, error) {
+	if c.Cache.DescribeNatGatewaysOutput == nil {
+		resp, err := c.Ec2.DescribeNatGateways(&ec2.DescribeNatGatewaysInput{})
+		if err != nil {
+			return nil, err
+		}
+		c.Cache.DescribeNatGatewaysOutput = resp
+	}
+	return c.Cache.DescribeNatGatewaysOutput, nil
+}
+
+func (c AwsClient) DescribeVpcPeeringConnections() (*ec2.DescribeVpcPeeringConnectionsOutput, error) {
+	if c.Cache.DescribeVpcPeeringConnectionsOutput == nil {
+		resp, err := c.Ec2.DescribeVpcPeeringConnections(&ec2.DescribeVpcPeeringConnectionsInput{})
+		if err != nil {
+			return nil, err
+		}
+		c.Cache.DescribeVpcPeeringConnectionsOutput = resp
+	}
+	return c.Cache.DescribeVpcPeeringConnectionsOutput, nil
+}
+
+func (c AwsClient) DescribeNetworkInterfaces() (*ec2.DescribeNetworkInterfacesOutput, error) {
+	if c.Cache.DescribeNetworkInterfacesOutput == nil {
+		resp, err := c.Ec2.DescribeNetworkInterfaces(&ec2.DescribeNetworkInterfacesInput{})
+		if err != nil {
+			return nil, err
+		}
+		c.Cache.DescribeNetworkInterfacesOutput = resp
+	}
+	return c.Cache.DescribeNetworkInterfacesOutput, nil
 }
 
 func (c *AwsClient) ListInstanceProfiles() (*iam.ListInstanceProfilesOutput, error) {

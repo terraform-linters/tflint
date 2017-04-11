@@ -1,3 +1,27 @@
+## 0.3.4 (2017-04-10)
+
+Patch version update. This release includes new detectors for `aws_route`
+
+### NewDetectors
+
+- Add AwsRouteInvalidRouteTableDetector ([#90](https://github.com/wata727/tflint/pull/90))
+- Add AwsRouteNotSpecifiedTargetDetector ([#91](https://github.com/wata727/tflint/pull/91))
+- Add AwsRouteSpecifiedMultipleTargetsDetector ([#92](https://github.com/wata727/tflint/pull/92))
+- Add AwsRouteInvalidGatewayDetector ([#93](https://github.com/wata727/tflint/pull/93))
+- Add AwsRouteInvalidEgressOnlyGatewayDetector ([#94](https://github.com/wata727/tflint/pull/94))
+- Add AwsRouteInvalidNatGatewayDetector ([#95](https://github.com/wata727/tflint/pull/95))
+- Add AwsRouteInvalidVpcPeeringConnectionDetector ([#96](https://github.com/wata727/tflint/pull/96))
+- Add AwsRouteInvalidInstanceDetector ([#97](https://github.com/wata727/tflint/pull/97))
+- Add AwsRouteInvalidNetworkInterfaceDetector ([#98](https://github.com/wata727/tflint/pull/98))
+
+### BugFix
+
+- Fix panic when security groups are on EC2-Classic ([#89](https://github.com/wata727/tflint/pull/89))
+
+### Others
+
+- Transfer from hakamadare/tflint to wata727/tflint ([#84](https://github.com/wata727/tflint/pull/84))
+
 ## 0.3.3 (2017-04-02)
 
 Patch version update. This release includes support for shared credentials.

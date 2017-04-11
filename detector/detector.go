@@ -63,6 +63,15 @@ var detectors = map[string]string{
 	"aws_elasticache_cluster_previous_type":           "CreateAwsElastiCacheClusterPreviousTypeDetector",
 	"aws_elasticache_cluster_duplicate_id":            "CreateAwsElastiCacheClusterDuplicateIDDetector",
 	"aws_security_group_duplicate_name":               "CreateAwsSecurityGroupDuplicateDetector",
+	"aws_route_invalid_route_table":                   "CreateAwsRouteInvalidRouteTableDetector",
+	"aws_route_not_specified_target":                  "CreateAwsRouteNotSpecifiedTargetDetector",
+	"aws_route_specified_multiple_targets":            "CreateAwsRouteSpecifiedMultipleTargetsDetector",
+	"aws_route_invalid_gateway":                       "CreateAwsRouteInvalidGatewayDetector",
+	"aws_route_invalid_egress_only_gateway":           "CreateAwsRouteInvalidEgressOnlyGatewayDetector",
+	"aws_route_invalid_nat_gateway":                   "CreateAwsRouteInvalidNatGatewayDetector",
+	"aws_route_invalid_vpc_peering_connection":        "CreateAwsRouteInvalidVpcPeeringConnectionDetector",
+	"aws_route_invalid_instance":                      "CreateAwsRouteInvalidInstanceDetector",
+	"aws_route_invalid_network_interface":             "CreateAwsRouteInvalidNetworkInterfaceDetector",
 }
 
 func NewDetector(templates map[string]*ast.File, state *state.TFState, tfvars []*ast.File, c *config.Config) (*Detector, error) {

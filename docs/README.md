@@ -25,6 +25,9 @@ Issues are classified into the following three types.
     - [aws_elasticache_cluster_invalid_type](aws_elasticache_cluster_invalid_type.md)
     - [aws_elasticache_cluster_previous_type](aws_elasticache_cluster_previous_type.md)
     - [aws_elasticache_cluster_default_parameter_group](aws_elasticache_cluster_default_parameter_group.md)
+- **AWS Route**
+    - [aws_route_not_specified_target](aws_route_not_specified_target.md)
+    - [aws_route_specified_multiple_targets](aws_route_specified_multiple_targets.md)
 - **Terraform**
     - [module_pinned_source](module_pinned_source.md)
 
@@ -53,6 +56,14 @@ Report these issues if you have specified invalid resource ID, name, etc. All is
     - aws_elasticache_cluster_invalid_parameter_group
     - aws_elasticache_cluster_invalid_subnet_group
     - aws_elasticache_cluster_invalid_security_group
+- **AWS Route**
+    - aws_route_invalid_route_table
+    - aws_route_invalid_gateway
+    - aws_route_invalid_egress_only_gateway
+    - aws_route_invalid_nat_gateway
+    - aws_route_invalid_vpc_peering_connection
+    - aws_route_invalid_instance
+    - aws_route_invalid_network_interface
 
 ### Duplicate Resource Issue
 Report these issues if you have specified resource ID, name, etc that already existed and must be unique. All issues are reported as ERROR. These issues are reported when enabled deep check. For example, it happens when resources with the same name is already created. Please check the actual resources again.

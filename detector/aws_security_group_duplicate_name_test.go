@@ -15,12 +15,12 @@ import (
 
 func TestDetectAwsSecurityGroupDuplicateName(t *testing.T) {
 	cases := []struct {
-		Name           string
-		Src            string
-		State          string
-		SecurityGroups []*ec2.SecurityGroup
-		Vpcs           []*ec2.Vpc
-		Issues         []*issue.Issue
+		Name              string
+		Src               string
+		State             string
+		SecurityGroups    []*ec2.SecurityGroup
+		AccountAttributes []*ec2.AccountAttribute
+		Issues            []*issue.Issue
 	}{
 		{
 			Name: "security group name is duplicate",
@@ -30,23 +30,35 @@ resource "aws_security_group" "test" {
     vpc_id = "vpc-1234abcd"
 }`,
 			SecurityGroups: []*ec2.SecurityGroup{
-				&ec2.SecurityGroup{
+				{
 					GroupName: aws.String("default"),
 					VpcId:     aws.String("vpc-1234abcd"),
 				},
-				&ec2.SecurityGroup{
+				{
 					GroupName: aws.String("custom"),
 					VpcId:     aws.String("vpc-1234abcd"),
 				},
 			},
-			Vpcs: []*ec2.Vpc{
-				&ec2.Vpc{
-					VpcId:     aws.String("vpc-1234abcd"),
-					IsDefault: aws.Bool(true),
+			AccountAttributes: []*ec2.AccountAttribute{
+				{
+					AttributeName: aws.String("supported-platforms"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("VPC"),
+						},
+					},
+				},
+				{
+					AttributeName: aws.String("default-vpc"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("vpc-1234abcd"),
+						},
+					},
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"default\" is duplicate name. It must be unique.",
 					Line:    3,
@@ -62,19 +74,31 @@ resource "aws_security_group" "test" {
     vpc_id = "vpc-1234abcd"
 }`,
 			SecurityGroups: []*ec2.SecurityGroup{
-				&ec2.SecurityGroup{
+				{
 					GroupName: aws.String("default"),
 					VpcId:     aws.String("vpc-1234abcd"),
 				},
-				&ec2.SecurityGroup{
+				{
 					GroupName: aws.String("custom"),
 					VpcId:     aws.String("vpc-1234abcd"),
 				},
 			},
-			Vpcs: []*ec2.Vpc{
-				&ec2.Vpc{
-					VpcId:     aws.String("vpc-1234abcd"),
-					IsDefault: aws.Bool(true),
+			AccountAttributes: []*ec2.AccountAttribute{
+				{
+					AttributeName: aws.String("supported-platforms"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("VPC"),
+						},
+					},
+				},
+				{
+					AttributeName: aws.String("default-vpc"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("vpc-1234abcd"),
+						},
+					},
 				},
 			},
 			Issues: []*issue.Issue{},
@@ -87,19 +111,31 @@ resource "aws_security_group" "test" {
     vpc_id = "vpc-1234abcd"
 }`,
 			SecurityGroups: []*ec2.SecurityGroup{
-				&ec2.SecurityGroup{
+				{
 					GroupName: aws.String("default"),
 					VpcId:     aws.String("vpc-abcd1234"),
 				},
-				&ec2.SecurityGroup{
+				{
 					GroupName: aws.String("custom"),
 					VpcId:     aws.String("vpc-abcd1234"),
 				},
 			},
-			Vpcs: []*ec2.Vpc{
-				&ec2.Vpc{
-					VpcId:     aws.String("vpc-1234abcd"),
-					IsDefault: aws.Bool(true),
+			AccountAttributes: []*ec2.AccountAttribute{
+				{
+					AttributeName: aws.String("supported-platforms"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("VPC"),
+						},
+					},
+				},
+				{
+					AttributeName: aws.String("default-vpc"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("vpc-1234abcd"),
+						},
+					},
 				},
 			},
 			Issues: []*issue.Issue{},
@@ -111,23 +147,31 @@ resource "aws_security_group" "test" {
     name   = "default"
 }`,
 			SecurityGroups: []*ec2.SecurityGroup{
-				&ec2.SecurityGroup{
+				{
 					GroupName: aws.String("default"),
 					VpcId:     aws.String("vpc-1234abcd"),
 				},
-				&ec2.SecurityGroup{
+				{
 					GroupName: aws.String("custom"),
 					VpcId:     aws.String("vpc-1234abcd"),
 				},
 			},
-			Vpcs: []*ec2.Vpc{
-				&ec2.Vpc{
-					VpcId:     aws.String("vpc-1234abcd"),
-					IsDefault: aws.Bool(false),
+			AccountAttributes: []*ec2.AccountAttribute{
+				{
+					AttributeName: aws.String("supported-platforms"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("VPC"),
+						},
+					},
 				},
-				&ec2.Vpc{
-					VpcId:     aws.String("vpc-abcd1234"),
-					IsDefault: aws.Bool(true),
+				{
+					AttributeName: aws.String("default-vpc"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("vpc-abcd1234"),
+						},
+					},
 				},
 			},
 			Issues: []*issue.Issue{},
@@ -139,27 +183,35 @@ resource "aws_security_group" "test" {
     name   = "default"
 }`,
 			SecurityGroups: []*ec2.SecurityGroup{
-				&ec2.SecurityGroup{
+				{
 					GroupName: aws.String("default"),
 					VpcId:     aws.String("vpc-1234abcd"),
 				},
-				&ec2.SecurityGroup{
+				{
 					GroupName: aws.String("custom"),
 					VpcId:     aws.String("vpc-1234abcd"),
 				},
 			},
-			Vpcs: []*ec2.Vpc{
-				&ec2.Vpc{
-					VpcId:     aws.String("vpc-1234abcd"),
-					IsDefault: aws.Bool(true),
+			AccountAttributes: []*ec2.AccountAttribute{
+				{
+					AttributeName: aws.String("supported-platforms"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("VPC"),
+						},
+					},
 				},
-				&ec2.Vpc{
-					VpcId:     aws.String("vpc-abcd1234"),
-					IsDefault: aws.Bool(false),
+				{
+					AttributeName: aws.String("default-vpc"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("vpc-1234abcd"),
+						},
+					},
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"default\" is duplicate name. It must be unique.",
 					Line:    3,
@@ -198,22 +250,78 @@ resource "aws_security_group" "test" {
 }
 `,
 			SecurityGroups: []*ec2.SecurityGroup{
-				&ec2.SecurityGroup{
+				{
 					GroupName: aws.String("default"),
 					VpcId:     aws.String("vpc-1234abcd"),
 				},
-				&ec2.SecurityGroup{
+				{
 					GroupName: aws.String("custom"),
 					VpcId:     aws.String("vpc-1234abcd"),
 				},
 			},
-			Vpcs: []*ec2.Vpc{
-				&ec2.Vpc{
-					VpcId:     aws.String("vpc-1234abcd"),
-					IsDefault: aws.Bool(true),
+			AccountAttributes: []*ec2.AccountAttribute{
+				{
+					AttributeName: aws.String("supported-platforms"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("VPC"),
+						},
+					},
+				},
+				{
+					AttributeName: aws.String("default-vpc"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("vpc-1234abcd"),
+						},
+					},
 				},
 			},
 			Issues: []*issue.Issue{},
+		},
+		{
+			Name: "security group name is duplicate when omitted vpc_id on EC2-Classic",
+			Src: `
+resource "aws_security_group" "test" {
+    name   = "default"
+}`,
+			SecurityGroups: []*ec2.SecurityGroup{
+				{
+					GroupName: aws.String("default"),
+				},
+				{
+					GroupName: aws.String("custom"),
+				},
+			},
+			AccountAttributes: []*ec2.AccountAttribute{
+				{
+					AttributeName: aws.String("supported-platforms"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("EC2"),
+						},
+						{
+							AttributeValue: aws.String("VPC"),
+						},
+					},
+				},
+				{
+					AttributeName: aws.String("default-vpc"),
+					AttributeValues: []*ec2.AccountAttributeValue{
+						{
+							AttributeValue: aws.String("none"),
+						},
+					},
+				},
+			},
+			Issues: []*issue.Issue{
+				{
+					Type:    "ERROR",
+					Message: "\"default\" is duplicate name. It must be unique.",
+					Line:    3,
+					File:    "test.tf",
+				},
+			},
 		},
 	}
 
@@ -228,8 +336,8 @@ resource "aws_security_group" "test" {
 		ec2mock.EXPECT().DescribeSecurityGroups(&ec2.DescribeSecurityGroupsInput{}).Return(&ec2.DescribeSecurityGroupsOutput{
 			SecurityGroups: tc.SecurityGroups,
 		}, nil)
-		ec2mock.EXPECT().DescribeVpcs(&ec2.DescribeVpcsInput{}).Return(&ec2.DescribeVpcsOutput{
-			Vpcs: tc.Vpcs,
+		ec2mock.EXPECT().DescribeAccountAttributes(&ec2.DescribeAccountAttributesInput{}).Return(&ec2.DescribeAccountAttributesOutput{
+			AccountAttributes: tc.AccountAttributes,
 		}, nil)
 		awsClient.Ec2 = ec2mock
 
