@@ -98,7 +98,7 @@ func TestCLIRun(t *testing.T) {
 		},
 		{
 			Name:              "print help by alias",
-			Command:           "./tflint --h",
+			Command:           "./tflint -h",
 			LoaderGenerator:   func(ctrl *gomock.Controller) loader.LoaderIF { return mock.NewMockLoaderIF(ctrl) },
 			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
 			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
@@ -575,7 +575,7 @@ func TestCLIRun(t *testing.T) {
 			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
 			Result: Result{
 				Status: ExitCodeError,
-				Stderr: "`--invalid-option` is unknown options",
+				Stderr: "`invalid-option` is unknown option",
 			},
 		},
 	}
