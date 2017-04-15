@@ -28,3 +28,5 @@ import:
   subpackages:
   - helper/variables
 - package: github.com/mitchellh/go-homedir
+- package: github.com/jessevdk/go-flags
+  version: ^1.2.0

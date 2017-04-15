@@ -1,8 +1,8 @@
-hash: a221ec3e41af391aa494ffc92408f3ad5785207ede47c1c73462b0156b593539
-updated: 2017-03-25T22:04:15.372373828+09:00
+hash: a877232f32e3186a58aecd016a18032815be2ee1f3dc52a7240367b46ddc76ca
+updated: 2017-04-15T17:08:16.557042621+09:00
 imports:
 - name: github.com/aws/aws-sdk-go
-  version: d122c9c0e1d875585918c85cf6eba7e5e43f221d
+  version: 7be45195c3af1b54a609812f90c05a7e492e2491
   subpackages:
   - aws
   - aws/awserr
@@ -68,6 +68,8 @@ imports:
   version: cbfb29cd8f52065ef3ef0361c3a2a254d7f185bc
   subpackages:
   - helper/variables
+- name: github.com/jessevdk/go-flags
+  version: 48cf8722c3375517aba351d1f7577c40663a4407
 - name: github.com/jmespath/go-jmespath
   version: bd40a432e4c76585ef6b72d3fd96fb9b6dc7b68d
 - name: github.com/k0kubun/pp
