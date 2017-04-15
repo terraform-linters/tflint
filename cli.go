@@ -33,20 +33,19 @@ type CLI struct {
 }
 
 type CLIOptions struct {
-	Help            bool   `short:"h" long:"help" description:"Show usage."`
-	Version         bool   `short:"v" long:"version" description:"Print TFLint version."`
-	Format          string `short:"f" long:"format" description:"Choose the output of TFLint format from \"default\", \"json\" or \"checkstyle\"" default:"default"`
-	Config          string `short:"c" long:"config" description:"Specify a config file name. default is \".tflint.hcl\"" default:".tflint.hcl"`
-	IgnoreModule    string `long:"ignore-module" description:"Specify module names to be ignored, separated by commas."`
-	IgnoreRule      string `long:"ignore-rule" description:"Specify rule names to be ignored, separated by commas."`
-	Varfile         string `long:"var-file" description:"Specify Terraform variable file names, separated by commas."`
-	Deep            bool   `long:"deep" description:"Enable deep check mode."`
-	AwsAccessKey    string `long:"aws-access-key" description:"Set AWS access key used in deep check mode."`
-	AwsSecretKey    string `long:"aws-secret-key" description:"Set AWS secret key used in deep check mode."`
-	AwsProfile      string `long:"aws-profile" description:"Set AWS shared credential profile name used in deep check mode."`
-	AwsRegion       string `long:"aws-region" description:"Set AWS region used in deep check mode."`
-	Debug           bool   `short:"d" long:"debug" description:"Enable debug mode."`
-	ErrorWithIssues bool   `long:"error-with-issues" description:"Return error code when issue exists."`
+	Version         bool   `short:"v" long:"version" description:"Print TFLint version"`
+	Format          string `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" default:"default"`
+	Config          string `short:"c" long:"config" description:"Config file name" value-name:"FILE" default:".tflint.hcl"`
+	IgnoreModule    string `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE1,SOURCE2..."`
+	IgnoreRule      string `long:"ignore-rule" description:"Ignore rule names" value-name:"RULE1,RULE2..."`
+	Varfile         string `long:"var-file" description:"Terraform variable file names" value-name:"FILE1,FILE2..."`
+	Deep            bool   `long:"deep" description:"Enable deep check mode"`
+	AwsAccessKey    string `long:"aws-access-key" description:"AWS access key used in deep check mode" value-name:"ACCESS_KEY"`
+	AwsSecretKey    string `long:"aws-secret-key" description:"AWS secret key used in deep check mode" value-name:"SECRET_KEY"`
+	AwsProfile      string `long:"aws-profile" description:"AWS shared credential profile name used in deep check mode" value-name:"PROFILE"`
+	AwsRegion       string `long:"aws-region" description:"AWS region used in deep check mode" value-name:"REGION"`
+	Debug           bool   `short:"d" long:"debug" description:"Enable debug mode"`
+	ErrorWithIssues bool   `long:"error-with-issues" description:"Return error code when issues exist"`
 	Fast            bool   `long:"fast" description:"Ignore slow rules. Currently, ignore only aws_instance_invalid_ami"`
 }
 
@@ -58,31 +57,26 @@ type TestCLIOptions struct {
 // Run invokes the CLI with the given arguments.
 func (cli *CLI) Run(args []string) int {
 	var opts CLIOptions
-	parser := flags.NewParser(&opts, flags.None)
+	parser := flags.NewParser(&opts, flags.HelpFlag)
+	parser.Usage = "[OPTIONS] [FILE]"
 	parser.UnknownOptionHandler = func(option string, arg flags.SplitArgument, args []string) ([]string, error) {
-		return []string{}, errors.New(fmt.Sprintf("ERROR: `%s` is unknown option. Please run `tflint --help`\n", option))
+		return []string{}, errors.New(fmt.Sprintf("ERROR: `%s` is unknown option. Please run `tflint --help`", option))
 	}
 	// Parse commandline flag
 	args, err := parser.ParseArgs(args)
 	if err != nil {
-		fmt.Fprint(cli.errStream, err)
-		return ExitCodeError
-	}
-
-	if !printer.ValidateFormat(opts.Format) {
-		fmt.Fprintf(cli.errStream, "ERROR: `%s` is unknown format. Please run `tflint --help`\n", opts.Format)
-		return ExitCodeError
+		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {
+			fmt.Fprintln(cli.outStream, err)
+			return ExitCodeOK
+		} else {
+			fmt.Fprintln(cli.errStream, err)
+			return ExitCodeError
+		}
 	}
 
 	// Show version
 	if opts.Version {
 		fmt.Fprintf(cli.outStream, "%s version %s\n", Name, Version)
-		return ExitCodeOK
-	}
-
-	// Show help
-	if opts.Help {
-		fmt.Fprintln(cli.outStream, Help)
 		return ExitCodeOK
 	}
 
@@ -121,7 +115,7 @@ func (cli *CLI) Run(args []string) int {
 	}
 	issues := cli.detector.Detect()
 	if cli.detector.HasError() {
-		fmt.Fprintln(cli.errStream, "ERROR: error occurred in detecting. Please run with --debug options for details.")
+		fmt.Fprintln(cli.errStream, "ERROR: error occurred in detecting. Please run with --debug option for details.")
 		return ExitCodeError
 	}
 
