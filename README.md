@@ -76,21 +76,27 @@ $ tflint template.tf
 Please show `tflint --help`
 
 ```
--h, --help                              show usage of TFLint. This page.
--v, --version                           print version information.
--f, --format <format>                   choose output format from "default", "json" or "checkstyle"
--c, --config <file>                     specify config file. default is ".tflint.hcl"
---ignore-module <source1,source2...>    ignore module by specified source.
---ignore-rule <rule1,rule2...>          ignore rules.
---var-file <file1,file2...>             specify terraform variable files.
---deep                                  enable deep check mode.
---aws-access-key                        set AWS access key used in deep check mode.
---aws-secret-key                        set AWS secret key used in deep check mode.
---aws-profile                           set AWS shared credential profile name in deep check mode.
---aws-region                            set AWS region used in deep check mode.
--d, --debug                             enable debug mode.
---error-with-issues                     return error code when issue exists.
---fast                                  ignore slow rules. currently, ignore only 'aws_instance_invalid_ami'
+Usage:
+  tflint [OPTIONS] [FILE]
+
+Application Options:
+  -v, --version                             Print TFLint version
+  -f, --format=[default|json|checkstyle]    Output format (default: default)
+  -c, --config=FILE                         Config file name (default: .tflint.hcl)
+      --ignore-module=SOURCE1,SOURCE2...    Ignore module sources
+      --ignore-rule=RULE1,RULE2...          Ignore rule names
+      --var-file=FILE1,FILE2...             Terraform variable file names
+      --deep                                Enable deep check mode
+      --aws-access-key=ACCESS_KEY           AWS access key used in deep check mode
+      --aws-secret-key=SECRET_KEY           AWS secret key used in deep check mode
+      --aws-profile=PROFILE                 AWS shared credential profile name used in deep check mode
+      --aws-region=REGION                   AWS region used in deep check mode
+  -d, --debug                               Enable debug mode
+      --error-with-issues                   Return error code when issues exist
+      --fast                                Ignore slow rules. Currently, ignore only aws_instance_invalid_ami
+
+Help Options:
+  -h, --help                                Show this help message
 ```
 
 ## Configuration
