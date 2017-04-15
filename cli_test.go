@@ -75,17 +75,6 @@ func TestCLIRun(t *testing.T) {
 			},
 		},
 		{
-			Name:              "print version by alias",
-			Command:           "./tflint -v",
-			LoaderGenerator:   func(ctrl *gomock.Controller) loader.LoaderIF { return mock.NewMockLoaderIF(ctrl) },
-			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
-			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
-			Result: Result{
-				Status: ExitCodeOK,
-				Stdout: fmt.Sprintf("TFLint version %s", Version),
-			},
-		},
-		{
 			Name:              "print help",
 			Command:           "./tflint --help",
 			LoaderGenerator:   func(ctrl *gomock.Controller) loader.LoaderIF { return mock.NewMockLoaderIF(ctrl) },
@@ -93,18 +82,7 @@ func TestCLIRun(t *testing.T) {
 			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
 			Result: Result{
 				Status: ExitCodeOK,
-				Stdout: "Usage: tflint [<options>] <args>",
-			},
-		},
-		{
-			Name:              "print help by alias",
-			Command:           "./tflint --h",
-			LoaderGenerator:   func(ctrl *gomock.Controller) loader.LoaderIF { return mock.NewMockLoaderIF(ctrl) },
-			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
-			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
-			Result: Result{
-				Status: ExitCodeOK,
-				Stdout: "Usage: tflint [<options>] <args>",
+				Stdout: "Application Options:",
 			},
 		},
 		{
@@ -244,49 +222,13 @@ func TestCLIRun(t *testing.T) {
 			},
 		},
 		{
-			Name:              "enable debug option by alias",
-			Command:           "./tflint -d",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
-			Result: Result{
-				Status: ExitCodeOK,
-				CLIOptions: TestCLIOptions{
-					Config: &config.Config{
-						Debug:          true,
-						DeepCheck:      false,
-						AwsCredentials: map[string]string{},
-						IgnoreModule:   map[string]bool{},
-						IgnoreRule:     map[string]bool{},
-						Varfile:        []string{"terraform.tfvars"},
-					},
-					ConfigFile: ".tflint.hcl",
-				},
-			},
-		},
-		{
-			Name:              "specify json format",
+			Name:              "specify format",
 			Command:           "./tflint --format json",
 			LoaderGenerator:   loaderDefaultBehavior,
 			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
 			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF {
 				printer := mock.NewMockPrinterIF(ctrl)
 				printer.EXPECT().Print([]*issue.Issue{}, "json")
-				return printer
-			},
-			Result: Result{
-				Status:     ExitCodeOK,
-				CLIOptions: defaultCLIOptions,
-			},
-		},
-		{
-			Name:              "specify checkstyle format",
-			Command:           "./tflint --format checkstyle",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF {
-				printer := mock.NewMockPrinterIF(ctrl)
-				printer.EXPECT().Print([]*issue.Issue{}, "checkstyle")
 				return printer
 			},
 			Result: Result{
@@ -302,22 +244,7 @@ func TestCLIRun(t *testing.T) {
 			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
 			Result: Result{
 				Status: ExitCodeError,
-				Stderr: "`awesome` is unknown format",
-			},
-		},
-		{
-			Name:              "specify json format by alias",
-			Command:           "./tflint -f json",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF {
-				printer := mock.NewMockPrinterIF(ctrl)
-				printer.EXPECT().Print([]*issue.Issue{}, "json")
-				return printer
-			},
-			Result: Result{
-				Status:     ExitCodeOK,
-				CLIOptions: defaultCLIOptions,
+				Stderr: "Invalid value `awesome' for option `-f, --format'",
 			},
 		},
 		{
@@ -392,27 +319,6 @@ func TestCLIRun(t *testing.T) {
 		{
 			Name:              "specify config gile",
 			Command:           "./tflint --config .tflint.example.hcl",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
-			Result: Result{
-				Status: ExitCodeOK,
-				CLIOptions: TestCLIOptions{
-					Config: &config.Config{
-						Debug:          false,
-						DeepCheck:      false,
-						AwsCredentials: map[string]string{},
-						IgnoreModule:   map[string]bool{},
-						IgnoreRule:     map[string]bool{},
-						Varfile:        []string{"terraform.tfvars"},
-					},
-					ConfigFile: ".tflint.example.hcl",
-				},
-			},
-		},
-		{
-			Name:              "specify config gile by alias",
-			Command:           "./tflint -c .tflint.example.hcl",
 			LoaderGenerator:   loaderDefaultBehavior,
 			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
 			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
@@ -569,13 +475,13 @@ func TestCLIRun(t *testing.T) {
 		},
 		{
 			Name:              "invalid options",
-			Command:           "./tflint --invalid-option",
+			Command:           "./tflint --debug --invalid-option",
 			LoaderGenerator:   func(ctrl *gomock.Controller) loader.LoaderIF { return mock.NewMockLoaderIF(ctrl) },
 			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
 			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
 			Result: Result{
 				Status: ExitCodeError,
-				Stderr: "`--invalid-option` is unknown options",
+				Stderr: "`invalid-option` is unknown option",
 			},
 		},
 	}

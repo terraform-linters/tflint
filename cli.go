@@ -1,10 +1,11 @@
 package main
 
 import (
-	"bytes"
-	"flag"
+	"errors"
 	"fmt"
 	"io"
+
+	flags "github.com/jessevdk/go-flags"
 
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/detector"
@@ -31,85 +32,56 @@ type CLI struct {
 	TestCLIOptions       TestCLIOptions
 }
 
+type CLIOptions struct {
+	Version         bool   `short:"v" long:"version" description:"Print TFLint version"`
+	Format          string `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" default:"default"`
+	Config          string `short:"c" long:"config" description:"Config file name" value-name:"FILE" default:".tflint.hcl"`
+	IgnoreModule    string `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE1,SOURCE2..."`
+	IgnoreRule      string `long:"ignore-rule" description:"Ignore rule names" value-name:"RULE1,RULE2..."`
+	Varfile         string `long:"var-file" description:"Terraform variable file names" value-name:"FILE1,FILE2..."`
+	Deep            bool   `long:"deep" description:"Enable deep check mode"`
+	AwsAccessKey    string `long:"aws-access-key" description:"AWS access key used in deep check mode" value-name:"ACCESS_KEY"`
+	AwsSecretKey    string `long:"aws-secret-key" description:"AWS secret key used in deep check mode" value-name:"SECRET_KEY"`
+	AwsProfile      string `long:"aws-profile" description:"AWS shared credential profile name used in deep check mode" value-name:"PROFILE"`
+	AwsRegion       string `long:"aws-region" description:"AWS region used in deep check mode" value-name:"REGION"`
+	Debug           bool   `short:"d" long:"debug" description:"Enable debug mode"`
+	ErrorWithIssues bool   `long:"error-with-issues" description:"Return error code when issues exist"`
+	Fast            bool   `long:"fast" description:"Ignore slow rules. Currently, ignore only aws_instance_invalid_ami"`
+}
+
 type TestCLIOptions struct {
 	Config     *config.Config
 	ConfigFile string
 }
 
-type ConfigurableArgs struct {
-	Debug        bool
-	DeepCheck    bool
-	Fast         bool
-	AwsAccessKey string
-	AwsSecretKey string
-	AwsRegion    string
-	AwsProfile   string
-	IgnoreModule string
-	IgnoreRule   string
-	Varfile      string
-	ConfigFile   string
-}
-
 // Run invokes the CLI with the given arguments.
 func (cli *CLI) Run(args []string) int {
-	var (
-		version         bool
-		help            bool
-		format          string
-		errorWithIssues bool
-	)
-
-	// Define option flag parse
-	flags := flag.NewFlagSet(Name, flag.ContinueOnError)
-	// Do not print default usage message
-	flags.SetOutput(new(bytes.Buffer))
-	configArgs := ConfigurableArgs{}
-
-	flags.BoolVar(&version, "version", false, "print version information.")
-	flags.BoolVar(&version, "v", false, "alias for -version")
-	flags.BoolVar(&help, "help", false, "show usage of TFLint. This page.")
-	flags.BoolVar(&help, "h", false, "alias for --help")
-	flags.BoolVar(&configArgs.Debug, "debug", false, "enable debug mode.")
-	flags.BoolVar(&configArgs.Debug, "d", false, "alias for --debug")
-	flags.StringVar(&format, "format", "default", "choose output format from \"default\", \"json\" or \"checkstyle\"")
-	flags.StringVar(&format, "f", "default", "alias for --format")
-	flags.StringVar(&configArgs.IgnoreModule, "ignore-module", "", "ignore module by specified source.")
-	flags.StringVar(&configArgs.IgnoreRule, "ignore-rule", "", "ignore rules.")
-	flags.StringVar(&configArgs.ConfigFile, "config", ".tflint.hcl", "specify config file. default is \".tflint.hcl\"")
-	flags.StringVar(&configArgs.ConfigFile, "c", ".tflint.hcl", "alias for --config")
-	flags.BoolVar(&configArgs.DeepCheck, "deep", false, "enable deep check mode.")
-	flags.StringVar(&configArgs.AwsAccessKey, "aws-access-key", "", "AWS access key used in deep check mode.")
-	flags.StringVar(&configArgs.AwsSecretKey, "aws-secret-key", "", "AWS secret key used in deep check mode.")
-	flags.StringVar(&configArgs.AwsProfile, "aws-profile", "", "AWS shared credential profile name used in deep check mode")
-	flags.StringVar(&configArgs.AwsRegion, "aws-region", "", "AWS region used in deep check mode.")
-	flags.BoolVar(&errorWithIssues, "error-with-issues", false, "return error code when issue exists.")
-	flags.BoolVar(&configArgs.Fast, "fast", false, "ignore slow rules.")
-	flags.StringVar(&configArgs.Varfile, "var-file", "", "terraform variable files")
-
-	// Parse commandline flag
-	if err := flags.Parse(args[1:]); err != nil {
-		fmt.Fprintf(cli.errStream, "ERROR: `%s` is unknown options. Please run `tflint --help`\n", args[1])
-		return ExitCodeError
+	var opts CLIOptions
+	parser := flags.NewParser(&opts, flags.HelpFlag)
+	parser.Usage = "[OPTIONS] [FILE]"
+	parser.UnknownOptionHandler = func(option string, arg flags.SplitArgument, args []string) ([]string, error) {
+		return []string{}, errors.New(fmt.Sprintf("ERROR: `%s` is unknown option. Please run `tflint --help`", option))
 	}
-	if !printer.ValidateFormat(format) {
-		fmt.Fprintf(cli.errStream, "ERROR: `%s` is unknown format. Please run `tflint --help`\n", format)
-		return ExitCodeError
+	// Parse commandline flag
+	args, err := parser.ParseArgs(args)
+	if err != nil {
+		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {
+			fmt.Fprintln(cli.outStream, err)
+			return ExitCodeOK
+		} else {
+			fmt.Fprintln(cli.errStream, err)
+			return ExitCodeError
+		}
 	}
 
 	// Show version
-	if version {
+	if opts.Version {
 		fmt.Fprintf(cli.outStream, "%s version %s\n", Name, Version)
 		return ExitCodeOK
 	}
 
-	// Show help
-	if help {
-		fmt.Fprintln(cli.outStream, Help)
-		return ExitCodeOK
-	}
-
 	// Setup config
-	c, err := cli.setupConfig(configArgs)
+	c, err := cli.setupConfig(opts)
 	if err != nil {
 		fmt.Fprintln(cli.errStream, err)
 		return ExitCodeError
@@ -122,8 +94,8 @@ func (cli *CLI) Run(args []string) int {
 	}
 	cli.loader.LoadState()
 	cli.loader.LoadTFVars(c.Varfile)
-	if flags.NArg() > 0 {
-		err = cli.loader.LoadTemplate(flags.Arg(0))
+	if len(args) > 1 {
+		err = cli.loader.LoadTemplate(args[1])
 	} else {
 		err = cli.loader.LoadAllTemplate(".")
 	}
@@ -143,7 +115,7 @@ func (cli *CLI) Run(args []string) int {
 	}
 	issues := cli.detector.Detect()
 	if cli.detector.HasError() {
-		fmt.Fprintln(cli.errStream, "ERROR: error occurred in detecting. Please run with --debug options for details.")
+		fmt.Fprintln(cli.errStream, "ERROR: error occurred in detecting. Please run with --debug option for details.")
 		return ExitCodeError
 	}
 
@@ -151,39 +123,39 @@ func (cli *CLI) Run(args []string) int {
 	if !cli.testMode {
 		cli.printer = printer.NewPrinter(cli.outStream, cli.errStream)
 	}
-	cli.printer.Print(issues, format)
+	cli.printer.Print(issues, opts.Format)
 
-	if errorWithIssues && len(issues) > 0 {
+	if opts.ErrorWithIssues && len(issues) > 0 {
 		return ExitCodeIssuesFound
 	}
 
 	return ExitCodeOK
 }
 
-func (cli *CLI) setupConfig(args ConfigurableArgs) (*config.Config, error) {
+func (cli *CLI) setupConfig(opts CLIOptions) (*config.Config, error) {
 	c := config.Init()
-	if args.Debug {
+	if opts.Debug {
 		c.Debug = true
 	}
-	if err := c.LoadConfig(args.ConfigFile); err != nil {
+	if err := c.LoadConfig(opts.Config); err != nil {
 		return nil, err
 	}
-	if args.DeepCheck || c.DeepCheck {
+	if opts.Deep || c.DeepCheck {
 		c.DeepCheck = true
-		c.SetAwsCredentials(args.AwsAccessKey, args.AwsSecretKey, args.AwsProfile, args.AwsRegion)
+		c.SetAwsCredentials(opts.AwsAccessKey, opts.AwsSecretKey, opts.AwsProfile, opts.AwsRegion)
 	}
 	// `aws_instance_invalid_ami` is very slow...
-	if args.Fast {
+	if opts.Fast {
 		c.SetIgnoreRule("aws_instance_invalid_ami")
 	}
-	c.SetIgnoreModule(args.IgnoreModule)
-	c.SetIgnoreRule(args.IgnoreRule)
-	c.SetVarfile(args.Varfile)
+	c.SetIgnoreModule(opts.IgnoreModule)
+	c.SetIgnoreRule(opts.IgnoreRule)
+	c.SetVarfile(opts.Varfile)
 	// If enabled test mode, set config information
 	if cli.testMode {
 		cli.TestCLIOptions = TestCLIOptions{
 			Config:     c,
-			ConfigFile: args.ConfigFile,
+			ConfigFile: opts.Config,
 		}
 	}
 	return c, nil

@@ -1775,6 +1775,44 @@ func (_mr *_MockElastiCacheAPIRecorder) RevokeCacheSecurityGroupIngressRequest(a
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RevokeCacheSecurityGroupIngressRequest", arg0)
 }
 
+func (_m *MockElastiCacheAPI) TestFailover(_param0 *elasticache.TestFailoverInput) (*elasticache.TestFailoverOutput, error) {
+	ret := _m.ctrl.Call(_m, "TestFailover", _param0)
+	ret0, _ := ret[0].(*elasticache.TestFailoverOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) TestFailover(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "TestFailover", arg0)
+}
+
+func (_m *MockElastiCacheAPI) TestFailoverWithContext(_param0 aws.Context, _param1 *elasticache.TestFailoverInput, _param2 ...request.Option) (*elasticache.TestFailoverOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "TestFailoverWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.TestFailoverOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) TestFailoverWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "TestFailoverWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) TestFailoverRequest(_param0 *elasticache.TestFailoverInput) (*request.Request, *elasticache.TestFailoverOutput) {
+	ret := _m.ctrl.Call(_m, "TestFailoverRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.TestFailoverOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) TestFailoverRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "TestFailoverRequest", arg0)
+}
+
 func (_m *MockElastiCacheAPI) WaitUntilCacheClusterAvailable(_param0 *elasticache.DescribeCacheClustersInput) error {
 	ret := _m.ctrl.Call(_m, "WaitUntilCacheClusterAvailable", _param0)
 	ret0, _ := ret[0].(error)
