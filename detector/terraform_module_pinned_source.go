@@ -8,13 +8,13 @@ import (
 	"github.com/wata727/tflint/issue"
 )
 
-type ModulePinnedSourceDetector struct {
+type TerraformModulePinnedSourceDetector struct {
 	source string
 	line   int
 	file   string
 }
 
-func NewModulePinnedSourceDetector(detector *Detector, file string, item *ast.ObjectItem) *ModulePinnedSourceDetector {
+func NewTerraformModulePinnedSourceDetector(detector *Detector, file string, item *ast.ObjectItem) *TerraformModulePinnedSourceDetector {
 	sourceToken, err := hclLiteralToken(item, "source")
 	if err != nil {
 		detector.Logger.Error(err)
@@ -26,14 +26,14 @@ func NewModulePinnedSourceDetector(detector *Detector, file string, item *ast.Ob
 		return nil
 	}
 
-	return &ModulePinnedSourceDetector{
+	return &TerraformModulePinnedSourceDetector{
 		source: sourceText,
 		file:   file,
 		line:   sourceToken.Pos.Line,
 	}
 }
 
-func (d *ModulePinnedSourceDetector) DetectPinnedModuleSource(issues *[]*issue.Issue) {
+func (d *TerraformModulePinnedSourceDetector) DetectPinnedModuleSource(issues *[]*issue.Issue) {
 	lower := strings.ToLower(d.source)
 
 	if strings.Contains(lower, "git") || strings.Contains(lower, "bitbucket") {
@@ -49,7 +49,7 @@ func (d *ModulePinnedSourceDetector) DetectPinnedModuleSource(issues *[]*issue.I
 	}
 }
 
-func (d *ModulePinnedSourceDetector) detectGitSource(source string) *issue.Issue {
+func (d *TerraformModulePinnedSourceDetector) detectGitSource(source string) *issue.Issue {
 	if strings.Contains(source, "ref=") {
 		if strings.Contains(source, "ref=master") {
 			return &issue.Issue{
@@ -71,7 +71,7 @@ func (d *ModulePinnedSourceDetector) detectGitSource(source string) *issue.Issue
 	return nil
 }
 
-func (d *ModulePinnedSourceDetector) detectMercurialSource(source string) *issue.Issue {
+func (d *TerraformModulePinnedSourceDetector) detectMercurialSource(source string) *issue.Issue {
 	if strings.Contains(source, "rev=") {
 		if strings.Contains(source, "rev=default") {
 			return &issue.Issue{

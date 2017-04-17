@@ -176,14 +176,14 @@ func (d *Detector) Detect() []*issue.Issue {
 			d.Logger.Info(fmt.Sprintf("ignore module `%s`", name))
 			continue
 		}
-		// Special case for module_pinned_source rule
-		modulePinnedSourceRule := "module_pinned_source"
-		if d.Config.IgnoreModule[modulePinnedSourceRule] {
+		// Special case for terraform_module_pinned_source rule
+		modulePinnedSourceRule := "terraform_module_pinned_source"
+		if d.Config.IgnoreRule[modulePinnedSourceRule] {
 			d.Logger.Info(fmt.Sprintf("ignore module `%s`", modulePinnedSourceRule))
 			continue
 		}
 		d.Logger.Info(fmt.Sprintf("run module linter `%s`", name))
-		modulePinnedSourceDetector := NewModulePinnedSourceDetector(d, m.File, m.ObjectItem)
+		modulePinnedSourceDetector := NewTerraformModulePinnedSourceDetector(d, m.File, m.ObjectItem)
 		modulePinnedSourceDetector.DetectPinnedModuleSource(&issues)
 	}
 
