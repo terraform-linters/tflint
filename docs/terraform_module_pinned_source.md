@@ -29,7 +29,7 @@ Result: 3 issues  (0 errors , 3 warnings , 0 notices)
 ```
 
 ## Why
-Terraform allows you to checkout module definitions from source control. If you do not pin the version to checkout, the dependency you require may introduce major breaking changes without your awareness. To preven this, always specify an explicit version to checkout.
+Terraform allows you to checkout module definitions from source control. If you do not pin the version to checkout, the dependency you require may introduce major breaking changes without your awareness. To prevent this, always specify an explicit version to checkout.
 
 ## How To Fix
 Specify a version pin.  For git repositories, it should not be "master". For Mercurial repositories, it should not be "default"
