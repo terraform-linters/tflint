@@ -14,10 +14,12 @@ import (
 )
 
 type hclModule struct {
-	Name      string
-	Source    string
-	Config    hil.EvalConfig
-	Templates map[string]*hclast.File
+	Name       string
+	Source     string
+	ObjectItem *hclast.ObjectItem
+	File       string
+	Config     hil.EvalConfig
+	Templates  map[string]*hclast.File
 }
 
 func detectModules(templates map[string]*hclast.File, c *config.Config) (map[string]*hclModule, error) {
@@ -53,8 +55,10 @@ func detectModules(templates map[string]*hclast.File, c *config.Config) (map[str
 			}
 
 			moduleMap[moduleKey] = &hclModule{
-				Name:   name,
-				Source: moduleSource,
+				Name:       name,
+				Source:     moduleSource,
+				ObjectItem: item,
+				File:       file,
 				Config: hil.EvalConfig{
 					GlobalScope: &hilast.BasicScope{
 						VarMap: varMap,

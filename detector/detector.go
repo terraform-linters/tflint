@@ -143,7 +143,6 @@ func IsKeyNotFound(item *ast.ObjectItem, k string) bool {
 func (d *Detector) Detect() []*issue.Issue {
 	var issues = []*issue.Issue{}
 	modules := d.EvalConfig.ModuleConfig
-
 	for ruleName, creatorMethod := range detectors {
 		if d.Config.IgnoreRule[ruleName] {
 			d.Logger.Info(fmt.Sprintf("ignore rule `%s`", ruleName))
@@ -168,7 +167,24 @@ func (d *Detector) Detect() []*issue.Issue {
 			}
 			moduleDetector.Error = d.Error
 			moduleDetector.detect(creatorMethod, &issues)
+
 		}
+	}
+
+	for name, m := range modules {
+		if d.Config.IgnoreModule[m.Source] {
+			d.Logger.Info(fmt.Sprintf("ignore module `%s`", name))
+			continue
+		}
+		// Special case for terraform_module_pinned_source rule
+		modulePinnedSourceRule := "terraform_module_pinned_source"
+		if d.Config.IgnoreRule[modulePinnedSourceRule] {
+			d.Logger.Info(fmt.Sprintf("ignore module `%s`", modulePinnedSourceRule))
+			continue
+		}
+		d.Logger.Info(fmt.Sprintf("run module linter `%s`", name))
+		modulePinnedSourceDetector := NewTerraformModulePinnedSourceDetector(d, m.File, m.ObjectItem)
+		modulePinnedSourceDetector.DetectPinnedModuleSource(&issues)
 	}
 
 	return issues

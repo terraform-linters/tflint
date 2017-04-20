@@ -28,6 +28,8 @@ Issues are classified into the following three types.
 - **AWS Route**
     - [aws_route_not_specified_target](aws_route_not_specified_target.md)
     - [aws_route_specified_multiple_targets](aws_route_specified_multiple_targets.md)
+- **Terraform**
+    - [terraform_module_pinned_source](terraform_module_pinned_source.md)
 
 ### Invalid Reference Issue
 Report these issues if you have specified invalid resource ID, name, etc. All issues are reported as ERROR. These issues are reported when enabled deep check. In many cases, an incorrect value is specified, so please fix it.
