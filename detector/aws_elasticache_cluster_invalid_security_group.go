@@ -3,9 +3,9 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/token"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsElastiCacheClusterInvalidSecurityGroupDetector struct {
@@ -39,21 +39,20 @@ func (d *AwsElastiCacheClusterInvalidSecurityGroupDetector) PreProcess() {
 	}
 }
 
-func (d *AwsElastiCacheClusterInvalidSecurityGroupDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+func (d *AwsElastiCacheClusterInvalidSecurityGroupDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
 	var varToken token.Token
 	var securityGroupTokens []token.Token
-	var err error
-	if varToken, err = hclLiteralToken(item, "security_group_ids"); err == nil {
+	var ok bool
+	if varToken, ok = resource.GetToken("security_group_ids"); ok {
+		var err error
 		securityGroupTokens, err = d.evalToStringTokens(varToken)
 		if err != nil {
 			d.Logger.Error(err)
 			return
 		}
 	} else {
-		d.Logger.Error(err)
-		securityGroupTokens, err = hclLiteralListToken(item, "security_group_ids")
-		if err != nil {
-			d.Logger.Error(err)
+		securityGroupTokens, ok = resource.GetListToken("security_group_ids")
+		if !ok {
 			return
 		}
 	}
@@ -65,12 +64,16 @@ func (d *AwsElastiCacheClusterInvalidSecurityGroupDetector) Detect(file string, 
 			continue
 		}
 
+		// If security_groups is interpolated by list variable, Filename is empty.
+		if securityGroupToken.Pos.Filename == "" {
+			securityGroupToken.Pos.Filename = varToken.Pos.Filename
+		}
 		if !d.securityGroups[securityGroup] {
 			issue := &issue.Issue{
 				Type:    d.IssueType,
 				Message: fmt.Sprintf("\"%s\" is invalid security group.", securityGroup),
 				Line:    securityGroupToken.Pos.Line,
-				File:    file,
+				File:    securityGroupToken.Pos.Filename,
 			}
 			*issues = append(*issues, issue)
 		}

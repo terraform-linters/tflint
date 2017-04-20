@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsInstanceInvalidIAMProfileDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsInstanceInvalidIAMProfileDetector) PreProcess() {
 	}
 }
 
-func (d *AwsInstanceInvalidIAMProfileDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	iamProfileToken, err := hclLiteralToken(item, "iam_instance_profile")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsInstanceInvalidIAMProfileDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	iamProfileToken, ok := resource.GetToken("iam_instance_profile")
+	if !ok {
 		return
 	}
 	iamProfile, err := d.evalToString(iamProfileToken.Text)
@@ -55,7 +54,7 @@ func (d *AwsInstanceInvalidIAMProfileDetector) Detect(file string, item *ast.Obj
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid IAM profile name.", iamProfile),
 			Line:    iamProfileToken.Pos.Line,
-			File:    file,
+			File:    iamProfileToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

@@ -3,9 +3,9 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/token"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsELBInvalidInstanceDetector struct {
@@ -41,21 +41,20 @@ func (d *AwsELBInvalidInstanceDetector) PreProcess() {
 	}
 }
 
-func (d *AwsELBInvalidInstanceDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
+func (d *AwsELBInvalidInstanceDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
 	var varToken token.Token
 	var instanceTokens []token.Token
-	var err error
-	if varToken, err = hclLiteralToken(item, "instances"); err == nil {
+	var ok bool
+	if varToken, ok = resource.GetToken("instances"); ok {
+		var err error
 		instanceTokens, err = d.evalToStringTokens(varToken)
 		if err != nil {
 			d.Logger.Error(err)
 			return
 		}
 	} else {
-		d.Logger.Error(err)
-		instanceTokens, err = hclLiteralListToken(item, "instances")
-		if err != nil {
-			d.Logger.Error(err)
+		instanceTokens, ok = resource.GetListToken("instances")
+		if !ok {
 			return
 		}
 	}
@@ -67,12 +66,16 @@ func (d *AwsELBInvalidInstanceDetector) Detect(file string, item *ast.ObjectItem
 			continue
 		}
 
+		// If `instances` is interpolated by list variable, file name is empty.
+		if instanceToken.Pos.Filename == "" {
+			instanceToken.Pos.Filename = varToken.Pos.Filename
+		}
 		if !d.instances[instance] {
 			issue := &issue.Issue{
 				Type:    d.IssueType,
 				Message: fmt.Sprintf("\"%s\" is invalid instance.", instance),
 				Line:    instanceToken.Pos.Line,
-				File:    file,
+				File:    instanceToken.Pos.Filename,
 			}
 			*issues = append(*issues, issue)
 		}

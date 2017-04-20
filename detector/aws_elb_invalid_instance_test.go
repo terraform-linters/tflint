@@ -30,21 +30,21 @@ resource "aws_elb" "balancer" {
     ]
 }`,
 			Response: []*ec2.Instance{
-				&ec2.Instance{
+				{
 					InstanceId: aws.String("i-12345678"),
 				},
-				&ec2.Instance{
+				{
 					InstanceId: aws.String("i-abcdefgh"),
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"i-1234abcd\" is invalid instance.",
 					Line:    4,
 					File:    "test.tf",
 				},
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"i-abcd1234\" is invalid instance.",
 					Line:    5,
@@ -62,14 +62,47 @@ resource "aws_elb" "balancer" {
     ]
 }`,
 			Response: []*ec2.Instance{
-				&ec2.Instance{
+				{
 					InstanceId: aws.String("i-1234abcd"),
 				},
-				&ec2.Instance{
+				{
 					InstanceId: aws.String("i-abcd1234"),
 				},
 			},
 			Issues: []*issue.Issue{},
+		},
+		{
+			Name: "use list variable",
+			Src: `
+variable "instances" {
+    default = ["i-1234abcd", "i-abcd1234"]
+}
+
+resource "aws_elb" "balancer" {
+    instances = "${var.instances}"
+}`,
+			Response: []*ec2.Instance{
+				{
+					InstanceId: aws.String("i-12345678"),
+				},
+				{
+					InstanceId: aws.String("i-abcdefgh"),
+				},
+			},
+			Issues: []*issue.Issue{
+				{
+					Type:    "ERROR",
+					Message: "\"i-1234abcd\" is invalid instance.",
+					Line:    7,
+					File:    "test.tf",
+				},
+				{
+					Type:    "ERROR",
+					Message: "\"i-abcd1234\" is invalid instance.",
+					Line:    7,
+					File:    "test.tf",
+				},
+			},
 		},
 	}
 
@@ -83,7 +116,7 @@ resource "aws_elb" "balancer" {
 		ec2mock := mock.NewMockEC2API(ctrl)
 		ec2mock.EXPECT().DescribeInstances(&ec2.DescribeInstancesInput{}).Return(&ec2.DescribeInstancesOutput{
 			Reservations: []*ec2.Reservation{
-				&ec2.Reservation{
+				{
 					Instances: tc.Response,
 				},
 			},

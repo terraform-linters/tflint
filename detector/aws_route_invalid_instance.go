@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsRouteInvalidInstanceDetector struct {
@@ -40,10 +40,9 @@ func (d *AwsRouteInvalidInstanceDetector) PreProcess() {
 	}
 }
 
-func (d *AwsRouteInvalidInstanceDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	instanceToken, err := hclLiteralToken(item, "instance_id")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsRouteInvalidInstanceDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	instanceToken, ok := resource.GetToken("instance_id")
+	if !ok {
 		return
 	}
 	instance, err := d.evalToString(instanceToken.Text)
@@ -57,7 +56,7 @@ func (d *AwsRouteInvalidInstanceDetector) Detect(file string, item *ast.ObjectIt
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid instance ID.", instance),
 			Line:    instanceToken.Pos.Line,
-			File:    file,
+			File:    instanceToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

@@ -30,21 +30,21 @@ resource "aws_elasticache_cluster" "redis" {
     ]
 }`,
 			Response: []*ec2.SecurityGroup{
-				&ec2.SecurityGroup{
+				{
 					GroupId: aws.String("sg-12345678"),
 				},
-				&ec2.SecurityGroup{
+				{
 					GroupId: aws.String("sg-abcdefgh"),
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"sg-1234abcd\" is invalid security group.",
 					Line:    4,
 					File:    "test.tf",
 				},
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"sg-abcd1234\" is invalid security group.",
 					Line:    5,
@@ -62,14 +62,47 @@ resource "aws_elasticache_cluster" "redis" {
     ]
 }`,
 			Response: []*ec2.SecurityGroup{
-				&ec2.SecurityGroup{
+				{
 					GroupId: aws.String("sg-1234abcd"),
 				},
-				&ec2.SecurityGroup{
+				{
 					GroupId: aws.String("sg-abcd1234"),
 				},
 			},
 			Issues: []*issue.Issue{},
+		},
+		{
+			Name: "use list variable",
+			Src: `
+variable "security_groups" {
+    default = ["sg-1234abcd", "sg-abcd1234"]
+}
+
+resource "aws_elasticache_cluster" "redis" {
+    security_group_ids = "${var.security_groups}"
+}`,
+			Response: []*ec2.SecurityGroup{
+				{
+					GroupId: aws.String("sg-12345678"),
+				},
+				{
+					GroupId: aws.String("sg-abcdefgh"),
+				},
+			},
+			Issues: []*issue.Issue{
+				{
+					Type:    "ERROR",
+					Message: "\"sg-1234abcd\" is invalid security group.",
+					Line:    7,
+					File:    "test.tf",
+				},
+				{
+					Type:    "ERROR",
+					Message: "\"sg-abcd1234\" is invalid security group.",
+					Line:    7,
+					File:    "test.tf",
+				},
+			},
 		},
 	}
 

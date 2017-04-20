@@ -22,7 +22,7 @@ resource "aws_instance" "web" {
     instance_type = "t1.micro"
 }`,
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "WARNING",
 					Message: "\"t1.micro\" is previous generation instance type.",
 					Line:    3,

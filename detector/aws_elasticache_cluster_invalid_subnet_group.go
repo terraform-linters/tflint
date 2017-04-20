@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsElastiCacheClusterInvalidSubnetGroupDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsElastiCacheClusterInvalidSubnetGroupDetector) PreProcess() {
 	}
 }
 
-func (d *AwsElastiCacheClusterInvalidSubnetGroupDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	subnetGroupToken, err := hclLiteralToken(item, "subnet_group_name")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsElastiCacheClusterInvalidSubnetGroupDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	subnetGroupToken, ok := resource.GetToken("subnet_group_name")
+	if !ok {
 		return
 	}
 	subnetGroup, err := d.evalToString(subnetGroupToken.Text)
@@ -55,7 +54,7 @@ func (d *AwsElastiCacheClusterInvalidSubnetGroupDetector) Detect(file string, it
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid subnet group name.", subnetGroup),
 			Line:    subnetGroupToken.Pos.Line,
-			File:    file,
+			File:    subnetGroupToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

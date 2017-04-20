@@ -96,6 +96,7 @@ func TestLoadJSON(t *testing.T) {
 func TestLoadTemplate(t *testing.T) {
 	type Input struct {
 		Templates map[string]*ast.File
+		Files     map[string][]byte
 		File      string
 	}
 
@@ -108,6 +109,9 @@ func TestLoadTemplate(t *testing.T) {
 			Name: "add file list",
 			Input: Input{
 				Templates: map[string]*ast.File{
+					"example.tf": {},
+				},
+				Files: map[string][]byte{
 					"example.tf": {},
 				},
 				File: "empty.tf",
@@ -128,6 +132,7 @@ func TestLoadTemplate(t *testing.T) {
 		load := &Loader{
 			Logger:    logger.Init(false),
 			Templates: tc.Input.Templates,
+			Files:     tc.Input.Files,
 		}
 
 		load.LoadTemplate(tc.Input.File)
@@ -435,6 +440,10 @@ func TestDump(t *testing.T) {
 		"main.tf":   {},
 		"output.tf": {},
 	}
+	files := map[string][]byte{
+		"main.tf":   {},
+		"output.tf": {},
+	}
 	state := &state.TFState{
 		Modules: []*state.Module{
 			{
@@ -465,12 +474,16 @@ func TestDump(t *testing.T) {
 		},
 	}
 	load.Templates = templates
+	load.Files = files
 	load.State = state
 	load.TFVars = tfvars
 
-	dumpTemplates, dumpState, dumpTFvars := load.Dump()
+	dumpTemplates, dumpFiles, dumpState, dumpTFvars := load.Dump()
 	if !reflect.DeepEqual(dumpTemplates, templates) {
 		t.Fatalf("\nBad: %s\nExpected: %s\n\n", pp.Sprint(dumpTemplates), pp.Sprint(templates))
+	}
+	if !reflect.DeepEqual(dumpFiles, files) {
+		t.Fatalf("\nBad: %s\nExpected: %s\n\n", pp.Sprint(dumpFiles), pp.Sprint(files))
 	}
 	if !reflect.DeepEqual(dumpState, state) {
 		t.Fatalf("\nBad: %s\nExpected: %s\n\n", pp.Sprint(dumpState), pp.Sprint(state))

@@ -22,7 +22,7 @@ resource "aws_instance" "web" {
     instance_type = "t1.2xlarge"
 }`,
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"t1.2xlarge\" is invalid instance type.",
 					Line:    3,

@@ -13,6 +13,7 @@ import (
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/evaluator"
 	"github.com/wata727/tflint/logger"
+	"github.com/wata727/tflint/schema"
 )
 
 func TestDetect(t *testing.T) {
@@ -63,15 +64,20 @@ func TestDetect(t *testing.T) {
 		testDir := dir + "/test-fixtures"
 		os.Chdir(testDir)
 
-		templates := make(map[string]*ast.File)
-		templates["text.tf"], _ = parser.Parse([]byte(`
-resource "aws_instance" {}
+		src := `
+resource "aws_instance" "web" {
+    instance_type = "t2.micro"
+}
 
 module "ec2_instance" {
     source = "./tf_aws_ec2_instance"
     ami = "ami-12345"
     num = "1"
-}`))
+}`
+		templates := make(map[string]*ast.File)
+		templates["text.tf"], _ = parser.Parse([]byte(src))
+		files := map[string][]byte{"text.tf": []byte(src)}
+		schema, _ := schema.Make(files)
 
 		c := config.Init()
 		c.SetIgnoreRule(tc.Config.IgnoreRule)
@@ -79,6 +85,7 @@ module "ec2_instance" {
 		evalConfig, _ := evaluator.NewEvaluator(templates, []*ast.File{}, c)
 		d := &Detector{
 			Templates:  templates,
+			Schema:     schema,
 			Config:     c,
 			EvalConfig: evalConfig,
 			Logger:     logger.Init(false),

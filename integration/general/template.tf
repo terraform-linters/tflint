@@ -19,6 +19,12 @@ variable "redis_previous_type" {
   default = "cache.t2.micro"
 }
 
+// override by `template_override.tf`
+resource "aws_instance" "web" {
+  ami           = "ami-12345678"
+  instance_type = "t1.2xlarge"
+}
+
 resource "aws_route" "not_specified" {
   route_table_id         = "rtb-1234abcd" // aws_route_not_specified_target
   destination_cidr_block = "10.0.1.0/22"

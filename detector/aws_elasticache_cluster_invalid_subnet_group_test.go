@@ -27,15 +27,15 @@ resource "aws_elasticache_cluster" "redis" {
     subnet_group_name = "app-server"
 }`,
 			Response: []*elasticache.CacheSubnetGroup{
-				&elasticache.CacheSubnetGroup{
+				{
 					CacheSubnetGroupName: aws.String("app-server1"),
 				},
-				&elasticache.CacheSubnetGroup{
+				{
 					CacheSubnetGroupName: aws.String("app-server2"),
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"app-server\" is invalid subnet group name.",
 					Line:    3,
@@ -50,13 +50,13 @@ resource "aws_elasticache_cluster" "redis" {
     subnet_group_name = "app-server"
 }`,
 			Response: []*elasticache.CacheSubnetGroup{
-				&elasticache.CacheSubnetGroup{
+				{
 					CacheSubnetGroupName: aws.String("app-server1"),
 				},
-				&elasticache.CacheSubnetGroup{
+				{
 					CacheSubnetGroupName: aws.String("app-server2"),
 				},
-				&elasticache.CacheSubnetGroup{
+				{
 					CacheSubnetGroupName: aws.String("app-server"),
 				},
 			},

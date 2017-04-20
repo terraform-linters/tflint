@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsRouteInvalidRouteTableDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsRouteInvalidRouteTableDetector) PreProcess() {
 	}
 }
 
-func (d *AwsRouteInvalidRouteTableDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	routeTableToken, err := hclLiteralToken(item, "route_table_id")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsRouteInvalidRouteTableDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	routeTableToken, ok := resource.GetToken("route_table_id")
+	if !ok {
 		return
 	}
 	routeTable, err := d.evalToString(routeTableToken.Text)
@@ -55,7 +54,7 @@ func (d *AwsRouteInvalidRouteTableDetector) Detect(file string, item *ast.Object
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid route table ID.", routeTable),
 			Line:    routeTableToken.Pos.Line,
-			File:    file,
+			File:    routeTableToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

@@ -30,21 +30,21 @@ resource "aws_alb" "balancer" {
     ]
 }`,
 			Response: []*ec2.Subnet{
-				&ec2.Subnet{
+				{
 					SubnetId: aws.String("subnet-12345678"),
 				},
-				&ec2.Subnet{
+				{
 					SubnetId: aws.String("subnet-abcdefgh"),
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"subnet-1234abcd\" is invalid subnet ID.",
 					Line:    4,
 					File:    "test.tf",
 				},
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"subnet-abcd1234\" is invalid subnet ID.",
 					Line:    5,
@@ -62,10 +62,30 @@ resource "aws_alb" "balancer" {
     ]
 }`,
 			Response: []*ec2.Subnet{
-				&ec2.Subnet{
+				{
 					SubnetId: aws.String("subnet-1234abcd"),
 				},
-				&ec2.Subnet{
+				{
+					SubnetId: aws.String("subnet-abcd1234"),
+				},
+			},
+			Issues: []*issue.Issue{},
+		},
+		{
+			Name: "use list variables",
+			Src: `
+varaible "subnets" {
+    default = ["subnet-1234abcd", "subnet-abcd1234"]
+}
+
+resource "aws_alb" "balancer" {
+    subnets = "${var.subnets}"
+}`,
+			Response: []*ec2.Subnet{
+				{
+					SubnetId: aws.String("subnet-1234abcd"),
+				},
+				{
 					SubnetId: aws.String("subnet-abcd1234"),
 				},
 			},

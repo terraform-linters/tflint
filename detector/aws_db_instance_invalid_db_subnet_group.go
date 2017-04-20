@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsDBInstanceInvalidDBSubnetGroupDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) PreProcess() {
 	}
 }
 
-func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	subnetGroupToken, err := hclLiteralToken(item, "db_subnet_group_name")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	subnetGroupToken, ok := resource.GetToken("db_subnet_group_name")
+	if !ok {
 		return
 	}
 	subnetGroup, err := d.evalToString(subnetGroupToken.Text)
@@ -55,7 +54,7 @@ func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) Detect(file string, item *as
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid DB subnet group name.", subnetGroup),
 			Line:    subnetGroupToken.Pos.Line,
-			File:    file,
+			File:    subnetGroupToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

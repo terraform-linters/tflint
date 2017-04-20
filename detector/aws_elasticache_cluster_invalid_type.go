@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsElastiCacheClusterInvalidTypeDetector struct {
@@ -56,10 +56,9 @@ func (d *AwsElastiCacheClusterInvalidTypeDetector) PreProcess() {
 	}
 }
 
-func (d *AwsElastiCacheClusterInvalidTypeDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	nodeTypeToken, err := hclLiteralToken(item, "node_type")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsElastiCacheClusterInvalidTypeDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	nodeTypeToken, ok := resource.GetToken("node_type")
+	if !ok {
 		return
 	}
 	nodeType, err := d.evalToString(nodeTypeToken.Text)
@@ -73,7 +72,7 @@ func (d *AwsElastiCacheClusterInvalidTypeDetector) Detect(file string, item *ast
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid node type.", nodeType),
 			Line:    nodeTypeToken.Pos.Line,
-			File:    file,
+			File:    nodeTypeToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

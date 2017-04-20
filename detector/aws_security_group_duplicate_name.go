@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsSecurityGroupDuplicateDetector struct {
@@ -59,10 +59,9 @@ func (d *AwsSecurityGroupDuplicateDetector) PreProcess() {
 	}
 }
 
-func (d *AwsSecurityGroupDuplicateDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	nameToken, err := hclLiteralToken(item, "name")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsSecurityGroupDuplicateDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	nameToken, ok := resource.GetToken("name")
+	if !ok {
 		return
 	}
 	name, err := d.evalToString(nameToken.Text)
@@ -71,31 +70,31 @@ func (d *AwsSecurityGroupDuplicateDetector) Detect(file string, item *ast.Object
 		return
 	}
 	var vpc string
-	vpc, err = d.fetchVpcId(item)
+	vpc, err = d.fetchVpcId(resource)
 	if err != nil {
 		d.Logger.Error(err)
 		return
 	}
 
-	if d.securiyGroups[vpc+"."+name] && !d.State.Exists(d.Target, hclObjectKeyText(item)) {
+	if d.securiyGroups[vpc+"."+name] && !d.State.Exists(d.Target, resource.Id) {
 		issue := &issue.Issue{
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),
 			Line:    nameToken.Pos.Line,
-			File:    file,
+			File:    nameToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}
 }
 
-func (d *AwsSecurityGroupDuplicateDetector) fetchVpcId(item *ast.ObjectItem) (string, error) {
+func (d *AwsSecurityGroupDuplicateDetector) fetchVpcId(resource *schema.Resource) (string, error) {
 	var vpc string
-	vpcToken, err := hclLiteralToken(item, "vpc_id")
-	if err != nil {
-		d.Logger.Error(err)
+	vpcToken, ok := resource.GetToken("vpc_id")
+	if !ok {
 		// "vpc_id" is optional. If omitted, use default vpc_id.
 		vpc = d.defaultVpc
 	} else {
+		var err error
 		vpc, err = d.evalToString(vpcToken.Text)
 		if err != nil {
 			return "", err

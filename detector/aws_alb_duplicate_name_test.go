@@ -28,15 +28,15 @@ resource "aws_alb" "test" {
     name = "test-alb-tf"
 }`,
 			Response: []*elbv2.LoadBalancer{
-				&elbv2.LoadBalancer{
+				{
 					LoadBalancerName: aws.String("test-alb-tf"),
 				},
-				&elbv2.LoadBalancer{
+				{
 					LoadBalancerName: aws.String("production-alb-tf"),
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"test-alb-tf\" is duplicate name. It must be unique.",
 					Line:    3,
@@ -51,10 +51,10 @@ resource "aws_alb" "test" {
     name = "test-alb-tf"
 }`,
 			Response: []*elbv2.LoadBalancer{
-				&elbv2.LoadBalancer{
+				{
 					LoadBalancerName: aws.String("staging-alb-tf"),
 				},
-				&elbv2.LoadBalancer{
+				{
 					LoadBalancerName: aws.String("production-alb-tf"),
 				},
 			},
@@ -113,10 +113,10 @@ resource "aws_alb" "test" {
 }
 `,
 			Response: []*elbv2.LoadBalancer{
-				&elbv2.LoadBalancer{
+				{
 					LoadBalancerName: aws.String("test-alb-tf"),
 				},
-				&elbv2.LoadBalancer{
+				{
 					LoadBalancerName: aws.String("production-alb-tf"),
 				},
 			},

@@ -1,8 +1,8 @@
 package detector
 
 import (
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsInstanceNotSpecifiedIAMProfileDetector struct {
@@ -21,13 +21,13 @@ func (d *Detector) CreateAwsInstanceNotSpecifiedIAMProfileDetector() *AwsInstanc
 	}
 }
 
-func (d *AwsInstanceNotSpecifiedIAMProfileDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	if IsKeyNotFound(item, "iam_instance_profile") {
+func (d *AwsInstanceNotSpecifiedIAMProfileDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	if _, ok := resource.GetToken("iam_instance_profile"); !ok {
 		issue := &issue.Issue{
 			Type:    d.IssueType,
 			Message: "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate instance. (Only less than Terraform 0.8.8)",
-			Line:    item.Pos().Line,
-			File:    file,
+			Line:    resource.Pos.Line,
+			File:    resource.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

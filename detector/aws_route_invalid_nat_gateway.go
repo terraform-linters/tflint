@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsRouteInvalidNatGatewayDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsRouteInvalidNatGatewayDetector) PreProcess() {
 	}
 }
 
-func (d *AwsRouteInvalidNatGatewayDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	ngatewayToken, err := hclLiteralToken(item, "nat_gateway_id")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsRouteInvalidNatGatewayDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	ngatewayToken, ok := resource.GetToken("nat_gateway_id")
+	if !ok {
 		return
 	}
 	ngateway, err := d.evalToString(ngatewayToken.Text)
@@ -55,7 +54,7 @@ func (d *AwsRouteInvalidNatGatewayDetector) Detect(file string, item *ast.Object
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid NAT gateway ID.", ngateway),
 			Line:    ngatewayToken.Pos.Line,
-			File:    file,
+			File:    ngatewayToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

@@ -26,7 +26,7 @@ resource "aws_instance" "web" {
     }
 }`,
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "WARNING",
 					Message: "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
 					Line:    5,
@@ -45,7 +45,7 @@ resource "aws_instance" "web" {
     }
 }`,
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "WARNING",
 					Message: "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
 					Line:    5,
@@ -72,19 +72,19 @@ resource "aws_instance" "web" {
     }
 }`,
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "WARNING",
 					Message: "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
 					Line:    5,
 					File:    "test.tf",
 				},
-				&issue.Issue{
+				{
 					Type:    "WARNING",
 					Message: "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
 					Line:    9,
 					File:    "test.tf",
 				},
-				&issue.Issue{
+				{
 					Type:    "WARNING",
 					Message: "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
 					Line:    13,

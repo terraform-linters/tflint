@@ -13,6 +13,7 @@ import (
 	hilast "github.com/hashicorp/hil/ast"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/loader"
+	"github.com/wata727/tflint/schema"
 )
 
 type hclModule struct {
@@ -22,6 +23,7 @@ type hclModule struct {
 	File       string
 	Config     hil.EvalConfig
 	Templates  map[string]*hclast.File
+	Schema     []*schema.Template
 }
 
 func (e *Evaluator) detectModules(templates map[string]*hclast.File, c *config.Config) (map[string]*hclModule, error) {
@@ -44,7 +46,10 @@ func (e *Evaluator) detectModules(templates map[string]*hclast.File, c *config.C
 			}
 			moduleKey := moduleKey(name, moduleSource)
 			load := loader.NewLoader(c.Debug)
-			err := load.LoadModuleFile(moduleKey, moduleSource)
+			if err := load.LoadModuleFile(moduleKey, moduleSource); err != nil {
+				return nil, err
+			}
+			schema, err := schema.Make(load.Files)
 			if err != nil {
 				return nil, err
 			}
@@ -71,6 +76,7 @@ func (e *Evaluator) detectModules(templates map[string]*hclast.File, c *config.C
 					},
 				},
 				Templates: load.Templates,
+				Schema:    schema,
 			}
 		}
 	}

@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsInstanceInvalidKeyNameDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsInstanceInvalidKeyNameDetector) PreProcess() {
 	}
 }
 
-func (d *AwsInstanceInvalidKeyNameDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	keyNameToken, err := hclLiteralToken(item, "key_name")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsInstanceInvalidKeyNameDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	keyNameToken, ok := resource.GetToken("key_name")
+	if !ok {
 		return
 	}
 	keyName, err := d.evalToString(keyNameToken.Text)
@@ -55,7 +54,7 @@ func (d *AwsInstanceInvalidKeyNameDetector) Detect(file string, item *ast.Object
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid key name.", keyName),
 			Line:    keyNameToken.Pos.Line,
-			File:    file,
+			File:    keyNameToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

@@ -27,15 +27,15 @@ resource "aws_instance" "web" {
     ami = "ami-1234abcd"
 }`,
 			Response: []*ec2.Image{
-				&ec2.Image{
+				{
 					ImageId: aws.String("ami-0c11b26d"),
 				},
-				&ec2.Image{
+				{
 					ImageId: aws.String("ami-9ad76sd1"),
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"ami-1234abcd\" is invalid AMI.",
 					Line:    3,
@@ -50,10 +50,10 @@ resource "aws_instance" "web" {
     ami = "ami-0c11b26d"
 }`,
 			Response: []*ec2.Image{
-				&ec2.Image{
+				{
 					ImageId: aws.String("ami-0c11b26d"),
 				},
-				&ec2.Image{
+				{
 					ImageId: aws.String("ami-9ad76sd1"),
 				},
 			},

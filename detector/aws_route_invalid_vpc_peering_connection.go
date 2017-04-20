@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsRouteInvalidVpcPeeringConnectionDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsRouteInvalidVpcPeeringConnectionDetector) PreProcess() {
 	}
 }
 
-func (d *AwsRouteInvalidVpcPeeringConnectionDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	vpcPeeringConnectionToken, err := hclLiteralToken(item, "vpc_peering_connection_id")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsRouteInvalidVpcPeeringConnectionDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	vpcPeeringConnectionToken, ok := resource.GetToken("vpc_peering_connection_id")
+	if !ok {
 		return
 	}
 	vpcPeeringConnection, err := d.evalToString(vpcPeeringConnectionToken.Text)
@@ -55,7 +54,7 @@ func (d *AwsRouteInvalidVpcPeeringConnectionDetector) Detect(file string, item *
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid VPC peering connection ID.", vpcPeeringConnection),
 			Line:    vpcPeeringConnectionToken.Pos.Line,
-			File:    file,
+			File:    vpcPeeringConnectionToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

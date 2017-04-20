@@ -27,15 +27,15 @@ resource "aws_instance" "web" {
     iam_instance_profile = "app-server"
 }`,
 			Response: []*iam.InstanceProfile{
-				&iam.InstanceProfile{
+				{
 					InstanceProfileName: aws.String("app-server1"),
 				},
-				&iam.InstanceProfile{
+				{
 					InstanceProfileName: aws.String("app-server2"),
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"app-server\" is invalid IAM profile name.",
 					Line:    3,
@@ -50,13 +50,13 @@ resource "aws_instance" "web" {
     iam_instance_profile = "app-server"
 }`,
 			Response: []*iam.InstanceProfile{
-				&iam.InstanceProfile{
+				{
 					InstanceProfileName: aws.String("app-server1"),
 				},
-				&iam.InstanceProfile{
+				{
 					InstanceProfileName: aws.String("app-server2"),
 				},
-				&iam.InstanceProfile{
+				{
 					InstanceProfileName: aws.String("app-server"),
 				},
 			},

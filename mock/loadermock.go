@@ -60,12 +60,13 @@ func (_mr *_MockLoaderIFRecorder) LoadAllTemplate(arg0 interface{}) *gomock.Call
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "LoadAllTemplate", arg0)
 }
 
-func (_m *MockLoaderIF) Dump() (map[string]*ast.File, *state.TFState, []*ast.File) {
+func (_m *MockLoaderIF) Dump() (map[string]*ast.File, map[string][]byte, *state.TFState, []*ast.File) {
 	ret := _m.ctrl.Call(_m, "Dump")
 	ret0, _ := ret[0].(map[string]*ast.File)
-	ret1, _ := ret[1].(*state.TFState)
-	ret2, _ := ret[2].([]*ast.File)
-	return ret0, ret1, ret2
+	ret1, _ := ret[1].(map[string][]byte)
+	ret2, _ := ret[2].(*state.TFState)
+	ret3, _ := ret[3].([]*ast.File)
+	return ret0, ret1, ret2, ret3
 }
 
 func (_mr *_MockLoaderIFRecorder) Dump() *gomock.Call {

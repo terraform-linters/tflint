@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsDBInstanceDuplicateIdentifierDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsDBInstanceDuplicateIdentifierDetector) PreProcess() {
 	}
 }
 
-func (d *AwsDBInstanceDuplicateIdentifierDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	identifierToken, err := hclLiteralToken(item, "identifier")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsDBInstanceDuplicateIdentifierDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	identifierToken, ok := resource.GetToken("identifier")
+	if !ok {
 		return
 	}
 	identifier, err := d.evalToString(identifierToken.Text)
@@ -50,12 +49,12 @@ func (d *AwsDBInstanceDuplicateIdentifierDetector) Detect(file string, item *ast
 		return
 	}
 
-	if d.identifiers[identifier] && !d.State.Exists(d.Target, hclObjectKeyText(item)) {
+	if d.identifiers[identifier] && !d.State.Exists(d.Target, resource.Id) {
 		issue := &issue.Issue{
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is duplicate identifier. It must be unique.", identifier),
 			Line:    identifierToken.Pos.Line,
-			File:    file,
+			File:    identifierToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

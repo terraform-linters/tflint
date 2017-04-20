@@ -22,7 +22,7 @@ resource "aws_elasticache_cluster" "cache" {
     parameter_group_name = "default.redis3.2"
 }`,
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "NOTICE",
 					Message: "\"default.redis3.2\" is default parameter group. You cannot edit it.",
 					Line:    3,

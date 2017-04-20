@@ -27,15 +27,15 @@ resource "aws_db_instance" "mysql" {
     parameter_group_name = "app-server"
 }`,
 			Response: []*rds.DBParameterGroup{
-				&rds.DBParameterGroup{
+				{
 					DBParameterGroupName: aws.String("app-server1"),
 				},
-				&rds.DBParameterGroup{
+				{
 					DBParameterGroupName: aws.String("app-server2"),
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"app-server\" is invalid parameter group name.",
 					Line:    3,
@@ -50,13 +50,13 @@ resource "aws_db_instance" "mysql" {
     parameter_group_name = "app-server"
 }`,
 			Response: []*rds.DBParameterGroup{
-				&rds.DBParameterGroup{
+				{
 					DBParameterGroupName: aws.String("app-server1"),
 				},
-				&rds.DBParameterGroup{
+				{
 					DBParameterGroupName: aws.String("app-server2"),
 				},
-				&rds.DBParameterGroup{
+				{
 					DBParameterGroupName: aws.String("app-server"),
 				},
 			},

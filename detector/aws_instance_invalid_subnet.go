@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsInstanceInvalidSubnetDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsInstanceInvalidSubnetDetector) PreProcess() {
 	}
 }
 
-func (d *AwsInstanceInvalidSubnetDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	subnetToken, err := hclLiteralToken(item, "subnet_id")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsInstanceInvalidSubnetDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	subnetToken, ok := resource.GetToken("subnet_id")
+	if !ok {
 		return
 	}
 	subnet, err := d.evalToString(subnetToken.Text)
@@ -55,7 +54,7 @@ func (d *AwsInstanceInvalidSubnetDetector) Detect(file string, item *ast.ObjectI
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid subnet ID.", subnet),
 			Line:    subnetToken.Pos.Line,
-			File:    file,
+			File:    subnetToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

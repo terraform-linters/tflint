@@ -22,7 +22,7 @@ resource "aws_elasticache_cluster" "redis" {
     node_type = "cache.t1.micro"
 }`,
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "WARNING",
 					Message: "\"cache.t1.micro\" is previous generation node type.",
 					Line:    3,
