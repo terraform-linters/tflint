@@ -5,6 +5,8 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	"reflect"
+
 	"github.com/hashicorp/hcl"
 	hclast "github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hil"
@@ -22,7 +24,7 @@ type hclModule struct {
 	Templates  map[string]*hclast.File
 }
 
-func detectModules(templates map[string]*hclast.File, c *config.Config) (map[string]*hclModule, error) {
+func (e *Evaluator) detectModules(templates map[string]*hclast.File, c *config.Config) (map[string]*hclModule, error) {
 	moduleMap := make(map[string]*hclModule)
 
 	for file, template := range templates {
@@ -51,7 +53,11 @@ func detectModules(templates map[string]*hclast.File, c *config.Config) (map[str
 			varMap := make(map[string]hilast.Variable)
 			for k, v := range module {
 				varName := "var." + k
-				varMap[varName] = parseVariable(v, "")
+				ev, err := e.evalModuleAttr(k, v)
+				if err != nil {
+					return nil, err
+				}
+				varMap[varName] = parseVariable(ev, "")
 			}
 
 			moduleMap[moduleKey] = &hclModule{
@@ -70,6 +76,27 @@ func detectModules(templates map[string]*hclast.File, c *config.Config) (map[str
 	}
 
 	return moduleMap, nil
+}
+
+func (e *Evaluator) evalModuleAttr(key string, val interface{}) (interface{}, error) {
+	if v, ok := val.(string); ok {
+		ev, err := e.Eval(v)
+		if err != nil {
+			return nil, err
+		}
+		if estr, ok := ev.(string); ok && estr == "[NOT EVALUABLE]" {
+			ev = e
+		}
+
+		// In parseVariable function, map is expected to be in slice.
+		switch reflect.ValueOf(ev).Kind() {
+		case reflect.Map:
+			return []interface{}{ev}, nil
+		default:
+			return ev, nil
+		}
+	}
+	return val, nil
 }
 
 func moduleKey(name string, source string) string {

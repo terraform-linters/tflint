@@ -124,9 +124,13 @@ func parseVariable(val interface{}, varType string) hilast.Variable {
 		// Correct:
 		//
 		// []map[string]string{
-		//     map[string]string{
-		//         "name":  "test",
-		//         "value": "hcl",
+		//     {
+		//         "key": []map[string]string{
+		//             {
+		//                 "name":  "test",
+		//                 "value": "hcl",
+		//             },
+		//         },
 		//     },
 		// }
 		//
