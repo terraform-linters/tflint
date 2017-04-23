@@ -31,6 +31,20 @@ resource "aws_route" "multiple_specified" {
   egress_only_gateway_id = "eigw-1234abcd"
 }
 
+resource "aws_cloudwatch_metric_alarm" "rds-writer-memory" {
+  alarm_name                = "terraform-test-foobar5"
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
+  evaluation_periods        = "2"
+  metric_name               = "CPUUtilization"
+  namespace                 = "AWS/EC2"
+  period                    = "120"
+  statistic                 = "Average"
+  threshold                 = "80"
+  unit                      = "percent" // aws_cloudwatch_metric_alarm_invalid_unit
+  alarm_description         = "This metric monitor ec2 cpu utilization"
+  insufficient_data_actions = []
+}
+
 module "ec2_instance" {
   source         = "github.com/wata727/example-module" // terraform_module_pinned_source
   instance_types = "${var.instance_type}"
