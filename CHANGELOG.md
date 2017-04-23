@@ -1,3 +1,25 @@
+## 0.3.5 (2017-04-23)
+
+Patch version update. This release includes new detectors and bugfix for module.
+
+### NewDetectors
+
+- Module source pinned ref check ([#100](https://github.com/wata727/tflint/pull/100))
+- Add AwsCloudWatchMetricAlarmInvalidUnitDetector ([#108](https://github.com/wata727/tflint/pull/108))
+
+### Enhancements
+
+- Support F1 instances ([#107](https://github.com/wata727/tflint/pull/107))
+
+### BugFix
+
+- Interpolate module attributes ([#105](https://github.com/wata727/tflint/pull/105))
+
+### Others
+
+- Improve CLI ([#102](https://github.com/wata727/tflint/pull/102))
+- Add integration test ([#106](https://github.com/wata727/tflint/pull/106))
+
 ## 0.3.4 (2017-04-10)
 
 Patch version update. This release includes new detectors for `aws_route`
