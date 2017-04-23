@@ -28,6 +28,8 @@ Issues are classified into the following three types.
 - **AWS Route**
     - [aws_route_not_specified_target](aws_route_not_specified_target.md)
     - [aws_route_specified_multiple_targets](aws_route_specified_multiple_targets.md)
+- **AWS CloudWatch Metric Alarm**
+    - [aws_cloudwatch_metric_alarm_invalid_unit](aws_cloudwatch_metric_alarm_invalid_unit.md)
 - **Terraform**
     - [terraform_module_pinned_source](terraform_module_pinned_source.md)
 

@@ -67,7 +67,7 @@
   },
   {
     "type": "ERROR",
-    "message": "\"t1.micro}\" is invalid instance type.",
+    "message": "\"t1.micro\" is invalid instance type.",
     "line": 9,
     "file": "github.com/wata727/example-module/aws_db_instance.tf"
   },
@@ -86,7 +86,13 @@
   {
     "type": "WARNING",
     "message": "Module source \"github.com/wata727/example-module\" is not pinned",
-    "line": 35,
+    "line": 49,
+    "file": "template.tf"
+  },
+  {
+    "type": "ERROR",
+    "message": "\"percent\" is invalid unit.",
+    "line": 43,
     "file": "template.tf"
   }
 ]

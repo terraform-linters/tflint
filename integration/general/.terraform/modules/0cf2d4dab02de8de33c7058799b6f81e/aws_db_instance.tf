@@ -6,7 +6,7 @@ resource "aws_db_instance" "mysql" {
   allocated_storage    = 10
   engine               = "mysql"
   engine_version       = "5.6.17"
-  instance_class       = "${var.mysql_types[0]}}"   // aws_db_instance_invalid_type
+  instance_class       = "${var.mysql_types[0]}"   // aws_db_instance_invalid_type
   name                 = "mydb"
   username             = "foo"
   password             = "secret_password"          // aws_db_instance_readable_password
