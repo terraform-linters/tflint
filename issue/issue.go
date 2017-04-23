@@ -1,5 +1,7 @@
 package issue
 
+import "fmt"
+
 type Issue struct {
 	Type    string `json:"type"`
 	Message string `json:"message"`
@@ -27,3 +29,11 @@ type ByLine struct {
 }
 
 func (b ByLine) Less(i, j int) bool { return b.Issues[i].Line < b.Issues[j].Line }
+
+type ByFileLine struct {
+	Issues
+}
+
+func (b ByFileLine) Less(i, j int) bool {
+	return fmt.Sprintf("%s:%b", b.Issues[i].File, b.Issues[i].Line) < fmt.Sprintf("%s:%b", b.Issues[j].File, b.Issues[j].Line)
+}

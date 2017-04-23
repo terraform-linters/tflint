@@ -1,0 +1,92 @@
+[
+  {
+    "type": "WARNING",
+    "message": "Password for the master DB user is readable. recommend using environment variables.",
+    "line": 12,
+    "file": "github.com/wata727/example-module/aws_db_instance.tf"
+  },
+  {
+    "type": "WARNING",
+    "message": "Password for the master DB user is readable. recommend using environment variables.",
+    "line": 24,
+    "file": "github.com/wata727/example-module/aws_db_instance.tf"
+  },
+  {
+    "type": "ERROR",
+    "message": "\"m4.large\" is invalid node type.",
+    "line": 9,
+    "file": "github.com/wata727/example-module/aws_elasticache_cluster.tf"
+  },
+  {
+    "type": "NOTICE",
+    "message": "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate instance. (Only less than Terraform 0.8.8)",
+    "line": 5,
+    "file": "github.com/wata727/example-module/aws_instance.tf"
+  },
+  {
+    "type": "WARNING",
+    "message": "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
+    "line": 9,
+    "file": "github.com/wata727/example-module/aws_instance.tf"
+  },
+  {
+    "type": "WARNING",
+    "message": "\"db.t1.micro\" is previous generation instance type.",
+    "line": 21,
+    "file": "github.com/wata727/example-module/aws_db_instance.tf"
+  },
+  {
+    "type": "ERROR",
+    "message": "\"t1.2xlarge\" is invalid instance type.",
+    "line": 7,
+    "file": "github.com/wata727/example-module/aws_instance.tf"
+  },
+  {
+    "type": "WARNING",
+    "message": "\"t1.micro\" is previous generation instance type.",
+    "line": 17,
+    "file": "github.com/wata727/example-module/aws_instance.tf"
+  },
+  {
+    "type": "NOTICE",
+    "message": "\"default.mysql5.6\" is default parameter group. You cannot edit it.",
+    "line": 14,
+    "file": "github.com/wata727/example-module/aws_db_instance.tf"
+  },
+  {
+    "type": "ERROR",
+    "message": "route target is not specified, each route must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id.",
+    "line": 22,
+    "file": "template.tf"
+  },
+  {
+    "type": "ERROR",
+    "message": "more than 1 target specified, only 1 routing target can be specified.",
+    "line": 27,
+    "file": "template.tf"
+  },
+  {
+    "type": "ERROR",
+    "message": "\"t1.micro}\" is invalid instance type.",
+    "line": 9,
+    "file": "github.com/wata727/example-module/aws_db_instance.tf"
+  },
+  {
+    "type": "NOTICE",
+    "message": "\"default.redis3.2\" is default parameter group. You cannot edit it.",
+    "line": 12,
+    "file": "github.com/wata727/example-module/aws_elasticache_cluster.tf"
+  },
+  {
+    "type": "WARNING",
+    "message": "\"cache.t1.micro\" is previous generation node type.",
+    "line": 22,
+    "file": "github.com/wata727/example-module/aws_elasticache_cluster.tf"
+  },
+  {
+    "type": "WARNING",
+    "message": "Module source \"github.com/wata727/example-module\" is not pinned",
+    "line": 35,
+    "file": "template.tf"
+  }
+]
