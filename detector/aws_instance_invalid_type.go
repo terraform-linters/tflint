@@ -100,6 +100,8 @@ func (d *AwsInstanceInvalidTypeDetector) PreProcess() {
 		"i3.4xlarge":  true,
 		"i3.8xlarge":  true,
 		"i3.16xlarge": true,
+		"f1.2xlarge":  true,
+		"f1.16xlarge": true,
 	}
 }
 
