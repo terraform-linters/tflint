@@ -21,10 +21,6 @@ func NewEvaluator(templates map[string]*hclast.File, varfile []*hclast.File, c *
 	if err != nil {
 		return nil, err
 	}
-	moduleMap, err := detectModules(templates, c)
-	if err != nil {
-		return nil, err
-	}
 
 	evaluator := &Evaluator{
 		Config: hil.EvalConfig{
@@ -32,8 +28,13 @@ func NewEvaluator(templates map[string]*hclast.File, varfile []*hclast.File, c *
 				VarMap: varMap,
 			},
 		},
-		ModuleConfig: moduleMap,
 	}
+
+	moduleMap, err := evaluator.detectModules(templates, c)
+	if err != nil {
+		return nil, err
+	}
+	evaluator.ModuleConfig = moduleMap
 
 	return evaluator, nil
 }

@@ -111,6 +111,126 @@ module "ec2_instance" {
 			Error: false,
 		},
 		{
+			Name: "detect module with string variable",
+			Input: map[string]string{
+				"module.tf": `
+variable "ami" {
+    default = "ami-12345"
+}
+
+module "ec2_instance" {
+    source = "./tf_aws_ec2_instance"
+    ami = "${var.ami}"
+}`,
+			},
+			Result: map[string]*hclModule{
+				"960d94c2f60d34845dc3051edfad76e1": {
+					Name:   "ec2_instance",
+					Source: "./tf_aws_ec2_instance",
+					File:   "module.tf",
+					Config: hil.EvalConfig{
+						GlobalScope: &hilast.BasicScope{
+							VarMap: map[string]hilast.Variable{
+								"var.ami": {
+									Type:  hilast.TypeString,
+									Value: "ami-12345",
+								},
+							},
+						},
+					},
+					Templates: map[string]*hclast.File{},
+				},
+			},
+			Error: false,
+		},
+		{
+			Name: "detect module with list variable",
+			Input: map[string]string{
+				"module.tf": `
+variable "amis" {
+    default = ["ami-12345", "ami-54321"]
+}
+
+module "ec2_instance" {
+    source = "./tf_aws_ec2_instance"
+    ami = "${var.amis}"
+}`,
+			},
+			Result: map[string]*hclModule{
+				"960d94c2f60d34845dc3051edfad76e1": {
+					Name:   "ec2_instance",
+					Source: "./tf_aws_ec2_instance",
+					File:   "module.tf",
+					Config: hil.EvalConfig{
+						GlobalScope: &hilast.BasicScope{
+							VarMap: map[string]hilast.Variable{
+								"var.ami": {
+									Type: hilast.TypeList,
+									Value: []hilast.Variable{
+										{
+											Type:  hilast.TypeString,
+											Value: "ami-12345",
+										},
+										{
+											Type:  hilast.TypeString,
+											Value: "ami-54321",
+										},
+									},
+								},
+							},
+						},
+					},
+					Templates: map[string]*hclast.File{},
+				},
+			},
+			Error: false,
+		},
+		{
+			Name: "detect module with map variable",
+			Input: map[string]string{
+				"module.tf": `
+variable "ami_info" {
+    default = {
+	name = "awesome image"
+	value = "ami-12345"
+    }
+}
+
+module "ec2_instance" {
+    source = "./tf_aws_ec2_instance"
+    ami = "${var.ami_info}"
+}`,
+			},
+			Result: map[string]*hclModule{
+				"960d94c2f60d34845dc3051edfad76e1": {
+					Name:   "ec2_instance",
+					Source: "./tf_aws_ec2_instance",
+					File:   "module.tf",
+					Config: hil.EvalConfig{
+						GlobalScope: &hilast.BasicScope{
+							VarMap: map[string]hilast.Variable{
+								"var.ami": {
+									Type: hilast.TypeMap,
+									Value: map[string]hilast.Variable{
+										"name": {
+											Type:  hilast.TypeString,
+											Value: "awesome image",
+										},
+										"value": {
+											Type:  hilast.TypeString,
+											Value: "ami-12345",
+										},
+									},
+								},
+							},
+						},
+					},
+					Templates: map[string]*hclast.File{},
+				},
+			},
+			Error: false,
+		},
+		{
 			Name: "invalid source",
 			Input: map[string]string{
 				"module.tf": `
@@ -148,7 +268,8 @@ module "ec2_instances" {
 		for k, v := range tc.Input {
 			templates[k], _ = parser.Parse([]byte(v))
 		}
-		result, err := detectModules(templates, config.Init())
+		evaluator, _ := NewEvaluator(templates, []*hclast.File{}, config.Init())
+		result, err := evaluator.detectModules(templates, config.Init())
 		if tc.Error && err == nil {
 			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
 			continue
