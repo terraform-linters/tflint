@@ -9,7 +9,7 @@ TFLint is [Terraform](https://www.terraform.io/) linter for detecting errors tha
 ## Why TFLint is Required?
 Terraform is a great tool for infrastructure as a code. It generates an execution plan, we can rely on this plan to proceed with development. However, this plan does not verify values used in template. For example, following template is invalid configuration (t1.2xlarge is invalid instance type)
 
-```
+```hcl
 resource "aws_instance" "web" {
   ami           = "ami-b73b63a0"
   instance_type = "t1.2xlarge" # invalid type!
@@ -102,7 +102,7 @@ Help Options:
 ## Configuration
 By default, TFLint loads `.tflint.hcl` under the current directory. The configuration file is described in [HCL](https://github.com/hashicorp/hcl), and options available on the command line can be described in advance. Following example:
 
-```
+```hcl
 config {
   deep_check = true
 
@@ -146,7 +146,7 @@ If you have access key and secret key, you can specify these credentials.
 $ tflint --aws-access-key AWS_ACCESS_KEY --aws-secret-key AWS_SECRET_KEY --aws-region us-east-1
 ```
 
-```
+```hcl
 config {
   aws_credentials = {
     access_key = "AWS_ACCESS_KEY"
@@ -163,7 +163,7 @@ If you have [shared credentials](https://aws.amazon.com/jp/blogs/security/a-new-
 $ tflint --aws-profile AWS_PROFILE --aws-region us-east-1
 ```
 
-```
+```hcl
 config {
   aws_credentials = {
     profile = "AWS_PROFILE"
