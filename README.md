@@ -63,7 +63,7 @@ template.tf
 Result: 2 issues  (1 errors , 0 warnings , 1 notices)
 ```
 
-Two issues were reported. One is for invalid instance type, the other one is for beat practices about IAM instance profile. If you would like to know more about these issues please check the [documentation](https://github.com/wata727/tflint/tree/master/docs).
+Two issues were reported. One is for invalid instance type, the other one is for best practices about IAM instance profile. If you would like to know more about these issues please check the [documentation](https://github.com/wata727/tflint/tree/master/docs).
 
 ### Specify Template
 If you want to parse only a specific template, not all templates, you can specify a filename as an argument.
