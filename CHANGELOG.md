@@ -1,3 +1,16 @@
+## 0.3.6 (2017-06-05)
+
+Patch version update. This release includes hotfix for module evaluation.
+
+## BugFix
+
+- DO NOT USE Evaluator :bow: ([#114](https://github.com/wata727/tflint/pull/114))
+
+## Others
+
+- Add HCL syntax highlighting in README ([#110](https://github.com/wata727/tflint/pull/110))
+- Update README.md ([#111](https://github.com/wata727/tflint/pull/111))
+
 ## 0.3.5 (2017-04-23)
 
 Patch version update. This release includes new detectors and bugfix for module.
