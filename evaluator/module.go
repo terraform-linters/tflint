@@ -85,7 +85,7 @@ func (e *Evaluator) evalModuleAttr(key string, val interface{}) (interface{}, er
 			return nil, err
 		}
 		if estr, ok := ev.(string); ok && estr == "[NOT EVALUABLE]" {
-			ev = e
+			ev = v
 		}
 
 		// In parseVariable function, map is expected to be in slice.
