@@ -27,15 +27,15 @@ resource "aws_db_instance" "mysql" {
     db_subnet_group_name = "app-server"
 }`,
 			Response: []*rds.DBSubnetGroup{
-				&rds.DBSubnetGroup{
+				{
 					DBSubnetGroupName: aws.String("app-server1"),
 				},
-				&rds.DBSubnetGroup{
+				{
 					DBSubnetGroupName: aws.String("app-server2"),
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"app-server\" is invalid DB subnet group name.",
 					Line:    3,
@@ -50,13 +50,13 @@ resource "aws_db_instance" "mysql" {
     db_subnet_group_name = "app-server"
 }`,
 			Response: []*rds.DBSubnetGroup{
-				&rds.DBSubnetGroup{
+				{
 					DBSubnetGroupName: aws.String("app-server1"),
 				},
-				&rds.DBSubnetGroup{
+				{
 					DBSubnetGroupName: aws.String("app-server2"),
 				},
-				&rds.DBSubnetGroup{
+				{
 					DBSubnetGroupName: aws.String("app-server"),
 				},
 			},

@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsRouteInvalidGatewayDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsRouteInvalidGatewayDetector) PreProcess() {
 	}
 }
 
-func (d *AwsRouteInvalidGatewayDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	gatewayToken, err := hclLiteralToken(item, "gateway_id")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsRouteInvalidGatewayDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	gatewayToken, ok := resource.GetToken("gateway_id")
+	if !ok {
 		return
 	}
 	gateway, err := d.evalToString(gatewayToken.Text)
@@ -55,7 +54,7 @@ func (d *AwsRouteInvalidGatewayDetector) Detect(file string, item *ast.ObjectIte
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid internet gateway ID.", gateway),
 			Line:    gatewayToken.Pos.Line,
-			File:    file,
+			File:    gatewayToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

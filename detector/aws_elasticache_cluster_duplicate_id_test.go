@@ -28,15 +28,15 @@ resource "aws_elasticache_cluster" "test" {
     cluster_id = "cluster-example"
 }`,
 			Response: []*elasticache.CacheCluster{
-				&elasticache.CacheCluster{
+				{
 					CacheClusterId: aws.String("cluster-example"),
 				},
-				&elasticache.CacheCluster{
+				{
 					CacheClusterId: aws.String("test-cluster"),
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"cluster-example\" is duplicate Cluster ID. It must be unique.",
 					Line:    3,
@@ -51,10 +51,10 @@ resource "aws_elasticache_cluster" "test" {
     cluster_id = "cluster-example"
 }`,
 			Response: []*elasticache.CacheCluster{
-				&elasticache.CacheCluster{
+				{
 					CacheClusterId: aws.String("example-cluster"),
 				},
-				&elasticache.CacheCluster{
+				{
 					CacheClusterId: aws.String("test-cluster"),
 				},
 			},
@@ -110,10 +110,10 @@ resource "aws_elasticache_cluster" "test" {
 }
 `,
 			Response: []*elasticache.CacheCluster{
-				&elasticache.CacheCluster{
+				{
 					CacheClusterId: aws.String("cluster-example"),
 				},
-				&elasticache.CacheCluster{
+				{
 					CacheClusterId: aws.String("test-cluster"),
 				},
 			},

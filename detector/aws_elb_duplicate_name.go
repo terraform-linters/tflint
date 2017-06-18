@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsELBDuplicateNameDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsELBDuplicateNameDetector) PreProcess() {
 	}
 }
 
-func (d *AwsELBDuplicateNameDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	nameToken, err := hclLiteralToken(item, "name")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsELBDuplicateNameDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	nameToken, ok := resource.GetToken("name")
+	if !ok {
 		return
 	}
 	name, err := d.evalToString(nameToken.Text)
@@ -50,12 +49,12 @@ func (d *AwsELBDuplicateNameDetector) Detect(file string, item *ast.ObjectItem, 
 		return
 	}
 
-	if d.loadBalancers[name] && !d.State.Exists(d.Target, hclObjectKeyText(item)) {
+	if d.loadBalancers[name] && !d.State.Exists(d.Target, resource.Id) {
 		issue := &issue.Issue{
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),
 			Line:    nameToken.Pos.Line,
-			File:    file,
+			File:    nameToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

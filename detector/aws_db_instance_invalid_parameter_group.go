@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsDBInstanceInvalidParameterGroupDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsDBInstanceInvalidParameterGroupDetector) PreProcess() {
 	}
 }
 
-func (d *AwsDBInstanceInvalidParameterGroupDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	parameterGroupToken, err := hclLiteralToken(item, "parameter_group_name")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsDBInstanceInvalidParameterGroupDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	parameterGroupToken, ok := resource.GetToken("parameter_group_name")
+	if !ok {
 		return
 	}
 	parameterGroup, err := d.evalToString(parameterGroupToken.Text)
@@ -55,7 +54,7 @@ func (d *AwsDBInstanceInvalidParameterGroupDetector) Detect(file string, item *a
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid parameter group name.", parameterGroup),
 			Line:    parameterGroupToken.Pos.Line,
-			File:    file,
+			File:    parameterGroupToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

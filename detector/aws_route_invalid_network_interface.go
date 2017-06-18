@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsRouteInvalidNetworkInterfaceDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsRouteInvalidNetworkInterfaceDetector) PreProcess() {
 	}
 }
 
-func (d *AwsRouteInvalidNetworkInterfaceDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	networkInterfaceToken, err := hclLiteralToken(item, "network_interface_id")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsRouteInvalidNetworkInterfaceDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	networkInterfaceToken, ok := resource.GetToken("network_interface_id")
+	if !ok {
 		return
 	}
 	networkInterface, err := d.evalToString(networkInterfaceToken.Text)
@@ -55,7 +54,7 @@ func (d *AwsRouteInvalidNetworkInterfaceDetector) Detect(file string, item *ast.
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid network interface ID.", networkInterface),
 			Line:    networkInterfaceToken.Pos.Line,
-			File:    file,
+			File:    networkInterfaceToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

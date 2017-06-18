@@ -19,7 +19,7 @@ type LoaderIF interface {
 	LoadTemplate(filename string) error
 	LoadModuleFile(moduleKey string, source string) error
 	LoadAllTemplate(dir string) error
-	Dump() (map[string]*ast.File, *state.TFState, []*ast.File)
+	Dump() (map[string]*ast.File, map[string][]byte, *state.TFState, []*ast.File)
 	LoadState()
 	LoadTFVars([]string)
 }
@@ -27,6 +27,7 @@ type LoaderIF interface {
 type Loader struct {
 	Logger    *logger.Logger
 	Templates map[string]*ast.File
+	Files     map[string][]byte
 	State     *state.TFState
 	TFVars    []*ast.File
 }
@@ -35,6 +36,7 @@ func NewLoader(debug bool) *Loader {
 	return &Loader{
 		Logger:    logger.Init(debug),
 		Templates: make(map[string]*ast.File),
+		Files:     map[string][]byte{},
 		State:     &state.TFState{},
 		TFVars:    []*ast.File{},
 	}
@@ -47,6 +49,15 @@ func (l *Loader) LoadTemplate(filename string) error {
 	}
 
 	l.Templates[filename] = root
+
+	l.Logger.Info(fmt.Sprintf("Load HCL file: `%s`", filename))
+	b, err := ioutil.ReadFile(filename)
+	if err != nil {
+		l.Logger.Error(err)
+		return fmt.Errorf("ERROR: Cannot open file %s", filename)
+	}
+	l.Files[filename] = b
+
 	return nil
 }
 
@@ -71,6 +82,14 @@ func (l *Loader) LoadModuleFile(moduleKey string, source string) error {
 		filename := strings.Replace(file, modulePath, "", 1)
 		fileKey := source + filename
 		l.Templates[fileKey] = root
+
+		l.Logger.Info(fmt.Sprintf("Load HCL file: `%s`", file))
+		b, err := ioutil.ReadFile(file)
+		if err != nil {
+			l.Logger.Error(err)
+			return fmt.Errorf("ERROR: Cannot open file %s", file)
+		}
+		l.Files[fileKey] = b
 	}
 
 	return nil
@@ -152,8 +171,8 @@ func (l *Loader) LoadTFVars(varfile []string) {
 	}
 }
 
-func (l *Loader) Dump() (map[string]*ast.File, *state.TFState, []*ast.File) {
-	return l.Templates, l.State, l.TFVars
+func (l *Loader) Dump() (map[string]*ast.File, map[string][]byte, *state.TFState, []*ast.File) {
+	return l.Templates, l.Files, l.State, l.TFVars
 }
 
 func loadHCL(filename string, l *logger.Logger) (*ast.File, error) {

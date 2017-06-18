@@ -22,7 +22,7 @@ resource "aws_instance" "web" {
     instance_type = "t2.2xlarge"
 }`,
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "NOTICE",
 					Message: "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate instance. (Only less than Terraform 0.8.8)",
 					Line:    2,

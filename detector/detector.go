@@ -11,6 +11,7 @@ import (
 	"github.com/wata727/tflint/evaluator"
 	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/logger"
+	"github.com/wata727/tflint/schema"
 	"github.com/wata727/tflint/state"
 )
 
@@ -21,6 +22,7 @@ type DetectorIF interface {
 
 type Detector struct {
 	Templates  map[string]*ast.File
+	Schema     []*schema.Template
 	State      *state.TFState
 	Config     *config.Config
 	AwsClient  *config.AwsClient
@@ -75,7 +77,7 @@ var detectors = map[string]string{
 	"aws_cloudwatch_metric_alarm_invalid_unit":        "CreateAwsCloudWatchMetricAlarmInvalidUnitDetector",
 }
 
-func NewDetector(templates map[string]*ast.File, state *state.TFState, tfvars []*ast.File, c *config.Config) (*Detector, error) {
+func NewDetector(templates map[string]*ast.File, schema []*schema.Template, state *state.TFState, tfvars []*ast.File, c *config.Config) (*Detector, error) {
 	evalConfig, err := evaluator.NewEvaluator(templates, tfvars, c)
 	if err != nil {
 		return nil, err
@@ -83,6 +85,7 @@ func NewDetector(templates map[string]*ast.File, state *state.TFState, tfvars []
 
 	return &Detector{
 		Templates:  templates,
+		Schema:     schema,
 		State:      state,
 		Config:     c,
 		AwsClient:  c.NewAwsClient(),
@@ -158,7 +161,7 @@ func (d *Detector) Detect() []*issue.Issue {
 				continue
 			}
 			d.Logger.Info(fmt.Sprintf("detect module `%s`", name))
-			moduleDetector, err := NewDetector(m.Templates, d.State, []*ast.File{}, d.Config)
+			moduleDetector, err := NewDetector(m.Templates, m.Schema, d.State, []*ast.File{}, d.Config)
 			if err != nil {
 				d.Logger.Error(err)
 				continue
@@ -206,12 +209,12 @@ func (d *Detector) detect(creatorMethod string, issues *[]*issue.Issue) {
 	if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
 		preprocess.Call([]reflect.Value{})
 	}
-	for file, template := range d.Templates {
-		for _, item := range template.Node.(*ast.ObjectList).Filter("resource", reflect.Indirect(detector).FieldByName("Target").String()).Items {
+
+	for _, template := range d.Schema {
+		for _, resource := range template.Find("resource", reflect.Indirect(detector).FieldByName("Target").String()) {
 			detect := detector.MethodByName("Detect")
 			detect.Call([]reflect.Value{
-				reflect.ValueOf(file),
-				reflect.ValueOf(item),
+				reflect.ValueOf(resource),
 				reflect.ValueOf(issues),
 			})
 		}

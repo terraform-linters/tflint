@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsInstancePreviousTypeDetector struct {
@@ -45,10 +45,9 @@ func (d *AwsInstancePreviousTypeDetector) PreProcess() {
 	}
 }
 
-func (d *AwsInstancePreviousTypeDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	instanceTypeToken, err := hclLiteralToken(item, "instance_type")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsInstancePreviousTypeDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	instanceTypeToken, ok := resource.GetToken("instance_type")
+	if !ok {
 		return
 	}
 	instanceType, err := d.evalToString(instanceTypeToken.Text)
@@ -62,7 +61,7 @@ func (d *AwsInstancePreviousTypeDetector) Detect(file string, item *ast.ObjectIt
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is previous generation instance type.", instanceType),
 			Line:    instanceTypeToken.Pos.Line,
-			File:    file,
+			File:    instanceTypeToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

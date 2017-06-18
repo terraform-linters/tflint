@@ -28,15 +28,15 @@ resource "aws_db_instance" "test" {
     identifier = "my-db"
 }`,
 			Response: []*rds.DBInstance{
-				&rds.DBInstance{
+				{
 					DBInstanceIdentifier: aws.String("my-db"),
 				},
-				&rds.DBInstance{
+				{
 					DBInstanceIdentifier: aws.String("your-db"),
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"my-db\" is duplicate identifier. It must be unique.",
 					Line:    3,
@@ -51,10 +51,10 @@ resource "aws_db_instance" "test" {
     name = "my-db"
 }`,
 			Response: []*rds.DBInstance{
-				&rds.DBInstance{
+				{
 					DBInstanceIdentifier: aws.String("our-db"),
 				},
-				&rds.DBInstance{
+				{
 					DBInstanceIdentifier: aws.String("your-db"),
 				},
 			},
@@ -135,10 +135,10 @@ resource "aws_db_instance" "test" {
 }
 `,
 			Response: []*rds.DBInstance{
-				&rds.DBInstance{
+				{
 					DBInstanceIdentifier: aws.String("my-db"),
 				},
-				&rds.DBInstance{
+				{
 					DBInstanceIdentifier: aws.String("your-db"),
 				},
 			},

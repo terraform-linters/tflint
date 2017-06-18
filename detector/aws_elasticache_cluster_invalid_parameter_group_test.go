@@ -27,15 +27,15 @@ resource "aws_elasticache_cluster" "redis" {
     parameter_group_name = "app-server"
 }`,
 			Response: []*elasticache.CacheParameterGroup{
-				&elasticache.CacheParameterGroup{
+				{
 					CacheParameterGroupName: aws.String("app-server1"),
 				},
-				&elasticache.CacheParameterGroup{
+				{
 					CacheParameterGroupName: aws.String("app-server2"),
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"app-server\" is invalid parameter group name.",
 					Line:    3,
@@ -50,13 +50,13 @@ resource "aws_elasticache_cluster" "redis" {
     parameter_group_name = "app-server"
 }`,
 			Response: []*elasticache.CacheParameterGroup{
-				&elasticache.CacheParameterGroup{
+				{
 					CacheParameterGroupName: aws.String("app-server1"),
 				},
-				&elasticache.CacheParameterGroup{
+				{
 					CacheParameterGroupName: aws.String("app-server2"),
 				},
-				&elasticache.CacheParameterGroup{
+				{
 					CacheParameterGroupName: aws.String("app-server"),
 				},
 			},

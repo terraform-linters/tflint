@@ -22,7 +22,7 @@ resource "aws_db_instance" "db" {
     parameter_group_name = "default.mysql5.6"
 }`,
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "NOTICE",
 					Message: "\"default.mysql5.6\" is default parameter group. You cannot edit it.",
 					Line:    3,

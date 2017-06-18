@@ -1,8 +1,8 @@
 package detector
 
 import (
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsDBInstanceReadablePasswordDetector struct {
@@ -21,13 +21,12 @@ func (d *Detector) CreateAwsDBInstanceReadablePasswordDetector() *AwsDBInstanceR
 	}
 }
 
-func (d *AwsDBInstanceReadablePasswordDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	passwordToken, err := hclLiteralToken(item, "password")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsDBInstanceReadablePasswordDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	passwordToken, ok := resource.GetToken("password")
+	if !ok {
 		return
 	}
-	_, err = d.evalToString(passwordToken.Text)
+	_, err := d.evalToString(passwordToken.Text)
 	if err != nil {
 		d.Logger.Error(err)
 		return
@@ -37,7 +36,7 @@ func (d *AwsDBInstanceReadablePasswordDetector) Detect(file string, item *ast.Ob
 		Type:    d.IssueType,
 		Message: "Password for the master DB user is readable. recommend using environment variables.",
 		Line:    passwordToken.Pos.Line,
-		File:    file,
+		File:    passwordToken.Pos.Filename,
 	}
 	*issues = append(*issues, issue)
 }

@@ -11,6 +11,7 @@ import (
 	"github.com/wata727/tflint/detector"
 	"github.com/wata727/tflint/loader"
 	"github.com/wata727/tflint/printer"
+	"github.com/wata727/tflint/schema"
 )
 
 // Exit codes are int values that represent an exit code for a particular error.
@@ -106,8 +107,17 @@ func (cli *CLI) Run(args []string) int {
 
 	// If disabled test mode, generates real detector
 	if !cli.testMode {
-		templates, state, tfvars := cli.loader.Dump()
-		cli.detector, err = detector.NewDetector(templates, state, tfvars, c)
+		templates, files, state, tfvars := cli.loader.Dump()
+		schema, err := schema.Make(files)
+		if err != nil {
+			fmt.Fprintln(cli.errStream, fmt.Errorf("ERROR: Parse error: %s", err))
+			return ExitCodeError
+		}
+		cli.detector, err = detector.NewDetector(templates, schema, state, tfvars, c)
+		if err != nil {
+			fmt.Fprintln(cli.errStream, err)
+			return ExitCodeError
+		}
 	}
 	if err != nil {
 		fmt.Fprintln(cli.errStream, err)

@@ -22,7 +22,7 @@ resource "aws_db_instance" "mysql" {
     instance_class = "db.t1.micro"
 }`,
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "WARNING",
 					Message: "\"db.t1.micro\" is previous generation instance type.",
 					Line:    3,

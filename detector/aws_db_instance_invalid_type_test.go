@@ -22,7 +22,7 @@ resource "aws_db_instance" "mysql" {
     instance_class = "m4.2xlarge"
 }`,
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"m4.2xlarge\" is invalid instance type.",
 					Line:    3,

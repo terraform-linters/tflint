@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsDBInstanceInvalidOptionGroupDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsDBInstanceInvalidOptionGroupDetector) PreProcess() {
 	}
 }
 
-func (d *AwsDBInstanceInvalidOptionGroupDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	optionGroupToken, err := hclLiteralToken(item, "option_group_name")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsDBInstanceInvalidOptionGroupDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	optionGroupToken, ok := resource.GetToken("option_group_name")
+	if !ok {
 		return
 	}
 	optionGroup, err := d.evalToString(optionGroupToken.Text)
@@ -55,7 +54,7 @@ func (d *AwsDBInstanceInvalidOptionGroupDetector) Detect(file string, item *ast.
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid option group name.", optionGroup),
 			Line:    optionGroupToken.Pos.Line,
-			File:    file,
+			File:    optionGroupToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

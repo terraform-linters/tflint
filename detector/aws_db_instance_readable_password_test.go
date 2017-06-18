@@ -22,7 +22,7 @@ resource "aws_db_instance" "mysql" {
     password = "super_secret"
 }`,
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "WARNING",
 					Message: "Password for the master DB user is readable. recommend using environment variables.",
 					Line:    3,

@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsDBInstanceInvalidTypeDetector struct {
@@ -57,10 +57,9 @@ func (d *AwsDBInstanceInvalidTypeDetector) PreProcess() {
 	}
 }
 
-func (d *AwsDBInstanceInvalidTypeDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	instanceTypeToken, err := hclLiteralToken(item, "instance_class")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsDBInstanceInvalidTypeDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	instanceTypeToken, ok := resource.GetToken("instance_class")
+	if !ok {
 		return
 	}
 	instanceType, err := d.evalToString(instanceTypeToken.Text)
@@ -74,7 +73,7 @@ func (d *AwsDBInstanceInvalidTypeDetector) Detect(file string, item *ast.ObjectI
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid instance type.", instanceType),
 			Line:    instanceTypeToken.Pos.Line,
-			File:    file,
+			File:    instanceTypeToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

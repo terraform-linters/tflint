@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsCloudWatchMetricAlarmInvalidUnitDetector struct {
@@ -58,10 +58,9 @@ func (d *AwsCloudWatchMetricAlarmInvalidUnitDetector) PreProcess() {
 	}
 }
 
-func (d *AwsCloudWatchMetricAlarmInvalidUnitDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	unitToken, err := hclLiteralToken(item, "unit")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsCloudWatchMetricAlarmInvalidUnitDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	unitToken, ok := resource.GetToken("unit")
+	if !ok {
 		return
 	}
 	unit, err := d.evalToString(unitToken.Text)
@@ -75,7 +74,7 @@ func (d *AwsCloudWatchMetricAlarmInvalidUnitDetector) Detect(file string, item *
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid unit.", unit),
 			Line:    unitToken.Pos.Line,
-			File:    file,
+			File:    unitToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

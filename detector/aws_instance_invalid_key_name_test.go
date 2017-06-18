@@ -27,15 +27,15 @@ resource "aws_instance" "web" {
     key_name = "foo"
 }`,
 			Response: []*ec2.KeyPairInfo{
-				&ec2.KeyPairInfo{
+				{
 					KeyName: aws.String("hogehoge"),
 				},
-				&ec2.KeyPairInfo{
+				{
 					KeyName: aws.String("fugafuga"),
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"foo\" is invalid key name.",
 					Line:    3,
@@ -50,10 +50,10 @@ resource "aws_instance" "web" {
     key_name = "foo"
 }`,
 			Response: []*ec2.KeyPairInfo{
-				&ec2.KeyPairInfo{
+				{
 					KeyName: aws.String("foo"),
 				},
-				&ec2.KeyPairInfo{
+				{
 					KeyName: aws.String("bar"),
 				},
 			},

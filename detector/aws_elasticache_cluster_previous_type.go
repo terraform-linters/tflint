@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsElastiCacheClusterPreviousTypeDetector struct {
@@ -39,10 +39,9 @@ func (d *AwsElastiCacheClusterPreviousTypeDetector) PreProcess() {
 	}
 }
 
-func (d *AwsElastiCacheClusterPreviousTypeDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	nodeTypeToken, err := hclLiteralToken(item, "node_type")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsElastiCacheClusterPreviousTypeDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	nodeTypeToken, ok := resource.GetToken("node_type")
+	if !ok {
 		return
 	}
 	nodeType, err := d.evalToString(nodeTypeToken.Text)
@@ -56,7 +55,7 @@ func (d *AwsElastiCacheClusterPreviousTypeDetector) Detect(file string, item *as
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is previous generation node type.", nodeType),
 			Line:    nodeTypeToken.Pos.Line,
-			File:    file,
+			File:    nodeTypeToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

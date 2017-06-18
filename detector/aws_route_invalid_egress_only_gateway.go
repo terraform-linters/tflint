@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsRouteInvalidEgressOnlyGatewayDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsRouteInvalidEgressOnlyGatewayDetector) PreProcess() {
 	}
 }
 
-func (d *AwsRouteInvalidEgressOnlyGatewayDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	egatewayToken, err := hclLiteralToken(item, "egress_only_gateway_id")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsRouteInvalidEgressOnlyGatewayDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	egatewayToken, ok := resource.GetToken("egress_only_gateway_id")
+	if !ok {
 		return
 	}
 	egateway, err := d.evalToString(egatewayToken.Text)
@@ -55,7 +54,7 @@ func (d *AwsRouteInvalidEgressOnlyGatewayDetector) Detect(file string, item *ast
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid egress only internet gateway ID.", egateway),
 			Line:    egatewayToken.Pos.Line,
-			File:    file,
+			File:    egatewayToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

@@ -22,7 +22,7 @@ resource "aws_elasticache_cluster" "redis" {
     node_type = "t2.micro"
 }`,
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"t2.micro\" is invalid node type.",
 					Line:    3,

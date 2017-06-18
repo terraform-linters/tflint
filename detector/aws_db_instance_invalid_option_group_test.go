@@ -27,15 +27,15 @@ resource "aws_db_instance" "mysql" {
     option_group_name = "app-server"
 }`,
 			Response: []*rds.OptionGroup{
-				&rds.OptionGroup{
+				{
 					OptionGroupName: aws.String("app-server1"),
 				},
-				&rds.OptionGroup{
+				{
 					OptionGroupName: aws.String("app-server2"),
 				},
 			},
 			Issues: []*issue.Issue{
-				&issue.Issue{
+				{
 					Type:    "ERROR",
 					Message: "\"app-server\" is invalid option group name.",
 					Line:    3,
@@ -50,13 +50,13 @@ resource "aws_db_instance" "mysql" {
     option_group_name = "app-server"
 }`,
 			Response: []*rds.OptionGroup{
-				&rds.OptionGroup{
+				{
 					OptionGroupName: aws.String("app-server1"),
 				},
-				&rds.OptionGroup{
+				{
 					OptionGroupName: aws.String("app-server2"),
 				},
-				&rds.OptionGroup{
+				{
 					OptionGroupName: aws.String("app-server"),
 				},
 			},

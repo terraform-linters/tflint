@@ -3,8 +3,8 @@ package detector
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/schema"
 )
 
 type AwsInstanceInvalidAMIDetector struct {
@@ -38,10 +38,9 @@ func (d *AwsInstanceInvalidAMIDetector) PreProcess() {
 	}
 }
 
-func (d *AwsInstanceInvalidAMIDetector) Detect(file string, item *ast.ObjectItem, issues *[]*issue.Issue) {
-	amiToken, err := hclLiteralToken(item, "ami")
-	if err != nil {
-		d.Logger.Error(err)
+func (d *AwsInstanceInvalidAMIDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
+	amiToken, ok := resource.GetToken("ami")
+	if !ok {
 		return
 	}
 	ami, err := d.evalToString(amiToken.Text)
@@ -55,7 +54,7 @@ func (d *AwsInstanceInvalidAMIDetector) Detect(file string, item *ast.ObjectItem
 			Type:    d.IssueType,
 			Message: fmt.Sprintf("\"%s\" is invalid AMI.", ami),
 			Line:    amiToken.Pos.Line,
-			File:    file,
+			File:    amiToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

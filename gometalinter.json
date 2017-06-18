@@ -7,7 +7,7 @@
     "golint",
     "gotype",
     "lll",
-    "vetshadow"
-  ],
-  "Cyclo": 15
+    "vetshadow",
+    "gocyclo"
+  ]
 }
