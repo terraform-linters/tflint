@@ -27,19 +27,18 @@ func Make(files map[string][]byte) ([]*Template, error) {
 			overrideFiles = append(overrideFiles, file)
 		} else {
 			plains[file] = files[file]
+			if templates, err = appendTemplates(templates, file, files[file], false); err != nil {
+				return nil, err
+			}
 		}
 	}
 	// Override files are loaded last in alphabetical order.
 	sort.Strings(overrideFiles)
 	for _, file := range overrideFiles {
 		overrides[file] = files[file]
-	}
-
-	if templates, err = appendTemplates(templates, plains, false); err != nil {
-		return nil, err
-	}
-	if templates, err = appendTemplates(templates, overrides, true); err != nil {
-		return nil, err
+		if templates, err = appendTemplates(templates, file, files[file], true); err != nil {
+			return nil, err
+		}
 	}
 
 	return templates, nil
@@ -84,71 +83,69 @@ func (t *Template) Find(query ...string) []*Resource {
 	}
 }
 
-func appendTemplates(templates []*Template, files map[string][]byte, override bool) ([]*Template, error) {
-	for file, body := range files {
-		template := &Template{
-			File:      file,
-			Resources: []*Resource{},
-		}
-		var ret map[string]map[string]interface{}
-		root, err := parser.Parse(body)
-		if err != nil {
-			return nil, err
-		}
-		if err := hcl.DecodeObject(&ret, root); err != nil {
-			return nil, err
-		}
+func appendTemplates(templates []*Template, file string, body []byte, override bool) ([]*Template, error) {
+	template := &Template{
+		File:      file,
+		Resources: []*Resource{},
+	}
+	var ret map[string]map[string]interface{}
+	root, err := parser.Parse(body)
+	if err != nil {
+		return nil, err
+	}
+	if err := hcl.DecodeObject(&ret, root); err != nil {
+		return nil, err
+	}
 
-		for resourceType, typeResources := range ret["resource"] {
-			for _, typeResource := range typeResources.([]map[string]interface{}) {
-				for key, attrs := range typeResource {
-					var newResource bool = true
-					var resourceItem *ast.ObjectItem = root.Node.(*ast.ObjectList).Filter("resource", resourceType, key).Items[0]
-					var resourcePos token.Pos = resourceItem.Val.Pos()
-					resourcePos.Filename = file
-					resource := &Resource{
-						File:  file,
-						Type:  resourceType,
-						Id:    key,
-						Pos:   resourcePos,
-						Attrs: map[string]*Attribute{},
-					}
+	for resourceType, typeResources := range ret["resource"] {
+		for _, typeResource := range typeResources.([]map[string]interface{}) {
+			for key, attrs := range typeResource {
+				var newResource bool = true
+				var resourceItem *ast.ObjectItem = root.Node.(*ast.ObjectList).Filter("resource", resourceType, key).Items[0]
+				var resourcePos token.Pos = resourceItem.Val.Pos()
+				resourcePos.Filename = file
+				resource := &Resource{
+					File:  file,
+					Type:  resourceType,
+					Id:    key,
+					Pos:   resourcePos,
+					Attrs: map[string]*Attribute{},
+				}
 
-					if override {
-						for _, temp := range templates {
-							if res := temp.Find("resource", resourceType, key); len(res) != 0 {
-								resource = res[0]
-								newResource = false
-								break
-							}
+				if override {
+					for _, temp := range templates {
+						if res := temp.Find("resource", resourceType, key); len(res) != 0 {
+							resource = res[0]
+							newResource = false
+							break
 						}
 					}
+				}
 
-					for _, attr := range attrs.([]map[string]interface{}) {
-						for k := range attr {
-							for _, attrToken := range resourceItem.Val.(*ast.ObjectType).List.Filter(k).Items {
-								if resource.Attrs[k] == nil || override {
-									resource.Attrs[k] = &Attribute{}
-								}
-								// The case of multiple specifiable keys such as `ebs_block_device`.
-								resource.Attrs[k].Vals = append(resource.Attrs[k].Vals, getToken(file, attrToken.Val))
-								pos := attrToken.Val.Pos()
-								pos.Filename = file
-								resource.Attrs[k].Poses = append(resource.Attrs[k].Poses, pos)
+				for _, attr := range attrs.([]map[string]interface{}) {
+					for k := range attr {
+						for _, attrToken := range resourceItem.Val.(*ast.ObjectType).List.Filter(k).Items {
+							if resource.Attrs[k] == nil || override {
+								resource.Attrs[k] = &Attribute{}
 							}
+							// The case of multiple specifiable keys such as `ebs_block_device`.
+							resource.Attrs[k].Vals = append(resource.Attrs[k].Vals, getToken(file, attrToken.Val))
+							pos := attrToken.Val.Pos()
+							pos.Filename = file
+							resource.Attrs[k].Poses = append(resource.Attrs[k].Poses, pos)
 						}
 					}
+				}
 
-					if newResource {
-						template.Resources = append(template.Resources, resource)
-					}
+				if newResource {
+					template.Resources = append(template.Resources, resource)
 				}
 			}
 		}
+	}
 
-		if !override {
-			templates = append(templates, template)
-		}
+	if !override {
+		templates = append(templates, template)
 	}
 
 	return templates, nil
