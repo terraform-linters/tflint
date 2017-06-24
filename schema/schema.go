@@ -104,13 +104,7 @@ func appendTemplates(templates []*Template, file string, body []byte, override b
 				var resourceItem *ast.ObjectItem = root.Node.(*ast.ObjectList).Filter("resource", resourceType, key).Items[0]
 				var resourcePos token.Pos = resourceItem.Val.Pos()
 				resourcePos.Filename = file
-				resource := &Resource{
-					File:  file,
-					Type:  resourceType,
-					Id:    key,
-					Pos:   resourcePos,
-					Attrs: map[string]*Attribute{},
-				}
+				resource := NewResource(file, resourcePos, resourceType, key)
 
 				if override {
 					for _, temp := range templates {
