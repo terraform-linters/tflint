@@ -67,7 +67,7 @@ func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string,
 		preprocess.Call([]reflect.Value{})
 	}
 	for _, template := range schema {
-		for _, resource := range template.Find("resource", reflect.Indirect(detector).FieldByName("Target").String()) {
+		for _, resource := range template.FindResources(reflect.Indirect(detector).FieldByName("Target").String()) {
 			detect := detector.MethodByName("Detect")
 			detect.Call([]reflect.Value{
 				reflect.ValueOf(resource),

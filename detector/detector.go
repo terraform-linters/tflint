@@ -211,7 +211,7 @@ func (d *Detector) detect(creatorMethod string, issues *[]*issue.Issue) {
 	}
 
 	for _, template := range d.Schema {
-		for _, resource := range template.Find("resource", reflect.Indirect(detector).FieldByName("Target").String()) {
+		for _, resource := range template.FindResources(reflect.Indirect(detector).FieldByName("Target").String()) {
 			detect := detector.MethodByName("Detect")
 			detect.Call([]reflect.Value{
 				reflect.ValueOf(resource),

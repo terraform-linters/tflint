@@ -8,7 +8,7 @@ type Resource struct {
 	Id   string
 }
 
-func NewResource(fileName string, pos token.Pos, resourceType string, resourceId string) *Resource {
+func newResource(fileName string, pos token.Pos, resourceType string, resourceId string) *Resource {
 	return &Resource{
 		Type: resourceType,
 		Id:   resourceId,

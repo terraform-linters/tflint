@@ -1,6 +1,9 @@
 package schema
 
-import "github.com/hashicorp/hcl/hcl/token"
+import (
+	"github.com/hashicorp/hcl/hcl/ast"
+	"github.com/hashicorp/hcl/hcl/token"
+)
 
 type Source struct {
 	File  string
@@ -11,6 +14,23 @@ type Source struct {
 type Attribute struct {
 	Poses []token.Pos
 	Vals  []interface{}
+}
+
+func (s *Source) setAttrs(attrs interface{}, item *ast.ObjectItem, fileName string, override bool) {
+	for _, attr := range attrs.([]map[string]interface{}) {
+		for k := range attr {
+			for _, attrToken := range item.Val.(*ast.ObjectType).List.Filter(k).Items {
+				if s.Attrs[k] == nil || override {
+					s.Attrs[k] = &Attribute{}
+				}
+				// The case of multiple specifiable keys such as `ebs_block_device`.
+				s.Attrs[k].Vals = append(s.Attrs[k].Vals, getToken(fileName, attrToken.Val))
+				pos := attrToken.Val.Pos()
+				pos.Filename = fileName
+				s.Attrs[k].Poses = append(s.Attrs[k].Poses, pos)
+			}
+		}
+	}
 }
 
 func (s *Source) GetToken(name string) (token.Token, bool) {

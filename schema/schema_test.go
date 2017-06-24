@@ -37,7 +37,10 @@ resource "aws_instance2" "web" {
     volume_size = "24"
   }
 }
-`,
+
+module "ec2_instance" {
+  source = "github.com/wata727/example-module"
+}`,
 			},
 			Result: []*Template{
 				{
@@ -221,6 +224,45 @@ resource "aws_instance2" "web" {
 							},
 						},
 					},
+					Modules: []*Module{
+						{
+							Id: "ec2_instance",
+							Source: &Source{
+								File: "test.tf",
+								Pos: token.Pos{
+									Filename: "test.tf",
+									Offset:   336,
+									Line:     21,
+									Column:   23,
+								},
+								Attrs: map[string]*Attribute{
+									"source": {
+										Poses: []token.Pos{
+											{
+												Filename: "test.tf",
+												Offset:   349,
+												Line:     22,
+												Column:   12,
+											},
+										},
+										Vals: []interface{}{
+											token.Token{
+												Type: 9,
+												Pos: token.Pos{
+													Filename: "test.tf",
+													Offset:   349,
+													Line:     22,
+													Column:   12,
+												},
+												Text: "\"github.com/wata727/example-module\"",
+												JSON: false,
+											},
+										},
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 		},
@@ -236,6 +278,10 @@ resource "aws_instance" "web" {
     Name = "HelloWorld"
   }
 }
+
+module "ec2_instance" {
+  source = "github.com/wata727/example-module"
+}
 `,
 				"test_override.tf": `
 resource "aws_instance" "web" {
@@ -250,6 +296,10 @@ resource "aws_instance" "web" {
 				"override.tf": `
 resource "aws_instance" "web" {
   instance_type = "t2.micro"
+}
+
+module "ec2_instance" {
+  source = "github.com/wata727/override-module"
 }
 `,
 			},
@@ -337,6 +387,45 @@ resource "aws_instance" "web" {
 													Text: "\"0.1\"",
 													JSON: false,
 												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					Modules: []*Module{
+						{
+							Id: "ec2_instance",
+							Source: &Source{
+								File: "test.tf",
+								Pos: token.Pos{
+									Filename: "test.tf",
+									Offset:   176,
+									Line:     11,
+									Column:   23,
+								},
+								Attrs: map[string]*Attribute{
+									"source": {
+										Poses: []token.Pos{
+											{
+												Filename: "override.tf",
+												Offset:   100,
+												Line:     7,
+												Column:   12,
+											},
+										},
+										Vals: []interface{}{
+											token.Token{
+												Type: 9,
+												Pos: token.Pos{
+													Filename: "override.tf",
+													Offset:   100,
+													Line:     7,
+													Column:   12,
+												},
+												Text: "\"github.com/wata727/override-module\"",
+												JSON: false,
 											},
 										},
 									},
