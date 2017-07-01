@@ -82,7 +82,7 @@ module "ec2_instance" {
 		c := config.Init()
 		c.SetIgnoreRule(tc.Config.IgnoreRule)
 		c.SetIgnoreModule(tc.Config.IgnoreModule)
-		evalConfig, _ := evaluator.NewEvaluator(templates, []*ast.File{}, c)
+		evalConfig, _ := evaluator.NewEvaluator(templates, schema, []*ast.File{}, c)
 		d := &Detector{
 			Templates:  templates,
 			Schema:     schema,
@@ -561,7 +561,7 @@ variable "text" {
 		templates := make(map[string]*ast.File)
 		templates["text.tf"], _ = parser.Parse([]byte(tc.Input.File))
 
-		evalConfig, _ := evaluator.NewEvaluator(templates, []*ast.File{}, config.Init())
+		evalConfig, _ := evaluator.NewEvaluator(templates, []*schema.Template{}, []*ast.File{}, config.Init())
 		d := &Detector{
 			Templates:  templates,
 			EvalConfig: evalConfig,
@@ -662,7 +662,7 @@ variable "array" {
 		templates := make(map[string]*ast.File)
 		templates["text.tf"], _ = parser.Parse([]byte(tc.Input.File))
 
-		evalConfig, _ := evaluator.NewEvaluator(templates, []*ast.File{}, config.Init())
+		evalConfig, _ := evaluator.NewEvaluator(templates, []*schema.Template{}, []*ast.File{}, config.Init())
 		d := &Detector{
 			Templates:  templates,
 			EvalConfig: evalConfig,
@@ -767,9 +767,13 @@ resource "aws_instance" {
 	for _, tc := range cases {
 		templates := make(map[string]*ast.File)
 		templates["text.tf"], _ = parser.Parse([]byte(tc.Input.File))
+		files := make(map[string][]byte)
+		files["text.tf"] = []byte(tc.Input.File)
+		schema, _ := schema.Make(files)
 
 		d := &Detector{
 			Templates: templates,
+			Schema:    schema,
 			Config:    config.Init(),
 			Logger:    logger.Init(false),
 		}

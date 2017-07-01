@@ -78,7 +78,7 @@ var detectors = map[string]string{
 }
 
 func NewDetector(templates map[string]*ast.File, schema []*schema.Template, state *state.TFState, tfvars []*ast.File, c *config.Config) (*Detector, error) {
-	evalConfig, err := evaluator.NewEvaluator(templates, tfvars, c)
+	evalConfig, err := evaluator.NewEvaluator(templates, schema, tfvars, c)
 	if err != nil {
 		return nil, err
 	}
@@ -154,6 +154,26 @@ func (d *Detector) Detect() []*issue.Issue {
 		}
 		d.Logger.Info(fmt.Sprintf("detect by `%s`", ruleName))
 		d.detect(creatorMethod, &issues)
+
+		for _, template := range d.Schema {
+			for _, module := range template.Modules {
+				if d.Config.IgnoreModule[module.ModuleSource] {
+					d.Logger.Info(fmt.Sprintf("ignore module `%s`", module.Id))
+					continue
+				}
+				d.Logger.Info(fmt.Sprintf("detect module `%s`", module.Id))
+				moduleDetector, err := NewDetector(map[string]*ast.File{}, module.Templates, d.State, []*ast.File{}, d.Config)
+				if err != nil {
+					d.Logger.Error(err)
+					continue
+				}
+				moduleDetector.EvalConfig = &evaluator.Evaluator{
+					Config: module.EvalConfig,
+				}
+				moduleDetector.Error = d.Error
+				moduleDetector.detect(creatorMethod, &issues)
+			}
+		}
 
 		for name, m := range modules {
 			if d.Config.IgnoreModule[m.Source] {
@@ -269,9 +289,10 @@ func (d *Detector) isSkip(deepCheck bool, target string) bool {
 	}
 
 	targetResources := 0
-	for _, template := range d.Templates {
-		targetResources += len(template.Node.(*ast.ObjectList).Filter("resource", target).Items)
+	for _, template := range d.Schema {
+		targetResources += len(template.FindResources(target))
 	}
+
 	if targetResources == 0 {
 		d.Logger.Info("target resources are not found.")
 		return true

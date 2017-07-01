@@ -226,7 +226,8 @@ module "ec2_instance" {
 					},
 					Modules: []*Module{
 						{
-							Id: "ec2_instance",
+							Id:           "ec2_instance",
+							ModuleSource: "github.com/wata727/example-module",
 							Source: &Source{
 								File: "test.tf",
 								Pos: token.Pos{
@@ -396,7 +397,8 @@ module "ec2_instance" {
 					},
 					Modules: []*Module{
 						{
-							Id: "ec2_instance",
+							Id:           "ec2_instance",
+							ModuleSource: "github.com/wata727/override-module",
 							Source: &Source{
 								File: "test.tf",
 								Pos: token.Pos{

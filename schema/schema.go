@@ -4,6 +4,8 @@ import (
 	"sort"
 	"strings"
 
+	"fmt"
+
 	"github.com/hashicorp/hcl"
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/parser"
@@ -147,6 +149,11 @@ func appendTemplates(templates []*Template, file string, body []byte, override b
 			}
 		}
 		module.setAttrs(attrs, moduleItem, file, override)
+		sourceToken, ok := module.GetToken("source")
+		if !ok {
+			return nil, fmt.Errorf("ERROR: Invalid module source in %s", module.Id)
+		}
+		module.ModuleSource = strings.Replace(sourceToken.Text, "\"", "", -1)
 
 		if new {
 			template.Modules = append(template.Modules, module)

@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/hil"
 	hilast "github.com/hashicorp/hil/ast"
 	"github.com/wata727/tflint/config"
+	"github.com/wata727/tflint/schema"
 )
 
 type Evaluator struct {
@@ -16,7 +17,7 @@ type Evaluator struct {
 	ModuleConfig map[string]*hclModule
 }
 
-func NewEvaluator(templates map[string]*hclast.File, varfile []*hclast.File, c *config.Config) (*Evaluator, error) {
+func NewEvaluator(templates map[string]*hclast.File, schema []*schema.Template, varfile []*hclast.File, c *config.Config) (*Evaluator, error) {
 	varMap, err := detectVariables(templates, varfile)
 	if err != nil {
 		return nil, err
@@ -28,6 +29,14 @@ func NewEvaluator(templates map[string]*hclast.File, varfile []*hclast.File, c *
 				VarMap: varMap,
 			},
 		},
+	}
+
+	for _, template := range schema {
+		for _, module := range template.Modules {
+			if err := evaluator.initModule(module, c); err != nil {
+				return nil, err
+			}
+		}
 	}
 
 	moduleMap, err := evaluator.detectModules(templates, c)

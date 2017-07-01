@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/parser"
 	"github.com/wata727/tflint/config"
+	"github.com/wata727/tflint/schema"
 )
 
 func TestIsEvaluable(t *testing.T) {
@@ -126,7 +127,7 @@ variable "name" {
 		root, _ := parser.Parse([]byte(tc.Input))
 		template := map[string]*ast.File{"testfile": root}
 
-		evaluator, err := NewEvaluator(template, []*ast.File{}, config.Init())
+		evaluator, err := NewEvaluator(template, []*schema.Template{}, []*ast.File{}, config.Init())
 		if err != nil {
 			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}
@@ -159,7 +160,7 @@ variable "name" {
 		root, _ := parser.Parse([]byte(tc.Input))
 		template := map[string]*ast.File{"testfile": root}
 
-		evaluator, err := NewEvaluator(template, []*ast.File{}, config.Init())
+		evaluator, err := NewEvaluator(template, []*schema.Template{}, []*ast.File{}, config.Init())
 		if err != nil {
 			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}
@@ -195,7 +196,7 @@ variable "name" {
 		root, _ := parser.Parse([]byte(tc.Input))
 		template := map[string]*ast.File{"testfile": root}
 
-		evaluator, err := NewEvaluator(template, []*ast.File{}, config.Init())
+		evaluator, err := NewEvaluator(template, []*schema.Template{}, []*ast.File{}, config.Init())
 		if err != nil {
 			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}
@@ -228,7 +229,7 @@ func TestEvalReturnNil(t *testing.T) {
 		root, _ := parser.Parse([]byte(tc.Input))
 		template := map[string]*ast.File{"testfile": root}
 
-		evaluator, err := NewEvaluator(template, []*ast.File{}, config.Init())
+		evaluator, err := NewEvaluator(template, []*schema.Template{}, []*ast.File{}, config.Init())
 		if err != nil {
 			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
 		}

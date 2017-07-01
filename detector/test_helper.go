@@ -51,7 +51,7 @@ func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string,
 	}
 	schema, _ := schema.Make(files)
 
-	evalConfig, _ := evaluator.NewEvaluator(templates, []*ast.File{}, c)
+	evalConfig, _ := evaluator.NewEvaluator(templates, schema, []*ast.File{}, c)
 	creator := reflect.ValueOf(&Detector{
 		Templates:  templates,
 		Schema:     schema,

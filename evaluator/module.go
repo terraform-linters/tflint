@@ -4,6 +4,7 @@ import (
 	"crypto/md5" // #nosec
 	"encoding/hex"
 	"fmt"
+	"strings"
 
 	"reflect"
 
@@ -24,6 +25,32 @@ type hclModule struct {
 	Config     hil.EvalConfig
 	Templates  map[string]*hclast.File
 	Schema     []*schema.Template
+}
+
+func (e *Evaluator) initModule(module *schema.Module, c *config.Config) error {
+	if err := module.Load(); err != nil {
+		return err
+	}
+
+	varMap := make(map[string]hilast.Variable)
+	for k := range module.Attrs {
+		if varToken, ok := module.GetToken(k); ok {
+			varName := "var." + k
+			ev, err := e.evalModuleAttr(k, strings.Replace(varToken.Text, "\"", "", -1))
+			if err != nil {
+				return err
+			}
+			varMap[varName] = parseVariable(ev, "")
+		}
+	}
+
+	module.EvalConfig = hil.EvalConfig{
+		GlobalScope: &hilast.BasicScope{
+			VarMap: varMap,
+		},
+	}
+
+	return nil
 }
 
 func (e *Evaluator) detectModules(templates map[string]*hclast.File, c *config.Config) (map[string]*hclModule, error) {

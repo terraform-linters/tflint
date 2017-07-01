@@ -12,6 +12,7 @@ import (
 	hilast "github.com/hashicorp/hil/ast"
 	"github.com/k0kubun/pp"
 	"github.com/wata727/tflint/config"
+	"github.com/wata727/tflint/schema"
 )
 
 func TestDetectModules(t *testing.T) {
@@ -268,7 +269,7 @@ module "ec2_instances" {
 		for k, v := range tc.Input {
 			templates[k], _ = parser.Parse([]byte(v))
 		}
-		evaluator, _ := NewEvaluator(templates, []*hclast.File{}, config.Init())
+		evaluator, _ := NewEvaluator(templates, []*schema.Template{}, []*hclast.File{}, config.Init())
 		result, err := evaluator.detectModules(templates, config.Init())
 		if tc.Error && err == nil {
 			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
