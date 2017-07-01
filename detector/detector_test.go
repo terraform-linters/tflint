@@ -701,7 +701,7 @@ func TestIsSkip(t *testing.T) {
 			Name: "return false when enabled deep checking",
 			Input: Input{
 				File: `
-resource "aws_instance" {
+resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
 				DeepCheckMode:     true,
@@ -714,7 +714,7 @@ resource "aws_instance" {
 			Name: "return true when disabled deep checking",
 			Input: Input{
 				File: `
-resource "aws_instance" {
+resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
 				DeepCheckMode:     false,
@@ -727,7 +727,7 @@ resource "aws_instance" {
 			Name: "return false when disabled deep checking but not deep check detector",
 			Input: Input{
 				File: `
-resource "aws_instance" {
+resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
 				DeepCheckMode:     false,
@@ -740,7 +740,7 @@ resource "aws_instance" {
 			Name: "return false when enabled deep checking and not deep check detector",
 			Input: Input{
 				File: `
-resource "aws_instance" {
+resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
 				DeepCheckMode:     true,
@@ -753,7 +753,7 @@ resource "aws_instance" {
 			Name: "return true when target resources are not found",
 			Input: Input{
 				File: `
-resource "aws_instance" {
+resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
 				DeepCheckMode:     true,
@@ -767,8 +767,7 @@ resource "aws_instance" {
 	for _, tc := range cases {
 		templates := make(map[string]*ast.File)
 		templates["text.tf"], _ = parser.Parse([]byte(tc.Input.File))
-		files := make(map[string][]byte)
-		files["text.tf"] = []byte(tc.Input.File)
+		files := map[string][]byte{"test.tf": []byte(tc.Input.File)}
 		schema, _ := schema.Make(files)
 
 		d := &Detector{
