@@ -13,8 +13,7 @@ import (
 )
 
 type Evaluator struct {
-	Config       hil.EvalConfig
-	ModuleConfig map[string]*hclModule
+	Config hil.EvalConfig
 }
 
 func NewEvaluator(templates map[string]*hclast.File, schema []*schema.Template, varfile []*hclast.File, c *config.Config) (*Evaluator, error) {
@@ -38,12 +37,6 @@ func NewEvaluator(templates map[string]*hclast.File, schema []*schema.Template, 
 			}
 		}
 	}
-
-	moduleMap, err := evaluator.detectModules(templates, c)
-	if err != nil {
-		return nil, err
-	}
-	evaluator.ModuleConfig = moduleMap
 
 	return evaluator, nil
 }

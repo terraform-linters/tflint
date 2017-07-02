@@ -21,7 +21,6 @@ type DetectorIF interface {
 }
 
 type Detector struct {
-	Templates  map[string]*ast.File
 	Schema     []*schema.Template
 	State      *state.TFState
 	Config     *config.Config
@@ -85,7 +84,6 @@ func NewDetector(templates map[string]*ast.File, schema []*schema.Template, stat
 	}
 
 	return &Detector{
-		Templates:  templates,
 		Schema:     schema,
 		State:      state,
 		Config:     c,
@@ -94,55 +92,6 @@ func NewDetector(templates map[string]*ast.File, schema []*schema.Template, stat
 		Logger:     logger.Init(c.Debug),
 		Error:      false,
 	}, nil
-}
-
-func hclObjectKeyText(item *ast.ObjectItem) string {
-	return strings.Trim(item.Keys[0].Token.Text, "\"")
-}
-
-func hclLiteralToken(item *ast.ObjectItem, k string) (token.Token, error) {
-	objItems, err := hclObjectItems(item, k)
-	if err != nil {
-		return token.Token{}, err
-	}
-
-	if v, ok := objItems[0].Val.(*ast.LiteralType); ok {
-		return v.Token, nil
-	}
-	return token.Token{}, fmt.Errorf("ERROR: `%s` value is not literal", k)
-}
-
-func hclLiteralListToken(item *ast.ObjectItem, k string) ([]token.Token, error) {
-	objItems, err := hclObjectItems(item, k)
-	if err != nil {
-		return []token.Token{}, err
-	}
-
-	var tokens []token.Token
-	if v, ok := objItems[0].Val.(*ast.ListType); ok {
-		for _, node := range v.List {
-			if v, ok := node.(*ast.LiteralType); ok {
-				tokens = append(tokens, v.Token)
-			} else {
-				return []token.Token{}, fmt.Errorf("ERROR: `%s` contains not literal value", k)
-			}
-		}
-		return tokens, nil
-	}
-	return []token.Token{}, fmt.Errorf("ERROR: `%s` value is not list", k)
-}
-
-func hclObjectItems(item *ast.ObjectItem, k string) ([]*ast.ObjectItem, error) {
-	items := item.Val.(*ast.ObjectType).List.Filter(k).Items
-	if len(items) == 0 {
-		return []*ast.ObjectItem{}, fmt.Errorf("ERROR: key `%s` not found", k)
-	}
-	return items, nil
-}
-
-func IsKeyNotFound(item *ast.ObjectItem, k string) bool {
-	items := item.Val.(*ast.ObjectType).List.Filter(k).Items
-	return len(items) == 0
 }
 
 func (d *Detector) Detect() []*issue.Issue {
