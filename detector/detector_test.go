@@ -689,6 +689,7 @@ func TestIsSkip(t *testing.T) {
 		File              string
 		DeepCheckMode     bool
 		DeepCheckDetector bool
+		TargetType        string
 		Target            string
 	}
 
@@ -706,6 +707,7 @@ resource "aws_instance" "web" {
 }`,
 				DeepCheckMode:     true,
 				DeepCheckDetector: true,
+				TargetType:        "resource",
 				Target:            "aws_instance",
 			},
 			Result: false,
@@ -719,6 +721,7 @@ resource "aws_instance" "web" {
 }`,
 				DeepCheckMode:     false,
 				DeepCheckDetector: true,
+				TargetType:        "resource",
 				Target:            "aws_instance",
 			},
 			Result: true,
@@ -732,6 +735,7 @@ resource "aws_instance" "web" {
 }`,
 				DeepCheckMode:     false,
 				DeepCheckDetector: false,
+				TargetType:        "resource",
 				Target:            "aws_instance",
 			},
 			Result: false,
@@ -745,6 +749,7 @@ resource "aws_instance" "web" {
 }`,
 				DeepCheckMode:     true,
 				DeepCheckDetector: false,
+				TargetType:        "resource",
 				Target:            "aws_instance",
 			},
 			Result: false,
@@ -758,7 +763,34 @@ resource "aws_instance" "web" {
 }`,
 				DeepCheckMode:     true,
 				DeepCheckDetector: true,
+				TargetType:        "resource",
 				Target:            "aws_db_instance",
+			},
+			Result: true,
+		},
+		{
+			Name: "return false when modules are found",
+			Input: Input{
+				File: `
+module "ec2_instance" {
+    source = "./ec2_instance"
+}`,
+				DeepCheckMode:     true,
+				DeepCheckDetector: true,
+				TargetType:        "module",
+			},
+			Result: false,
+		},
+		{
+			Name: "return true when target modules are not found",
+			Input: Input{
+				File: `
+resource "aws_instance" "web" {
+    ami = "ami-12345"
+}`,
+				DeepCheckMode:     true,
+				DeepCheckDetector: true,
+				TargetType:        "module",
 			},
 			Result: true,
 		},
@@ -778,7 +810,7 @@ resource "aws_instance" "web" {
 		}
 		d.Config.DeepCheck = tc.Input.DeepCheckMode
 
-		result := d.isSkip(tc.Input.DeepCheckDetector, tc.Input.Target)
+		result := d.isSkip(tc.Input.DeepCheckDetector, tc.Input.TargetType, tc.Input.Target)
 		if result != tc.Result {
 			t.Fatalf("\nBad: %t\nExpected: %t\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}

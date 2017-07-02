@@ -9,19 +9,21 @@ import (
 
 type AwsRouteInvalidEgressOnlyGatewayDetector struct {
 	*Detector
-	IssueType string
-	Target    string
-	DeepCheck bool
-	egateways map[string]bool
+	IssueType  string
+	TargetType string
+	Target     string
+	DeepCheck  bool
+	egateways  map[string]bool
 }
 
 func (d *Detector) CreateAwsRouteInvalidEgressOnlyGatewayDetector() *AwsRouteInvalidEgressOnlyGatewayDetector {
 	return &AwsRouteInvalidEgressOnlyGatewayDetector{
-		Detector:  d,
-		IssueType: issue.ERROR,
-		Target:    "aws_route",
-		DeepCheck: true,
-		egateways: map[string]bool{},
+		Detector:   d,
+		IssueType:  issue.ERROR,
+		TargetType: "resource",
+		Target:     "aws_route",
+		DeepCheck:  true,
+		egateways:  map[string]bool{},
 	}
 }
 

@@ -10,6 +10,7 @@ import (
 type AwsRouteInvalidNetworkInterfaceDetector struct {
 	*Detector
 	IssueType         string
+	TargetType        string
 	Target            string
 	DeepCheck         bool
 	networkInterfaces map[string]bool
@@ -19,6 +20,7 @@ func (d *Detector) CreateAwsRouteInvalidNetworkInterfaceDetector() *AwsRouteInva
 	return &AwsRouteInvalidNetworkInterfaceDetector{
 		Detector:          d,
 		IssueType:         issue.ERROR,
+		TargetType:        "resource",
 		Target:            "aws_route",
 		DeepCheck:         true,
 		networkInterfaces: map[string]bool{},

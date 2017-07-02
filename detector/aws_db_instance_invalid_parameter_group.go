@@ -10,6 +10,7 @@ import (
 type AwsDBInstanceInvalidParameterGroupDetector struct {
 	*Detector
 	IssueType       string
+	TargetType      string
 	Target          string
 	DeepCheck       bool
 	parameterGroups map[string]bool
@@ -19,6 +20,7 @@ func (d *Detector) CreateAwsDBInstanceInvalidParameterGroupDetector() *AwsDBInst
 	return &AwsDBInstanceInvalidParameterGroupDetector{
 		Detector:        d,
 		IssueType:       issue.ERROR,
+		TargetType:      "resource",
 		Target:          "aws_db_instance",
 		DeepCheck:       true,
 		parameterGroups: map[string]bool{},

@@ -10,6 +10,7 @@ import (
 type AwsSecurityGroupDuplicateDetector struct {
 	*Detector
 	IssueType     string
+	TargetType    string
 	Target        string
 	DeepCheck     bool
 	securiyGroups map[string]bool
@@ -20,6 +21,7 @@ func (d *Detector) CreateAwsSecurityGroupDuplicateDetector() *AwsSecurityGroupDu
 	return &AwsSecurityGroupDuplicateDetector{
 		Detector:      d,
 		IssueType:     issue.ERROR,
+		TargetType:    "resource",
 		Target:        "aws_security_group",
 		DeepCheck:     true,
 		securiyGroups: map[string]bool{},

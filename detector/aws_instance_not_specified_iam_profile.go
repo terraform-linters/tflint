@@ -7,17 +7,19 @@ import (
 
 type AwsInstanceNotSpecifiedIAMProfileDetector struct {
 	*Detector
-	IssueType string
-	Target    string
-	DeepCheck bool
+	IssueType  string
+	TargetType string
+	Target     string
+	DeepCheck  bool
 }
 
 func (d *Detector) CreateAwsInstanceNotSpecifiedIAMProfileDetector() *AwsInstanceNotSpecifiedIAMProfileDetector {
 	return &AwsInstanceNotSpecifiedIAMProfileDetector{
-		Detector:  d,
-		IssueType: issue.NOTICE,
-		Target:    "aws_instance",
-		DeepCheck: false,
+		Detector:   d,
+		IssueType:  issue.NOTICE,
+		TargetType: "resource",
+		Target:     "aws_instance",
+		DeepCheck:  false,
 	}
 }
 

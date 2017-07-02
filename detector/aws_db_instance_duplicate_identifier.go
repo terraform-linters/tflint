@@ -10,6 +10,7 @@ import (
 type AwsDBInstanceDuplicateIdentifierDetector struct {
 	*Detector
 	IssueType   string
+	TargetType  string
 	Target      string
 	DeepCheck   bool
 	identifiers map[string]bool
@@ -19,6 +20,7 @@ func (d *Detector) CreateAwsDBInstanceDuplicateIdentifierDetector() *AwsDBInstan
 	return &AwsDBInstanceDuplicateIdentifierDetector{
 		Detector:    d,
 		IssueType:   issue.ERROR,
+		TargetType:  "resource",
 		Target:      "aws_db_instance",
 		DeepCheck:   true,
 		identifiers: map[string]bool{},

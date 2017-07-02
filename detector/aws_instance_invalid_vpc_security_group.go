@@ -11,6 +11,7 @@ import (
 type AwsInstanceInvalidVPCSecurityGroupDetector struct {
 	*Detector
 	IssueType      string
+	TargetType     string
 	Target         string
 	DeepCheck      bool
 	securityGroups map[string]bool
@@ -20,6 +21,7 @@ func (d *Detector) CreateAwsInstanceInvalidVPCSecurityGroupDetector() *AwsInstan
 	return &AwsInstanceInvalidVPCSecurityGroupDetector{
 		Detector:       d,
 		IssueType:      issue.ERROR,
+		TargetType:     "resource",
 		Target:         "aws_instance",
 		DeepCheck:      true,
 		securityGroups: map[string]bool{},

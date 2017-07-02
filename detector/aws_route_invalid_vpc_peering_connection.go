@@ -10,6 +10,7 @@ import (
 type AwsRouteInvalidVpcPeeringConnectionDetector struct {
 	*Detector
 	IssueType             string
+	TargetType            string
 	Target                string
 	DeepCheck             bool
 	vpcPeeringConnections map[string]bool
@@ -19,6 +20,7 @@ func (d *Detector) CreateAwsRouteInvalidVpcPeeringConnectionDetector() *AwsRoute
 	return &AwsRouteInvalidVpcPeeringConnectionDetector{
 		Detector:              d,
 		IssueType:             issue.ERROR,
+		TargetType:            "resource",
 		Target:                "aws_route",
 		DeepCheck:             true,
 		vpcPeeringConnections: map[string]bool{},

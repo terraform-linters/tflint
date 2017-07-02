@@ -9,19 +9,21 @@ import (
 
 type AwsInstanceInvalidAMIDetector struct {
 	*Detector
-	IssueType string
-	Target    string
-	DeepCheck bool
-	amis      map[string]bool
+	IssueType  string
+	TargetType string
+	Target     string
+	DeepCheck  bool
+	amis       map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidAMIDetector() *AwsInstanceInvalidAMIDetector {
 	return &AwsInstanceInvalidAMIDetector{
-		Detector:  d,
-		IssueType: issue.ERROR,
-		Target:    "aws_instance",
-		DeepCheck: true,
-		amis:      map[string]bool{},
+		Detector:   d,
+		IssueType:  issue.ERROR,
+		TargetType: "resource",
+		Target:     "aws_instance",
+		DeepCheck:  true,
+		amis:       map[string]bool{},
 	}
 }
 

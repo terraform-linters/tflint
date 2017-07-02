@@ -10,6 +10,7 @@ import (
 type AwsDBInstanceInvalidTypeDetector struct {
 	*Detector
 	IssueType     string
+	TargetType    string
 	Target        string
 	DeepCheck     bool
 	instanceTypes map[string]bool
@@ -19,6 +20,7 @@ func (d *Detector) CreateAwsDBInstanceInvalidTypeDetector() *AwsDBInstanceInvali
 	return &AwsDBInstanceInvalidTypeDetector{
 		Detector:      d,
 		IssueType:     issue.ERROR,
+		TargetType:    "resource",
 		Target:        "aws_db_instance",
 		DeepCheck:     false,
 		instanceTypes: map[string]bool{},

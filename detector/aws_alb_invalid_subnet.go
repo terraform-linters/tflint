@@ -10,19 +10,21 @@ import (
 
 type AwsALBInvalidSubnetDetector struct {
 	*Detector
-	IssueType string
-	Target    string
-	DeepCheck bool
-	subnets   map[string]bool
+	IssueType  string
+	TargetType string
+	Target     string
+	DeepCheck  bool
+	subnets    map[string]bool
 }
 
 func (d *Detector) CreateAwsALBInvalidSubnetDetector() *AwsALBInvalidSubnetDetector {
 	return &AwsALBInvalidSubnetDetector{
-		Detector:  d,
-		IssueType: issue.ERROR,
-		Target:    "aws_alb",
-		DeepCheck: true,
-		subnets:   map[string]bool{},
+		Detector:   d,
+		IssueType:  issue.ERROR,
+		TargetType: "resource",
+		Target:     "aws_alb",
+		DeepCheck:  true,
+		subnets:    map[string]bool{},
 	}
 }
 

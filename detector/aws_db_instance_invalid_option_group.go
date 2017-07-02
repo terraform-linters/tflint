@@ -10,6 +10,7 @@ import (
 type AwsDBInstanceInvalidOptionGroupDetector struct {
 	*Detector
 	IssueType    string
+	TargetType   string
 	Target       string
 	DeepCheck    bool
 	optionGroups map[string]bool
@@ -19,6 +20,7 @@ func (d *Detector) CreateAwsDBInstanceInvalidOptionGroupDetector() *AwsDBInstanc
 	return &AwsDBInstanceInvalidOptionGroupDetector{
 		Detector:     d,
 		IssueType:    issue.ERROR,
+		TargetType:   "resource",
 		Target:       "aws_db_instance",
 		DeepCheck:    true,
 		optionGroups: map[string]bool{},
