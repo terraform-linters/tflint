@@ -51,10 +51,11 @@ func (d *AwsALBDuplicateNameDetector) Detect(resource *schema.Resource, issues *
 
 	if d.loadBalancers[name] && !d.State.Exists(d.Target, resource.Id) {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),
-			Line:    nameToken.Pos.Line,
-			File:    nameToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),
+			Line:     nameToken.Pos.Line,
+			File:     nameToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

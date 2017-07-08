@@ -51,10 +51,11 @@ func (d *AwsInstanceInvalidAMIDetector) Detect(resource *schema.Resource, issues
 
 	if !d.amis[ami] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid AMI.", ami),
-			Line:    amiToken.Pos.Line,
-			File:    amiToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid AMI.", ami),
+			Line:     amiToken.Pos.Line,
+			File:     amiToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

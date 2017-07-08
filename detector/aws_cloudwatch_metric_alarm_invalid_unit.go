@@ -72,10 +72,12 @@ func (d *AwsCloudWatchMetricAlarmInvalidUnitDetector) Detect(resource *schema.Re
 
 	if !d.validUnits[unit] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid unit.", unit),
-			Line:    unitToken.Pos.Line,
-			File:    unitToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid unit.", unit),
+			Line:     unitToken.Pos.Line,
+			File:     unitToken.Pos.Filename,
+			Link:     d.Link,
 		}
 		*issues = append(*issues, issue)
 	}

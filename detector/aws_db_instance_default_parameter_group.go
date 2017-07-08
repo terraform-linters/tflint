@@ -36,10 +36,12 @@ func (d *AwsDBInstanceDefaultParameterGroupDetector) Detect(resource *schema.Res
 
 	if d.isDefaultDbParameterGroup(parameterGroup) {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is default parameter group. You cannot edit it.", parameterGroup),
-			Line:    parameterGroupToken.Pos.Line,
-			File:    parameterGroupToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is default parameter group. You cannot edit it.", parameterGroup),
+			Line:     parameterGroupToken.Pos.Line,
+			File:     parameterGroupToken.Pos.Filename,
+			Link:     d.Link,
 		}
 		*issues = append(*issues, issue)
 	}

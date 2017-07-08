@@ -23,10 +23,12 @@ func (d *Detector) CreateAwsInstanceNotSpecifiedIAMProfileDetector() *AwsInstanc
 func (d *AwsInstanceNotSpecifiedIAMProfileDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
 	if _, ok := resource.GetToken("iam_instance_profile"); !ok {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate instance. (Only less than Terraform 0.8.8)",
-			Line:    resource.Pos.Line,
-			File:    resource.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate instance. (Only less than Terraform 0.8.8)",
+			Line:     resource.Pos.Line,
+			File:     resource.Pos.Filename,
+			Link:     d.Link,
 		}
 		*issues = append(*issues, issue)
 	}

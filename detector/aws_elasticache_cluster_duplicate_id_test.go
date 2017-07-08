@@ -37,10 +37,11 @@ resource "aws_elasticache_cluster" "test" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"cluster-example\" is duplicate Cluster ID. It must be unique.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_elasticache_cluster_duplicate_id",
+					Type:     "ERROR",
+					Message:  "\"cluster-example\" is duplicate Cluster ID. It must be unique.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

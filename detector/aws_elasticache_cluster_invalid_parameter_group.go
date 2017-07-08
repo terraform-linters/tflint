@@ -51,10 +51,11 @@ func (d *AwsElastiCacheClusterInvalidParameterGroupDetector) Detect(resource *sc
 
 	if !d.cacheParameterGroups[parameterGroup] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid parameter group name.", parameterGroup),
-			Line:    parameterGroupToken.Pos.Line,
-			File:    parameterGroupToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid parameter group name.", parameterGroup),
+			Line:     parameterGroupToken.Pos.Line,
+			File:     parameterGroupToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

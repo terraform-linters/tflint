@@ -36,10 +36,11 @@ resource "aws_instance" "web" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"app-server\" is invalid IAM profile name.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_instance_invalid_iam_profile",
+					Type:     "ERROR",
+					Message:  "\"app-server\" is invalid IAM profile name.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

@@ -23,10 +23,12 @@ resource "aws_elasticache_cluster" "redis" {
 }`,
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"t2.micro\" is invalid node type.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_elasticache_cluster_invalid_type",
+					Type:     "ERROR",
+					Message:  "\"t2.micro\" is invalid node type.",
+					Line:     3,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_elasticache_cluster_invalid_type.md",
 				},
 			},
 		},

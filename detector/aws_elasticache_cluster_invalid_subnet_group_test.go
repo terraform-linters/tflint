@@ -36,10 +36,11 @@ resource "aws_elasticache_cluster" "redis" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"app-server\" is invalid subnet group name.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_elasticache_cluster_invalid_subnet_group",
+					Type:     "ERROR",
+					Message:  "\"app-server\" is invalid subnet group name.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

@@ -51,10 +51,11 @@ func (d *AwsDBInstanceInvalidOptionGroupDetector) Detect(resource *schema.Resour
 
 	if !d.optionGroups[optionGroup] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid option group name.", optionGroup),
-			Line:    optionGroupToken.Pos.Line,
-			File:    optionGroupToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid option group name.", optionGroup),
+			Line:     optionGroupToken.Pos.Line,
+			File:     optionGroupToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

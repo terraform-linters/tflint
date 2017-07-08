@@ -36,10 +36,11 @@ resource "aws_route" "foo" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"rtb-nat-gw-a\" is invalid route table ID.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_route_invalid_route_table",
+					Type:     "ERROR",
+					Message:  "\"rtb-nat-gw-a\" is invalid route table ID.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

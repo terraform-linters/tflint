@@ -37,10 +37,11 @@ resource "aws_alb" "test" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"test-alb-tf\" is duplicate name. It must be unique.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_alb_duplicate_name",
+					Type:     "ERROR",
+					Message:  "\"test-alb-tf\" is duplicate name. It must be unique.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

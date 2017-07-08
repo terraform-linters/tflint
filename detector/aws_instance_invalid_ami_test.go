@@ -36,10 +36,11 @@ resource "aws_instance" "web" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"ami-1234abcd\" is invalid AMI.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_instance_invalid_ami",
+					Type:     "ERROR",
+					Message:  "\"ami-1234abcd\" is invalid AMI.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

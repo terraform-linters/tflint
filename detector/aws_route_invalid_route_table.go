@@ -51,10 +51,11 @@ func (d *AwsRouteInvalidRouteTableDetector) Detect(resource *schema.Resource, is
 
 	if !d.routeTables[routeTable] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid route table ID.", routeTable),
-			Line:    routeTableToken.Pos.Line,
-			File:    routeTableToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid route table ID.", routeTable),
+			Line:     routeTableToken.Pos.Line,
+			File:     routeTableToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

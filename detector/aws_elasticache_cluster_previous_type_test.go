@@ -23,10 +23,12 @@ resource "aws_elasticache_cluster" "redis" {
 }`,
 			Issues: []*issue.Issue{
 				{
-					Type:    "WARNING",
-					Message: "\"cache.t1.micro\" is previous generation node type.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_elasticache_cluster_previous_type",
+					Type:     "WARNING",
+					Message:  "\"cache.t1.micro\" is previous generation node type.",
+					Line:     3,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_elasticache_cluster_previous_type.md",
 				},
 			},
 		},

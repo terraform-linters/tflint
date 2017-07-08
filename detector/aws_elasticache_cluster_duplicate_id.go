@@ -51,10 +51,11 @@ func (d *AwsElastiCacheClusterDuplicateIDDetector) Detect(resource *schema.Resou
 
 	if d.cacheClusters[id] && !d.State.Exists(d.Target, resource.Id) {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is duplicate Cluster ID. It must be unique.", id),
-			Line:    idToken.Pos.Line,
-			File:    idToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is duplicate Cluster ID. It must be unique.", id),
+			Line:     idToken.Pos.Line,
+			File:     idToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

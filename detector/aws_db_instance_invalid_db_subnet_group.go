@@ -51,10 +51,11 @@ func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) Detect(resource *schema.Reso
 
 	if !d.subnetGroups[subnetGroup] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid DB subnet group name.", subnetGroup),
-			Line:    subnetGroupToken.Pos.Line,
-			File:    subnetGroupToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid DB subnet group name.", subnetGroup),
+			Line:     subnetGroupToken.Pos.Line,
+			File:     subnetGroupToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

@@ -51,10 +51,11 @@ func (d *AwsInstanceInvalidSubnetDetector) Detect(resource *schema.Resource, iss
 
 	if !d.subnets[subnet] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid subnet ID.", subnet),
-			Line:    subnetToken.Pos.Line,
-			File:    subnetToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid subnet ID.", subnet),
+			Line:     subnetToken.Pos.Line,
+			File:     subnetToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

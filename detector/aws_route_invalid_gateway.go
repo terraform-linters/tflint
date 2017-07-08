@@ -51,10 +51,11 @@ func (d *AwsRouteInvalidGatewayDetector) Detect(resource *schema.Resource, issue
 
 	if !d.gateways[gateway] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid internet gateway ID.", gateway),
-			Line:    gatewayToken.Pos.Line,
-			File:    gatewayToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid internet gateway ID.", gateway),
+			Line:     gatewayToken.Pos.Line,
+			File:     gatewayToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

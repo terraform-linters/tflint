@@ -36,10 +36,11 @@ resource "aws_route" "foo" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"igw-1234abcd\" is invalid egress only internet gateway ID.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_route_invalid_egress_only_gateway",
+					Type:     "ERROR",
+					Message:  "\"igw-1234abcd\" is invalid egress only internet gateway ID.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

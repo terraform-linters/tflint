@@ -32,10 +32,12 @@ func (d *AwsDBInstanceReadablePasswordDetector) Detect(resource *schema.Resource
 	}
 
 	issue := &issue.Issue{
-		Type:    d.IssueType,
-		Message: "Password for the master DB user is readable. recommend using environment variables.",
-		Line:    passwordToken.Pos.Line,
-		File:    passwordToken.Pos.Filename,
+		Detector: d.Name,
+		Type:     d.IssueType,
+		Message:  "Password for the master DB user is readable. recommend using environment variables.",
+		Line:     passwordToken.Pos.Line,
+		File:     passwordToken.Pos.Filename,
+		Link:     d.Link,
 	}
 	*issues = append(*issues, issue)
 }

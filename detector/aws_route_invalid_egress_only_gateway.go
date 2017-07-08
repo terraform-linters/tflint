@@ -51,10 +51,11 @@ func (d *AwsRouteInvalidEgressOnlyGatewayDetector) Detect(resource *schema.Resou
 
 	if !d.egateways[egateway] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid egress only internet gateway ID.", egateway),
-			Line:    egatewayToken.Pos.Line,
-			File:    egatewayToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid egress only internet gateway ID.", egateway),
+			Line:     egatewayToken.Pos.Line,
+			File:     egatewayToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

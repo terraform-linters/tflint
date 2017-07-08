@@ -10,9 +10,11 @@ import (
 )
 
 type Error struct {
+	Detector string `xml:"detector,attr"`
 	Line     int    `xml:"line,attr"`
 	Severity string `xml:"severity,attr"`
 	Message  string `xml:"message,attr"`
+	Link     string `xml:"link,attr"`
 }
 
 type File struct {
@@ -34,7 +36,16 @@ func (p *Printer) CheckstylePrint(issues []*issue.Issue) {
 		if len(v.Files) == 0 || v.Files[len(v.Files)-1].Name != i.File {
 			v.Files = append(v.Files, File{Name: i.File})
 		}
-		v.Files[len(v.Files)-1].Errors = append(v.Files[len(v.Files)-1].Errors, Error{Line: i.Line, Severity: toSeverity(i.Type), Message: i.Message})
+		v.Files[len(v.Files)-1].Errors = append(
+			v.Files[len(v.Files)-1].Errors,
+			Error{
+				Detector: i.Detector,
+				Line:     i.Line,
+				Severity: toSeverity(i.Type),
+				Message:  i.Message,
+				Link:     i.Link,
+			},
+		)
 	}
 
 	result, err := xml.MarshalIndent(v, "", "  ")

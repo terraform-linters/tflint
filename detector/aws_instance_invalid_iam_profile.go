@@ -51,10 +51,11 @@ func (d *AwsInstanceInvalidIAMProfileDetector) Detect(resource *schema.Resource,
 
 	if !d.profiles[iamProfile] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid IAM profile name.", iamProfile),
-			Line:    iamProfileToken.Pos.Line,
-			File:    iamProfileToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid IAM profile name.", iamProfile),
+			Line:     iamProfileToken.Pos.Line,
+			File:     iamProfileToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

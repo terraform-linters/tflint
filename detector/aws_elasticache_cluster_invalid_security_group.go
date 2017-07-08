@@ -70,10 +70,11 @@ func (d *AwsElastiCacheClusterInvalidSecurityGroupDetector) Detect(resource *sch
 		}
 		if !d.securityGroups[securityGroup] {
 			issue := &issue.Issue{
-				Type:    d.IssueType,
-				Message: fmt.Sprintf("\"%s\" is invalid security group.", securityGroup),
-				Line:    securityGroupToken.Pos.Line,
-				File:    securityGroupToken.Pos.Filename,
+				Detector: d.Name,
+				Type:     d.IssueType,
+				Message:  fmt.Sprintf("\"%s\" is invalid security group.", securityGroup),
+				Line:     securityGroupToken.Pos.Line,
+				File:     securityGroupToken.Pos.Filename,
 			}
 			*issues = append(*issues, issue)
 		}

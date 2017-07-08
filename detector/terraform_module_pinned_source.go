@@ -43,18 +43,22 @@ func (d *TerraformModulePinnedSourceDetector) detectGitSource(module *schema.Mod
 	if strings.Contains(lower, "ref=") {
 		if strings.Contains(lower, "ref=master") {
 			return &issue.Issue{
-				Type:    d.IssueType,
-				Message: fmt.Sprintf("Module source \"%s\" uses default ref \"master\"", module.ModuleSource),
-				Line:    sourceToken.Pos.Line,
-				File:    sourceToken.Pos.Filename,
+				Detector: d.Name,
+				Type:     d.IssueType,
+				Message:  fmt.Sprintf("Module source \"%s\" uses default ref \"master\"", module.ModuleSource),
+				Line:     sourceToken.Pos.Line,
+				File:     sourceToken.Pos.Filename,
+				Link:     d.Link,
 			}
 		}
 	} else {
 		return &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("Module source \"%s\" is not pinned", module.ModuleSource),
-			Line:    sourceToken.Pos.Line,
-			File:    sourceToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("Module source \"%s\" is not pinned", module.ModuleSource),
+			Line:     sourceToken.Pos.Line,
+			File:     sourceToken.Pos.Filename,
+			Link:     d.Link,
 		}
 	}
 
@@ -68,18 +72,22 @@ func (d *TerraformModulePinnedSourceDetector) detectMercurialSource(module *sche
 	if strings.Contains(lower, "rev=") {
 		if strings.Contains(lower, "rev=default") {
 			return &issue.Issue{
-				Type:    issue.WARNING,
-				Message: fmt.Sprintf("Module source \"%s\" uses default rev \"default\"", module.ModuleSource),
-				Line:    sourceToken.Pos.Line,
-				File:    sourceToken.Pos.Filename,
+				Detector: d.Name,
+				Type:     issue.WARNING,
+				Message:  fmt.Sprintf("Module source \"%s\" uses default rev \"default\"", module.ModuleSource),
+				Line:     sourceToken.Pos.Line,
+				File:     sourceToken.Pos.Filename,
+				Link:     d.Link,
 			}
 		}
 	} else {
 		return &issue.Issue{
-			Type:    issue.WARNING,
-			Message: fmt.Sprintf("Module source \"%s\" is not pinned", module.ModuleSource),
-			Line:    sourceToken.Pos.Line,
-			File:    sourceToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     issue.WARNING,
+			Message:  fmt.Sprintf("Module source \"%s\" is not pinned", module.ModuleSource),
+			Line:     sourceToken.Pos.Line,
+			File:     sourceToken.Pos.Filename,
+			Link:     d.Link,
 		}
 	}
 

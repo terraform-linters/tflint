@@ -23,10 +23,12 @@ resource "aws_db_instance" "mysql" {
 }`,
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"m4.2xlarge\" is invalid instance type.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_db_instance_invalid_type",
+					Type:     "ERROR",
+					Message:  "\"m4.2xlarge\" is invalid instance type.",
+					Line:     3,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_db_instance_invalid_type.md",
 				},
 			},
 		},

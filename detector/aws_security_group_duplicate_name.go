@@ -78,10 +78,11 @@ func (d *AwsSecurityGroupDuplicateDetector) Detect(resource *schema.Resource, is
 
 	if d.securiyGroups[vpc+"."+name] && !d.State.Exists(d.Target, resource.Id) {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),
-			Line:    nameToken.Pos.Line,
-			File:    nameToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),
+			Line:     nameToken.Pos.Line,
+			File:     nameToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

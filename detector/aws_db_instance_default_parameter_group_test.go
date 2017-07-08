@@ -23,10 +23,12 @@ resource "aws_db_instance" "db" {
 }`,
 			Issues: []*issue.Issue{
 				{
-					Type:    "NOTICE",
-					Message: "\"default.mysql5.6\" is default parameter group. You cannot edit it.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_db_instance_default_parameter_group",
+					Type:     "NOTICE",
+					Message:  "\"default.mysql5.6\" is default parameter group. You cannot edit it.",
+					Line:     3,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_db_instance_default_parameter_group.md",
 				},
 			},
 		},

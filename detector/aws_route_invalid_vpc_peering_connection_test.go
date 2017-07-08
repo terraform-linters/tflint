@@ -36,10 +36,11 @@ resource "aws_route" "foo" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"pcx-1234abcd\" is invalid VPC peering connection ID.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_route_invalid_vpc_peering_connection",
+					Type:     "ERROR",
+					Message:  "\"pcx-1234abcd\" is invalid VPC peering connection ID.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

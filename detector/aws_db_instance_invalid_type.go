@@ -71,10 +71,12 @@ func (d *AwsDBInstanceInvalidTypeDetector) Detect(resource *schema.Resource, iss
 
 	if !d.instanceTypes[instanceType] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid instance type.", instanceType),
-			Line:    instanceTypeToken.Pos.Line,
-			File:    instanceTypeToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid instance type.", instanceType),
+			Line:     instanceTypeToken.Pos.Line,
+			File:     instanceTypeToken.Pos.Filename,
+			Link:     d.Link,
 		}
 		*issues = append(*issues, issue)
 	}

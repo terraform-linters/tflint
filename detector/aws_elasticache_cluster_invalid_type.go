@@ -70,10 +70,12 @@ func (d *AwsElastiCacheClusterInvalidTypeDetector) Detect(resource *schema.Resou
 
 	if !d.nodeTypes[nodeType] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid node type.", nodeType),
-			Line:    nodeTypeToken.Pos.Line,
-			File:    nodeTypeToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid node type.", nodeType),
+			Line:     nodeTypeToken.Pos.Line,
+			File:     nodeTypeToken.Pos.Filename,
+			Link:     d.Link,
 		}
 		*issues = append(*issues, issue)
 	}

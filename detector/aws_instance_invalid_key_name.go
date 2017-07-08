@@ -51,10 +51,11 @@ func (d *AwsInstanceInvalidKeyNameDetector) Detect(resource *schema.Resource, is
 
 	if !d.keypairs[keyName] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid key name.", keyName),
-			Line:    keyNameToken.Pos.Line,
-			File:    keyNameToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid key name.", keyName),
+			Line:     keyNameToken.Pos.Line,
+			File:     keyNameToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

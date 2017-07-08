@@ -36,10 +36,11 @@ resource "aws_route" "foo" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"i-1234abcd\" is invalid instance ID.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_route_invalid_instance",
+					Type:     "ERROR",
+					Message:  "\"i-1234abcd\" is invalid instance ID.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

@@ -51,10 +51,11 @@ func (d *AwsDBInstanceDuplicateIdentifierDetector) Detect(resource *schema.Resou
 
 	if d.identifiers[identifier] && !d.State.Exists(d.Target, resource.Id) {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is duplicate identifier. It must be unique.", identifier),
-			Line:    identifierToken.Pos.Line,
-			File:    identifierToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is duplicate identifier. It must be unique.", identifier),
+			Line:     identifierToken.Pos.Line,
+			File:     identifierToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

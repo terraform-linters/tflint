@@ -53,10 +53,11 @@ func (d *AwsRouteInvalidInstanceDetector) Detect(resource *schema.Resource, issu
 
 	if !d.instances[instance] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid instance ID.", instance),
-			Line:    instanceToken.Pos.Line,
-			File:    instanceToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid instance ID.", instance),
+			Line:     instanceToken.Pos.Line,
+			File:     instanceToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

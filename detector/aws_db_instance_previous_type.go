@@ -53,10 +53,12 @@ func (d *AwsDBInstancePreviousTypeDetector) Detect(resource *schema.Resource, is
 
 	if d.previousInstanceTypes[instanceType] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is previous generation instance type.", instanceType),
-			Line:    instanceTypeToken.Pos.Line,
-			File:    instanceTypeToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is previous generation instance type.", instanceType),
+			Line:     instanceTypeToken.Pos.Line,
+			File:     instanceTypeToken.Pos.Filename,
+			Link:     d.Link,
 		}
 		*issues = append(*issues, issue)
 	}

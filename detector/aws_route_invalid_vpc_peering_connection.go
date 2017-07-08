@@ -51,10 +51,11 @@ func (d *AwsRouteInvalidVpcPeeringConnectionDetector) Detect(resource *schema.Re
 
 	if !d.vpcPeeringConnections[vpcPeeringConnection] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid VPC peering connection ID.", vpcPeeringConnection),
-			Line:    vpcPeeringConnectionToken.Pos.Line,
-			File:    vpcPeeringConnectionToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid VPC peering connection ID.", vpcPeeringConnection),
+			Line:     vpcPeeringConnectionToken.Pos.Line,
+			File:     vpcPeeringConnectionToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

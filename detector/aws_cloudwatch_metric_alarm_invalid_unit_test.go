@@ -29,10 +29,12 @@ resource "aws_cloudwatch_metric_alarm" "test" {
 }`,
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"GB\" is invalid unit.",
-					Line:    9,
-					File:    "test.tf",
+					Detector: "aws_cloudwatch_metric_alarm_invalid_unit",
+					Type:     "ERROR",
+					Message:  "\"GB\" is invalid unit.",
+					Line:     9,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_cloudwatch_metric_alarm_invalid_unit.md",
 				},
 			},
 		},
@@ -50,10 +52,12 @@ resource "aws_cloudwatch_metric_alarm" "test" {
 }`,
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"gigabytes\" is invalid unit.",
-					Line:    9,
-					File:    "test.tf",
+					Detector: "aws_cloudwatch_metric_alarm_invalid_unit",
+					Type:     "ERROR",
+					Message:  "\"gigabytes\" is invalid unit.",
+					Line:     9,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_cloudwatch_metric_alarm_invalid_unit.md",
 				},
 			},
 		},

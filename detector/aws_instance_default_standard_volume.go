@@ -28,10 +28,12 @@ func (d *AwsInstanceDefaultStandardVolumeDetector) Detect(resource *schema.Resou
 			for i, deviceToken := range deviceTokens {
 				if deviceToken["volume_type"].Text == "" {
 					issue := &issue.Issue{
-						Type:    d.IssueType,
-						Message: "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
-						Line:    resource.Attrs[device].Poses[i].Line,
-						File:    resource.Attrs[device].Poses[i].Filename,
+						Detector: d.Name,
+						Type:     d.IssueType,
+						Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
+						Line:     resource.Attrs[device].Poses[i].Line,
+						File:     resource.Attrs[device].Poses[i].Filename,
+						Link:     d.Link,
 					}
 					*issues = append(*issues, issue)
 				}

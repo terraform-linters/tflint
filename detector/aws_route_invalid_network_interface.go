@@ -51,10 +51,11 @@ func (d *AwsRouteInvalidNetworkInterfaceDetector) Detect(resource *schema.Resour
 
 	if !d.networkInterfaces[networkInterface] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid network interface ID.", networkInterface),
-			Line:    networkInterfaceToken.Pos.Line,
-			File:    networkInterfaceToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid network interface ID.", networkInterface),
+			Line:     networkInterfaceToken.Pos.Line,
+			File:     networkInterfaceToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

@@ -72,10 +72,11 @@ func (d *AwsELBInvalidInstanceDetector) Detect(resource *schema.Resource, issues
 		}
 		if !d.instances[instance] {
 			issue := &issue.Issue{
-				Type:    d.IssueType,
-				Message: fmt.Sprintf("\"%s\" is invalid instance.", instance),
-				Line:    instanceToken.Pos.Line,
-				File:    instanceToken.Pos.Filename,
+				Detector: d.Name,
+				Type:     d.IssueType,
+				Message:  fmt.Sprintf("\"%s\" is invalid instance.", instance),
+				Line:     instanceToken.Pos.Line,
+				File:     instanceToken.Pos.Filename,
 			}
 			*issues = append(*issues, issue)
 		}

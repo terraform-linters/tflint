@@ -51,10 +51,11 @@ func (d *AwsRouteInvalidNatGatewayDetector) Detect(resource *schema.Resource, is
 
 	if !d.ngateways[ngateway] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid NAT gateway ID.", ngateway),
-			Line:    ngatewayToken.Pos.Line,
-			File:    ngatewayToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid NAT gateway ID.", ngateway),
+			Line:     ngatewayToken.Pos.Line,
+			File:     ngatewayToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

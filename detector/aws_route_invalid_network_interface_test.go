@@ -36,10 +36,11 @@ resource "aws_route" "foo" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"eni-1234abcd\" is invalid network interface ID.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_route_invalid_network_interface",
+					Type:     "ERROR",
+					Message:  "\"eni-1234abcd\" is invalid network interface ID.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},
