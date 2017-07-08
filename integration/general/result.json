@@ -86,8 +86,8 @@
   {
     "type": "WARNING",
     "message": "Module source \"github.com/wata727/example-module\" is not pinned",
-    "line": 55,
-    "file": "template.tf"
+    "line": 8,
+    "file": "template_override.tf"
   },
   {
     "type": "ERROR",

@@ -7,17 +7,19 @@ import (
 
 type AwsRouteNotSpecifiedTargetDetector struct {
 	*Detector
-	IssueType string
-	Target    string
-	DeepCheck bool
+	IssueType  string
+	TargetType string
+	Target     string
+	DeepCheck  bool
 }
 
 func (d *Detector) CreateAwsRouteNotSpecifiedTargetDetector() *AwsRouteNotSpecifiedTargetDetector {
 	return &AwsRouteNotSpecifiedTargetDetector{
-		Detector:  d,
-		IssueType: issue.ERROR,
-		Target:    "aws_route",
-		DeepCheck: false,
+		Detector:   d,
+		IssueType:  issue.ERROR,
+		TargetType: "resource",
+		Target:     "aws_route",
+		DeepCheck:  false,
 	}
 }
 

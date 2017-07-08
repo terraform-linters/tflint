@@ -10,6 +10,7 @@ import (
 type AwsDBInstanceInvalidDBSubnetGroupDetector struct {
 	*Detector
 	IssueType    string
+	TargetType   string
 	Target       string
 	DeepCheck    bool
 	subnetGroups map[string]bool
@@ -19,6 +20,7 @@ func (d *Detector) CreateAwsDBInstanceInvalidDBSubnetGroupDetector() *AwsDBInsta
 	return &AwsDBInstanceInvalidDBSubnetGroupDetector{
 		Detector:     d,
 		IssueType:    issue.ERROR,
+		TargetType:   "resource",
 		Target:       "aws_db_instance",
 		DeepCheck:    true,
 		subnetGroups: map[string]bool{},

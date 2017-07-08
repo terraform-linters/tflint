@@ -82,9 +82,8 @@ module "ec2_instance" {
 		c := config.Init()
 		c.SetIgnoreRule(tc.Config.IgnoreRule)
 		c.SetIgnoreModule(tc.Config.IgnoreModule)
-		evalConfig, _ := evaluator.NewEvaluator(templates, []*ast.File{}, c)
+		evalConfig, _ := evaluator.NewEvaluator(templates, schema, []*ast.File{}, c)
 		d := &Detector{
-			Templates:  templates,
 			Schema:     schema,
 			Config:     c,
 			EvalConfig: evalConfig,
@@ -94,418 +93,6 @@ module "ec2_instance" {
 		issues := d.Detect()
 		if len(issues) != tc.Result {
 			t.Fatalf("\nBad: %d\nExpected: %d\n\ntestcase: %s", len(issues), tc.Result, tc.Name)
-		}
-	}
-}
-
-func TestHclObjectKeyText(t *testing.T) {
-	cases := []struct {
-		Name   string
-		Src    string
-		Result string
-	}{
-		{
-			Name: "return key name",
-			Src: `
-resource "aws_instance" "web" {
-    instance_type = "t2.micro"
-}`,
-			Result: "web",
-		},
-	}
-
-	for _, tc := range cases {
-		root, _ := parser.Parse([]byte(tc.Src))
-		item := root.Node.(*ast.ObjectList).Filter("resource", "aws_instance").Items[0]
-
-		result := hclObjectKeyText(item)
-		if result != tc.Result {
-			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
-		}
-	}
-}
-
-func TestHclLiteralToken(t *testing.T) {
-	type Input struct {
-		File string
-		Key  string
-	}
-
-	cases := []struct {
-		Name   string
-		Input  Input
-		Result token.Token
-		Error  bool
-	}{
-		{
-			Name: "return literal token",
-			Input: Input{
-				File: `
-resource "aws_instance" "web" {
-    instance_type = "t2.micro"
-}`,
-				Key: "instance_type",
-			},
-			Result: token.Token{
-				Type: 9,
-				Pos: token.Pos{
-					Filename: "",
-					Offset:   47,
-					Line:     3,
-					Column:   21,
-				},
-				Text: "\"t2.micro\"",
-				JSON: false,
-			},
-			Error: false,
-		},
-		{
-			Name: "happen error when value is list",
-			Input: Input{
-				File: `
-resource "aws_instance" "web" {
-    instance_type = ["t2.micro"]
-}`,
-				Key: "instance_type",
-			},
-			Result: token.Token{},
-			Error:  true,
-		},
-		{
-			Name: "happen error when value is map",
-			Input: Input{
-				File: `
-resource "aws_instance" "web" {
-    instance_type = {
-        default = "t2.micro"
-    }
-}`,
-				Key: "instance_type",
-			},
-			Result: token.Token{},
-			Error:  true,
-		},
-		{
-			Name: "happen error when key not found",
-			Input: Input{
-				File: `
-resource "aws_instance" "web" {
-    instance_type = "t2.micro"
-}`,
-				Key: "ami_id",
-			},
-			Result: token.Token{},
-			Error:  true,
-		},
-	}
-
-	for _, tc := range cases {
-		root, _ := parser.Parse([]byte(tc.Input.File))
-		item := root.Node.(*ast.ObjectList).Filter("resource", "aws_instance").Items[0]
-
-		result, err := hclLiteralToken(item, tc.Input.Key)
-		if tc.Error && err == nil {
-			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
-			continue
-		}
-		if !tc.Error && err != nil {
-			t.Fatalf("\nshould not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
-			continue
-		}
-
-		if result.Text != tc.Result.Text {
-			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
-		}
-	}
-}
-
-func TestHclLiteralListToken(t *testing.T) {
-	type Input struct {
-		File string
-		Key  string
-	}
-
-	cases := []struct {
-		Name   string
-		Input  Input
-		Result []token.Token
-		Error  bool
-	}{
-		{
-			Name: "return literal tokens",
-			Input: Input{
-				File: `
-resource "aws_instance" "web" {
-    vpc_security_group_ids = [
-        "sg-1234abcd",
-        "sg-abcd1234",
-    ]
-}`,
-				Key: "vpc_security_group_ids",
-			},
-			Result: []token.Token{
-				{
-					Type: 9,
-					Pos: token.Pos{
-						Filename: "",
-						Offset:   72,
-						Line:     4,
-						Column:   9,
-					},
-					Text: "\"sg-1234abcd\"",
-					JSON: false,
-				},
-				{
-					Type: 9,
-					Pos: token.Pos{
-						Filename: "",
-						Offset:   95,
-						Line:     5,
-						Column:   9,
-					},
-					Text: "\"sg-abcd1234\"",
-					JSON: false,
-				},
-			},
-			Error: false,
-		},
-		{
-			Name: "happen error when value is literal",
-			Input: Input{
-				File: `
-resource "aws_instance" "web" {
-    vpc_security_group_ids = "sg-1234abcd"
-}`,
-				Key: "vpc_security_group_ids",
-			},
-			Result: []token.Token{},
-			Error:  true,
-		},
-		{
-			Name: "happen error when value is map",
-			Input: Input{
-				File: `
-resource "aws_instance" "web" {
-    vpc_security_group_ids = {
-        first  = "sg-1234abcd"
-        second = "sg-abcd1234"
-    }
-}`,
-				Key: "vpc_security_group_ids",
-			},
-			Result: []token.Token{},
-			Error:  true,
-		},
-		{
-			Name: "happen error when key not found",
-			Input: Input{
-				File: `
-resource "aws_instance" "web" {
-    vpc_security_group_ids = [
-        "sg-1234abcd",
-        "sg-abcd1234",
-    ]
-}`,
-				Key: "instance_type",
-			},
-			Result: []token.Token{},
-			Error:  true,
-		},
-	}
-
-	for _, tc := range cases {
-		root, _ := parser.Parse([]byte(tc.Input.File))
-		item := root.Node.(*ast.ObjectList).Filter("resource", "aws_instance").Items[0]
-
-		result, err := hclLiteralListToken(item, tc.Input.Key)
-		if tc.Error && err == nil {
-			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
-			continue
-		}
-		if !tc.Error && err != nil {
-			t.Fatalf("\nshould not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
-			continue
-		}
-
-		if !reflect.DeepEqual(result, tc.Result) {
-			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
-		}
-	}
-}
-
-func TestHclObjectItems(t *testing.T) {
-	type Input struct {
-		File string
-		Key  string
-	}
-
-	cases := []struct {
-		Name   string
-		Input  Input
-		Result []*ast.ObjectItem
-		Error  bool
-	}{
-		{
-			Name: "return object items",
-			Input: Input{
-				File: `
-resource "aws_instance" "web" {
-    root_block_device = {
-        volume_size = "16"
-    }
-}`,
-				Key: "root_block_device",
-			},
-			Result: []*ast.ObjectItem{
-				{
-					Keys: []*ast.ObjectKey{},
-					Assign: token.Pos{
-						Filename: "",
-						Offset:   55,
-						Line:     3,
-						Column:   23,
-					},
-					Val: &ast.ObjectType{
-						Lbrace: token.Pos{
-							Filename: "",
-							Offset:   57,
-							Line:     3,
-							Column:   25,
-						},
-						Rbrace: token.Pos{
-							Filename: "",
-							Offset:   90,
-							Line:     5,
-							Column:   5,
-						},
-						List: &ast.ObjectList{
-							Items: []*ast.ObjectItem{
-								{
-									Keys: []*ast.ObjectKey{
-										{
-											Token: token.Token{
-												Type: 4,
-												Pos: token.Pos{
-													Filename: "",
-													Offset:   67,
-													Line:     4,
-													Column:   9,
-												},
-												Text: "volume_size",
-												JSON: false,
-											},
-										},
-									},
-									Assign: token.Pos{
-										Filename: "",
-										Offset:   79,
-										Line:     4,
-										Column:   21,
-									},
-									Val: &ast.LiteralType{
-										Token: token.Token{
-											Type: 9,
-											Pos: token.Pos{
-												Filename: "",
-												Offset:   81,
-												Line:     4,
-												Column:   23,
-											},
-											Text: "\"16\"",
-											JSON: false,
-										},
-										LineComment: (*ast.CommentGroup)(nil),
-									},
-									LeadComment: (*ast.CommentGroup)(nil),
-									LineComment: (*ast.CommentGroup)(nil),
-								},
-							},
-						},
-					},
-					LeadComment: (*ast.CommentGroup)(nil),
-					LineComment: (*ast.CommentGroup)(nil),
-				},
-			},
-			Error: false,
-		},
-		{
-			Name: "happen error when key not found",
-			Input: Input{
-				File: `
-resource "aws_instance" "web" {
-    root_block_device = {
-        volume_size = "16"
-    }
-}`,
-				Key: "ami_id",
-			},
-			Result: []*ast.ObjectItem{},
-			Error:  true,
-		},
-	}
-
-	for _, tc := range cases {
-		root, _ := parser.Parse([]byte(tc.Input.File))
-		item := root.Node.(*ast.ObjectList).Filter("resource", "aws_instance").Items[0]
-
-		result, err := hclObjectItems(item, tc.Input.Key)
-		if tc.Error && err == nil {
-			t.Fatalf("\nshould be happen error.\n\ntestcase: %s", tc.Name)
-			continue
-		}
-		if !tc.Error && err != nil {
-			t.Fatalf("\nshould not be happen error.\nError: %s\n\ntestcase: %s", err, tc.Name)
-			continue
-		}
-
-		if !reflect.DeepEqual(result, tc.Result) {
-			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
-		}
-	}
-}
-
-func TestIsKeyNotFound(t *testing.T) {
-	type Input struct {
-		File string
-		Key  string
-	}
-
-	cases := []struct {
-		Name   string
-		Input  Input
-		Result bool
-	}{
-		{
-			Name: "key found",
-			Input: Input{
-				File: `
-resource "aws_instance" "web" {
-    instance_type = "t2.micro"
-}`,
-				Key: "instance_type",
-			},
-			Result: false,
-		},
-		{
-			Name: "happen error when value is list",
-			Input: Input{
-				File: `
-resource "aws_instance" "web" {
-    instance_type = "t2.micro"
-}`,
-				Key: "iam_instance_profile",
-			},
-			Result: true,
-		},
-	}
-
-	for _, tc := range cases {
-		root, _ := parser.Parse([]byte(tc.Input.File))
-		item := root.Node.(*ast.ObjectList).Filter("resource", "aws_instance").Items[0]
-		result := IsKeyNotFound(item, tc.Input.Key)
-
-		if result != tc.Result {
-			t.Fatalf("\nBad: %t\nExpected: %t\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}
 	}
 }
@@ -561,9 +148,8 @@ variable "text" {
 		templates := make(map[string]*ast.File)
 		templates["text.tf"], _ = parser.Parse([]byte(tc.Input.File))
 
-		evalConfig, _ := evaluator.NewEvaluator(templates, []*ast.File{}, config.Init())
+		evalConfig, _ := evaluator.NewEvaluator(templates, []*schema.Template{}, []*ast.File{}, config.Init())
 		d := &Detector{
-			Templates:  templates,
 			EvalConfig: evalConfig,
 		}
 
@@ -662,9 +248,8 @@ variable "array" {
 		templates := make(map[string]*ast.File)
 		templates["text.tf"], _ = parser.Parse([]byte(tc.Input.File))
 
-		evalConfig, _ := evaluator.NewEvaluator(templates, []*ast.File{}, config.Init())
+		evalConfig, _ := evaluator.NewEvaluator(templates, []*schema.Template{}, []*ast.File{}, config.Init())
 		d := &Detector{
-			Templates:  templates,
 			EvalConfig: evalConfig,
 		}
 
@@ -689,6 +274,7 @@ func TestIsSkip(t *testing.T) {
 		File              string
 		DeepCheckMode     bool
 		DeepCheckDetector bool
+		TargetType        string
 		Target            string
 	}
 
@@ -701,11 +287,12 @@ func TestIsSkip(t *testing.T) {
 			Name: "return false when enabled deep checking",
 			Input: Input{
 				File: `
-resource "aws_instance" {
+resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
 				DeepCheckMode:     true,
 				DeepCheckDetector: true,
+				TargetType:        "resource",
 				Target:            "aws_instance",
 			},
 			Result: false,
@@ -714,11 +301,12 @@ resource "aws_instance" {
 			Name: "return true when disabled deep checking",
 			Input: Input{
 				File: `
-resource "aws_instance" {
+resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
 				DeepCheckMode:     false,
 				DeepCheckDetector: true,
+				TargetType:        "resource",
 				Target:            "aws_instance",
 			},
 			Result: true,
@@ -727,11 +315,12 @@ resource "aws_instance" {
 			Name: "return false when disabled deep checking but not deep check detector",
 			Input: Input{
 				File: `
-resource "aws_instance" {
+resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
 				DeepCheckMode:     false,
 				DeepCheckDetector: false,
+				TargetType:        "resource",
 				Target:            "aws_instance",
 			},
 			Result: false,
@@ -740,11 +329,12 @@ resource "aws_instance" {
 			Name: "return false when enabled deep checking and not deep check detector",
 			Input: Input{
 				File: `
-resource "aws_instance" {
+resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
 				DeepCheckMode:     true,
 				DeepCheckDetector: false,
+				TargetType:        "resource",
 				Target:            "aws_instance",
 			},
 			Result: false,
@@ -753,12 +343,39 @@ resource "aws_instance" {
 			Name: "return true when target resources are not found",
 			Input: Input{
 				File: `
-resource "aws_instance" {
+resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
 				DeepCheckMode:     true,
 				DeepCheckDetector: true,
+				TargetType:        "resource",
 				Target:            "aws_db_instance",
+			},
+			Result: true,
+		},
+		{
+			Name: "return false when modules are found",
+			Input: Input{
+				File: `
+module "ec2_instance" {
+    source = "./ec2_instance"
+}`,
+				DeepCheckMode:     true,
+				DeepCheckDetector: true,
+				TargetType:        "module",
+			},
+			Result: false,
+		},
+		{
+			Name: "return true when target modules are not found",
+			Input: Input{
+				File: `
+resource "aws_instance" "web" {
+    ami = "ami-12345"
+}`,
+				DeepCheckMode:     true,
+				DeepCheckDetector: true,
+				TargetType:        "module",
 			},
 			Result: true,
 		},
@@ -767,15 +384,17 @@ resource "aws_instance" {
 	for _, tc := range cases {
 		templates := make(map[string]*ast.File)
 		templates["text.tf"], _ = parser.Parse([]byte(tc.Input.File))
+		files := map[string][]byte{"test.tf": []byte(tc.Input.File)}
+		schema, _ := schema.Make(files)
 
 		d := &Detector{
-			Templates: templates,
-			Config:    config.Init(),
-			Logger:    logger.Init(false),
+			Schema: schema,
+			Config: config.Init(),
+			Logger: logger.Init(false),
 		}
 		d.Config.DeepCheck = tc.Input.DeepCheckMode
 
-		result := d.isSkip(tc.Input.DeepCheckDetector, tc.Input.Target)
+		result := d.isSkip(tc.Input.DeepCheckDetector, tc.Input.TargetType, tc.Input.Target)
 		if result != tc.Result {
 			t.Fatalf("\nBad: %t\nExpected: %t\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}

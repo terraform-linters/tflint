@@ -4,6 +4,8 @@ import (
 	"sort"
 	"strings"
 
+	"fmt"
+
 	"github.com/hashicorp/hcl"
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/parser"
@@ -13,6 +15,7 @@ import (
 type Template struct {
 	File      string
 	Resources []*Resource
+	Modules   []*Module
 }
 
 func Make(files map[string][]byte) ([]*Template, error) {
@@ -44,43 +47,48 @@ func Make(files map[string][]byte) ([]*Template, error) {
 	return templates, nil
 }
 
-func (t *Template) Find(query ...string) []*Resource {
+func (t *Template) FindResources(query ...string) []*Resource {
 	resources := []*Resource{}
-	var provider, providerType, id string
+	var resourceType, id string
 	for i, attr := range query {
 		switch i {
 		case 0:
-			provider = attr
+			resourceType = attr
 		case 1:
-			providerType = attr
-		case 2:
 			id = attr
 		default:
 			// noop
 		}
 	}
 
-	switch provider {
-	case "resource":
-		if providerType != "" {
-			for _, resource := range t.Resources {
-				if id != "" {
-					if resource.Type == providerType && resource.Id == id {
-						resources = append(resources, resource)
-					}
-				} else {
-					if resource.Type == providerType {
-						resources = append(resources, resource)
-					}
+	if resourceType != "" {
+		for _, resource := range t.Resources {
+			if id != "" {
+				if resource.Type == resourceType && resource.Id == id {
+					resources = append(resources, resource)
+				}
+			} else {
+				if resource.Type == resourceType {
+					resources = append(resources, resource)
 				}
 			}
-		} else {
-			resources = t.Resources
 		}
-		return resources
-	default:
-		return resources
+	} else {
+		resources = t.Resources
 	}
+	return resources
+}
+
+func (t *Template) FindModules(id string) []*Module {
+	modules := []*Module{}
+
+	for _, module := range t.Modules {
+		if module.Id == id {
+			modules = append(modules, module)
+		}
+	}
+
+	return modules
 }
 
 func appendTemplates(templates []*Template, file string, body []byte, override bool) ([]*Template, error) {
@@ -100,47 +108,55 @@ func appendTemplates(templates []*Template, file string, body []byte, override b
 	for resourceType, typeResources := range ret["resource"] {
 		for _, typeResource := range typeResources.([]map[string]interface{}) {
 			for key, attrs := range typeResource {
-				var newResource bool = true
+				var new bool = true
 				var resourceItem *ast.ObjectItem = root.Node.(*ast.ObjectList).Filter("resource", resourceType, key).Items[0]
 				var resourcePos token.Pos = resourceItem.Val.Pos()
 				resourcePos.Filename = file
-				resource := &Resource{
-					File:  file,
-					Type:  resourceType,
-					Id:    key,
-					Pos:   resourcePos,
-					Attrs: map[string]*Attribute{},
-				}
+				resource := newResource(file, resourcePos, resourceType, key)
 
 				if override {
 					for _, temp := range templates {
-						if res := temp.Find("resource", resourceType, key); len(res) != 0 {
+						if res := temp.FindResources(resourceType, key); len(res) != 0 {
 							resource = res[0]
-							newResource = false
+							new = false
 							break
 						}
 					}
 				}
+				resource.setAttrs(attrs, resourceItem, file, override)
 
-				for _, attr := range attrs.([]map[string]interface{}) {
-					for k := range attr {
-						for _, attrToken := range resourceItem.Val.(*ast.ObjectType).List.Filter(k).Items {
-							if resource.Attrs[k] == nil || override {
-								resource.Attrs[k] = &Attribute{}
-							}
-							// The case of multiple specifiable keys such as `ebs_block_device`.
-							resource.Attrs[k].Vals = append(resource.Attrs[k].Vals, getToken(file, attrToken.Val))
-							pos := attrToken.Val.Pos()
-							pos.Filename = file
-							resource.Attrs[k].Poses = append(resource.Attrs[k].Poses, pos)
-						}
-					}
-				}
-
-				if newResource {
+				if new {
 					template.Resources = append(template.Resources, resource)
 				}
 			}
+		}
+	}
+
+	for moduleId, attrs := range ret["module"] {
+		var new bool = true
+		var moduleItem *ast.ObjectItem = root.Node.(*ast.ObjectList).Filter("module", moduleId).Items[0]
+		var modulePos token.Pos = moduleItem.Val.Pos()
+		modulePos.Filename = file
+		module := newModule(file, modulePos, moduleId)
+
+		if override {
+			for _, temp := range templates {
+				if mod := temp.FindModules(moduleId); len(mod) != 0 {
+					module = mod[0]
+					new = false
+					break
+				}
+			}
+		}
+		module.setAttrs(attrs, moduleItem, file, override)
+		sourceToken, ok := module.GetToken("source")
+		if !ok {
+			return nil, fmt.Errorf("ERROR: Invalid module source in %s", module.Id)
+		}
+		module.ModuleSource = strings.Replace(sourceToken.Text, "\"", "", -1)
+
+		if new {
+			template.Modules = append(template.Modules, module)
 		}
 	}
 

@@ -10,6 +10,7 @@ import (
 type AwsElastiCacheClusterDuplicateIDDetector struct {
 	*Detector
 	IssueType     string
+	TargetType    string
 	Target        string
 	DeepCheck     bool
 	cacheClusters map[string]bool
@@ -19,6 +20,7 @@ func (d *Detector) CreateAwsElastiCacheClusterDuplicateIDDetector() *AwsElastiCa
 	return &AwsElastiCacheClusterDuplicateIDDetector{
 		Detector:      d,
 		IssueType:     issue.ERROR,
+		TargetType:    "resource",
 		Target:        "aws_elasticache_cluster",
 		DeepCheck:     true,
 		cacheClusters: map[string]bool{},

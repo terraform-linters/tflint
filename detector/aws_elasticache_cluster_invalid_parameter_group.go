@@ -10,6 +10,7 @@ import (
 type AwsElastiCacheClusterInvalidParameterGroupDetector struct {
 	*Detector
 	IssueType            string
+	TargetType           string
 	Target               string
 	DeepCheck            bool
 	cacheParameterGroups map[string]bool
@@ -19,6 +20,7 @@ func (d *Detector) CreateAwsElastiCacheClusterInvalidParameterGroupDetector() *A
 	return &AwsElastiCacheClusterInvalidParameterGroupDetector{
 		Detector:             d,
 		IssueType:            issue.ERROR,
+		TargetType:           "resource",
 		Target:               "aws_elasticache_cluster",
 		DeepCheck:            true,
 		cacheParameterGroups: map[string]bool{},

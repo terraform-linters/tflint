@@ -10,6 +10,7 @@ import (
 type AwsCloudWatchMetricAlarmInvalidUnitDetector struct {
 	*Detector
 	IssueType  string
+	TargetType string
 	Target     string
 	DeepCheck  bool
 	validUnits map[string]bool
@@ -19,6 +20,7 @@ func (d *Detector) CreateAwsCloudWatchMetricAlarmInvalidUnitDetector() *AwsCloud
 	return &AwsCloudWatchMetricAlarmInvalidUnitDetector{
 		Detector:   d,
 		IssueType:  issue.ERROR,
+		TargetType: "resource",
 		Target:     "aws_cloudwatch_metric_alarm",
 		DeepCheck:  false,
 		validUnits: map[string]bool{},

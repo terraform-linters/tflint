@@ -9,19 +9,21 @@ import (
 
 type AwsRouteInvalidNatGatewayDetector struct {
 	*Detector
-	IssueType string
-	Target    string
-	DeepCheck bool
-	ngateways map[string]bool
+	IssueType  string
+	TargetType string
+	Target     string
+	DeepCheck  bool
+	ngateways  map[string]bool
 }
 
 func (d *Detector) CreateAwsRouteInvalidNatGatewayDetector() *AwsRouteInvalidNatGatewayDetector {
 	return &AwsRouteInvalidNatGatewayDetector{
-		Detector:  d,
-		IssueType: issue.ERROR,
-		Target:    "aws_route",
-		DeepCheck: true,
-		ngateways: map[string]bool{},
+		Detector:   d,
+		IssueType:  issue.ERROR,
+		TargetType: "resource",
+		Target:     "aws_route",
+		DeepCheck:  true,
+		ngateways:  map[string]bool{},
 	}
 }
 

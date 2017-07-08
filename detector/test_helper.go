@@ -17,17 +17,19 @@ import (
 
 type TestDetector struct {
 	*Detector
-	IssueType string
-	Target    string
-	DeepCheck bool
+	IssueType  string
+	TargetType string
+	Target     string
+	DeepCheck  bool
 }
 
 func (d *Detector) CreateTestDetector() *TestDetector {
 	return &TestDetector{
-		Detector:  d,
-		IssueType: "TEST",
-		Target:    "aws_instance",
-		DeepCheck: false,
+		Detector:   d,
+		IssueType:  "TEST",
+		TargetType: "resource",
+		Target:     "aws_instance",
+		DeepCheck:  false,
 	}
 }
 
@@ -51,9 +53,8 @@ func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string,
 	}
 	schema, _ := schema.Make(files)
 
-	evalConfig, _ := evaluator.NewEvaluator(templates, []*ast.File{}, c)
+	evalConfig, _ := evaluator.NewEvaluator(templates, schema, []*ast.File{}, c)
 	creator := reflect.ValueOf(&Detector{
-		Templates:  templates,
 		Schema:     schema,
 		State:      tfstate,
 		EvalConfig: evalConfig,
@@ -66,14 +67,29 @@ func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string,
 	if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
 		preprocess.Call([]reflect.Value{})
 	}
-	for _, template := range schema {
-		for _, resource := range template.Find("resource", reflect.Indirect(detector).FieldByName("Target").String()) {
-			detect := detector.MethodByName("Detect")
-			detect.Call([]reflect.Value{
-				reflect.ValueOf(resource),
-				reflect.ValueOf(issues),
-			})
+	switch reflect.Indirect(detector).FieldByName("TargetType").String() {
+	case "resource":
+		for _, template := range schema {
+			for _, resource := range template.FindResources(reflect.Indirect(detector).FieldByName("Target").String()) {
+				detect := detector.MethodByName("Detect")
+				detect.Call([]reflect.Value{
+					reflect.ValueOf(resource),
+					reflect.ValueOf(issues),
+				})
+			}
 		}
+	case "module":
+		for _, template := range schema {
+			for _, module := range template.Modules {
+				detect := detector.MethodByName("Detect")
+				detect.Call([]reflect.Value{
+					reflect.ValueOf(module),
+					reflect.ValueOf(issues),
+				})
+			}
+		}
+	default:
+		return nil
 	}
 	return nil
 }

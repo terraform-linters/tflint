@@ -51,10 +51,7 @@ resource "aws_cloudwatch_metric_alarm" "rds-writer-memory" {
   insufficient_data_actions = []
 }
 
+// override by `template_override.tf`
 module "ec2_instance" {
-  source         = "github.com/wata727/example-module" // terraform_module_pinned_source
-  instance_types = "${var.instance_type}"
-  mysql_types    = "${var.mysql_type}"
-  redis_previous = "${var.redis_previous_type}"
-  redis_invalid  = "${var.redis_invalud_type}"
+  source         = "github.com/wata727/invalid_module"
 }

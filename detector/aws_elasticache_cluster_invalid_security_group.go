@@ -11,6 +11,7 @@ import (
 type AwsElastiCacheClusterInvalidSecurityGroupDetector struct {
 	*Detector
 	IssueType      string
+	TargetType     string
 	Target         string
 	DeepCheck      bool
 	securityGroups map[string]bool
@@ -20,6 +21,7 @@ func (d *Detector) CreateAwsElastiCacheClusterInvalidSecurityGroupDetector() *Aw
 	return &AwsElastiCacheClusterInvalidSecurityGroupDetector{
 		Detector:       d,
 		IssueType:      issue.ERROR,
+		TargetType:     "resource",
 		Target:         "aws_elasticache_cluster",
 		DeepCheck:      true,
 		securityGroups: map[string]bool{},

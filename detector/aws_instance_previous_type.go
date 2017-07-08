@@ -10,6 +10,7 @@ import (
 type AwsInstancePreviousTypeDetector struct {
 	*Detector
 	IssueType             string
+	TargetType            string
 	Target                string
 	DeepCheck             bool
 	previousInstanceTypes map[string]bool
@@ -19,6 +20,7 @@ func (d *Detector) CreateAwsInstancePreviousTypeDetector() *AwsInstancePreviousT
 	return &AwsInstancePreviousTypeDetector{
 		Detector:              d,
 		IssueType:             issue.WARNING,
+		TargetType:            "resource",
 		Target:                "aws_instance",
 		DeepCheck:             false,
 		previousInstanceTypes: map[string]bool{},

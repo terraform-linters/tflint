@@ -10,6 +10,7 @@ import (
 type AwsRouteInvalidRouteTableDetector struct {
 	*Detector
 	IssueType   string
+	TargetType  string
 	Target      string
 	DeepCheck   bool
 	routeTables map[string]bool
@@ -19,6 +20,7 @@ func (d *Detector) CreateAwsRouteInvalidRouteTableDetector() *AwsRouteInvalidRou
 	return &AwsRouteInvalidRouteTableDetector{
 		Detector:    d,
 		IssueType:   issue.ERROR,
+		TargetType:  "resource",
 		Target:      "aws_route",
 		DeepCheck:   true,
 		routeTables: map[string]bool{},

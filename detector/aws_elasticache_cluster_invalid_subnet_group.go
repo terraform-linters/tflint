@@ -10,6 +10,7 @@ import (
 type AwsElastiCacheClusterInvalidSubnetGroupDetector struct {
 	*Detector
 	IssueType         string
+	TargetType        string
 	Target            string
 	DeepCheck         bool
 	cacheSubnetGroups map[string]bool
@@ -19,6 +20,7 @@ func (d *Detector) CreateAwsElastiCacheClusterInvalidSubnetGroupDetector() *AwsE
 	return &AwsElastiCacheClusterInvalidSubnetGroupDetector{
 		Detector:          d,
 		IssueType:         issue.ERROR,
+		TargetType:        "resource",
 		Target:            "aws_elasticache_cluster",
 		DeepCheck:         true,
 		cacheSubnetGroups: map[string]bool{},

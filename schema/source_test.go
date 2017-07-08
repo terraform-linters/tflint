@@ -93,7 +93,7 @@ var multiMapToken = []interface{}{
 		},
 	}}
 
-var resource = &Resource{
+var source = Source{
 	Attrs: map[string]*Attribute{
 		"literal": {
 			Vals: literalToken,
@@ -158,7 +158,7 @@ func TestGetToken(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		token, ok := resource.GetToken(tc.Input)
+		token, ok := source.GetToken(tc.Input)
 		if !reflect.DeepEqual(token, tc.Result.Token) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(token), pp.Sprint(tc.Result.Token), tc.Name)
 		}
@@ -230,7 +230,7 @@ func TestGetListToken(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		token, ok := resource.GetListToken(tc.Input)
+		token, ok := source.GetListToken(tc.Input)
 		if !reflect.DeepEqual(token, tc.Result.Token) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(token), pp.Sprint(tc.Result.Token), tc.Name)
 		}
@@ -311,7 +311,7 @@ func TestGetMapToken(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		token, ok := resource.GetMapToken(tc.Input)
+		token, ok := source.GetMapToken(tc.Input)
 		if !reflect.DeepEqual(token, tc.Result.Token) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(token), pp.Sprint(tc.Result.Token), tc.Name)
 		}
@@ -409,7 +409,7 @@ func TestGetAllMapTokens(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		token, ok := resource.GetAllMapTokens(tc.Input)
+		token, ok := source.GetAllMapTokens(tc.Input)
 		if !reflect.DeepEqual(token, tc.Result.Token) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(token), pp.Sprint(tc.Result.Token), tc.Name)
 		}

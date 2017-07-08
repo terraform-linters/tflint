@@ -7,17 +7,19 @@ import (
 
 type AwsDBInstanceReadablePasswordDetector struct {
 	*Detector
-	IssueType string
-	Target    string
-	DeepCheck bool
+	IssueType  string
+	TargetType string
+	Target     string
+	DeepCheck  bool
 }
 
 func (d *Detector) CreateAwsDBInstanceReadablePasswordDetector() *AwsDBInstanceReadablePasswordDetector {
 	return &AwsDBInstanceReadablePasswordDetector{
-		Detector:  d,
-		IssueType: issue.WARNING,
-		Target:    "aws_db_instance",
-		DeepCheck: false,
+		Detector:   d,
+		IssueType:  issue.WARNING,
+		TargetType: "resource",
+		Target:     "aws_db_instance",
+		DeepCheck:  false,
 	}
 }
 

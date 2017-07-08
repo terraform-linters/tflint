@@ -21,7 +21,6 @@ type DetectorIF interface {
 }
 
 type Detector struct {
-	Templates  map[string]*ast.File
 	Schema     []*schema.Template
 	State      *state.TFState
 	Config     *config.Config
@@ -75,16 +74,16 @@ var detectors = map[string]string{
 	"aws_route_invalid_instance":                      "CreateAwsRouteInvalidInstanceDetector",
 	"aws_route_invalid_network_interface":             "CreateAwsRouteInvalidNetworkInterfaceDetector",
 	"aws_cloudwatch_metric_alarm_invalid_unit":        "CreateAwsCloudWatchMetricAlarmInvalidUnitDetector",
+	"terraform_module_pinned_source":                  "CreateTerraformModulePinnedSourceDetector",
 }
 
 func NewDetector(templates map[string]*ast.File, schema []*schema.Template, state *state.TFState, tfvars []*ast.File, c *config.Config) (*Detector, error) {
-	evalConfig, err := evaluator.NewEvaluator(templates, tfvars, c)
+	evalConfig, err := evaluator.NewEvaluator(templates, schema, tfvars, c)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Detector{
-		Templates:  templates,
 		Schema:     schema,
 		State:      state,
 		Config:     c,
@@ -95,58 +94,8 @@ func NewDetector(templates map[string]*ast.File, schema []*schema.Template, stat
 	}, nil
 }
 
-func hclObjectKeyText(item *ast.ObjectItem) string {
-	return strings.Trim(item.Keys[0].Token.Text, "\"")
-}
-
-func hclLiteralToken(item *ast.ObjectItem, k string) (token.Token, error) {
-	objItems, err := hclObjectItems(item, k)
-	if err != nil {
-		return token.Token{}, err
-	}
-
-	if v, ok := objItems[0].Val.(*ast.LiteralType); ok {
-		return v.Token, nil
-	}
-	return token.Token{}, fmt.Errorf("ERROR: `%s` value is not literal", k)
-}
-
-func hclLiteralListToken(item *ast.ObjectItem, k string) ([]token.Token, error) {
-	objItems, err := hclObjectItems(item, k)
-	if err != nil {
-		return []token.Token{}, err
-	}
-
-	var tokens []token.Token
-	if v, ok := objItems[0].Val.(*ast.ListType); ok {
-		for _, node := range v.List {
-			if v, ok := node.(*ast.LiteralType); ok {
-				tokens = append(tokens, v.Token)
-			} else {
-				return []token.Token{}, fmt.Errorf("ERROR: `%s` contains not literal value", k)
-			}
-		}
-		return tokens, nil
-	}
-	return []token.Token{}, fmt.Errorf("ERROR: `%s` value is not list", k)
-}
-
-func hclObjectItems(item *ast.ObjectItem, k string) ([]*ast.ObjectItem, error) {
-	items := item.Val.(*ast.ObjectType).List.Filter(k).Items
-	if len(items) == 0 {
-		return []*ast.ObjectItem{}, fmt.Errorf("ERROR: key `%s` not found", k)
-	}
-	return items, nil
-}
-
-func IsKeyNotFound(item *ast.ObjectItem, k string) bool {
-	items := item.Val.(*ast.ObjectType).List.Filter(k).Items
-	return len(items) == 0
-}
-
 func (d *Detector) Detect() []*issue.Issue {
 	var issues = []*issue.Issue{}
-	modules := d.EvalConfig.ModuleConfig
 	for ruleName, creatorMethod := range detectors {
 		if d.Config.IgnoreRule[ruleName] {
 			d.Logger.Info(fmt.Sprintf("ignore rule `%s`", ruleName))
@@ -155,40 +104,25 @@ func (d *Detector) Detect() []*issue.Issue {
 		d.Logger.Info(fmt.Sprintf("detect by `%s`", ruleName))
 		d.detect(creatorMethod, &issues)
 
-		for name, m := range modules {
-			if d.Config.IgnoreModule[m.Source] {
-				d.Logger.Info(fmt.Sprintf("ignore module `%s`", name))
-				continue
+		for _, template := range d.Schema {
+			for _, module := range template.Modules {
+				if d.Config.IgnoreModule[module.ModuleSource] {
+					d.Logger.Info(fmt.Sprintf("ignore module `%s`", module.Id))
+					continue
+				}
+				d.Logger.Info(fmt.Sprintf("detect module `%s`", module.Id))
+				moduleDetector, err := NewDetector(map[string]*ast.File{}, module.Templates, d.State, []*ast.File{}, d.Config)
+				if err != nil {
+					d.Logger.Error(err)
+					continue
+				}
+				moduleDetector.EvalConfig = &evaluator.Evaluator{
+					Config: module.EvalConfig,
+				}
+				moduleDetector.Error = d.Error
+				moduleDetector.detect(creatorMethod, &issues)
 			}
-			d.Logger.Info(fmt.Sprintf("detect module `%s`", name))
-			moduleDetector, err := NewDetector(m.Templates, m.Schema, d.State, []*ast.File{}, d.Config)
-			if err != nil {
-				d.Logger.Error(err)
-				continue
-			}
-			moduleDetector.EvalConfig = &evaluator.Evaluator{
-				Config: m.Config,
-			}
-			moduleDetector.Error = d.Error
-			moduleDetector.detect(creatorMethod, &issues)
-
 		}
-	}
-
-	for name, m := range modules {
-		if d.Config.IgnoreModule[m.Source] {
-			d.Logger.Info(fmt.Sprintf("ignore module `%s`", name))
-			continue
-		}
-		// Special case for terraform_module_pinned_source rule
-		modulePinnedSourceRule := "terraform_module_pinned_source"
-		if d.Config.IgnoreRule[modulePinnedSourceRule] {
-			d.Logger.Info(fmt.Sprintf("ignore module `%s`", modulePinnedSourceRule))
-			continue
-		}
-		d.Logger.Info(fmt.Sprintf("run module linter `%s`", name))
-		modulePinnedSourceDetector := NewTerraformModulePinnedSourceDetector(d, m.File, m.ObjectItem)
-		modulePinnedSourceDetector.DetectPinnedModuleSource(&issues)
 	}
 
 	return issues
@@ -202,22 +136,42 @@ func (d *Detector) detect(creatorMethod string, issues *[]*issue.Issue) {
 	creator := reflect.ValueOf(d).MethodByName(creatorMethod)
 	detector := creator.Call([]reflect.Value{})[0]
 
-	if d.isSkip(reflect.Indirect(detector).FieldByName("DeepCheck").Bool(), reflect.Indirect(detector).FieldByName("Target").String()) {
+	if d.isSkip(
+		reflect.Indirect(detector).FieldByName("DeepCheck").Bool(),
+		reflect.Indirect(detector).FieldByName("TargetType").String(),
+		reflect.Indirect(detector).FieldByName("Target").String(),
+	) {
 		d.Logger.Info("skip this rule.")
 		return
 	}
-	if preprocess := detector.MethodByName("PreProcess"); preprocess.IsValid() {
-		preprocess.Call([]reflect.Value{})
+	if preProcess := detector.MethodByName("PreProcess"); preProcess.IsValid() {
+		preProcess.Call([]reflect.Value{})
 	}
 
-	for _, template := range d.Schema {
-		for _, resource := range template.Find("resource", reflect.Indirect(detector).FieldByName("Target").String()) {
-			detect := detector.MethodByName("Detect")
-			detect.Call([]reflect.Value{
-				reflect.ValueOf(resource),
-				reflect.ValueOf(issues),
-			})
+	switch reflect.Indirect(detector).FieldByName("TargetType").String() {
+	case "resource":
+		for _, template := range d.Schema {
+			for _, resource := range template.FindResources(reflect.Indirect(detector).FieldByName("Target").String()) {
+				detect := detector.MethodByName("Detect")
+				detect.Call([]reflect.Value{
+					reflect.ValueOf(resource),
+					reflect.ValueOf(issues),
+				})
+			}
 		}
+	case "module":
+		for _, template := range d.Schema {
+			for _, module := range template.Modules {
+				detect := detector.MethodByName("Detect")
+				detect.Call([]reflect.Value{
+					reflect.ValueOf(module),
+					reflect.ValueOf(issues),
+				})
+			}
+		}
+	default:
+		d.Logger.Info("Unexpected target type.")
+		return
 	}
 }
 
@@ -263,17 +217,27 @@ func (d *Detector) evalToStringTokens(t token.Token) ([]token.Token, error) {
 	return tokens, nil
 }
 
-func (d *Detector) isSkip(deepCheck bool, target string) bool {
+func (d *Detector) isSkip(deepCheck bool, targetType string, target string) bool {
 	if deepCheck && !d.Config.DeepCheck {
 		return true
 	}
 
-	targetResources := 0
-	for _, template := range d.Templates {
-		targetResources += len(template.Node.(*ast.ObjectList).Filter("resource", target).Items)
+	targets := 0
+	switch targetType {
+	case "resource":
+		for _, template := range d.Schema {
+			targets += len(template.FindResources(target))
+		}
+	case "module":
+		for _, template := range d.Schema {
+			targets += len(template.Modules)
+		}
+	default:
+		d.Logger.Info("Unexpected target type.")
 	}
-	if targetResources == 0 {
-		d.Logger.Info("target resources are not found.")
+
+	if targets == 0 {
+		d.Logger.Info("targets are not found.")
 		return true
 	}
 	return false

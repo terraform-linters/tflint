@@ -10,6 +10,7 @@ import (
 type AwsALBDuplicateNameDetector struct {
 	*Detector
 	IssueType     string
+	TargetType    string
 	Target        string
 	DeepCheck     bool
 	loadBalancers map[string]bool
@@ -19,6 +20,7 @@ func (d *Detector) CreateAwsALBDuplicateNameDetector() *AwsALBDuplicateNameDetec
 	return &AwsALBDuplicateNameDetector{
 		Detector:      d,
 		IssueType:     issue.ERROR,
+		TargetType:    "resource",
 		Target:        "aws_alb",
 		DeepCheck:     true,
 		loadBalancers: map[string]bool{},
