@@ -23,32 +23,36 @@ func TestCheckstylePrint(t *testing.T) {
 			Name: "multi files",
 			Input: []*issue.Issue{
 				{
-					File:    "template.tf",
-					Line:    1,
-					Type:    "ERROR",
-					Message: "example error message",
+					Detector: "error detector",
+					File:     "template.tf",
+					Line:     1,
+					Type:     "ERROR",
+					Message:  "example error message",
 				},
 				{
-					File:    "application.tf",
-					Line:    10,
-					Type:    "NOTICE",
-					Message: "example notice message",
+					Detector: "notice detector",
+					File:     "application.tf",
+					Line:     10,
+					Type:     "NOTICE",
+					Message:  "example notice message",
+					Link:     "https://github.com/wata727/tflint",
 				},
 				{
-					File:    "template.tf",
-					Line:    3,
-					Type:    "WARNING",
-					Message: "example warning message",
+					Detector: "warning detector",
+					File:     "template.tf",
+					Line:     3,
+					Type:     "WARNING",
+					Message:  "example warning message",
 				},
 			},
 			Result: `<?xml version="1.0" encoding="UTF-8"?>
 <checkstyle>
   <file name="application.tf">
-    <error line="10" severity="info" message="example notice message"></error>
+    <error detector="notice detector" line="10" severity="info" message="example notice message" link="https://github.com/wata727/tflint"></error>
   </file>
   <file name="template.tf">
-    <error line="1" severity="error" message="example error message"></error>
-    <error line="3" severity="warning" message="example warning message"></error>
+    <error detector="error detector" line="1" severity="error" message="example error message" link=""></error>
+    <error detector="warning detector" line="3" severity="warning" message="example warning message" link=""></error>
   </file>
 </checkstyle>`,
 		},

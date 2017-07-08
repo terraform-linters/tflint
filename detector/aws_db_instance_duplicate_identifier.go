@@ -9,22 +9,20 @@ import (
 
 type AwsDBInstanceDuplicateIdentifierDetector struct {
 	*Detector
-	IssueType   string
-	TargetType  string
-	Target      string
-	DeepCheck   bool
 	identifiers map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstanceDuplicateIdentifierDetector() *AwsDBInstanceDuplicateIdentifierDetector {
-	return &AwsDBInstanceDuplicateIdentifierDetector{
+	nd := &AwsDBInstanceDuplicateIdentifierDetector{
 		Detector:    d,
-		IssueType:   issue.ERROR,
-		TargetType:  "resource",
-		Target:      "aws_db_instance",
-		DeepCheck:   true,
 		identifiers: map[string]bool{},
 	}
+	nd.Name = "aws_db_instance_duplicate_identifier"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_db_instance"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsDBInstanceDuplicateIdentifierDetector) PreProcess() {
@@ -53,10 +51,11 @@ func (d *AwsDBInstanceDuplicateIdentifierDetector) Detect(resource *schema.Resou
 
 	if d.identifiers[identifier] && !d.State.Exists(d.Target, resource.Id) {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is duplicate identifier. It must be unique.", identifier),
-			Line:    identifierToken.Pos.Line,
-			File:    identifierToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is duplicate identifier. It must be unique.", identifier),
+			Line:     identifierToken.Pos.Line,
+			File:     identifierToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

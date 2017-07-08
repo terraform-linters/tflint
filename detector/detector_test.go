@@ -53,9 +53,7 @@ func TestDetect(t *testing.T) {
 		},
 	}
 
-	detectors = map[string]string{
-		"test_rule": "CreateTestDetector",
-	}
+	detectorFactories = []string{"CreateTestDetector"}
 
 	for _, tc := range cases {
 		prev, _ := filepath.Abs(".")
@@ -271,6 +269,7 @@ variable "array" {
 
 func TestIsSkip(t *testing.T) {
 	type Input struct {
+		RuleName          string
 		File              string
 		DeepCheckMode     bool
 		DeepCheckDetector bool
@@ -286,6 +285,7 @@ func TestIsSkip(t *testing.T) {
 		{
 			Name: "return false when enabled deep checking",
 			Input: Input{
+				RuleName: "aws_instance_invalid_type",
 				File: `
 resource "aws_instance" "web" {
     ami = "ami-12345"
@@ -300,6 +300,7 @@ resource "aws_instance" "web" {
 		{
 			Name: "return true when disabled deep checking",
 			Input: Input{
+				RuleName: "aws_instance_invalid_type",
 				File: `
 resource "aws_instance" "web" {
     ami = "ami-12345"
@@ -314,6 +315,7 @@ resource "aws_instance" "web" {
 		{
 			Name: "return false when disabled deep checking but not deep check detector",
 			Input: Input{
+				RuleName: "aws_instance_invalid_type",
 				File: `
 resource "aws_instance" "web" {
     ami = "ami-12345"
@@ -328,6 +330,7 @@ resource "aws_instance" "web" {
 		{
 			Name: "return false when enabled deep checking and not deep check detector",
 			Input: Input{
+				RuleName: "aws_instance_invalid_type",
 				File: `
 resource "aws_instance" "web" {
     ami = "ami-12345"
@@ -342,6 +345,7 @@ resource "aws_instance" "web" {
 		{
 			Name: "return true when target resources are not found",
 			Input: Input{
+				RuleName: "aws_instance_invalid_type",
 				File: `
 resource "aws_instance" "web" {
     ami = "ami-12345"
@@ -356,6 +360,7 @@ resource "aws_instance" "web" {
 		{
 			Name: "return false when modules are found",
 			Input: Input{
+				RuleName: "aws_instance_invalid_type",
 				File: `
 module "ec2_instance" {
     source = "./ec2_instance"
@@ -369,6 +374,7 @@ module "ec2_instance" {
 		{
 			Name: "return true when target modules are not found",
 			Input: Input{
+				RuleName: "aws_instance_invalid_type",
 				File: `
 resource "aws_instance" "web" {
     ami = "ami-12345"
@@ -394,7 +400,12 @@ resource "aws_instance" "web" {
 		}
 		d.Config.DeepCheck = tc.Input.DeepCheckMode
 
-		result := d.isSkip(tc.Input.DeepCheckDetector, tc.Input.TargetType, tc.Input.Target)
+		result := d.isSkip(
+			tc.Input.RuleName,
+			tc.Input.DeepCheckDetector,
+			tc.Input.TargetType,
+			tc.Input.Target,
+		)
 		if result != tc.Result {
 			t.Fatalf("\nBad: %t\nExpected: %t\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}

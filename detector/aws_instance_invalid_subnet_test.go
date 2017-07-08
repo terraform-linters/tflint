@@ -36,10 +36,11 @@ resource "aws_instance" "web" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"subnet-1234abcd\" is invalid subnet ID.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_instance_invalid_subnet",
+					Type:     "ERROR",
+					Message:  "\"subnet-1234abcd\" is invalid subnet ID.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

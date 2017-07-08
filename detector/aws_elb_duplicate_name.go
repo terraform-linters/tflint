@@ -9,22 +9,20 @@ import (
 
 type AwsELBDuplicateNameDetector struct {
 	*Detector
-	IssueType     string
-	TargetType    string
-	Target        string
-	DeepCheck     bool
 	loadBalancers map[string]bool
 }
 
 func (d *Detector) CreateAwsELBDuplicateNameDetector() *AwsELBDuplicateNameDetector {
-	return &AwsELBDuplicateNameDetector{
+	nd := &AwsELBDuplicateNameDetector{
 		Detector:      d,
-		IssueType:     issue.ERROR,
-		TargetType:    "resource",
-		Target:        "aws_elb",
-		DeepCheck:     true,
 		loadBalancers: map[string]bool{},
 	}
+	nd.Name = "aws_elb_duplicate_name"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_elb"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsELBDuplicateNameDetector) PreProcess() {
@@ -53,10 +51,11 @@ func (d *AwsELBDuplicateNameDetector) Detect(resource *schema.Resource, issues *
 
 	if d.loadBalancers[name] && !d.State.Exists(d.Target, resource.Id) {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),
-			Line:    nameToken.Pos.Line,
-			File:    nameToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),
+			Line:     nameToken.Pos.Line,
+			File:     nameToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

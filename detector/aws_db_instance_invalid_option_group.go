@@ -9,22 +9,20 @@ import (
 
 type AwsDBInstanceInvalidOptionGroupDetector struct {
 	*Detector
-	IssueType    string
-	TargetType   string
-	Target       string
-	DeepCheck    bool
 	optionGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstanceInvalidOptionGroupDetector() *AwsDBInstanceInvalidOptionGroupDetector {
-	return &AwsDBInstanceInvalidOptionGroupDetector{
+	nd := &AwsDBInstanceInvalidOptionGroupDetector{
 		Detector:     d,
-		IssueType:    issue.ERROR,
-		TargetType:   "resource",
-		Target:       "aws_db_instance",
-		DeepCheck:    true,
 		optionGroups: map[string]bool{},
 	}
+	nd.Name = "aws_db_instance_invalid_option_group"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_db_instance"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsDBInstanceInvalidOptionGroupDetector) PreProcess() {
@@ -53,10 +51,11 @@ func (d *AwsDBInstanceInvalidOptionGroupDetector) Detect(resource *schema.Resour
 
 	if !d.optionGroups[optionGroup] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid option group name.", optionGroup),
-			Line:    optionGroupToken.Pos.Line,
-			File:    optionGroupToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid option group name.", optionGroup),
+			Line:     optionGroupToken.Pos.Line,
+			File:     optionGroupToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

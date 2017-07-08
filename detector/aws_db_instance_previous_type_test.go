@@ -23,10 +23,12 @@ resource "aws_db_instance" "mysql" {
 }`,
 			Issues: []*issue.Issue{
 				{
-					Type:    "WARNING",
-					Message: "\"db.t1.micro\" is previous generation instance type.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_db_instance_previous_type",
+					Type:     "WARNING",
+					Message:  "\"db.t1.micro\" is previous generation instance type.",
+					Line:     3,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_db_instance_previous_type.md",
 				},
 			},
 		},

@@ -23,10 +23,12 @@ resource "aws_instance" "web" {
 }`,
 			Issues: []*issue.Issue{
 				{
-					Type:    "NOTICE",
-					Message: "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate instance. (Only less than Terraform 0.8.8)",
-					Line:    2,
-					File:    "test.tf",
+					Detector: "aws_instance_not_specified_iam_profile",
+					Type:     "NOTICE",
+					Message:  "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate instance. (Only less than Terraform 0.8.8)",
+					Line:     2,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_not_specified_iam_profile.md",
 				},
 			},
 		},

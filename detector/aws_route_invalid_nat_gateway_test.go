@@ -36,10 +36,11 @@ resource "aws_route" "foo" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"nat-1234abcd\" is invalid NAT gateway ID.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_route_invalid_nat_gateway",
+					Type:     "ERROR",
+					Message:  "\"nat-1234abcd\" is invalid NAT gateway ID.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

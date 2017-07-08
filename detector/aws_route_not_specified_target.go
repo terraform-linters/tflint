@@ -7,20 +7,17 @@ import (
 
 type AwsRouteNotSpecifiedTargetDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
 }
 
 func (d *Detector) CreateAwsRouteNotSpecifiedTargetDetector() *AwsRouteNotSpecifiedTargetDetector {
-	return &AwsRouteNotSpecifiedTargetDetector{
-		Detector:   d,
-		IssueType:  issue.ERROR,
-		TargetType: "resource",
-		Target:     "aws_route",
-		DeepCheck:  false,
-	}
+	nd := &AwsRouteNotSpecifiedTargetDetector{Detector: d}
+	nd.Name = "aws_route_not_specified_target"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_route"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_route_not_specified_target.md"
+	return nd
 }
 
 func (d *AwsRouteNotSpecifiedTargetDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
@@ -40,10 +37,12 @@ func (d *AwsRouteNotSpecifiedTargetDetector) Detect(resource *schema.Resource, i
 	}
 
 	issue := &issue.Issue{
-		Type:    d.IssueType,
-		Message: "route target is not specified, each route must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id.",
-		Line:    resource.Pos.Line,
-		File:    resource.Pos.Filename,
+		Detector: d.Name,
+		Type:     d.IssueType,
+		Message:  "route target is not specified, each route must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id.",
+		Line:     resource.Pos.Line,
+		File:     resource.Pos.Filename,
+		Link:     d.Link,
 	}
 	*issues = append(*issues, issue)
 }

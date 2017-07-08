@@ -23,10 +23,12 @@ resource "aws_instance" "web" {
 }`,
 			Issues: []*issue.Issue{
 				{
-					Type:    "WARNING",
-					Message: "\"t1.micro\" is previous generation instance type.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_instance_previous_type",
+					Type:     "WARNING",
+					Message:  "\"t1.micro\" is previous generation instance type.",
+					Line:     3,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_previous_type.md",
 				},
 			},
 		},

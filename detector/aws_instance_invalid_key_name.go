@@ -9,22 +9,20 @@ import (
 
 type AwsInstanceInvalidKeyNameDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
-	keypairs   map[string]bool
+	keypairs map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidKeyNameDetector() *AwsInstanceInvalidKeyNameDetector {
-	return &AwsInstanceInvalidKeyNameDetector{
-		Detector:   d,
-		IssueType:  issue.ERROR,
-		TargetType: "resource",
-		Target:     "aws_instance",
-		DeepCheck:  true,
-		keypairs:   map[string]bool{},
+	nd := &AwsInstanceInvalidKeyNameDetector{
+		Detector: d,
+		keypairs: map[string]bool{},
 	}
+	nd.Name = "aws_instance_invalid_key_name"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_instance"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsInstanceInvalidKeyNameDetector) PreProcess() {
@@ -53,10 +51,11 @@ func (d *AwsInstanceInvalidKeyNameDetector) Detect(resource *schema.Resource, is
 
 	if !d.keypairs[keyName] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid key name.", keyName),
-			Line:    keyNameToken.Pos.Line,
-			File:    keyNameToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid key name.", keyName),
+			Line:     keyNameToken.Pos.Line,
+			File:     keyNameToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

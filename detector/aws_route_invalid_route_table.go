@@ -9,22 +9,20 @@ import (
 
 type AwsRouteInvalidRouteTableDetector struct {
 	*Detector
-	IssueType   string
-	TargetType  string
-	Target      string
-	DeepCheck   bool
 	routeTables map[string]bool
 }
 
 func (d *Detector) CreateAwsRouteInvalidRouteTableDetector() *AwsRouteInvalidRouteTableDetector {
-	return &AwsRouteInvalidRouteTableDetector{
+	nd := &AwsRouteInvalidRouteTableDetector{
 		Detector:    d,
-		IssueType:   issue.ERROR,
-		TargetType:  "resource",
-		Target:      "aws_route",
-		DeepCheck:   true,
 		routeTables: map[string]bool{},
 	}
+	nd.Name = "aws_route_invalid_route_table"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_route"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsRouteInvalidRouteTableDetector) PreProcess() {
@@ -53,10 +51,11 @@ func (d *AwsRouteInvalidRouteTableDetector) Detect(resource *schema.Resource, is
 
 	if !d.routeTables[routeTable] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid route table ID.", routeTable),
-			Line:    routeTableToken.Pos.Line,
-			File:    routeTableToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid route table ID.", routeTable),
+			Line:     routeTableToken.Pos.Line,
+			File:     routeTableToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

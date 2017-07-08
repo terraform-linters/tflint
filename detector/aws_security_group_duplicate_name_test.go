@@ -59,10 +59,11 @@ resource "aws_security_group" "test" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"default\" is duplicate name. It must be unique.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_security_group_duplicate_name",
+					Type:     "ERROR",
+					Message:  "\"default\" is duplicate name. It must be unique.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},
@@ -212,10 +213,11 @@ resource "aws_security_group" "test" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"default\" is duplicate name. It must be unique.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_security_group_duplicate_name",
+					Type:     "ERROR",
+					Message:  "\"default\" is duplicate name. It must be unique.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},
@@ -316,10 +318,11 @@ resource "aws_security_group" "test" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"default\" is duplicate name. It must be unique.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_security_group_duplicate_name",
+					Type:     "ERROR",
+					Message:  "\"default\" is duplicate name. It must be unique.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

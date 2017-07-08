@@ -7,20 +7,17 @@ import (
 
 type AwsDBInstanceReadablePasswordDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
 }
 
 func (d *Detector) CreateAwsDBInstanceReadablePasswordDetector() *AwsDBInstanceReadablePasswordDetector {
-	return &AwsDBInstanceReadablePasswordDetector{
-		Detector:   d,
-		IssueType:  issue.WARNING,
-		TargetType: "resource",
-		Target:     "aws_db_instance",
-		DeepCheck:  false,
-	}
+	nd := &AwsDBInstanceReadablePasswordDetector{Detector: d}
+	nd.Name = "aws_db_instance_readable_password"
+	nd.IssueType = issue.WARNING
+	nd.TargetType = "resource"
+	nd.Target = "aws_db_instance"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_db_instance_readable_password.md"
+	return nd
 }
 
 func (d *AwsDBInstanceReadablePasswordDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
@@ -35,10 +32,12 @@ func (d *AwsDBInstanceReadablePasswordDetector) Detect(resource *schema.Resource
 	}
 
 	issue := &issue.Issue{
-		Type:    d.IssueType,
-		Message: "Password for the master DB user is readable. recommend using environment variables.",
-		Line:    passwordToken.Pos.Line,
-		File:    passwordToken.Pos.Filename,
+		Detector: d.Name,
+		Type:     d.IssueType,
+		Message:  "Password for the master DB user is readable. recommend using environment variables.",
+		Line:     passwordToken.Pos.Line,
+		File:     passwordToken.Pos.Filename,
+		Link:     d.Link,
 	}
 	*issues = append(*issues, issue)
 }

@@ -7,20 +7,17 @@ import (
 
 type AwsInstanceDefaultStandardVolumeDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
 }
 
 func (d *Detector) CreateAwsInstanceDefaultStandardVolumeDetector() *AwsInstanceDefaultStandardVolumeDetector {
-	return &AwsInstanceDefaultStandardVolumeDetector{
-		Detector:   d,
-		IssueType:  issue.WARNING,
-		TargetType: "resource",
-		Target:     "aws_instance",
-		DeepCheck:  false,
-	}
+	nd := &AwsInstanceDefaultStandardVolumeDetector{Detector: d}
+	nd.Name = "aws_instance_default_standard_volume"
+	nd.IssueType = issue.WARNING
+	nd.TargetType = "resource"
+	nd.Target = "aws_instance"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md"
+	return nd
 }
 
 func (d *AwsInstanceDefaultStandardVolumeDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
@@ -31,10 +28,12 @@ func (d *AwsInstanceDefaultStandardVolumeDetector) Detect(resource *schema.Resou
 			for i, deviceToken := range deviceTokens {
 				if deviceToken["volume_type"].Text == "" {
 					issue := &issue.Issue{
-						Type:    d.IssueType,
-						Message: "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
-						Line:    resource.Attrs[device].Poses[i].Line,
-						File:    resource.Attrs[device].Poses[i].Filename,
+						Detector: d.Name,
+						Type:     d.IssueType,
+						Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
+						Line:     resource.Attrs[device].Poses[i].Line,
+						File:     resource.Attrs[device].Poses[i].Filename,
+						Link:     d.Link,
 					}
 					*issues = append(*issues, issue)
 				}

@@ -10,22 +10,20 @@ import (
 
 type AwsELBInvalidSubnetDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
-	subnets    map[string]bool
+	subnets map[string]bool
 }
 
 func (d *Detector) CreateAwsELBInvalidSubnetDetector() *AwsELBInvalidSubnetDetector {
-	return &AwsELBInvalidSubnetDetector{
-		Detector:   d,
-		IssueType:  issue.ERROR,
-		TargetType: "resource",
-		Target:     "aws_elb",
-		DeepCheck:  true,
-		subnets:    map[string]bool{},
+	nd := &AwsELBInvalidSubnetDetector{
+		Detector: d,
+		subnets:  map[string]bool{},
 	}
+	nd.Name = "aws_elb_invalid_subnet"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_elb"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsELBInvalidSubnetDetector) PreProcess() {
@@ -72,10 +70,11 @@ func (d *AwsELBInvalidSubnetDetector) Detect(resource *schema.Resource, issues *
 		}
 		if !d.subnets[subnet] {
 			issue := &issue.Issue{
-				Type:    d.IssueType,
-				Message: fmt.Sprintf("\"%s\" is invalid subnet ID.", subnet),
-				Line:    subnetToken.Pos.Line,
-				File:    subnetToken.Pos.Filename,
+				Detector: d.Name,
+				Type:     d.IssueType,
+				Message:  fmt.Sprintf("\"%s\" is invalid subnet ID.", subnet),
+				Line:     subnetToken.Pos.Line,
+				File:     subnetToken.Pos.Filename,
 			}
 			*issues = append(*issues, issue)
 		}

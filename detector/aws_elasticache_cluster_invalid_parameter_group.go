@@ -9,22 +9,20 @@ import (
 
 type AwsElastiCacheClusterInvalidParameterGroupDetector struct {
 	*Detector
-	IssueType            string
-	TargetType           string
-	Target               string
-	DeepCheck            bool
 	cacheParameterGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterInvalidParameterGroupDetector() *AwsElastiCacheClusterInvalidParameterGroupDetector {
-	return &AwsElastiCacheClusterInvalidParameterGroupDetector{
+	nd := &AwsElastiCacheClusterInvalidParameterGroupDetector{
 		Detector:             d,
-		IssueType:            issue.ERROR,
-		TargetType:           "resource",
-		Target:               "aws_elasticache_cluster",
-		DeepCheck:            true,
 		cacheParameterGroups: map[string]bool{},
 	}
+	nd.Name = "aws_elasticache_cluster_invalid_parameter_group"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_elasticache_cluster"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsElastiCacheClusterInvalidParameterGroupDetector) PreProcess() {
@@ -53,10 +51,11 @@ func (d *AwsElastiCacheClusterInvalidParameterGroupDetector) Detect(resource *sc
 
 	if !d.cacheParameterGroups[parameterGroup] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid parameter group name.", parameterGroup),
-			Line:    parameterGroupToken.Pos.Line,
-			File:    parameterGroupToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid parameter group name.", parameterGroup),
+			Line:     parameterGroupToken.Pos.Line,
+			File:     parameterGroupToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

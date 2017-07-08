@@ -23,10 +23,12 @@ resource "aws_route" "foo" {
 }`,
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "route target is not specified, each route must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id.",
-					Line:    2,
-					File:    "test.tf",
+					Detector: "aws_route_not_specified_target",
+					Type:     "ERROR",
+					Message:  "route target is not specified, each route must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id.",
+					Line:     2,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_route_not_specified_target.md",
 				},
 			},
 		},

@@ -9,22 +9,20 @@ import (
 
 type AwsElastiCacheClusterDuplicateIDDetector struct {
 	*Detector
-	IssueType     string
-	TargetType    string
-	Target        string
-	DeepCheck     bool
 	cacheClusters map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterDuplicateIDDetector() *AwsElastiCacheClusterDuplicateIDDetector {
-	return &AwsElastiCacheClusterDuplicateIDDetector{
+	nd := &AwsElastiCacheClusterDuplicateIDDetector{
 		Detector:      d,
-		IssueType:     issue.ERROR,
-		TargetType:    "resource",
-		Target:        "aws_elasticache_cluster",
-		DeepCheck:     true,
 		cacheClusters: map[string]bool{},
 	}
+	nd.Name = "aws_elasticache_cluster_duplicate_id"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_elasticache_cluster"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsElastiCacheClusterDuplicateIDDetector) PreProcess() {
@@ -53,10 +51,11 @@ func (d *AwsElastiCacheClusterDuplicateIDDetector) Detect(resource *schema.Resou
 
 	if d.cacheClusters[id] && !d.State.Exists(d.Target, resource.Id) {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is duplicate Cluster ID. It must be unique.", id),
-			Line:    idToken.Pos.Line,
-			File:    idToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is duplicate Cluster ID. It must be unique.", id),
+			Line:     idToken.Pos.Line,
+			File:     idToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

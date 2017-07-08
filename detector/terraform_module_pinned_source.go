@@ -10,18 +10,16 @@ import (
 
 type TerraformModulePinnedSourceDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	DeepCheck  bool
 }
 
 func (d *Detector) CreateTerraformModulePinnedSourceDetector() *TerraformModulePinnedSourceDetector {
-	return &TerraformModulePinnedSourceDetector{
-		Detector:   d,
-		IssueType:  issue.WARNING,
-		TargetType: "module",
-		DeepCheck:  false,
-	}
+	nd := &TerraformModulePinnedSourceDetector{Detector: d}
+	nd.Name = "terraform_module_pinned_source"
+	nd.IssueType = issue.WARNING
+	nd.TargetType = "module"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/terraform_module_pinned_source.md"
+	return nd
 }
 
 func (d *TerraformModulePinnedSourceDetector) Detect(module *schema.Module, issues *[]*issue.Issue) {
@@ -45,18 +43,22 @@ func (d *TerraformModulePinnedSourceDetector) detectGitSource(module *schema.Mod
 	if strings.Contains(lower, "ref=") {
 		if strings.Contains(lower, "ref=master") {
 			return &issue.Issue{
-				Type:    d.IssueType,
-				Message: fmt.Sprintf("Module source \"%s\" uses default ref \"master\"", module.ModuleSource),
-				Line:    sourceToken.Pos.Line,
-				File:    sourceToken.Pos.Filename,
+				Detector: d.Name,
+				Type:     d.IssueType,
+				Message:  fmt.Sprintf("Module source \"%s\" uses default ref \"master\"", module.ModuleSource),
+				Line:     sourceToken.Pos.Line,
+				File:     sourceToken.Pos.Filename,
+				Link:     d.Link,
 			}
 		}
 	} else {
 		return &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("Module source \"%s\" is not pinned", module.ModuleSource),
-			Line:    sourceToken.Pos.Line,
-			File:    sourceToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("Module source \"%s\" is not pinned", module.ModuleSource),
+			Line:     sourceToken.Pos.Line,
+			File:     sourceToken.Pos.Filename,
+			Link:     d.Link,
 		}
 	}
 
@@ -70,18 +72,22 @@ func (d *TerraformModulePinnedSourceDetector) detectMercurialSource(module *sche
 	if strings.Contains(lower, "rev=") {
 		if strings.Contains(lower, "rev=default") {
 			return &issue.Issue{
-				Type:    issue.WARNING,
-				Message: fmt.Sprintf("Module source \"%s\" uses default rev \"default\"", module.ModuleSource),
-				Line:    sourceToken.Pos.Line,
-				File:    sourceToken.Pos.Filename,
+				Detector: d.Name,
+				Type:     issue.WARNING,
+				Message:  fmt.Sprintf("Module source \"%s\" uses default rev \"default\"", module.ModuleSource),
+				Line:     sourceToken.Pos.Line,
+				File:     sourceToken.Pos.Filename,
+				Link:     d.Link,
 			}
 		}
 	} else {
 		return &issue.Issue{
-			Type:    issue.WARNING,
-			Message: fmt.Sprintf("Module source \"%s\" is not pinned", module.ModuleSource),
-			Line:    sourceToken.Pos.Line,
-			File:    sourceToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     issue.WARNING,
+			Message:  fmt.Sprintf("Module source \"%s\" is not pinned", module.ModuleSource),
+			Line:     sourceToken.Pos.Line,
+			File:     sourceToken.Pos.Filename,
+			Link:     d.Link,
 		}
 	}
 

@@ -10,20 +10,17 @@ import (
 
 type AwsDBInstanceDefaultParameterGroupDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
 }
 
 func (d *Detector) CreateAwsDBInstanceDefaultParameterGroupDetector() *AwsDBInstanceDefaultParameterGroupDetector {
-	return &AwsDBInstanceDefaultParameterGroupDetector{
-		Detector:   d,
-		IssueType:  issue.NOTICE,
-		TargetType: "resource",
-		Target:     "aws_db_instance",
-		DeepCheck:  false,
-	}
+	nd := &AwsDBInstanceDefaultParameterGroupDetector{Detector: d}
+	nd.Name = "aws_db_instance_default_parameter_group"
+	nd.IssueType = issue.NOTICE
+	nd.TargetType = "resource"
+	nd.Target = "aws_db_instance"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_db_instance_default_parameter_group.md"
+	return nd
 }
 
 func (d *AwsDBInstanceDefaultParameterGroupDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
@@ -39,10 +36,12 @@ func (d *AwsDBInstanceDefaultParameterGroupDetector) Detect(resource *schema.Res
 
 	if d.isDefaultDbParameterGroup(parameterGroup) {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is default parameter group. You cannot edit it.", parameterGroup),
-			Line:    parameterGroupToken.Pos.Line,
-			File:    parameterGroupToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is default parameter group. You cannot edit it.", parameterGroup),
+			Line:     parameterGroupToken.Pos.Line,
+			File:     parameterGroupToken.Pos.Filename,
+			Link:     d.Link,
 		}
 		*issues = append(*issues, issue)
 	}

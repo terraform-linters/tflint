@@ -9,22 +9,20 @@ import (
 
 type AwsRouteInvalidNetworkInterfaceDetector struct {
 	*Detector
-	IssueType         string
-	TargetType        string
-	Target            string
-	DeepCheck         bool
 	networkInterfaces map[string]bool
 }
 
 func (d *Detector) CreateAwsRouteInvalidNetworkInterfaceDetector() *AwsRouteInvalidNetworkInterfaceDetector {
-	return &AwsRouteInvalidNetworkInterfaceDetector{
+	nd := &AwsRouteInvalidNetworkInterfaceDetector{
 		Detector:          d,
-		IssueType:         issue.ERROR,
-		TargetType:        "resource",
-		Target:            "aws_route",
-		DeepCheck:         true,
 		networkInterfaces: map[string]bool{},
 	}
+	nd.Name = "aws_route_invalid_network_interface"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_route"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsRouteInvalidNetworkInterfaceDetector) PreProcess() {
@@ -53,10 +51,11 @@ func (d *AwsRouteInvalidNetworkInterfaceDetector) Detect(resource *schema.Resour
 
 	if !d.networkInterfaces[networkInterface] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid network interface ID.", networkInterface),
-			Line:    networkInterfaceToken.Pos.Line,
-			File:    networkInterfaceToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid network interface ID.", networkInterface),
+			Line:     networkInterfaceToken.Pos.Line,
+			File:     networkInterfaceToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

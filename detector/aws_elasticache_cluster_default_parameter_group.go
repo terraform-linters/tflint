@@ -10,20 +10,17 @@ import (
 
 type AwsElastiCacheClusterDefaultParameterGroupDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterDefaultParameterGroupDetector() *AwsElastiCacheClusterDefaultParameterGroupDetector {
-	return &AwsElastiCacheClusterDefaultParameterGroupDetector{
-		Detector:   d,
-		IssueType:  issue.NOTICE,
-		TargetType: "resource",
-		Target:     "aws_elasticache_cluster",
-		DeepCheck:  false,
-	}
+	nd := &AwsElastiCacheClusterDefaultParameterGroupDetector{Detector: d}
+	nd.Name = "aws_elasticache_cluster_default_parameter_group"
+	nd.IssueType = issue.NOTICE
+	nd.TargetType = "resource"
+	nd.Target = "aws_elasticache_cluster"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_elasticache_cluster_default_parameter_group.md"
+	return nd
 }
 
 func (d *AwsElastiCacheClusterDefaultParameterGroupDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
@@ -39,10 +36,12 @@ func (d *AwsElastiCacheClusterDefaultParameterGroupDetector) Detect(resource *sc
 
 	if d.isDefaultCacheParameterGroup(parameterGroup) {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is default parameter group. You cannot edit it.", parameterGroup),
-			Line:    parameterGroupToken.Pos.Line,
-			File:    parameterGroupToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is default parameter group. You cannot edit it.", parameterGroup),
+			Line:     parameterGroupToken.Pos.Line,
+			File:     parameterGroupToken.Pos.Filename,
+			Link:     d.Link,
 		}
 		*issues = append(*issues, issue)
 	}

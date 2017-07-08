@@ -7,20 +7,17 @@ import (
 
 type AwsRouteSpecifiedMultipleTargetsDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
 }
 
 func (d *Detector) CreateAwsRouteSpecifiedMultipleTargetsDetector() *AwsRouteSpecifiedMultipleTargetsDetector {
-	return &AwsRouteSpecifiedMultipleTargetsDetector{
-		Detector:   d,
-		IssueType:  issue.ERROR,
-		TargetType: "resource",
-		Target:     "aws_route",
-		DeepCheck:  false,
-	}
+	nd := &AwsRouteSpecifiedMultipleTargetsDetector{Detector: d}
+	nd.Name = "aws_route_specified_multiple_targets"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_route"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_route_specified_multiple_targets.md"
+	return nd
 }
 
 func (d *AwsRouteSpecifiedMultipleTargetsDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
@@ -32,10 +29,12 @@ func (d *AwsRouteSpecifiedMultipleTargetsDetector) Detect(resource *schema.Resou
 			targetCount++
 			if targetCount > 1 {
 				issue := &issue.Issue{
-					Type:    d.IssueType,
-					Message: "more than 1 target specified, only 1 routing target can be specified.",
-					Line:    resource.Pos.Line,
-					File:    resource.Pos.Filename,
+					Detector: d.Name,
+					Type:     d.IssueType,
+					Message:  "more than 1 target specified, only 1 routing target can be specified.",
+					Line:     resource.Pos.Line,
+					File:     resource.Pos.Filename,
+					Link:     d.Link,
 				}
 				*issues = append(*issues, issue)
 				return

@@ -17,20 +17,16 @@ import (
 
 type TestDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
 }
 
 func (d *Detector) CreateTestDetector() *TestDetector {
-	return &TestDetector{
-		Detector:   d,
-		IssueType:  "TEST",
-		TargetType: "resource",
-		Target:     "aws_instance",
-		DeepCheck:  false,
-	}
+	nd := &TestDetector{Detector: d}
+	nd.Name = "test_rule"
+	nd.IssueType = "TEST"
+	nd.TargetType = "resource"
+	nd.Target = "aws_instance"
+	nd.DeepCheck = false
+	return nd
 }
 
 func (d *TestDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {

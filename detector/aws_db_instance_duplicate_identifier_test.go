@@ -37,10 +37,11 @@ resource "aws_db_instance" "test" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"my-db\" is duplicate identifier. It must be unique.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_db_instance_duplicate_identifier",
+					Type:     "ERROR",
+					Message:  "\"my-db\" is duplicate identifier. It must be unique.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

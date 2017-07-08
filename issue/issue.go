@@ -3,10 +3,12 @@ package issue
 import "fmt"
 
 type Issue struct {
-	Type    string `json:"type"`
-	Message string `json:"message"`
-	Line    int    `json:"line"`
-	File    string `json:"file"`
+	Detector string `json:"detector"`
+	Type     string `json:"type"`
+	Message  string `json:"message"`
+	Line     int    `json:"line"`
+	File     string `json:"file"`
+	Link     string `json:"link"`
 }
 
 const ERROR = "ERROR"

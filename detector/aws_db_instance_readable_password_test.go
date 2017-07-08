@@ -23,10 +23,12 @@ resource "aws_db_instance" "mysql" {
 }`,
 			Issues: []*issue.Issue{
 				{
-					Type:    "WARNING",
-					Message: "Password for the master DB user is readable. recommend using environment variables.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_db_instance_readable_password",
+					Type:     "WARNING",
+					Message:  "Password for the master DB user is readable. recommend using environment variables.",
+					Line:     3,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_db_instance_readable_password.md",
 				},
 			},
 		},

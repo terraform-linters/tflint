@@ -9,22 +9,21 @@ import (
 
 type AwsElastiCacheClusterPreviousTypeDetector struct {
 	*Detector
-	IssueType         string
-	TargetType        string
-	Target            string
-	DeepCheck         bool
 	previousNodeTypes map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterPreviousTypeDetector() *AwsElastiCacheClusterPreviousTypeDetector {
-	return &AwsElastiCacheClusterPreviousTypeDetector{
+	nd := &AwsElastiCacheClusterPreviousTypeDetector{
 		Detector:          d,
-		IssueType:         issue.WARNING,
-		TargetType:        "resource",
-		Target:            "aws_elasticache_cluster",
-		DeepCheck:         false,
 		previousNodeTypes: map[string]bool{},
 	}
+	nd.Name = "aws_elasticache_cluster_previous_type"
+	nd.IssueType = issue.WARNING
+	nd.TargetType = "resource"
+	nd.Target = "aws_elasticache_cluster"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_elasticache_cluster_previous_type.md"
+	return nd
 }
 
 func (d *AwsElastiCacheClusterPreviousTypeDetector) PreProcess() {
@@ -54,10 +53,12 @@ func (d *AwsElastiCacheClusterPreviousTypeDetector) Detect(resource *schema.Reso
 
 	if d.previousNodeTypes[nodeType] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is previous generation node type.", nodeType),
-			Line:    nodeTypeToken.Pos.Line,
-			File:    nodeTypeToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is previous generation node type.", nodeType),
+			Line:     nodeTypeToken.Pos.Line,
+			File:     nodeTypeToken.Pos.Filename,
+			Link:     d.Link,
 		}
 		*issues = append(*issues, issue)
 	}

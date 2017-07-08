@@ -10,22 +10,20 @@ import (
 
 type AwsDBInstanceInvalidVPCSecurityGroupDetector struct {
 	*Detector
-	IssueType      string
-	TargetType     string
-	Target         string
-	DeepCheck      bool
 	securityGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstanceInvalidVPCSecurityGroupDetector() *AwsDBInstanceInvalidVPCSecurityGroupDetector {
-	return &AwsDBInstanceInvalidVPCSecurityGroupDetector{
+	nd := &AwsDBInstanceInvalidVPCSecurityGroupDetector{
 		Detector:       d,
-		IssueType:      issue.ERROR,
-		TargetType:     "resource",
-		Target:         "aws_db_instance",
-		DeepCheck:      true,
 		securityGroups: map[string]bool{},
 	}
+	nd.Name = "aws_db_instance_invalid_vpc_security_group"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_db_instance"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsDBInstanceInvalidVPCSecurityGroupDetector) PreProcess() {
@@ -71,10 +69,11 @@ func (d *AwsDBInstanceInvalidVPCSecurityGroupDetector) Detect(resource *schema.R
 		}
 		if !d.securityGroups[securityGroup] {
 			issue := &issue.Issue{
-				Type:    d.IssueType,
-				Message: fmt.Sprintf("\"%s\" is invalid security group.", securityGroup),
-				Line:    securityGroupToken.Pos.Line,
-				File:    securityGroupToken.Pos.Filename,
+				Detector: d.Name,
+				Type:     d.IssueType,
+				Message:  fmt.Sprintf("\"%s\" is invalid security group.", securityGroup),
+				Line:     securityGroupToken.Pos.Line,
+				File:     securityGroupToken.Pos.Filename,
 			}
 			*issues = append(*issues, issue)
 		}

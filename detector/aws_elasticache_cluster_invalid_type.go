@@ -9,22 +9,21 @@ import (
 
 type AwsElastiCacheClusterInvalidTypeDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
-	nodeTypes  map[string]bool
+	nodeTypes map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterInvalidTypeDetector() *AwsElastiCacheClusterInvalidTypeDetector {
-	return &AwsElastiCacheClusterInvalidTypeDetector{
-		Detector:   d,
-		IssueType:  issue.ERROR,
-		TargetType: "resource",
-		Target:     "aws_elasticache_cluster",
-		DeepCheck:  false,
-		nodeTypes:  map[string]bool{},
+	nd := &AwsElastiCacheClusterInvalidTypeDetector{
+		Detector:  d,
+		nodeTypes: map[string]bool{},
 	}
+	nd.Name = "aws_elasticache_cluster_invalid_type"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_elasticache_cluster"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_elasticache_cluster_invalid_type.md"
+	return nd
 }
 
 func (d *AwsElastiCacheClusterInvalidTypeDetector) PreProcess() {
@@ -71,10 +70,12 @@ func (d *AwsElastiCacheClusterInvalidTypeDetector) Detect(resource *schema.Resou
 
 	if !d.nodeTypes[nodeType] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid node type.", nodeType),
-			Line:    nodeTypeToken.Pos.Line,
-			File:    nodeTypeToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid node type.", nodeType),
+			Line:     nodeTypeToken.Pos.Line,
+			File:     nodeTypeToken.Pos.Filename,
+			Link:     d.Link,
 		}
 		*issues = append(*issues, issue)
 	}

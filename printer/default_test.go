@@ -23,36 +23,41 @@ func TestDefaultPrint(t *testing.T) {
 			Name: "multi files",
 			Input: []*issue.Issue{
 				{
-					File:    "template.tf",
-					Line:    1,
-					Type:    "ERROR",
-					Message: "example error message",
+					Detector: "error detector",
+					File:     "template.tf",
+					Line:     1,
+					Type:     "ERROR",
+					Message:  "example error message",
 				},
 				{
-					File:    "application.tf",
-					Line:    10,
-					Type:    "NOTICE",
-					Message: "example notice message",
+					Detector: "notice detector",
+					File:     "application.tf",
+					Line:     10,
+					Type:     "NOTICE",
+					Message:  "example notice message",
+					Link:     "https://github.com/wata727/tflint",
 				},
 				{
-					File:    "template.tf",
-					Line:    5,
-					Type:    "WARNING",
-					Message: "example warning message",
+					Detector: "warning detector",
+					File:     "template.tf",
+					Line:     5,
+					Type:     "WARNING",
+					Message:  "example warning message",
 				},
 				{
-					File:    "template.tf",
-					Line:    3,
-					Type:    "WARNING",
-					Message: "example warning message",
+					Detector: "warning detector",
+					File:     "template.tf",
+					Line:     3,
+					Type:     "WARNING",
+					Message:  "example warning message",
 				},
 			},
 			Result: fmt.Sprintf(`%s
-	%s example notice message
+	%s example notice message (notice detector)
 %s
-	%s example error message
-	%s example warning message
-	%s example warning message
+	%s example error message (error detector)
+	%s example warning message (warning detector)
+	%s example warning message (warning detector)
 
 Result: %s  (%s , %s , %s)
 `, fileColor("application.tf"), noticeColor("NOTICE:10"), fileColor("template.tf"), errorColor("ERROR:1"), warningColor("WARNING:3"), warningColor("WARNING:5"), fileColor("4 issues"), errorColor("1 errors"), warningColor("2 warnings"), noticeColor("1 notices")),

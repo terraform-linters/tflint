@@ -10,22 +10,20 @@ import (
 
 type AwsElastiCacheClusterInvalidSecurityGroupDetector struct {
 	*Detector
-	IssueType      string
-	TargetType     string
-	Target         string
-	DeepCheck      bool
 	securityGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterInvalidSecurityGroupDetector() *AwsElastiCacheClusterInvalidSecurityGroupDetector {
-	return &AwsElastiCacheClusterInvalidSecurityGroupDetector{
+	nd := &AwsElastiCacheClusterInvalidSecurityGroupDetector{
 		Detector:       d,
-		IssueType:      issue.ERROR,
-		TargetType:     "resource",
-		Target:         "aws_elasticache_cluster",
-		DeepCheck:      true,
 		securityGroups: map[string]bool{},
 	}
+	nd.Name = "aws_elasticache_cluster_invalid_security_group"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_elasticache_cluster"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsElastiCacheClusterInvalidSecurityGroupDetector) PreProcess() {
@@ -72,10 +70,11 @@ func (d *AwsElastiCacheClusterInvalidSecurityGroupDetector) Detect(resource *sch
 		}
 		if !d.securityGroups[securityGroup] {
 			issue := &issue.Issue{
-				Type:    d.IssueType,
-				Message: fmt.Sprintf("\"%s\" is invalid security group.", securityGroup),
-				Line:    securityGroupToken.Pos.Line,
-				File:    securityGroupToken.Pos.Filename,
+				Detector: d.Name,
+				Type:     d.IssueType,
+				Message:  fmt.Sprintf("\"%s\" is invalid security group.", securityGroup),
+				Line:     securityGroupToken.Pos.Line,
+				File:     securityGroupToken.Pos.Filename,
 			}
 			*issues = append(*issues, issue)
 		}

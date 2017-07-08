@@ -9,24 +9,22 @@ import (
 
 type AwsSecurityGroupDuplicateDetector struct {
 	*Detector
-	IssueType     string
-	TargetType    string
-	Target        string
-	DeepCheck     bool
 	securiyGroups map[string]bool
 	defaultVpc    string
 }
 
 func (d *Detector) CreateAwsSecurityGroupDuplicateDetector() *AwsSecurityGroupDuplicateDetector {
-	return &AwsSecurityGroupDuplicateDetector{
+	nd := &AwsSecurityGroupDuplicateDetector{
 		Detector:      d,
-		IssueType:     issue.ERROR,
-		TargetType:    "resource",
-		Target:        "aws_security_group",
-		DeepCheck:     true,
 		securiyGroups: map[string]bool{},
 		defaultVpc:    "",
 	}
+	nd.Name = "aws_security_group_duplicate_name"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_security_group"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsSecurityGroupDuplicateDetector) PreProcess() {
@@ -80,10 +78,11 @@ func (d *AwsSecurityGroupDuplicateDetector) Detect(resource *schema.Resource, is
 
 	if d.securiyGroups[vpc+"."+name] && !d.State.Exists(d.Target, resource.Id) {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),
-			Line:    nameToken.Pos.Line,
-			File:    nameToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is duplicate name. It must be unique.", name),
+			Line:     nameToken.Pos.Line,
+			File:     nameToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

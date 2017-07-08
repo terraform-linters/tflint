@@ -41,16 +41,17 @@ func (p *Printer) printByLine(issues []*issue.Issue) {
 	fmt.Fprintf(p.stdout, "%s\n", fileColor(issues[0].File))
 	for _, i := range issues {
 		issuePrefix := i.Type + ":" + strconv.Itoa(i.Line)
+		message := fmt.Sprintf("%s (%s)", i.Message, i.Detector)
 
 		switch i.Type {
-		case "ERROR":
+		case issue.ERROR:
 			issuePrefix = errorColor(issuePrefix)
-		case "WARNING":
+		case issue.WARNING:
 			issuePrefix = warningColor(issuePrefix)
-		case "NOTICE":
+		case issue.NOTICE:
 			issuePrefix = noticeColor(issuePrefix)
 		}
-		fmt.Fprintf(p.stdout, "\t%s %s\n", issuePrefix, i.Message)
+		fmt.Fprintf(p.stdout, "\t%s %s\n", issuePrefix, message)
 	}
 }
 
@@ -61,11 +62,11 @@ func (p *Printer) printSummary(issues []*issue.Issue) {
 
 	for _, i := range issues {
 		switch i.Type {
-		case "ERROR":
+		case issue.ERROR:
 			eIssues = append(eIssues, i)
-		case "WARNING":
+		case issue.WARNING:
 			wIssues = append(wIssues, i)
-		case "NOTICE":
+		case issue.NOTICE:
 			nIssues = append(nIssues, i)
 		}
 	}

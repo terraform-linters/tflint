@@ -9,22 +9,20 @@ import (
 
 type AwsDBInstanceInvalidParameterGroupDetector struct {
 	*Detector
-	IssueType       string
-	TargetType      string
-	Target          string
-	DeepCheck       bool
 	parameterGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstanceInvalidParameterGroupDetector() *AwsDBInstanceInvalidParameterGroupDetector {
-	return &AwsDBInstanceInvalidParameterGroupDetector{
+	nd := &AwsDBInstanceInvalidParameterGroupDetector{
 		Detector:        d,
-		IssueType:       issue.ERROR,
-		TargetType:      "resource",
-		Target:          "aws_db_instance",
-		DeepCheck:       true,
 		parameterGroups: map[string]bool{},
 	}
+	nd.Name = "aws_db_instance_invalid_parameter_group"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_db_instance"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsDBInstanceInvalidParameterGroupDetector) PreProcess() {
@@ -53,10 +51,11 @@ func (d *AwsDBInstanceInvalidParameterGroupDetector) Detect(resource *schema.Res
 
 	if !d.parameterGroups[parameterGroup] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid parameter group name.", parameterGroup),
-			Line:    parameterGroupToken.Pos.Line,
-			File:    parameterGroupToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid parameter group name.", parameterGroup),
+			Line:     parameterGroupToken.Pos.Line,
+			File:     parameterGroupToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

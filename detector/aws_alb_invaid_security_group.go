@@ -10,22 +10,20 @@ import (
 
 type AwsALBInvalidSecurityGroupDetector struct {
 	*Detector
-	IssueType      string
-	TargetType     string
-	Target         string
-	DeepCheck      bool
 	securityGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsALBInvalidSecurityGroupDetector() *AwsALBInvalidSecurityGroupDetector {
-	return &AwsALBInvalidSecurityGroupDetector{
+	nd := &AwsALBInvalidSecurityGroupDetector{
 		Detector:       d,
-		IssueType:      issue.ERROR,
-		TargetType:     "resource",
-		Target:         "aws_alb",
-		DeepCheck:      true,
 		securityGroups: map[string]bool{},
 	}
+	nd.Name = "aws_alb_invalid_security_group"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_alb"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsALBInvalidSecurityGroupDetector) PreProcess() {
@@ -72,10 +70,11 @@ func (d *AwsALBInvalidSecurityGroupDetector) Detect(resource *schema.Resource, i
 		}
 		if !d.securityGroups[securityGroup] {
 			issue := &issue.Issue{
-				Type:    d.IssueType,
-				Message: fmt.Sprintf("\"%s\" is invalid security group.", securityGroup),
-				Line:    securityGroupToken.Pos.Line,
-				File:    securityGroupToken.Pos.Filename,
+				Detector: d.Name,
+				Type:     d.IssueType,
+				Message:  fmt.Sprintf("\"%s\" is invalid security group.", securityGroup),
+				Line:     securityGroupToken.Pos.Line,
+				File:     securityGroupToken.Pos.Filename,
 			}
 			*issues = append(*issues, issue)
 		}

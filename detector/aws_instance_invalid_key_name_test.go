@@ -36,10 +36,11 @@ resource "aws_instance" "web" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"foo\" is invalid key name.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_instance_invalid_key_name",
+					Type:     "ERROR",
+					Message:  "\"foo\" is invalid key name.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

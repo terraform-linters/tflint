@@ -36,10 +36,11 @@ resource "aws_db_instance" "mysql" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"app-server\" is invalid option group name.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_db_instance_invalid_option_group",
+					Type:     "ERROR",
+					Message:  "\"app-server\" is invalid option group name.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

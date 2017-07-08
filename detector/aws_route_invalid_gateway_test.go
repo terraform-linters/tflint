@@ -36,10 +36,11 @@ resource "aws_route" "foo" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"eigw-1234abcd\" is invalid internet gateway ID.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_route_invalid_gateway",
+					Type:     "ERROR",
+					Message:  "\"eigw-1234abcd\" is invalid internet gateway ID.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

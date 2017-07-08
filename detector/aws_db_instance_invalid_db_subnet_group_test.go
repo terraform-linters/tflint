@@ -36,10 +36,11 @@ resource "aws_db_instance" "mysql" {
 			},
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"app-server\" is invalid DB subnet group name.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_db_instance_invalid_db_subnet_group",
+					Type:     "ERROR",
+					Message:  "\"app-server\" is invalid DB subnet group name.",
+					Line:     3,
+					File:     "test.tf",
 				},
 			},
 		},

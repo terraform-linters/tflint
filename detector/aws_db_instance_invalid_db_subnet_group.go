@@ -9,22 +9,20 @@ import (
 
 type AwsDBInstanceInvalidDBSubnetGroupDetector struct {
 	*Detector
-	IssueType    string
-	TargetType   string
-	Target       string
-	DeepCheck    bool
 	subnetGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstanceInvalidDBSubnetGroupDetector() *AwsDBInstanceInvalidDBSubnetGroupDetector {
-	return &AwsDBInstanceInvalidDBSubnetGroupDetector{
+	nd := &AwsDBInstanceInvalidDBSubnetGroupDetector{
 		Detector:     d,
-		IssueType:    issue.ERROR,
-		TargetType:   "resource",
-		Target:       "aws_db_instance",
-		DeepCheck:    true,
 		subnetGroups: map[string]bool{},
 	}
+	nd.Name = "aws_db_instance_invalid_db_subnet_group"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_db_instance"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) PreProcess() {
@@ -53,10 +51,11 @@ func (d *AwsDBInstanceInvalidDBSubnetGroupDetector) Detect(resource *schema.Reso
 
 	if !d.subnetGroups[subnetGroup] {
 		issue := &issue.Issue{
-			Type:    d.IssueType,
-			Message: fmt.Sprintf("\"%s\" is invalid DB subnet group name.", subnetGroup),
-			Line:    subnetGroupToken.Pos.Line,
-			File:    subnetGroupToken.Pos.Filename,
+			Detector: d.Name,
+			Type:     d.IssueType,
+			Message:  fmt.Sprintf("\"%s\" is invalid DB subnet group name.", subnetGroup),
+			Line:     subnetGroupToken.Pos.Line,
+			File:     subnetGroupToken.Pos.Filename,
 		}
 		*issues = append(*issues, issue)
 	}

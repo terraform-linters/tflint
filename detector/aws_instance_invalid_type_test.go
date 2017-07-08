@@ -23,10 +23,12 @@ resource "aws_instance" "web" {
 }`,
 			Issues: []*issue.Issue{
 				{
-					Type:    "ERROR",
-					Message: "\"t1.2xlarge\" is invalid instance type.",
-					Line:    3,
-					File:    "test.tf",
+					Detector: "aws_instance_invalid_type",
+					Type:     "ERROR",
+					Message:  "\"t1.2xlarge\" is invalid instance type.",
+					Line:     3,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_invalid_type.md",
 				},
 			},
 		},
