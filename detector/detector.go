@@ -37,51 +37,51 @@ type Detector struct {
 	Link       string
 }
 
-var detectors = map[string]string{
-	"aws_instance_invalid_type":                       "CreateAwsInstanceInvalidTypeDetector",
-	"aws_instance_previous_type":                      "CreateAwsInstancePreviousTypeDetector",
-	"aws_instance_not_specified_iam_profile":          "CreateAwsInstanceNotSpecifiedIAMProfileDetector",
-	"aws_instance_default_standard_volume":            "CreateAwsInstanceDefaultStandardVolumeDetector",
-	"aws_instance_invalid_iam_profile":                "CreateAwsInstanceInvalidIAMProfileDetector",
-	"aws_instance_invalid_ami":                        "CreateAwsInstanceInvalidAMIDetector",
-	"aws_instance_invalid_key_name":                   "CreateAwsInstanceInvalidKeyNameDetector",
-	"aws_instance_invalid_subnet":                     "CreateAwsInstanceInvalidSubnetDetector",
-	"aws_instance_invalid_vpc_security_group":         "CreateAwsInstanceInvalidVPCSecurityGroupDetector",
-	"aws_alb_invalid_security_group":                  "CreateAwsALBInvalidSecurityGroupDetector",
-	"aws_alb_invalid_subnet":                          "CreateAwsALBInvalidSubnetDetector",
-	"aws_alb_duplicate_name":                          "CreateAwsALBDuplicateNameDetector",
-	"aws_elb_invalid_security_group":                  "CreateAwsELBInvalidSecurityGroupDetector",
-	"aws_elb_invalid_subnet":                          "CreateAwsELBInvalidSubnetDetector",
-	"aws_elb_invalid_instance":                        "CreateAwsELBInvalidInstanceDetector",
-	"aws_elb_duplicate_name":                          "CreateAwsELBDuplicateNameDetector",
-	"aws_db_instance_default_parameter_group":         "CreateAwsDBInstanceDefaultParameterGroupDetector",
-	"aws_db_instance_invalid_vpc_security_group":      "CreateAwsDBInstanceInvalidVPCSecurityGroupDetector",
-	"aws_db_instance_invalid_db_subnet_group":         "CreateAwsDBInstanceInvalidDBSubnetGroupDetector",
-	"aws_db_instance_invalid_parameter_group":         "CreateAwsDBInstanceInvalidParameterGroupDetector",
-	"aws_db_instance_invalid_option_group":            "CreateAwsDBInstanceInvalidOptionGroupDetector",
-	"aws_db_instance_invalid_type":                    "CreateAwsDBInstanceInvalidTypeDetector",
-	"aws_db_instance_previous_type":                   "CreateAwsDBInstancePreviousTypeDetector",
-	"aws_db_instance_readable_password":               "CreateAwsDBInstanceReadablePasswordDetector",
-	"aws_db_instance_duplicate_identifier":            "CreateAwsDBInstanceDuplicateIdentifierDetector",
-	"aws_elasticache_cluster_default_parameter_group": "CreateAwsElastiCacheClusterDefaultParameterGroupDetector",
-	"aws_elasticache_cluster_invalid_parameter_group": "CreateAwsElastiCacheClusterInvalidParameterGroupDetector",
-	"aws_elasticache_cluster_invalid_subnet_group":    "CreateAwsElastiCacheClusterInvalidSubnetGroupDetector",
-	"aws_elasticache_cluster_invalid_security_group":  "CreateAwsElastiCacheClusterInvalidSecurityGroupDetector",
-	"aws_elasticache_cluster_invalid_type":            "CreateAwsElastiCacheClusterInvalidTypeDetector",
-	"aws_elasticache_cluster_previous_type":           "CreateAwsElastiCacheClusterPreviousTypeDetector",
-	"aws_elasticache_cluster_duplicate_id":            "CreateAwsElastiCacheClusterDuplicateIDDetector",
-	"aws_security_group_duplicate_name":               "CreateAwsSecurityGroupDuplicateDetector",
-	"aws_route_invalid_route_table":                   "CreateAwsRouteInvalidRouteTableDetector",
-	"aws_route_not_specified_target":                  "CreateAwsRouteNotSpecifiedTargetDetector",
-	"aws_route_specified_multiple_targets":            "CreateAwsRouteSpecifiedMultipleTargetsDetector",
-	"aws_route_invalid_gateway":                       "CreateAwsRouteInvalidGatewayDetector",
-	"aws_route_invalid_egress_only_gateway":           "CreateAwsRouteInvalidEgressOnlyGatewayDetector",
-	"aws_route_invalid_nat_gateway":                   "CreateAwsRouteInvalidNatGatewayDetector",
-	"aws_route_invalid_vpc_peering_connection":        "CreateAwsRouteInvalidVpcPeeringConnectionDetector",
-	"aws_route_invalid_instance":                      "CreateAwsRouteInvalidInstanceDetector",
-	"aws_route_invalid_network_interface":             "CreateAwsRouteInvalidNetworkInterfaceDetector",
-	"aws_cloudwatch_metric_alarm_invalid_unit":        "CreateAwsCloudWatchMetricAlarmInvalidUnitDetector",
-	"terraform_module_pinned_source":                  "CreateTerraformModulePinnedSourceDetector",
+var detectorFactories = []string{
+	"CreateAwsInstanceInvalidTypeDetector",
+	"CreateAwsInstancePreviousTypeDetector",
+	"CreateAwsInstanceNotSpecifiedIAMProfileDetector",
+	"CreateAwsInstanceDefaultStandardVolumeDetector",
+	"CreateAwsInstanceInvalidIAMProfileDetector",
+	"CreateAwsInstanceInvalidAMIDetector",
+	"CreateAwsInstanceInvalidKeyNameDetector",
+	"CreateAwsInstanceInvalidSubnetDetector",
+	"CreateAwsInstanceInvalidVPCSecurityGroupDetector",
+	"CreateAwsALBInvalidSecurityGroupDetector",
+	"CreateAwsALBInvalidSubnetDetector",
+	"CreateAwsALBDuplicateNameDetector",
+	"CreateAwsELBInvalidSecurityGroupDetector",
+	"CreateAwsELBInvalidSubnetDetector",
+	"CreateAwsELBInvalidInstanceDetector",
+	"CreateAwsELBDuplicateNameDetector",
+	"CreateAwsDBInstanceDefaultParameterGroupDetector",
+	"CreateAwsDBInstanceInvalidVPCSecurityGroupDetector",
+	"CreateAwsDBInstanceInvalidDBSubnetGroupDetector",
+	"CreateAwsDBInstanceInvalidParameterGroupDetector",
+	"CreateAwsDBInstanceInvalidOptionGroupDetector",
+	"CreateAwsDBInstanceInvalidTypeDetector",
+	"CreateAwsDBInstancePreviousTypeDetector",
+	"CreateAwsDBInstanceReadablePasswordDetector",
+	"CreateAwsDBInstanceDuplicateIdentifierDetector",
+	"CreateAwsElastiCacheClusterDefaultParameterGroupDetector",
+	"CreateAwsElastiCacheClusterInvalidParameterGroupDetector",
+	"CreateAwsElastiCacheClusterInvalidSubnetGroupDetector",
+	"CreateAwsElastiCacheClusterInvalidSecurityGroupDetector",
+	"CreateAwsElastiCacheClusterInvalidTypeDetector",
+	"CreateAwsElastiCacheClusterPreviousTypeDetector",
+	"CreateAwsElastiCacheClusterDuplicateIDDetector",
+	"CreateAwsSecurityGroupDuplicateDetector",
+	"CreateAwsRouteInvalidRouteTableDetector",
+	"CreateAwsRouteNotSpecifiedTargetDetector",
+	"CreateAwsRouteSpecifiedMultipleTargetsDetector",
+	"CreateAwsRouteInvalidGatewayDetector",
+	"CreateAwsRouteInvalidEgressOnlyGatewayDetector",
+	"CreateAwsRouteInvalidNatGatewayDetector",
+	"CreateAwsRouteInvalidVpcPeeringConnectionDetector",
+	"CreateAwsRouteInvalidInstanceDetector",
+	"CreateAwsRouteInvalidNetworkInterfaceDetector",
+	"CreateAwsCloudWatchMetricAlarmInvalidUnitDetector",
+	"CreateTerraformModulePinnedSourceDetector",
 }
 
 func NewDetector(templates map[string]*ast.File, schema []*schema.Template, state *state.TFState, tfvars []*ast.File, c *config.Config) (*Detector, error) {
@@ -103,12 +103,7 @@ func NewDetector(templates map[string]*ast.File, schema []*schema.Template, stat
 
 func (d *Detector) Detect() []*issue.Issue {
 	var issues = []*issue.Issue{}
-	for ruleName, creatorMethod := range detectors {
-		if d.Config.IgnoreRule[ruleName] {
-			d.Logger.Info(fmt.Sprintf("ignore rule `%s`", ruleName))
-			continue
-		}
-		d.Logger.Info(fmt.Sprintf("detect by `%s`", ruleName))
+	for _, creatorMethod := range detectorFactories {
 		d.detect(creatorMethod, &issues)
 
 		for _, template := range d.Schema {
@@ -142,15 +137,19 @@ func (d *Detector) HasError() bool {
 func (d *Detector) detect(creatorMethod string, issues *[]*issue.Issue) {
 	creator := reflect.ValueOf(d).MethodByName(creatorMethod)
 	detector := creator.Call([]reflect.Value{})[0]
+	ruleName := reflect.Indirect(detector).FieldByName("Name").String()
 
 	if d.isSkip(
+		ruleName,
 		reflect.Indirect(detector).FieldByName("DeepCheck").Bool(),
 		reflect.Indirect(detector).FieldByName("TargetType").String(),
 		reflect.Indirect(detector).FieldByName("Target").String(),
 	) {
-		d.Logger.Info("skip this rule.")
+		d.Logger.Info(fmt.Sprintf("skip `%s`", ruleName))
 		return
 	}
+
+	d.Logger.Info(fmt.Sprintf("detect by `%s`", ruleName))
 	if preProcess := detector.MethodByName("PreProcess"); preProcess.IsValid() {
 		preProcess.Call([]reflect.Value{})
 	}
@@ -224,7 +223,11 @@ func (d *Detector) evalToStringTokens(t token.Token) ([]token.Token, error) {
 	return tokens, nil
 }
 
-func (d *Detector) isSkip(deepCheck bool, targetType string, target string) bool {
+func (d *Detector) isSkip(name string, deepCheck bool, targetType string, target string) bool {
+	if d.Config.IgnoreRule[name] {
+		return true
+	}
+
 	if deepCheck && !d.Config.DeepCheck {
 		return true
 	}
