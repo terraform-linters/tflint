@@ -9,24 +9,22 @@ import (
 
 type AwsSecurityGroupDuplicateDetector struct {
 	*Detector
-	IssueType     string
-	TargetType    string
-	Target        string
-	DeepCheck     bool
 	securiyGroups map[string]bool
 	defaultVpc    string
 }
 
 func (d *Detector) CreateAwsSecurityGroupDuplicateDetector() *AwsSecurityGroupDuplicateDetector {
-	return &AwsSecurityGroupDuplicateDetector{
+	nd := &AwsSecurityGroupDuplicateDetector{
 		Detector:      d,
-		IssueType:     issue.ERROR,
-		TargetType:    "resource",
-		Target:        "aws_security_group",
-		DeepCheck:     true,
 		securiyGroups: map[string]bool{},
 		defaultVpc:    "",
 	}
+	nd.Name = "aws_security_group_duplicate_name"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_security_group"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsSecurityGroupDuplicateDetector) PreProcess() {

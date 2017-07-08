@@ -10,22 +10,20 @@ import (
 
 type AwsInstanceInvalidVPCSecurityGroupDetector struct {
 	*Detector
-	IssueType      string
-	TargetType     string
-	Target         string
-	DeepCheck      bool
 	securityGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidVPCSecurityGroupDetector() *AwsInstanceInvalidVPCSecurityGroupDetector {
-	return &AwsInstanceInvalidVPCSecurityGroupDetector{
+	nd := &AwsInstanceInvalidVPCSecurityGroupDetector{
 		Detector:       d,
-		IssueType:      issue.ERROR,
-		TargetType:     "resource",
-		Target:         "aws_instance",
-		DeepCheck:      true,
 		securityGroups: map[string]bool{},
 	}
+	nd.Name = "aws_instance_invalid_vpc_security_group"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_instance"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsInstanceInvalidVPCSecurityGroupDetector) PreProcess() {

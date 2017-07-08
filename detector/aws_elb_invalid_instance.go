@@ -10,22 +10,20 @@ import (
 
 type AwsELBInvalidInstanceDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
-	instances  map[string]bool
+	instances map[string]bool
 }
 
 func (d *Detector) CreateAwsELBInvalidInstanceDetector() *AwsELBInvalidInstanceDetector {
-	return &AwsELBInvalidInstanceDetector{
-		Detector:   d,
-		IssueType:  issue.ERROR,
-		TargetType: "resource",
-		Target:     "aws_elb",
-		DeepCheck:  true,
-		instances:  map[string]bool{},
+	nd := &AwsELBInvalidInstanceDetector{
+		Detector:  d,
+		instances: map[string]bool{},
 	}
+	nd.Name = "aws_elb_invalid_instance"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_elb"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsELBInvalidInstanceDetector) PreProcess() {

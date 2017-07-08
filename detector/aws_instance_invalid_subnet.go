@@ -9,22 +9,20 @@ import (
 
 type AwsInstanceInvalidSubnetDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
-	subnets    map[string]bool
+	subnets map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidSubnetDetector() *AwsInstanceInvalidSubnetDetector {
-	return &AwsInstanceInvalidSubnetDetector{
-		Detector:   d,
-		IssueType:  issue.ERROR,
-		TargetType: "resource",
-		Target:     "aws_instance",
-		DeepCheck:  true,
-		subnets:    map[string]bool{},
+	nd := &AwsInstanceInvalidSubnetDetector{
+		Detector: d,
+		subnets:  map[string]bool{},
 	}
+	nd.Name = "aws_instance_invalid_subnet"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_instance"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsInstanceInvalidSubnetDetector) PreProcess() {

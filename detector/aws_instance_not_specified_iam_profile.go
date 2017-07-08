@@ -7,20 +7,17 @@ import (
 
 type AwsInstanceNotSpecifiedIAMProfileDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
 }
 
 func (d *Detector) CreateAwsInstanceNotSpecifiedIAMProfileDetector() *AwsInstanceNotSpecifiedIAMProfileDetector {
-	return &AwsInstanceNotSpecifiedIAMProfileDetector{
-		Detector:   d,
-		IssueType:  issue.NOTICE,
-		TargetType: "resource",
-		Target:     "aws_instance",
-		DeepCheck:  false,
-	}
+	nd := &AwsInstanceNotSpecifiedIAMProfileDetector{Detector: d}
+	nd.Name = "aws_instance_not_specified_iam_profile"
+	nd.IssueType = issue.NOTICE
+	nd.TargetType = "resource"
+	nd.Target = "aws_instance"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_instance_not_specified_iam_profile.md"
+	return nd
 }
 
 func (d *AwsInstanceNotSpecifiedIAMProfileDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {

@@ -9,22 +9,20 @@ import (
 
 type AwsDBInstanceDuplicateIdentifierDetector struct {
 	*Detector
-	IssueType   string
-	TargetType  string
-	Target      string
-	DeepCheck   bool
 	identifiers map[string]bool
 }
 
 func (d *Detector) CreateAwsDBInstanceDuplicateIdentifierDetector() *AwsDBInstanceDuplicateIdentifierDetector {
-	return &AwsDBInstanceDuplicateIdentifierDetector{
+	nd := &AwsDBInstanceDuplicateIdentifierDetector{
 		Detector:    d,
-		IssueType:   issue.ERROR,
-		TargetType:  "resource",
-		Target:      "aws_db_instance",
-		DeepCheck:   true,
 		identifiers: map[string]bool{},
 	}
+	nd.Name = "aws_db_instance_duplicate_identifier"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_db_instance"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsDBInstanceDuplicateIdentifierDetector) PreProcess() {

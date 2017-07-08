@@ -10,18 +10,16 @@ import (
 
 type TerraformModulePinnedSourceDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	DeepCheck  bool
 }
 
 func (d *Detector) CreateTerraformModulePinnedSourceDetector() *TerraformModulePinnedSourceDetector {
-	return &TerraformModulePinnedSourceDetector{
-		Detector:   d,
-		IssueType:  issue.WARNING,
-		TargetType: "module",
-		DeepCheck:  false,
-	}
+	nd := &TerraformModulePinnedSourceDetector{Detector: d}
+	nd.Name = "terraform_module_pinned_source"
+	nd.IssueType = issue.WARNING
+	nd.TargetType = "module"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/terraform_module_pinned_source.md"
+	return nd
 }
 
 func (d *TerraformModulePinnedSourceDetector) Detect(module *schema.Module, issues *[]*issue.Issue) {

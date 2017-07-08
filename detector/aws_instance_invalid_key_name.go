@@ -9,22 +9,20 @@ import (
 
 type AwsInstanceInvalidKeyNameDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
-	keypairs   map[string]bool
+	keypairs map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidKeyNameDetector() *AwsInstanceInvalidKeyNameDetector {
-	return &AwsInstanceInvalidKeyNameDetector{
-		Detector:   d,
-		IssueType:  issue.ERROR,
-		TargetType: "resource",
-		Target:     "aws_instance",
-		DeepCheck:  true,
-		keypairs:   map[string]bool{},
+	nd := &AwsInstanceInvalidKeyNameDetector{
+		Detector: d,
+		keypairs: map[string]bool{},
 	}
+	nd.Name = "aws_instance_invalid_key_name"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_instance"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsInstanceInvalidKeyNameDetector) PreProcess() {

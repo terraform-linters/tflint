@@ -7,20 +7,17 @@ import (
 
 type AwsInstanceDefaultStandardVolumeDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
 }
 
 func (d *Detector) CreateAwsInstanceDefaultStandardVolumeDetector() *AwsInstanceDefaultStandardVolumeDetector {
-	return &AwsInstanceDefaultStandardVolumeDetector{
-		Detector:   d,
-		IssueType:  issue.WARNING,
-		TargetType: "resource",
-		Target:     "aws_instance",
-		DeepCheck:  false,
-	}
+	nd := &AwsInstanceDefaultStandardVolumeDetector{Detector: d}
+	nd.Name = "aws_instance_default_standard_volume"
+	nd.IssueType = issue.WARNING
+	nd.TargetType = "resource"
+	nd.Target = "aws_instance"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md"
+	return nd
 }
 
 func (d *AwsInstanceDefaultStandardVolumeDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {

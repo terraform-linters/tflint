@@ -9,22 +9,21 @@ import (
 
 type AwsCloudWatchMetricAlarmInvalidUnitDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
 	validUnits map[string]bool
 }
 
 func (d *Detector) CreateAwsCloudWatchMetricAlarmInvalidUnitDetector() *AwsCloudWatchMetricAlarmInvalidUnitDetector {
-	return &AwsCloudWatchMetricAlarmInvalidUnitDetector{
+	nd := &AwsCloudWatchMetricAlarmInvalidUnitDetector{
 		Detector:   d,
-		IssueType:  issue.ERROR,
-		TargetType: "resource",
-		Target:     "aws_cloudwatch_metric_alarm",
-		DeepCheck:  false,
 		validUnits: map[string]bool{},
 	}
+	nd.Name = "aws_cloudwatch_metric_alarm_invalid_unit"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_cloudwatch_metric_alarm"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_cloudwatch_metric_alarm_invalid_unit.md"
+	return nd
 }
 
 func (d *AwsCloudWatchMetricAlarmInvalidUnitDetector) PreProcess() {

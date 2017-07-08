@@ -9,22 +9,20 @@ import (
 
 type AwsELBDuplicateNameDetector struct {
 	*Detector
-	IssueType     string
-	TargetType    string
-	Target        string
-	DeepCheck     bool
 	loadBalancers map[string]bool
 }
 
 func (d *Detector) CreateAwsELBDuplicateNameDetector() *AwsELBDuplicateNameDetector {
-	return &AwsELBDuplicateNameDetector{
+	nd := &AwsELBDuplicateNameDetector{
 		Detector:      d,
-		IssueType:     issue.ERROR,
-		TargetType:    "resource",
-		Target:        "aws_elb",
-		DeepCheck:     true,
 		loadBalancers: map[string]bool{},
 	}
+	nd.Name = "aws_elb_duplicate_name"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_elb"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsELBDuplicateNameDetector) PreProcess() {

@@ -9,22 +9,20 @@ import (
 
 type AwsRouteInvalidNetworkInterfaceDetector struct {
 	*Detector
-	IssueType         string
-	TargetType        string
-	Target            string
-	DeepCheck         bool
 	networkInterfaces map[string]bool
 }
 
 func (d *Detector) CreateAwsRouteInvalidNetworkInterfaceDetector() *AwsRouteInvalidNetworkInterfaceDetector {
-	return &AwsRouteInvalidNetworkInterfaceDetector{
+	nd := &AwsRouteInvalidNetworkInterfaceDetector{
 		Detector:          d,
-		IssueType:         issue.ERROR,
-		TargetType:        "resource",
-		Target:            "aws_route",
-		DeepCheck:         true,
 		networkInterfaces: map[string]bool{},
 	}
+	nd.Name = "aws_route_invalid_network_interface"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_route"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsRouteInvalidNetworkInterfaceDetector) PreProcess() {

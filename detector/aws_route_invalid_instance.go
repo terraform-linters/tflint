@@ -9,22 +9,20 @@ import (
 
 type AwsRouteInvalidInstanceDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
-	instances  map[string]bool
+	instances map[string]bool
 }
 
 func (d *Detector) CreateAwsRouteInvalidInstanceDetector() *AwsRouteInvalidInstanceDetector {
-	return &AwsRouteInvalidInstanceDetector{
-		Detector:   d,
-		IssueType:  issue.ERROR,
-		TargetType: "resource",
-		Target:     "aws_route",
-		DeepCheck:  true,
-		instances:  map[string]bool{},
+	nd := &AwsRouteInvalidInstanceDetector{
+		Detector:  d,
+		instances: map[string]bool{},
 	}
+	nd.Name = "aws_route_invalid_instance"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_route"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsRouteInvalidInstanceDetector) PreProcess() {

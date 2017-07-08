@@ -10,22 +10,20 @@ import (
 
 type AwsElastiCacheClusterInvalidSecurityGroupDetector struct {
 	*Detector
-	IssueType      string
-	TargetType     string
-	Target         string
-	DeepCheck      bool
 	securityGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterInvalidSecurityGroupDetector() *AwsElastiCacheClusterInvalidSecurityGroupDetector {
-	return &AwsElastiCacheClusterInvalidSecurityGroupDetector{
+	nd := &AwsElastiCacheClusterInvalidSecurityGroupDetector{
 		Detector:       d,
-		IssueType:      issue.ERROR,
-		TargetType:     "resource",
-		Target:         "aws_elasticache_cluster",
-		DeepCheck:      true,
 		securityGroups: map[string]bool{},
 	}
+	nd.Name = "aws_elasticache_cluster_invalid_security_group"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_elasticache_cluster"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsElastiCacheClusterInvalidSecurityGroupDetector) PreProcess() {

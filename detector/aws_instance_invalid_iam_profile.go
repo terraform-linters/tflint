@@ -9,22 +9,20 @@ import (
 
 type AwsInstanceInvalidIAMProfileDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
-	profiles   map[string]bool
+	profiles map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidIAMProfileDetector() *AwsInstanceInvalidIAMProfileDetector {
-	return &AwsInstanceInvalidIAMProfileDetector{
-		Detector:   d,
-		IssueType:  issue.ERROR,
-		TargetType: "resource",
-		Target:     "aws_instance",
-		DeepCheck:  true,
-		profiles:   map[string]bool{},
+	nd := &AwsInstanceInvalidIAMProfileDetector{
+		Detector: d,
+		profiles: map[string]bool{},
 	}
+	nd.Name = "aws_instance_invalid_iam_profile"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_instance"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsInstanceInvalidIAMProfileDetector) PreProcess() {

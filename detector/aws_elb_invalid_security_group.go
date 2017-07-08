@@ -10,22 +10,20 @@ import (
 
 type AwsELBInvalidSecurityGroupDetector struct {
 	*Detector
-	IssueType      string
-	TargetType     string
-	Target         string
-	DeepCheck      bool
 	securityGroups map[string]bool
 }
 
 func (d *Detector) CreateAwsELBInvalidSecurityGroupDetector() *AwsELBInvalidSecurityGroupDetector {
-	return &AwsELBInvalidSecurityGroupDetector{
+	nd := &AwsELBInvalidSecurityGroupDetector{
 		Detector:       d,
-		IssueType:      issue.ERROR,
-		TargetType:     "resource",
-		Target:         "aws_elb",
-		DeepCheck:      true,
 		securityGroups: map[string]bool{},
 	}
+	nd.Name = "aws_elb_invalid_security_group"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_elb"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsELBInvalidSecurityGroupDetector) PreProcess() {

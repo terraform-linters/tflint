@@ -28,6 +28,13 @@ type Detector struct {
 	EvalConfig *evaluator.Evaluator
 	Logger     *logger.Logger
 	Error      bool
+
+	Name       string
+	IssueType  string
+	TargetType string
+	Target     string
+	DeepCheck  bool
+	Link       string
 }
 
 var detectors = map[string]string{

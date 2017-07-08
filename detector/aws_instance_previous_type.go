@@ -9,22 +9,21 @@ import (
 
 type AwsInstancePreviousTypeDetector struct {
 	*Detector
-	IssueType             string
-	TargetType            string
-	Target                string
-	DeepCheck             bool
 	previousInstanceTypes map[string]bool
 }
 
 func (d *Detector) CreateAwsInstancePreviousTypeDetector() *AwsInstancePreviousTypeDetector {
-	return &AwsInstancePreviousTypeDetector{
+	nd := &AwsInstancePreviousTypeDetector{
 		Detector:              d,
-		IssueType:             issue.WARNING,
-		TargetType:            "resource",
-		Target:                "aws_instance",
-		DeepCheck:             false,
 		previousInstanceTypes: map[string]bool{},
 	}
+	nd.Name = "aws_instance_previous_type"
+	nd.IssueType = issue.WARNING
+	nd.TargetType = "resource"
+	nd.Target = "aws_instance"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_instance_previous_type.md"
+	return nd
 }
 
 func (d *AwsInstancePreviousTypeDetector) PreProcess() {

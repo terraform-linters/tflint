@@ -7,20 +7,17 @@ import (
 
 type AwsRouteNotSpecifiedTargetDetector struct {
 	*Detector
-	IssueType  string
-	TargetType string
-	Target     string
-	DeepCheck  bool
 }
 
 func (d *Detector) CreateAwsRouteNotSpecifiedTargetDetector() *AwsRouteNotSpecifiedTargetDetector {
-	return &AwsRouteNotSpecifiedTargetDetector{
-		Detector:   d,
-		IssueType:  issue.ERROR,
-		TargetType: "resource",
-		Target:     "aws_route",
-		DeepCheck:  false,
-	}
+	nd := &AwsRouteNotSpecifiedTargetDetector{Detector: d}
+	nd.Name = "aws_route_not_specified_target"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_route"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_route_not_specified_target.md"
+	return nd
 }
 
 func (d *AwsRouteNotSpecifiedTargetDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {

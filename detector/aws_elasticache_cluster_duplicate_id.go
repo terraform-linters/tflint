@@ -9,22 +9,20 @@ import (
 
 type AwsElastiCacheClusterDuplicateIDDetector struct {
 	*Detector
-	IssueType     string
-	TargetType    string
-	Target        string
-	DeepCheck     bool
 	cacheClusters map[string]bool
 }
 
 func (d *Detector) CreateAwsElastiCacheClusterDuplicateIDDetector() *AwsElastiCacheClusterDuplicateIDDetector {
-	return &AwsElastiCacheClusterDuplicateIDDetector{
+	nd := &AwsElastiCacheClusterDuplicateIDDetector{
 		Detector:      d,
-		IssueType:     issue.ERROR,
-		TargetType:    "resource",
-		Target:        "aws_elasticache_cluster",
-		DeepCheck:     true,
 		cacheClusters: map[string]bool{},
 	}
+	nd.Name = "aws_elasticache_cluster_duplicate_id"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_elasticache_cluster"
+	nd.DeepCheck = true
+	return nd
 }
 
 func (d *AwsElastiCacheClusterDuplicateIDDetector) PreProcess() {

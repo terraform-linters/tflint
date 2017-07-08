@@ -9,22 +9,21 @@ import (
 
 type AwsInstanceInvalidTypeDetector struct {
 	*Detector
-	IssueType     string
-	TargetType    string
-	Target        string
-	DeepCheck     bool
 	instanceTypes map[string]bool
 }
 
 func (d *Detector) CreateAwsInstanceInvalidTypeDetector() *AwsInstanceInvalidTypeDetector {
-	return &AwsInstanceInvalidTypeDetector{
+	nd := &AwsInstanceInvalidTypeDetector{
 		Detector:      d,
-		IssueType:     issue.ERROR,
-		TargetType:    "resource",
-		Target:        "aws_instance",
-		DeepCheck:     false,
 		instanceTypes: map[string]bool{},
 	}
+	nd.Name = "aws_instance_invalid_type"
+	nd.IssueType = issue.ERROR
+	nd.TargetType = "resource"
+	nd.Target = "aws_instance"
+	nd.DeepCheck = false
+	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_instance_invalid_type.md"
+	return nd
 }
 
 func (d *AwsInstanceInvalidTypeDetector) PreProcess() {
