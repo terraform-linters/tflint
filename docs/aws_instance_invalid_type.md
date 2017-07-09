@@ -19,7 +19,7 @@ The following is the execution result of TFLint:
 ```
 $ tflint
 template.tf
-        ERROR:3 "t1.2xlarge" is invalid instance type.
+        ERROR:3 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
 
 Result: 1 issues  (1 errors , 0 warnings , 0 notices)
 ```

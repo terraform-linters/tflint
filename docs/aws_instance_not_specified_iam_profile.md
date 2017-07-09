@@ -18,7 +18,7 @@ The following is the execution result of TFLint:
 ```
 $ tflint
 template.tf
-        NOTICE:1 "iam_instance_profile" is not specified. If you want to change it, you need to recreate the instance.
+        NOTICE:1 "iam_instance_profile" is not specified. If you want to change it, you need to recreate the instance. (aws_instance_not_specified_iam_profile)
 
 Result: 1 issues  (0 errors , 0 warnings , 1 notices)
 ```

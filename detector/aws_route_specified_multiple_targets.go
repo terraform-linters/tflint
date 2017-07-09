@@ -31,7 +31,7 @@ func (d *AwsRouteSpecifiedMultipleTargetsDetector) Detect(resource *schema.Resou
 				issue := &issue.Issue{
 					Detector: d.Name,
 					Type:     d.IssueType,
-					Message:  "more than 1 target specified, only 1 routing target can be specified.",
+					Message:  "More than one routing target specified. It must be one.",
 					Line:     resource.Pos.Line,
 					File:     resource.Pos.Filename,
 					Link:     d.Link,

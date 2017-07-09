@@ -22,7 +22,7 @@ The following is the execution result of TFLint:
 ```
 $ tflint
 template.tf
-        WARNING:6 "cache.t1.micro" is previous generation node type.
+        WARNING:6 "cache.t1.micro" is previous generation node type. (aws_elasticache_cluster_previous_type)
 
 Result: 1 issues  (0 errors , 1 warnings , 0 notices)
 ```

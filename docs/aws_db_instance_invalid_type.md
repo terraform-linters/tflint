@@ -21,7 +21,7 @@ The following is the execution result of TFLint:
 ```
 $ tflint
 template.tf
-        ERROR:5 "t1.micro" is invalid instance type.
+        ERROR:5 "t1.micro" is invalid instance type. (aws_db_instance_invalid_type)
 
 Result: 1 issues  (1 errors , 0 warnings , 0 notices)
 ```

@@ -22,7 +22,7 @@ The following is the execution result of TFLint:
 ```
 $ tflint
 template.tf
-        NOTICE:9 "default.redis3.2" is default parameter group. You cannot edit it.
+        NOTICE:9 "default.redis3.2" is default parameter group. You cannot edit it. (aws_elasticache_cluster_default_parameter_group)
 
 Result: 1 issues  (0 errors , 0 warnings , 1 notices)
 ```

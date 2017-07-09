@@ -19,7 +19,7 @@ The following is the execution result of TFLint:
 ```
 $ tflint
 template.tf
-        WARNING:6 "volume_type" is not specified. Default standard volume type is not recommended. You can use "gp2", "io1", etc instead.
+        WARNING:6 "volume_type" is not specified. Default standard volume type is not recommended. You can use "gp2", "io1", etc instead. (aws_instance_default_standard_volume)
 
 Result: 1 issues  (0 errors , 1 warnings , 0 notices)
 ```

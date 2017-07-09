@@ -27,7 +27,7 @@ resource "aws_route" "foo" {
 				{
 					Detector: "aws_route_specified_multiple_targets",
 					Type:     "ERROR",
-					Message:  "more than 1 target specified, only 1 routing target can be specified.",
+					Message:  "More than one routing target specified. It must be one.",
 					Line:     2,
 					File:     "test.tf",
 					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_route_specified_multiple_targets.md",

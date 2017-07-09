@@ -21,7 +21,7 @@ The following is the execution result of TFLint:
 ```
 $ tflint
 template.tf
-        WARNING:5 "db.t1.micro" is previous generation instance type.
+        WARNING:5 "db.t1.micro" is previous generation instance type. (aws_db_instance_previous_type)
 
 Result: 1 issues  (0 errors , 1 warnings , 0 notices)
 ```
