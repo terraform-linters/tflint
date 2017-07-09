@@ -1,6 +1,7 @@
 package detector
 
 import (
+	"github.com/hashicorp/go-version"
 	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/schema"
 )
@@ -21,11 +22,18 @@ func (d *Detector) CreateAwsInstanceNotSpecifiedIAMProfileDetector() *AwsInstanc
 }
 
 func (d *AwsInstanceNotSpecifiedIAMProfileDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue) {
-	if _, ok := resource.GetToken("iam_instance_profile"); !ok {
+	v1, err := version.NewVersion(d.Config.TerraformVersion)
+	// If `terraform_version` is not set, always detect.
+	if err != nil {
+		v1, _ = version.NewVersion("0.8.0")
+	}
+	v2, _ := version.NewVersion("0.8.8")
+
+	if _, ok := resource.GetToken("iam_instance_profile"); !ok && v1.LessThan(v2) {
 		issue := &issue.Issue{
 			Detector: d.Name,
 			Type:     d.IssueType,
-			Message:  "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate instance. (Only less than Terraform 0.8.8)",
+			Message:  "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate the instance.",
 			Line:     resource.Pos.Line,
 			File:     resource.Pos.Filename,
 			Link:     d.Link,

@@ -30,3 +30,4 @@ import:
 - package: github.com/mitchellh/go-homedir
 - package: github.com/jessevdk/go-flags
   version: ^1.2.0
+- package: github.com/hashicorp/go-version

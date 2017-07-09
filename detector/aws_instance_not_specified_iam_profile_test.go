@@ -13,6 +13,7 @@ func TestDetectAwsInstanceNotSpecifiedIAMProfile(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Src    string
+		Config *config.Config
 		Issues []*issue.Issue
 	}{
 		{
@@ -21,11 +22,12 @@ func TestDetectAwsInstanceNotSpecifiedIAMProfile(t *testing.T) {
 resource "aws_instance" "web" {
     instance_type = "t2.2xlarge"
 }`,
+			Config: config.Init(),
 			Issues: []*issue.Issue{
 				{
 					Detector: "aws_instance_not_specified_iam_profile",
 					Type:     "NOTICE",
-					Message:  "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate instance. (Only less than Terraform 0.8.8)",
+					Message:  "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate the instance.",
 					Line:     2,
 					File:     "test.tf",
 					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_not_specified_iam_profile.md",
@@ -39,6 +41,38 @@ resource "aws_instance" "web" {
     instance_type = "t2.micro"
     iam_instance_profile = "test"
 }`,
+			Config: config.Init(),
+			Issues: []*issue.Issue{},
+		},
+		{
+			Name: "iam_instance_profile is not specified and Terraform version is less than 0.8.8",
+			Src: `
+resource "aws_instance" "web" {
+    instance_type = "t2.2xlarge"
+}`,
+			Config: &config.Config{
+				TerraformVersion: "0.8.7",
+			},
+			Issues: []*issue.Issue{
+				{
+					Detector: "aws_instance_not_specified_iam_profile",
+					Type:     "NOTICE",
+					Message:  "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate the instance.",
+					Line:     2,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_not_specified_iam_profile.md",
+				},
+			},
+		},
+		{
+			Name: "iam_instance_profile is not specified and Terraform version is 0.8.8",
+			Src: `
+resource "aws_instance" "web" {
+    instance_type = "t2.2xlarge"
+}`,
+			Config: &config.Config{
+				TerraformVersion: "0.8.8",
+			},
 			Issues: []*issue.Issue{},
 		},
 	}
@@ -49,7 +83,7 @@ resource "aws_instance" "web" {
 			"CreateAwsInstanceNotSpecifiedIAMProfileDetector",
 			tc.Src,
 			"",
-			config.Init(),
+			tc.Config,
 			config.Init().NewAwsClient(),
 			&issues,
 		)

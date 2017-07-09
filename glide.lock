@@ -1,5 +1,5 @@
-hash: a877232f32e3186a58aecd016a18032815be2ee1f3dc52a7240367b46ddc76ca
-updated: 2017-04-15T17:08:16.557042621+09:00
+hash: 7dcc19395a7ae20cd2d8d2bf57ec53525774185572a387ba791f3b4349aff73b
+updated: 2017-07-09T14:47:09.476933057+09:00
 imports:
 - name: github.com/aws/aws-sdk-go
   version: 7be45195c3af1b54a609812f90c05a7e492e2491
@@ -47,6 +47,8 @@ imports:
   version: bd3c8e81be01eef76d4b503f5e687d2d1354d2d9
   subpackages:
   - gomock
+- name: github.com/hashicorp/go-version
+  version: 03c5bf6be031b6dd45afec16b1cf94fc8938bc77
 - name: github.com/hashicorp/hcl
   version: 630949a3c5fa3c613328e1b8256052cbc2327c9b
   subpackages:

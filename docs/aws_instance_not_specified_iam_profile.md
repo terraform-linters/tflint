@@ -18,7 +18,7 @@ The following is the execution result of TFLint:
 ```
 $ tflint
 template.tf
-        NOTICE:1 "iam_instance_profile" is not specified. If you want to change it, you need to recreate instance. (Only less than Terraform 0.8.8)
+        NOTICE:1 "iam_instance_profile" is not specified. If you want to change it, you need to recreate the instance.
 
 Result: 1 issues  (0 errors , 0 warnings , 1 notices)
 ```
@@ -28,7 +28,7 @@ You can select only one IAM profile at instance setup. However, if you do not se
 
 Even if you think that you do not need an IAM profile, we recommend that you specify a dummy. Then you can change the privilege when you need it, so you can escape the recreate of the instance.
 
-NOTE: There is good news that Terraform 0.8.8 and later can change it later. However, it is better to give proper authority from the beginning. If you change it later, there is a possibility that your application may have unexpected effects.
+NOTE: There is good news that Terraform 0.8.8 and later can change it later. If `terraform_version` is greater than `0.8.8`, This issue is not reported.
 
 ## How To Fix
 Please add `iam_instance_profile` attribute.
