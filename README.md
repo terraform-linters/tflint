@@ -104,6 +104,7 @@ By default, TFLint loads `.tflint.hcl` under the current directory. The configur
 
 ```hcl
 config {
+  terraform_version = "0.9.11"
   deep_check = true
 
   aws_credentials = {
@@ -130,6 +131,9 @@ If you want to create a configuration file with a different name, specify the fi
 ```
 $ tflint --config other_config.hcl
 ```
+
+### Terraform Version
+You can set the version of Terraform you are using. If it is set, TFLint will detect issues according to it.
 
 ### Credentials
 TFLint supports various credential providers. It is used with the following priority:

@@ -1,4 +1,5 @@
 config {
+  terraform_version = "0.9.11"
   deep_check = true
 
   aws_credentials = {
@@ -15,4 +16,6 @@ config {
   ignore_module = {
     "github.com/wata727/example-module" = true
   }
+
+  varfile = ["example1.tfvars", "example2.tfvars"]
 }

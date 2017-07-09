@@ -10,12 +10,13 @@ import (
 )
 
 type Config struct {
-	Debug          bool
-	DeepCheck      bool              `hcl:"deep_check"`
-	AwsCredentials map[string]string `hcl:"aws_credentials"`
-	IgnoreModule   map[string]bool   `hcl:"ignore_module"`
-	IgnoreRule     map[string]bool   `hcl:"ignore_rule"`
-	Varfile        []string          `hcl:"varfile"`
+	Debug            bool
+	DeepCheck        bool              `hcl:"deep_check"`
+	AwsCredentials   map[string]string `hcl:"aws_credentials"`
+	IgnoreModule     map[string]bool   `hcl:"ignore_module"`
+	IgnoreRule       map[string]bool   `hcl:"ignore_rule"`
+	Varfile          []string          `hcl:"varfile"`
+	TerraformVersion string            `hcl:"terraform_version"`
 }
 
 func Init() *Config {
