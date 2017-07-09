@@ -74,7 +74,7 @@
   {
     "detector": "aws_route_not_specified_target",
     "type": "ERROR",
-    "message": "route target is not specified, each route must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id.",
+    "message": "The routing target is not specified, each routing must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id.",
     "line": 28,
     "file": "template.tf",
     "link": "https://github.com/wata727/tflint/blob/master/docs/aws_route_not_specified_target.md"
@@ -82,7 +82,7 @@
   {
     "detector": "aws_route_specified_multiple_targets",
     "type": "ERROR",
-    "message": "more than 1 target specified, only 1 routing target can be specified.",
+    "message": "More than one routing target specified. It must be one.",
     "line": 33,
     "file": "template.tf",
     "link": "https://github.com/wata727/tflint/blob/master/docs/aws_route_specified_multiple_targets.md"

@@ -1,5 +1,5 @@
 # AWS Route Specified Multiple Targets
-Report this issue if multiple route targets are specified. This issue type is ERROR.
+Report this issue if multiple routing targets are specified. This issue type is ERROR.
 
 ## Example
 ```
@@ -17,7 +17,7 @@ The following is the execution result of TFLint:
 ```
 $ tflint
 template.tf
-        ERROR:1 more than 1 target specified, only 1 routing target can be specified.
+        ERROR:1 More than one routing target specified. It must be one.
 
 Result: 1 issues  (1 errors , 0 warnings , 0 notices)
 ```
