@@ -1,3 +1,20 @@
+## 0.4.0 (2017-07-09)
+
+Minor version update. This release includes big core API changes.
+
+## Enhancements
+
+- Overrides module ([#118](https://github.com/wata727/tflint/pull/118))
+- Add document link and detector name on output ([#122](https://github.com/wata727/tflint/pull/122))
+- Add Terraform version options ([#123](https://github.com/wata727/tflint/pull/123))
+- Report `aws_instance_not_specified_iam_profile` only when `terraform_version` is less than 0.8.8 ([#124](https://github.com/wata727/tflint/pull/124))
+
+## Others
+
+- Provide abstract HCL access ([#112](https://github.com/wata727/tflint/pull/112))
+- Fix override logic ([#117](https://github.com/wata727/tflint/pull/117))
+- Fix some output messages and documentation ([#125](https://github.com/wata727/tflint/pull/125))
+
 ## 0.3.6 (2017-06-05)
 
 Patch version update. This release includes hotfix for module evaluation.
