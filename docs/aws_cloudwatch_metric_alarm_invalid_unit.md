@@ -22,7 +22,7 @@ The following is the execution result of TFLint:
 
 ```
 template.tf
-	ERROR:10 "percent" is invalid unit.
+	ERROR:10 "percent" is invalid unit. (aws_cloudwatch_metric_alarm_invalid_unit)
 
 Result: 1 issues  (1 errors , 0 warnings , 0 notices)
 ```

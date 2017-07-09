@@ -21,7 +21,7 @@ The following is the execution result of TFLint:
 ```
 $ tflint
 template.tf
-        WARNING:8 Password for the master DB user is readable. recommend using environment variables.
+        WARNING:8 Password for the master DB user is readable. recommend using environment variables. (aws_db_instance_readable_password)
 
 Result: 1 issues  (0 errors , 1 warnings , 0 notices)
 ```

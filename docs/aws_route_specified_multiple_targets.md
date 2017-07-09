@@ -17,7 +17,7 @@ The following is the execution result of TFLint:
 ```
 $ tflint
 template.tf
-        ERROR:1 More than one routing target specified. It must be one.
+        ERROR:1 More than one routing target specified. It must be one. (aws_route_specified_multiple_targets)
 
 Result: 1 issues  (1 errors , 0 warnings , 0 notices)
 ```

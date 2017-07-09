@@ -57,8 +57,8 @@ Try running TFLint under the directory where Terraform is executed. It detect if
 ```
 $ tflint
 template.tf
-        NOTICE:1 "iam_instance_profile" is not specified. If you want to change it, you need to recreate the instance.
-        ERROR:3 "t1.2xlarge" is invalid instance type.
+        NOTICE:1 "iam_instance_profile" is not specified. If you want to change it, you need to recreate the instance. (aws_instance_not_specified_iam_profile)
+        ERROR:3 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
 
 Result: 2 issues  (1 errors , 0 warnings , 1 notices)
 ```
@@ -196,8 +196,8 @@ Deep check is an option that you can actually search resources on AWS and check 
 ```
 $ tflint --deep
 template.tf
-        ERROR:3 "t1.2xlarge" is invalid instance type.
-        ERROR:4 "invalid_profile" is invalid IAM profile name.
+        ERROR:3 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
+        ERROR:4 "invalid_profile" is invalid IAM profile name. (aws_instance_invalid_iam_profile)
 
 Result: 2 issues  (2 errors , 0 warnings , 0 notices)
 ```

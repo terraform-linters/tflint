@@ -22,7 +22,7 @@ The following is the execution result of TFLint:
 ```
 $ tflint
 template.tf
-        ERROR:6 "m4.large" is invalid node type.
+        ERROR:6 "m4.large" is invalid node type. (aws_elasticache_cluster_invalid_type)
 
 Result: 1 issues  (1 errors , 0 warnings , 0 notices)
 ```

@@ -15,7 +15,7 @@ The following is the execution result of TFLint:
 ```
 $ tflint
 template.tf
-        ERROR:1 The routing target is not specified, each routing must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id.
+        ERROR:1 The routing target is not specified, each routing must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id. (aws_route_not_specified_target)
 
 Result: 1 issues  (1 errors , 0 warnings , 0 notices)
 ```

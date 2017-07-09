@@ -25,7 +25,7 @@ The following is the execution result of TFLint:
 ```
 $ tflint
 template.tf
-        NOTICE:12 "default.mysql5.7" is default parameter group. You cannot edit it.
+        NOTICE:12 "default.mysql5.7" is default parameter group. You cannot edit it. (aws_db_instance_default_parameter_group)
 
 Result: 1 issues  (0 errors , 0 warnings , 1 notices)
 ```
