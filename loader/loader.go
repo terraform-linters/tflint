@@ -116,10 +116,22 @@ func (l *Loader) LoadAllTemplate(dir string) error {
 }
 
 func (l *Loader) LoadState() {
+	var localStatePath string = state.LocalStatePath
+	l.Logger.Info("Load environment...")
+	if b, err := ioutil.ReadFile(".terraform/environment"); err == nil {
+		env := string(b)
+		l.Logger.Info(fmt.Sprintf("Environment file detected. env: %s", env))
+		if env != "default" {
+			localStatePath = "terraform.tfstate.d/" + env + "/terraform.tfstate"
+		}
+	} else {
+		l.Logger.Error(err)
+	}
+
 	l.Logger.Info("Load tfstate...")
 	var statePath string
 	// stat local state
-	if _, err := os.Stat(state.LocalStatePath); err != nil {
+	if _, err := os.Stat(localStatePath); err != nil {
 		l.Logger.Error(err)
 		// stat remote state
 		if _, err := os.Stat(state.RemoteStatePath); err != nil {
@@ -131,7 +143,7 @@ func (l *Loader) LoadState() {
 		}
 	} else {
 		l.Logger.Info("Local state detected")
-		statePath = state.LocalStatePath
+		statePath = localStatePath
 	}
 
 	jsonBytes, err := ioutil.ReadFile(statePath)
