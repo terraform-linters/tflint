@@ -41,6 +41,11 @@ func TestIsEvaluable(t *testing.T) {
 			Input:  "${lookup(var.roles, count.index)}",
 			Result: false,
 		},
+		{
+			Name:   "terraform metadata syntax",
+			Input:  "${terraform.env}",
+			Result: true,
+		},
 	}
 
 	for _, tc := range cases {
@@ -236,6 +241,36 @@ func TestEvalReturnNil(t *testing.T) {
 		result, _ := evaluator.Eval(tc.Src)
 		if result != nil {
 			t.Fatalf("\nBad: %s\nExpected: nil\n\ntestcase: %s", result, tc.Name)
+		}
+	}
+}
+
+func TestEvalTerraformEnv(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Input  string
+		Src    string
+		Result string
+	}{
+		{
+			Name:   "terraform environment",
+			Input:  "dev",
+			Src:    "${terraform.env}",
+			Result: "dev",
+		},
+	}
+
+	for _, tc := range cases {
+		c := config.Init()
+		c.TerraformEnv = tc.Input
+
+		evaluator, err := NewEvaluator(map[string]*ast.File{}, []*schema.Template{}, []*ast.File{}, c)
+		if err != nil {
+			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
+		}
+		result, _ := evaluator.Eval(tc.Src)
+		if result != tc.Result {
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
 		}
 	}
 }

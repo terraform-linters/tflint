@@ -21,6 +21,10 @@ func NewEvaluator(templates map[string]*hclast.File, schema []*schema.Template, 
 	if err != nil {
 		return nil, err
 	}
+	varMap["terraform.env"] = hilast.Variable{
+		Type:  hilast.TypeString,
+		Value: c.TerraformEnv,
+	}
 
 	evaluator := &Evaluator{
 		Config: hil.EvalConfig{
@@ -44,6 +48,7 @@ func NewEvaluator(templates map[string]*hclast.File, schema []*schema.Template, 
 func isEvaluable(src string) bool {
 	var supportPrefix = []string{
 		"var",
+		"terraform",
 	}
 
 	supportPrefixPattern := "("

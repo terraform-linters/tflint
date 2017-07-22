@@ -51,6 +51,7 @@ func TestCLIRun(t *testing.T) {
 			IgnoreModule:   map[string]bool{},
 			IgnoreRule:     map[string]bool{},
 			Varfile:        []string{"terraform.tfvars"},
+			TerraformEnv:   "default",
 		},
 		ConfigFile: ".tflint.hcl",
 	}
@@ -103,7 +104,7 @@ func TestCLIRun(t *testing.T) {
 			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF {
 				detector := mock.NewMockDetectorIF(ctrl)
 				detector.EXPECT().Detect().Return([]*issue.Issue{
-					&issue.Issue{
+					{
 						Type:    "TEST",
 						Message: "this is test method",
 						Line:    1,
@@ -116,7 +117,7 @@ func TestCLIRun(t *testing.T) {
 			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF {
 				printer := mock.NewMockPrinterIF(ctrl)
 				printer.EXPECT().Print([]*issue.Issue{
-					&issue.Issue{
+					{
 						Type:    "TEST",
 						Message: "this is test method",
 						Line:    1,
@@ -216,6 +217,7 @@ func TestCLIRun(t *testing.T) {
 						IgnoreModule:   map[string]bool{},
 						IgnoreRule:     map[string]bool{},
 						Varfile:        []string{"terraform.tfvars"},
+						TerraformEnv:   "default",
 					},
 					ConfigFile: ".tflint.hcl",
 				},
@@ -263,6 +265,7 @@ func TestCLIRun(t *testing.T) {
 						IgnoreModule:   map[string]bool{},
 						IgnoreRule:     map[string]bool{"rule1": true, "rule2": true},
 						Varfile:        []string{"terraform.tfvars"},
+						TerraformEnv:   "default",
 					},
 					ConfigFile: ".tflint.hcl",
 				},
@@ -284,6 +287,7 @@ func TestCLIRun(t *testing.T) {
 						IgnoreModule:   map[string]bool{"module1": true, "module2": true},
 						IgnoreRule:     map[string]bool{},
 						Varfile:        []string{"terraform.tfvars"},
+						TerraformEnv:   "default",
 					},
 					ConfigFile: ".tflint.hcl",
 				},
@@ -311,6 +315,7 @@ func TestCLIRun(t *testing.T) {
 						IgnoreModule:   map[string]bool{},
 						IgnoreRule:     map[string]bool{},
 						Varfile:        []string{"terraform.tfvars", "example1.tfvars", "example2.tfvars"},
+						TerraformEnv:   "default",
 					},
 					ConfigFile: ".tflint.hcl",
 				},
@@ -332,6 +337,7 @@ func TestCLIRun(t *testing.T) {
 						IgnoreModule:   map[string]bool{},
 						IgnoreRule:     map[string]bool{},
 						Varfile:        []string{"terraform.tfvars"},
+						TerraformEnv:   "default",
 					},
 					ConfigFile: ".tflint.example.hcl",
 				},
@@ -353,6 +359,7 @@ func TestCLIRun(t *testing.T) {
 						IgnoreModule:   map[string]bool{},
 						IgnoreRule:     map[string]bool{},
 						Varfile:        []string{"terraform.tfvars"},
+						TerraformEnv:   "default",
 					},
 					ConfigFile: ".tflint.hcl",
 				},
@@ -378,6 +385,7 @@ func TestCLIRun(t *testing.T) {
 						IgnoreModule: map[string]bool{},
 						IgnoreRule:   map[string]bool{},
 						Varfile:      []string{"terraform.tfvars"},
+						TerraformEnv: "default",
 					},
 					ConfigFile: ".tflint.hcl",
 				},
@@ -402,6 +410,7 @@ func TestCLIRun(t *testing.T) {
 						IgnoreModule: map[string]bool{},
 						IgnoreRule:   map[string]bool{},
 						Varfile:      []string{"terraform.tfvars"},
+						TerraformEnv: "default",
 					},
 					ConfigFile: ".tflint.hcl",
 				},
@@ -468,6 +477,7 @@ func TestCLIRun(t *testing.T) {
 						IgnoreModule:   map[string]bool{},
 						IgnoreRule:     map[string]bool{"aws_instance_invalid_ami": true},
 						Varfile:        []string{"terraform.tfvars"},
+						TerraformEnv:   "default",
 					},
 					ConfigFile: ".tflint.hcl",
 				},

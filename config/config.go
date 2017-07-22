@@ -4,6 +4,8 @@ import (
 	"os"
 	"strings"
 
+	"io/ioutil"
+
 	"github.com/hashicorp/hcl"
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/wata727/tflint/loader"
@@ -17,6 +19,7 @@ type Config struct {
 	IgnoreRule       map[string]bool   `hcl:"ignore_rule"`
 	Varfile          []string          `hcl:"varfile"`
 	TerraformVersion string            `hcl:"terraform_version"`
+	TerraformEnv     string
 }
 
 func Init() *Config {
@@ -27,10 +30,15 @@ func Init() *Config {
 		IgnoreModule:   map[string]bool{},
 		IgnoreRule:     map[string]bool{},
 		Varfile:        []string{},
+		TerraformEnv:   "default",
 	}
 }
 
 func (c *Config) LoadConfig(filename string) error {
+	if b, err := ioutil.ReadFile(".terraform/environment"); err == nil {
+		c.TerraformEnv = string(b)
+	}
+
 	if _, err := os.Stat(filename); err != nil {
 		return nil
 	}
