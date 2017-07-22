@@ -185,7 +185,7 @@ $ export AWS_SECRET_ACCESS_KEY=AWS_SECRET_KEY
 ```
 
 ## Interpolation Syntax Support
-TFLint can interpret part of [interpolation syntax](https://www.terraform.io/docs/configuration/interpolation.html). We now support only variables. So you cannot use attributes of resource, outputs of modules and built-in functions. If you are using them, TFLint ignores it. You can check what is ignored by executing it with `--debug` option.
+TFLint can interpret part of [interpolation syntax](https://www.terraform.io/docs/configuration/interpolation.html). We now support only variables and terraform meta information (e.g. "${terraform.env}"). So you cannot use attributes of resource, outputs of modules and built-in functions. If you are using them, TFLint ignores it. You can check what is ignored by executing it with `--debug` option.
 
 ### Variable Files
 If you use [variable files](https://www.terraform.io/docs/configuration/variables.html#variable-files), Please specify it by arguments or configuration file. TFLint interprets variables as well as Terraform. In other words, when variables are conflicting, It will be overridden or merged correctly.

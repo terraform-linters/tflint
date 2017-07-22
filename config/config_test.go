@@ -17,7 +17,7 @@ func TestLoadConfig(t *testing.T) {
 	}{
 		{
 			Name:  "load config file",
-			Input: ".tflint.hcl",
+			Input: "dev_environment",
 			Result: &Config{
 				DeepCheck: true,
 				AwsCredentials: map[string]string{
@@ -34,27 +34,31 @@ func TestLoadConfig(t *testing.T) {
 				},
 				Varfile:          []string{"example1.tfvars", "example2.tfvars"},
 				TerraformVersion: "0.9.11",
+				TerraformEnv:     "dev",
 			},
 		},
 		{
 			Name:   "config file not found",
-			Input:  ".tflint.config",
+			Input:  "default",
 			Result: Init(),
 		},
 	}
 
+	prev, _ := filepath.Abs(".")
+	dir, _ := os.Getwd()
+	defer os.Chdir(prev)
+
 	for _, tc := range cases {
-		prev, _ := filepath.Abs(".")
-		dir, _ := os.Getwd()
-		defer os.Chdir(prev)
-		testDir := dir + "/test-fixtures"
+		testDir := dir + "/test-fixtures/" + tc.Input
 		os.Chdir(testDir)
 
 		c := Init()
-		c.LoadConfig(tc.Input)
+		c.LoadConfig(".tflint.hcl")
 		if !reflect.DeepEqual(c, tc.Result) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(c), pp.Sprint(tc.Result), tc.Name)
 		}
+
+		os.Chdir(prev)
 	}
 }
 
