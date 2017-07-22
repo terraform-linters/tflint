@@ -49,7 +49,8 @@ func (d *AwsELBDuplicateNameDetector) Detect(resource *schema.Resource, issues *
 		return
 	}
 
-	if d.loadBalancers[name] && !d.State.Exists(d.Target, resource.Id) {
+	identityCheckFunc := func(attributes map[string]string) bool { return attributes["name"] == name }
+	if d.loadBalancers[name] && !d.State.Exists(d.Target, resource.Id, identityCheckFunc) {
 		issue := &issue.Issue{
 			Detector: d.Name,
 			Type:     d.IssueType,
