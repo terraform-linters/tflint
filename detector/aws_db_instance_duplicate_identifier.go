@@ -49,7 +49,8 @@ func (d *AwsDBInstanceDuplicateIdentifierDetector) Detect(resource *schema.Resou
 		return
 	}
 
-	if d.identifiers[identifier] && !d.State.Exists(d.Target, resource.Id) {
+	identityCheckFunc := func(attributes map[string]string) bool { return attributes["identifier"] == identifier }
+	if d.identifiers[identifier] && !d.State.Exists(d.Target, resource.Id, identityCheckFunc) {
 		issue := &issue.Issue{
 			Detector: d.Name,
 			Type:     d.IssueType,

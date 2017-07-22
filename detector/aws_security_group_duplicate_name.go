@@ -76,7 +76,10 @@ func (d *AwsSecurityGroupDuplicateDetector) Detect(resource *schema.Resource, is
 		return
 	}
 
-	if d.securiyGroups[vpc+"."+name] && !d.State.Exists(d.Target, resource.Id) {
+	identityCheckFunc := func(attributes map[string]string) bool {
+		return attributes["vpc_id"] == vpc && attributes["name"] == name
+	}
+	if d.securiyGroups[vpc+"."+name] && !d.State.Exists(d.Target, resource.Id, identityCheckFunc) {
 		issue := &issue.Issue{
 			Detector: d.Name,
 			Type:     d.IssueType,

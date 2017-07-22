@@ -49,7 +49,8 @@ func (d *AwsElastiCacheClusterDuplicateIDDetector) Detect(resource *schema.Resou
 		return
 	}
 
-	if d.cacheClusters[id] && !d.State.Exists(d.Target, resource.Id) {
+	identityCheckFunc := func(attributes map[string]string) bool { return attributes["cluster_id"] == id }
+	if d.cacheClusters[id] && !d.State.Exists(d.Target, resource.Id, identityCheckFunc) {
 		issue := &issue.Issue{
 			Detector: d.Name,
 			Type:     d.IssueType,

@@ -23,10 +23,10 @@ type Instance struct {
 	Attributes map[string]string `json:"attributes"`
 }
 
-func (s *TFState) Exists(resourceType string, id string) bool {
+func (s *TFState) Exists(resourceType string, id string, identifyCheckFunc func(map[string]string) bool) bool {
 	for _, module := range s.Modules {
-		if _, ok := module.Resources[resourceType+"."+id]; ok {
-			return true
+		if resource, ok := module.Resources[resourceType+"."+id]; ok {
+			return identifyCheckFunc(resource.Primary.Attributes)
 		}
 	}
 	return false

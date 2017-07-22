@@ -284,6 +284,34 @@ func TestLoadState(t *testing.T) {
 			},
 		},
 		{
+			Name: "load environment local state",
+			Dir:  "environment",
+			Result: &state.TFState{
+				Modules: []*state.Module{
+					{
+						Resources: map[string]*state.Resource{
+							"aws_db_parameter_group.service": {
+								Type:         "aws_db_parameter_group",
+								Dependencies: []string{},
+								Primary: &state.Instance{
+									ID: "service",
+									Attributes: map[string]string{
+										"arn":         "arn:aws:rds:us-east-1:hogehoge:pg:service",
+										"description": "dev-db-parameter-group",
+										"family":      "mysql5.6",
+										"id":          "dev",
+										"name":        "dev",
+										"parameter.#": "0",
+										"tags.%":      "0",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
 			Name: "load remote state",
 			Dir:  "remote-state",
 			Result: &state.TFState{
@@ -318,10 +346,11 @@ func TestLoadState(t *testing.T) {
 		},
 	}
 
+	prev, _ := filepath.Abs(".")
+	dir, _ := os.Getwd()
+	defer os.Chdir(prev)
+
 	for _, tc := range cases {
-		prev, _ := filepath.Abs(".")
-		dir, _ := os.Getwd()
-		defer os.Chdir(prev)
 		testDir := dir + "/test-fixtures/" + tc.Dir
 		os.Chdir(testDir)
 		load := NewLoader(false)
