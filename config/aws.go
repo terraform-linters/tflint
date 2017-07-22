@@ -6,6 +6,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/ec2/ec2iface"
+	"github.com/aws/aws-sdk-go/service/ecs"
+	"github.com/aws/aws-sdk-go/service/ecs/ecsiface"
 	"github.com/aws/aws-sdk-go/service/elasticache"
 	"github.com/aws/aws-sdk-go/service/elasticache/elasticacheiface"
 	"github.com/aws/aws-sdk-go/service/elb"
@@ -27,6 +29,7 @@ type AwsClient struct {
 	Elasticache elasticacheiface.ElastiCacheAPI
 	Elb         elbiface.ELBAPI
 	Elbv2       elbv2iface.ELBV2API
+	Ecs         ecsiface.ECSAPI
 	Cache       *ResponseCache
 }
 
@@ -42,6 +45,7 @@ func (c *Config) NewAwsClient() *AwsClient {
 	client.Elasticache = elasticache.New(s)
 	client.Elb = elb.New(s)
 	client.Elbv2 = elbv2.New(s)
+	client.Ecs = ecs.New(s)
 
 	return client
 }
@@ -102,6 +106,7 @@ type ResponseCache struct {
 	DescribeCacheClustersOutput              *elasticache.DescribeCacheClustersOutput
 	DescribeLoadBalancersOutput              *elbv2.DescribeLoadBalancersOutput
 	DescribeClassicLoadBalancersOutput       *elb.DescribeLoadBalancersOutput
+	DescribeClusterOutput                    *ecs.DescribeClustersOutput
 }
 
 func (c *AwsClient) DescribeImages() (*ec2.DescribeImagesOutput, error) {
@@ -355,4 +360,22 @@ func (c *AwsClient) DescribeClassicLoadBalancers() (*elb.DescribeLoadBalancersOu
 		c.Cache.DescribeClassicLoadBalancersOutput = resp
 	}
 	return c.Cache.DescribeClassicLoadBalancersOutput, nil
+}
+
+func (c *AwsClient) DescribeClusters() (*ecs.DescribeClustersOutput, error) {
+	if c.Cache.DescribeClusterOutput == nil {
+		arns, err := c.Ecs.ListClusters(&ecs.ListClustersInput{})
+		if err != nil {
+			return nil, err
+		}
+
+		resp, err := c.Ecs.DescribeClusters(&ecs.DescribeClustersInput{
+			Clusters: arns.ClusterArns,
+		})
+		if err != nil {
+			return nil, err
+		}
+		c.Cache.DescribeClusterOutput = resp
+	}
+	return c.Cache.DescribeClusterOutput, nil
 }
