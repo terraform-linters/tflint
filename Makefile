@@ -46,5 +46,6 @@ mock: prepare
 	mockgen -source vendor/github.com/aws/aws-sdk-go/service/elbv2/elbv2iface/interface.go -destination mock/elbv2mock.go
 	mockgen -source vendor/github.com/aws/aws-sdk-go/service/iam/iamiface/interface.go -destination mock/iammock.go
 	mockgen -source vendor/github.com/aws/aws-sdk-go/service/rds/rdsiface/interface.go -destination mock/rdsmock.go
+	mockgen -source vendor/github.com/aws/aws-sdk-go/service/ecs/ecsiface/interface.go  -destination mock/ecsmock.go
 
 .PHONY: default prepare test build install release clean mock

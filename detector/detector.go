@@ -81,6 +81,7 @@ var detectorFactories = []string{
 	"CreateAwsRouteInvalidInstanceDetector",
 	"CreateAwsRouteInvalidNetworkInterfaceDetector",
 	"CreateAwsCloudWatchMetricAlarmInvalidUnitDetector",
+	"CreateAwsECSClusterDuplicateNameDetector",
 	"CreateTerraformModulePinnedSourceDetector",
 }
 

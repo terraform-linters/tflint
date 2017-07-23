@@ -80,3 +80,5 @@ Report these issues if you have specified resource ID, name, etc that already ex
     - aws_db_instance_duplicate_identifier
 - **AWS ElastiCache Cluster**
     - aws_elasticache_cluster_duplicate_id
+- **AWS ECS Cluster**
+    - aws_ecs_cluster_duplicate_name
