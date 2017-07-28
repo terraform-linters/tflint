@@ -411,6 +411,44 @@ func (_mr *_MockELBV2APIRecorder) DeregisterTargetsRequest(arg0 interface{}) *go
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeregisterTargetsRequest", arg0)
 }
 
+func (_m *MockELBV2API) DescribeAccountLimits(_param0 *elbv2.DescribeAccountLimitsInput) (*elbv2.DescribeAccountLimitsOutput, error) {
+	ret := _m.ctrl.Call(_m, "DescribeAccountLimits", _param0)
+	ret0, _ := ret[0].(*elbv2.DescribeAccountLimitsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBV2APIRecorder) DescribeAccountLimits(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeAccountLimits", arg0)
+}
+
+func (_m *MockELBV2API) DescribeAccountLimitsWithContext(_param0 aws.Context, _param1 *elbv2.DescribeAccountLimitsInput, _param2 ...request.Option) (*elbv2.DescribeAccountLimitsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeAccountLimitsWithContext", _s...)
+	ret0, _ := ret[0].(*elbv2.DescribeAccountLimitsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBV2APIRecorder) DescribeAccountLimitsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeAccountLimitsWithContext", _s...)
+}
+
+func (_m *MockELBV2API) DescribeAccountLimitsRequest(_param0 *elbv2.DescribeAccountLimitsInput) (*request.Request, *elbv2.DescribeAccountLimitsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeAccountLimitsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elbv2.DescribeAccountLimitsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBV2APIRecorder) DescribeAccountLimitsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeAccountLimitsRequest", arg0)
+}
+
 func (_m *MockELBV2API) DescribeListeners(_param0 *elbv2.DescribeListenersInput) (*elbv2.DescribeListenersOutput, error) {
 	ret := _m.ctrl.Call(_m, "DescribeListeners", _param0)
 	ret0, _ := ret[0].(*elbv2.DescribeListenersOutput)
@@ -1294,4 +1332,29 @@ func (_m *MockELBV2API) WaitUntilLoadBalancerExistsWithContext(_param0 aws.Conte
 func (_mr *_MockELBV2APIRecorder) WaitUntilLoadBalancerExistsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	_s := append([]interface{}{arg0, arg1}, arg2...)
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilLoadBalancerExistsWithContext", _s...)
+}
+
+func (_m *MockELBV2API) WaitUntilLoadBalancersDeleted(_param0 *elbv2.DescribeLoadBalancersInput) error {
+	ret := _m.ctrl.Call(_m, "WaitUntilLoadBalancersDeleted", _param0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockELBV2APIRecorder) WaitUntilLoadBalancersDeleted(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilLoadBalancersDeleted", arg0)
+}
+
+func (_m *MockELBV2API) WaitUntilLoadBalancersDeletedWithContext(_param0 aws.Context, _param1 *elbv2.DescribeLoadBalancersInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilLoadBalancersDeletedWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockELBV2APIRecorder) WaitUntilLoadBalancersDeletedWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilLoadBalancersDeletedWithContext", _s...)
 }
