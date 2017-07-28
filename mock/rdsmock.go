@@ -3762,6 +3762,82 @@ func (_mr *_MockRDSAPIRecorder) RevokeDBSecurityGroupIngressRequest(arg0 interfa
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RevokeDBSecurityGroupIngressRequest", arg0)
 }
 
+func (_m *MockRDSAPI) StartDBInstance(_param0 *rds.StartDBInstanceInput) (*rds.StartDBInstanceOutput, error) {
+	ret := _m.ctrl.Call(_m, "StartDBInstance", _param0)
+	ret0, _ := ret[0].(*rds.StartDBInstanceOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) StartDBInstance(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "StartDBInstance", arg0)
+}
+
+func (_m *MockRDSAPI) StartDBInstanceWithContext(_param0 aws.Context, _param1 *rds.StartDBInstanceInput, _param2 ...request.Option) (*rds.StartDBInstanceOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "StartDBInstanceWithContext", _s...)
+	ret0, _ := ret[0].(*rds.StartDBInstanceOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) StartDBInstanceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "StartDBInstanceWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) StartDBInstanceRequest(_param0 *rds.StartDBInstanceInput) (*request.Request, *rds.StartDBInstanceOutput) {
+	ret := _m.ctrl.Call(_m, "StartDBInstanceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.StartDBInstanceOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) StartDBInstanceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "StartDBInstanceRequest", arg0)
+}
+
+func (_m *MockRDSAPI) StopDBInstance(_param0 *rds.StopDBInstanceInput) (*rds.StopDBInstanceOutput, error) {
+	ret := _m.ctrl.Call(_m, "StopDBInstance", _param0)
+	ret0, _ := ret[0].(*rds.StopDBInstanceOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) StopDBInstance(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "StopDBInstance", arg0)
+}
+
+func (_m *MockRDSAPI) StopDBInstanceWithContext(_param0 aws.Context, _param1 *rds.StopDBInstanceInput, _param2 ...request.Option) (*rds.StopDBInstanceOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "StopDBInstanceWithContext", _s...)
+	ret0, _ := ret[0].(*rds.StopDBInstanceOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) StopDBInstanceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "StopDBInstanceWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) StopDBInstanceRequest(_param0 *rds.StopDBInstanceInput) (*request.Request, *rds.StopDBInstanceOutput) {
+	ret := _m.ctrl.Call(_m, "StopDBInstanceRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.StopDBInstanceOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) StopDBInstanceRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "StopDBInstanceRequest", arg0)
+}
+
 func (_m *MockRDSAPI) WaitUntilDBInstanceAvailable(_param0 *rds.DescribeDBInstancesInput) error {
 	ret := _m.ctrl.Call(_m, "WaitUntilDBInstanceAvailable", _param0)
 	ret0, _ := ret[0].(error)

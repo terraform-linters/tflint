@@ -1,7 +1,7 @@
 package: github.com/wata727/tflint
 import:
 - package: github.com/aws/aws-sdk-go
-  version: ^1.7.8
+  version: ^1.10.18
   subpackages:
   - aws
   - aws/credentials
@@ -10,7 +10,7 @@ import:
   - service/iam
   - service/iam/iamiface
 - package: github.com/fatih/color
-  version: ^1.4.1
+  version: ^1.5.0
 - package: github.com/golang/mock
   subpackages:
   - gomock
@@ -29,5 +29,5 @@ import:
   - helper/variables
 - package: github.com/mitchellh/go-homedir
 - package: github.com/jessevdk/go-flags
-  version: ^1.2.0
+  version: ^1.3.0
 - package: github.com/hashicorp/go-version

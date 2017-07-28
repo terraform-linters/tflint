@@ -525,6 +525,44 @@ func (_mr *_MockELBAPIRecorder) DeregisterInstancesFromLoadBalancerRequest(arg0 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeregisterInstancesFromLoadBalancerRequest", arg0)
 }
 
+func (_m *MockELBAPI) DescribeAccountLimits(_param0 *elb.DescribeAccountLimitsInput) (*elb.DescribeAccountLimitsOutput, error) {
+	ret := _m.ctrl.Call(_m, "DescribeAccountLimits", _param0)
+	ret0, _ := ret[0].(*elb.DescribeAccountLimitsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DescribeAccountLimits(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeAccountLimits", arg0)
+}
+
+func (_m *MockELBAPI) DescribeAccountLimitsWithContext(_param0 aws.Context, _param1 *elb.DescribeAccountLimitsInput, _param2 ...request.Option) (*elb.DescribeAccountLimitsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeAccountLimitsWithContext", _s...)
+	ret0, _ := ret[0].(*elb.DescribeAccountLimitsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DescribeAccountLimitsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeAccountLimitsWithContext", _s...)
+}
+
+func (_m *MockELBAPI) DescribeAccountLimitsRequest(_param0 *elb.DescribeAccountLimitsInput) (*request.Request, *elb.DescribeAccountLimitsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeAccountLimitsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elb.DescribeAccountLimitsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBAPIRecorder) DescribeAccountLimitsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeAccountLimitsRequest", arg0)
+}
+
 func (_m *MockELBAPI) DescribeInstanceHealth(_param0 *elb.DescribeInstanceHealthInput) (*elb.DescribeInstanceHealthOutput, error) {
 	ret := _m.ctrl.Call(_m, "DescribeInstanceHealth", _param0)
 	ret0, _ := ret[0].(*elb.DescribeInstanceHealthOutput)

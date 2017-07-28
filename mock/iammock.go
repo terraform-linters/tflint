@@ -677,6 +677,44 @@ func (_mr *_MockIAMAPIRecorder) CreateSAMLProviderRequest(arg0 interface{}) *gom
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateSAMLProviderRequest", arg0)
 }
 
+func (_m *MockIAMAPI) CreateServiceLinkedRole(_param0 *iam.CreateServiceLinkedRoleInput) (*iam.CreateServiceLinkedRoleOutput, error) {
+	ret := _m.ctrl.Call(_m, "CreateServiceLinkedRole", _param0)
+	ret0, _ := ret[0].(*iam.CreateServiceLinkedRoleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateServiceLinkedRole(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateServiceLinkedRole", arg0)
+}
+
+func (_m *MockIAMAPI) CreateServiceLinkedRoleWithContext(_param0 aws.Context, _param1 *iam.CreateServiceLinkedRoleInput, _param2 ...request.Option) (*iam.CreateServiceLinkedRoleOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "CreateServiceLinkedRoleWithContext", _s...)
+	ret0, _ := ret[0].(*iam.CreateServiceLinkedRoleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateServiceLinkedRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateServiceLinkedRoleWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) CreateServiceLinkedRoleRequest(_param0 *iam.CreateServiceLinkedRoleInput) (*request.Request, *iam.CreateServiceLinkedRoleOutput) {
+	ret := _m.ctrl.Call(_m, "CreateServiceLinkedRoleRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.CreateServiceLinkedRoleOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) CreateServiceLinkedRoleRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "CreateServiceLinkedRoleRequest", arg0)
+}
+
 func (_m *MockIAMAPI) CreateServiceSpecificCredential(_param0 *iam.CreateServiceSpecificCredentialInput) (*iam.CreateServiceSpecificCredentialOutput, error) {
 	ret := _m.ctrl.Call(_m, "CreateServiceSpecificCredential", _param0)
 	ret0, _ := ret[0].(*iam.CreateServiceSpecificCredentialOutput)
@@ -4821,6 +4859,44 @@ func (_m *MockIAMAPI) UpdateOpenIDConnectProviderThumbprintRequest(_param0 *iam.
 
 func (_mr *_MockIAMAPIRecorder) UpdateOpenIDConnectProviderThumbprintRequest(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateOpenIDConnectProviderThumbprintRequest", arg0)
+}
+
+func (_m *MockIAMAPI) UpdateRoleDescription(_param0 *iam.UpdateRoleDescriptionInput) (*iam.UpdateRoleDescriptionOutput, error) {
+	ret := _m.ctrl.Call(_m, "UpdateRoleDescription", _param0)
+	ret0, _ := ret[0].(*iam.UpdateRoleDescriptionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateRoleDescription(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateRoleDescription", arg0)
+}
+
+func (_m *MockIAMAPI) UpdateRoleDescriptionWithContext(_param0 aws.Context, _param1 *iam.UpdateRoleDescriptionInput, _param2 ...request.Option) (*iam.UpdateRoleDescriptionOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "UpdateRoleDescriptionWithContext", _s...)
+	ret0, _ := ret[0].(*iam.UpdateRoleDescriptionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateRoleDescriptionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateRoleDescriptionWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) UpdateRoleDescriptionRequest(_param0 *iam.UpdateRoleDescriptionInput) (*request.Request, *iam.UpdateRoleDescriptionOutput) {
+	ret := _m.ctrl.Call(_m, "UpdateRoleDescriptionRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UpdateRoleDescriptionOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) UpdateRoleDescriptionRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateRoleDescriptionRequest", arg0)
 }
 
 func (_m *MockIAMAPI) UpdateSAMLProvider(_param0 *iam.UpdateSAMLProviderInput) (*iam.UpdateSAMLProviderOutput, error) {
