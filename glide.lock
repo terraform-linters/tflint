@@ -1,8 +1,8 @@
-hash: 7dcc19395a7ae20cd2d8d2bf57ec53525774185572a387ba791f3b4349aff73b
-updated: 2017-07-09T14:47:09.476933057+09:00
+hash: aa087a4d5eadbbfde4bfeae265b89032cf4951a18dddf0925ebda27ec67ae6f2
+updated: 2017-07-28T23:29:42.842711035+09:00
 imports:
 - name: github.com/aws/aws-sdk-go
-  version: 7be45195c3af1b54a609812f90c05a7e492e2491
+  version: 5e436e55ac5eddc739f26a2a209b3f4248ee8e0e
   subpackages:
   - aws
   - aws/awserr
@@ -20,14 +20,19 @@ imports:
   - aws/request
   - aws/session
   - aws/signer/v4
+  - internal/shareddefaults
   - private/protocol
   - private/protocol/ec2query
+  - private/protocol/json/jsonutil
+  - private/protocol/jsonrpc
   - private/protocol/query
   - private/protocol/query/queryutil
   - private/protocol/rest
   - private/protocol/xml/xmlutil
   - service/ec2
   - service/ec2/ec2iface
+  - service/ecs
+  - service/ecs/ecsiface
   - service/elasticache
   - service/elasticache/elasticacheiface
   - service/elb
@@ -44,13 +49,13 @@ imports:
 - name: github.com/go-ini/ini
   version: 7e015cd18f007383aa571cc413bd2ec09cff7f2d
 - name: github.com/golang/mock
-  version: bd3c8e81be01eef76d4b503f5e687d2d1354d2d9
+  version: 13f360950a79f5864a972c786a10a50e44b69541
   subpackages:
   - gomock
 - name: github.com/hashicorp/go-version
   version: 03c5bf6be031b6dd45afec16b1cf94fc8938bc77
 - name: github.com/hashicorp/hcl
-  version: 630949a3c5fa3c613328e1b8256052cbc2327c9b
+  version: 392dba7d905ed5d04a5794ba89f558b27e2ba1ca
   subpackages:
   - hcl/ast
   - hcl/parser
@@ -61,7 +66,7 @@ imports:
   - json/scanner
   - json/token
 - name: github.com/hashicorp/hil
-  version: 5b8d13c8c5c2753e109fab25392a1dbfa2db93d2
+  version: fa9f258a92500514cc8e9c67020487709df92432
   subpackages:
   - ast
   - parser
