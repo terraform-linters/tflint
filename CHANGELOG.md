@@ -1,15 +1,32 @@
+## 0.4.1 (2017-07-29)
+
+Patch version update. This release includes terraform meta information interpolation syntax support.
+
+### NewDetectors
+
+- Add AwsECSClusterDuplicateNameDetector ([#128](https://github.com/wata727/tflint/pull/128))
+
+### Enhancements
+
+- Support "${terraform.env}" syntax ([#126](https://github.com/wata727/tflint/pull/126))
+- Environment state handling ([#127](https://github.com/wata727/tflint/pull/127))
+
+### Others
+
+- Update deps ([#130](https://github.com/wata727/tflint/pull/130))
+
 ## 0.4.0 (2017-07-09)
 
 Minor version update. This release includes big core API changes.
 
-## Enhancements
+### Enhancements
 
 - Overrides module ([#118](https://github.com/wata727/tflint/pull/118))
 - Add document link and detector name on output ([#122](https://github.com/wata727/tflint/pull/122))
 - Add Terraform version options ([#123](https://github.com/wata727/tflint/pull/123))
 - Report `aws_instance_not_specified_iam_profile` only when `terraform_version` is less than 0.8.8 ([#124](https://github.com/wata727/tflint/pull/124))
 
-## Others
+### Others
 
 - Provide abstract HCL access ([#112](https://github.com/wata727/tflint/pull/112))
 - Fix override logic ([#117](https://github.com/wata727/tflint/pull/117))
@@ -19,11 +36,11 @@ Minor version update. This release includes big core API changes.
 
 Patch version update. This release includes hotfix for module evaluation.
 
-## BugFix
+### BugFix
 
 - DO NOT USE Evaluator :bow: ([#114](https://github.com/wata727/tflint/pull/114))
 
-## Others
+### Others
 
 - Add HCL syntax highlighting in README ([#110](https://github.com/wata727/tflint/pull/110))
 - Update README.md ([#111](https://github.com/wata727/tflint/pull/111))
