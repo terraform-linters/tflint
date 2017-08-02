@@ -1,3 +1,11 @@
+## 0.4.2 (2017-08-03)
+
+Patch version update. This release includes a hotfix.
+
+### BugFix
+
+- Fix panic for integer variables interpolation ([#131](https://github.com/wata727/tflint/pull/131))
+
 ## 0.4.1 (2017-07-29)
 
 Patch version update. This release includes terraform meta information interpolation syntax support.
