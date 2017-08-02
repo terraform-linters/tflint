@@ -539,11 +539,11 @@ func TestParseVariable(t *testing.T) {
 						Value: map[string]hilast.Variable{
 							"test3": {
 								Type:  hilast.TypeString,
-								Value: 1,
+								Value: "1",
 							},
 							"test4": {
 								Type:  hilast.TypeString,
-								Value: 10,
+								Value: "10",
 							},
 						},
 					},

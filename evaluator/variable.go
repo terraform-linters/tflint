@@ -3,6 +3,8 @@ package evaluator
 import (
 	"reflect"
 
+	"fmt"
+
 	"github.com/hashicorp/hcl"
 	hclast "github.com/hashicorp/hcl/hcl/ast"
 	hilast "github.com/hashicorp/hil/ast"
@@ -99,7 +101,7 @@ func parseVariable(val interface{}, varType string) hilast.Variable {
 	case HCL_STRING_VARTYPE:
 		hilVar = hilast.Variable{
 			Type:  hilast.TypeString,
-			Value: val,
+			Value: fmt.Sprint(val),
 		}
 	case HCL_MAP_VARTYPE:
 		// When HCL map var convert(parse) to Go var,

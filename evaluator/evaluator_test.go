@@ -74,6 +74,16 @@ variable "name" {
 			Result: "test",
 		},
 		{
+			Name: "completed integer variable",
+			Input: `
+variable "name" {
+    type = "string"
+    default = 1
+}`,
+			Src:    "${var.name}",
+			Result: "1",
+		},
+		{
 			Name: "completed list variable",
 			Input: `
 variable "name" {
@@ -104,6 +114,15 @@ variable "name" {
 }`,
 			Src:    "${var.name}",
 			Result: "test",
+		},
+		{
+			Name: "integer variable in missing type",
+			Input: `
+variable "name" {
+    default = 1
+}`,
+			Src:    "${var.name}",
+			Result: "1",
 		},
 		{
 			Name: "list variable in missing key",
