@@ -94,6 +94,10 @@ func (cli *CLI) Run(args []string) int {
 	root := "./"
 	dirsToCheck := []string{root}
 	rootInfo, err := os.Stat(root)
+	if err != nil {
+		fmt.Fprintln(cli.errStream, err)
+		return ExitCodeError
+	}
 	if c.Recurse {
 		err = filepath.Walk(root, func(path string, f os.FileInfo, err error) error {
 			if f.IsDir() {
@@ -106,6 +110,10 @@ func (cli *CLI) Run(args []string) int {
 			}
 			return nil
 		})
+		if err != nil {
+			fmt.Fprintln(cli.errStream, err)
+			return ExitCodeError
+		}
 	}
 
 	for _, dir := range dirsToCheck {
