@@ -20,6 +20,7 @@ type Config struct {
 	Varfile          []string          `hcl:"varfile"`
 	TerraformVersion string            `hcl:"terraform_version"`
 	TerraformEnv     string
+	Recurse          bool
 }
 
 func Init() *Config {
@@ -31,6 +32,7 @@ func Init() *Config {
 		IgnoreRule:     map[string]bool{},
 		Varfile:        []string{},
 		TerraformEnv:   "default",
+		Recurse:        false,
 	}
 }
 
