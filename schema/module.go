@@ -36,12 +36,17 @@ func newModule(fileName string, pos token.Pos, moduleId string) *Module {
 
 func (m *Module) Load() error {
 	files := map[string][]byte{}
+	modulePath := m.oldPath()
 
-	if _, err := os.Stat(m.path()); err != nil {
-		return fmt.Errorf("ERROR: module `%s` not found. Did you run `terraform get`?", m.ModuleSource)
+	if _, err := os.Stat(modulePath); err != nil {
+		// Since the digest has changed in Terraform v0.10.6, try to check the new path
+		modulePath = m.path()
+		if _, err := os.Stat(modulePath); err != nil {
+			return fmt.Errorf("ERROR: module `%s` not found. Did you run `terraform get`?", m.ModuleSource)
+		}
 	}
 
-	filePaths, err := filepath.Glob(m.path() + "/*.tf")
+	filePaths, err := filepath.Glob(modulePath + "/*.tf")
 	if err != nil {
 		return err
 	}
@@ -52,7 +57,7 @@ func (m *Module) Load() error {
 			return fmt.Errorf("ERROR: Cannot open file %s", filePath)
 		}
 
-		fileName := strings.Replace(filePath, m.path(), "", 1)
+		fileName := strings.Replace(filePath, modulePath, "", 1)
 		fileKey := m.ModuleSource + fileName
 		files[fileKey] = b
 	}
@@ -64,8 +69,15 @@ func (m *Module) Load() error {
 	return nil
 }
 
-func (m *Module) path() string {
+// Since the digest has changed in Terraform v0.10.6, this is the path up to v0.10.5
+func (m *Module) oldPath() string {
 	base := "root." + m.Id + "-" + m.ModuleSource
+	sum := md5.Sum([]byte(base)) // #nosec
+	return ".terraform/modules/" + hex.EncodeToString(sum[:])
+}
+
+func (m *Module) path() string {
+	base := "module." + m.Id + "-" + m.ModuleSource
 	sum := md5.Sum([]byte(base)) // #nosec
 	return ".terraform/modules/" + hex.EncodeToString(sum[:])
 }
