@@ -1,9 +1,10 @@
 package evaluator
 
 import (
-	"strings"
-
+	"errors"
+	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/hashicorp/hil"
 	"github.com/hashicorp/hil/ast"
@@ -23,7 +24,7 @@ func (e *Evaluator) initModule(module *schema.Module, c *config.Config) error {
 				varName := "var." + k
 				ev, err := e.evalModuleAttr(k, strings.Replace(varToken.Text, "\"", "", -1))
 				if err != nil {
-					return err
+					return errors.New(fmt.Sprintf("Evaluation error: %s in %s:%d", err, varToken.Pos.Filename, varToken.Pos.Line))
 				}
 				varMap[varName] = parseVariable(ev, "")
 			}
