@@ -205,7 +205,7 @@ Result: 2 issues  (2 errors , 0 warnings , 0 notices)
 In the above example, an IAM instance profile that does not actually exist is specified, so it is an error. In order to refer to actual resources, AWS credentials are required. You can use command line options, configuration files, environment variables, shared credentials for these specifications.
 
 ## Developing
-If you want to build TFLint at your environment, you can build with the following procedure. [Go](https://golang.org/) 1.8 or more is required.
+If you want to build TFLint at your environment, you can build with the following procedure. [Go](https://golang.org/) 1.9 or more is required.
 
 ```
 $ make build
