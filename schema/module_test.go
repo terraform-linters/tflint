@@ -19,7 +19,7 @@ func TestLoad(t *testing.T) {
 		Error  bool
 	}{
 		{
-			Name: "init module",
+			Name: "init module with old digest path",
 			Input: `
 module "ec2_instance" {
 	source = "./tf_aws_ec2_instance"
@@ -80,6 +80,82 @@ module "ec2_instance" {
 													Column:   19,
 												},
 												Text: "\"ami-12345678\"",
+												JSON: false,
+											},
+										},
+									},
+								},
+							},
+							Type: "aws_instance",
+							Id:   "web",
+						},
+					},
+				},
+			},
+			Error: false,
+		},
+		{
+			Name: "init module with new digest path",
+			Input: `
+module "ec2_instance" {
+	source = "./tf_aws_ec2_instance_v2"
+}`,
+			Result: []*Template{
+				{
+					File: "./tf_aws_ec2_instance_v2/test.tf",
+					Resources: []*Resource{
+						{
+							Source: &Source{
+								File: "./tf_aws_ec2_instance_v2/test.tf",
+								Pos: token.Pos{
+									Filename: "./tf_aws_ec2_instance_v2/test.tf",
+									Offset:   30,
+									Line:     1,
+									Column:   31,
+								},
+								Attrs: map[string]*Attribute{
+									"instance_type": {
+										Poses: []token.Pos{
+											{
+												Filename: "./tf_aws_ec2_instance_v2/test.tf",
+												Offset:   83,
+												Line:     3,
+												Column:   19,
+											},
+										},
+										Vals: []interface{}{
+											token.Token{
+												Type: 9,
+												Pos: token.Pos{
+													Filename: "./tf_aws_ec2_instance_v2/test.tf",
+													Offset:   83,
+													Line:     3,
+													Column:   19,
+												},
+												Text: "\"t2.micro\"",
+												JSON: false,
+											},
+										},
+									},
+									"ami": {
+										Poses: []token.Pos{
+											{
+												Filename: "./tf_aws_ec2_instance_v2/test.tf",
+												Offset:   50,
+												Line:     2,
+												Column:   19,
+											},
+										},
+										Vals: []interface{}{
+											token.Token{
+												Type: 9,
+												Pos: token.Pos{
+													Filename: "./tf_aws_ec2_instance_v2/test.tf",
+													Offset:   50,
+													Line:     2,
+													Column:   19,
+												},
+												Text: "\"ami-abcd1234\"",
 												JSON: false,
 											},
 										},
