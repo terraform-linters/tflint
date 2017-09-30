@@ -48,4 +48,10 @@ mock: prepare
 	mockgen -source vendor/github.com/aws/aws-sdk-go/service/rds/rdsiface/interface.go -destination mock/rdsmock.go
 	mockgen -source vendor/github.com/aws/aws-sdk-go/service/ecs/ecsiface/interface.go  -destination mock/ecsmock.go
 
-.PHONY: default prepare test build install release clean mock
+image:
+	docker build -t wata727/tflint:${VERSION} .
+	docker tag wata727/tflint:${VERSION} wata727/tflint:latest
+	docker push wata727/tflint:${VERSION}
+	docker push wata727/tflint:latest
+
+.PHONY: default prepare test build install release clean mock image
