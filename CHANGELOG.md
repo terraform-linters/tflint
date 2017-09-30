@@ -1,3 +1,16 @@
+## 0.4.3 (2017-09-30)
+
+Patch version update. This release includes Terraform v0.10.6 supports.
+
+### Enhancements
+
+- Add G3 instances support ([#139](https://github.com/wata727/tflint/pull/139))
+- Support new digest module path ([#144](https://github.com/wata727/tflint/pull/144))
+
+### Others
+
+- Fix unclear error messages ([#137](https://github.com/wata727/tflint/pull/137))
+
 ## 0.4.2 (2017-08-03)
 
 Patch version update. This release includes a hotfix.

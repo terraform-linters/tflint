@@ -1,4 +1,4 @@
 package main
 
 const Name string = "TFLint"
-const Version string = "0.4.2"
+const Version string = "0.4.3"
