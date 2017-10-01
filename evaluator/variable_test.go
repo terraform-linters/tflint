@@ -1,6 +1,7 @@
 package evaluator
 
 import (
+	"os"
 	"reflect"
 	"testing"
 
@@ -218,6 +219,91 @@ complex = {
 
 		if !reflect.DeepEqual(result, tc.Result) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
+		}
+	}
+}
+
+func TestDecodeEnvVars(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Vars   []*hclVariable
+		Env    map[string]string
+		Result []map[string]interface{}
+	}{
+		{
+			Name: "Decode string",
+			Vars: []*hclVariable{
+				{
+					Name: "hoge",
+				},
+			},
+			Env: map[string]string{
+				"TF_VAR_hoge": "fuga",
+			},
+			Result: []map[string]interface{}{
+				{
+					"hoge": "fuga",
+				},
+			},
+		},
+		{
+			Name: "Decode list",
+			Vars: []*hclVariable{
+				{
+					Name:         "hoge",
+					DeclaredType: "list",
+				},
+			},
+			Env: map[string]string{
+				"TF_VAR_hoge": "[\"bar\", \"baz\"]",
+			},
+			Result: []map[string]interface{}{
+				{
+					"hoge": []interface{}{"bar", "baz"},
+				},
+			},
+		},
+		{
+			Name: "Decode map",
+			Vars: []*hclVariable{
+				{
+					Name:         "hoge",
+					DeclaredType: "map",
+				},
+			},
+			Env: map[string]string{
+				"TF_VAR_hoge": "{bar = \"baz\", hoge = \"fuga\"}",
+			},
+			Result: []map[string]interface{}{
+				{
+					"hoge": []map[string]interface{}{
+						{
+							"bar":  "baz",
+							"hoge": "fuga",
+						},
+					},
+				},
+			},
+		},
+	}
+
+	for _, tc := range cases {
+		for k, v := range tc.Env {
+			os.Setenv(k, v)
+		}
+
+		result, err := decodeEnvVars(tc.Vars)
+		if err != nil {
+			t.Fatalf("\nAn error occurred.\nError: %s\n\ntestcase: %s", err, tc.Name)
+			continue
+		}
+
+		if !reflect.DeepEqual(result, tc.Result) {
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(result), pp.Sprint(tc.Result), tc.Name)
+		}
+
+		for k, _ := range tc.Env {
+			os.Unsetenv(k)
 		}
 	}
 }
