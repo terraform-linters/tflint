@@ -19,7 +19,7 @@ func TestLoad(t *testing.T) {
 		Error  bool
 	}{
 		{
-			Name: "init module with old digest path",
+			Name: "init module with v0.10.5",
 			Input: `
 module "ec2_instance" {
 	source = "./tf_aws_ec2_instance"
@@ -95,7 +95,7 @@ module "ec2_instance" {
 			Error: false,
 		},
 		{
-			Name: "init module with new digest path",
+			Name: "init module with v0.10.6",
 			Input: `
 module "ec2_instance" {
 	source = "./tf_aws_ec2_instance_v2"
@@ -156,6 +156,82 @@ module "ec2_instance" {
 													Column:   19,
 												},
 												Text: "\"ami-abcd1234\"",
+												JSON: false,
+											},
+										},
+									},
+								},
+							},
+							Type: "aws_instance",
+							Id:   "web",
+						},
+					},
+				},
+			},
+			Error: false,
+		},
+		{
+			Name: "init module with v0.10.7",
+			Input: `
+module "ec2_instance" {
+	source = "./tf_aws_ec2_instance_v3"
+}`,
+			Result: []*Template{
+				{
+					File: "./tf_aws_ec2_instance_v3/test.tf",
+					Resources: []*Resource{
+						{
+							Source: &Source{
+								File: "./tf_aws_ec2_instance_v3/test.tf",
+								Pos: token.Pos{
+									Filename: "./tf_aws_ec2_instance_v3/test.tf",
+									Offset:   30,
+									Line:     1,
+									Column:   31,
+								},
+								Attrs: map[string]*Attribute{
+									"instance_type": {
+										Poses: []token.Pos{
+											{
+												Filename: "./tf_aws_ec2_instance_v3/test.tf",
+												Offset:   83,
+												Line:     3,
+												Column:   19,
+											},
+										},
+										Vals: []interface{}{
+											token.Token{
+												Type: 9,
+												Pos: token.Pos{
+													Filename: "./tf_aws_ec2_instance_v3/test.tf",
+													Offset:   83,
+													Line:     3,
+													Column:   19,
+												},
+												Text: "\"m3.large\"",
+												JSON: false,
+											},
+										},
+									},
+									"ami": {
+										Poses: []token.Pos{
+											{
+												Filename: "./tf_aws_ec2_instance_v3/test.tf",
+												Offset:   50,
+												Line:     2,
+												Column:   19,
+											},
+										},
+										Vals: []interface{}{
+											token.Token{
+												Type: 9,
+												Pos: token.Pos{
+													Filename: "./tf_aws_ec2_instance_v3/test.tf",
+													Offset:   50,
+													Line:     2,
+													Column:   19,
+												},
+												Text: "\"ami-9876abcd\"",
 												JSON: false,
 											},
 										},

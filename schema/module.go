@@ -36,14 +36,9 @@ func newModule(fileName string, pos token.Pos, moduleId string) *Module {
 
 func (m *Module) Load() error {
 	files := map[string][]byte{}
-	modulePath := m.oldPath()
-
-	if _, err := os.Stat(modulePath); err != nil {
-		// Since the digest has changed in Terraform v0.10.6, try to check the new path
-		modulePath = m.path()
-		if _, err := os.Stat(modulePath); err != nil {
-			return fmt.Errorf("ERROR: module `%s` not found. Did you run `terraform get`?", m.ModuleSource)
-		}
+	modulePath, err := m.path()
+	if err != nil {
+		return err
 	}
 
 	filePaths, err := filepath.Glob(modulePath + "/*.tf")
@@ -69,15 +64,27 @@ func (m *Module) Load() error {
 	return nil
 }
 
-// Since the digest has changed in Terraform v0.10.6, this is the path up to v0.10.5
-func (m *Module) oldPath() string {
-	base := "root." + m.Id + "-" + m.ModuleSource
-	sum := md5.Sum([]byte(base)) // #nosec
-	return ".terraform/modules/" + hex.EncodeToString(sum[:])
+func (m *Module) path() (string, error) {
+	// before v0.10.5
+	base := m.pathname("root." + m.Id + "-" + m.ModuleSource)
+	if _, err := os.Stat(base); err == nil {
+		return base, nil
+	}
+	// for v0.10.6
+	base = m.pathname("module." + m.Id + "-" + m.ModuleSource)
+	if _, err := os.Stat(base); err == nil {
+		return base, nil
+	}
+	// after v0.10.7
+	base = m.pathname("0.root." + m.Id + "-" + m.ModuleSource)
+	if _, err := os.Stat(base); err == nil {
+		return base, nil
+	}
+
+	return "", fmt.Errorf("ERROR: module `%s` not found. Did you run `terraform get`?", m.ModuleSource)
 }
 
-func (m *Module) path() string {
-	base := "module." + m.Id + "-" + m.ModuleSource
+func (m *Module) pathname(base string) string {
 	sum := md5.Sum([]byte(base)) // #nosec
 	return ".terraform/modules/" + hex.EncodeToString(sum[:])
 }
