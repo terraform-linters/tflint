@@ -1,7 +1,9 @@
 package evaluator
 
 import (
+	"os"
 	"reflect"
+	"strings"
 
 	"fmt"
 
@@ -31,13 +33,19 @@ func detectVariables(templates map[string]*hclast.File, varfile []*hclast.File) 
 		if err := hcl.DecodeObject(&variables, template.Node.(*hclast.ObjectList).Filter("variable")); err != nil {
 			return nil, err
 		}
+		envVars, err := decodeEnvVars(variables)
+		if err != nil {
+			return nil, err
+		}
 		tfvars, err := decodeTFVars(varfile)
 		if err != nil {
 			return nil, err
 		}
 
 		for _, v := range variables {
-			if overriddenVariable(v, tfvars); v.Default == nil {
+			overriddenVariable(v, envVars)
+			overriddenVariable(v, tfvars)
+			if v.Default == nil {
 				continue
 			}
 			varName := "var." + v.Name
@@ -58,6 +66,44 @@ func decodeTFVars(varfile []*hclast.File) ([]map[string]interface{}, error) {
 		}
 		result = append(result, r)
 	}
+	return result, nil
+}
+
+func decodeEnvVars(variables []*hclVariable) ([]map[string]interface{}, error) {
+	result := []map[string]interface{}{}
+
+	for _, e := range os.Environ() {
+		idx := strings.Index(e, "=")
+		envKey := e[:idx]
+		envVal := e[idx+1:]
+
+		if strings.HasPrefix(envKey, "TF_VAR_") {
+			varName := strings.Replace(envKey, "TF_VAR_", "", 1)
+			for _, v := range variables {
+				if v.Name != varName {
+					continue
+				}
+
+				var varType string
+				if v.DeclaredType == "" {
+					varType = deduceType(v.Default)
+				} else {
+					varType = v.DeclaredType
+				}
+
+				if varType == HCL_STRING_VARTYPE {
+					envVal = fmt.Sprintf("\"%s\"", envVal)
+				}
+
+				var r map[string]interface{}
+				if err := hcl.Decode(&r, fmt.Sprintf("%s = %s", varName, envVal)); err != nil {
+					return nil, err
+				}
+				result = append(result, r)
+			}
+		}
+	}
+
 	return result, nil
 }
 
@@ -83,8 +129,13 @@ func overriddenVariable(v *hclVariable, tfvars []map[string]interface{}) {
 	}
 }
 
-func parseVariable(val interface{}, varType string) hilast.Variable {
-	// varType is overwrite invariably. Because, happen panic when used in incorrect type
+func deduceType(val interface{}) string {
+	if val == nil {
+		return HCL_STRING_VARTYPE
+	}
+
+	var varType string
+
 	switch reflect.TypeOf(val).Kind() {
 	case reflect.String:
 		varType = HCL_STRING_VARTYPE
@@ -95,6 +146,13 @@ func parseVariable(val interface{}, varType string) hilast.Variable {
 	default:
 		varType = HCL_STRING_VARTYPE
 	}
+
+	return varType
+}
+
+func parseVariable(val interface{}, varType string) hilast.Variable {
+	// varType is overwrite invariably. Because, happen panic when used in incorrect type
+	varType = deduceType(val)
 
 	var hilVar hilast.Variable
 	switch varType {
