@@ -1,3 +1,17 @@
+## 0.5.0 (2017-10-14)
+
+Minor version update. This release includes environment variable support.
+
+### Enhancements
+
+- Support variables from environment variables ([#147](https://github.com/wata727/tflint/pull/147))
+- Support moudle path for v0.10.7 ([#149](https://github.com/wata727/tflint/pull/149))
+
+## Others
+
+- Add Makefile target for creating docker image ([#145](https://github.com/wata727/tflint/pull/145))
+- Update Go version ([#146](https://github.com/wata727/tflint/pull/146))
+
 ## 0.4.3 (2017-09-30)
 
 Patch version update. This release includes Terraform v0.10.6 supports.

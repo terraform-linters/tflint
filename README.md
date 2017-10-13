@@ -4,7 +4,7 @@
 [![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/wata727/tflint/)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-TFLint is [Terraform](https://www.terraform.io/) linter for detecting errors that can not be detected by `terraform plan`
+TFLint is a [Terraform](https://www.terraform.io/) linter for detecting errors that can not be detected by `terraform plan`
 
 ## Why TFLint is Required?
 Terraform is a great tool for infrastructure as a code. It generates an execution plan, we can rely on this plan to proceed with development. However, this plan does not verify values used in template. For example, following template is invalid configuration (t1.2xlarge is invalid instance type)
@@ -25,7 +25,7 @@ If you run `terraform apply` for this template, it will obviously produce an err
 ## Installation
 Download binary built for your architecture from [latest releases](https://github.com/wata727/tflint/releases/latest). After downloading, place the binary on the directory on the PATH. An example of installation by command is as follows.
 ```
-$ wget https://github.com/wata727/tflint/releases/download/v0.4.3/tflint_darwin_amd64.zip
+$ wget https://github.com/wata727/tflint/releases/download/v0.5.0/tflint_darwin_amd64.zip
 $ unzip tflint_darwin_amd64.zip
 Archive:  tflint_darwin_amd64.zip
   inflating: tflint
