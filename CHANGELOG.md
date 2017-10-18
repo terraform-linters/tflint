@@ -1,3 +1,8 @@
+## 0.5.1 (2017-10-18)
+
+Re-release due to [#151](https://github.com/wata727/tflint/issues/151)  
+There is no change in the code from v0.5.0
+
 ## 0.5.0 (2017-10-14)
 
 Minor version update. This release includes environment variable support.
