@@ -1,3 +1,18 @@
+## 0.5.2 (2017-11-12)
+
+### Enhancements
+
+- Use `cristim/ec2-instances-info` instead of hard-coded list ([#159](https://github.com/wata727/tflint/pull/159))
+
+### BugFix
+
+- Use `strings.Trim` instead of `strings.Replace` ([#158](https://github.com/wata727/tflint/pull/158))
+
+### Others
+
+- Set Docker container default workdir to /data ([#152](https://github.com/wata727/tflint/pull/152))
+- Add ca-certificates to Docker image for TLS requests to AWS ([#155](https://github.com/wata727/tflint/pull/155))
+
 ## 0.5.1 (2017-10-18)
 
 Re-release due to [#151](https://github.com/wata727/tflint/issues/151)  
@@ -12,7 +27,7 @@ Minor version update. This release includes environment variable support.
 - Support variables from environment variables ([#147](https://github.com/wata727/tflint/pull/147))
 - Support moudle path for v0.10.7 ([#149](https://github.com/wata727/tflint/pull/149))
 
-## Others
+### Others
 
 - Add Makefile target for creating docker image ([#145](https://github.com/wata727/tflint/pull/145))
 - Update Go version ([#146](https://github.com/wata727/tflint/pull/146))
