@@ -2673,6 +2673,44 @@ func (_mr *_MockRDSAPIRecorder) DescribeSourceRegionsRequest(arg0 interface{}) *
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeSourceRegionsRequest", arg0)
 }
 
+func (_m *MockRDSAPI) DescribeValidDBInstanceModifications(_param0 *rds.DescribeValidDBInstanceModificationsInput) (*rds.DescribeValidDBInstanceModificationsOutput, error) {
+	ret := _m.ctrl.Call(_m, "DescribeValidDBInstanceModifications", _param0)
+	ret0, _ := ret[0].(*rds.DescribeValidDBInstanceModificationsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeValidDBInstanceModifications(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeValidDBInstanceModifications", arg0)
+}
+
+func (_m *MockRDSAPI) DescribeValidDBInstanceModificationsWithContext(_param0 aws.Context, _param1 *rds.DescribeValidDBInstanceModificationsInput, _param2 ...request.Option) (*rds.DescribeValidDBInstanceModificationsOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeValidDBInstanceModificationsWithContext", _s...)
+	ret0, _ := ret[0].(*rds.DescribeValidDBInstanceModificationsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeValidDBInstanceModificationsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeValidDBInstanceModificationsWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) DescribeValidDBInstanceModificationsRequest(_param0 *rds.DescribeValidDBInstanceModificationsInput) (*request.Request, *rds.DescribeValidDBInstanceModificationsOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeValidDBInstanceModificationsRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeValidDBInstanceModificationsOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockRDSAPIRecorder) DescribeValidDBInstanceModificationsRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeValidDBInstanceModificationsRequest", arg0)
+}
+
 func (_m *MockRDSAPI) DownloadDBLogFilePortion(_param0 *rds.DownloadDBLogFilePortionInput) (*rds.DownloadDBLogFilePortionOutput, error) {
 	ret := _m.ctrl.Call(_m, "DownloadDBLogFilePortion", _param0)
 	ret0, _ := ret[0].(*rds.DownloadDBLogFilePortionOutput)
@@ -3886,4 +3924,54 @@ func (_m *MockRDSAPI) WaitUntilDBInstanceDeletedWithContext(_param0 aws.Context,
 func (_mr *_MockRDSAPIRecorder) WaitUntilDBInstanceDeletedWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	_s := append([]interface{}{arg0, arg1}, arg2...)
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilDBInstanceDeletedWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) WaitUntilDBSnapshotAvailable(_param0 *rds.DescribeDBSnapshotsInput) error {
+	ret := _m.ctrl.Call(_m, "WaitUntilDBSnapshotAvailable", _param0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockRDSAPIRecorder) WaitUntilDBSnapshotAvailable(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilDBSnapshotAvailable", arg0)
+}
+
+func (_m *MockRDSAPI) WaitUntilDBSnapshotAvailableWithContext(_param0 aws.Context, _param1 *rds.DescribeDBSnapshotsInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilDBSnapshotAvailableWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockRDSAPIRecorder) WaitUntilDBSnapshotAvailableWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilDBSnapshotAvailableWithContext", _s...)
+}
+
+func (_m *MockRDSAPI) WaitUntilDBSnapshotDeleted(_param0 *rds.DescribeDBSnapshotsInput) error {
+	ret := _m.ctrl.Call(_m, "WaitUntilDBSnapshotDeleted", _param0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockRDSAPIRecorder) WaitUntilDBSnapshotDeleted(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilDBSnapshotDeleted", arg0)
+}
+
+func (_m *MockRDSAPI) WaitUntilDBSnapshotDeletedWithContext(_param0 aws.Context, _param1 *rds.DescribeDBSnapshotsInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilDBSnapshotDeletedWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockRDSAPIRecorder) WaitUntilDBSnapshotDeletedWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilDBSnapshotDeletedWithContext", _s...)
 }

@@ -31,6 +31,44 @@ func (_m *MockELBV2API) EXPECT() *_MockELBV2APIRecorder {
 	return _m.recorder
 }
 
+func (_m *MockELBV2API) AddListenerCertificates(_param0 *elbv2.AddListenerCertificatesInput) (*elbv2.AddListenerCertificatesOutput, error) {
+	ret := _m.ctrl.Call(_m, "AddListenerCertificates", _param0)
+	ret0, _ := ret[0].(*elbv2.AddListenerCertificatesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBV2APIRecorder) AddListenerCertificates(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddListenerCertificates", arg0)
+}
+
+func (_m *MockELBV2API) AddListenerCertificatesWithContext(_param0 aws.Context, _param1 *elbv2.AddListenerCertificatesInput, _param2 ...request.Option) (*elbv2.AddListenerCertificatesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "AddListenerCertificatesWithContext", _s...)
+	ret0, _ := ret[0].(*elbv2.AddListenerCertificatesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBV2APIRecorder) AddListenerCertificatesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddListenerCertificatesWithContext", _s...)
+}
+
+func (_m *MockELBV2API) AddListenerCertificatesRequest(_param0 *elbv2.AddListenerCertificatesInput) (*request.Request, *elbv2.AddListenerCertificatesOutput) {
+	ret := _m.ctrl.Call(_m, "AddListenerCertificatesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elbv2.AddListenerCertificatesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBV2APIRecorder) AddListenerCertificatesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AddListenerCertificatesRequest", arg0)
+}
+
 func (_m *MockELBV2API) AddTags(_param0 *elbv2.AddTagsInput) (*elbv2.AddTagsOutput, error) {
 	ret := _m.ctrl.Call(_m, "AddTags", _param0)
 	ret0, _ := ret[0].(*elbv2.AddTagsOutput)
@@ -447,6 +485,44 @@ func (_m *MockELBV2API) DescribeAccountLimitsRequest(_param0 *elbv2.DescribeAcco
 
 func (_mr *_MockELBV2APIRecorder) DescribeAccountLimitsRequest(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeAccountLimitsRequest", arg0)
+}
+
+func (_m *MockELBV2API) DescribeListenerCertificates(_param0 *elbv2.DescribeListenerCertificatesInput) (*elbv2.DescribeListenerCertificatesOutput, error) {
+	ret := _m.ctrl.Call(_m, "DescribeListenerCertificates", _param0)
+	ret0, _ := ret[0].(*elbv2.DescribeListenerCertificatesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBV2APIRecorder) DescribeListenerCertificates(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeListenerCertificates", arg0)
+}
+
+func (_m *MockELBV2API) DescribeListenerCertificatesWithContext(_param0 aws.Context, _param1 *elbv2.DescribeListenerCertificatesInput, _param2 ...request.Option) (*elbv2.DescribeListenerCertificatesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DescribeListenerCertificatesWithContext", _s...)
+	ret0, _ := ret[0].(*elbv2.DescribeListenerCertificatesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBV2APIRecorder) DescribeListenerCertificatesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeListenerCertificatesWithContext", _s...)
+}
+
+func (_m *MockELBV2API) DescribeListenerCertificatesRequest(_param0 *elbv2.DescribeListenerCertificatesInput) (*request.Request, *elbv2.DescribeListenerCertificatesOutput) {
+	ret := _m.ctrl.Call(_m, "DescribeListenerCertificatesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elbv2.DescribeListenerCertificatesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBV2APIRecorder) DescribeListenerCertificatesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DescribeListenerCertificatesRequest", arg0)
 }
 
 func (_m *MockELBV2API) DescribeListeners(_param0 *elbv2.DescribeListenersInput) (*elbv2.DescribeListenersOutput, error) {
@@ -1094,6 +1170,44 @@ func (_mr *_MockELBV2APIRecorder) RegisterTargetsRequest(arg0 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RegisterTargetsRequest", arg0)
 }
 
+func (_m *MockELBV2API) RemoveListenerCertificates(_param0 *elbv2.RemoveListenerCertificatesInput) (*elbv2.RemoveListenerCertificatesOutput, error) {
+	ret := _m.ctrl.Call(_m, "RemoveListenerCertificates", _param0)
+	ret0, _ := ret[0].(*elbv2.RemoveListenerCertificatesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBV2APIRecorder) RemoveListenerCertificates(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveListenerCertificates", arg0)
+}
+
+func (_m *MockELBV2API) RemoveListenerCertificatesWithContext(_param0 aws.Context, _param1 *elbv2.RemoveListenerCertificatesInput, _param2 ...request.Option) (*elbv2.RemoveListenerCertificatesOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "RemoveListenerCertificatesWithContext", _s...)
+	ret0, _ := ret[0].(*elbv2.RemoveListenerCertificatesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBV2APIRecorder) RemoveListenerCertificatesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveListenerCertificatesWithContext", _s...)
+}
+
+func (_m *MockELBV2API) RemoveListenerCertificatesRequest(_param0 *elbv2.RemoveListenerCertificatesInput) (*request.Request, *elbv2.RemoveListenerCertificatesOutput) {
+	ret := _m.ctrl.Call(_m, "RemoveListenerCertificatesRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elbv2.RemoveListenerCertificatesOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockELBV2APIRecorder) RemoveListenerCertificatesRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveListenerCertificatesRequest", arg0)
+}
+
 func (_m *MockELBV2API) RemoveTags(_param0 *elbv2.RemoveTagsInput) (*elbv2.RemoveTagsOutput, error) {
 	ret := _m.ctrl.Call(_m, "RemoveTags", _param0)
 	ret0, _ := ret[0].(*elbv2.RemoveTagsOutput)
@@ -1357,4 +1471,54 @@ func (_m *MockELBV2API) WaitUntilLoadBalancersDeletedWithContext(_param0 aws.Con
 func (_mr *_MockELBV2APIRecorder) WaitUntilLoadBalancersDeletedWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	_s := append([]interface{}{arg0, arg1}, arg2...)
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilLoadBalancersDeletedWithContext", _s...)
+}
+
+func (_m *MockELBV2API) WaitUntilTargetDeregistered(_param0 *elbv2.DescribeTargetHealthInput) error {
+	ret := _m.ctrl.Call(_m, "WaitUntilTargetDeregistered", _param0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockELBV2APIRecorder) WaitUntilTargetDeregistered(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilTargetDeregistered", arg0)
+}
+
+func (_m *MockELBV2API) WaitUntilTargetDeregisteredWithContext(_param0 aws.Context, _param1 *elbv2.DescribeTargetHealthInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilTargetDeregisteredWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockELBV2APIRecorder) WaitUntilTargetDeregisteredWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilTargetDeregisteredWithContext", _s...)
+}
+
+func (_m *MockELBV2API) WaitUntilTargetInService(_param0 *elbv2.DescribeTargetHealthInput) error {
+	ret := _m.ctrl.Call(_m, "WaitUntilTargetInService", _param0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockELBV2APIRecorder) WaitUntilTargetInService(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilTargetInService", arg0)
+}
+
+func (_m *MockELBV2API) WaitUntilTargetInServiceWithContext(_param0 aws.Context, _param1 *elbv2.DescribeTargetHealthInput, _param2 ...request.WaiterOption) error {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "WaitUntilTargetInServiceWithContext", _s...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockELBV2APIRecorder) WaitUntilTargetInServiceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "WaitUntilTargetInServiceWithContext", _s...)
 }

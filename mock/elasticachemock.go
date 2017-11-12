@@ -1585,6 +1585,44 @@ func (_mr *_MockElastiCacheAPIRecorder) ModifyReplicationGroupRequest(arg0 inter
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyReplicationGroupRequest", arg0)
 }
 
+func (_m *MockElastiCacheAPI) ModifyReplicationGroupShardConfiguration(_param0 *elasticache.ModifyReplicationGroupShardConfigurationInput) (*elasticache.ModifyReplicationGroupShardConfigurationOutput, error) {
+	ret := _m.ctrl.Call(_m, "ModifyReplicationGroupShardConfiguration", _param0)
+	ret0, _ := ret[0].(*elasticache.ModifyReplicationGroupShardConfigurationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) ModifyReplicationGroupShardConfiguration(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyReplicationGroupShardConfiguration", arg0)
+}
+
+func (_m *MockElastiCacheAPI) ModifyReplicationGroupShardConfigurationWithContext(_param0 aws.Context, _param1 *elasticache.ModifyReplicationGroupShardConfigurationInput, _param2 ...request.Option) (*elasticache.ModifyReplicationGroupShardConfigurationOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "ModifyReplicationGroupShardConfigurationWithContext", _s...)
+	ret0, _ := ret[0].(*elasticache.ModifyReplicationGroupShardConfigurationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) ModifyReplicationGroupShardConfigurationWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyReplicationGroupShardConfigurationWithContext", _s...)
+}
+
+func (_m *MockElastiCacheAPI) ModifyReplicationGroupShardConfigurationRequest(_param0 *elasticache.ModifyReplicationGroupShardConfigurationInput) (*request.Request, *elasticache.ModifyReplicationGroupShardConfigurationOutput) {
+	ret := _m.ctrl.Call(_m, "ModifyReplicationGroupShardConfigurationRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.ModifyReplicationGroupShardConfigurationOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockElastiCacheAPIRecorder) ModifyReplicationGroupShardConfigurationRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "ModifyReplicationGroupShardConfigurationRequest", arg0)
+}
+
 func (_m *MockElastiCacheAPI) PurchaseReservedCacheNodesOffering(_param0 *elasticache.PurchaseReservedCacheNodesOfferingInput) (*elasticache.PurchaseReservedCacheNodesOfferingOutput, error) {
 	ret := _m.ctrl.Call(_m, "PurchaseReservedCacheNodesOffering", _param0)
 	ret0, _ := ret[0].(*elasticache.PurchaseReservedCacheNodesOfferingOutput)

@@ -1437,6 +1437,44 @@ func (_mr *_MockIAMAPIRecorder) DeleteServerCertificateRequest(arg0 interface{})
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteServerCertificateRequest", arg0)
 }
 
+func (_m *MockIAMAPI) DeleteServiceLinkedRole(_param0 *iam.DeleteServiceLinkedRoleInput) (*iam.DeleteServiceLinkedRoleOutput, error) {
+	ret := _m.ctrl.Call(_m, "DeleteServiceLinkedRole", _param0)
+	ret0, _ := ret[0].(*iam.DeleteServiceLinkedRoleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteServiceLinkedRole(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteServiceLinkedRole", arg0)
+}
+
+func (_m *MockIAMAPI) DeleteServiceLinkedRoleWithContext(_param0 aws.Context, _param1 *iam.DeleteServiceLinkedRoleInput, _param2 ...request.Option) (*iam.DeleteServiceLinkedRoleOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "DeleteServiceLinkedRoleWithContext", _s...)
+	ret0, _ := ret[0].(*iam.DeleteServiceLinkedRoleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteServiceLinkedRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteServiceLinkedRoleWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) DeleteServiceLinkedRoleRequest(_param0 *iam.DeleteServiceLinkedRoleInput) (*request.Request, *iam.DeleteServiceLinkedRoleOutput) {
+	ret := _m.ctrl.Call(_m, "DeleteServiceLinkedRoleRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.DeleteServiceLinkedRoleOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) DeleteServiceLinkedRoleRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "DeleteServiceLinkedRoleRequest", arg0)
+}
+
 func (_m *MockIAMAPI) DeleteServiceSpecificCredential(_param0 *iam.DeleteServiceSpecificCredentialInput) (*iam.DeleteServiceSpecificCredentialOutput, error) {
 	ret := _m.ctrl.Call(_m, "DeleteServiceSpecificCredential", _param0)
 	ret0, _ := ret[0].(*iam.DeleteServiceSpecificCredentialOutput)
@@ -2587,6 +2625,44 @@ func (_m *MockIAMAPI) GetServerCertificateRequest(_param0 *iam.GetServerCertific
 
 func (_mr *_MockIAMAPIRecorder) GetServerCertificateRequest(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetServerCertificateRequest", arg0)
+}
+
+func (_m *MockIAMAPI) GetServiceLinkedRoleDeletionStatus(_param0 *iam.GetServiceLinkedRoleDeletionStatusInput) (*iam.GetServiceLinkedRoleDeletionStatusOutput, error) {
+	ret := _m.ctrl.Call(_m, "GetServiceLinkedRoleDeletionStatus", _param0)
+	ret0, _ := ret[0].(*iam.GetServiceLinkedRoleDeletionStatusOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetServiceLinkedRoleDeletionStatus(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetServiceLinkedRoleDeletionStatus", arg0)
+}
+
+func (_m *MockIAMAPI) GetServiceLinkedRoleDeletionStatusWithContext(_param0 aws.Context, _param1 *iam.GetServiceLinkedRoleDeletionStatusInput, _param2 ...request.Option) (*iam.GetServiceLinkedRoleDeletionStatusOutput, error) {
+	_s := []interface{}{_param0, _param1}
+	for _, _x := range _param2 {
+		_s = append(_s, _x)
+	}
+	ret := _m.ctrl.Call(_m, "GetServiceLinkedRoleDeletionStatusWithContext", _s...)
+	ret0, _ := ret[0].(*iam.GetServiceLinkedRoleDeletionStatusOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetServiceLinkedRoleDeletionStatusWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	_s := append([]interface{}{arg0, arg1}, arg2...)
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetServiceLinkedRoleDeletionStatusWithContext", _s...)
+}
+
+func (_m *MockIAMAPI) GetServiceLinkedRoleDeletionStatusRequest(_param0 *iam.GetServiceLinkedRoleDeletionStatusInput) (*request.Request, *iam.GetServiceLinkedRoleDeletionStatusOutput) {
+	ret := _m.ctrl.Call(_m, "GetServiceLinkedRoleDeletionStatusRequest", _param0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetServiceLinkedRoleDeletionStatusOutput)
+	return ret0, ret1
+}
+
+func (_mr *_MockIAMAPIRecorder) GetServiceLinkedRoleDeletionStatusRequest(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetServiceLinkedRoleDeletionStatusRequest", arg0)
 }
 
 func (_m *MockIAMAPI) GetUser(_param0 *iam.GetUserInput) (*iam.GetUserOutput, error) {
