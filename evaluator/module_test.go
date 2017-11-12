@@ -103,6 +103,41 @@ module "ec2_instance" {
 			Error: false,
 		},
 		{
+			Name: "init module with list in map",
+			Input: `
+variable "amis" {
+    default = {
+        test1 = ["ami-12345", "ami-54321"]
+        test2 = ["ami-123ab", "ami-abc12"]
+    }
+}
+
+module "ec2_instance" {
+    source = "./tf_aws_ec2_instance"
+    ami = "${var.amis["test1"]}"
+}`,
+			Result: hil.EvalConfig{
+				GlobalScope: &hilast.BasicScope{
+					VarMap: map[string]hilast.Variable{
+						"var.ami": {
+							Type: hilast.TypeList,
+							Value: []hilast.Variable{
+								{
+									Type:  hilast.TypeString,
+									Value: "ami-12345",
+								},
+								{
+									Type:  hilast.TypeString,
+									Value: "ami-54321",
+								},
+							},
+						},
+					},
+				},
+			},
+			Error: false,
+		},
+		{
 			Name: "init module with map variable",
 			Input: `
 variable "ami_info" {

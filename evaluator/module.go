@@ -22,7 +22,7 @@ func (e *Evaluator) initModule(module *schema.Module, c *config.Config) error {
 		if k != "source" {
 			if varToken, ok := module.GetToken(k); ok {
 				varName := "var." + k
-				ev, err := e.evalModuleAttr(k, strings.Replace(varToken.Text, "\"", "", -1))
+				ev, err := e.evalModuleAttr(k, strings.Trim(varToken.Text, "\""))
 				if err != nil {
 					return errors.New(fmt.Sprintf("Evaluation error: %s in %s:%d", err, varToken.Pos.Filename, varToken.Pos.Line))
 				}
