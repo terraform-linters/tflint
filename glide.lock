@@ -1,8 +1,8 @@
-hash: aa087a4d5eadbbfde4bfeae265b89032cf4951a18dddf0925ebda27ec67ae6f2
-updated: 2017-07-28T23:29:42.842711035+09:00
+hash: 34a70d8fec8c8edbd07b523aacf6e7bade0e32968a1e467cd4be898bc19130ed
+updated: 2017-11-12T21:17:59.70459+09:00
 imports:
 - name: github.com/aws/aws-sdk-go
-  version: 5e436e55ac5eddc739f26a2a209b3f4248ee8e0e
+  version: e6c5e190452424b404ecdb81d6e3991d46b18e9d
   subpackages:
   - aws
   - aws/awserr
@@ -44,8 +44,12 @@ imports:
   - service/rds
   - service/rds/rdsiface
   - service/sts
+- name: github.com/cristim/ec2-instances-info
+  version: f464d91eba25f5ee861ff70ef592ec2eb207d3ae
+  subpackages:
+  - data
 - name: github.com/fatih/color
-  version: 9131ab34cf20d2f6d83fdc67168a5430d1c7dc23
+  version: 570b54cabe6b8eb0bc2dfce68d964677d63b5260
 - name: github.com/go-ini/ini
   version: 7e015cd18f007383aa571cc413bd2ec09cff7f2d
 - name: github.com/golang/mock
@@ -76,7 +80,7 @@ imports:
   subpackages:
   - helper/variables
 - name: github.com/jessevdk/go-flags
-  version: 48cf8722c3375517aba351d1f7577c40663a4407
+  version: 96dc06278ce32a0e9d957d590bb987c81ee66407
 - name: github.com/jmespath/go-jmespath
   version: bd40a432e4c76585ef6b72d3fd96fb9b6dc7b68d
 - name: github.com/k0kubun/pp
@@ -93,6 +97,8 @@ imports:
   version: 53818660ed4955e899c0bcafa97299a388bd7c8e
 - name: github.com/mitchellh/reflectwalk
   version: 417edcfd99a4d472c262e58f22b4bfe97580f03e
+- name: github.com/pkg/errors
+  version: f15c970de5b76fac0b59abb32d62c17cc7bed265
 - name: golang.org/x/sys
   version: e24f485414aeafb646f6fca458b0bf869c0880a1
   repo: https://go.googlesource.com/sys
