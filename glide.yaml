@@ -31,3 +31,4 @@ import:
 - package: github.com/jessevdk/go-flags
   version: ^1.3.0
 - package: github.com/hashicorp/go-version
+- package: github.com/cristim/ec2-instances-info
