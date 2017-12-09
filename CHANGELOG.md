@@ -1,3 +1,10 @@
+## 0.5.3 (2017-12-09)
+
+### Enhancements
+
+- Support module path for v0.11.0 ([#161](https://github.com/wata727/tflint/pull/161))
+- Ignore module initialization when settings `ignore_module` ([#163](https://github.com/wata727/tflint/pull/163))
+
 ## 0.5.2 (2017-11-12)
 
 ### Enhancements
