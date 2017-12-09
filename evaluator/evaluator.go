@@ -36,6 +36,10 @@ func NewEvaluator(templates map[string]*hclast.File, schema []*schema.Template, 
 
 	for _, template := range schema {
 		for _, module := range template.Modules {
+			if c.IgnoreModule[module.ModuleSource] {
+				continue
+			}
+
 			if err := evaluator.initModule(module, c); err != nil {
 				return nil, err
 			}
