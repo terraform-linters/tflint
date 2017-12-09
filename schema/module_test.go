@@ -247,6 +247,92 @@ module "ec2_instance" {
 			Error: false,
 		},
 		{
+			Name: "init module with v0.11.0",
+			Input: `
+module "ecs_on_spotfleet" {
+	source = "github.com/wata727/tf_aws_ecs_on_spotfleet.git?ref=master"
+}`,
+			Result: []*Template{
+				{
+					File: "github.com/wata727/tf_aws_ecs_on_spotfleet.git?ref=master/test.tf",
+					Resources: []*Resource{
+						{
+							Source: &Source{
+								File: "github.com/wata727/tf_aws_ecs_on_spotfleet.git?ref=master/test.tf",
+								Pos: token.Pos{
+									Filename: "github.com/wata727/tf_aws_ecs_on_spotfleet.git?ref=master/test.tf",
+									Offset:   30,
+									Line:     1,
+									Column:   31,
+								},
+								Attrs: map[string]*Attribute{
+									"instance_type": {
+										Poses: []token.Pos{
+											{
+												Filename: "github.com/wata727/tf_aws_ecs_on_spotfleet.git?ref=master/test.tf",
+												Offset:   83,
+												Line:     3,
+												Column:   19,
+											},
+										},
+										Vals: []interface{}{
+											token.Token{
+												Type: 9,
+												Pos: token.Pos{
+													Filename: "github.com/wata727/tf_aws_ecs_on_spotfleet.git?ref=master/test.tf",
+													Offset:   83,
+													Line:     3,
+													Column:   19,
+												},
+												Text: "\"t2.nano\"",
+												JSON: false,
+											},
+										},
+									},
+									"ami": {
+										Poses: []token.Pos{
+											{
+												Filename: "github.com/wata727/tf_aws_ecs_on_spotfleet.git?ref=master/test.tf",
+												Offset:   50,
+												Line:     2,
+												Column:   19,
+											},
+										},
+										Vals: []interface{}{
+											token.Token{
+												Type: 9,
+												Pos: token.Pos{
+													Filename: "github.com/wata727/tf_aws_ecs_on_spotfleet.git?ref=master/test.tf",
+													Offset:   50,
+													Line:     2,
+													Column:   19,
+												},
+												Text: "\"ami-8a7b6d5c\"",
+												JSON: false,
+											},
+										},
+									},
+								},
+							},
+							Type: "aws_instance",
+							Id:   "web",
+						},
+					},
+				},
+			},
+			Error: false,
+		},
+		{
+			Name: "init version specified module with v0.11.0",
+			Input: `
+module "consul2" {
+	source = "hashicorp/consul/aws"
+	version = ">= 0.0.3, <= 0.0.5"
+}`,
+			Result: nil, // This is a bug... :(
+			Error:  true,
+		},
+		{
 			Name: "module not found",
 			Input: `
 module "ec2_instances" {

@@ -75,8 +75,14 @@ func (m *Module) path() (string, error) {
 	if _, err := os.Stat(base); err == nil {
 		return base, nil
 	}
-	// after v0.10.7
+	// for v0.10.7 and 0.10.8
 	base = m.pathname("0.root." + m.Id + "-" + m.ModuleSource)
+	if _, err := os.Stat(base); err == nil {
+		return base, nil
+	}
+	// after v0.11.0
+	// XXX: Unfortunately, this format can not resolve the path of the module that specifies the version.
+	base = m.pathname("1." + m.Id + ";" + m.ModuleSource)
 	if _, err := os.Stat(base); err == nil {
 		return base, nil
 	}
