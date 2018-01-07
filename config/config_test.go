@@ -38,6 +38,11 @@ func TestLoadConfig(t *testing.T) {
 			},
 		},
 		{
+			Name: "empty config file",
+			Input: "empty_config",
+			Result: Init(),
+		},
+		{
 			Name:   "config file not found",
 			Input:  "default",
 			Result: Init(),

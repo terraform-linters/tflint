@@ -21,7 +21,7 @@ func main() {
 				fmt.Fprintf(cli.errStream, " -> %d: %s: %s(%d)\n", depth, runtime.FuncForPC(pc).Name(), strings.Replace(src, path.Dir(src), "", 1), line)
 			}
 			fmt.Fprintln(cli.errStream, `
-TFLint crached... :(
+TFLint crashed... :(
 Please attach an output log, describe the situation and version that occurred and post an issue to https://github.com/wata727/tflint/issues
 `)
 			os.Exit(ExitCodeError)

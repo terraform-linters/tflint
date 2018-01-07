@@ -47,8 +47,13 @@ func (c *Config) LoadConfig(filename string) error {
 	if err := l.LoadTemplate(filename); err != nil {
 		return nil
 	}
+	configs := l.Templates[filename].Node.(*ast.ObjectList).Filter("config").Items
 
-	if err := hcl.DecodeObject(c, l.Templates[filename].Node.(*ast.ObjectList).Filter("config").Items[0]); err != nil {
+	if len(configs) == 0 {
+		return nil
+	}
+
+	if err := hcl.DecodeObject(c, configs[0]); err != nil {
 		return err
 	}
 
