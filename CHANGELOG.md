@@ -1,3 +1,9 @@
+## 0.5.4 (2018-01-07)
+
+### Bugfix
+
+- Handle empty config file ([#166](https://github.com/wata727/tflint/pull/166))
+
 ## 0.5.3 (2017-12-09)
 
 ### Enhancements
