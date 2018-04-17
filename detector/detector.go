@@ -40,7 +40,6 @@ type Detector struct {
 var detectorFactories = []string{
 	"CreateAwsInstanceInvalidTypeDetector",
 	"CreateAwsInstancePreviousTypeDetector",
-	"CreateAwsInstanceNotSpecifiedIAMProfileDetector",
 	"CreateAwsInstanceDefaultStandardVolumeDetector",
 	"CreateAwsInstanceInvalidIAMProfileDetector",
 	"CreateAwsInstanceInvalidAMIDetector",
