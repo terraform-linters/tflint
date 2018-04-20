@@ -24,14 +24,6 @@
     "link": "https://github.com/wata727/tflint/blob/master/docs/aws_elasticache_cluster_invalid_type.md"
   },
   {
-    "detector": "aws_instance_not_specified_iam_profile",
-    "type": "NOTICE",
-    "message": "\"iam_instance_profile\" is not specified. If you want to change it, you need to recreate the instance.",
-    "line": 5,
-    "file": "github.com/wata727/example-module/aws_instance.tf",
-    "link": "https://github.com/wata727/tflint/blob/master/docs/aws_instance_not_specified_iam_profile.md"
-  },
-  {
     "detector": "aws_instance_default_standard_volume",
     "type": "WARNING",
     "message": "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",

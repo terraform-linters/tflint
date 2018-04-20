@@ -57,13 +57,12 @@ Try running TFLint under the directory where Terraform is executed. It detect if
 ```
 $ tflint
 template.tf
-        NOTICE:1 "iam_instance_profile" is not specified. If you want to change it, you need to recreate the instance. (aws_instance_not_specified_iam_profile)
         ERROR:3 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
 
 Result: 2 issues  (1 errors , 0 warnings , 1 notices)
 ```
 
-Two issues were reported. One is for invalid instance type, the other one is for best practices about IAM instance profile. If you would like to know more about these issues please check the [documentation](https://github.com/wata727/tflint/tree/master/docs).
+If you would like to know more about these issues please check the [documentation](https://github.com/wata727/tflint/tree/master/docs).
 
 ### Specify Template
 If you want to parse only a specific template, not all templates, you can specify a filename as an argument.

@@ -14,7 +14,6 @@ Issues are classified into the following three types.
 - **AWS Instance**
     - [aws_instance_invalid_type](aws_instance_invalid_type.md)
     - [aws_instance_previous_type](aws_instance_previous_type.md)
-    - [aws_instance_not_specified_iam_profile](aws_instance_not_specified_iam_profile.md)
     - [aws_instance_default_standard_volume](aws_instance_default_standard_volume.md)
 - **AWS DB Instance**
     - [aws_db_instance_invalid_type](aws_db_instance_invalid_type.md)
