@@ -32,9 +32,10 @@ func TestLoadConfig(t *testing.T) {
 				IgnoreModule: map[string]bool{
 					"github.com/wata727/example-module": true,
 				},
-				Varfile:          []string{"example1.tfvars", "example2.tfvars"},
-				TerraformVersion: "0.9.11",
-				TerraformEnv:     "dev",
+				Varfile:            []string{"example1.tfvars", "example2.tfvars"},
+				TerraformVersion:   "0.9.11",
+				TerraformEnv:       "dev",
+				TerraformWorkspace: "dev",
 			},
 		},
 		{
