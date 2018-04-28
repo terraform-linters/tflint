@@ -293,3 +293,33 @@ func TestEvalTerraformEnv(t *testing.T) {
 		}
 	}
 }
+
+func TestEvalTerraformWorkspace(t *testing.T) {
+	cases := []struct {
+		Name   string
+		Input  string
+		Src    string
+		Result string
+	}{
+		{
+			Name:   "terraform workspace",
+			Input:  "dev",
+			Src:    "${terraform.workspace}",
+			Result: "dev",
+		},
+	}
+
+	for _, tc := range cases {
+		c := config.Init()
+		c.TerraformWorkspace = tc.Input
+
+		evaluator, err := NewEvaluator(map[string]*ast.File{}, []*schema.Template{}, []*ast.File{}, c)
+		if err != nil {
+			t.Fatalf("\nError: %s\n\ntestcase: %s", err, tc.Name)
+		}
+		result, _ := evaluator.Eval(tc.Src)
+		if result != tc.Result {
+			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", result, tc.Result, tc.Name)
+		}
+	}
+}

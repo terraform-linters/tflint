@@ -12,31 +12,34 @@ import (
 )
 
 type Config struct {
-	Debug            bool
-	DeepCheck        bool              `hcl:"deep_check"`
-	AwsCredentials   map[string]string `hcl:"aws_credentials"`
-	IgnoreModule     map[string]bool   `hcl:"ignore_module"`
-	IgnoreRule       map[string]bool   `hcl:"ignore_rule"`
-	Varfile          []string          `hcl:"varfile"`
-	TerraformVersion string            `hcl:"terraform_version"`
-	TerraformEnv     string
+	Debug              bool
+	DeepCheck          bool              `hcl:"deep_check"`
+	AwsCredentials     map[string]string `hcl:"aws_credentials"`
+	IgnoreModule       map[string]bool   `hcl:"ignore_module"`
+	IgnoreRule         map[string]bool   `hcl:"ignore_rule"`
+	Varfile            []string          `hcl:"varfile"`
+	TerraformVersion   string            `hcl:"terraform_version"`
+	TerraformEnv       string
+	TerraformWorkspace string
 }
 
 func Init() *Config {
 	return &Config{
-		Debug:          false,
-		DeepCheck:      false,
-		AwsCredentials: map[string]string{},
-		IgnoreModule:   map[string]bool{},
-		IgnoreRule:     map[string]bool{},
-		Varfile:        []string{},
-		TerraformEnv:   "default",
+		Debug:              false,
+		DeepCheck:          false,
+		AwsCredentials:     map[string]string{},
+		IgnoreModule:       map[string]bool{},
+		IgnoreRule:         map[string]bool{},
+		Varfile:            []string{},
+		TerraformEnv:       "default",
+		TerraformWorkspace: "default",
 	}
 }
 
 func (c *Config) LoadConfig(filename string) error {
 	if b, err := ioutil.ReadFile(".terraform/environment"); err == nil {
 		c.TerraformEnv = string(b)
+		c.TerraformWorkspace = string(b)
 	}
 
 	if _, err := os.Stat(filename); err != nil {

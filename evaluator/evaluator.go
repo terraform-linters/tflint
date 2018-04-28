@@ -25,6 +25,10 @@ func NewEvaluator(templates map[string]*hclast.File, schema []*schema.Template, 
 		Type:  hilast.TypeString,
 		Value: c.TerraformEnv,
 	}
+	varMap["terraform.workspace"] = hilast.Variable{
+		Type:  hilast.TypeString,
+		Value: c.TerraformWorkspace,
+	}
 
 	evaluator := &Evaluator{
 		Config: hil.EvalConfig{
