@@ -43,21 +43,28 @@ func NewLoader(debug bool) *Loader {
 }
 
 func (l *Loader) LoadTemplate(filename string) error {
-	root, err := loadHCL(filename, l.Logger)
+	files, err := filepath.Glob(filename)
 	if err != nil {
 		return err
 	}
-	fileKey := strings.Replace(filename, "\\", "/", -1)
 
-	l.Templates[fileKey] = root
+	for _, file := range files {
+		root, err := loadHCL(file, l.Logger)
+		if err != nil {
+			return err
+		}
 
-	l.Logger.Info(fmt.Sprintf("Load HCL file: `%s`", filename))
-	b, err := ioutil.ReadFile(filename)
-	if err != nil {
-		l.Logger.Error(err)
-		return fmt.Errorf("ERROR: Cannot open file %s", filename)
+		fileKey := strings.Replace(file, "\\", "/", -1)
+		l.Templates[fileKey] = root
+
+		l.Logger.Info(fmt.Sprintf("Load HCL file: `%s`", file))
+		b, err := ioutil.ReadFile(file)
+		if err != nil {
+			l.Logger.Error(err)
+			return fmt.Errorf("ERROR: Cannot open file %s", file)
+		}
+		l.Files[fileKey] = b
 	}
-	l.Files[fileKey] = b
 
 	return nil
 }
@@ -100,17 +107,10 @@ func (l *Loader) LoadAllTemplate(dir string) error {
 	if _, err := os.Stat(dir); err != nil {
 		return err
 	}
-	filePattern := dir + "/*.tf"
-	files, err := filepath.Glob(filePattern)
+
+	err := l.LoadTemplate(dir + "/*.tf")
 	if err != nil {
 		return err
-	}
-
-	for _, file := range files {
-		err := l.LoadTemplate(file)
-		if err != nil {
-			return err
-		}
 	}
 
 	return nil

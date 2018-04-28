@@ -101,12 +101,14 @@ func TestLoadTemplate(t *testing.T) {
 	}
 
 	cases := []struct {
-		Name   string
-		Input  Input
-		Result map[string]*ast.File
+		Name    string
+		WorkDir string
+		Input   Input
+		Result  map[string]*ast.File
 	}{
 		{
-			Name: "add file list",
+			Name:    "add file list",
+			WorkDir: "files",
 			Input: Input{
 				Templates: map[string]*ast.File{
 					"example.tf": {},
@@ -121,13 +123,25 @@ func TestLoadTemplate(t *testing.T) {
 				"empty.tf":   {Node: &ast.ObjectList{}},
 			},
 		},
+		{
+			Name:    "glob pattern",
+			WorkDir: "all-files",
+			Input: Input{
+				Templates: map[string]*ast.File{},
+				Files:     map[string][]byte{},
+				File:      "*.tf",
+			},
+			Result: map[string]*ast.File{
+				"main.tf":   {Node: &ast.ObjectList{}},
+				"output.tf": {Node: &ast.ObjectList{}},
+			},
+		},
 	}
 
 	for _, tc := range cases {
 		prev, _ := filepath.Abs(".")
 		dir, _ := os.Getwd()
-		defer os.Chdir(prev)
-		testDir := dir + "/test-fixtures/files"
+		testDir := dir + "/test-fixtures/" + tc.WorkDir
 		os.Chdir(testDir)
 		load := &Loader{
 			Logger:    logger.Init(false),
@@ -136,6 +150,7 @@ func TestLoadTemplate(t *testing.T) {
 		}
 
 		load.LoadTemplate(tc.Input.File)
+		os.Chdir(prev)
 		if !reflect.DeepEqual(load.Templates, tc.Result) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(load.Templates), pp.Sprint(tc.Result), tc.Name)
 		}
