@@ -6,10 +6,16 @@ import (
 	"path"
 	"runtime"
 	"strings"
+
+	colorable "github.com/mattn/go-colorable"
 )
 
 func main() {
-	cli := &CLI{outStream: os.Stdout, errStream: os.Stderr, testMode: false}
+	cli := &CLI{
+		outStream: colorable.NewColorable(os.Stdout),
+		errStream: colorable.NewColorable(os.Stderr),
+		testMode:  false,
+	}
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Fprintf(cli.errStream, "Panic: %v\n", r)
