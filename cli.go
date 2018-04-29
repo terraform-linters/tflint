@@ -6,6 +6,7 @@ import (
 	"io"
 
 	flags "github.com/jessevdk/go-flags"
+	homedir "github.com/mitchellh/go-homedir"
 
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/detector"
@@ -147,7 +148,11 @@ func (cli *CLI) setupConfig(opts CLIOptions) (*config.Config, error) {
 	if opts.Debug {
 		c.Debug = true
 	}
-	if err := c.LoadConfig(opts.Config); err != nil {
+	fallbackConfig, err := homedir.Expand("~/.tflint.hcl")
+	if err != nil {
+		return nil, err
+	}
+	if err := c.LoadConfig(opts.Config, fallbackConfig); err != nil {
 		return nil, err
 	}
 	if opts.Deep || c.DeepCheck {

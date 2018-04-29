@@ -99,7 +99,12 @@ Help Options:
 ```
 
 ## Configuration
-By default, TFLint loads `.tflint.hcl` under the current directory. The configuration file is described in [HCL](https://github.com/hashicorp/hcl), and options available on the command line can be described in advance. Following example:
+By default, TFLint loads `.tflint.hcl` according to the following priority:
+
+- Current directory (`./.tflint.hcl`)
+- Home directory (`~/.tflint.hcl`)
+
+The configuration file is described in [HCL](https://github.com/hashicorp/hcl), and options available on the command line can be described in advance. Following example:
 
 ```hcl
 config {

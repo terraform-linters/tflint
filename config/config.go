@@ -36,21 +36,26 @@ func Init() *Config {
 	}
 }
 
-func (c *Config) LoadConfig(filename string) error {
+func (c *Config) LoadConfig(files ...string) error {
 	if b, err := ioutil.ReadFile(".terraform/environment"); err == nil {
 		c.TerraformEnv = string(b)
 		c.TerraformWorkspace = string(b)
 	}
 
-	if _, err := os.Stat(filename); err != nil {
-		return nil
-	}
+	var configs []*ast.ObjectItem
+	for _, file := range files {
+		if _, err := os.Stat(file); err != nil {
+			continue
+		}
 
-	l := loader.NewLoader(c.Debug)
-	if err := l.LoadTemplate(filename); err != nil {
-		return nil
+		l := loader.NewLoader(c.Debug)
+		if err := l.LoadTemplate(file); err != nil {
+			continue
+		}
+
+		configs = l.Templates[file].Node.(*ast.ObjectList).Filter("config").Items
+		break
 	}
-	configs := l.Templates[filename].Node.(*ast.ObjectList).Filter("config").Items
 
 	if len(configs) == 0 {
 		return nil
