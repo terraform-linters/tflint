@@ -52,7 +52,7 @@ func (m *Module) Load() error {
 			return fmt.Errorf("ERROR: Cannot open file %s", filePath)
 		}
 
-		fileName := strings.Replace(filePath, modulePath, "", 1)
+		fileName := strings.Replace(strings.Replace(filePath, "\\", "/", -1), modulePath, "", 1)
 		fileKey := m.ModuleSource + fileName
 		files[fileKey] = b
 	}
