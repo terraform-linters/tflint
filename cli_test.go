@@ -248,7 +248,7 @@ func TestCLIRun(t *testing.T) {
 			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
 			Result: Result{
 				Status: ExitCodeError,
-				Stderr: "Invalid value `awesome' for option `-f, --format'",
+				Stderr: "Invalid value `awesome' for option",
 			},
 		},
 		{
@@ -382,9 +382,9 @@ func TestCLIRun(t *testing.T) {
 				Status: ExitCodeOK,
 				CLIOptions: TestCLIOptions{
 					Config: &config.Config{
-						Debug:             false,
-						DeepCheck:         true,
-						AwsCredentials:    map[string]string{
+						Debug:     false,
+						DeepCheck: true,
+						AwsCredentials: map[string]string{
 							"access_key": "AWS_ACCESS_KEY_ID",
 							"secret_key": "AWS_SECRET_ACCESS_KEY",
 							"region":     "us-east-1",
@@ -409,9 +409,9 @@ func TestCLIRun(t *testing.T) {
 				Status: ExitCodeOK,
 				CLIOptions: TestCLIOptions{
 					Config: &config.Config{
-						Debug:             false,
-						DeepCheck:         true,
-						AwsCredentials:    map[string]string{
+						Debug:     false,
+						DeepCheck: true,
+						AwsCredentials: map[string]string{
 							"profile": "account1",
 							"region":  "us-east-1",
 						},
