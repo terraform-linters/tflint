@@ -47,8 +47,9 @@ func (l *Loader) LoadTemplate(filename string) error {
 	if err != nil {
 		return err
 	}
+	fileKey := strings.Replace(filename, "\\", "/", -1)
 
-	l.Templates[filename] = root
+	l.Templates[fileKey] = root
 
 	l.Logger.Info(fmt.Sprintf("Load HCL file: `%s`", filename))
 	b, err := ioutil.ReadFile(filename)
@@ -56,7 +57,7 @@ func (l *Loader) LoadTemplate(filename string) error {
 		l.Logger.Error(err)
 		return fmt.Errorf("ERROR: Cannot open file %s", filename)
 	}
-	l.Files[filename] = b
+	l.Files[fileKey] = b
 
 	return nil
 }
@@ -79,7 +80,7 @@ func (l *Loader) LoadModuleFile(moduleKey string, source string) error {
 		if err != nil {
 			return err
 		}
-		filename := strings.Replace(file, modulePath, "", 1)
+		filename := strings.Replace(strings.Replace(file, "\\", "/", -1), modulePath, "", 1)
 		fileKey := source + filename
 		l.Templates[fileKey] = root
 
