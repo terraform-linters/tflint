@@ -22,8 +22,7 @@ func main() {
 			}
 			fmt.Fprintln(cli.errStream, `
 TFLint crashed... :(
-Please attach an output log, describe the situation and version that occurred and post an issue to https://github.com/wata727/tflint/issues
-`)
+Please attach an output log, describe the situation and version that occurred and post an issue to https://github.com/wata727/tflint/issues`)
 			os.Exit(ExitCodeError)
 		}
 	}()
