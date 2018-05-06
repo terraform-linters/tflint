@@ -155,6 +155,16 @@ variable "name" {
 			Src:    "${var.name[\"key\"]}",
 			Result: "test1",
 		},
+		{
+			Name: "conditional",
+			Input: `
+variable "name" {
+    type = "string"
+    default = "prod"
+}`,
+			Src:    "${var.name == \"prod\" ? \"production\" : \"development\"}",
+			Result: "production",
+		},
 	}
 
 	for _, tc := range cases {
