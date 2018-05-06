@@ -15,9 +15,11 @@ var warningColor = color.New(color.FgYellow).SprintFunc()
 var noticeColor = color.New(color.FgHiWhite).SprintFunc()
 var successColor = color.New(color.FgHiGreen).SprintFunc()
 
-func (p *Printer) DefaultPrint(issues []*issue.Issue) {
+func (p *Printer) DefaultPrint(issues []*issue.Issue, quiet bool) {
 	if len(issues) == 0 {
-		p.printAwesome()
+		if !quiet {
+			p.printAwesome()
+		}
 		return
 	}
 

@@ -7,7 +7,7 @@ import (
 )
 
 type PrinterIF interface {
-	Print(issues []*issue.Issue, format string)
+	Print(issues []*issue.Issue, format string, quiet bool)
 }
 
 type Printer struct {
@@ -22,15 +22,15 @@ func NewPrinter(stdout io.Writer, stderr io.Writer) *Printer {
 	}
 }
 
-func (p *Printer) Print(issues []*issue.Issue, format string) {
+func (p *Printer) Print(issues []*issue.Issue, format string, quiet bool) {
 	switch format {
 	case "default":
-		p.DefaultPrint(issues)
+		p.DefaultPrint(issues, quiet)
 	case "json":
 		p.JSONPrint(issues)
 	case "checkstyle":
 		p.CheckstylePrint(issues)
 	default:
-		p.DefaultPrint(issues)
+		p.DefaultPrint(issues, quiet)
 	}
 }
