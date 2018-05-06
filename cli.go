@@ -96,13 +96,20 @@ func (cli *CLI) Run(args []string) int {
 	cli.loader.LoadState()
 	cli.loader.LoadTFVars(c.Varfile)
 	if len(args) > 1 {
-		err = cli.loader.LoadTemplate(args[1])
+		for i, file := range args {
+			if i == 0 {
+				continue
+			}
+			if err = cli.loader.LoadTemplate(file); err != nil {
+				fmt.Fprintln(cli.errStream, err)
+				return ExitCodeError
+			}
+		}
 	} else {
-		err = cli.loader.LoadAllTemplate(".")
-	}
-	if err != nil {
-		fmt.Fprintln(cli.errStream, err)
-		return ExitCodeError
+		if err = cli.loader.LoadAllTemplate("."); err != nil {
+			fmt.Fprintln(cli.errStream, err)
+			return ExitCodeError
+		}
 	}
 
 	// If disabled test mode, generates real detector

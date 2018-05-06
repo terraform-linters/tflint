@@ -185,6 +185,24 @@ func TestCLIRun(t *testing.T) {
 			},
 		},
 		{
+			Name:    "load multiple file",
+			Command: "./tflint template1.tf template2.tf",
+			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
+				loader := mock.NewMockLoaderIF(ctrl)
+				loader.EXPECT().LoadState()
+				loader.EXPECT().LoadTFVars([]string{"terraform.tfvars"})
+				loader.EXPECT().LoadTemplate("template1.tf").Return(nil)
+				loader.EXPECT().LoadTemplate("template2.tf").Return(nil)
+				return loader
+			},
+			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
+			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
+			Result: Result{
+				Status:     ExitCodeOK,
+				CLIOptions: defaultCLIOptions,
+			},
+		},
+		{
 			Name:    "load single file when occurred loading error",
 			Command: "./tflint test_template.tf",
 			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
