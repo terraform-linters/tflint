@@ -11,13 +11,15 @@ import (
 
 func TestLoadConfig(t *testing.T) {
 	cases := []struct {
-		Name   string
-		Input  string
-		Result *Config
+		Name    string
+		WorkDir string
+		Input   []string
+		Result  *Config
 	}{
 		{
-			Name:  "load config file",
-			Input: "dev_environment",
+			Name:    "load config file",
+			WorkDir: "dev_environment",
+			Input:   []string{".tflint.hcl"},
 			Result: &Config{
 				DeepCheck: true,
 				AwsCredentials: map[string]string{
@@ -39,14 +41,40 @@ func TestLoadConfig(t *testing.T) {
 			},
 		},
 		{
-			Name: "empty config file",
-			Input: "empty_config",
-			Result: Init(),
+			Name:    "empty config file",
+			WorkDir: "empty_config",
+			Input:   []string{".tflint.hcl"},
+			Result:  Init(),
 		},
 		{
-			Name:   "config file not found",
-			Input:  "default",
-			Result: Init(),
+			Name:    "config file not found",
+			WorkDir: "default",
+			Input:   []string{".tflint.hcl"},
+			Result:  Init(),
+		},
+		{
+			Name:    "load fallback config",
+			WorkDir: "dev_environment",
+			Input:   []string{"empty.tf", ".tflint.hcl"},
+			Result: &Config{
+				DeepCheck: true,
+				AwsCredentials: map[string]string{
+					"access_key": "AWS_ACCESS_KEY",
+					"secret_key": "AWS_SECRET_KEY",
+					"region":     "us-east-1",
+				},
+				IgnoreRule: map[string]bool{
+					"aws_instance_invalid_type":  true,
+					"aws_instance_previous_type": true,
+				},
+				IgnoreModule: map[string]bool{
+					"github.com/wata727/example-module": true,
+				},
+				Varfile:            []string{"example1.tfvars", "example2.tfvars"},
+				TerraformVersion:   "0.9.11",
+				TerraformEnv:       "dev",
+				TerraformWorkspace: "dev",
+			},
 		},
 	}
 
@@ -55,11 +83,11 @@ func TestLoadConfig(t *testing.T) {
 	defer os.Chdir(prev)
 
 	for _, tc := range cases {
-		testDir := dir + "/test-fixtures/" + tc.Input
+		testDir := dir + "/test-fixtures/" + tc.WorkDir
 		os.Chdir(testDir)
 
 		c := Init()
-		c.LoadConfig(".tflint.hcl")
+		c.LoadConfig(tc.Input...)
 		if !reflect.DeepEqual(c, tc.Result) {
 			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(c), pp.Sprint(tc.Result), tc.Name)
 		}
