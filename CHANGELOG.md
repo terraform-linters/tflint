@@ -1,3 +1,27 @@
+## 0.6.0 (2018-05-18)
+
+### Enhancements
+
+- Support terraform.workspace variable ([#181](https://github.com/wata727/tflint/pull/181))
+- Accept glob and multiple input ([#183](https://github.com/wata727/tflint/pull/183))
+- Fallback to config under the home directory ([#186](https://github.com/wata727/tflint/pull/186))
+- Add new --quiet option ([#190](https://github.com/wata727/tflint/pull/190))
+
+### Changes
+
+- Remove aws_instance_not_specified_iam_profile ([#180](https://github.com/wata727/tflint/pull/180))
+
+### Bugfix
+
+- Handle color for Windows ([#184](https://github.com/wata727/tflint/pull/184))
+- Fix interpolation checking ([#189](https://github.com/wata727/tflint/pull/189))
+- Detect pinned sources using regular expressions ([#194](https://github.com/wata727/tflint/pull/194))
+
+### Others
+
+- AppVeyor :rocket: ([#185](https://github.com/wata727/tflint/pull/185))
+- Add note for installation ([#196](https://github.com/wata727/tflint/pull/196))
+
 ## 0.5.4 (2018-01-07)
 
 ### Bugfix

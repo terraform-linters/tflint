@@ -25,7 +25,7 @@ If you run `terraform apply` for this template, it will obviously produce an err
 ## Installation
 Download binary built for your architecture from [latest releases](https://github.com/wata727/tflint/releases/latest). After downloading, place the binary on the directory on the PATH. The following example is the installation in macOS.
 ```
-$ wget https://github.com/wata727/tflint/releases/download/v0.5.4/tflint_darwin_amd64.zip
+$ wget https://github.com/wata727/tflint/releases/download/v0.6.0/tflint_darwin_amd64.zip
 $ unzip tflint_darwin_amd64.zip
 Archive:  tflint_darwin_amd64.zip
   inflating: tflint
@@ -93,6 +93,7 @@ Application Options:
   -d, --debug                               Enable debug mode
       --error-with-issues                   Return error code when issues exist
       --fast                                Ignore slow rules. Currently, ignore only aws_instance_invalid_ami
+  -q, --quiet                               Do not output any message when no issues are found (Format=default only)
 
 Help Options:
   -h, --help                                Show this help message
