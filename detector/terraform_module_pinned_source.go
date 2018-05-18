@@ -2,6 +2,7 @@ package detector
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/wata727/tflint/issue"
@@ -25,11 +26,15 @@ func (d *Detector) CreateTerraformModulePinnedSourceDetector() *TerraformModuleP
 func (d *TerraformModulePinnedSourceDetector) Detect(module *schema.Module, issues *[]*issue.Issue) {
 	lower := strings.ToLower(module.ModuleSource)
 
-	if strings.Contains(lower, "git") || strings.Contains(lower, "bitbucket") {
+	reGithub := regexp.MustCompile("(^github.com/(.+)/(.+)$)|(^git@github.com:(.+)/(.+)$)")
+	reBitbucket := regexp.MustCompile("^bitbucket.org/(.+)/(.+)$")
+	reGenericGit := regexp.MustCompile("(git://(.+)/(.+))|(git::https://(.+)/(.+))|(git::ssh://((.+)@)??(.+)/(.+)/(.+))")
+
+	if reGithub.MatchString(lower) || reBitbucket.MatchString(lower) || reGenericGit.MatchString(lower) {
 		if issue := d.detectGitSource(module); issue != nil {
 			*issues = append(*issues, issue)
 		}
-	} else if strings.HasPrefix(lower, "hg:") {
+	} else if strings.HasPrefix(lower, "hg::") {
 		if issue := d.detectMercurialSource(module); issue != nil {
 			*issues = append(*issues, issue)
 		}

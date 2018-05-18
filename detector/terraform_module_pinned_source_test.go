@@ -143,6 +143,96 @@ module "pinned git" {
 			Issues: []*issue.Issue{},
 		},
 		{
+			Name: "generic git (git::https) module reference is not pinned",
+			Src: `
+module "unpinned generic git https" {
+  source = "git::https://hashicorp.com/consul.git"
+}
+`,
+			Issues: []*issue.Issue{
+				{
+					Detector: "terraform_module_pinned_source",
+					Type:     "WARNING",
+					Message:  "Module source \"git::https://hashicorp.com/consul.git\" is not pinned",
+					Line:     3,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/terraform_module_pinned_source.md",
+				},
+			},
+		},
+		{
+			Name: "generic git (git::ssh) module reference is not pinned",
+			Src: `
+module "unpinned generic git ssh" {
+  source = "git::ssh://git@github.com/owner/repo.git"
+}
+`,
+			Issues: []*issue.Issue{
+				{
+					Detector: "terraform_module_pinned_source",
+					Type:     "WARNING",
+					Message:  "Module source \"git::ssh://git@github.com/owner/repo.git\" is not pinned",
+					Line:     3,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/terraform_module_pinned_source.md",
+				},
+			},
+		},
+		{
+			Name: "generic git (git::https) module reference is default",
+			Src: `
+module "default generic git https" {
+  source = "git::https://hashicorp.com/consul.git?ref=master"
+}
+`,
+			Issues: []*issue.Issue{
+				{
+					Detector: "terraform_module_pinned_source",
+					Type:     "WARNING",
+					Message:  "Module source \"git::https://hashicorp.com/consul.git?ref=master\" uses default ref \"master\"",
+					Line:     3,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/terraform_module_pinned_source.md",
+				},
+			},
+		},
+		{
+			Name: "generic git (git::ssh) module reference is default",
+			Src: `
+module "default generic git ssh" {
+  source = "git::ssh://git@github.com/owner/repo.git?ref=master"
+}
+`,
+			Issues: []*issue.Issue{
+				{
+					Detector: "terraform_module_pinned_source",
+					Type:     "WARNING",
+					Message:  "Module source \"git::ssh://git@github.com/owner/repo.git?ref=master\" uses default ref \"master\"",
+					Line:     3,
+					File:     "test.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/terraform_module_pinned_source.md",
+				},
+			},
+		},
+		{
+			Name: "generic git (git::https) module reference is pinned",
+			Src: `
+module "pinned generic git https" {
+  source = "git::https://hashicorp.com/consul.git?ref=pinned"
+}
+`,
+			Issues: []*issue.Issue{},
+		},
+		{
+			Name: "generic git (git::ssh) module reference is pinned",
+			Src: `
+module "pinned generic git ssh" {
+  source = "git::ssh://git@github.com/owner/repo.git?ref=pinned"
+}
+`,
+			Issues: []*issue.Issue{},
+		},
+		{
 			Name: "mercurial module is not pinned",
 			Src: `
 module "default mercurial" {
