@@ -3,7 +3,6 @@ package evaluator
 import (
 	"fmt"
 	"regexp"
-	"strings"
 
 	hclast "github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hil"
@@ -54,19 +53,19 @@ func NewEvaluator(templates map[string]*hclast.File, schema []*schema.Template, 
 }
 
 func isEvaluable(src string) bool {
-	var supportPrefix = []string{
-		"var",
-		"terraform",
+	supportedFunction := map[string]bool{
+		"var":       true,
+		"terraform": true,
+	}
+	interpolationRegExp := regexp.MustCompile("\\${([a-z_]+)[\\.\\(].+?}")
+
+	for _, match := range interpolationRegExp.FindAllStringSubmatch(src, -1) {
+		if !supportedFunction[match[1]] {
+			return false
+		}
 	}
 
-	supportPrefixPattern := "("
-	for _, v := range supportPrefix {
-		supportPrefixPattern = supportPrefixPattern + v + "|"
-	}
-	supportPrefixPattern = strings.Trim(supportPrefixPattern, "|") + ")"
-	supportHilPattern := "\\${" + supportPrefixPattern + "\\..+}"
-
-	return regexp.MustCompile(supportHilPattern).Match([]byte(src)) || !strings.Contains(src, "$")
+	return true
 }
 
 func (e *Evaluator) Eval(src string) (interface{}, error) {

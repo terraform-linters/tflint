@@ -37,7 +37,7 @@ func TestIsEvaluable(t *testing.T) {
 			Result: false,
 		},
 		{
-			Name:   "function syntax",
+			Name:   "unsupported function syntax",
 			Input:  "${lookup(var.roles, count.index)}",
 			Result: false,
 		},
@@ -45,6 +45,16 @@ func TestIsEvaluable(t *testing.T) {
 			Name:   "terraform metadata syntax",
 			Input:  "${terraform.env}",
 			Result: true,
+		},
+		{
+			Name:   "complex syntax including var syntax",
+			Input:  "Hello ${var.world}",
+			Result: true,
+		},
+		{
+			Name:   "complex syntax including unsupported function",
+			Input:  "${var.text} ${lookup(var.roles, count.index)}",
+			Result: false,
 		},
 	}
 
@@ -144,6 +154,16 @@ variable "name" {
 }`,
 			Src:    "${var.name[\"key\"]}",
 			Result: "test1",
+		},
+		{
+			Name: "conditional",
+			Input: `
+variable "name" {
+    type = "string"
+    default = "prod"
+}`,
+			Src:    "${var.name == \"prod\" ? \"production\" : \"development\"}",
+			Result: "production",
 		},
 	}
 
