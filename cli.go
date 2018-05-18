@@ -49,6 +49,7 @@ type CLIOptions struct {
 	Debug           bool   `short:"d" long:"debug" description:"Enable debug mode"`
 	ErrorWithIssues bool   `long:"error-with-issues" description:"Return error code when issues exist"`
 	Fast            bool   `long:"fast" description:"Ignore slow rules. Currently, ignore only aws_instance_invalid_ami"`
+	Quiet           bool   `short:"q" long:"quiet" description:"Do not output any message when no issues are found (Format=default only)"`
 }
 
 type TestCLIOptions struct {
@@ -141,7 +142,7 @@ func (cli *CLI) Run(args []string) int {
 	if !cli.testMode {
 		cli.printer = printer.NewPrinter(cli.outStream, cli.errStream)
 	}
-	cli.printer.Print(issues, opts.Format)
+	cli.printer.Print(issues, opts.Format, opts.Quiet)
 
 	if opts.ErrorWithIssues && len(issues) > 0 {
 		return ExitCodeIssuesFound

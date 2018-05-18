@@ -40,7 +40,7 @@ func TestCLIRun(t *testing.T) {
 	}
 	var printerNoIssuesDefaultBehaviour = func(ctrl *gomock.Controller) printer.PrinterIF {
 		printer := mock.NewMockPrinterIF(ctrl)
-		printer.EXPECT().Print([]*issue.Issue{}, "default")
+		printer.EXPECT().Print([]*issue.Issue{}, "default", false)
 		return printer
 	}
 	defaultCLIOptions := TestCLIOptions{
@@ -124,7 +124,7 @@ func TestCLIRun(t *testing.T) {
 						Line:    1,
 						File:    "",
 					},
-				}, "default")
+				}, "default", false)
 				return printer
 			},
 			Result: Result{
@@ -250,7 +250,7 @@ func TestCLIRun(t *testing.T) {
 			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
 			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF {
 				printer := mock.NewMockPrinterIF(ctrl)
-				printer.EXPECT().Print([]*issue.Issue{}, "json")
+				printer.EXPECT().Print([]*issue.Issue{}, "json", false)
 				return printer
 			},
 			Result: Result{
@@ -480,7 +480,7 @@ func TestCLIRun(t *testing.T) {
 						Line:    1,
 						File:    "",
 					},
-				}, "default")
+				}, "default", false)
 				return printer
 			},
 			Result: Result{
@@ -509,6 +509,21 @@ func TestCLIRun(t *testing.T) {
 					},
 					ConfigFile: ".tflint.hcl",
 				},
+			},
+		},
+		{
+			Name:              "quiet output",
+			Command:           "./tflint --quiet",
+			LoaderGenerator:   loaderDefaultBehavior,
+			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
+			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF {
+				printer := mock.NewMockPrinterIF(ctrl)
+				printer.EXPECT().Print([]*issue.Issue{}, "default", true)
+				return printer
+			},
+			Result: Result{
+				Status:     ExitCodeOK,
+				CLIOptions: defaultCLIOptions,
 			},
 		},
 		{

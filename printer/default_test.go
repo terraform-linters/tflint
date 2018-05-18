@@ -11,17 +11,24 @@ import (
 func TestDefaultPrint(t *testing.T) {
 	cases := []struct {
 		Name   string
-		Input  []*issue.Issue
+		Issues []*issue.Issue
+		Quiet  bool
 		Result string
 	}{
 		{
 			Name:   "no issues",
-			Input:  []*issue.Issue{},
+			Issues: []*issue.Issue{},
 			Result: successColor("Awesome! Your code is following the best practices :)") + "\n",
 		},
 		{
+			Name:   "no issues with quiet option",
+			Issues: []*issue.Issue{},
+			Quiet:  true,
+			Result: "",
+		},
+		{
 			Name: "multi files",
-			Input: []*issue.Issue{
+			Issues: []*issue.Issue{
 				{
 					Detector: "error detector",
 					File:     "template.tf",
@@ -68,7 +75,7 @@ Result: %s  (%s , %s , %s)
 		stdout := &bytes.Buffer{}
 		stderr := &bytes.Buffer{}
 		p := NewPrinter(stdout, stderr)
-		p.DefaultPrint(tc.Input)
+		p.DefaultPrint(tc.Issues, tc.Quiet)
 		result := stdout.String()
 
 		if result != tc.Result {
