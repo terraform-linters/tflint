@@ -22,6 +22,7 @@ func (d *Detector) CreateAwsRouteInvalidNatGatewayDetector() *AwsRouteInvalidNat
 	nd.TargetType = "resource"
 	nd.Target = "aws_route"
 	nd.DeepCheck = true
+	nd.Enabled = true
 	return nd
 }
 

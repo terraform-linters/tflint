@@ -23,6 +23,7 @@ func (d *Detector) CreateAwsInstancePreviousTypeDetector() *AwsInstancePreviousT
 	nd.Target = "aws_instance"
 	nd.DeepCheck = false
 	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_instance_previous_type.md"
+	nd.Enabled = true
 	return nd
 }
 

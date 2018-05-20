@@ -23,6 +23,7 @@ func (d *Detector) CreateAwsALBInvalidSubnetDetector() *AwsALBInvalidSubnetDetec
 	nd.TargetType = "resource"
 	nd.Target = "aws_alb"
 	nd.DeepCheck = true
+	nd.Enabled = true
 	return nd
 }
 

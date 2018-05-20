@@ -22,6 +22,7 @@ func (d *Detector) CreateAwsELBDuplicateNameDetector() *AwsELBDuplicateNameDetec
 	nd.TargetType = "resource"
 	nd.Target = "aws_elb"
 	nd.DeepCheck = true
+	nd.Enabled = true
 	return nd
 }
 

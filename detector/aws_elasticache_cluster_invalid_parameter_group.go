@@ -22,6 +22,7 @@ func (d *Detector) CreateAwsElastiCacheClusterInvalidParameterGroupDetector() *A
 	nd.TargetType = "resource"
 	nd.Target = "aws_elasticache_cluster"
 	nd.DeepCheck = true
+	nd.Enabled = true
 	return nd
 }
 

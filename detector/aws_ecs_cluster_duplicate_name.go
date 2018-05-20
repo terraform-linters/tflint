@@ -22,6 +22,7 @@ func (d *Detector) CreateAwsECSClusterDuplicateNameDetector() *AwsECSClusterDupl
 	nd.TargetType = "resource"
 	nd.Target = "aws_ecs_cluster"
 	nd.DeepCheck = true
+	nd.Enabled = true
 	return nd
 }
 

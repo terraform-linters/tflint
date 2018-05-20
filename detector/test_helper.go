@@ -26,6 +26,7 @@ func (d *Detector) CreateTestDetector() *TestDetector {
 	nd.TargetType = "resource"
 	nd.Target = "aws_instance"
 	nd.DeepCheck = false
+	nd.Enabled = true
 	return nd
 }
 

@@ -23,6 +23,7 @@ func (d *Detector) CreateAwsInstanceInvalidVPCSecurityGroupDetector() *AwsInstan
 	nd.TargetType = "resource"
 	nd.Target = "aws_instance"
 	nd.DeepCheck = true
+	nd.Enabled = true
 	return nd
 }
 

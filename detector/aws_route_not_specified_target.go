@@ -17,6 +17,7 @@ func (d *Detector) CreateAwsRouteNotSpecifiedTargetDetector() *AwsRouteNotSpecif
 	nd.Target = "aws_route"
 	nd.DeepCheck = false
 	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_route_not_specified_target.md"
+	nd.Enabled = true
 	return nd
 }
 

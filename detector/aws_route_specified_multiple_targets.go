@@ -17,6 +17,7 @@ func (d *Detector) CreateAwsRouteSpecifiedMultipleTargetsDetector() *AwsRouteSpe
 	nd.Target = "aws_route"
 	nd.DeepCheck = false
 	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_route_specified_multiple_targets.md"
+	nd.Enabled = true
 	return nd
 }
 

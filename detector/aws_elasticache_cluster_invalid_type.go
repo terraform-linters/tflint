@@ -23,6 +23,7 @@ func (d *Detector) CreateAwsElastiCacheClusterInvalidTypeDetector() *AwsElastiCa
 	nd.Target = "aws_elasticache_cluster"
 	nd.DeepCheck = false
 	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_elasticache_cluster_invalid_type.md"
+	nd.Enabled = true
 	return nd
 }
 

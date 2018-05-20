@@ -22,6 +22,7 @@ func (d *Detector) CreateAwsDBInstanceInvalidOptionGroupDetector() *AwsDBInstanc
 	nd.TargetType = "resource"
 	nd.Target = "aws_db_instance"
 	nd.DeepCheck = true
+	nd.Enabled = true
 	return nd
 }
 
