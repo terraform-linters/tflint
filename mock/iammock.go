@@ -5717,6 +5717,50 @@ func (mr *MockIAMAPIMockRecorder) UpdateOpenIDConnectProviderThumbprintRequest(a
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOpenIDConnectProviderThumbprintRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateOpenIDConnectProviderThumbprintRequest), arg0)
 }
 
+// UpdateRole mocks base method
+func (m *MockIAMAPI) UpdateRole(arg0 *iam.UpdateRoleInput) (*iam.UpdateRoleOutput, error) {
+	ret := m.ctrl.Call(m, "UpdateRole", arg0)
+	ret0, _ := ret[0].(*iam.UpdateRoleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateRole indicates an expected call of UpdateRole
+func (mr *MockIAMAPIMockRecorder) UpdateRole(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRole", reflect.TypeOf((*MockIAMAPI)(nil).UpdateRole), arg0)
+}
+
+// UpdateRoleWithContext mocks base method
+func (m *MockIAMAPI) UpdateRoleWithContext(arg0 aws.Context, arg1 *iam.UpdateRoleInput, arg2 ...request.Option) (*iam.UpdateRoleOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpdateRoleWithContext", varargs...)
+	ret0, _ := ret[0].(*iam.UpdateRoleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateRoleWithContext indicates an expected call of UpdateRoleWithContext
+func (mr *MockIAMAPIMockRecorder) UpdateRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRoleWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UpdateRoleWithContext), varargs...)
+}
+
+// UpdateRoleRequest mocks base method
+func (m *MockIAMAPI) UpdateRoleRequest(arg0 *iam.UpdateRoleInput) (*request.Request, *iam.UpdateRoleOutput) {
+	ret := m.ctrl.Call(m, "UpdateRoleRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.UpdateRoleOutput)
+	return ret0, ret1
+}
+
+// UpdateRoleRequest indicates an expected call of UpdateRoleRequest
+func (mr *MockIAMAPIMockRecorder) UpdateRoleRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRoleRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateRoleRequest), arg0)
+}
+
 // UpdateRoleDescription mocks base method
 func (m *MockIAMAPI) UpdateRoleDescription(arg0 *iam.UpdateRoleDescriptionInput) (*iam.UpdateRoleDescriptionOutput, error) {
 	ret := m.ctrl.Call(m, "UpdateRoleDescription", arg0)
