@@ -1,8 +1,14 @@
-hash: 34a70d8fec8c8edbd07b523aacf6e7bade0e32968a1e467cd4be898bc19130ed
-updated: 2017-11-12T21:17:59.70459+09:00
+hash: d44f651b635b113a3f77d5ac56c734dd0da98ce8ed0b7f32494e0567044bd79d
+updated: 2018-05-20T16:56:25.998386341+09:00
 imports:
+- name: github.com/agext/levenshtein
+  version: 5f10fee965225ac1eecdc234c09daf5cd9e7f7b6
+- name: github.com/apparentlymart/go-textseg
+  version: b836f5c4d331d1945a2fead7188db25432d73b69
+  subpackages:
+  - textseg
 - name: github.com/aws/aws-sdk-go
-  version: e6c5e190452424b404ecdb81d6e3991d46b18e9d
+  version: 5f796043d63bfddca929cfbcffce01e5a894aad5
   subpackages:
   - aws
   - aws/awserr
@@ -20,6 +26,8 @@ imports:
   - aws/request
   - aws/session
   - aws/signer/v4
+  - internal/sdkio
+  - internal/sdkrand
   - internal/shareddefaults
   - private/protocol
   - private/protocol/ec2query
@@ -45,21 +53,21 @@ imports:
   - service/rds/rdsiface
   - service/sts
 - name: github.com/cristim/ec2-instances-info
-  version: f464d91eba25f5ee861ff70ef592ec2eb207d3ae
+  version: d2ae4817170d37217fffd340b5417b3005cae3d6
   subpackages:
   - data
 - name: github.com/fatih/color
-  version: 570b54cabe6b8eb0bc2dfce68d964677d63b5260
+  version: 5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4
 - name: github.com/go-ini/ini
-  version: 7e015cd18f007383aa571cc413bd2ec09cff7f2d
+  version: bda519ae5f4cbc60d391ff8610711627a08b86ae
 - name: github.com/golang/mock
-  version: 13f360950a79f5864a972c786a10a50e44b69541
+  version: 22bbf0ddf08105dfa364d0a2fa619dfa71014af5
   subpackages:
   - gomock
 - name: github.com/hashicorp/go-version
-  version: 03c5bf6be031b6dd45afec16b1cf94fc8938bc77
+  version: 23480c0665776210b5fbbac6eaaee40e3e6a96b7
 - name: github.com/hashicorp/hcl
-  version: 392dba7d905ed5d04a5794ba89f558b27e2ba1ca
+  version: ef8a98b0bbce4a65b5aa4c368430a80ddc533168
   subpackages:
   - hcl/ast
   - hcl/parser
@@ -69,6 +77,15 @@ imports:
   - json/parser
   - json/scanner
   - json/token
+- name: github.com/hashicorp/hcl2
+  version: 9db880accff19d9bd953958df738ef0c02b4a311
+  subpackages:
+  - ext/typeexpr
+  - gohcl
+  - hcl
+  - hcl/hclsyntax
+  - hcl/json
+  - hclparse
 - name: github.com/hashicorp/hil
   version: fa9f258a92500514cc8e9c67020487709df92432
   subpackages:
@@ -76,32 +93,55 @@ imports:
   - parser
   - scanner
 - name: github.com/hashicorp/terraform
-  version: cbfb29cd8f52065ef3ef0361c3a2a254d7f185bc
+  version: 0cc9e050ecd4a46ba6448758c2edc0b29bef5695
   subpackages:
+  - configs
   - helper/variables
 - name: github.com/jessevdk/go-flags
-  version: 96dc06278ce32a0e9d957d590bb987c81ee66407
+  version: c6ca198ec95c841fdb89fc0de7496fed11ab854e
 - name: github.com/jmespath/go-jmespath
-  version: bd40a432e4c76585ef6b72d3fd96fb9b6dc7b68d
+  version: c2b33e8439af944379acbdd9c3a5fe0bc44bd8a5
 - name: github.com/k0kubun/pp
   version: 027a6d1765d673d337e687394dbe780dd64e2a1e
 - name: github.com/mattn/go-colorable
-  version: 5411d3eea5978e6cdc258b30de592b60df6aba96
-  repo: https://github.com/mattn/go-colorable
+  version: efa589957cd060542a26d2dd7832fd6a6c6c3ade
 - name: github.com/mattn/go-isatty
-  version: 57fdcb988a5c543893cc61bce354a6e24ab70022
-  repo: https://github.com/mattn/go-isatty
+  version: 6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c
 - name: github.com/mitchellh/go-homedir
   version: b8bc1bf767474819792c23f32d8286a45736f1c6
+- name: github.com/mitchellh/go-wordwrap
+  version: ad45545899c7b13c020ea92b2072220eefad42b8
 - name: github.com/mitchellh/mapstructure
-  version: 53818660ed4955e899c0bcafa97299a388bd7c8e
+  version: bb74f1db0675b241733089d5a1faa5dd8b0ef57b
 - name: github.com/mitchellh/reflectwalk
-  version: 417edcfd99a4d472c262e58f22b4bfe97580f03e
+  version: 63d60e9d0dbc60cf9164e6510889b0db6683d98c
 - name: github.com/pkg/errors
-  version: f15c970de5b76fac0b59abb32d62c17cc7bed265
+  version: 816c9085562cd7ee03e7f8188a1cfd942858cded
+- name: github.com/spf13/afero
+  version: 63644898a8da0bc22138abf860edaf5277b6102e
+  subpackages:
+  - mem
+- name: github.com/zclconf/go-cty
+  version: d006e4534bc4fbc512383aa98d04d641ea951ba5
+  subpackages:
+  - cty
+  - cty/convert
+  - cty/function
+  - cty/function/stdlib
+  - cty/gocty
+  - cty/json
+  - cty/set
+- name: golang.org/x/net
+  version: 57065200b4b034a1c8ad54ff77069408c2218ae6
+  subpackages:
+  - context
 - name: golang.org/x/sys
-  version: e24f485414aeafb646f6fca458b0bf869c0880a1
-  repo: https://go.googlesource.com/sys
+  version: 7c87d13f8e835d2fb3a70a2912c811ed0c1d241b
   subpackages:
   - unix
+- name: golang.org/x/text
+  version: 5c1cf69b5978e5a34c5f9ba09a83e56acc4b7877
+  subpackages:
+  - transform
+  - unicode/norm
 testImports: []
