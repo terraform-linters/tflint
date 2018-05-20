@@ -6,21 +6,38 @@ import (
 
 	"io/ioutil"
 
-	"github.com/hashicorp/hcl"
-	"github.com/hashicorp/hcl/hcl/ast"
-	"github.com/wata727/tflint/loader"
+	"github.com/hashicorp/hcl2/gohcl"
+	"github.com/hashicorp/hcl2/hclparse"
 )
+
+type rawConfig struct {
+	Config *struct {
+		DeepCheck        *bool              `hcl:"deep_check"`
+		AwsCredentials   *map[string]string `hcl:"aws_credentials"`
+		IgnoreModule     *map[string]bool   `hcl:"ignore_module"`
+		IgnoreRule       *map[string]bool   `hcl:"ignore_rule"`
+		Varfile          *[]string          `hcl:"varfile"`
+		TerraformVersion *string            `hcl:"terraform_version"`
+	} `hcl:"config,block"`
+	Rules []Rule `hcl:"rule,block"`
+}
 
 type Config struct {
 	Debug              bool
-	DeepCheck          bool              `hcl:"deep_check"`
-	AwsCredentials     map[string]string `hcl:"aws_credentials"`
-	IgnoreModule       map[string]bool   `hcl:"ignore_module"`
-	IgnoreRule         map[string]bool   `hcl:"ignore_rule"`
-	Varfile            []string          `hcl:"varfile"`
-	TerraformVersion   string            `hcl:"terraform_version"`
+	DeepCheck          bool
+	AwsCredentials     map[string]string
+	IgnoreModule       map[string]bool
+	IgnoreRule         map[string]bool
+	Varfile            []string
+	TerraformVersion   string
 	TerraformEnv       string
 	TerraformWorkspace string
+	Rules              map[string]*Rule
+}
+
+type Rule struct {
+	Name    string `hcl:"name,label"`
+	Enabled bool   `hcl:"enabled"`
 }
 
 func Init() *Config {
@@ -33,6 +50,7 @@ func Init() *Config {
 		Varfile:            []string{},
 		TerraformEnv:       "default",
 		TerraformWorkspace: "default",
+		Rules:              map[string]*Rule{},
 	}
 }
 
@@ -42,27 +60,24 @@ func (c *Config) LoadConfig(files ...string) error {
 		c.TerraformWorkspace = string(b)
 	}
 
-	var configs []*ast.ObjectItem
+	parser := hclparse.NewParser()
 	for _, file := range files {
 		if _, err := os.Stat(file); err != nil {
 			continue
 		}
 
-		l := loader.NewLoader(c.Debug)
-		if err := l.LoadTemplate(file); err != nil {
-			continue
+		f, diags := parser.ParseHCLFile(file)
+		if diags.HasErrors() {
+			return diags
 		}
 
-		configs = l.Templates[file].Node.(*ast.ObjectList).Filter("config").Items
-		break
-	}
+		var raw rawConfig
+		diags = gohcl.DecodeBody(f.Body, nil, &raw)
+		if diags.HasErrors() {
+			return diags
+		}
 
-	if len(configs) == 0 {
-		return nil
-	}
-
-	if err := hcl.DecodeObject(c, configs[0]); err != nil {
-		return err
+		c.setConfigFromRaw(raw)
 	}
 
 	return nil
@@ -126,4 +141,34 @@ func (c *Config) SetVarfile(varfile string) {
 	}
 	varfiles := strings.Split(varfile, ",")
 	c.Varfile = append(c.Varfile, varfiles...)
+}
+
+func (c *Config) setConfigFromRaw(raw rawConfig) {
+	rc := raw.Config
+
+	if rc != nil {
+		if rc.DeepCheck != nil {
+			c.DeepCheck = *rc.DeepCheck
+		}
+		if rc.AwsCredentials != nil {
+			c.AwsCredentials = *rc.AwsCredentials
+		}
+		if rc.IgnoreModule != nil {
+			c.IgnoreModule = *rc.IgnoreModule
+		}
+		if rc.IgnoreRule != nil {
+			c.IgnoreRule = *rc.IgnoreRule
+		}
+		if rc.Varfile != nil {
+			c.Varfile = *rc.Varfile
+		}
+		if rc.TerraformVersion != nil {
+			c.TerraformVersion = *rc.TerraformVersion
+		}
+	}
+
+	for _, r := range raw.Rules {
+		var rule Rule = r
+		c.Rules[rule.Name] = &rule
+	}
 }
