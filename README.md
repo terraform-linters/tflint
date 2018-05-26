@@ -118,16 +118,19 @@ config {
     region     = "us-east-1"
   }
 
-  ignore_rule = {
-    aws_instance_invalid_type  = true
-    aws_instance_previous_type = true
-  }
-
   ignore_module = {
     "github.com/wata727/example-module" = true
   }
 
   varfile = ["example1.tfvars", "example2.tfvars"]
+}
+
+rule "aws_instance_invalid_type" {
+  enabled = false
+}
+
+rule "aws_instance_previous_type" {
+  enabled = false
 }
 ```
 
