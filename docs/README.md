@@ -32,6 +32,12 @@ Issues are classified into the following three types.
 - **Terraform**
     - [terraform_module_pinned_source](terraform_module_pinned_source.md)
 
+### Default Disabled Issue
+These rules are not always useful, so they are disabled by default. If you want to check the following, enabled the rule in configuration file.
+
+- **Terraform**
+    - [terraform_resource_explicit_provider](terraform_resource_explicit_provider.md)
+
 ### Invalid Reference Issue
 Report these issues if you have specified invalid resource ID, name, etc. All issues are reported as ERROR. These issues are reported when enabled deep check. In many cases, an incorrect value is specified, so please fix it.
 
