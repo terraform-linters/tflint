@@ -271,15 +271,16 @@ func TestIsSkip(t *testing.T) {
 	type Input struct {
 		RuleName          string
 		File              string
-		DeepCheckMode     bool
 		DeepCheckDetector bool
 		TargetType        string
 		Target            string
+		Enabled           bool
 	}
 
 	cases := []struct {
 		Name   string
 		Input  Input
+		Config *config.Config
 		Result bool
 	}{
 		{
@@ -290,10 +291,21 @@ func TestIsSkip(t *testing.T) {
 resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
-				DeepCheckMode:     true,
 				DeepCheckDetector: true,
 				TargetType:        "resource",
 				Target:            "aws_instance",
+				Enabled:           true,
+			},
+			Config: &config.Config{
+				Debug:              false,
+				DeepCheck:          true,
+				AwsCredentials:     map[string]string{},
+				IgnoreModule:       map[string]bool{},
+				IgnoreRule:         map[string]bool{},
+				Varfile:            []string{},
+				TerraformEnv:       "default",
+				TerraformWorkspace: "default",
+				Rules:              map[string]*config.Rule{},
 			},
 			Result: false,
 		},
@@ -305,11 +317,12 @@ resource "aws_instance" "web" {
 resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
-				DeepCheckMode:     false,
 				DeepCheckDetector: true,
 				TargetType:        "resource",
 				Target:            "aws_instance",
+				Enabled:           true,
 			},
+			Config: config.Init(),
 			Result: true,
 		},
 		{
@@ -320,11 +333,12 @@ resource "aws_instance" "web" {
 resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
-				DeepCheckMode:     false,
 				DeepCheckDetector: false,
 				TargetType:        "resource",
 				Target:            "aws_instance",
+				Enabled:           true,
 			},
+			Config: config.Init(),
 			Result: false,
 		},
 		{
@@ -335,10 +349,21 @@ resource "aws_instance" "web" {
 resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
-				DeepCheckMode:     true,
 				DeepCheckDetector: false,
 				TargetType:        "resource",
 				Target:            "aws_instance",
+				Enabled:           true,
+			},
+			Config: &config.Config{
+				Debug:              false,
+				DeepCheck:          true,
+				AwsCredentials:     map[string]string{},
+				IgnoreModule:       map[string]bool{},
+				IgnoreRule:         map[string]bool{},
+				Varfile:            []string{},
+				TerraformEnv:       "default",
+				TerraformWorkspace: "default",
+				Rules:              map[string]*config.Rule{},
 			},
 			Result: false,
 		},
@@ -350,11 +375,12 @@ resource "aws_instance" "web" {
 resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
-				DeepCheckMode:     true,
-				DeepCheckDetector: true,
+				DeepCheckDetector: false,
 				TargetType:        "resource",
 				Target:            "aws_db_instance",
+				Enabled:           true,
 			},
+			Config: config.Init(),
 			Result: true,
 		},
 		{
@@ -365,10 +391,11 @@ resource "aws_instance" "web" {
 module "ec2_instance" {
     source = "./ec2_instance"
 }`,
-				DeepCheckMode:     true,
-				DeepCheckDetector: true,
+				DeepCheckDetector: false,
 				TargetType:        "module",
+				Enabled:           true,
 			},
+			Config: config.Init(),
 			Result: false,
 		},
 		{
@@ -379,11 +406,148 @@ module "ec2_instance" {
 resource "aws_instance" "web" {
     ami = "ami-12345"
 }`,
-				DeepCheckMode:     true,
-				DeepCheckDetector: true,
+				DeepCheckDetector: false,
 				TargetType:        "module",
+				Enabled:           true,
+			},
+			Config: config.Init(),
+			Result: true,
+		},
+		{
+			Name: "return true when set `ignore_rule`",
+			Input: Input{
+				RuleName: "aws_instance_invalid_type",
+				File: `
+resource "aws_instance" "web" {
+    ami = "ami-12345"
+}`,
+				DeepCheckDetector: false,
+				TargetType:        "resource",
+				Target:            "aws_instance",
+				Enabled:           true,
+			},
+			Config: &config.Config{
+				Debug:          false,
+				DeepCheck:      false,
+				AwsCredentials: map[string]string{},
+				IgnoreModule:   map[string]bool{},
+				IgnoreRule: map[string]bool{
+					"aws_instance_invalid_type": true,
+				},
+				Varfile:            []string{},
+				TerraformEnv:       "default",
+				TerraformWorkspace: "default",
+				Rules:              map[string]*config.Rule{},
 			},
 			Result: true,
+		},
+		{
+			Name: "return true when set `enabled = false` with `rule`",
+			Input: Input{
+				RuleName: "aws_instance_invalid_type",
+				File: `
+resource "aws_instance" "web" {
+    ami = "ami-12345"
+}`,
+				DeepCheckDetector: false,
+				TargetType:        "resource",
+				Target:            "aws_instance",
+				Enabled:           true,
+			},
+			Config: &config.Config{
+				Debug:              false,
+				DeepCheck:          false,
+				AwsCredentials:     map[string]string{},
+				IgnoreModule:       map[string]bool{},
+				IgnoreRule:         map[string]bool{},
+				Varfile:            []string{},
+				TerraformEnv:       "default",
+				TerraformWorkspace: "default",
+				Rules: map[string]*config.Rule{
+					"aws_instance_invalid_type": {
+						Enabled: false,
+					},
+				},
+			},
+			Result: true,
+		},
+		{
+			Name: "return false when set `enabled = true` with `rule`, but set `ignore_rule",
+			Input: Input{
+				RuleName: "aws_instance_invalid_type",
+				File: `
+resource "aws_instance" "web" {
+    ami = "ami-12345"
+}`,
+				DeepCheckDetector: false,
+				TargetType:        "resource",
+				Target:            "aws_instance",
+				Enabled:           true,
+			},
+			Config: &config.Config{
+				Debug:          false,
+				DeepCheck:      false,
+				AwsCredentials: map[string]string{},
+				IgnoreModule:   map[string]bool{},
+				IgnoreRule: map[string]bool{
+					"aws_instance_invalid_type": true,
+				},
+				Varfile:            []string{},
+				TerraformEnv:       "default",
+				TerraformWorkspace: "default",
+				Rules: map[string]*config.Rule{
+					"aws_instance_invalid_type": {
+						Enabled: true,
+					},
+				},
+			},
+			Result: false,
+		},
+		{
+			Name: "return false when using disabled detector",
+			Input: Input{
+				RuleName: "aws_instance_invalid_type",
+				File: `
+resource "aws_instance" "web" {
+    ami = "ami-12345"
+}`,
+				DeepCheckDetector: false,
+				TargetType:        "resource",
+				Target:            "aws_instance",
+				Enabled:           false,
+			},
+			Config: config.Init(),
+			Result: true,
+		},
+		{
+			Name: "return false when using disabled detector, but set `enabled = true` with `rule`",
+			Input: Input{
+				RuleName: "aws_instance_invalid_type",
+				File: `
+resource "aws_instance" "web" {
+    ami = "ami-12345"
+}`,
+				DeepCheckDetector: false,
+				TargetType:        "resource",
+				Target:            "aws_instance",
+				Enabled:           false,
+			},
+			Config: &config.Config{
+				Debug:              false,
+				DeepCheck:          false,
+				AwsCredentials:     map[string]string{},
+				IgnoreModule:       map[string]bool{},
+				IgnoreRule:         map[string]bool{},
+				Varfile:            []string{},
+				TerraformEnv:       "default",
+				TerraformWorkspace: "default",
+				Rules: map[string]*config.Rule{
+					"aws_instance_invalid_type": {
+						Enabled: true,
+					},
+				},
+			},
+			Result: false,
 		},
 	}
 
@@ -395,13 +559,13 @@ resource "aws_instance" "web" {
 
 		d := &Detector{
 			Schema: schema,
-			Config: config.Init(),
+			Config: tc.Config,
 			Logger: logger.Init(false),
 		}
-		d.Config.DeepCheck = tc.Input.DeepCheckMode
 
 		result := d.isSkip(
 			tc.Input.RuleName,
+			tc.Input.Enabled,
 			tc.Input.DeepCheckDetector,
 			tc.Input.TargetType,
 			tc.Input.Target,

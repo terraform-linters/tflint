@@ -38,6 +38,16 @@ func TestLoadConfig(t *testing.T) {
 				TerraformVersion:   "0.9.11",
 				TerraformEnv:       "dev",
 				TerraformWorkspace: "dev",
+				Rules: map[string]*Rule{
+					"aws_instance_invalid_type": {
+						Name:    "aws_instance_invalid_type",
+						Enabled: false,
+					},
+					"aws_instance_previous_type": {
+						Name:    "aws_instance_previous_type",
+						Enabled: false,
+					},
+				},
 			},
 		},
 		{
@@ -74,6 +84,16 @@ func TestLoadConfig(t *testing.T) {
 				TerraformVersion:   "0.9.11",
 				TerraformEnv:       "dev",
 				TerraformWorkspace: "dev",
+				Rules: map[string]*Rule{
+					"aws_instance_invalid_type": {
+						Name:    "aws_instance_invalid_type",
+						Enabled: false,
+					},
+					"aws_instance_previous_type": {
+						Name:    "aws_instance_previous_type",
+						Enabled: false,
+					},
+				},
 			},
 		},
 	}

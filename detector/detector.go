@@ -35,6 +35,7 @@ type Detector struct {
 	Target     string
 	DeepCheck  bool
 	Link       string
+	Enabled    bool
 }
 
 var detectorFactories = []string{
@@ -141,6 +142,7 @@ func (d *Detector) detect(creatorMethod string, issues *[]*issue.Issue) {
 
 	if d.isSkip(
 		ruleName,
+		reflect.Indirect(detector).FieldByName("Enabled").Bool(),
 		reflect.Indirect(detector).FieldByName("DeepCheck").Bool(),
 		reflect.Indirect(detector).FieldByName("TargetType").String(),
 		reflect.Indirect(detector).FieldByName("Target").String(),
@@ -223,9 +225,17 @@ func (d *Detector) evalToStringTokens(t token.Token) ([]token.Token, error) {
 	return tokens, nil
 }
 
-func (d *Detector) isSkip(name string, deepCheck bool, targetType string, target string) bool {
-	if d.Config.IgnoreRule[name] {
-		return true
+func (d *Detector) isSkip(name string, enabled bool, deepCheck bool, targetType string, target string) bool {
+	if rule := d.Config.Rules[name]; rule != nil {
+		if rule.Enabled {
+			// noop
+		} else if !rule.Enabled || !enabled {
+			return true
+		}
+	} else {
+		if d.Config.IgnoreRule[name] || !enabled {
+			return true
+		}
 	}
 
 	if deepCheck && !d.Config.DeepCheck {

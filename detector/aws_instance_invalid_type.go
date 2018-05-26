@@ -24,6 +24,7 @@ func (d *Detector) CreateAwsInstanceInvalidTypeDetector() *AwsInstanceInvalidTyp
 	nd.Target = "aws_instance"
 	nd.DeepCheck = false
 	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_instance_invalid_type.md"
+	nd.Enabled = true
 	return nd
 }
 

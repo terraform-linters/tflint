@@ -23,6 +23,7 @@ func (d *Detector) CreateAwsCloudWatchMetricAlarmInvalidUnitDetector() *AwsCloud
 	nd.Target = "aws_cloudwatch_metric_alarm"
 	nd.DeepCheck = false
 	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_cloudwatch_metric_alarm_invalid_unit.md"
+	nd.Enabled = true
 	return nd
 }
 

@@ -17,6 +17,7 @@ func (d *Detector) CreateAwsInstanceDefaultStandardVolumeDetector() *AwsInstance
 	nd.Target = "aws_instance"
 	nd.DeepCheck = false
 	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md"
+	nd.Enabled = true
 	return nd
 }
 

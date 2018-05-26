@@ -23,6 +23,7 @@ func (d *Detector) CreateAwsELBInvalidSecurityGroupDetector() *AwsELBInvalidSecu
 	nd.TargetType = "resource"
 	nd.Target = "aws_elb"
 	nd.DeepCheck = true
+	nd.Enabled = true
 	return nd
 }
 

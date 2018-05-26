@@ -22,6 +22,7 @@ func (d *Detector) CreateAwsRouteInvalidVpcPeeringConnectionDetector() *AwsRoute
 	nd.TargetType = "resource"
 	nd.Target = "aws_route"
 	nd.DeepCheck = true
+	nd.Enabled = true
 	return nd
 }
 

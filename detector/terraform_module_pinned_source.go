@@ -20,6 +20,7 @@ func (d *Detector) CreateTerraformModulePinnedSourceDetector() *TerraformModuleP
 	nd.TargetType = "module"
 	nd.DeepCheck = false
 	nd.Link = "https://github.com/wata727/tflint/blob/master/docs/terraform_module_pinned_source.md"
+	nd.Enabled = true
 	return nd
 }
 

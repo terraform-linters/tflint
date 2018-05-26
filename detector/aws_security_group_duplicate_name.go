@@ -24,6 +24,7 @@ func (d *Detector) CreateAwsSecurityGroupDuplicateDetector() *AwsSecurityGroupDu
 	nd.TargetType = "resource"
 	nd.Target = "aws_security_group"
 	nd.DeepCheck = true
+	nd.Enabled = true
 	return nd
 }
 

@@ -255,6 +255,50 @@ func (mr *MockRDSAPIMockRecorder) AuthorizeDBSecurityGroupIngressRequest(arg0 in
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AuthorizeDBSecurityGroupIngressRequest", reflect.TypeOf((*MockRDSAPI)(nil).AuthorizeDBSecurityGroupIngressRequest), arg0)
 }
 
+// BacktrackDBCluster mocks base method
+func (m *MockRDSAPI) BacktrackDBCluster(arg0 *rds.BacktrackDBClusterInput) (*rds.BacktrackDBClusterOutput, error) {
+	ret := m.ctrl.Call(m, "BacktrackDBCluster", arg0)
+	ret0, _ := ret[0].(*rds.BacktrackDBClusterOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BacktrackDBCluster indicates an expected call of BacktrackDBCluster
+func (mr *MockRDSAPIMockRecorder) BacktrackDBCluster(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BacktrackDBCluster", reflect.TypeOf((*MockRDSAPI)(nil).BacktrackDBCluster), arg0)
+}
+
+// BacktrackDBClusterWithContext mocks base method
+func (m *MockRDSAPI) BacktrackDBClusterWithContext(arg0 aws.Context, arg1 *rds.BacktrackDBClusterInput, arg2 ...request.Option) (*rds.BacktrackDBClusterOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "BacktrackDBClusterWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.BacktrackDBClusterOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BacktrackDBClusterWithContext indicates an expected call of BacktrackDBClusterWithContext
+func (mr *MockRDSAPIMockRecorder) BacktrackDBClusterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BacktrackDBClusterWithContext", reflect.TypeOf((*MockRDSAPI)(nil).BacktrackDBClusterWithContext), varargs...)
+}
+
+// BacktrackDBClusterRequest mocks base method
+func (m *MockRDSAPI) BacktrackDBClusterRequest(arg0 *rds.BacktrackDBClusterInput) (*request.Request, *rds.BacktrackDBClusterOutput) {
+	ret := m.ctrl.Call(m, "BacktrackDBClusterRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.BacktrackDBClusterOutput)
+	return ret0, ret1
+}
+
+// BacktrackDBClusterRequest indicates an expected call of BacktrackDBClusterRequest
+func (mr *MockRDSAPIMockRecorder) BacktrackDBClusterRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BacktrackDBClusterRequest", reflect.TypeOf((*MockRDSAPI)(nil).BacktrackDBClusterRequest), arg0)
+}
+
 // CopyDBClusterParameterGroup mocks base method
 func (m *MockRDSAPI) CopyDBClusterParameterGroup(arg0 *rds.CopyDBClusterParameterGroupInput) (*rds.CopyDBClusterParameterGroupOutput, error) {
 	ret := m.ctrl.Call(m, "CopyDBClusterParameterGroup", arg0)
@@ -1485,6 +1529,50 @@ func (m *MockRDSAPI) DescribeCertificatesRequest(arg0 *rds.DescribeCertificatesI
 // DescribeCertificatesRequest indicates an expected call of DescribeCertificatesRequest
 func (mr *MockRDSAPIMockRecorder) DescribeCertificatesRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCertificatesRequest", reflect.TypeOf((*MockRDSAPI)(nil).DescribeCertificatesRequest), arg0)
+}
+
+// DescribeDBClusterBacktracks mocks base method
+func (m *MockRDSAPI) DescribeDBClusterBacktracks(arg0 *rds.DescribeDBClusterBacktracksInput) (*rds.DescribeDBClusterBacktracksOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeDBClusterBacktracks", arg0)
+	ret0, _ := ret[0].(*rds.DescribeDBClusterBacktracksOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeDBClusterBacktracks indicates an expected call of DescribeDBClusterBacktracks
+func (mr *MockRDSAPIMockRecorder) DescribeDBClusterBacktracks(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterBacktracks", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterBacktracks), arg0)
+}
+
+// DescribeDBClusterBacktracksWithContext mocks base method
+func (m *MockRDSAPI) DescribeDBClusterBacktracksWithContext(arg0 aws.Context, arg1 *rds.DescribeDBClusterBacktracksInput, arg2 ...request.Option) (*rds.DescribeDBClusterBacktracksOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeDBClusterBacktracksWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.DescribeDBClusterBacktracksOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeDBClusterBacktracksWithContext indicates an expected call of DescribeDBClusterBacktracksWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeDBClusterBacktracksWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterBacktracksWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterBacktracksWithContext), varargs...)
+}
+
+// DescribeDBClusterBacktracksRequest mocks base method
+func (m *MockRDSAPI) DescribeDBClusterBacktracksRequest(arg0 *rds.DescribeDBClusterBacktracksInput) (*request.Request, *rds.DescribeDBClusterBacktracksOutput) {
+	ret := m.ctrl.Call(m, "DescribeDBClusterBacktracksRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBClusterBacktracksOutput)
+	return ret0, ret1
+}
+
+// DescribeDBClusterBacktracksRequest indicates an expected call of DescribeDBClusterBacktracksRequest
+func (mr *MockRDSAPIMockRecorder) DescribeDBClusterBacktracksRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterBacktracksRequest", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterBacktracksRequest), arg0)
 }
 
 // DescribeDBClusterParameterGroups mocks base method
@@ -4310,6 +4398,50 @@ func (m *MockRDSAPI) RestoreDBInstanceFromDBSnapshotRequest(arg0 *rds.RestoreDBI
 // RestoreDBInstanceFromDBSnapshotRequest indicates an expected call of RestoreDBInstanceFromDBSnapshotRequest
 func (mr *MockRDSAPIMockRecorder) RestoreDBInstanceFromDBSnapshotRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RestoreDBInstanceFromDBSnapshotRequest", reflect.TypeOf((*MockRDSAPI)(nil).RestoreDBInstanceFromDBSnapshotRequest), arg0)
+}
+
+// RestoreDBInstanceFromS3 mocks base method
+func (m *MockRDSAPI) RestoreDBInstanceFromS3(arg0 *rds.RestoreDBInstanceFromS3Input) (*rds.RestoreDBInstanceFromS3Output, error) {
+	ret := m.ctrl.Call(m, "RestoreDBInstanceFromS3", arg0)
+	ret0, _ := ret[0].(*rds.RestoreDBInstanceFromS3Output)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RestoreDBInstanceFromS3 indicates an expected call of RestoreDBInstanceFromS3
+func (mr *MockRDSAPIMockRecorder) RestoreDBInstanceFromS3(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RestoreDBInstanceFromS3", reflect.TypeOf((*MockRDSAPI)(nil).RestoreDBInstanceFromS3), arg0)
+}
+
+// RestoreDBInstanceFromS3WithContext mocks base method
+func (m *MockRDSAPI) RestoreDBInstanceFromS3WithContext(arg0 aws.Context, arg1 *rds.RestoreDBInstanceFromS3Input, arg2 ...request.Option) (*rds.RestoreDBInstanceFromS3Output, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "RestoreDBInstanceFromS3WithContext", varargs...)
+	ret0, _ := ret[0].(*rds.RestoreDBInstanceFromS3Output)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RestoreDBInstanceFromS3WithContext indicates an expected call of RestoreDBInstanceFromS3WithContext
+func (mr *MockRDSAPIMockRecorder) RestoreDBInstanceFromS3WithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RestoreDBInstanceFromS3WithContext", reflect.TypeOf((*MockRDSAPI)(nil).RestoreDBInstanceFromS3WithContext), varargs...)
+}
+
+// RestoreDBInstanceFromS3Request mocks base method
+func (m *MockRDSAPI) RestoreDBInstanceFromS3Request(arg0 *rds.RestoreDBInstanceFromS3Input) (*request.Request, *rds.RestoreDBInstanceFromS3Output) {
+	ret := m.ctrl.Call(m, "RestoreDBInstanceFromS3Request", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.RestoreDBInstanceFromS3Output)
+	return ret0, ret1
+}
+
+// RestoreDBInstanceFromS3Request indicates an expected call of RestoreDBInstanceFromS3Request
+func (mr *MockRDSAPIMockRecorder) RestoreDBInstanceFromS3Request(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RestoreDBInstanceFromS3Request", reflect.TypeOf((*MockRDSAPI)(nil).RestoreDBInstanceFromS3Request), arg0)
 }
 
 // RestoreDBInstanceToPointInTime mocks base method
