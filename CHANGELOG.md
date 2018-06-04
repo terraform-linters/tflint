@@ -1,3 +1,13 @@
+## 0.7.0 (2018-06-04)
+
+### Enhancements
+
+- Add new `rule` configuration syntax ([#197](https://github.com/wata727/tflint/pull/197))
+
+### Others
+
+- Recommend `rule` syntax instead of `ignore_rules` in README ([#200](https://github.com/wata727/tflint/pull/200))
+
 ## 0.6.0 (2018-05-18)
 
 ### Enhancements
