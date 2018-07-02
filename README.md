@@ -217,15 +217,6 @@ If you want to build TFLint at your environment, you can build with the followin
 
 ```
 $ make build
-go get github.com/Masterminds/glide
-glide install
-[INFO]  Downloading dependencies. Please wait...
-...
-go test $(go list ./... | grep -v vendor | grep -v mock)
-...
-go build -v
-...
-github.com/wata727/tflint
 ```
 
 ## Author
