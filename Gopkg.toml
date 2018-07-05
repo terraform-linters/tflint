@@ -46,6 +46,10 @@
   name = "github.com/hashicorp/hil"
 
 [[constraint]]
+  branch = "v0.12-dev"
+  name = "github.com/hashicorp/terraform"
+
+[[constraint]]
   name = "github.com/jessevdk/go-flags"
   version = "1.3.0"
 

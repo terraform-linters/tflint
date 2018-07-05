@@ -127,9 +127,10 @@
   revision = "fa9f258a92500514cc8e9c67020487709df92432"
 
 [[projects]]
+  branch = "v0.12-dev"
   name = "github.com/hashicorp/terraform"
   packages = ["helper/variables"]
-  revision = "0cc9e050ecd4a46ba6448758c2edc0b29bef5695"
+  revision = "cfdc951920bf5f9962cf5946fe0ff59488d956cb"
 
 [[projects]]
   name = "github.com/jessevdk/go-flags"
@@ -227,6 +228,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "6fd5cdaaba556f66cc4f90f32faf7508b2ab72e52e764a5bfec247bcb6218f62"
+  inputs-digest = "c46c5d3afee47b41d877fd34eb42946069fc706ebdca15212ea6e08c10cc13cd"
   solver-name = "gps-cdcl"
   solver-version = 1
