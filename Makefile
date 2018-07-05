@@ -1,8 +1,8 @@
 default: build
 
 prepare:
-	go get github.com/Masterminds/glide
-	glide install
+	go get -u github.com/golang/dep/cmd/dep
+	dep ensure
 
 test: prepare
 	go test $$(go list ./... | grep -v vendor | grep -v mock)
