@@ -148,11 +148,10 @@
   revision = "fa9f258a92500514cc8e9c67020487709df92432"
 
 [[projects]]
-  digest = "1:a5e52a51acdaeb0bcd1058d4499c1e67a1a6abb9baa06e217f95192c5e91eeb9"
+  branch = "v0.12-dev"
   name = "github.com/hashicorp/terraform"
   packages = ["helper/variables"]
-  pruneopts = "UT"
-  revision = "0cc9e050ecd4a46ba6448758c2edc0b29bef5695"
+  revision = "cfdc951920bf5f9962cf5946fe0ff59488d956cb"
 
 [[projects]]
   digest = "1:a2cff208d4759f6ba1b1cd228587b0a1869f95f22542ec9cd17fff64430113c7"
