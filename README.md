@@ -192,6 +192,18 @@ $ export AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY
 $ export AWS_SECRET_ACCESS_KEY=AWS_SECRET_KEY
 ```
 
+### Rules
+
+You can make settings for each rule in the `rule` block. Currently, it can set only `enabled` option. If you set `enabled = false`, TFLint doesn't check templates by this rule.
+
+```
+rule "aws_instance_previous_type" {
+  enabled = false
+}
+```
+
+Please see the [documentation](https://github.com/wata727/tflint/tree/master/docs) for a list of rules.
+
 ## Interpolation Syntax Support
 TFLint can interpret part of [interpolation syntax](https://www.terraform.io/docs/configuration/interpolation.html). We now support only variables and terraform meta information (e.g. "${terraform.env}"). So you cannot use attributes of resource, outputs of modules and built-in functions. If you are using them, TFLint ignores it. You can check what is ignored by executing it with `--debug` option.
 
