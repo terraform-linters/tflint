@@ -26,7 +26,7 @@ type Error struct {
 // Error shows error message. This must be implemented for error interface.
 func (e *Error) Error() string {
 	if e.Message != "" && e.Cause != nil {
-		return fmt.Sprintf("%s: %s", e.Message, e.Cause)
+		return fmt.Sprintf("%s; %s", e.Message, e.Cause)
 	}
 
 	if e.Message == "" && e.Cause != nil {
