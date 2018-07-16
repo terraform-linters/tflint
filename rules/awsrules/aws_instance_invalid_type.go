@@ -2,7 +2,6 @@ package awsrules
 
 import (
 	"fmt"
-	"path/filepath"
 
 	instances "github.com/cristim/ec2-instances-info"
 	"github.com/hashicorp/hcl2/hcl"
@@ -63,7 +62,7 @@ func (r *AwsInstanceInvalidTypeRule) Check(runner *tflint.Runner) {
 					Type:     issue.ERROR,
 					Message:  fmt.Sprintf("\"%s\" is invalid instance type.", instanceType),
 					Line:     attribute.Range.Start.Line,
-					File:     filepath.Base(attribute.Range.Filename),
+					File:     runner.GetFileName(attribute.Range.Filename),
 					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_invalid_type.md",
 				})
 			}

@@ -310,11 +310,6 @@ func Test_EvaluateExpr_map(t *testing.T) {
 }
 
 func Test_EvaluateExpr_interpolationError(t *testing.T) {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	cases := []struct {
 		Name      string
 		Key       string
@@ -327,50 +322,35 @@ func Test_EvaluateExpr_interpolationError(t *testing.T) {
 			Key:       "undefined",
 			Variables: map[string]map[string]cty.Value{},
 			ErrorCode: EvaluationError,
-			ErrorText: fmt.Sprintf(
-				"Failed to eval an expression in %s:33: Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
-				filepath.Join(currentDir, "test-fixtures", "runner", "resource.tf"),
-			),
+			ErrorText: "Failed to eval an expression in resource.tf:33; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
 		},
 		{
 			Name:      "no default value",
 			Key:       "no_value",
 			Variables: map[string]map[string]cty.Value{},
 			ErrorCode: UnknownValueError,
-			ErrorText: fmt.Sprintf(
-				"Unknown value found in %s:34; Please use environment variables or tfvars to set the value",
-				filepath.Join(currentDir, "test-fixtures", "runner", "resource.tf"),
-			),
+			ErrorText: "Unknown value found in resource.tf:34; Please use environment variables or tfvars to set the value",
 		},
 		{
 			Name:      "terraform env",
 			Key:       "env",
 			Variables: map[string]map[string]cty.Value{},
 			ErrorCode: EvaluationError,
-			ErrorText: fmt.Sprintf(
-				"Failed to eval an expression in %s:35: Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
-				filepath.Join(currentDir, "test-fixtures", "runner", "resource.tf"),
-			),
+			ErrorText: "Failed to eval an expression in resource.tf:35; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
 		},
 		{
 			Name:      "type mismatch",
 			Key:       "string_list",
 			Variables: map[string]map[string]cty.Value{},
 			ErrorCode: TypeConversionError,
-			ErrorText: fmt.Sprintf(
-				"Invalid type expression in %s:23: incorrect type; string required",
-				filepath.Join(currentDir, "test-fixtures", "runner", "resource.tf"),
-			),
+			ErrorText: "Invalid type expression in resource.tf:23; incorrect type; string required",
 		},
 		{
 			Name:      "unevalauble",
 			Key:       "module",
 			Variables: map[string]map[string]cty.Value{},
 			ErrorCode: UnevaluableError,
-			ErrorText: fmt.Sprintf(
-				"Unevaluable expression found in %s:38",
-				filepath.Join(currentDir, "test-fixtures", "runner", "resource.tf"),
-			),
+			ErrorText: "Unevaluable expression found in resource.tf:38",
 		},
 	}
 
@@ -555,6 +535,7 @@ func Test_getWorkspace(t *testing.T) {
 
 func newRunnerHelper(cfg *configs.Config, variables map[string]map[string]cty.Value) *Runner {
 	return &Runner{
+		TFConfig: cfg,
 		ctx: terraform.BuiltinEvalContext{
 			Evaluator: &terraform.Evaluator{
 				Meta: &terraform.ContextMeta{
