@@ -31,13 +31,16 @@ type Runner struct {
 	ctx    terraform.BuiltinEvalContext
 	state  state.TFState
 	config *config.Config
-	logger *logger.Logger
+	logger *logger.Logger // TODO: Improve logging system
 }
 
 // NewRunner returns new TFLint runner
 // TODO: Generate variables from configs
 func NewRunner(cfg *configs.Config) *Runner {
 	return &Runner{
+		TFConfig: cfg,
+		Issues:   []*issue.Issue{},
+
 		ctx: terraform.BuiltinEvalContext{
 			Evaluator: &terraform.Evaluator{
 				Meta: &terraform.ContextMeta{
@@ -48,8 +51,7 @@ func NewRunner(cfg *configs.Config) *Runner {
 				VariableValuesLock: &sync.Mutex{},
 			},
 		},
-		TFConfig: cfg,
-		Issues:   []*issue.Issue{},
+		logger: logger.Init(false),
 	}
 }
 
@@ -58,7 +60,7 @@ func NewRunner(cfg *configs.Config) *Runner {
 // because raw cty.Value has TupleType.
 func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 	if !isEvaluable(expr) {
-		return &Error{
+		err := &Error{
 			Code: UnevaluableError,
 			Message: fmt.Sprintf(
 				"Unevaluable expression found in %s:%d",
@@ -66,11 +68,13 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 				expr.Range().Start.Line,
 			),
 		}
+		r.logger.Error(err)
+		return err
 	}
 
 	val, diags := r.ctx.EvaluateExpr(expr, cty.DynamicPseudoType, nil)
 	if diags.HasErrors() {
-		return &Error{
+		err := &Error{
 			Code: EvaluationError,
 			Message: fmt.Sprintf(
 				"Failed to eval an expression in %s:%d",
@@ -79,10 +83,12 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			),
 			Cause: diags.Err(),
 		}
+		r.logger.Error(err)
+		return err
 	}
 
 	if !val.IsKnown() {
-		return &Error{
+		err := &Error{
 			Code: UnknownValueError,
 			Message: fmt.Sprintf(
 				"Unknown value found in %s:%d; Please use environment variables or tfvars to set the value",
@@ -90,6 +96,8 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 				expr.Range().Start.Line,
 			),
 		}
+		r.logger.Error(err)
+		return err
 	}
 
 	var err error
@@ -105,7 +113,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 	}
 
 	if err != nil {
-		return &Error{
+		err := &Error{
 			Code: TypeConversionError,
 			Message: fmt.Sprintf(
 				"Invalid type expression in %s:%d",
@@ -114,11 +122,13 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			),
 			Cause: err,
 		}
+		r.logger.Error(err)
+		return err
 	}
 
 	err = gocty.FromCtyValue(val, ret)
 	if err != nil {
-		return &Error{
+		err := &Error{
 			Code: TypeMismatchError,
 			Message: fmt.Sprintf(
 				"Invalid type expression in %s:%d",
@@ -127,6 +137,8 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			),
 			Cause: err,
 		}
+		r.logger.Error(err)
+		return err
 	}
 	return nil
 }
@@ -134,6 +146,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 func isEvaluable(expr hcl.Expression) bool {
 	refs, diags := lang.ReferencesInExpr(expr)
 	if diags.HasErrors() {
+		// Maybe this is bug
 		panic(diags.Err())
 	}
 	for _, ref := range refs {
