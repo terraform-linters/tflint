@@ -5,4 +5,4 @@ sudo: false
 go: 1.9
 
 script:
-  - 'make build'
+  - 'make install'
