@@ -40,6 +40,9 @@ func NewRunner(cfg *configs.Config) *Runner {
 	return &Runner{
 		ctx: terraform.BuiltinEvalContext{
 			Evaluator: &terraform.Evaluator{
+				Meta: &terraform.ContextMeta{
+					Env: getWorkspace(),
+				},
 				Config:             cfg,
 				VariableValues:     map[string]map[string]cty.Value{},
 				VariableValuesLock: &sync.Mutex{},
