@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/wata727/tflint/logger"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -119,18 +120,7 @@ func Test_EvaluateExpr_string(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		runner := &Runner{
-			ctx: terraform.BuiltinEvalContext{
-				Evaluator: &terraform.Evaluator{
-					Meta: &terraform.ContextMeta{
-						Env: getWorkspace(),
-					},
-					Config:             cfg,
-					VariableValues:     tc.Variables,
-					VariableValuesLock: &sync.Mutex{},
-				},
-			},
-		}
+		runner := newRunnerHelper(cfg, tc.Variables)
 
 		var ret string
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -183,18 +173,7 @@ func Test_EvaluateExpr_integer(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		runner := &Runner{
-			ctx: terraform.BuiltinEvalContext{
-				Evaluator: &terraform.Evaluator{
-					Meta: &terraform.ContextMeta{
-						Env: getWorkspace(),
-					},
-					Config:             cfg,
-					VariableValues:     tc.Variables,
-					VariableValuesLock: &sync.Mutex{},
-				},
-			},
-		}
+		runner := newRunnerHelper(cfg, tc.Variables)
 
 		var ret int
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -233,18 +212,7 @@ func Test_EvaluateExpr_stringList(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		runner := &Runner{
-			ctx: terraform.BuiltinEvalContext{
-				Evaluator: &terraform.Evaluator{
-					Meta: &terraform.ContextMeta{
-						Env: getWorkspace(),
-					},
-					Config:             cfg,
-					VariableValues:     tc.Variables,
-					VariableValuesLock: &sync.Mutex{},
-				},
-			},
-		}
+		runner := newRunnerHelper(cfg, tc.Variables)
 
 		ret := []string{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -283,18 +251,7 @@ func Test_EvaluateExpr_numberList(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		runner := &Runner{
-			ctx: terraform.BuiltinEvalContext{
-				Evaluator: &terraform.Evaluator{
-					Meta: &terraform.ContextMeta{
-						Env: getWorkspace(),
-					},
-					Config:             cfg,
-					VariableValues:     tc.Variables,
-					VariableValuesLock: &sync.Mutex{},
-				},
-			},
-		}
+		runner := newRunnerHelper(cfg, tc.Variables)
 
 		ret := []int{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -338,18 +295,7 @@ func Test_EvaluateExpr_map(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		runner := &Runner{
-			ctx: terraform.BuiltinEvalContext{
-				Evaluator: &terraform.Evaluator{
-					Meta: &terraform.ContextMeta{
-						Env: getWorkspace(),
-					},
-					Config:             cfg,
-					VariableValues:     tc.Variables,
-					VariableValuesLock: &sync.Mutex{},
-				},
-			},
-		}
+		runner := newRunnerHelper(cfg, tc.Variables)
 
 		ret := mapObject{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -438,18 +384,7 @@ func Test_EvaluateExpr_interpolationError(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		runner := &Runner{
-			ctx: terraform.BuiltinEvalContext{
-				Evaluator: &terraform.Evaluator{
-					Meta: &terraform.ContextMeta{
-						Env: getWorkspace(),
-					},
-					Config:             cfg,
-					VariableValues:     tc.Variables,
-					VariableValuesLock: &sync.Mutex{},
-				},
-			},
-		}
+		runner := newRunnerHelper(cfg, tc.Variables)
 
 		var ret string
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -615,6 +550,22 @@ func Test_getWorkspace(t *testing.T) {
 				t.Fatal(err)
 			}
 		}
+	}
+}
+
+func newRunnerHelper(cfg *configs.Config, variables map[string]map[string]cty.Value) *Runner {
+	return &Runner{
+		ctx: terraform.BuiltinEvalContext{
+			Evaluator: &terraform.Evaluator{
+				Meta: &terraform.ContextMeta{
+					Env: getWorkspace(),
+				},
+				Config:             cfg,
+				VariableValues:     variables,
+				VariableValuesLock: &sync.Mutex{},
+			},
+		},
+		logger: logger.Init(false),
 	}
 }
 
