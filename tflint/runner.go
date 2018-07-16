@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/hashicorp/hcl2/hcl"
@@ -64,7 +65,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Code: UnevaluableError,
 			Message: fmt.Sprintf(
 				"Unevaluable expression found in %s:%d",
-				expr.Range().Filename,
+				r.GetFileName(expr.Range().Filename),
 				expr.Range().Start.Line,
 			),
 		}
@@ -78,7 +79,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Code: EvaluationError,
 			Message: fmt.Sprintf(
 				"Failed to eval an expression in %s:%d",
-				expr.Range().Filename,
+				r.GetFileName(expr.Range().Filename),
 				expr.Range().Start.Line,
 			),
 			Cause: diags.Err(),
@@ -92,7 +93,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Code: UnknownValueError,
 			Message: fmt.Sprintf(
 				"Unknown value found in %s:%d; Please use environment variables or tfvars to set the value",
-				expr.Range().Filename,
+				r.GetFileName(expr.Range().Filename),
 				expr.Range().Start.Line,
 			),
 		}
@@ -117,7 +118,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Code: TypeConversionError,
 			Message: fmt.Sprintf(
 				"Invalid type expression in %s:%d",
-				expr.Range().Filename,
+				r.GetFileName(expr.Range().Filename),
 				expr.Range().Start.Line,
 			),
 			Cause: err,
@@ -132,7 +133,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Code: TypeMismatchError,
 			Message: fmt.Sprintf(
 				"Invalid type expression in %s:%d",
-				expr.Range().Filename,
+				r.GetFileName(expr.Range().Filename),
 				expr.Range().Start.Line,
 			),
 			Cause: err,
@@ -141,6 +142,16 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 		return err
 	}
 	return nil
+}
+
+// GetFileName returns user-friendly file name.
+// It returns base file name when processing root module.
+// Otherwise, it add the module name as prefix to base file name.
+func (r *Runner) GetFileName(raw string) string {
+	if r.TFConfig.Path.IsRoot() {
+		return filepath.Base(raw)
+	}
+	return filepath.Join(r.TFConfig.Path.String(), filepath.Base(raw))
 }
 
 func isEvaluable(expr hcl.Expression) bool {
