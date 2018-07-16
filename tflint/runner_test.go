@@ -416,6 +416,16 @@ func Test_EvaluateExpr_interpolationError(t *testing.T) {
 				filepath.Join(currentDir, "test-fixtures", "runner", "resource.tf"),
 			),
 		},
+		{
+			Name:      "unevalauble",
+			Key:       "module",
+			Variables: map[string]map[string]cty.Value{},
+			ErrorCode: UnevaluableError,
+			ErrorText: fmt.Sprintf(
+				"Unevaluable expression found in %s:38",
+				filepath.Join(currentDir, "test-fixtures", "runner", "resource.tf"),
+			),
+		},
 	}
 
 	for _, tc := range cases {
