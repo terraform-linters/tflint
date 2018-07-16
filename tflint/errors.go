@@ -11,6 +11,8 @@ const (
 	TypeConversionError
 	// TypeMismatchError is an error when a type of cty.Value is not as expected
 	TypeMismatchError
+	// UnevaluableError is an error when a received expression has unevaluable references.
+	UnevaluableError
 )
 
 // Error is application error object. It has own error code
