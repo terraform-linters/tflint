@@ -54,6 +54,17 @@ func NewRunner(cfg *configs.Config) *Runner {
 // When it received slice as `ret`, it converts cty.Value to expected list type
 // because raw cty.Value has TupleType.
 func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
+	if !isEvaluable(expr) {
+		return &Error{
+			Code: UnevaluableError,
+			Message: fmt.Sprintf(
+				"Unevaluable expression found in %s:%d",
+				expr.Range().Filename,
+				expr.Range().Start.Line,
+			),
+		}
+	}
+
 	val, diags := r.ctx.EvaluateExpr(expr, cty.DynamicPseudoType, nil)
 	if diags.HasErrors() {
 		return &Error{
@@ -117,7 +128,6 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 	return nil
 }
 
-// TODO: Move to EvaluateExpr
 func isEvaluable(expr hcl.Expression) bool {
 	refs, diags := lang.ReferencesInExpr(expr)
 	if diags.HasErrors() {
