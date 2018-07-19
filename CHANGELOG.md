@@ -1,3 +1,15 @@
+## 0.7.1 (2018-07-19)
+
+### Bugfix
+
+- Add missing db instances as valid types ([#214](https://github.com/wata727/tflint/pull/214))
+- Update valid instance types ([#215](https://github.com/wata727/tflint/pull/215))
+
+### Others
+
+- Migrate to dep from Glide ([#208](https://github.com/wata727/tflint/pull/208))
+- Add `rule` section in README ([#213](https://github.com/wata727/tflint/pull/213))
+
 ## 0.7.0 (2018-06-04)
 
 ### Enhancements
