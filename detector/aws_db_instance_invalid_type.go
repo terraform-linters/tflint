@@ -33,6 +33,8 @@ func (d *AwsDBInstanceInvalidTypeDetector) PreProcess() {
 		"db.t2.small":    true,
 		"db.t2.medium":   true,
 		"db.t2.large":    true,
+		"db.t2.xlarge":   true,
+		"db.t2.2xlarge":  true,
 		"db.m4.large":    true,
 		"db.m4.xlarge":   true,
 		"db.m4.2xlarge":  true,
