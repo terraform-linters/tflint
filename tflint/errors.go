@@ -13,12 +13,20 @@ const (
 	TypeMismatchError
 	// UnevaluableError is an error when a received expression has unevaluable references.
 	UnevaluableError
+
+	// FatalLevel is a recorverable error, it cause panic
+	FatalLevel int = 0
+	// ErrorLevel is a user-level error, it display and feedback error information
+	ErrorLevel int = 1 + iota
+	// WarningLevel is a user-level warning. Although it is an error, it has no effect on execution.
+	WarningLevel
 )
 
 // Error is application error object. It has own error code
 // for processing according to a type of error.
 type Error struct {
 	Code    int
+	Level   int
 	Message string
 	Cause   error
 }
