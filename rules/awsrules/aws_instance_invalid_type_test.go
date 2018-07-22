@@ -64,17 +64,21 @@ resource "aws_instance" "missing_key" {
 
 		mod, diags := loader.Parser().LoadConfigDir(dir)
 		if diags.HasErrors() {
-			panic(diags)
+			t.Fatal(diags)
 		}
 		cfg, tfdiags := configs.BuildConfig(mod, configs.DisabledModuleWalker)
 		if tfdiags.HasErrors() {
-			panic(tfdiags)
+			t.Fatal(tfdiags)
 		}
 
 		runner := tflint.NewRunner(cfg)
 		rule := &AwsInstanceInvalidTypeRule{}
-		rule.PreProcess()
-		rule.Check(runner)
+		if err = rule.PreProcess(); err != nil {
+			t.Fatal(err)
+		}
+		if err = rule.Check(runner); err != nil {
+			t.Fatal(err)
+		}
 
 		if !cmp.Equal(tc.Expected, runner.Issues) {
 			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
