@@ -36,8 +36,9 @@ type Runner struct {
 }
 
 // NewRunner returns new TFLint runner
-// TODO: Generate variables from configs
-func NewRunner(cfg *configs.Config) *Runner {
+// It prepares built-in context (workpace metadata, variables) from
+// received `configs.Config` and `terraform.InputValues`
+func NewRunner(cfg *configs.Config, variables ...terraform.InputValues) *Runner {
 	return &Runner{
 		TFConfig: cfg,
 		Issues:   []*issue.Issue{},
@@ -48,7 +49,7 @@ func NewRunner(cfg *configs.Config) *Runner {
 					Env: getWorkspace(),
 				},
 				Config:             cfg,
-				VariableValues:     map[string]map[string]cty.Value{},
+				VariableValues:     prepareVariableValues(cfg.Module.Variables, variables...),
 				VariableValuesLock: &sync.Mutex{},
 			},
 		},
@@ -157,6 +158,24 @@ func (r *Runner) GetFileName(raw string) string {
 		return filepath.Base(raw)
 	}
 	return filepath.Join(r.TFConfig.Path.String(), filepath.Base(raw))
+}
+
+// TODO: Support TF_VAR environment variables, CLI input variables
+// See https://www.terraform.io/intro/getting-started/variables.html#assigning-variables
+// TODO: Test override variavles
+func prepareVariableValues(configVars map[string]*configs.Variable, variables ...terraform.InputValues) map[string]map[string]cty.Value {
+	overrideVariables := terraform.DefaultVariableValues(configVars)
+
+	for _, vars := range variables {
+		overrideVariables.Override(vars)
+	}
+
+	variableValues := make(map[string]map[string]cty.Value)
+	variableValues[""] = make(map[string]cty.Value)
+	for k, iv := range overrideVariables {
+		variableValues[""][k] = iv.Value
+	}
+	return variableValues
 }
 
 func isEvaluable(expr hcl.Expression) bool {
