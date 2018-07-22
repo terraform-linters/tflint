@@ -431,11 +431,12 @@ resource "null_resource" "test" {
 
 func Test_EvaluateExpr_interpolationError(t *testing.T) {
 	cases := []struct {
-		Name      string
-		Content   string
-		Variables map[string]map[string]cty.Value
-		ErrorCode int
-		ErrorText string
+		Name       string
+		Content    string
+		Variables  map[string]map[string]cty.Value
+		ErrorCode  int
+		ErrorLevel int
+		ErrorText  string
 	}{
 		{
 			Name: "undefined variable",
@@ -443,9 +444,10 @@ func Test_EvaluateExpr_interpolationError(t *testing.T) {
 resource "null_resource" "test" {
   key = "${var.undefined_var}"
 }`,
-			Variables: map[string]map[string]cty.Value{},
-			ErrorCode: EvaluationError,
-			ErrorText: "Failed to eval an expression in resource.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
+			Variables:  map[string]map[string]cty.Value{},
+			ErrorCode:  EvaluationError,
+			ErrorLevel: ErrorLevel,
+			ErrorText:  "Failed to eval an expression in resource.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
 		},
 		{
 			Name: "no default value",
@@ -455,9 +457,10 @@ variable "no_value_var" {}
 resource "null_resource" "test" {
   key = "${var.no_value_var}"
 }`,
-			Variables: map[string]map[string]cty.Value{},
-			ErrorCode: UnknownValueError,
-			ErrorText: "Unknown value found in resource.tf:5; Please use environment variables or tfvars to set the value",
+			Variables:  map[string]map[string]cty.Value{},
+			ErrorCode:  UnknownValueError,
+			ErrorLevel: WarningLevel,
+			ErrorText:  "Unknown value found in resource.tf:5; Please use environment variables or tfvars to set the value",
 		},
 		{
 			Name: "terraform env",
@@ -465,9 +468,10 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = "${terraform.env}"
 }`,
-			Variables: map[string]map[string]cty.Value{},
-			ErrorCode: EvaluationError,
-			ErrorText: "Failed to eval an expression in resource.tf:3; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
+			Variables:  map[string]map[string]cty.Value{},
+			ErrorCode:  EvaluationError,
+			ErrorLevel: ErrorLevel,
+			ErrorText:  "Failed to eval an expression in resource.tf:3; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
 		},
 		{
 			Name: "type mismatch",
@@ -475,9 +479,10 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = ["one", "two", "three"]
 }`,
-			Variables: map[string]map[string]cty.Value{},
-			ErrorCode: TypeConversionError,
-			ErrorText: "Invalid type expression in resource.tf:3; incorrect type; string required",
+			Variables:  map[string]map[string]cty.Value{},
+			ErrorCode:  TypeConversionError,
+			ErrorLevel: ErrorLevel,
+			ErrorText:  "Invalid type expression in resource.tf:3; incorrect type; string required",
 		},
 		{
 			Name: "unevalauble",
@@ -485,9 +490,10 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = "${module.text}"
 }`,
-			Variables: map[string]map[string]cty.Value{},
-			ErrorCode: UnevaluableError,
-			ErrorText: "Unevaluable expression found in resource.tf:3",
+			Variables:  map[string]map[string]cty.Value{},
+			ErrorCode:  UnevaluableError,
+			ErrorLevel: WarningLevel,
+			ErrorText:  "Unevaluable expression found in resource.tf:3",
 		},
 	}
 
@@ -522,6 +528,9 @@ resource "null_resource" "test" {
 			}
 			if appErr.Code != tc.ErrorCode {
 				t.Fatalf("Failed `%s` test: expected error code is `%d`, but get `%d`", tc.Name, tc.ErrorCode, appErr.Code)
+			}
+			if appErr.Level != tc.ErrorLevel {
+				t.Fatalf("Failed `%s` test: expected error level is `%d`, but get `%d`", tc.Name, tc.ErrorLevel, appErr.Level)
 			}
 			if appErr.Error() != tc.ErrorText {
 				t.Fatalf("Failed `%s` test: expected error is `%s`, but get `%s`", tc.Name, tc.ErrorText, appErr.Error())

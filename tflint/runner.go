@@ -62,7 +62,8 @@ func NewRunner(cfg *configs.Config) *Runner {
 func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 	if !isEvaluable(expr) {
 		err := &Error{
-			Code: UnevaluableError,
+			Code:  UnevaluableError,
+			Level: WarningLevel,
 			Message: fmt.Sprintf(
 				"Unevaluable expression found in %s:%d",
 				r.GetFileName(expr.Range().Filename),
@@ -76,7 +77,8 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 	val, diags := r.ctx.EvaluateExpr(expr, cty.DynamicPseudoType, nil)
 	if diags.HasErrors() {
 		err := &Error{
-			Code: EvaluationError,
+			Code:  EvaluationError,
+			Level: ErrorLevel,
 			Message: fmt.Sprintf(
 				"Failed to eval an expression in %s:%d",
 				r.GetFileName(expr.Range().Filename),
@@ -90,7 +92,8 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 
 	if !val.IsKnown() {
 		err := &Error{
-			Code: UnknownValueError,
+			Code:  UnknownValueError,
+			Level: WarningLevel,
 			Message: fmt.Sprintf(
 				"Unknown value found in %s:%d; Please use environment variables or tfvars to set the value",
 				r.GetFileName(expr.Range().Filename),
@@ -115,7 +118,8 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 
 	if err != nil {
 		err := &Error{
-			Code: TypeConversionError,
+			Code:  TypeConversionError,
+			Level: ErrorLevel,
 			Message: fmt.Sprintf(
 				"Invalid type expression in %s:%d",
 				r.GetFileName(expr.Range().Filename),
@@ -130,7 +134,8 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 	err = gocty.FromCtyValue(val, ret)
 	if err != nil {
 		err := &Error{
-			Code: TypeMismatchError,
+			Code:  TypeMismatchError,
+			Level: ErrorLevel,
 			Message: fmt.Sprintf(
 				"Invalid type expression in %s:%d",
 				r.GetFileName(expr.Range().Filename),
