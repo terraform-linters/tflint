@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"sync"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -14,16 +13,13 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/logger"
-	"github.com/zclconf/go-cty/cty"
 )
 
 func Test_EvaluateExpr_string(t *testing.T) {
 	cases := []struct {
-		Name      string
-		Content   string
-		Variables map[string]map[string]cty.Value
-		Expected  string
+		Name     string
+		Content  string
+		Expected string
 	}{
 		{
 			Name: "literal",
@@ -31,82 +27,69 @@ func Test_EvaluateExpr_string(t *testing.T) {
 resource "null_resource" "test" {
   key = "literal_val"
 }`,
-			Variables: map[string]map[string]cty.Value{},
-			Expected:  "literal_val",
+			Expected: "literal_val",
 		},
 		{
 			Name: "string interpolation",
 			Content: `
-variable "string_var" {}
+variable "string_var" {
+  default = "string_val"
+}
 
 resource "null_resource" "test" {
   key = "${var.string_var}"
 }`,
-			Variables: map[string]map[string]cty.Value{
-				"": map[string]cty.Value{
-					"string_var": cty.StringVal("string_val"),
-				},
-			},
 			Expected: "string_val",
 		},
 		{
 			Name: "new style interpolation",
 			Content: `
-variable "string_var" {}
+variable "string_var" {
+  default = "string_val"
+}
 
 resource "null_resource" "test" {
   key = var.string_var
 }`,
-			Variables: map[string]map[string]cty.Value{
-				"": map[string]cty.Value{
-					"string_var": cty.StringVal("string_val"),
-				},
-			},
 			Expected: "string_val",
 		},
 		{
 			Name: "list element",
 			Content: `
-variable "list_var" {}
+variable "list_var" {
+  default = ["one", "two"]
+}
 
 resource "null_resource" "test" {
   key = "${var.list_var[0]}"
 }`,
-			Variables: map[string]map[string]cty.Value{
-				"": map[string]cty.Value{
-					"list_var": cty.TupleVal([]cty.Value{cty.StringVal("one"), cty.StringVal("two")}),
-				},
-			},
 			Expected: "one",
 		},
 		{
 			Name: "map element",
 			Content: `
-variable "map_var" {}
+variable "map_var" {
+  default = {
+    one = "one"
+    two = "two"
+  }
+}
 
 resource "null_resource" "test" {
   key = "${var.map_var["one"]}"
 }`,
-			Variables: map[string]map[string]cty.Value{
-				"": map[string]cty.Value{
-					"map_var": cty.ObjectVal(map[string]cty.Value{"one": cty.StringVal("one"), "two": cty.StringVal("two")}),
-				},
-			},
 			Expected: "one",
 		},
 		{
 			Name: "convert from integer",
 			Content: `
-variable "string_var" {}
+variable "string_var" {
+  default = 10
+}
 
 resource "null_resource" "test" {
   key = "${var.string_var}"
 }`,
-			Variables: map[string]map[string]cty.Value{
-				"": map[string]cty.Value{
-					"string_var": cty.NumberIntVal(10),
-				},
-			},
 			Expected: "10",
 		},
 		{
@@ -115,8 +98,7 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = "${true ? "production" : "development"}"
 }`,
-			Variables: map[string]map[string]cty.Value{},
-			Expected:  "production",
+			Expected: "production",
 		},
 		{
 			Name: "bulit-in function",
@@ -124,8 +106,7 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = "${md5("foo")}"
 }`,
-			Variables: map[string]map[string]cty.Value{},
-			Expected:  "acbd18db4cc2f85cedef654fccc4a4d8",
+			Expected: "acbd18db4cc2f85cedef654fccc4a4d8",
 		},
 		{
 			Name: "terraform workspace",
@@ -133,22 +114,18 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = "${terraform.workspace}"
 }`,
-			Variables: map[string]map[string]cty.Value{},
-			Expected:  "default",
+			Expected: "default",
 		},
 		{
 			Name: "inside interpolation",
 			Content: `
-variable "string_var" {}
+variable "string_var" {
+  default = "World"
+}
 
 resource "null_resource" "test" {
   key = "Hello ${var.string_var}"
 }`,
-			Variables: map[string]map[string]cty.Value{
-				"": map[string]cty.Value{
-					"string_var": cty.StringVal("World"),
-				},
-			},
 			Expected: "Hello World",
 		},
 	}
@@ -174,7 +151,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := newRunnerHelper(cfg, tc.Variables)
+		runner := NewRunner(cfg, map[string]*terraform.InputValue{})
 
 		var ret string
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -190,39 +167,32 @@ resource "null_resource" "test" {
 
 func Test_EvaluateExpr_integer(t *testing.T) {
 	cases := []struct {
-		Name      string
-		Content   string
-		Variables map[string]map[string]cty.Value
-		Expected  int
+		Name     string
+		Content  string
+		Expected int
 	}{
 		{
 			Name: "integer interpolation",
 			Content: `
-variable "integer_var" {}
+variable "integer_var" {
+  default = 3
+}
 
 resource "null_resource" "test" {
   key = "${var.integer_var}"
 }`,
-			Variables: map[string]map[string]cty.Value{
-				"": map[string]cty.Value{
-					"integer_var": cty.NumberIntVal(3),
-				},
-			},
 			Expected: 3,
 		},
 		{
 			Name: "convert from string",
 			Content: `
-variable "integer_var" {}
+variable "integer_var" {
+  default = "3"
+}
 
 resource "null_resource" "test" {
   key = "${var.integer_var}"
 }`,
-			Variables: map[string]map[string]cty.Value{
-				"": map[string]cty.Value{
-					"integer_var": cty.StringVal("3"),
-				},
-			},
 			Expected: 3,
 		},
 	}
@@ -248,7 +218,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := newRunnerHelper(cfg, tc.Variables)
+		runner := NewRunner(cfg, map[string]*terraform.InputValue{})
 
 		var ret int
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -264,10 +234,9 @@ resource "null_resource" "test" {
 
 func Test_EvaluateExpr_stringList(t *testing.T) {
 	cases := []struct {
-		Name      string
-		Content   string
-		Variables map[string]map[string]cty.Value
-		Expected  []string
+		Name     string
+		Content  string
+		Expected []string
 	}{
 		{
 			Name: "list literal",
@@ -275,8 +244,7 @@ func Test_EvaluateExpr_stringList(t *testing.T) {
 resource "null_resource" "test" {
   key = ["one", "two", "three"]
 }`,
-			Variables: map[string]map[string]cty.Value{},
-			Expected:  []string{"one", "two", "three"},
+			Expected: []string{"one", "two", "three"},
 		},
 	}
 
@@ -301,7 +269,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := newRunnerHelper(cfg, tc.Variables)
+		runner := NewRunner(cfg, map[string]*terraform.InputValue{})
 
 		ret := []string{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -317,10 +285,9 @@ resource "null_resource" "test" {
 
 func Test_EvaluateExpr_numberList(t *testing.T) {
 	cases := []struct {
-		Name      string
-		Content   string
-		Variables map[string]map[string]cty.Value
-		Expected  []int
+		Name     string
+		Content  string
+		Expected []int
 	}{
 		{
 			Name: "list literal",
@@ -328,8 +295,7 @@ func Test_EvaluateExpr_numberList(t *testing.T) {
 resource "null_resource" "test" {
   key = [1, 2, 3]
 }`,
-			Variables: map[string]map[string]cty.Value{},
-			Expected:  []int{1, 2, 3},
+			Expected: []int{1, 2, 3},
 		},
 	}
 
@@ -354,7 +320,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := newRunnerHelper(cfg, tc.Variables)
+		runner := NewRunner(cfg, map[string]*terraform.InputValue{})
 
 		ret := []int{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -375,10 +341,9 @@ func Test_EvaluateExpr_map(t *testing.T) {
 	}
 
 	cases := []struct {
-		Name      string
-		Content   string
-		Variables map[string]map[string]cty.Value
-		Expected  mapObject
+		Name     string
+		Content  string
+		Expected mapObject
 	}{
 		{
 			Name: "map literal",
@@ -389,8 +354,7 @@ resource "null_resource" "test" {
     two = 2
   }
 }`,
-			Variables: map[string]map[string]cty.Value{},
-			Expected:  mapObject{One: 1, Two: 2},
+			Expected: mapObject{One: 1, Two: 2},
 		},
 	}
 
@@ -415,7 +379,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := newRunnerHelper(cfg, tc.Variables)
+		runner := NewRunner(cfg, map[string]*terraform.InputValue{})
 
 		ret := mapObject{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -433,7 +397,6 @@ func Test_EvaluateExpr_interpolationError(t *testing.T) {
 	cases := []struct {
 		Name       string
 		Content    string
-		Variables  map[string]map[string]cty.Value
 		ErrorCode  int
 		ErrorLevel int
 		ErrorText  string
@@ -444,7 +407,6 @@ func Test_EvaluateExpr_interpolationError(t *testing.T) {
 resource "null_resource" "test" {
   key = "${var.undefined_var}"
 }`,
-			Variables:  map[string]map[string]cty.Value{},
 			ErrorCode:  EvaluationError,
 			ErrorLevel: ErrorLevel,
 			ErrorText:  "Failed to eval an expression in resource.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
@@ -457,7 +419,6 @@ variable "no_value_var" {}
 resource "null_resource" "test" {
   key = "${var.no_value_var}"
 }`,
-			Variables:  map[string]map[string]cty.Value{},
 			ErrorCode:  UnknownValueError,
 			ErrorLevel: WarningLevel,
 			ErrorText:  "Unknown value found in resource.tf:5; Please use environment variables or tfvars to set the value",
@@ -468,7 +429,6 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = "${terraform.env}"
 }`,
-			Variables:  map[string]map[string]cty.Value{},
 			ErrorCode:  EvaluationError,
 			ErrorLevel: ErrorLevel,
 			ErrorText:  "Failed to eval an expression in resource.tf:3; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
@@ -479,7 +439,6 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = ["one", "two", "three"]
 }`,
-			Variables:  map[string]map[string]cty.Value{},
 			ErrorCode:  TypeConversionError,
 			ErrorLevel: ErrorLevel,
 			ErrorText:  "Invalid type expression in resource.tf:3; incorrect type; string required",
@@ -490,7 +449,6 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = "${module.text}"
 }`,
-			Variables:  map[string]map[string]cty.Value{},
 			ErrorCode:  UnevaluableError,
 			ErrorLevel: WarningLevel,
 			ErrorText:  "Unevaluable expression found in resource.tf:3",
@@ -518,7 +476,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := newRunnerHelper(cfg, tc.Variables)
+		runner := NewRunner(cfg, map[string]*terraform.InputValue{})
 
 		var ret string
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -744,23 +702,6 @@ func Test_getWorkspace(t *testing.T) {
 				t.Fatal(err)
 			}
 		}
-	}
-}
-
-func newRunnerHelper(cfg *configs.Config, variables map[string]map[string]cty.Value) *Runner {
-	return &Runner{
-		TFConfig: cfg,
-		ctx: terraform.BuiltinEvalContext{
-			Evaluator: &terraform.Evaluator{
-				Meta: &terraform.ContextMeta{
-					Env: getWorkspace(),
-				},
-				Config:             cfg,
-				VariableValues:     variables,
-				VariableValuesLock: &sync.Mutex{},
-			},
-		},
-		logger: logger.Init(false),
 	}
 }
 
