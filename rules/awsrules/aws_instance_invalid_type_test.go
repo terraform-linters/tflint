@@ -8,6 +8,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
+	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
@@ -71,7 +72,7 @@ resource "aws_instance" "missing_key" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(cfg)
+		runner := tflint.NewRunner(cfg, map[string]*terraform.InputValue{})
 		rule := &AwsInstanceInvalidTypeRule{}
 		if err = rule.PreProcess(); err != nil {
 			t.Fatal(err)
