@@ -183,7 +183,12 @@ func getWorkspace() string {
 		return envVar
 	}
 
-	envData, _ := ioutil.ReadFile(".terraform/environment")
+	dir := os.Getenv("TF_DATA_DIR")
+	if dir == "" {
+		dir = ".terraform"
+	}
+
+	envData, _ := ioutil.ReadFile(filepath.Join(dir, "environment"))
 	current := string(bytes.TrimSpace(envData))
 	if current == "" {
 		current = "default"
