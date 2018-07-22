@@ -686,7 +686,7 @@ func Test_getWorkspace(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Dir      string
-		EnvVar   string
+		EnvVar   map[string]string
 		Expected string
 	}{
 		{
@@ -694,14 +694,20 @@ func Test_getWorkspace(t *testing.T) {
 			Expected: "default",
 		},
 		{
-			Name:     "environment variable",
-			EnvVar:   "dev",
+			Name:     "TF_WORKSPACE",
+			EnvVar:   map[string]string{"TF_WORKSPACE": "dev"},
 			Expected: "dev",
 		},
 		{
 			Name:     "environment file",
 			Dir:      filepath.Join(currentDir, "test-fixtures", "with_environment_file"),
 			Expected: "staging",
+		},
+		{
+			Name:     "TF_DATA_DIR",
+			Dir:      filepath.Join(currentDir, "test-fixtures", "with_environment_file"),
+			EnvVar:   map[string]string{"TF_DATA_DIR": ".terraform_production"},
+			Expected: "production",
 		},
 	}
 
@@ -713,8 +719,8 @@ func Test_getWorkspace(t *testing.T) {
 			}
 		}
 
-		if tc.EnvVar != "" {
-			err := os.Setenv("TF_WORKSPACE", tc.EnvVar)
+		for key, value := range tc.EnvVar {
+			err := os.Setenv(key, value)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -725,8 +731,8 @@ func Test_getWorkspace(t *testing.T) {
 			t.Fatalf("Failed `%s` test: expected value is %s, but get %s", tc.Name, tc.Expected, ret)
 		}
 
-		if tc.EnvVar != "" {
-			err := os.Unsetenv("TF_WORKSPACE")
+		for key := range tc.EnvVar {
+			err := os.Unsetenv(key)
 			if err != nil {
 				t.Fatal(err)
 			}
