@@ -15,22 +15,24 @@ type AwsInstanceInvalidTypeRule struct {
 }
 
 // PreProcess makes valid instance type list.
-func (r *AwsInstanceInvalidTypeRule) PreProcess() {
+func (r *AwsInstanceInvalidTypeRule) PreProcess() error {
 	r.instanceTypes = map[string]bool{}
 
 	data, err := instances.Data()
 	if err != nil {
-		// TODO
 		panic(err)
 	}
 
 	for _, i := range *data {
 		r.instanceTypes[i.InstanceType] = true
 	}
+
+	return nil
 }
 
-// Check checks "aws_instance" according to the rule.
-func (r *AwsInstanceInvalidTypeRule) Check(runner *tflint.Runner) {
+// Check checks whether "aws_instance" has invalid instance type.
+// Valid instance type list is prepared in `PreProcess()`.
+func (r *AwsInstanceInvalidTypeRule) Check(runner *tflint.Runner) error {
 	for _, resource := range runner.TFConfig.Module.ManagedResources {
 		if resource.Type != "aws_instance" {
 			continue
@@ -44,16 +46,21 @@ func (r *AwsInstanceInvalidTypeRule) Check(runner *tflint.Runner) {
 			},
 		})
 		if diags.HasErrors() {
-			// TODO
 			panic(diags)
 		}
 
 		if attribute, ok := body.Attributes["instance_type"]; ok {
 			var instanceType string
 			err := runner.EvaluateExpr(attribute.Expr, &instanceType)
-			if err != nil {
-				// TODO
-				panic(err)
+			if appErr, ok := err.(*tflint.Error); ok {
+				switch appErr.Level {
+				case tflint.WarningLevel:
+					continue
+				case tflint.ErrorLevel:
+					return appErr
+				default:
+					panic(appErr)
+				}
 			}
 
 			if !r.instanceTypes[instanceType] {
@@ -68,4 +75,6 @@ func (r *AwsInstanceInvalidTypeRule) Check(runner *tflint.Runner) {
 			}
 		}
 	}
+
+	return nil
 }
