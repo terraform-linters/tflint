@@ -265,16 +265,16 @@
 
 [[projects]]
   branch = "v0.12-dev"
-  digest = "1:09fc3547e83575ef11d48abc33939cb3174a83f9f17ae4ede6a6ae712c28d840"
+  digest = "1:46e618024f9dd5a495d28d5f79612f5e250c22865a269b5248032b2aafcf0ea2"
   name = "github.com/hashicorp/terraform"
   packages = [
     "addrs",
     "config",
-    "config/configschema",
     "config/hcl2shim",
     "config/module",
     "configs",
     "configs/configload",
+    "configs/configschema",
     "dag",
     "flatmap",
     "helper/hilmapstructure",
@@ -295,7 +295,7 @@
     "version",
   ]
   pruneopts = "UT"
-  revision = "cfdc951920bf5f9962cf5946fe0ff59488d956cb"
+  revision = "2b2a4b6ebdd365cf8de8b9f8008fcd40c255e352"
 
 [[projects]]
   digest = "1:a2cff208d4759f6ba1b1cd228587b0a1869f95f22542ec9cd17fff64430113c7"
