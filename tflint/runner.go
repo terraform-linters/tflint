@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/hashicorp/hcl2/hcl"
@@ -160,14 +161,34 @@ func (r *Runner) GetFileName(raw string) string {
 	return filepath.Join(r.TFConfig.Path.String(), filepath.Base(raw))
 }
 
-// TODO: Support TF_VAR environment variables, CLI input variables
+// prepareVariableValues prepares Terraform variables from configs, input variables and environment variables.
+// Variables in the configuration are overwritten by environment variables.
+// Finally, they are overwritten by received input variable on the received order.
+// Therefore, CLI flag input variables must be passed at the end of arguments.
+// This is the responsibility of the caller.
 // See https://www.terraform.io/intro/getting-started/variables.html#assigning-variables
-// TODO: Test override variavles
 func prepareVariableValues(configVars map[string]*configs.Variable, variables ...terraform.InputValues) map[string]map[string]cty.Value {
 	overrideVariables := terraform.DefaultVariableValues(configVars)
 
+	envVariables := make(terraform.InputValues)
+	for _, e := range os.Environ() {
+		idx := strings.Index(e, "=")
+		envKey := e[:idx]
+		envVal := e[idx+1:]
+
+		if strings.HasPrefix(envKey, "TF_VAR_") {
+			varName := strings.Replace(envKey, "TF_VAR_", "", 1)
+
+			envVariables[varName] = &terraform.InputValue{
+				Value:      cty.StringVal(envVal),
+				SourceType: terraform.ValueFromEnvVar,
+			}
+		}
+	}
+	overrideVariables = overrideVariables.Override(envVariables)
+
 	for _, vars := range variables {
-		overrideVariables.Override(vars)
+		overrideVariables = overrideVariables.Override(vars)
 	}
 
 	variableValues := make(map[string]map[string]cty.Value)

@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/zclconf/go-cty/cty"
 )
 
 func Test_EvaluateExpr_string(t *testing.T) {
@@ -698,6 +699,121 @@ func Test_getWorkspace(t *testing.T) {
 
 		if tc.Dir != "" {
 			err := os.Chdir(currentDir)
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+}
+
+func Test_overrideVariables(t *testing.T) {
+	cases := []struct {
+		Name        string
+		Content     string
+		EnvVar      map[string]string
+		InputValues []terraform.InputValues
+		Expected    string
+	}{
+		{
+			Name: "override default value by environment variables",
+			Content: `
+variable "instance_type" {
+  default = "t2.micro"
+}
+
+resource "null_resource" "test" {
+  key = "${var.instance_type}"
+}`,
+			EnvVar:   map[string]string{"TF_VAR_instance_type": "m4.large"},
+			Expected: "m4.large",
+		},
+		{
+			Name: "override environment variables by passed variables",
+			Content: `
+variable "instance_type" {}
+
+resource "null_resource" "test" {
+  key = "${var.instance_type}"
+}`,
+			EnvVar: map[string]string{"TF_VAR_instance_type": "m4.large"},
+			InputValues: []terraform.InputValues{
+				terraform.InputValues{
+					"instance_type": &terraform.InputValue{
+						Value:      cty.StringVal("c5.2xlarge"),
+						SourceType: terraform.ValueFromFile,
+					},
+				},
+			},
+			Expected: "c5.2xlarge",
+		},
+		{
+			Name: "override variables by variables passed later",
+			Content: `
+variable "instance_type" {}
+
+resource "null_resource" "test" {
+  key = "${var.instance_type}"
+}`,
+			InputValues: []terraform.InputValues{
+				terraform.InputValues{
+					"instance_type": &terraform.InputValue{
+						Value:      cty.StringVal("c5.2xlarge"),
+						SourceType: terraform.ValueFromFile,
+					},
+				},
+				terraform.InputValues{
+					"instance_type": &terraform.InputValue{
+						Value:      cty.StringVal("p3.8xlarge"),
+						SourceType: terraform.ValueFromFile,
+					},
+				},
+			},
+			Expected: "p3.8xlarge",
+		},
+	}
+
+	dir, err := ioutil.TempDir("", "overrideVariables")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+
+	for _, tc := range cases {
+		for key, value := range tc.EnvVar {
+			err := os.Setenv(key, value)
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+
+		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		cfg, err := loadConfigHelper(dir)
+		if err != nil {
+			t.Fatal(err)
+		}
+		attribute, err := extractAttributeHelper("key", cfg)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		runner := NewRunner(cfg, tc.InputValues...)
+
+		var ret string
+		err = runner.EvaluateExpr(attribute.Expr, &ret)
+		if err != nil {
+			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
+		}
+
+		if tc.Expected != ret {
+			t.Fatalf("Failed `%s` test: expected value is %s, but get %s", tc.Name, tc.Expected, ret)
+		}
+
+		for key := range tc.EnvVar {
+			err := os.Unsetenv(key)
 			if err != nil {
 				t.Fatal(err)
 			}
