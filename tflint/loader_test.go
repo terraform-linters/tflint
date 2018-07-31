@@ -1,0 +1,225 @@
+package tflint
+
+import (
+	"os"
+	"path/filepath"
+	"testing"
+)
+
+func Test_LoadConfig_v0_10_5(t *testing.T) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "v0.10.5_module"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	loader, err := NewLoader()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+	config, err := loader.LoadConfig()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+
+	if _, exists := config.Children["ec2_instance"]; !exists {
+		t.Fatalf("`ec2_instance` module is not loaded: %#v", config.Children)
+	}
+
+	if _, exists := config.Children["ec2_instance"].Module.ManagedResources["aws_instance.web"]; !exists {
+		t.Fatalf("`ec2_instance` module resource `aws_instance.web` is not loaded: %#v", config.Children["ec2_instance"].Module.ManagedResources)
+	}
+}
+
+func Test_LoadConfig_v0_10_6(t *testing.T) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "v0.10.6_module"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	loader, err := NewLoader()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+	config, err := loader.LoadConfig()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+
+	if _, exists := config.Children["ec2_instance"]; !exists {
+		t.Fatalf("`ec2_instance` module is not loaded: %#v", config.Children)
+	}
+
+	if _, exists := config.Children["ec2_instance"].Module.ManagedResources["aws_instance.web"]; !exists {
+		t.Fatalf("`ec2_instance` module resource `aws_instance.web` is not loaded: %#v", config.Children["ec2_instance"].Module.ManagedResources)
+	}
+}
+
+func Test_LoadConfig_v0_10_7(t *testing.T) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "v0.10.7_module"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	loader, err := NewLoader()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+	config, err := loader.LoadConfig()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+
+	if _, exists := config.Children["ec2_instance"]; !exists {
+		t.Fatalf("`ec2_instance` module is not loaded: %#v", config.Children)
+	}
+
+	if _, exists := config.Children["ec2_instance"].Module.ManagedResources["aws_instance.web"]; !exists {
+		t.Fatalf("`ec2_instance` module resource `aws_instance.web` is not loaded: %#v", config.Children["ec2_instance"].Module.ManagedResources)
+	}
+}
+
+func Test_LoadConfig_v0_11_0(t *testing.T) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "v0.11.0_module"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	loader, err := NewLoader()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+	config, err := loader.LoadConfig()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+
+	if _, exists := config.Children["ecs_on_spotfleet"]; !exists {
+		t.Fatalf("`ecs_on_spotfleet` module is not loaded: %#v", config.Children)
+	}
+
+	if _, exists := config.Children["ecs_on_spotfleet"].Module.ManagedResources["aws_ecs_cluster.main"]; !exists {
+		t.Fatalf("`ecs_on_spotfleet` module resource `aws_ecs_cluster.main` is not loaded: %#v", config.Children["ecs_on_spotfleet"].Module.ManagedResources)
+	}
+
+	if _, exists := config.Children["consul"]; !exists {
+		t.Fatalf("`consul` module is not loaded: %#v", config.Children)
+	}
+
+	if _, exists := config.Children["consul"].Children["consul_clients"]; !exists {
+		t.Fatalf("`consul.consul_clients` module is not loaded: %#v", config.Children["consul"].Children)
+	}
+
+	if _, exists := config.Children["consul"].Children["consul_clients"].Children["iam_policies"]; !exists {
+		t.Fatalf("`consule.consul_clients.iam_policies` module is not loaded: %#v", config.Children["consul"].Children["consul_clients"].Children)
+	}
+
+	if _, exists := config.Children["consul"].Children["consul_clients"].Children["iam_policies"].Module.ManagedResources["aws_iam_role_policy.auto_discover_cluster"]; !exists {
+		t.Fatalf("`consule.consul_clients.iam_policies` module resource `aws_iam_role_policy.auto_discover_cluster` is not loaded: %#v", config.Children["consul"].Children["consul_clients"].Children["iam_policies"].Module.ManagedResources)
+	}
+
+	if _, exists := config.Children["consul"].Children["consul_clients"].Children["security_group_rules"]; !exists {
+		t.Fatalf("`consule.consul_clients.security_group_rules` module is not loaded: %#v", config.Children["consul"].Children["consul_clients"].Children)
+	}
+
+	if _, exists := config.Children["consul"].Children["consul_clients"].Children["security_group_rules"].Module.ManagedResources["aws_security_group_rule.allow_server_rpc_inbound"]; !exists {
+		t.Fatalf("`consule.consul_clients.security_group_rules` module resource `aws_security_group_rule.allow_server_rpc_inbound` is not loaded: %#v", config.Children["consul"].Children["consul_clients"].Children["security_group_rules"].Module.ManagedResources)
+	}
+
+	if _, exists := config.Children["consul"].Children["consul_servers"]; !exists {
+		t.Fatalf("`consul.consul_servers` module is not loaded: %#v", config.Children["consul"].Children)
+	}
+
+	if _, exists := config.Children["consul"].Children["consul_servers"].Children["iam_policies"]; !exists {
+		t.Fatalf("`consule.consul_servers.iam_policies` module is not loaded: %#v", config.Children["consul"].Children["consul_servers"].Children)
+	}
+
+	if _, exists := config.Children["consul"].Children["consul_servers"].Children["iam_policies"].Module.ManagedResources["aws_iam_role_policy.auto_discover_cluster"]; !exists {
+		t.Fatalf("`consule.consul_servers.iam_policies` module resource `aws_iam_role_policy.auto_discover_cluster` is not loaded: %#v", config.Children["consul"].Children["consul_servers"].Children["iam_policies"].Module.ManagedResources)
+	}
+
+	if _, exists := config.Children["consul"].Children["consul_servers"].Children["security_group_rules"]; !exists {
+		t.Fatalf("`consule.consul_servers.security_group_rules` module is not loaded: %#v", config.Children["consul"].Children["consul_servers"].Children)
+	}
+
+	if _, exists := config.Children["consul"].Children["consul_servers"].Children["security_group_rules"].Module.ManagedResources["aws_security_group_rule.allow_server_rpc_inbound"]; !exists {
+		t.Fatalf("`consule.consul_servers.security_group_rules` module resource `aws_security_group_rule.allow_server_rpc_inbound` is not loaded: %#v", config.Children["consul"].Children["consul_servers"].Children["security_group_rules"].Module.ManagedResources)
+	}
+}
+
+func Test_LoadConfig_moduleNotFound(t *testing.T) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "before_terraform_init"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	loader, err := NewLoader()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+	_, err = loader.LoadConfig()
+	if err == nil {
+		t.Fatal("Expected error is not occurred")
+	}
+
+	expected := "module.tf:1,1-22: `ec2_instance` module is not found. Did you run `terraform init`?; Failed to search by `1.ec2_instance;./tf_aws_ec2_instance` key."
+	if err.Error() != expected {
+		t.Fatalf("Expected error is `%s`, but get `%s`", expected, err.Error())
+	}
+}
+
+func Test_LoadConfig_invalidConfiguration(t *testing.T) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "invalid_configuration"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	loader, err := NewLoader()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+	_, err = loader.LoadConfig()
+	if err == nil {
+		t.Fatal("Expected error is not occurred")
+	}
+
+	expected := "resource.tf:1,1-10: Unsupported block type; Blocks of type \"resources\" are not expected here. Did you mean \"resource\"?"
+	if err.Error() != expected {
+		t.Fatalf("Expected error is `%s`, but get `%s`", expected, err.Error())
+	}
+}
