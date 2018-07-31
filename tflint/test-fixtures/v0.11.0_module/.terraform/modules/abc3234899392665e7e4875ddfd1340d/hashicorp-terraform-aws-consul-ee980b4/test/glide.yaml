@@ -1,0 +1,19 @@
+package: github.com/hashicorp/terraform-aws-consul/test
+owners:
+- name: Gruntwork
+  homepage: http://www.gruntwork.io
+import:
+- package: github.com/gruntwork-io/terratest
+  repo: git@github.com:gruntwork-io/terratest
+  vcs: git
+  version: v0.4.1
+- package: github.com/hashicorp/consul
+  version: v0.8.0
+- package: github.com/aws/aws-sdk-go
+  version: v1.6.27
+  subpackages:
+  - aws
+  - aws/defaults
+  - aws/session
+  - aws/service/ec2
+  - aws/service/autoscaling
