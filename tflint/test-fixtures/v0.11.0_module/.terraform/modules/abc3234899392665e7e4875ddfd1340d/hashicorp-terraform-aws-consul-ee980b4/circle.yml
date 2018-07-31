@@ -1,0 +1,39 @@
+machine:
+  environment:
+    PATH: $PATH:$HOME/terraform:$HOME/packer:$HOME/glide/linux-amd64
+
+dependencies:
+  override:
+    # Install the gruntwork-module-circleci-helpers and use it to configure the build environment and run tests.
+    - curl -Ls https://raw.githubusercontent.com/gruntwork-io/gruntwork-installer/master/bootstrap-gruntwork-installer.sh | bash /dev/stdin --version v0.0.17
+    - gruntwork-install --module-name "gruntwork-module-circleci-helpers" --repo "https://github.com/gruntwork-io/module-ci" --tag "v0.3.17"
+    - gruntwork-install --module-name "build-helpers" --repo "https://github.com/gruntwork-io/module-ci" --tag "v0.3.17"
+    - gruntwork-install --module-name "aws-helpers" --repo "https://github.com/gruntwork-io/module-ci" --tag "v0.3.17"
+    - configure-environment-for-gruntwork-module --go-src-path test
+
+  cache_directories:
+    - ~/terraform
+    - ~/packer
+    - ~/glide
+
+test:
+  override:
+    # To create AMIs for the first time in a new AWS account, make the code changes (e.g. updating AWS account number)
+    # in the appropriate .tf files) in a branch named "publish-amis". This will bypass tests but still build the AMIs.
+    - if [[ $CIRCLE_BRANCH != "publish-amis" ]]; then run-go-tests --path test; fi
+
+deployment:
+  release:
+    tag: /v.*/
+    commands:
+      # If a new release is tagged in GitHub, build the AMIs and publish them to all regions.
+      - ~/$CIRCLE_PROJECT_REPONAME/_ci/publish-amis.sh "ubuntu16-ami"
+      - ~/$CIRCLE_PROJECT_REPONAME/_ci/publish-amis.sh "amazon-linux-ami"
+
+    branch: publish-amis
+    commands:
+      # We generally only want to build AMIs on new releases, but when we are setting up AMIs in a new account for the
+      # first time, we want to build the AMIs but NOT run automated tests, since those tests will fail without an existing
+      # AMI already in the AWS Account.
+      - ~/$CIRCLE_PROJECT_REPONAME/_ci/publish-amis.sh "ubuntu16-ami"
+      - ~/$CIRCLE_PROJECT_REPONAME/_ci/publish-amis.sh "amazon-linux-ami"
