@@ -1,12 +1,8 @@
 package tflint
 
 import (
-	"bytes"
 	"fmt"
-	"io/ioutil"
-	"os"
 	"path/filepath"
-	"strings"
 	"sync"
 
 	"github.com/hashicorp/hcl2/hcl"
@@ -47,7 +43,7 @@ func NewRunner(cfg *configs.Config, variables ...terraform.InputValues) *Runner 
 		ctx: terraform.BuiltinEvalContext{
 			Evaluator: &terraform.Evaluator{
 				Meta: &terraform.ContextMeta{
-					Env: getWorkspace(),
+					Env: getTFWorkspace(),
 				},
 				Config:             cfg,
 				VariableValues:     prepareVariableValues(cfg.Module.Variables, variables...),
@@ -168,24 +164,7 @@ func (r *Runner) GetFileName(raw string) string {
 // This is the responsibility of the caller.
 // See https://www.terraform.io/intro/getting-started/variables.html#assigning-variables
 func prepareVariableValues(configVars map[string]*configs.Variable, variables ...terraform.InputValues) map[string]map[string]cty.Value {
-	overrideVariables := terraform.DefaultVariableValues(configVars)
-
-	envVariables := make(terraform.InputValues)
-	for _, e := range os.Environ() {
-		idx := strings.Index(e, "=")
-		envKey := e[:idx]
-		envVal := e[idx+1:]
-
-		if strings.HasPrefix(envKey, "TF_VAR_") {
-			varName := strings.Replace(envKey, "TF_VAR_", "", 1)
-
-			envVariables[varName] = &terraform.InputValue{
-				Value:      cty.StringVal(envVal),
-				SourceType: terraform.ValueFromEnvVar,
-			}
-		}
-	}
-	overrideVariables = overrideVariables.Override(envVariables)
+	overrideVariables := terraform.DefaultVariableValues(configVars).Override(getTFEnvVariables())
 
 	for _, vars := range variables {
 		overrideVariables = overrideVariables.Override(vars)
@@ -216,23 +195,4 @@ func isEvaluable(expr hcl.Expression) bool {
 		}
 	}
 	return true
-}
-
-func getWorkspace() string {
-	if envVar := os.Getenv("TF_WORKSPACE"); envVar != "" {
-		return envVar
-	}
-
-	dir := os.Getenv("TF_DATA_DIR")
-	if dir == "" {
-		dir = ".terraform"
-	}
-
-	envData, _ := ioutil.ReadFile(filepath.Join(dir, "environment"))
-	current := string(bytes.TrimSpace(envData))
-	if current == "" {
-		current = "default"
-	}
-
-	return current
 }

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -632,76 +631,6 @@ resource "null_resource" "test" {
 		ret := isEvaluable(attribute.Expr)
 		if ret != tc.Expected {
 			t.Fatalf("Failed `%s` test: expected value is %t, but get %t", tc.Name, tc.Expected, ret)
-		}
-	}
-}
-
-func Test_getWorkspace(t *testing.T) {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	cases := []struct {
-		Name     string
-		Dir      string
-		EnvVar   map[string]string
-		Expected string
-	}{
-		{
-			Name:     "default",
-			Expected: "default",
-		},
-		{
-			Name:     "TF_WORKSPACE",
-			EnvVar:   map[string]string{"TF_WORKSPACE": "dev"},
-			Expected: "dev",
-		},
-		{
-			Name:     "environment file",
-			Dir:      filepath.Join(currentDir, "test-fixtures", "with_environment_file"),
-			Expected: "staging",
-		},
-		{
-			Name:     "TF_DATA_DIR",
-			Dir:      filepath.Join(currentDir, "test-fixtures", "with_environment_file"),
-			EnvVar:   map[string]string{"TF_DATA_DIR": ".terraform_production"},
-			Expected: "production",
-		},
-	}
-
-	for _, tc := range cases {
-		if tc.Dir != "" {
-			err := os.Chdir(tc.Dir)
-			if err != nil {
-				t.Fatal(err)
-			}
-		}
-
-		for key, value := range tc.EnvVar {
-			err := os.Setenv(key, value)
-			if err != nil {
-				t.Fatal(err)
-			}
-		}
-
-		ret := getWorkspace()
-		if ret != tc.Expected {
-			t.Fatalf("Failed `%s` test: expected value is %s, but get %s", tc.Name, tc.Expected, ret)
-		}
-
-		for key := range tc.EnvVar {
-			err := os.Unsetenv(key)
-			if err != nil {
-				t.Fatal(err)
-			}
-		}
-
-		if tc.Dir != "" {
-			err := os.Chdir(currentDir)
-			if err != nil {
-				t.Fatal(err)
-			}
 		}
 	}
 }
