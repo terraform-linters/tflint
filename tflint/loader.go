@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -42,6 +43,7 @@ func NewLoader() (*Loader, error) {
 		ModulesDir: getTFModuleDir(),
 	})
 	if err != nil {
+		log.Printf("[ERROR] %s", err)
 		return nil, err
 	}
 
@@ -52,7 +54,9 @@ func NewLoader() (*Loader, error) {
 	}
 
 	if _, err := os.Stat(getTFModuleManifestPath()); !os.IsNotExist(err) {
+		log.Print("[INFO] Module manifest file found. Initializing...")
 		if err := l.initializeModuleManifest(); err != nil {
+			log.Printf("[ERROR] %s", err)
 			return nil, err
 		}
 	}
@@ -64,49 +68,67 @@ func NewLoader() (*Loader, error) {
 func (l *Loader) LoadConfig() (*configs.Config, error) {
 	rootMod, diags := l.loader.Parser().LoadConfigDir(".")
 	if diags.HasErrors() {
+		log.Printf("[ERROR] %s", diags)
 		return nil, diags
 	}
 
+	log.Print("[INFO] Trying to load modules using the legacy module walker...")
 	cfg, diags := configs.BuildConfig(rootMod, l.moduleWalkerLegacy())
 	if !diags.HasErrors() {
 		return cfg, nil
 	}
+	log.Print("[WARN] Failed to load modules using the legacy module walker; Trying the v0.10.6 module walker...")
+	log.Printf("[DEBUG] Original error: %s", diags)
 
 	cfg, diags = configs.BuildConfig(rootMod, l.moduleWalkerV0_10_6())
 	if !diags.HasErrors() {
 		return cfg, nil
 	}
+	log.Print("[WARN] Failed to load modules using the v0.10.6 module walker; Trying the v0.10.7 ~ v0.10.8 module walker...")
+	log.Printf("[DEBUG] Original error: %s", diags)
 
 	cfg, diags = configs.BuildConfig(rootMod, l.moduleWalkerV0_10_7V0_10_8())
 	if !diags.HasErrors() {
 		return cfg, nil
 	}
+	log.Print("[WARN] Failed to load modules using the v0.10.7 ~ v0.10.8 module walker; Trying the v0.11.0 ~ v0.11.7 module walker...")
+	log.Printf("[DEBUG] Original error: %s", diags)
 
 	cfg, diags = configs.BuildConfig(rootMod, l.moduleWalkerV0_11_0V0_11_7())
 	if !diags.HasErrors() {
 		return cfg, nil
 	}
 
+	log.Printf("[ERROR] Failed to load modules using the v0.11.0 ~ v0.11.7 module walker. %s", diags)
 	return nil, diags
 }
 
 func (l *Loader) moduleWalkerLegacy() configs.ModuleWalker {
 	return configs.ModuleWalkerFunc(func(req *configs.ModuleRequest) (*configs.Module, *version.Version, hcl.Diagnostics) {
-		mod, diags := l.loader.Parser().LoadConfigDir(makeModuleDirFromKey("root." + req.Name + "-" + req.SourceAddr))
+		key := "root." + req.Name + "-" + req.SourceAddr
+		dir := makeModuleDirFromKey(key)
+		log.Printf("[DEBUG] Trying to load the module: key=%s, dir=%s", key, dir)
+		mod, diags := l.loader.Parser().LoadConfigDir(dir)
 		return mod, nil, diags
 	})
 }
 
 func (l *Loader) moduleWalkerV0_10_6() configs.ModuleWalker {
 	return configs.ModuleWalkerFunc(func(req *configs.ModuleRequest) (*configs.Module, *version.Version, hcl.Diagnostics) {
-		mod, diags := l.loader.Parser().LoadConfigDir(makeModuleDirFromKey("module." + req.Name + "-" + req.SourceAddr))
+		key := "module." + req.Name + "-" + req.SourceAddr
+		dir := makeModuleDirFromKey(key)
+		log.Printf("[DEBUG] Trying to load the module: key=%s, dir=%s", key, dir)
+		mod, diags := l.loader.Parser().LoadConfigDir(dir)
 		return mod, nil, diags
 	})
 }
 
 func (l *Loader) moduleWalkerV0_10_7V0_10_8() configs.ModuleWalker {
 	return configs.ModuleWalkerFunc(func(req *configs.ModuleRequest) (*configs.Module, *version.Version, hcl.Diagnostics) {
-		mod, diags := l.loader.Parser().LoadConfigDir(makeModuleDirFromKey("0.root." + req.Name + "-" + req.SourceAddr))
+		key := "0.root." + req.Name + "-" + req.SourceAddr
+		dir := makeModuleDirFromKey(key)
+		log.Printf("[DEBUG] Trying to load the module: key=%s, dir=%s", key, dir)
+		mod, diags := l.loader.Parser().LoadConfigDir(dir)
 		return mod, nil, diags
 	})
 }
@@ -132,6 +154,7 @@ func (l *Loader) moduleWalkerV0_11_0V0_11_7() configs.ModuleWalker {
 		if record.Root != "" {
 			dir = filepath.Join(dir, record.Root)
 		}
+		log.Printf("[DEBUG] Trying to load the module: key=%s, version=%s, dir=%s", key, record.VersionStr, dir)
 
 		mod, diags := l.loader.Parser().LoadConfigDir(dir)
 		return mod, record.Version, diags
@@ -143,6 +166,7 @@ func (l *Loader) initializeModuleManifest() error {
 	if err != nil {
 		return err
 	}
+	log.Printf("[DEBUG] Parsing the module manifest file: %s", file)
 
 	var manifestFile moduleManifestFile
 	err = json.Unmarshal(file, &manifestFile)
@@ -193,13 +217,22 @@ func buildParentModulePathTree(path []string, cfg *configs.Config) []string {
 func (l *Loader) getModulePath(req *configs.ModuleRequest) string {
 	key := req.Name + ";" + req.SourceAddr
 	if len(req.VersionConstraint.Required) > 0 {
+		log.Printf("[DEBUG] Processing the `%s` module: constraints=%#v", req.Name, req.VersionConstraint)
 		sourceVersions := l.moduleSourceVersions[req.SourceAddr]
 
 		var latest *version.Version
 		for _, v := range sourceVersions {
-			if req.VersionConstraint.Required.Check(v) && (latest == nil || v.GreaterThan(latest)) {
-				latest = v
+			if req.VersionConstraint.Required.Check(v) {
+				if latest == nil || v.GreaterThan(latest) {
+					latest = v
+				}
+			} else {
+				log.Printf("[INFO] `%s` doesn't satisfy the version constraint. Ignored.", v)
 			}
+		}
+
+		if latest == nil {
+			panic(fmt.Errorf("There is no version that satisfies the constraints: name=%s, constraints=%#v, versions=%#v", req.Name, req.VersionConstraint, l.moduleSourceVersions[req.SourceAddr]))
 		}
 		key += "." + latest.String()
 	}
