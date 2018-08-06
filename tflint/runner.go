@@ -2,6 +2,7 @@ package tflint
 
 import (
 	"fmt"
+	"log"
 	"path/filepath"
 	"sync"
 
@@ -12,7 +13,6 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/logger"
 	"github.com/wata727/tflint/state"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
@@ -29,7 +29,6 @@ type Runner struct {
 	ctx    terraform.BuiltinEvalContext
 	state  state.TFState
 	config *config.Config
-	logger *logger.Logger // TODO: Improve logging system
 }
 
 // NewRunner returns new TFLint runner
@@ -50,7 +49,6 @@ func NewRunner(cfg *configs.Config, variables ...terraform.InputValues) *Runner 
 				VariableValuesLock: &sync.Mutex{},
 			},
 		},
-		logger: logger.Init(false),
 	}
 }
 
@@ -68,7 +66,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 				expr.Range().Start.Line,
 			),
 		}
-		r.logger.Error(err)
+		log.Printf("[WARN] %s; TFLint ignores an unevaluable expression.", err)
 		return err
 	}
 
@@ -84,7 +82,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			),
 			Cause: diags.Err(),
 		}
-		r.logger.Error(err)
+		log.Printf("[ERROR] %s", err)
 		return err
 	}
 
@@ -98,7 +96,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 				expr.Range().Start.Line,
 			),
 		}
-		r.logger.Error(err)
+		log.Printf("[WARN] %s; TFLint ignores an expression includes an unknown value.", err)
 		return err
 	}
 
@@ -125,7 +123,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			),
 			Cause: err,
 		}
-		r.logger.Error(err)
+		log.Printf("[ERROR] %s", err)
 		return err
 	}
 
@@ -141,7 +139,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			),
 			Cause: err,
 		}
-		r.logger.Error(err)
+		log.Printf("[ERROR] %s", err)
 		return err
 	}
 	return nil
@@ -164,11 +162,7 @@ func (r *Runner) GetFileName(raw string) string {
 // This is the responsibility of the caller.
 // See https://www.terraform.io/intro/getting-started/variables.html#assigning-variables
 func prepareVariableValues(configVars map[string]*configs.Variable, variables ...terraform.InputValues) map[string]map[string]cty.Value {
-	overrideVariables := terraform.DefaultVariableValues(configVars).Override(getTFEnvVariables())
-
-	for _, vars := range variables {
-		overrideVariables = overrideVariables.Override(vars)
-	}
+	overrideVariables := terraform.DefaultVariableValues(configVars).Override(getTFEnvVariables()).Override(variables...)
 
 	variableValues := make(map[string]map[string]cty.Value)
 	variableValues[""] = make(map[string]cty.Value)
