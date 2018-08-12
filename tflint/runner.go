@@ -52,6 +52,75 @@ func NewRunner(cfg *configs.Config, variables ...terraform.InputValues) *Runner 
 	}
 }
 
+// NewModuleRunners returns new TFLint runners for child modules
+// Recursively search modules and generate Runners
+// In order to propagate attributes of moduleCall as variables to the module,
+// evaluate the variables. If it cannot be evaluated, treat it as unknown
+func NewModuleRunners(parent *Runner) ([]*Runner, error) {
+	runners := []*Runner{}
+
+	for name, cfg := range parent.TFConfig.Children {
+		moduleCall, ok := parent.TFConfig.Module.ModuleCalls[name]
+		if !ok {
+			panic(fmt.Errorf("Expected module call `%s` is not found in `%s`", name, parent.TFConfig.Path.String()))
+		}
+
+		attributes, diags := moduleCall.Config.JustAttributes()
+		if diags.HasErrors() {
+			err := &Error{
+				Code:  UnexpectedAttributeError,
+				Level: ErrorLevel,
+				Message: fmt.Sprintf(
+					"Attribute of module not allowed was found in %s:%d",
+					parent.GetFileName(moduleCall.DeclRange.Filename),
+					moduleCall.DeclRange.Start.Line,
+				),
+				Cause: diags,
+			}
+			log.Printf("[ERROR] %s", err)
+			return runners, err
+		}
+
+		for varName, rawVar := range cfg.Module.Variables {
+			if attribute, exists := attributes[varName]; exists {
+				if isEvaluable(attribute.Expr) {
+					val, diags := parent.ctx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType, nil)
+					if diags.HasErrors() {
+						err := &Error{
+							Code:  EvaluationError,
+							Level: ErrorLevel,
+							Message: fmt.Sprintf(
+								"Failed to eval an expression in %s:%d",
+								parent.GetFileName(attribute.Expr.Range().Filename),
+								attribute.Expr.Range().Start.Line,
+							),
+							Cause: diags.Err(),
+						}
+						log.Printf("[ERROR] %s", err)
+						return runners, err
+					}
+					rawVar.Default = val
+				} else {
+					// If module attributes are not evaluable, it marks that value as unknown.
+					// Unknown values are ignored when evaluated inside the module.
+					log.Printf("[DEBUG] `%s` has been marked as unknown", varName)
+					rawVar.Default = cty.UnknownVal(cty.DynamicPseudoType)
+				}
+			}
+		}
+
+		runner := NewRunner(cfg)
+		runners = append(runners, runner)
+		moudleRunners, err := NewModuleRunners(runner)
+		if err != nil {
+			return runners, err
+		}
+		runners = append(runners, moudleRunners...)
+	}
+
+	return runners, nil
+}
+
 // EvaluateExpr is a wrapper of terraform.BultinEvalContext.EvaluateExpr and gocty.FromCtyValue
 // When it received slice as `ret`, it converts cty.Value to expected list type
 // because raw cty.Value has TupleType.
