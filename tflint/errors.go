@@ -13,6 +13,8 @@ const (
 	TypeMismatchError
 	// UnevaluableError is an error when a received expression has unevaluable references.
 	UnevaluableError
+	// UnexpectedAttributeError is an error when handle unexpected attributes (e.g. block)
+	UnexpectedAttributeError
 
 	// FatalLevel is a recorverable error, it cause panic
 	FatalLevel int = 0
