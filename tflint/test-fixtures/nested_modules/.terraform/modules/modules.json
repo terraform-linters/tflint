@@ -1,0 +1,1 @@
+{"Modules":[{"Source":"./module","Key":"1.root;./module","Version":"","Dir":".terraform/modules/07be448a6067a2bba065bff4beea229d","Root":""},{"Source":"./module1","Key":"1.root;./module|test;./module1","Version":"","Dir":".terraform/modules/a8d8930bc3c2ae53bf6e3bbcb3083d7b","Root":""}]}
