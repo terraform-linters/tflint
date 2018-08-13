@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/lang"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/wata727/tflint/client"
 	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/state"
@@ -23,8 +24,9 @@ import (
 // For variables interplation, it has Terraform eval context,
 // and state. After checking, it accumulates results as issues.
 type Runner struct {
-	TFConfig *configs.Config
-	Issues   issue.Issues
+	TFConfig  *configs.Config
+	Issues    issue.Issues
+	AwsClient *client.AwsClient
 
 	ctx    terraform.BuiltinEvalContext
 	state  state.TFState
@@ -34,10 +36,11 @@ type Runner struct {
 // NewRunner returns new TFLint runner
 // It prepares built-in context (workpace metadata, variables) from
 // received `configs.Config` and `terraform.InputValues`
-func NewRunner(cfg *configs.Config, variables ...terraform.InputValues) *Runner {
+func NewRunner(c *config.Config, cfg *configs.Config, variables ...terraform.InputValues) *Runner {
 	return &Runner{
-		TFConfig: cfg,
-		Issues:   []*issue.Issue{},
+		TFConfig:  cfg,
+		Issues:    []*issue.Issue{},
+		AwsClient: client.NewAwsClient(c),
 
 		ctx: terraform.BuiltinEvalContext{
 			Evaluator: &terraform.Evaluator{
@@ -49,6 +52,7 @@ func NewRunner(cfg *configs.Config, variables ...terraform.InputValues) *Runner 
 				VariableValuesLock: &sync.Mutex{},
 			},
 		},
+		config: c,
 	}
 }
 
@@ -109,7 +113,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 			}
 		}
 
-		runner := NewRunner(cfg)
+		runner := NewRunner(parent.config, cfg)
 		runners = append(runners, runner)
 		moudleRunners, err := NewModuleRunners(runner)
 		if err != nil {
@@ -119,6 +123,19 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 	}
 
 	return runners, nil
+}
+
+// LookupResourcesByType returns Terraform's resources, which match received resource type
+func (r *Runner) LookupResourcesByType(resourceType string) []*configs.Resource {
+	ret := []*configs.Resource{}
+
+	for _, resource := range r.TFConfig.Module.ManagedResources {
+		if resource.Type == resourceType {
+			ret = append(ret, resource)
+		}
+	}
+
+	return ret
 }
 
 // EvaluateExpr is a wrapper of terraform.BultinEvalContext.EvaluateExpr and gocty.FromCtyValue

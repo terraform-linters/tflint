@@ -15,6 +15,8 @@ const (
 	UnevaluableError
 	// UnexpectedAttributeError is an error when handle unexpected attributes (e.g. block)
 	UnexpectedAttributeError
+	// ExternalAPIError is an error when calling the external API (e.g. AWS SDK)
+	ExternalAPIError
 
 	// FatalLevel is a recorverable error, it cause panic
 	FatalLevel int = 0
