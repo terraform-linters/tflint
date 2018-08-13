@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/k0kubun/pp"
+	"github.com/wata727/tflint/config"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -151,7 +152,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(config.Init(), cfg, map[string]*terraform.InputValue{})
 
 		var ret string
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -218,7 +219,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(config.Init(), cfg, map[string]*terraform.InputValue{})
 
 		var ret int
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -269,7 +270,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(config.Init(), cfg, map[string]*terraform.InputValue{})
 
 		ret := []string{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -320,7 +321,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(config.Init(), cfg, map[string]*terraform.InputValue{})
 
 		ret := []int{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -379,7 +380,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(config.Init(), cfg, map[string]*terraform.InputValue{})
 
 		ret := mapObject{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -476,7 +477,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(config.Init(), cfg, map[string]*terraform.InputValue{})
 
 		var ret string
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -729,7 +730,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(cfg, tc.InputValues...)
+		runner := NewRunner(config.Init(), cfg, tc.InputValues...)
 
 		var ret string
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -771,7 +772,7 @@ func Test_NewModuleRunners_noModules(t *testing.T) {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	runner := NewRunner(cfg, map[string]*terraform.InputValue{})
+	runner := NewRunner(config.Init(), cfg, map[string]*terraform.InputValue{})
 	runners, err := NewModuleRunners(runner)
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
@@ -803,7 +804,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	runner := NewRunner(cfg, map[string]*terraform.InputValue{})
+	runner := NewRunner(config.Init(), cfg, map[string]*terraform.InputValue{})
 	runners, err := NewModuleRunners(runner)
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
@@ -971,7 +972,7 @@ func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	runner := NewRunner(cfg, map[string]*terraform.InputValue{})
+	runner := NewRunner(config.Init(), cfg, map[string]*terraform.InputValue{})
 	_, err = NewModuleRunners(runner)
 
 	errText := "Failed to eval an expression in module.tf:4; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute."
@@ -1017,7 +1018,7 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	runner := NewRunner(cfg, map[string]*terraform.InputValue{})
+	runner := NewRunner(config.Init(), cfg, map[string]*terraform.InputValue{})
 	_, err = NewModuleRunners(runner)
 
 	errText := "Attribute of module not allowed was found in module.tf:1; <nil>: Unexpected invalid block; Blocks are not allowed here."
@@ -1039,5 +1040,53 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 		}
 	} else {
 		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+}
+
+func Test_LookupResourcesByType(t *testing.T) {
+	dir, err := ioutil.TempDir("", "LookupResourcesByType")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+
+	err = ioutil.WriteFile(dir+"/resource.tf", []byte(`
+resource "aws_instance" "web" {
+  ami           = "${data.aws_ami.ubuntu.id}"
+  instance_type = "t2.micro"
+
+  tags {
+    Name = "HelloWorld"
+  }
+}
+
+resource "aws_route53_zone" "primary" {
+  name = "example.com"
+}
+
+resource "aws_route" "r" {
+  route_table_id            = "rtb-4fbb3ac4"
+  destination_cidr_block    = "10.0.1.0/22"
+  vpc_peering_connection_id = "pcx-45ff3dc1"
+  depends_on                = ["aws_route_table.testing"]
+}
+`), os.ModePerm)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cfg, err := loadConfigHelper(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	runner := NewRunner(config.Init(), cfg, map[string]*terraform.InputValue{})
+	resources := runner.LookupResourcesByType("aws_instance")
+
+	if len(resources) != 1 {
+		t.Fatalf("Expected resources size is `1`, but get `%d`", len(resources))
+	}
+	if resources[0].Type != "aws_instance" {
+		t.Fatalf("Expected resource type is `aws_instance`, but get `%s`", resources[0].Type)
 	}
 }
