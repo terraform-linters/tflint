@@ -17,6 +17,13 @@ import (
 	"github.com/hashicorp/terraform/configs/configload"
 )
 
+//go:generate mockgen -source loader.go -destination ../mock/loader.go -package mock
+
+// AbstractLoader is a loader interface for mock
+type AbstractLoader interface {
+	LoadConfig() (*configs.Config, error)
+}
+
 // Loader is a wrapper of Terraform's configload.Loader
 type Loader struct {
 	loader               *configload.Loader
