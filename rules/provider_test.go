@@ -10,7 +10,7 @@ import (
 
 func Test_NewRules(t *testing.T) {
 	// Mock rules in test
-	defaultRules = []Rule{
+	DefaultRules = []Rule{
 		awsrules.NewAwsInstanceInvalidTypeRule(),
 	}
 	deepCheckRules = []Rule{
