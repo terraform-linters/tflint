@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path"
 	"runtime"
 	"strings"
 
+	"github.com/hashicorp/logutils"
 	colorable "github.com/mattn/go-colorable"
 )
 
@@ -16,6 +18,13 @@ func main() {
 		errStream: colorable.NewColorable(os.Stderr),
 		testMode:  false,
 	}
+	filter := &logutils.LevelFilter{
+		Levels:   []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
+		MinLevel: logutils.LogLevel(strings.ToUpper(os.Getenv("TFLINT_LOG"))),
+		Writer:   cli.errStream,
+	}
+	log.SetOutput(filter)
+
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Fprintf(cli.errStream, "Panic: %v\n", r)
@@ -32,5 +41,6 @@ Please attach an output log, describe the situation and version that occurred an
 			os.Exit(ExitCodeError)
 		}
 	}()
+
 	os.Exit(cli.Run(os.Args))
 }
