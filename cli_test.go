@@ -4,578 +4,412 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"reflect"
+	"io/ioutil"
+	"log"
+	"os"
 	"strings"
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/k0kubun/pp"
+	"github.com/google/go-cmp/cmp"
+	"github.com/hashicorp/terraform/configs"
 	"github.com/wata727/tflint/config"
-	"github.com/wata727/tflint/detector"
 	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/loader"
 	"github.com/wata727/tflint/mock"
-	"github.com/wata727/tflint/printer"
+	"github.com/wata727/tflint/rules"
+	"github.com/wata727/tflint/tflint"
 )
 
-func TestCLIRun(t *testing.T) {
-	type Result struct {
-		Status     int
-		Stdout     string
-		Stderr     string
-		CLIOptions TestCLIOptions
-	}
-	var loaderDefaultBehavior = func(ctrl *gomock.Controller) loader.LoaderIF {
-		loader := mock.NewMockLoaderIF(ctrl)
-		loader.EXPECT().LoadState()
-		loader.EXPECT().LoadTFVars([]string{"terraform.tfvars"})
-		loader.EXPECT().LoadAllTemplate(".").Return(nil)
-		return loader
-	}
-	var detectorNoErrorNoIssuesBehavior = func(ctrl *gomock.Controller) detector.DetectorIF {
-		detector := mock.NewMockDetectorIF(ctrl)
-		detector.EXPECT().Detect().Return([]*issue.Issue{})
-		detector.EXPECT().HasError().Return(false)
-		return detector
-	}
-	var printerNoIssuesDefaultBehaviour = func(ctrl *gomock.Controller) printer.PrinterIF {
-		printer := mock.NewMockPrinterIF(ctrl)
-		printer.EXPECT().Print([]*issue.Issue{}, "default", false)
-		return printer
-	}
-	defaultCLIOptions := TestCLIOptions{
-		Config: &config.Config{
-			Debug:              false,
-			DeepCheck:          false,
-			AwsCredentials:     map[string]string{},
-			IgnoreModule:       map[string]bool{},
-			IgnoreRule:         map[string]bool{},
-			Varfile:            []string{"terraform.tfvars"},
-			TerraformEnv:       "default",
-			TerraformWorkspace: "default",
-			Rules:              map[string]*config.Rule{},
-		},
-		ConfigFile: ".tflint.hcl",
-	}
+func TestMain(m *testing.M) {
+	log.SetOutput(ioutil.Discard)
+	os.Exit(m.Run())
+}
 
+func TestCLIRun__noIssuesFound(t *testing.T) {
 	cases := []struct {
-		Name              string
-		Command           string
-		LoaderGenerator   func(ctrl *gomock.Controller) loader.LoaderIF
-		DetectorGenerator func(ctrl *gomock.Controller) detector.DetectorIF
-		PrinterGenerator  func(ctrl *gomock.Controller) printer.PrinterIF
-		Result            Result
+		Name    string
+		Command string
+		LoadErr error
+		Status  int
+		Stdout  string
+		Stderr  string
 	}{
 		{
-			Name:              "print version",
-			Command:           "./tflint --version",
-			LoaderGenerator:   func(ctrl *gomock.Controller) loader.LoaderIF { return mock.NewMockLoaderIF(ctrl) },
-			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
-			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
-			Result: Result{
-				Status: ExitCodeOK,
-				Stdout: fmt.Sprintf("TFLint version %s", Version),
-			},
+			Name:    "print version",
+			Command: "./tflint --version",
+			Status:  ExitCodeOK,
+			Stdout:  fmt.Sprintf("TFLint version %s", Version),
 		},
 		{
-			Name:              "print help",
-			Command:           "./tflint --help",
-			LoaderGenerator:   func(ctrl *gomock.Controller) loader.LoaderIF { return mock.NewMockLoaderIF(ctrl) },
-			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
-			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
-			Result: Result{
-				Status: ExitCodeOK,
-				Stdout: "Application Options:",
-			},
+			Name:    "print help",
+			Command: "./tflint --help",
+			Status:  ExitCodeOK,
+			Stdout:  "Application Options:",
 		},
 		{
-			Name:              "nothing options",
-			Command:           "./tflint",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
-			Result: Result{
-				Status:     ExitCodeOK,
-				CLIOptions: defaultCLIOptions,
-			},
-		},
-		{
-			Name:            "nothing options when issues found",
-			Command:         "./tflint",
-			LoaderGenerator: loaderDefaultBehavior,
-			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF {
-				detector := mock.NewMockDetectorIF(ctrl)
-				detector.EXPECT().Detect().Return([]*issue.Issue{
-					{
-						Type:    "TEST",
-						Message: "this is test method",
-						Line:    1,
-						File:    "",
-					},
-				})
-				detector.EXPECT().HasError().Return(false)
-				return detector
-			},
-			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF {
-				printer := mock.NewMockPrinterIF(ctrl)
-				printer.EXPECT().Print([]*issue.Issue{
-					{
-						Type:    "TEST",
-						Message: "this is test method",
-						Line:    1,
-						File:    "",
-					},
-				}, "default", false)
-				return printer
-			},
-			Result: Result{
-				Status:     ExitCodeOK,
-				CLIOptions: defaultCLIOptions,
-			},
-		},
-		{
-			Name:    "nothing options when occurred loading error",
+			Name:    "no options",
 			Command: "./tflint",
-			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
-				loader := mock.NewMockLoaderIF(ctrl)
-				loader.EXPECT().LoadState()
-				loader.EXPECT().LoadTFVars([]string{"terraform.tfvars"})
-				loader.EXPECT().LoadAllTemplate(".").Return(errors.New("loading error!"))
-				return loader
-			},
-			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
-			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
-			Result: Result{
-				Status:     ExitCodeError,
-				Stderr:     "loading error!",
-				CLIOptions: defaultCLIOptions,
-			},
+			Status:  ExitCodeOK,
+			Stdout:  "Awesome! Your code is following the best practices :)",
 		},
 		{
-			Name:            "nothing options when occurred detecting error",
-			Command:         "./tflint",
-			LoaderGenerator: loaderDefaultBehavior,
-			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF {
-				detector := mock.NewMockDetectorIF(ctrl)
-				detector.EXPECT().Detect().Return([]*issue.Issue{})
-				detector.EXPECT().HasError().Return(true)
-				return detector
-			},
-			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
-			Result: Result{
-				Status:     ExitCodeError,
-				Stderr:     "error occurred in detecting",
-				CLIOptions: defaultCLIOptions,
-			},
+			Name:    "specify format",
+			Command: "./tflint --format json",
+			Status:  ExitCodeOK,
+			Stdout:  "[]",
 		},
 		{
-			Name:    "load single file",
-			Command: "./tflint test_template.tf",
-			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
-				loader := mock.NewMockLoaderIF(ctrl)
-				loader.EXPECT().LoadState()
-				loader.EXPECT().LoadTFVars([]string{"terraform.tfvars"})
-				loader.EXPECT().LoadTemplate("test_template.tf").Return(nil)
-				return loader
-			},
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
-			Result: Result{
-				Status:     ExitCodeOK,
-				CLIOptions: defaultCLIOptions,
-			},
+			Name:    "`--error-with-issues` option",
+			Command: "./tflint --error-with-issues",
+			Status:  ExitCodeOK,
+			Stdout:  "Awesome! Your code is following the best practices :)",
 		},
 		{
-			Name:    "load multiple file",
-			Command: "./tflint template1.tf template2.tf",
-			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
-				loader := mock.NewMockLoaderIF(ctrl)
-				loader.EXPECT().LoadState()
-				loader.EXPECT().LoadTFVars([]string{"terraform.tfvars"})
-				loader.EXPECT().LoadTemplate("template1.tf").Return(nil)
-				loader.EXPECT().LoadTemplate("template2.tf").Return(nil)
-				return loader
-			},
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
-			Result: Result{
-				Status:     ExitCodeOK,
-				CLIOptions: defaultCLIOptions,
-			},
+			Name:    "`--quiet` option",
+			Command: "./tflint --quiet",
+			Status:  ExitCodeOK,
+			Stdout:  "",
 		},
 		{
-			Name:    "load single file when occurred loading error",
-			Command: "./tflint test_template.tf",
-			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
-				loader := mock.NewMockLoaderIF(ctrl)
-				loader.EXPECT().LoadState()
-				loader.EXPECT().LoadTFVars([]string{"terraform.tfvars"})
-				loader.EXPECT().LoadTemplate("test_template.tf").Return(errors.New("loading error!"))
-				return loader
-			},
-			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
-			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
-			Result: Result{
-				Status:     ExitCodeError,
-				Stderr:     "loading error!",
-				CLIOptions: defaultCLIOptions,
-			},
+			Name:    "loading errors are occurred",
+			Command: "./tflint",
+			LoadErr: errors.New("Load error occurred"),
+			Status:  ExitCodeError,
+			Stderr:  "Load error occurred",
 		},
 		{
-			Name:              "enable debug option",
-			Command:           "./tflint --debug",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
-			Result: Result{
-				Status: ExitCodeOK,
-				CLIOptions: TestCLIOptions{
-					Config: &config.Config{
-						Debug:              true,
-						DeepCheck:          false,
-						AwsCredentials:     map[string]string{},
-						IgnoreModule:       map[string]bool{},
-						IgnoreRule:         map[string]bool{},
-						Varfile:            []string{"terraform.tfvars"},
-						TerraformEnv:       "default",
-						TerraformWorkspace: "default",
-						Rules:              map[string]*config.Rule{},
-					},
-					ConfigFile: ".tflint.hcl",
-				},
-			},
+			Name:    "invalid options",
+			Command: "./tflint --debug",
+			Status:  ExitCodeError,
+			Stderr:  "`debug` is unknown option. Please run `tflint --help`",
 		},
 		{
-			Name:              "specify format",
-			Command:           "./tflint --format json",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF {
-				printer := mock.NewMockPrinterIF(ctrl)
-				printer.EXPECT().Print([]*issue.Issue{}, "json", false)
-				return printer
-			},
-			Result: Result{
-				Status:     ExitCodeOK,
-				CLIOptions: defaultCLIOptions,
-			},
+			Name:    "invalid format",
+			Command: "./tflint --format awesome",
+			Status:  ExitCodeError,
+			Stderr:  "Invalid value `awesome' for option",
 		},
 		{
-			Name:              "specify invalid format",
-			Command:           "./tflint --format awesome",
-			LoaderGenerator:   func(ctrl *gomock.Controller) loader.LoaderIF { return mock.NewMockLoaderIF(ctrl) },
-			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
-			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
-			Result: Result{
-				Status: ExitCodeError,
-				Stderr: "Invalid value `awesome' for option",
-			},
-		},
-		{
-			Name:              "ignore_rules",
-			Command:           "./tflint --ignore-rule rule1,rule2",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
-			Result: Result{
-				Status: ExitCodeOK,
-				CLIOptions: TestCLIOptions{
-					Config: &config.Config{
-						Debug:              false,
-						DeepCheck:          false,
-						AwsCredentials:     map[string]string{},
-						IgnoreModule:       map[string]bool{},
-						IgnoreRule:         map[string]bool{"rule1": true, "rule2": true},
-						Varfile:            []string{"terraform.tfvars"},
-						TerraformEnv:       "default",
-						TerraformWorkspace: "default",
-						Rules:              map[string]*config.Rule{},
-					},
-					ConfigFile: ".tflint.hcl",
-				},
-			},
-		},
-		{
-			Name:              "ignore_modules",
-			Command:           "./tflint --ignore-module module1,module2",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
-			Result: Result{
-				Status: ExitCodeOK,
-				CLIOptions: TestCLIOptions{
-					Config: &config.Config{
-						Debug:              false,
-						DeepCheck:          false,
-						AwsCredentials:     map[string]string{},
-						IgnoreModule:       map[string]bool{"module1": true, "module2": true},
-						IgnoreRule:         map[string]bool{},
-						Varfile:            []string{"terraform.tfvars"},
-						TerraformEnv:       "default",
-						TerraformWorkspace: "default",
-						Rules:              map[string]*config.Rule{},
-					},
-					ConfigFile: ".tflint.hcl",
-				},
-			},
-		},
-		{
-			Name:    "variable file",
-			Command: "./tflint --var-file example1.tfvars,example2.tfvars",
-			LoaderGenerator: func(ctrl *gomock.Controller) loader.LoaderIF {
-				loader := mock.NewMockLoaderIF(ctrl)
-				loader.EXPECT().LoadState()
-				loader.EXPECT().LoadTFVars([]string{"terraform.tfvars", "example1.tfvars", "example2.tfvars"})
-				loader.EXPECT().LoadAllTemplate(".").Return(nil)
-				return loader
-			},
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
-			Result: Result{
-				Status: ExitCodeOK,
-				CLIOptions: TestCLIOptions{
-					Config: &config.Config{
-						Debug:              false,
-						DeepCheck:          false,
-						AwsCredentials:     map[string]string{},
-						IgnoreModule:       map[string]bool{},
-						IgnoreRule:         map[string]bool{},
-						Varfile:            []string{"terraform.tfvars", "example1.tfvars", "example2.tfvars"},
-						TerraformEnv:       "default",
-						TerraformWorkspace: "default",
-						Rules:              map[string]*config.Rule{},
-					},
-					ConfigFile: ".tflint.hcl",
-				},
-			},
-		},
-		{
-			Name:              "specify config gile",
-			Command:           "./tflint --config .tflint.example.hcl",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
-			Result: Result{
-				Status: ExitCodeOK,
-				CLIOptions: TestCLIOptions{
-					Config: &config.Config{
-						Debug:              false,
-						DeepCheck:          false,
-						AwsCredentials:     map[string]string{},
-						IgnoreModule:       map[string]bool{},
-						IgnoreRule:         map[string]bool{},
-						Varfile:            []string{"terraform.tfvars"},
-						TerraformEnv:       "default",
-						TerraformWorkspace: "default",
-						Rules:              map[string]*config.Rule{},
-					},
-					ConfigFile: ".tflint.example.hcl",
-				},
-			},
-		},
-		{
-			Name:              "enable deep check mode",
-			Command:           "./tflint --deep",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
-			Result: Result{
-				Status: ExitCodeOK,
-				CLIOptions: TestCLIOptions{
-					Config: &config.Config{
-						Debug:              false,
-						DeepCheck:          true,
-						AwsCredentials:     map[string]string{},
-						IgnoreModule:       map[string]bool{},
-						IgnoreRule:         map[string]bool{},
-						Varfile:            []string{"terraform.tfvars"},
-						TerraformEnv:       "default",
-						TerraformWorkspace: "default",
-						Rules:              map[string]*config.Rule{},
-					},
-					ConfigFile: ".tflint.hcl",
-				},
-			},
-		},
-		{
-			Name:              "set aws static credentials",
-			Command:           "./tflint --deep --aws-access-key AWS_ACCESS_KEY_ID --aws-secret-key AWS_SECRET_ACCESS_KEY --aws-region us-east-1",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
-			Result: Result{
-				Status: ExitCodeOK,
-				CLIOptions: TestCLIOptions{
-					Config: &config.Config{
-						Debug:     false,
-						DeepCheck: true,
-						AwsCredentials: map[string]string{
-							"access_key": "AWS_ACCESS_KEY_ID",
-							"secret_key": "AWS_SECRET_ACCESS_KEY",
-							"region":     "us-east-1",
-						},
-						IgnoreModule:       map[string]bool{},
-						IgnoreRule:         map[string]bool{},
-						Varfile:            []string{"terraform.tfvars"},
-						TerraformEnv:       "default",
-						TerraformWorkspace: "default",
-						Rules:              map[string]*config.Rule{},
-					},
-					ConfigFile: ".tflint.hcl",
-				},
-			},
-		},
-		{
-			Name:              "set aws shared credentials",
-			Command:           "./tflint --deep --aws-profile account1 --aws-region us-east-1",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
-			Result: Result{
-				Status: ExitCodeOK,
-				CLIOptions: TestCLIOptions{
-					Config: &config.Config{
-						Debug:     false,
-						DeepCheck: true,
-						AwsCredentials: map[string]string{
-							"profile": "account1",
-							"region":  "us-east-1",
-						},
-						IgnoreModule:       map[string]bool{},
-						IgnoreRule:         map[string]bool{},
-						Varfile:            []string{"terraform.tfvars"},
-						TerraformEnv:       "default",
-						TerraformWorkspace: "default",
-						Rules:              map[string]*config.Rule{},
-					},
-					ConfigFile: ".tflint.hcl",
-				},
-			},
-		},
-		{
-			Name:              "enabled error with issues flag when no issues found",
-			Command:           "./tflint --error-with-issues",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
-			Result: Result{
-				Status:     ExitCodeOK,
-				CLIOptions: defaultCLIOptions,
-			},
-		},
-		{
-			Name:            "enabled error with issues flag when issues found",
-			Command:         "./tflint --error-with-issues",
-			LoaderGenerator: loaderDefaultBehavior,
-			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF {
-				detector := mock.NewMockDetectorIF(ctrl)
-				detector.EXPECT().Detect().Return([]*issue.Issue{
-					{
-						Type:    "TEST",
-						Message: "this is test method",
-						Line:    1,
-						File:    "",
-					},
-				})
-				detector.EXPECT().HasError().Return(false)
-				return detector
-			},
-			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF {
-				printer := mock.NewMockPrinterIF(ctrl)
-				printer.EXPECT().Print([]*issue.Issue{
-					{
-						Type:    "TEST",
-						Message: "this is test method",
-						Line:    1,
-						File:    "",
-					},
-				}, "default", false)
-				return printer
-			},
-			Result: Result{
-				Status:     ExitCodeIssuesFound,
-				CLIOptions: defaultCLIOptions,
-			},
-		},
-		{
-			Name:              "enable fast mode",
-			Command:           "./tflint --fast",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator:  printerNoIssuesDefaultBehaviour,
-			Result: Result{
-				Status: ExitCodeOK,
-				CLIOptions: TestCLIOptions{
-					Config: &config.Config{
-						Debug:              false,
-						DeepCheck:          false,
-						AwsCredentials:     map[string]string{},
-						IgnoreModule:       map[string]bool{},
-						IgnoreRule:         map[string]bool{"aws_instance_invalid_ami": true},
-						Varfile:            []string{"terraform.tfvars"},
-						TerraformEnv:       "default",
-						TerraformWorkspace: "default",
-						Rules:              map[string]*config.Rule{},
-					},
-					ConfigFile: ".tflint.hcl",
-				},
-			},
-		},
-		{
-			Name:              "quiet output",
-			Command:           "./tflint --quiet",
-			LoaderGenerator:   loaderDefaultBehavior,
-			DetectorGenerator: detectorNoErrorNoIssuesBehavior,
-			PrinterGenerator: func(ctrl *gomock.Controller) printer.PrinterIF {
-				printer := mock.NewMockPrinterIF(ctrl)
-				printer.EXPECT().Print([]*issue.Issue{}, "default", true)
-				return printer
-			},
-			Result: Result{
-				Status:     ExitCodeOK,
-				CLIOptions: defaultCLIOptions,
-			},
-		},
-		{
-			Name:              "invalid options",
-			Command:           "./tflint --debug --invalid-option",
-			LoaderGenerator:   func(ctrl *gomock.Controller) loader.LoaderIF { return mock.NewMockLoaderIF(ctrl) },
-			DetectorGenerator: func(ctrl *gomock.Controller) detector.DetectorIF { return mock.NewMockDetectorIF(ctrl) },
-			PrinterGenerator:  func(ctrl *gomock.Controller) printer.PrinterIF { return mock.NewMockPrinterIF(ctrl) },
-			Result: Result{
-				Status: ExitCodeError,
-				Stderr: "`invalid-option` is unknown option",
-			},
+			Name:    "invalid arguments",
+			Command: "./tflint template.tf",
+			Status:  ExitCodeError,
+			Stderr:  "Too many arguments. TFLint doesn't accept the file argument",
 		},
 	}
 
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
 	for _, tc := range cases {
-		ctrl := gomock.NewController(t)
-		defer ctrl.Finish()
+		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
+		cli := &CLI{
+			outStream: outStream,
+			errStream: errStream,
+			testMode:  true,
+		}
+
+		loader := mock.NewMockAbstractLoader(ctrl)
+		loader.EXPECT().LoadConfig().Return(configs.NewEmptyConfig(), tc.LoadErr).AnyTimes()
+		cli.loader = loader
+
+		status := cli.Run(strings.Split(tc.Command, " "))
+
+		if status != tc.Status {
+			t.Fatalf("Failed `%s`: Expected status is `%d`, but get `%d`", tc.Name, tc.Status, status)
+		}
+		if !strings.Contains(outStream.String(), tc.Stdout) {
+			t.Fatalf("Failed `%s`: Expected to contain `%s` in stdout, but get `%s`", tc.Name, tc.Stdout, outStream.String())
+		}
+		if !strings.Contains(errStream.String(), tc.Stderr) {
+			t.Fatalf("Failed `%s`: Expected to contain `%s` in stderr, but get `%s`", tc.Name, tc.Stderr, errStream.String())
+		}
+	}
+}
+
+type testRule struct{}
+type errorRule struct{}
+
+func (r *testRule) Name() string {
+	return "test_rule"
+}
+func (r *errorRule) Name() string {
+	return "error_rule"
+}
+
+func (r *testRule) Enabled() bool {
+	return true
+}
+func (r *errorRule) Enabled() bool {
+	return true
+}
+
+func (r *testRule) Check(runner *tflint.Runner) error {
+	runner.Issues = append(runner.Issues, &issue.Issue{
+		Detector: r.Name(),
+		Type:     issue.ERROR,
+		Message:  "This is test error",
+		Line:     1,
+		File:     "test.tf",
+	})
+	return nil
+}
+func (r *errorRule) Check(runner *tflint.Runner) error {
+	return errors.New("Check failed")
+}
+
+func TestCLIRun__issuesFound(t *testing.T) {
+	cases := []struct {
+		Name    string
+		Command string
+		Rule    rules.Rule
+		Status  int
+		Stdout  string
+		Stderr  string
+	}{
+		{
+			Name:    "issues found",
+			Command: "./tflint",
+			Rule:    &testRule{},
+			Status:  ExitCodeOK,
+			Stdout:  "This is test error (test_rule)",
+		},
+		{
+			Name:    "`--error-with-issues` option",
+			Command: "./tflint --error-with-issues",
+			Rule:    &testRule{},
+			Status:  ExitCodeIssuesFound,
+			Stdout:  "This is test error (test_rule)",
+		},
+		{
+			Name:    "`--quiet` option",
+			Command: "./tflint --quiet",
+			Rule:    &testRule{},
+			Status:  ExitCodeOK,
+			Stdout:  "This is test error (test_rule)",
+		},
+		{
+			Name:    "checking errors are occurred",
+			Command: "./tflint",
+			Rule:    &errorRule{},
+			Status:  ExitCodeError,
+			Stderr:  "Check failed",
+		},
+	}
+
+	ctrl := gomock.NewController(t)
+	originalRules := rules.DefaultRules
+	defer func() {
+		rules.DefaultRules = originalRules
+		ctrl.Finish()
+	}()
+
+	for _, tc := range cases {
+		// Mock rules
+		rules.DefaultRules = []rules.Rule{tc.Rule}
 
 		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
 		cli := &CLI{
 			outStream: outStream,
 			errStream: errStream,
-			loader:    tc.LoaderGenerator(ctrl),
-			detector:  tc.DetectorGenerator(ctrl),
-			printer:   tc.PrinterGenerator(ctrl),
 			testMode:  true,
 		}
-		args := strings.Split(tc.Command, " ")
 
-		status := cli.Run(args)
-		if status != tc.Result.Status {
-			t.Fatalf("˜\nBad: %d\nExpected: %d\n\ntestcase: %s", status, tc.Result.Status, tc.Name)
+		loader := mock.NewMockAbstractLoader(ctrl)
+		loader.EXPECT().LoadConfig().Return(configs.NewEmptyConfig(), nil).AnyTimes()
+		cli.loader = loader
+
+		status := cli.Run(strings.Split(tc.Command, " "))
+
+		if status != tc.Status {
+			t.Fatalf("Failed `%s`: Expected status is `%d`, but get `%d`", tc.Name, tc.Status, status)
 		}
-		if !strings.Contains(outStream.String(), tc.Result.Stdout) {
-			t.Fatalf("\nBad: %s\nExpected Contains: %s\n\ntestcase: %s", outStream.String(), tc.Result.Stdout, tc.Name)
+		if !strings.Contains(outStream.String(), tc.Stdout) {
+			t.Fatalf("Failed `%s`: Expected to contain `%s` in stdout, but get `%s`", tc.Name, tc.Stdout, outStream.String())
 		}
-		if !strings.Contains(errStream.String(), tc.Result.Stderr) {
-			t.Fatalf("\nBad: %s\nExpected Contains: %s\n\ntestcase: %s", errStream.String(), tc.Result.Stderr, tc.Name)
+		if !strings.Contains(errStream.String(), tc.Stderr) {
+			t.Fatalf("Failed `%s`: Expected to contain `%s` in stderr, but get `%s`", tc.Name, tc.Stderr, errStream.String())
 		}
-		if !reflect.DeepEqual(cli.TestCLIOptions, tc.Result.CLIOptions) {
-			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(cli.TestCLIOptions), pp.Sprint(tc.Result.CLIOptions), tc.Name)
+	}
+}
+
+func TestCLIRun__options(t *testing.T) {
+	cases := []struct {
+		Name       string
+		Command    string
+		CLIOptions TestCLIOptions
+	}{
+		{
+			Name:    "`--config` option",
+			Command: "./tflint --config .tflint.example.hcl",
+			CLIOptions: TestCLIOptions{
+				Config: &config.Config{
+					Debug:              false,
+					DeepCheck:          false,
+					AwsCredentials:     map[string]string{},
+					IgnoreModule:       map[string]bool{},
+					IgnoreRule:         map[string]bool{},
+					Varfile:            []string{"terraform.tfvars"},
+					TerraformEnv:       "default",
+					TerraformWorkspace: "default",
+					Rules:              map[string]*config.Rule{},
+				},
+				ConfigFile: ".tflint.example.hcl",
+			},
+		},
+		{
+			Name:    "`--ignore-module` option",
+			Command: "./tflint --ignore-module module1,module2",
+			CLIOptions: TestCLIOptions{
+				Config: &config.Config{
+					Debug:              false,
+					DeepCheck:          false,
+					AwsCredentials:     map[string]string{},
+					IgnoreModule:       map[string]bool{"module1": true, "module2": true},
+					IgnoreRule:         map[string]bool{},
+					Varfile:            []string{"terraform.tfvars"},
+					TerraformEnv:       "default",
+					TerraformWorkspace: "default",
+					Rules:              map[string]*config.Rule{},
+				},
+				ConfigFile: ".tflint.hcl",
+			},
+		},
+		{
+			Name:    "`--ignore-rule` option",
+			Command: "./tflint --ignore-rule rule1,rule2",
+			CLIOptions: TestCLIOptions{
+				Config: &config.Config{
+					Debug:              false,
+					DeepCheck:          false,
+					AwsCredentials:     map[string]string{},
+					IgnoreModule:       map[string]bool{},
+					IgnoreRule:         map[string]bool{"rule1": true, "rule2": true},
+					Varfile:            []string{"terraform.tfvars"},
+					TerraformEnv:       "default",
+					TerraformWorkspace: "default",
+					Rules:              map[string]*config.Rule{},
+				},
+				ConfigFile: ".tflint.hcl",
+			},
+		},
+		{
+			Name:    "`--var-file` option",
+			Command: "./tflint --var-file example1.tfvars,example2.tfvars",
+			CLIOptions: TestCLIOptions{
+				Config: &config.Config{
+					Debug:              false,
+					DeepCheck:          false,
+					AwsCredentials:     map[string]string{},
+					IgnoreModule:       map[string]bool{},
+					IgnoreRule:         map[string]bool{},
+					Varfile:            []string{"terraform.tfvars", "example1.tfvars", "example2.tfvars"},
+					TerraformEnv:       "default",
+					TerraformWorkspace: "default",
+					Rules:              map[string]*config.Rule{},
+				},
+				ConfigFile: ".tflint.hcl",
+			},
+		},
+		{
+			Name:    "`--deep` option",
+			Command: "./tflint --deep",
+			CLIOptions: TestCLIOptions{
+				Config: &config.Config{
+					Debug:              false,
+					DeepCheck:          true,
+					AwsCredentials:     map[string]string{},
+					IgnoreModule:       map[string]bool{},
+					IgnoreRule:         map[string]bool{},
+					Varfile:            []string{"terraform.tfvars"},
+					TerraformEnv:       "default",
+					TerraformWorkspace: "default",
+					Rules:              map[string]*config.Rule{},
+				},
+				ConfigFile: ".tflint.hcl",
+			},
+		},
+		{
+			Name:    "static credentials option",
+			Command: "./tflint --deep --aws-access-key AWS_ACCESS_KEY_ID --aws-secret-key AWS_SECRET_ACCESS_KEY --aws-region us-east-1",
+			CLIOptions: TestCLIOptions{
+				Config: &config.Config{
+					Debug:     false,
+					DeepCheck: true,
+					AwsCredentials: map[string]string{
+						"access_key": "AWS_ACCESS_KEY_ID",
+						"secret_key": "AWS_SECRET_ACCESS_KEY",
+						"region":     "us-east-1",
+					},
+					IgnoreModule:       map[string]bool{},
+					IgnoreRule:         map[string]bool{},
+					Varfile:            []string{"terraform.tfvars"},
+					TerraformEnv:       "default",
+					TerraformWorkspace: "default",
+					Rules:              map[string]*config.Rule{},
+				},
+				ConfigFile: ".tflint.hcl",
+			},
+		},
+		{
+			Name:    "shared credentials option",
+			Command: "./tflint --deep --aws-profile account1 --aws-region us-east-1",
+			CLIOptions: TestCLIOptions{
+				Config: &config.Config{
+					Debug:     false,
+					DeepCheck: true,
+					AwsCredentials: map[string]string{
+						"profile": "account1",
+						"region":  "us-east-1",
+					},
+					IgnoreModule:       map[string]bool{},
+					IgnoreRule:         map[string]bool{},
+					Varfile:            []string{"terraform.tfvars"},
+					TerraformEnv:       "default",
+					TerraformWorkspace: "default",
+					Rules:              map[string]*config.Rule{},
+				},
+				ConfigFile: ".tflint.hcl",
+			},
+		},
+		{
+			Name:    "`--fast` option",
+			Command: "./tflint --fast",
+			CLIOptions: TestCLIOptions{
+				Config: &config.Config{
+					Debug:              false,
+					DeepCheck:          false,
+					AwsCredentials:     map[string]string{},
+					IgnoreModule:       map[string]bool{},
+					IgnoreRule:         map[string]bool{"aws_instance_invalid_ami": true},
+					Varfile:            []string{"terraform.tfvars"},
+					TerraformEnv:       "default",
+					TerraformWorkspace: "default",
+					Rules:              map[string]*config.Rule{},
+				},
+				ConfigFile: ".tflint.hcl",
+			},
+		},
+	}
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	for _, tc := range cases {
+		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
+		cli := &CLI{
+			outStream: outStream,
+			errStream: errStream,
+			testMode:  true,
+		}
+
+		loader := mock.NewMockAbstractLoader(ctrl)
+		loader.EXPECT().LoadConfig().Return(configs.NewEmptyConfig(), nil).AnyTimes()
+		cli.loader = loader
+
+		cli.Run(strings.Split(tc.Command, " "))
+
+		if !cmp.Equal(cli.TestCLIOptions, tc.CLIOptions) {
+			t.Fatalf("Failed `%s`: Diff: %s", tc.Name, cmp.Diff(cli.TestCLIOptions, tc.CLIOptions))
 		}
 	}
 }

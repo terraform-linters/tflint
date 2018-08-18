@@ -13,7 +13,8 @@ type Rule interface {
 	Check(runner *tflint.Runner) error
 }
 
-var defaultRules = []Rule{
+// DefaultRules is rules by default
+var DefaultRules = []Rule{
 	awsrules.NewAwsInstanceInvalidTypeRule(),
 }
 
@@ -27,9 +28,9 @@ func NewRules(c *config.Config) []Rule {
 	allRules := []Rule{}
 
 	if c.DeepCheck {
-		allRules = append(defaultRules, deepCheckRules...)
+		allRules = append(DefaultRules, deepCheckRules...)
 	} else {
-		allRules = defaultRules
+		allRules = DefaultRules
 	}
 
 	for _, rule := range allRules {
