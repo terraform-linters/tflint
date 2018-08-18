@@ -34,7 +34,7 @@
   revision = "1fca145dffbcaa8fe914309b1ec0cfc67500fe61"
 
 [[projects]]
-  digest = "1:271ab64d26014859cc9cc0c38ad7331d417642be635e6a973f6759fa6f21dd9f"
+  digest = "1:fe7191c78f12adb347093574a8c1540ccaa7d6804853d1a5501a2526690a6961"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -111,7 +111,7 @@
   version = "v3.5.1"
 
 [[projects]]
-  digest = "1:4f48cdd6b8fb9235eb7914eb1d7224e6f82198765e4bc3ab30b64482285f18a6"
+  digest = "1:e4e72d0e157d3284c997019c6a58212bbb5845523219df3cb12264713cf94263"
   name = "github.com/cristim/ec2-instances-info"
   packages = [
     ".",
@@ -145,7 +145,15 @@
   revision = "22bbf0ddf08105dfa364d0a2fa619dfa71014af5"
 
 [[projects]]
-  digest = "1:21c8b3a5b2d66f5ba6731f12133ccbf970947a6f4e78f0d46b64c49f8a4034c1"
+  digest = "1:15042ad3498153684d09f393bbaec6b216c8eec6d61f63dff711de7d64ed8861"
+  name = "github.com/golang/protobuf"
+  packages = ["proto"]
+  pruneopts = "UT"
+  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
+  version = "v1.1.0"
+
+[[projects]]
+  digest = "1:2e3c336fc7fde5c984d2841455a658a6d626450b1754a854b3b32e7a8f49a07a"
   name = "github.com/google/go-cmp"
   packages = [
     "cmp",
@@ -175,7 +183,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:417287820da558e90819d6b30660463d0f7834904fdfd3085bd4ac291a131b6c"
+  digest = "1:49be3bd056300f2156364200a3dd871cdc548adf09242ea6d4353d512574834c"
   name = "github.com/hashicorp/go-getter"
   packages = [
     ".",
@@ -218,7 +226,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:8951fe6e358876736d8fa1f3992624fdbb2dec6bc49401c1381d1ef8abbb544f"
+  digest = "1:12247a2e99a060cc692f6680e5272c8adf0b8f572e6bce0d7095e624c958a240"
   name = "github.com/hashicorp/hcl"
   packages = [
     ".",
@@ -235,7 +243,7 @@
   revision = "ef8a98b0bbce4a65b5aa4c368430a80ddc533168"
 
 [[projects]]
-  digest = "1:8d812ce7c469e6b18edbbcc6fb810768974a5e3699e41fd17d765d0de70a5a3d"
+  digest = "1:428f47430afc7f5445ee321460faefe6086fce1699a6753ef811693e19ebfa7d"
   name = "github.com/hashicorp/hcl2"
   packages = [
     "ext/dynblock",
@@ -252,7 +260,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:3fb79570d4ea3e2d9369298c27266504b06ba67085a4472244db772e288d342c"
+  digest = "1:a0fcb763bbae723b790db78143ac713c2a96c7542a4e1a2628ba3a9aedd13ae9"
   name = "github.com/hashicorp/hil"
   packages = [
     ".",
@@ -265,7 +273,7 @@
 
 [[projects]]
   branch = "v0.12-dev"
-  digest = "1:c755d61a604f3735c18fd3e8797473040f7eca5be2fa8a17174e282e61b68e9a"
+  digest = "1:bf3ffe1f0c00b66afd745b27481a12bbc404f6cddd0fb6b04c748479e85191f9"
   name = "github.com/hashicorp/terraform"
   packages = [
     "addrs",
@@ -283,10 +291,14 @@
     "lang",
     "lang/funcs",
     "moduledeps",
+    "plans",
     "plugin/discovery",
+    "providers",
+    "provisioners",
     "registry",
     "registry/regsrc",
     "registry/response",
+    "states",
     "svchost",
     "svchost/auth",
     "svchost/disco",
@@ -295,7 +307,7 @@
     "version",
   ]
   pruneopts = "UT"
-  revision = "2fbc8e12e9c28ccb1e943aadee0c8738fec4f37e"
+  revision = "7d7c77ad13649d3043986c1d14900a1db7443df6"
 
 [[projects]]
   digest = "1:a2cff208d4759f6ba1b1cd228587b0a1869f95f22542ec9cd17fff64430113c7"
@@ -408,7 +420,7 @@
   revision = "816c9085562cd7ee03e7f8188a1cfd942858cded"
 
 [[projects]]
-  digest = "1:d894b5c28574e853bdcaa28f25755732df4c71efb11e61376534f3a11345e88c"
+  digest = "1:4d76324ccff5546792b4274c5fe1639bc5983c533c85d1b4be2168d57daabdf0"
   name = "github.com/posener/complete"
   packages = [
     ".",
@@ -421,7 +433,7 @@
   version = "v1.1.1"
 
 [[projects]]
-  digest = "1:37ace7f35375adec11634126944bdc45a673415e2fcc07382d03b75ec76ea94c"
+  digest = "1:bd1ae00087d17c5a748660b8e89e1043e1e5479d0fea743352cda2f8dd8c4f84"
   name = "github.com/spf13/afero"
   packages = [
     ".",
@@ -432,7 +444,7 @@
   version = "v1.1.1"
 
 [[projects]]
-  digest = "1:acac0c4bc8829e859a9d5ddf407780be6d5b1a11c7cc7817fb0abc8f235e1f38"
+  digest = "1:4aeb3860275fa1fd60cccfb5a6ef85da438bf17402e1e84412ade4d4b55066a0"
   name = "github.com/ulikunitz/xz"
   packages = [
     ".",
@@ -445,7 +457,18 @@
   version = "v0.5.4"
 
 [[projects]]
-  digest = "1:8641c7be0e75402ddfe7fdfcc67003b5cf1213f99f48261c131d76619ec33536"
+  digest = "1:8f9017baaaca37682b06d9f48a292bbeb0ea40c7807343628fd81b595f5a1f93"
+  name = "github.com/vmihailenco/msgpack"
+  packages = [
+    ".",
+    "codes",
+  ]
+  pruneopts = "UT"
+  revision = "b5e691b1eb52a28c05e67ab9df303626c095c23b"
+  version = "v3.3.3"
+
+[[projects]]
+  digest = "1:d8547fd84fef05574fa738845c7ee6eff89dc2325f7010e1b3e41f1dfef72d5d"
   name = "github.com/zclconf/go-cty"
   packages = [
     "cty",
@@ -454,6 +477,7 @@
     "cty/function/stdlib",
     "cty/gocty",
     "cty/json",
+    "cty/msgpack",
     "cty/set",
   ]
   pruneopts = "UT"
@@ -461,7 +485,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f052d355061b6bf836b3401d52e562f68d439db658053de9f5d906d1ba3cb39e"
+  digest = "1:f0c8ff8cea29d50958d6b76e265ab9aba20771bd6af15010088528f0a89978b4"
   name = "golang.org/x/crypto"
   packages = [
     "bcrypt",
@@ -478,12 +502,10 @@
   revision = "a49355c7e3f8fe157a85be2f77e6e269a0f89602"
 
 [[projects]]
-  digest = "1:d85a27a802d726ebbb464524d735f242ef33bc911aaf0951554e25c9c147f87e"
+  digest = "1:465a33526e2f67923b633d1ff67999c13a41d5226ee8ae78ddc22bc41c5ec4b3"
   name = "golang.org/x/net"
   packages = [
     "context",
-    "html",
-    "html/atom",
     "idna",
   ]
   pruneopts = "UT"
@@ -497,7 +519,7 @@
   revision = "7c87d13f8e835d2fb3a70a2912c811ed0c1d241b"
 
 [[projects]]
-  digest = "1:cf55a51524320cfb2ed590ffc8264c6775d65e4e4748f5b6f03b96ab62e358c3"
+  digest = "1:48a65666e8f196369b8428f77eb405b507ca40aab043cfcbc1fb36ad122b748d"
   name = "golang.org/x/text"
   packages = [
     "collate",
@@ -519,6 +541,24 @@
   ]
   pruneopts = "UT"
   revision = "5c1cf69b5978e5a34c5f9ba09a83e56acc4b7877"
+
+[[projects]]
+  digest = "1:e035746398055c893b89370aa82b8e7ffb4940b689c6e5626300591e5a33d83d"
+  name = "google.golang.org/appengine"
+  packages = [
+    ".",
+    "datastore",
+    "internal",
+    "internal/app_identity",
+    "internal/base",
+    "internal/datastore",
+    "internal/log",
+    "internal/modules",
+    "internal/remote_api",
+  ]
+  pruneopts = "UT"
+  revision = "b1f26356af11148e710935ed1ac8a7f5702c7612"
+  version = "v1.1.0"
 
 [solve-meta]
   analyzer-name = "dep"
