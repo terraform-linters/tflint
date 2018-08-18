@@ -272,6 +272,14 @@
   revision = "fa9f258a92500514cc8e9c67020487709df92432"
 
 [[projects]]
+  branch = "master"
+  digest = "1:ce3f7860fd68bd2dd4c3735e2aed8c9de7c7d05bd6ad7d97a6bedcf4fe7b84fb"
+  name = "github.com/hashicorp/logutils"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "0dc08b1671f34c4250ce212759ebd880f743d883"
+
+[[projects]]
   branch = "v0.12-dev"
   digest = "1:bf3ffe1f0c00b66afd745b27481a12bbc404f6cddd0fb6b04c748479e85191f9"
   name = "github.com/hashicorp/terraform"
@@ -598,6 +606,7 @@
     "github.com/hashicorp/hcl2/hclparse",
     "github.com/hashicorp/hil",
     "github.com/hashicorp/hil/ast",
+    "github.com/hashicorp/logutils",
     "github.com/hashicorp/terraform/addrs",
     "github.com/hashicorp/terraform/configs",
     "github.com/hashicorp/terraform/configs/configload",
