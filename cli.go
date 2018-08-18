@@ -9,10 +9,10 @@ import (
 	homedir "github.com/mitchellh/go-homedir"
 
 	"github.com/wata727/tflint/config"
-	"github.com/wata727/tflint/detector"
-	"github.com/wata727/tflint/loader"
+	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/printer"
-	"github.com/wata727/tflint/schema"
+	"github.com/wata727/tflint/rules"
+	"github.com/wata727/tflint/tflint"
 )
 
 // Exit codes are int values that represent an exit code for a particular error.
@@ -27,13 +27,12 @@ type CLI struct {
 	// outStream and errStream are the stdout and stderr
 	// to write message from the CLI.
 	outStream, errStream io.Writer
-	loader               loader.LoaderIF
-	detector             detector.DetectorIF
-	printer              printer.PrinterIF
+	loader               tflint.AbstractLoader
 	testMode             bool
 	TestCLIOptions       TestCLIOptions
 }
 
+// CLIOptions is an option specified by arguments.
 type CLIOptions struct {
 	Version         bool   `short:"v" long:"version" description:"Print TFLint version"`
 	Format          string `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" default:"default"`
@@ -46,12 +45,12 @@ type CLIOptions struct {
 	AwsSecretKey    string `long:"aws-secret-key" description:"AWS secret key used in deep check mode" value-name:"SECRET_KEY"`
 	AwsProfile      string `long:"aws-profile" description:"AWS shared credential profile name used in deep check mode" value-name:"PROFILE"`
 	AwsRegion       string `long:"aws-region" description:"AWS region used in deep check mode" value-name:"REGION"`
-	Debug           bool   `short:"d" long:"debug" description:"Enable debug mode"`
 	ErrorWithIssues bool   `long:"error-with-issues" description:"Return error code when issues exist"`
-	Fast            bool   `long:"fast" description:"Ignore slow rules. Currently, ignore only aws_instance_invalid_ami"`
-	Quiet           bool   `short:"q" long:"quiet" description:"Do not output any message when no issues are found (Format=default only)"`
+	Fast            bool   `long:"fast" description:"Ignore slow rules (aws_instance_invalid_ami only)"`
+	Quiet           bool   `short:"q" long:"quiet" description:"Do not output any message when no issues are found (default format only)"`
 }
 
+// TestCLIOptions is a set of configs assembled from the CLIOptions for test
 type TestCLIOptions struct {
 	Config     *config.Config
 	ConfigFile string
@@ -61,9 +60,9 @@ type TestCLIOptions struct {
 func (cli *CLI) Run(args []string) int {
 	var opts CLIOptions
 	parser := flags.NewParser(&opts, flags.HelpFlag)
-	parser.Usage = "[OPTIONS] [FILE]"
+	parser.Usage = "[OPTIONS]"
 	parser.UnknownOptionHandler = func(option string, arg flags.SplitArgument, args []string) ([]string, error) {
-		return []string{}, errors.New(fmt.Sprintf("ERROR: `%s` is unknown option. Please run `tflint --help`", option))
+		return []string{}, fmt.Errorf("ERROR: `%s` is unknown option. Please run `tflint --help`", option)
 	}
 	// Parse commandline flag
 	args, err := parser.ParseArgs(args)
@@ -71,10 +70,13 @@ func (cli *CLI) Run(args []string) int {
 		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {
 			fmt.Fprintln(cli.outStream, err)
 			return ExitCodeOK
-		} else {
-			fmt.Fprintln(cli.errStream, err)
-			return ExitCodeError
 		}
+		fmt.Fprintln(cli.errStream, err)
+		return ExitCodeError
+	}
+	if len(args) > 1 {
+		fmt.Fprintln(cli.errStream, errors.New("ERROR: Too many arguments. TFLint doesn't accept the file argument"))
+		return ExitCodeError
 	}
 
 	// Show version
@@ -90,59 +92,46 @@ func (cli *CLI) Run(args []string) int {
 		return ExitCodeError
 	}
 
-	// Main function
-	// If disabled test mode, generates real loader
+	// Load Terraform's configurations
 	if !cli.testMode {
-		cli.loader = loader.NewLoader(c.Debug)
-	}
-	cli.loader.LoadState()
-	cli.loader.LoadTFVars(c.Varfile)
-	if len(args) > 1 {
-		for i, file := range args {
-			if i == 0 {
-				continue
-			}
-			if err = cli.loader.LoadTemplate(file); err != nil {
-				fmt.Fprintln(cli.errStream, err)
-				return ExitCodeError
-			}
-		}
-	} else {
-		if err = cli.loader.LoadAllTemplate("."); err != nil {
-			fmt.Fprintln(cli.errStream, err)
-			return ExitCodeError
-		}
-	}
-
-	// If disabled test mode, generates real detector
-	if !cli.testMode {
-		templates, files, state, tfvars := cli.loader.Dump()
-		schema, err := schema.Make(files)
-		if err != nil {
-			fmt.Fprintln(cli.errStream, fmt.Errorf("ERROR: Parse error: %s", err))
-			return ExitCodeError
-		}
-		cli.detector, err = detector.NewDetector(templates, schema, state, tfvars, c)
+		cli.loader, err = tflint.NewLoader()
 		if err != nil {
 			fmt.Fprintln(cli.errStream, err)
 			return ExitCodeError
 		}
 	}
+	configs, err := cli.loader.LoadConfig()
 	if err != nil {
 		fmt.Fprintln(cli.errStream, err)
 		return ExitCodeError
 	}
-	issues := cli.detector.Detect()
-	if cli.detector.HasError() {
-		fmt.Fprintln(cli.errStream, "ERROR: error occurred in detecting. Please run with --debug option for details.")
+
+	// Check configurations via Runner
+	runner := tflint.NewRunner(c, configs)
+	runners, err := tflint.NewModuleRunners(runner)
+	if err != nil {
+		fmt.Fprintln(cli.errStream, err)
 		return ExitCodeError
 	}
+	runners = append(runners, runner)
 
-	// If disabled test mode, generates real printer
-	if !cli.testMode {
-		cli.printer = printer.NewPrinter(cli.outStream, cli.errStream)
+	for _, rule := range rules.NewRules(c) {
+		for _, runner := range runners {
+			err := rule.Check(runner)
+			if err != nil {
+				fmt.Fprintln(cli.errStream, err)
+				return ExitCodeError
+			}
+		}
 	}
-	cli.printer.Print(issues, opts.Format, opts.Quiet)
+
+	issues := []*issue.Issue{}
+	for _, runner := range runners {
+		issues = append(issues, runner.Issues...)
+	}
+
+	// Print issues
+	printer.NewPrinter(cli.outStream, cli.errStream).Print(issues, opts.Format, opts.Quiet)
 
 	if opts.ErrorWithIssues && len(issues) > 0 {
 		return ExitCodeIssuesFound
@@ -153,9 +142,6 @@ func (cli *CLI) Run(args []string) int {
 
 func (cli *CLI) setupConfig(opts CLIOptions) (*config.Config, error) {
 	c := config.Init()
-	if opts.Debug {
-		c.Debug = true
-	}
 	fallbackConfig, err := homedir.Expand("~/.tflint.hcl")
 	if err != nil {
 		return nil, err
