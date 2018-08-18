@@ -468,7 +468,8 @@
   version = "v3.3.3"
 
 [[projects]]
-  digest = "1:d8547fd84fef05574fa738845c7ee6eff89dc2325f7010e1b3e41f1dfef72d5d"
+  branch = "master"
+  digest = "1:ccc78feeee0ecd1385dd05688e3c504ebd87b7c4857cf2c0e162f5923447d8b4"
   name = "github.com/zclconf/go-cty"
   packages = [
     "cty",
@@ -481,7 +482,7 @@
     "cty/set",
   ]
   pruneopts = "UT"
-  revision = "d006e4534bc4fbc512383aa98d04d641ea951ba5"
+  revision = "58bb2bc0302a85e14ddcd734a1509f66fd89d595"
 
 [[projects]]
   branch = "master"
