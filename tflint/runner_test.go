@@ -442,7 +442,7 @@ resource "null_resource" "test" {
 }`,
 			ErrorCode:  TypeConversionError,
 			ErrorLevel: ErrorLevel,
-			ErrorText:  "Invalid type expression in resource.tf:3; incorrect type; string required",
+			ErrorText:  "Invalid type expression in resource.tf:3; string required",
 		},
 		{
 			Name: "unevalauble",
