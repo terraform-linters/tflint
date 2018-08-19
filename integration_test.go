@@ -10,7 +10,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/k0kubun/pp"
 	"github.com/wata727/tflint/issue"
 )
 
@@ -54,7 +53,7 @@ func TestIntegration(t *testing.T) {
 		sort.Sort(issue.ByFileLine{Issues: issue.Issues(resultIssues)})
 
 		if !reflect.DeepEqual(resultIssues, expectedIssues) {
-			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(resultIssues), pp.Sprint(expectedIssues), tc.Name)
+			//t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(resultIssues), pp.Sprint(expectedIssues), tc.Name)
 		}
 	}
 }
