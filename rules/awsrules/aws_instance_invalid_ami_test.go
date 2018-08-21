@@ -13,7 +13,6 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/mock"
 	"github.com/wata727/tflint/tflint"
@@ -85,7 +84,7 @@ resource "aws_instance" "valid" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(config.Init(), cfg, map[string]*terraform.InputValue{})
+		runner := tflint.NewRunner(tflint.EmptyConfig(), cfg, map[string]*terraform.InputValue{})
 		rule := NewAwsInstanceInvalidAMIRule()
 
 		ec2mock := mock.NewMockEC2API(ctrl)
@@ -155,7 +154,7 @@ resource "aws_instance" "valid" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(config.Init(), cfg, map[string]*terraform.InputValue{})
+		runner := tflint.NewRunner(tflint.EmptyConfig(), cfg, map[string]*terraform.InputValue{})
 		rule := NewAwsInstanceInvalidAMIRule()
 
 		ec2mock := mock.NewMockEC2API(ctrl)

@@ -12,7 +12,6 @@ import (
 	"github.com/hashicorp/terraform/lang"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/client"
-	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/state"
 	"github.com/zclconf/go-cty/cty"
@@ -30,17 +29,17 @@ type Runner struct {
 
 	ctx    terraform.BuiltinEvalContext
 	state  state.TFState
-	config *config.Config
+	config *Config
 }
 
 // NewRunner returns new TFLint runner
 // It prepares built-in context (workpace metadata, variables) from
 // received `configs.Config` and `terraform.InputValues`
-func NewRunner(c *config.Config, cfg *configs.Config, variables ...terraform.InputValues) *Runner {
+func NewRunner(c *Config, cfg *configs.Config, variables ...terraform.InputValues) *Runner {
 	return &Runner{
 		TFConfig:  cfg,
 		Issues:    []*issue.Issue{},
-		AwsClient: client.NewAwsClient(c),
+		AwsClient: client.NewAwsClient(c.AwsCredentials),
 
 		ctx: terraform.BuiltinEvalContext{
 			Evaluator: &terraform.Evaluator{
