@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/rules/awsrules"
+	"github.com/wata727/tflint/tflint"
 )
 
 func Test_NewRules(t *testing.T) {
@@ -19,19 +19,19 @@ func Test_NewRules(t *testing.T) {
 
 	cases := []struct {
 		Name     string
-		Config   *config.Config
+		Config   *tflint.Config
 		Expected []Rule
 	}{
 		{
 			Name:   "default",
-			Config: config.Init(),
+			Config: tflint.EmptyConfig(),
 			Expected: []Rule{
 				awsrules.NewAwsInstanceInvalidTypeRule(),
 			},
 		},
 		{
 			Name: "enabled deep check",
-			Config: &config.Config{
+			Config: &tflint.Config{
 				DeepCheck: true,
 			},
 			Expected: []Rule{
@@ -41,7 +41,7 @@ func Test_NewRules(t *testing.T) {
 		},
 		{
 			Name: "ignore_rule",
-			Config: &config.Config{
+			Config: &tflint.Config{
 				IgnoreRule: map[string]bool{
 					"aws_instance_invalid_type": true,
 				},
@@ -50,8 +50,8 @@ func Test_NewRules(t *testing.T) {
 		},
 		{
 			Name: "enabled = false",
-			Config: &config.Config{
-				Rules: map[string]*config.Rule{
+			Config: &tflint.Config{
+				Rules: map[string]*tflint.Rule{
 					"aws_instance_invalid_type": {
 						Enabled: false,
 					},
@@ -61,11 +61,11 @@ func Test_NewRules(t *testing.T) {
 		},
 		{
 			Name: "`enabled = true` and `ignore_rule`",
-			Config: &config.Config{
+			Config: &tflint.Config{
 				IgnoreRule: map[string]bool{
 					"aws_instance_invalid_type": true,
 				},
-				Rules: map[string]*config.Rule{
+				Rules: map[string]*tflint.Rule{
 					"aws_instance_invalid_type": {
 						Enabled: true,
 					},
