@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
@@ -73,7 +72,7 @@ resource "aws_instance" "missing_key" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(config.Init(), cfg, map[string]*terraform.InputValue{})
+		runner := tflint.NewRunner(tflint.EmptyConfig(), cfg, map[string]*terraform.InputValue{})
 		rule := NewAwsInstanceInvalidTypeRule()
 		if err = rule.Check(runner); err != nil {
 			t.Fatalf("Unexpected error occurred: %s", err)

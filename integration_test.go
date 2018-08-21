@@ -4,14 +4,21 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"os"
 	"reflect"
 	"sort"
 	"strings"
 	"testing"
 
+	"github.com/wata727/tflint/cmd"
 	"github.com/wata727/tflint/issue"
 )
+
+func TestMain(m *testing.M) {
+	log.SetOutput(ioutil.Discard)
+	os.Exit(m.Run())
+}
 
 func TestIntegration(t *testing.T) {
 	cases := []struct {
@@ -32,10 +39,7 @@ func TestIntegration(t *testing.T) {
 		os.Chdir(testDir)
 
 		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
-		cli := &CLI{
-			outStream: outStream,
-			errStream: errStream,
-		}
+		cli := cmd.NewCLI(outStream, errStream)
 		args := strings.Split(tc.Command, " ")
 		cli.Run(args)
 
