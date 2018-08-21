@@ -1,7 +1,6 @@
 package rules
 
 import (
-	"github.com/wata727/tflint/config"
 	"github.com/wata727/tflint/rules/awsrules"
 	"github.com/wata727/tflint/tflint"
 )
@@ -23,7 +22,7 @@ var deepCheckRules = []Rule{
 }
 
 // NewRules returns rules according to configuration
-func NewRules(c *config.Config) []Rule {
+func NewRules(c *tflint.Config) []Rule {
 	ret := []Rule{}
 	allRules := []Rule{}
 
