@@ -7,7 +7,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	homedir "github.com/mitchellh/go-homedir"
-	"github.com/wata727/tflint/config"
 )
 
 func Test_newAwsSession(t *testing.T) {
@@ -19,17 +18,15 @@ func Test_newAwsSession(t *testing.T) {
 
 	cases := []struct {
 		Name     string
-		Config   *config.Config
+		Creds    AwsCredentials
 		Expected Result
 	}{
 		{
 			Name: "static credentials",
-			Config: &config.Config{
-				AwsCredentials: map[string]string{
-					"access_key": "AWS_ACCESS_KEY",
-					"secret_key": "AWS_SECRET_KEY",
-					"region":     "us-east-1",
-				},
+			Creds: AwsCredentials{
+				AccessKey: "AWS_ACCESS_KEY",
+				SecretKey: "AWS_SECRET_KEY",
+				Region:    "us-east-1",
 			},
 			Expected: Result{
 				Credentials: credentials.NewStaticCredentials("AWS_ACCESS_KEY", "AWS_SECRET_KEY", ""),
@@ -38,21 +35,19 @@ func Test_newAwsSession(t *testing.T) {
 		},
 		{
 			Name: "shared credentials",
-			Config: &config.Config{
-				AwsCredentials: map[string]string{
-					"profile": "account1",
-					"region":  "us-east-1",
-				},
+			Creds: AwsCredentials{
+				Profile: "production",
+				Region:  "us-east-1",
 			},
 			Expected: Result{
-				Credentials: credentials.NewSharedCredentials(path, "account1"),
+				Credentials: credentials.NewSharedCredentials(path, "production"),
 				Region:      aws.String("us-east-1"),
 			},
 		},
 	}
 
 	for _, tc := range cases {
-		s := newAwsSession(tc.Config)
+		s := newAwsSession(tc.Creds)
 		if !reflect.DeepEqual(tc.Expected.Credentials, s.Config.Credentials) {
 			t.Fatalf("Failed `%s` test: expected credentials are `%#v`, but get `%#v`", tc.Name, tc.Expected.Credentials, s.Config.Credentials)
 		}
