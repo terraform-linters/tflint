@@ -21,7 +21,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/aws/aws-sdk-go/service/rds/rdsiface"
 	homedir "github.com/mitchellh/go-homedir"
-	"github.com/wata727/tflint/config"
 )
 
 // AwsClient is a wrapper of the AWS SDK client
@@ -36,9 +35,17 @@ type AwsClient struct {
 	ECS         ecsiface.ECSAPI
 }
 
+// AwsCredentials is credentials for AWS used in deep check mode
+type AwsCredentials struct {
+	AccessKey string
+	SecretKey string
+	Profile   string
+	Region    string
+}
+
 // NewAwsClient returns new AwsClient with configured session
-func NewAwsClient(cfg *config.Config) *AwsClient {
-	s := newAwsSession(cfg)
+func NewAwsClient(creds AwsCredentials) *AwsClient {
+	s := newAwsSession(creds)
 
 	return &AwsClient{
 		IAM:         iam.New(s),
@@ -52,16 +59,16 @@ func NewAwsClient(cfg *config.Config) *AwsClient {
 }
 
 // newAwsSession returns a session necessary for initialization of the AWS SDK
-func newAwsSession(cfg *config.Config) *session.Session {
+func newAwsSession(creds AwsCredentials) *session.Session {
 	s := session.New()
 
-	if cfg.HasAwsRegion() {
-		log.Printf("[INFO] Set AWS region: %s", cfg.AwsCredentials["region"])
+	if creds.Region != "" {
+		log.Printf("[INFO] Set AWS region: %s", creds.Region)
 		s = session.New(&aws.Config{
-			Region: aws.String(cfg.AwsCredentials["region"]),
+			Region: aws.String(creds.Region),
 		})
 	}
-	if cfg.HasAwsSharedCredentials() {
+	if creds.Profile != "" && creds.Region != "" {
 		log.Printf("[INFO] Set AWS shared credentials")
 		path, err := homedir.Expand("~/.aws/credentials")
 		if err != nil {
@@ -69,15 +76,15 @@ func newAwsSession(cfg *config.Config) *session.Session {
 			panic(err)
 		}
 		s = session.New(&aws.Config{
-			Credentials: credentials.NewSharedCredentials(path, cfg.AwsCredentials["profile"]),
-			Region:      aws.String(cfg.AwsCredentials["region"]),
+			Credentials: credentials.NewSharedCredentials(path, creds.Profile),
+			Region:      aws.String(creds.Region),
 		})
 	}
-	if cfg.HasAwsStaticCredentials() {
+	if creds.AccessKey != "" && creds.SecretKey != "" && creds.Region != "" {
 		log.Printf("[INFO] Set AWS static credentials")
 		s = session.New(&aws.Config{
-			Credentials: credentials.NewStaticCredentials(cfg.AwsCredentials["access_key"], cfg.AwsCredentials["secret_key"], ""),
-			Region:      aws.String(cfg.AwsCredentials["region"]),
+			Credentials: credentials.NewStaticCredentials(creds.AccessKey, creds.SecretKey, ""),
+			Region:      aws.String(creds.Region),
 		})
 	}
 
