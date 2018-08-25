@@ -69,14 +69,15 @@
   version = "v1.13.52"
 
 [[projects]]
-  digest = "1:e4e72d0e157d3284c997019c6a58212bbb5845523219df3cb12264713cf94263"
+  branch = "master"
+  digest = "1:632b6e77d8f1cfce5d783432aefe7e335a0925fd91c9efd5dc514d76f0eb9e35"
   name = "github.com/cristim/ec2-instances-info"
   packages = [
     ".",
     "data",
   ]
   pruneopts = "UT"
-  revision = "d2ae4817170d37217fffd340b5417b3005cae3d6"
+  revision = "73c042a5558cd6d8b61fb82502d6f7aec334e9ed"
 
 [[projects]]
   digest = "1:938a2672d6ebbb7f7bc63eee3e4b9464c16ffcf77ec8913d3edbf32b4e3984dd"
