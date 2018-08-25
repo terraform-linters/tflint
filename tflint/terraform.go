@@ -12,6 +12,8 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
+var defaultValuesFile = "terraform.tfvars"
+
 func getTFDataDir() string {
 	dir := os.Getenv("TF_DATA_DIR")
 	if dir != "" {
