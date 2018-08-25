@@ -7,6 +7,7 @@ package mock
 import (
 	gomock "github.com/golang/mock/gomock"
 	configs "github.com/hashicorp/terraform/configs"
+	terraform "github.com/hashicorp/terraform/terraform"
 	reflect "reflect"
 )
 
@@ -44,4 +45,21 @@ func (m *MockAbstractLoader) LoadConfig() (*configs.Config, error) {
 // LoadConfig indicates an expected call of LoadConfig
 func (mr *MockAbstractLoaderMockRecorder) LoadConfig() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadConfig", reflect.TypeOf((*MockAbstractLoader)(nil).LoadConfig))
+}
+
+// LoadValuesFiles mocks base method
+func (m *MockAbstractLoader) LoadValuesFiles(arg0 ...string) ([]terraform.InputValues, error) {
+	varargs := []interface{}{}
+	for _, a := range arg0 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "LoadValuesFiles", varargs...)
+	ret0, _ := ret[0].([]terraform.InputValues)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// LoadValuesFiles indicates an expected call of LoadValuesFiles
+func (mr *MockAbstractLoaderMockRecorder) LoadValuesFiles(arg0 ...interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadValuesFiles", reflect.TypeOf((*MockAbstractLoader)(nil).LoadValuesFiles), arg0...)
 }

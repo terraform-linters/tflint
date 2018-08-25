@@ -3,7 +3,11 @@ package tflint
 import (
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
+
+	"github.com/hashicorp/terraform/terraform"
+	"github.com/zclconf/go-cty/cty"
 )
 
 func Test_LoadConfig_v0_10_5(t *testing.T) {
@@ -219,6 +223,90 @@ func Test_LoadConfig_invalidConfiguration(t *testing.T) {
 	}
 
 	expected := "resource.tf:1,1-10: Unsupported block type; Blocks of type \"resources\" are not expected here. Did you mean \"resource\"?"
+	if err.Error() != expected {
+		t.Fatalf("Expected error is `%s`, but get `%s`", expected, err.Error())
+	}
+}
+
+func Test_LoadValuesFiles(t *testing.T) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "values_files"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	loader, err := NewLoader()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+	ret, err := loader.LoadValuesFiles("cli1.tfvars", "cli2.tfvars")
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+
+	expected := []terraform.InputValues{
+		{
+			"default": {
+				Value:      cty.StringVal("terraform.tfvars"),
+				SourceType: terraform.ValueFromFile,
+			},
+		},
+		{
+			"auto1": {
+				Value:      cty.StringVal("auto1.auto.tfvars"),
+				SourceType: terraform.ValueFromFile,
+			},
+		},
+		{
+			"auto2": {
+				Value:      cty.StringVal("auto2.auto.tfvars"),
+				SourceType: terraform.ValueFromFile,
+			},
+		},
+		{
+			"cli1": {
+				Value:      cty.StringVal("cli1.tfvars"),
+				SourceType: terraform.ValueFromFile,
+			},
+		},
+		{
+			"cli2": {
+				Value:      cty.StringVal("cli2.tfvars"),
+				SourceType: terraform.ValueFromFile,
+			},
+		},
+	}
+
+	if !reflect.DeepEqual(expected, ret) {
+		t.Fatalf("Unexpected input values are received: expected=%#v actual=%#v", expected, ret)
+	}
+}
+
+func Test_LoadValuesFiles_invalidValuesFile(t *testing.T) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "invalid_values_files"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	loader, err := NewLoader()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+	_, err = loader.LoadValuesFiles()
+	if err == nil {
+		t.Fatal("Expected error is not occurred")
+	}
+
+	expected := "Faild to load values file in `terraform.tfvars`: <nil>: Unexpected resource block; Blocks are not allowed here."
 	if err.Error() != expected {
 		t.Fatalf("Expected error is `%s`, but get `%s`", expected, err.Error())
 	}

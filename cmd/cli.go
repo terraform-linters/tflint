@@ -87,9 +87,14 @@ func (cli *CLI) Run(args []string) int {
 		fmt.Fprintln(cli.errStream, err)
 		return ExitCodeError
 	}
+	valuesFiles, err := cli.loader.LoadValuesFiles(cfg.Varfile...)
+	if err != nil {
+		fmt.Fprintln(cli.errStream, err)
+		return ExitCodeError
+	}
 
 	// Check configurations via Runner
-	runner := tflint.NewRunner(cfg, configs)
+	runner := tflint.NewRunner(cfg, configs, valuesFiles...)
 	runners, err := tflint.NewModuleRunners(runner)
 	if err != nil {
 		fmt.Fprintln(cli.errStream, err)
