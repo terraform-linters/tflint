@@ -13,22 +13,20 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/client"
 	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/state"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
 	"github.com/zclconf/go-cty/cty/gocty"
 )
 
 // Runner checks templates according rules.
-// For variables interplation, it has Terraform eval context,
-// and state. After checking, it accumulates results as issues.
+// For variables interplation, it has Terraform eval context.
+// After checking, it accumulates results as issues.
 type Runner struct {
 	TFConfig  *configs.Config
 	Issues    issue.Issues
 	AwsClient *client.AwsClient
 
 	ctx    terraform.BuiltinEvalContext
-	state  state.TFState
 	config *Config
 }
 
