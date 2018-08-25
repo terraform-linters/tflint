@@ -9,12 +9,14 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	version "github.com/hashicorp/go-version"
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
+	"github.com/hashicorp/terraform/terraform"
 )
 
 //go:generate mockgen -source loader.go -destination ../mock/loader.go -package mock
@@ -22,6 +24,7 @@ import (
 // AbstractLoader is a loader interface for mock
 type AbstractLoader interface {
 	LoadConfig() (*configs.Config, error)
+	LoadValuesFiles(...string) ([]terraform.InputValues, error)
 }
 
 // Loader is a wrapper of Terraform's configload.Loader
@@ -108,6 +111,68 @@ func (l *Loader) LoadConfig() (*configs.Config, error) {
 
 	log.Printf("[ERROR] Failed to load modules using the v0.11.0 ~ v0.11.7 module walker. %s", diags)
 	return nil, diags
+}
+
+// LoadValuesFiles reads Terraform's values files and returns terraform.InputValues list in order of priority
+// Pass values ​​files specified from the CLI as the arguments in order of priority
+// This is the responsibility of the caller
+func (l *Loader) LoadValuesFiles(files ...string) ([]terraform.InputValues, error) {
+	values := []terraform.InputValues{}
+
+	autoLoadFiles, err := autoLoadValuesFiles()
+	if err != nil {
+		log.Printf("[ERROR] %s", err)
+		return nil, err
+	}
+	if _, err := os.Stat(defaultValuesFile); !os.IsNotExist(err) {
+		autoLoadFiles = append([]string{defaultValuesFile}, autoLoadFiles...)
+	}
+	files = append(autoLoadFiles, files...)
+
+	for _, file := range files {
+		log.Printf("[INFO] Load `%s`", file)
+		vals, diags := l.loader.Parser().LoadValuesFile(file)
+		if diags.HasErrors() {
+			err := fmt.Errorf("Faild to load values file in `%s`: %s", file, diags)
+			log.Printf("[ERROR] %s", err)
+			return nil, err
+		}
+
+		ret := make(terraform.InputValues)
+		for k, v := range vals {
+			ret[k] = &terraform.InputValue{
+				Value:      v,
+				SourceType: terraform.ValueFromFile,
+			}
+		}
+		values = append(values, ret)
+	}
+
+	return values, nil
+}
+
+// autoLoadValuesFiles returns all files which match *.auto.tfvars present in the current directory
+// The list is sorted alphabetically. This is equivalent to priority
+// Please note that terraform.tfvars is not included in this list
+func autoLoadValuesFiles() ([]string, error) {
+	files, err := ioutil.ReadDir(".")
+	if err != nil {
+		return nil, err
+	}
+
+	ret := []string{}
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+
+		if strings.HasSuffix(file.Name(), ".auto.tfvars") || strings.HasSuffix(file.Name(), ".auto.tfvars.json") {
+			ret = append(ret, file.Name())
+		}
+	}
+	sort.Strings(ret)
+
+	return ret, nil
 }
 
 func (l *Loader) moduleWalkerLegacy() configs.ModuleWalker {

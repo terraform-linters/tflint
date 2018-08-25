@@ -9,6 +9,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hashicorp/terraform/configs"
+	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/mock"
 	"github.com/wata727/tflint/rules"
@@ -100,6 +101,7 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 
 		loader := mock.NewMockAbstractLoader(ctrl)
 		loader.EXPECT().LoadConfig().Return(configs.NewEmptyConfig(), tc.LoadErr).AnyTimes()
+		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, tc.LoadErr).AnyTimes()
 		cli.loader = loader
 
 		status := cli.Run(strings.Split(tc.Command, " "))
@@ -206,6 +208,7 @@ func TestCLIRun__issuesFound(t *testing.T) {
 
 		loader := mock.NewMockAbstractLoader(ctrl)
 		loader.EXPECT().LoadConfig().Return(configs.NewEmptyConfig(), nil).AnyTimes()
+		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, nil).AnyTimes()
 		cli.loader = loader
 
 		status := cli.Run(strings.Split(tc.Command, " "))
