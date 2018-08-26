@@ -1,3 +1,9 @@
+## 0.7.2 (2018-08-26)
+
+### Enhancements
+
+- Update valid instance list ([#226](https://github.com/wata727/tflint/pull/226))
+
 ## 0.7.1 (2018-07-19)
 
 ### Bugfix
