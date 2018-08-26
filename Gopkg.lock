@@ -111,7 +111,7 @@
   version = "v3.5.1"
 
 [[projects]]
-  digest = "1:e4e72d0e157d3284c997019c6a58212bbb5845523219df3cb12264713cf94263"
+  digest = "1:632b6e77d8f1cfce5d783432aefe7e335a0925fd91c9efd5dc514d76f0eb9e35"
   name = "github.com/cristim/ec2-instances-info"
   packages = [
     ".",
