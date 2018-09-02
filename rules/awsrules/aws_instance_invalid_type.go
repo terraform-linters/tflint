@@ -49,32 +49,11 @@ func (r *AwsInstanceInvalidTypeRule) Enabled() bool {
 
 // Check checks whether "aws_instance" has invalid instance type.
 func (r *AwsInstanceInvalidTypeRule) Check(runner *tflint.Runner) error {
-	for _, resource := range runner.LookupResourcesByType(r.resourceType) {
-		body, _, diags := resource.Config.PartialContent(&hcl.BodySchema{
-			Attributes: []hcl.AttributeSchema{
-				{
-					Name: r.attributeName,
-				},
-			},
-		})
-		if diags.HasErrors() {
-			panic(diags)
-		}
+	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
+		var instanceType string
+		err := runner.EvaluateExpr(attribute.Expr, &instanceType)
 
-		if attribute, ok := body.Attributes[r.attributeName]; ok {
-			var instanceType string
-			err := runner.EvaluateExpr(attribute.Expr, &instanceType)
-			if appErr, ok := err.(*tflint.Error); ok {
-				switch appErr.Level {
-				case tflint.WarningLevel:
-					continue
-				case tflint.ErrorLevel:
-					return appErr
-				default:
-					panic(appErr)
-				}
-			}
-
+		return runner.EnsureNoError(err, func() error {
 			if !r.instanceTypes[instanceType] {
 				runner.Issues = append(runner.Issues, &issue.Issue{
 					Detector: r.Name(),
@@ -85,8 +64,7 @@ func (r *AwsInstanceInvalidTypeRule) Check(runner *tflint.Runner) error {
 					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_invalid_type.md",
 				})
 			}
-		}
-	}
-
-	return nil
+			return nil
+		})
+	})
 }
