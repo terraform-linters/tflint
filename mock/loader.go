@@ -63,3 +63,15 @@ func (m *MockAbstractLoader) LoadValuesFiles(arg0 ...string) ([]terraform.InputV
 func (mr *MockAbstractLoaderMockRecorder) LoadValuesFiles(arg0 ...interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadValuesFiles", reflect.TypeOf((*MockAbstractLoader)(nil).LoadValuesFiles), arg0...)
 }
+
+// IsConfigFile mocks base method
+func (m *MockAbstractLoader) IsConfigFile(arg0 string) bool {
+	ret := m.ctrl.Call(m, "IsConfigFile", arg0)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsConfigFile indicates an expected call of IsConfigFile
+func (mr *MockAbstractLoaderMockRecorder) IsConfigFile(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsConfigFile", reflect.TypeOf((*MockAbstractLoader)(nil).IsConfigFile), arg0)
+}

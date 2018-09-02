@@ -311,3 +311,50 @@ func Test_LoadValuesFiles_invalidValuesFile(t *testing.T) {
 		t.Fatalf("Expected error is `%s`, but get `%s`", expected, err.Error())
 	}
 }
+
+func Test_IsConfigFile(t *testing.T) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "is_config_file"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	loader, err := NewLoader()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+
+	cases := []struct {
+		Name     string
+		File     string
+		Expected bool
+	}{
+		{
+			Name:     "config file",
+			File:     "template.tf",
+			Expected: true,
+		},
+		{
+			Name:     "not config file",
+			File:     "README",
+			Expected: false,
+		},
+		{
+			Name:     "not found",
+			File:     "not_found.tf",
+			Expected: false,
+		},
+	}
+
+	for _, tc := range cases {
+		ret := loader.IsConfigFile(tc.File)
+		if ret != tc.Expected {
+			t.Fatalf("Test `%s` failed: expected is `%t`, but get `%t`", tc.Name, tc.Expected, ret)
+		}
+	}
+}
