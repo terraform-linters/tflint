@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/k0kubun/pp"
+	"github.com/wata727/tflint/issue"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -1087,5 +1088,40 @@ resource "aws_route" "r" {
 	}
 	if resources[0].Type != "aws_instance" {
 		t.Fatalf("Expected resource type is `aws_instance`, but get `%s`", resources[0].Type)
+	}
+}
+
+func Test_LookupIssues(t *testing.T) {
+	runner := NewRunner(EmptyConfig(), configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
+	runner.Issues = issue.Issues{
+		{
+			Detector: "test rule",
+			Type:     issue.ERROR,
+			Message:  "This is test rule",
+			Line:     1,
+			File:     "template.tf",
+		},
+		{
+			Detector: "test rule",
+			Type:     issue.ERROR,
+			Message:  "This is test rule",
+			Line:     1,
+			File:     "resource.tf",
+		},
+	}
+
+	ret := runner.LookupIssues("template.tf")
+	expected := issue.Issues{
+		{
+			Detector: "test rule",
+			Type:     issue.ERROR,
+			Message:  "This is test rule",
+			Line:     1,
+			File:     "template.tf",
+		},
+	}
+
+	if !cmp.Equal(expected, ret) {
+		t.Fatalf("Failed test: diff: %s", cmp.Diff(expected, ret))
 	}
 }
