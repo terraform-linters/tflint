@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -79,12 +81,6 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Command: "./tflint --format awesome",
 			Status:  ExitCodeError,
 			Stderr:  "Invalid value `awesome' for option",
-		},
-		{
-			Name:    "invalid arguments",
-			Command: "./tflint template.tf",
-			Status:  ExitCodeError,
-			Stderr:  "Too many arguments. TFLint doesn't accept the file argument",
 		},
 	}
 
@@ -207,6 +203,100 @@ func TestCLIRun__issuesFound(t *testing.T) {
 		}
 
 		loader := mock.NewMockAbstractLoader(ctrl)
+		loader.EXPECT().LoadConfig().Return(configs.NewEmptyConfig(), nil).AnyTimes()
+		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, nil).AnyTimes()
+		cli.loader = loader
+
+		status := cli.Run(strings.Split(tc.Command, " "))
+
+		if status != tc.Status {
+			t.Fatalf("Failed `%s`: Expected status is `%d`, but get `%d`", tc.Name, tc.Status, status)
+		}
+		if !strings.Contains(outStream.String(), tc.Stdout) {
+			t.Fatalf("Failed `%s`: Expected to contain `%s` in stdout, but get `%s`", tc.Name, tc.Stdout, outStream.String())
+		}
+		if !strings.Contains(errStream.String(), tc.Stderr) {
+			t.Fatalf("Failed `%s`: Expected to contain `%s` in stderr, but get `%s`", tc.Name, tc.Stderr, errStream.String())
+		}
+	}
+}
+
+func TestCLIRun__withArguments(t *testing.T) {
+	cases := []struct {
+		Name         string
+		Command      string
+		IsConfigFile bool
+		Status       int
+		Stdout       string
+		Stderr       string
+	}{
+		{
+			Name:    "no arguments",
+			Command: "./tflint",
+			Status:  ExitCodeOK,
+			Stdout:  "This is test error (test_rule)",
+		},
+		{
+			Name:         "files arguments",
+			Command:      "./tflint template.tf",
+			IsConfigFile: true,
+			Status:       ExitCodeOK,
+			Stdout:       "Awesome! Your code is following the best practices :)",
+		},
+		{
+			Name:         "directories arguments",
+			Command:      "./tflint ./",
+			IsConfigFile: true,
+			Status:       ExitCodeError,
+			Stderr:       "./: TFLint doesn't accept directories as arguments",
+		},
+		{
+			Name:         "file not found",
+			Command:      "./tflint not_found.tf",
+			IsConfigFile: true,
+			Status:       ExitCodeError,
+			Stderr:       "not_found.tf: configuration file is not found",
+		},
+		{
+			Name:         "not Terraform configuration",
+			Command:      "./tflint README",
+			IsConfigFile: false,
+			Status:       ExitCodeError,
+			Stderr:       "README: This file is not a configuration file",
+		},
+	}
+
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "arguments"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ctrl := gomock.NewController(t)
+	originalRules := rules.DefaultRules
+
+	defer func() {
+		os.Chdir(currentDir)
+		rules.DefaultRules = originalRules
+		ctrl.Finish()
+	}()
+
+	for _, tc := range cases {
+		// Mock rules
+		rules.DefaultRules = []rules.Rule{&testRule{}}
+
+		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
+		cli := &CLI{
+			outStream: outStream,
+			errStream: errStream,
+			testMode:  true,
+		}
+
+		loader := mock.NewMockAbstractLoader(ctrl)
+		loader.EXPECT().IsConfigFile(gomock.Any()).Return(tc.IsConfigFile).AnyTimes()
 		loader.EXPECT().LoadConfig().Return(configs.NewEmptyConfig(), nil).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, nil).AnyTimes()
 		cli.loader = loader

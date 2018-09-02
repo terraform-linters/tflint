@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"io"
+	"os"
 
 	flags "github.com/jessevdk/go-flags"
 
@@ -55,10 +55,7 @@ func (cli *CLI) Run(args []string) int {
 		fmt.Fprintln(cli.errStream, err)
 		return ExitCodeError
 	}
-	if len(args) > 1 {
-		fmt.Fprintln(cli.errStream, errors.New("ERROR: Too many arguments. TFLint doesn't accept the file argument"))
-		return ExitCodeError
-	}
+	argFiles := args[1:]
 
 	// Show version
 	if opts.Version {
@@ -79,6 +76,20 @@ func (cli *CLI) Run(args []string) int {
 		cli.loader, err = tflint.NewLoader()
 		if err != nil {
 			fmt.Fprintln(cli.errStream, err)
+			return ExitCodeError
+		}
+	}
+	for _, file := range argFiles {
+		if fileInfo, err := os.Stat(file); os.IsNotExist(err) {
+			fmt.Fprintf(cli.errStream, "%s: configuration file is not found\n", file)
+			return ExitCodeError
+		} else if fileInfo.IsDir() {
+			fmt.Fprintf(cli.errStream, "%s: TFLint doesn't accept directories as arguments\n", file)
+			return ExitCodeError
+		}
+
+		if !cli.loader.IsConfigFile(file) {
+			fmt.Fprintf(cli.errStream, "%s: This file is not a configuration file\n", file)
 			return ExitCodeError
 		}
 	}
@@ -114,7 +125,7 @@ func (cli *CLI) Run(args []string) int {
 
 	issues := []*issue.Issue{}
 	for _, runner := range runners {
-		issues = append(issues, runner.Issues...)
+		issues = append(issues, runner.LookupIssues(argFiles...)...)
 	}
 
 	// Print issues

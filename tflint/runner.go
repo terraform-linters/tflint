@@ -238,6 +238,23 @@ func (r *Runner) GetFileName(raw string) string {
 	return filepath.Join(r.TFConfig.Path.String(), filepath.Base(raw))
 }
 
+// LookupIssues returns issues according to the received files
+func (r *Runner) LookupIssues(files ...string) issue.Issues {
+	if len(files) == 0 {
+		return r.Issues
+	}
+
+	issues := []*issue.Issue{}
+	for _, issue := range r.Issues {
+		for _, file := range files {
+			if file == issue.File {
+				issues = append(issues, issue)
+			}
+		}
+	}
+	return issues
+}
+
 // prepareVariableValues prepares Terraform variables from configs, input variables and environment variables.
 // Variables in the configuration are overwritten by environment variables.
 // Finally, they are overwritten by received input variable on the received order.

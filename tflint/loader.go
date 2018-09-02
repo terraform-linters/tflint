@@ -25,11 +25,13 @@ import (
 type AbstractLoader interface {
 	LoadConfig() (*configs.Config, error)
 	LoadValuesFiles(...string) ([]terraform.InputValues, error)
+	IsConfigFile(string) bool
 }
 
 // Loader is a wrapper of Terraform's configload.Loader
 type Loader struct {
 	loader               *configload.Loader
+	configFiles          []string
 	moduleSourceVersions map[string][]*version.Version
 	moduleManifest       map[string]*moduleManifest
 }
@@ -57,8 +59,14 @@ func NewLoader() (*Loader, error) {
 		return nil, err
 	}
 
+	primary, override, diags := loader.Parser().ConfigDirFiles(".")
+	if diags != nil {
+		return nil, diags
+	}
+
 	l := &Loader{
 		loader:               loader,
+		configFiles:          append(primary, override...),
 		moduleSourceVersions: map[string][]*version.Version{},
 		moduleManifest:       map[string]*moduleManifest{},
 	}
@@ -149,6 +157,16 @@ func (l *Loader) LoadValuesFiles(files ...string) ([]terraform.InputValues, erro
 	}
 
 	return values, nil
+}
+
+// IsConfigFile checks whether the configuration files includes the file
+func (l *Loader) IsConfigFile(file string) bool {
+	for _, configFile := range l.configFiles {
+		if file == configFile {
+			return true
+		}
+	}
+	return false
 }
 
 // autoLoadValuesFiles returns all files which match *.auto.tfvars present in the current directory
