@@ -1,6 +1,8 @@
 package tflint
 
 import (
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -1043,8 +1045,8 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 	}
 }
 
-func Test_LookupResourcesByType(t *testing.T) {
-	dir, err := ioutil.TempDir("", "LookupResourcesByType")
+func Test_lookupResourcesByType(t *testing.T) {
+	dir, err := ioutil.TempDir("", "lookupResourcesByType")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1081,7 +1083,7 @@ resource "aws_route" "r" {
 	}
 
 	runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
-	resources := runner.LookupResourcesByType("aws_instance")
+	resources := runner.lookupResourcesByType("aws_instance")
 
 	if len(resources) != 1 {
 		t.Fatalf("Expected resources size is `1`, but get `%d`", len(resources))
@@ -1123,5 +1125,132 @@ func Test_LookupIssues(t *testing.T) {
 
 	if !cmp.Equal(expected, ret) {
 		t.Fatalf("Failed test: diff: %s", cmp.Diff(expected, ret))
+	}
+}
+
+func Test_WalkResourceAttributes(t *testing.T) {
+	cases := []struct {
+		Name      string
+		Content   string
+		ErrorText string
+	}{
+		{
+			Name: "Resource not found",
+			Content: `
+resource "null_resource" "test" {
+  key = "foo"
+}`,
+		},
+		{
+			Name: "Attribute not found",
+			Content: `
+resource "aws_instance" "test" {
+  key = "foo"
+}`,
+		},
+		{
+			Name: "Block attribute",
+			Content: `
+resource "aws_instance" "test" {
+  instance_type {
+    name = "t2.micro"
+  }
+}`,
+		},
+		{
+			Name: "walk",
+			Content: `
+resource "aws_instance" "test" {
+  instance_type = "t2.micro"
+}`,
+			ErrorText: "Walk instance_type",
+		},
+	}
+
+	dir, err := ioutil.TempDir("", "WalkResourceAttributes")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+
+	for _, tc := range cases {
+		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		cfg, err := loadConfigHelper(dir)
+		if err != nil {
+			t.Fatal(err)
+		}
+		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+
+		err = runner.WalkResourceAttributes("aws_instance", "instance_type", func(attribute *hcl.Attribute) error {
+			return fmt.Errorf("Walk %s", attribute.Name)
+		})
+		if err == nil {
+			if tc.ErrorText != "" {
+				t.Fatalf("Failed `%s` test: expected error is not occurred `%s`", tc.Name, tc.ErrorText)
+			}
+		} else if err.Error() != tc.ErrorText {
+			t.Fatalf("Failed `%s` test: expected error is %s, but get %s", tc.Name, tc.ErrorText, err)
+		}
+	}
+}
+
+func Test_EnsureNoError(t *testing.T) {
+	cases := []struct {
+		Name      string
+		Error     error
+		ErrorText string
+	}{
+		{
+			Name:      "no error",
+			Error:     nil,
+			ErrorText: "function called",
+		},
+		{
+			Name:      "native error",
+			Error:     errors.New("Error occurred"),
+			ErrorText: "Error occurred",
+		},
+		{
+			Name: "warning error",
+			Error: &Error{
+				Code:    UnknownValueError,
+				Level:   WarningLevel,
+				Message: "Warning error",
+			},
+		},
+		{
+			Name: "app error",
+			Error: &Error{
+				Code:    TypeMismatchError,
+				Level:   ErrorLevel,
+				Message: "App error",
+			},
+			ErrorText: "App error",
+		},
+	}
+
+	dir, err := ioutil.TempDir("", "EnsureNoError")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+
+	for _, tc := range cases {
+		runner := NewRunner(EmptyConfig(), configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
+
+		err = runner.EnsureNoError(tc.Error, func() error {
+			return errors.New("function called")
+		})
+		if err == nil {
+			if tc.ErrorText != "" {
+				t.Fatalf("Failed `%s` test: expected error is not occurred `%s`", tc.Name, tc.ErrorText)
+			}
+		} else if err.Error() != tc.ErrorText {
+			t.Fatalf("Failed `%s` test: expected error is %s, but get %s", tc.Name, tc.ErrorText, err)
+		}
 	}
 }

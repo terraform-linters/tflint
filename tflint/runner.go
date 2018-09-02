@@ -122,19 +122,6 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 	return runners, nil
 }
 
-// LookupResourcesByType returns Terraform's resources, which match received resource type
-func (r *Runner) LookupResourcesByType(resourceType string) []*configs.Resource {
-	ret := []*configs.Resource{}
-
-	for _, resource := range r.TFConfig.Module.ManagedResources {
-		if resource.Type == resourceType {
-			ret = append(ret, resource)
-		}
-	}
-
-	return ret
-}
-
 // EvaluateExpr is a wrapper of terraform.BultinEvalContext.EvaluateExpr and gocty.FromCtyValue
 // When it received slice as `ret`, it converts cty.Value to expected list type
 // because raw cty.Value has TupleType.
@@ -255,6 +242,52 @@ func (r *Runner) LookupIssues(files ...string) issue.Issues {
 	return issues
 }
 
+// WalkResourceAttributes searches for resources and passes the appropriate attributes to the walker function
+func (r *Runner) WalkResourceAttributes(resource, attributeName string, walker func(*hcl.Attribute) error) error {
+	for _, resource := range r.lookupResourcesByType(resource) {
+		body, _, diags := resource.Config.PartialContent(&hcl.BodySchema{
+			Attributes: []hcl.AttributeSchema{
+				{
+					Name: attributeName,
+				},
+			},
+		})
+		if diags.HasErrors() {
+			return diags
+		}
+
+		if attribute, ok := body.Attributes[attributeName]; ok {
+			err := walker(attribute)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+// EnsureNoError is a helper for processing when no error occurs
+// This function skips processing without returning an error to the caller when the error is warning
+func (r *Runner) EnsureNoError(err error, proc func() error) error {
+	if err == nil {
+		return proc()
+	}
+
+	if appErr, ok := err.(*Error); ok {
+		switch appErr.Level {
+		case WarningLevel:
+			return nil
+		case ErrorLevel:
+			return appErr
+		default:
+			panic(appErr)
+		}
+	} else {
+		return err
+	}
+}
+
 // prepareVariableValues prepares Terraform variables from configs, input variables and environment variables.
 // Variables in the configuration are overwritten by environment variables.
 // Finally, they are overwritten by received input variable on the received order.
@@ -270,6 +303,18 @@ func prepareVariableValues(configVars map[string]*configs.Variable, variables ..
 		variableValues[""][k] = iv.Value
 	}
 	return variableValues
+}
+
+func (r *Runner) lookupResourcesByType(resourceType string) []*configs.Resource {
+	ret := []*configs.Resource{}
+
+	for _, resource := range r.TFConfig.Module.ManagedResources {
+		if resource.Type == resourceType {
+			ret = append(ret, resource)
+		}
+	}
+
+	return ret
 }
 
 func isEvaluable(expr hcl.Expression) bool {
