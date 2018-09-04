@@ -282,7 +282,7 @@
 
 [[projects]]
   branch = "v0.12-dev"
-  digest = "1:0c5fb06110601b54aee0d007cb21de1451a67c769fc2617806c87a6fbd4dd837"
+  digest = "1:2a04cc48753ce5d8e9028484343aa35a9703f38d610488f2be240273756b2881"
   name = "github.com/hashicorp/terraform"
   packages = [
     "addrs",
@@ -317,7 +317,7 @@
     "version",
   ]
   pruneopts = "UT"
-  revision = "23c17cdc7b3457394188de36e9b3db0966c3d7b9"
+  revision = "bed2566c7632463d26a4e72f1c1b999358aebbf6"
 
 [[projects]]
   digest = "1:a2cff208d4759f6ba1b1cd228587b0a1869f95f22542ec9cd17fff64430113c7"
@@ -479,7 +479,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:ccc78feeee0ecd1385dd05688e3c504ebd87b7c4857cf2c0e162f5923447d8b4"
+  digest = "1:d3ff7bbb471336a697a8ca894651b0bd29d001e2de1629fa0dafb72b6f90e9a6"
   name = "github.com/zclconf/go-cty"
   packages = [
     "cty",
@@ -492,7 +492,7 @@
     "cty/set",
   ]
   pruneopts = "UT"
-  revision = "58bb2bc0302a85e14ddcd734a1509f66fd89d595"
+  revision = "752f6a689f5e6cd7836c7bd0e1ac9b757814a2c7"
 
 [[projects]]
   branch = "master"
