@@ -40,8 +40,11 @@ func (r *AwsInstanceInvalidAMIRule) Enabled() bool {
 
 // Check checks whether "aws_instance" has invalid AMI ID
 func (r *AwsInstanceInvalidAMIRule) Check(runner *tflint.Runner) error {
+	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
 		if !r.dataPrepared {
+			log.Print("[DEBUG] Fetch AMI images")
 			resp, err := runner.AwsClient.EC2.DescribeImages(&ec2.DescribeImagesInput{})
 			if err != nil {
 				err := &tflint.Error{

@@ -58,7 +58,7 @@ func getTFEnvVariables() terraform.InputValues {
 		envVal := e[idx+1:]
 
 		if strings.HasPrefix(envKey, "TF_VAR_") {
-			log.Printf("[INFO] TF_VAR_* environment variable found: key=%s, value=%s", envKey, envVal)
+			log.Printf("[INFO] TF_VAR_* environment variable found: key=%s", envKey)
 			varName := strings.Replace(envKey, "TF_VAR_", "", 1)
 
 			envVariables[varName] = &terraform.InputValue{

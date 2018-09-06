@@ -71,7 +71,9 @@ func LoadConfig(file string) (*Config, error) {
 		return cfg, nil
 	} else if file != defaultConfigFile {
 		log.Printf("[ERROR] %s", err)
-		return nil, fmt.Errorf("Failed to load config file: %s", file)
+		return nil, fmt.Errorf("`%s` is not found", file)
+	} else {
+		log.Printf("[INFO] Default config file is not found. Ignored")
 	}
 
 	fallback, err := homedir.Expand(fallbackConfigFile)
@@ -80,7 +82,7 @@ func LoadConfig(file string) (*Config, error) {
 		return nil, err
 	}
 
-	log.Printf("[INFO] Load fallback config: %s", file)
+	log.Printf("[INFO] Load fallback config: %s", fallback)
 	if _, err := os.Stat(fallback); !os.IsNotExist(err) {
 		cfg, err := loadConfigFromFile(fallback)
 		if err != nil {
@@ -88,6 +90,7 @@ func LoadConfig(file string) (*Config, error) {
 		}
 		return cfg, nil
 	}
+	log.Printf("[INFO] Fallback config file is not found. Ignored")
 
 	log.Print("[INFO] Use default config")
 	return EmptyConfig(), nil
