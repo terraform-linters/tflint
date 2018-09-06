@@ -1,9 +1,11 @@
 package tflint
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/hashicorp/hcl2/hcl"
@@ -34,6 +36,12 @@ type Runner struct {
 // It prepares built-in context (workpace metadata, variables) from
 // received `configs.Config` and `terraform.InputValues`
 func NewRunner(c *Config, cfg *configs.Config, variables ...terraform.InputValues) *Runner {
+	path := "root"
+	if !cfg.Path.IsRoot() {
+		path = cfg.Path.String()
+	}
+	log.Printf("[INFO] Initialize new runner for %s", path)
+
 	return &Runner{
 		TFConfig:  cfg,
 		Issues:    []*issue.Issue{},
@@ -68,6 +76,13 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 
 		attributes, diags := moduleCall.Config.JustAttributes()
 		if diags.HasErrors() {
+			var causeErr error
+			if diags[0].Subject == nil {
+				// HACK: When Subject is nil, it outputs unintended message, so it replaces with actual file.
+				causeErr = errors.New(strings.Replace(diags.Error(), "<nil>: ", "", 1))
+			} else {
+				causeErr = diags
+			}
 			err := &Error{
 				Code:  UnexpectedAttributeError,
 				Level: ErrorLevel,
@@ -76,7 +91,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 					parent.GetFileName(moduleCall.DeclRange.Filename),
 					moduleCall.DeclRange.Start.Line,
 				),
-				Cause: diags,
+				Cause: causeErr,
 			}
 			log.Printf("[ERROR] %s", err)
 			return runners, err
@@ -225,6 +240,14 @@ func (r *Runner) GetFileName(raw string) string {
 	return filepath.Join(r.TFConfig.Path.String(), filepath.Base(raw))
 }
 
+// TFConfigPath is a wrapper of addrs.Module
+func (r *Runner) TFConfigPath() string {
+	if r.TFConfig.Path.IsRoot() {
+		return "root"
+	}
+	return r.TFConfig.Path.String()
+}
+
 // LookupIssues returns issues according to the received files
 func (r *Runner) LookupIssues(files ...string) issue.Issues {
 	if len(files) == 0 {
@@ -257,6 +280,7 @@ func (r *Runner) WalkResourceAttributes(resource, attributeName string, walker f
 		}
 
 		if attribute, ok := body.Attributes[attributeName]; ok {
+			log.Printf("[DEBUG] Walk `%s` attribute", resource.Type+"."+resource.Name+"."+attributeName)
 			err := walker(attribute)
 			if err != nil {
 				return err

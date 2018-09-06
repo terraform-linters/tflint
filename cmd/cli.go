@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
 
+	"github.com/fatih/color"
 	flags "github.com/jessevdk/go-flags"
 
 	"github.com/wata727/tflint/issue"
@@ -43,7 +45,10 @@ func (cli *CLI) Run(args []string) int {
 	parser := flags.NewParser(&opts, flags.HelpFlag)
 	parser.Usage = "[OPTIONS]"
 	parser.UnknownOptionHandler = func(option string, arg flags.SplitArgument, args []string) ([]string, error) {
-		return []string{}, fmt.Errorf("ERROR: `%s` is unknown option. Please run `tflint --help`", option)
+		if option == "debug" {
+			return []string{}, errors.New("`debug` option was removed in v0.8.0. Please set `TFLINT_LOG` environment variables instead")
+		}
+		return []string{}, fmt.Errorf("`%s` is unknown option. Please run `tflint --help`", option)
 	}
 	// Parse commandline flag
 	args, err := parser.ParseArgs(args)
@@ -52,7 +57,7 @@ func (cli *CLI) Run(args []string) int {
 			fmt.Fprintln(cli.outStream, err)
 			return ExitCodeOK
 		}
-		fmt.Fprintln(cli.errStream, err)
+		cli.printError(err)
 		return ExitCodeError
 	}
 	argFiles := args[1:]
@@ -66,7 +71,7 @@ func (cli *CLI) Run(args []string) int {
 	// Setup config
 	cfg, err := tflint.LoadConfig(opts.Config)
 	if err != nil {
-		fmt.Fprintln(cli.errStream, err)
+		cli.printError(fmt.Errorf("Failed to load TFLint config: %s", err))
 		return ExitCodeError
 	}
 	cfg = cfg.Merge(opts.toConfig())
@@ -75,32 +80,32 @@ func (cli *CLI) Run(args []string) int {
 	if !cli.testMode {
 		cli.loader, err = tflint.NewLoader()
 		if err != nil {
-			fmt.Fprintln(cli.errStream, err)
+			cli.printError(fmt.Errorf("Failed to prepare loading: %s", err))
 			return ExitCodeError
 		}
 	}
 	for _, file := range argFiles {
 		if fileInfo, err := os.Stat(file); os.IsNotExist(err) {
-			fmt.Fprintf(cli.errStream, "%s: configuration file is not found\n", file)
+			cli.printError(fmt.Errorf("Failed to load `%s`: File not found", file))
 			return ExitCodeError
 		} else if fileInfo.IsDir() {
-			fmt.Fprintf(cli.errStream, "%s: TFLint doesn't accept directories as arguments\n", file)
+			cli.printError(fmt.Errorf("Failed to load `%s`: TFLint doesn't accept directories as arguments", file))
 			return ExitCodeError
 		}
 
 		if !cli.loader.IsConfigFile(file) {
-			fmt.Fprintf(cli.errStream, "%s: This file is not a configuration file\n", file)
+			cli.printError(fmt.Errorf("Failed to load `%s`: File is not a target of Terraform", file))
 			return ExitCodeError
 		}
 	}
 	configs, err := cli.loader.LoadConfig()
 	if err != nil {
-		fmt.Fprintln(cli.errStream, err)
+		cli.printError(fmt.Errorf("Failed to load configurations: %s", err))
 		return ExitCodeError
 	}
 	valuesFiles, err := cli.loader.LoadValuesFiles(cfg.Varfile...)
 	if err != nil {
-		fmt.Fprintln(cli.errStream, err)
+		cli.printError(fmt.Errorf("Failed to load values files: %s", err))
 		return ExitCodeError
 	}
 
@@ -108,7 +113,7 @@ func (cli *CLI) Run(args []string) int {
 	runner := tflint.NewRunner(cfg, configs, valuesFiles...)
 	runners, err := tflint.NewModuleRunners(runner)
 	if err != nil {
-		fmt.Fprintln(cli.errStream, err)
+		cli.printError(fmt.Errorf("Failed to prepare rule checking: %s", err))
 		return ExitCodeError
 	}
 	runners = append(runners, runner)
@@ -117,7 +122,7 @@ func (cli *CLI) Run(args []string) int {
 		for _, runner := range runners {
 			err := rule.Check(runner)
 			if err != nil {
-				fmt.Fprintln(cli.errStream, err)
+				cli.printError(fmt.Errorf("Failed to check `%s` rule: %s", rule.Name(), err))
 				return ExitCodeError
 			}
 		}
@@ -136,4 +141,8 @@ func (cli *CLI) Run(args []string) int {
 	}
 
 	return ExitCodeOK
+}
+
+func (cli *CLI) printError(err error) {
+	fmt.Fprintln(cli.errStream, color.New(color.FgRed).Sprintf("Error: ")+err.Error())
 }

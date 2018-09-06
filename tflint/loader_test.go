@@ -195,7 +195,7 @@ func Test_LoadConfig_moduleNotFound(t *testing.T) {
 		t.Fatal("Expected error is not occurred")
 	}
 
-	expected := "module.tf:1,1-22: `ec2_instance` module is not found. Did you run `terraform init`?; Failed to search by `1.ec2_instance;./tf_aws_ec2_instance` key."
+	expected := "module.tf:1,1-22: `ec2_instance` module is not found. Did you run `terraform init`?; "
 	if err.Error() != expected {
 		t.Fatalf("Expected error is `%s`, but get `%s`", expected, err.Error())
 	}
@@ -306,7 +306,7 @@ func Test_LoadValuesFiles_invalidValuesFile(t *testing.T) {
 		t.Fatal("Expected error is not occurred")
 	}
 
-	expected := "Faild to load values file in `terraform.tfvars`: <nil>: Unexpected resource block; Blocks are not allowed here."
+	expected := "terraform.tfvars: Unexpected resource block; Blocks are not allowed here."
 	if err.Error() != expected {
 		t.Fatalf("Expected error is `%s`, but get `%s`", expected, err.Error())
 	}
