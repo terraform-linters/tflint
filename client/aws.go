@@ -45,6 +45,8 @@ type AwsCredentials struct {
 
 // NewAwsClient returns new AwsClient with configured session
 func NewAwsClient(creds AwsCredentials) *AwsClient {
+	log.Print("[INFO] Initialize AWS Client")
+
 	s := newAwsSession(creds)
 
 	return &AwsClient{

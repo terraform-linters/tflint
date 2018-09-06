@@ -71,10 +71,16 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Stderr:  "Load error occurred",
 		},
 		{
-			Name:    "invalid options",
+			Name:    "deprecated options",
 			Command: "./tflint --debug",
 			Status:  ExitCodeError,
-			Stderr:  "`debug` is unknown option. Please run `tflint --help`",
+			Stderr:  "`debug` option was removed in v0.8.0. Please set `TFLINT_LOG` environment variables instead",
+		},
+		{
+			Name:    "invalid options",
+			Command: "./tflint --unknown",
+			Status:  ExitCodeError,
+			Stderr:  "`unknown` is unknown option. Please run `tflint --help`",
 		},
 		{
 			Name:    "invalid format",
@@ -248,21 +254,21 @@ func TestCLIRun__withArguments(t *testing.T) {
 			Command:      "./tflint ./",
 			IsConfigFile: true,
 			Status:       ExitCodeError,
-			Stderr:       "./: TFLint doesn't accept directories as arguments",
+			Stderr:       "Failed to load `./`: TFLint doesn't accept directories as arguments",
 		},
 		{
 			Name:         "file not found",
 			Command:      "./tflint not_found.tf",
 			IsConfigFile: true,
 			Status:       ExitCodeError,
-			Stderr:       "not_found.tf: configuration file is not found",
+			Stderr:       "Failed to load `not_found.tf`: File not found",
 		},
 		{
 			Name:         "not Terraform configuration",
 			Command:      "./tflint README",
 			IsConfigFile: false,
 			Status:       ExitCodeError,
-			Stderr:       "README: This file is not a configuration file",
+			Stderr:       "Failed to load `README`: File is not a target of Terraform",
 		},
 	}
 

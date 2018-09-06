@@ -2,6 +2,7 @@ package awsrules
 
 import (
 	"fmt"
+	"log"
 
 	instances "github.com/cristim/ec2-instances-info"
 	"github.com/hashicorp/hcl2/hcl"
@@ -49,6 +50,8 @@ func (r *AwsInstanceInvalidTypeRule) Enabled() bool {
 
 // Check checks whether "aws_instance" has invalid instance type.
 func (r *AwsInstanceInvalidTypeRule) Check(runner *tflint.Runner) error {
+	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
 		var instanceType string
 		err := runner.EvaluateExpr(attribute.Expr, &instanceType)

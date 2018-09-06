@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -51,6 +52,8 @@ type moduleManifestFile struct {
 
 // NewLoader returns a loader with module manifests
 func NewLoader() (*Loader, error) {
+	log.Print("[INFO] Initialize new loader")
+
 	loader, err := configload.NewLoader(&configload.Config{
 		ModulesDir: getTFModuleDir(),
 	})
@@ -61,6 +64,7 @@ func NewLoader() (*Loader, error) {
 
 	primary, override, diags := loader.Parser().ConfigDirFiles(".")
 	if diags != nil {
+		log.Printf("[ERROR] %s", diags)
 		return nil, diags
 	}
 
@@ -84,32 +88,33 @@ func NewLoader() (*Loader, error) {
 
 // LoadConfig loads Terraform's configurations
 func (l *Loader) LoadConfig() (*configs.Config, error) {
+	log.Print("[INFO] Load configurations under the current directory")
 	rootMod, diags := l.loader.Parser().LoadConfigDir(".")
 	if diags.HasErrors() {
 		log.Printf("[ERROR] %s", diags)
 		return nil, diags
 	}
 
-	log.Print("[INFO] Trying to load modules using the legacy module walker...")
+	log.Print("[DEBUG] Trying to load modules using the legacy module walker...")
 	cfg, diags := configs.BuildConfig(rootMod, l.moduleWalkerLegacy())
 	if !diags.HasErrors() {
 		return cfg, nil
 	}
-	log.Print("[WARN] Failed to load modules using the legacy module walker; Trying the v0.10.6 module walker...")
+	log.Print("[DEBUG] Failed to load modules using the legacy module walker; Trying the v0.10.6 module walker...")
 	log.Printf("[DEBUG] Original error: %s", diags)
 
 	cfg, diags = configs.BuildConfig(rootMod, l.moduleWalkerV0_10_6())
 	if !diags.HasErrors() {
 		return cfg, nil
 	}
-	log.Print("[WARN] Failed to load modules using the v0.10.6 module walker; Trying the v0.10.7 ~ v0.10.8 module walker...")
+	log.Print("[DEBUG] Failed to load modules using the v0.10.6 module walker; Trying the v0.10.7 ~ v0.10.8 module walker...")
 	log.Printf("[DEBUG] Original error: %s", diags)
 
 	cfg, diags = configs.BuildConfig(rootMod, l.moduleWalkerV0_10_7V0_10_8())
 	if !diags.HasErrors() {
 		return cfg, nil
 	}
-	log.Print("[WARN] Failed to load modules using the v0.10.7 ~ v0.10.8 module walker; Trying the v0.11.0 ~ v0.11.7 module walker...")
+	log.Print("[DEBUG] Failed to load modules using the v0.10.7 ~ v0.10.8 module walker; Trying the v0.11.0 ~ v0.11.7 module walker...")
 	log.Printf("[DEBUG] Original error: %s", diags)
 
 	cfg, diags = configs.BuildConfig(rootMod, l.moduleWalkerV0_11_0V0_11_7())
@@ -125,7 +130,15 @@ func (l *Loader) LoadConfig() (*configs.Config, error) {
 // Pass values ​​files specified from the CLI as the arguments in order of priority
 // This is the responsibility of the caller
 func (l *Loader) LoadValuesFiles(files ...string) ([]terraform.InputValues, error) {
+	log.Print("[INFO] Load values files")
+
 	values := []terraform.InputValues{}
+
+	for _, file := range files {
+		if _, err := os.Stat(file); os.IsNotExist(err) {
+			return values, fmt.Errorf("`%s` is not found", file)
+		}
+	}
 
 	autoLoadFiles, err := autoLoadValuesFiles()
 	if err != nil {
@@ -141,9 +154,12 @@ func (l *Loader) LoadValuesFiles(files ...string) ([]terraform.InputValues, erro
 		log.Printf("[INFO] Load `%s`", file)
 		vals, diags := l.loader.Parser().LoadValuesFile(file)
 		if diags.HasErrors() {
-			err := fmt.Errorf("Faild to load values file in `%s`: %s", file, diags)
-			log.Printf("[ERROR] %s", err)
-			return nil, err
+			log.Printf("[ERROR] %s", diags)
+			if diags[0].Subject == nil {
+				// HACK: When Subject is nil, it outputs unintended message, so it replaces with actual file.
+				return nil, errors.New(strings.Replace(diags.Error(), "<nil>: ", fmt.Sprintf("%s: ", file), 1))
+			}
+			return nil, diags
 		}
 
 		ret := make(terraform.InputValues)
@@ -230,11 +246,11 @@ func (l *Loader) moduleWalkerV0_11_0V0_11_7() configs.ModuleWalker {
 
 		record, ok := l.moduleManifest[key]
 		if !ok {
+			log.Printf("[DEBUG] Failed to search by `%s` key.", key)
 			return nil, nil, hcl.Diagnostics{
 				{
 					Severity: hcl.DiagError,
 					Summary:  fmt.Sprintf("`%s` module is not found. Did you run `terraform init`?", req.Name),
-					Detail:   fmt.Sprintf("Failed to search by `%s` key.", key),
 					Subject:  &req.CallRange,
 				},
 			}
