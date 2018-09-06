@@ -119,7 +119,7 @@ func Test_LoadConfig_error(t *testing.T) {
 			Name: "file not found",
 			File: filepath.Join(currentDir, "test-fixtures", "config", "not_found.hcl"),
 			Expected: fmt.Sprintf(
-				"Failed to load config file: %s",
+				"`%s` is not found",
 				filepath.Join(currentDir, "test-fixtures", "config", "not_found.hcl"),
 			),
 		},
