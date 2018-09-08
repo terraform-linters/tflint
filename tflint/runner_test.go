@@ -953,6 +953,41 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 	}
 }
 
+func Test_NewModuleRunners_ignoreModules(t *testing.T) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "nested_modules"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	loader, err := NewLoader()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+	cfg, err := loader.LoadConfig()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+
+	conf := EmptyConfig()
+	conf.IgnoreModule["./module"] = true
+
+	runner := NewRunner(conf, cfg, map[string]*terraform.InputValue{})
+	runners, err := NewModuleRunners(runner)
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+
+	if len(runners) != 0 {
+		t.Fatalf("This function must not return runners because `ignore_module` is set. Got `%d` runner(s)", len(runners))
+	}
+}
+
 func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
 	currentDir, err := os.Getwd()
 	if err != nil {
