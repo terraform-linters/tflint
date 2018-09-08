@@ -282,7 +282,7 @@
 
 [[projects]]
   branch = "v0.12-dev"
-  digest = "1:2a04cc48753ce5d8e9028484343aa35a9703f38d610488f2be240273756b2881"
+  digest = "1:825c3d3cd5b19b0f30bc5bfc05d95fcea92a42d2c1845934a1c306da269e1175"
   name = "github.com/hashicorp/terraform"
   packages = [
     "addrs",
@@ -317,7 +317,7 @@
     "version",
   ]
   pruneopts = "UT"
-  revision = "bed2566c7632463d26a4e72f1c1b999358aebbf6"
+  revision = "3ca8ac2e18d9548ac4ff05e2323bfac023240ed0"
 
 [[projects]]
   digest = "1:a2cff208d4759f6ba1b1cd228587b0a1869f95f22542ec9cd17fff64430113c7"
