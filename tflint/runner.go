@@ -73,6 +73,10 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 		if !ok {
 			panic(fmt.Errorf("Expected module call `%s` is not found in `%s`", name, parent.TFConfig.Path.String()))
 		}
+		if parent.TFConfig.Path.IsRoot() && parent.config.IgnoreModule[moduleCall.SourceAddr] {
+			log.Printf("[INFO] Ignore `%s` module", moduleCall.Name)
+			continue
+		}
 
 		attributes, diags := moduleCall.Config.JustAttributes()
 		if diags.HasErrors() {
