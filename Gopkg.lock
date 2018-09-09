@@ -320,6 +320,14 @@
   revision = "3ca8ac2e18d9548ac4ff05e2323bfac023240ed0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:89cd2208bdeb192cc83ee287216af3c987fc87a90b9087718ad6631b636cefcf"
+  name = "github.com/iancoleman/strcase"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "3605ed457bf7f8caa1371b4fafadadc026673479"
+
+[[projects]]
   digest = "1:a2cff208d4759f6ba1b1cd228587b0a1869f95f22542ec9cd17fff64430113c7"
   name = "github.com/jessevdk/go-flags"
   packages = ["."]
@@ -615,6 +623,7 @@
     "github.com/hashicorp/terraform/helper/variables",
     "github.com/hashicorp/terraform/lang",
     "github.com/hashicorp/terraform/terraform",
+    "github.com/iancoleman/strcase",
     "github.com/jessevdk/go-flags",
     "github.com/k0kubun/pp",
     "github.com/mattn/go-colorable",
