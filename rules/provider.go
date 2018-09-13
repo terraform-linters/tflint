@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/wata727/tflint/rules/awsrules"
+	"github.com/wata727/tflint/rules/terraformrules"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -18,6 +19,7 @@ type Rule interface {
 var DefaultRules = []Rule{
 	awsrules.NewAwsDBInstanceReadablePasswordRule(),
 	awsrules.NewAwsInstanceInvalidTypeRule(),
+	terraformrules.NewTerraformModulePinnedSourceRule(),
 }
 
 var deepCheckRules = []Rule{
