@@ -62,7 +62,7 @@ template.tf
 Result: 2 issues  (1 errors , 0 warnings , 1 notices)
 ```
 
-If you would like to know more about these issues please check the [documentation](https://github.com/wata727/tflint/tree/master/docs).
+If you would like to know more about these issues and available features please check the [documentation](https://github.com/wata727/tflint/tree/master/docs).
 
 ### Specify Template
 If you want to parse only a specific template, not all templates, you can specify a filename as an argument.
