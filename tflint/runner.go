@@ -199,6 +199,10 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 		val, err = convert.Convert(val, cty.List(cty.String))
 	case *[]int:
 		val, err = convert.Convert(val, cty.List(cty.Number))
+	case *map[string]string:
+		val, err = convert.Convert(val, cty.Map(cty.String))
+	case *map[string]int:
+		val, err = convert.Convert(val, cty.Map(cty.Number))
 	}
 
 	if err != nil {
