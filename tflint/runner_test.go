@@ -337,16 +337,11 @@ resource "null_resource" "test" {
 	}
 }
 
-func Test_EvaluateExpr_map(t *testing.T) {
-	type mapObject struct {
-		One int `cty:"one"`
-		Two int `cty:"two"`
-	}
-
+func Test_EvaluateExpr_stringMap(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected mapObject
+		Expected map[string]string
 	}{
 		{
 			Name: "map literal",
@@ -354,10 +349,10 @@ func Test_EvaluateExpr_map(t *testing.T) {
 resource "null_resource" "test" {
   key = {
     one = 1
-    two = 2
+    two = "2"
   }
 }`,
-			Expected: mapObject{One: 1, Two: 2},
+			Expected: map[string]string{"one": "1", "two": "2"},
 		},
 	}
 
@@ -384,7 +379,61 @@ resource "null_resource" "test" {
 
 		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
 
-		ret := mapObject{}
+		ret := map[string]string{}
+		err = runner.EvaluateExpr(attribute.Expr, &ret)
+		if err != nil {
+			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
+		}
+
+		if !cmp.Equal(tc.Expected, ret) {
+			t.Fatalf("Failed `%s` test: diff: %s", tc.Name, cmp.Diff(tc.Expected, ret))
+		}
+	}
+}
+
+func Test_EvaluateExpr_numberMap(t *testing.T) {
+	cases := []struct {
+		Name     string
+		Content  string
+		Expected map[string]int
+	}{
+		{
+			Name: "map literal",
+			Content: `
+resource "null_resource" "test" {
+  key = {
+    one = 1
+    two = "2"
+  }
+}`,
+			Expected: map[string]int{"one": 1, "two": 2},
+		},
+	}
+
+	dir, err := ioutil.TempDir("", "map")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+
+	for _, tc := range cases {
+		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		cfg, err := loadConfigHelper(dir)
+		if err != nil {
+			t.Fatal(err)
+		}
+		attribute, err := extractAttributeHelper("key", cfg)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+
+		ret := map[string]int{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
