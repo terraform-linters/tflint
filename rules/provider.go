@@ -18,6 +18,7 @@ type Rule interface {
 // DefaultRules is rules by default
 var DefaultRules = []Rule{
 	awsrules.NewAwsDBInstanceReadablePasswordRule(),
+	awsrules.NewAwsInstanceDefaultStandardVolumeRule(),
 	awsrules.NewAwsInstanceInvalidTypeRule(),
 	terraformrules.NewTerraformModulePinnedSourceRule(),
 }
