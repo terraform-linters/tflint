@@ -20,6 +20,8 @@ var DefaultRules = []Rule{
 	awsrules.NewAwsDBInstanceReadablePasswordRule(),
 	awsrules.NewAwsInstanceDefaultStandardVolumeRule(),
 	awsrules.NewAwsInstanceInvalidTypeRule(),
+	awsrules.NewAwsRouteNotSpecifiedTargetRule(),
+	awsrules.NewAwsRouteSpecifiedMultipleTargetsRule(),
 	terraformrules.NewTerraformModulePinnedSourceRule(),
 }
 
