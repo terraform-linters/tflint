@@ -1129,7 +1129,7 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 	}
 }
 
-func Test_lookupResourcesByType(t *testing.T) {
+func Test_LookupResourcesByType(t *testing.T) {
 	dir, err := ioutil.TempDir("", "lookupResourcesByType")
 	if err != nil {
 		t.Fatal(err)
@@ -1167,7 +1167,7 @@ resource "aws_route" "r" {
 	}
 
 	runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
-	resources := runner.lookupResourcesByType("aws_instance")
+	resources := runner.LookupResourcesByType("aws_instance")
 
 	if len(resources) != 1 {
 		t.Fatalf("Expected resources size is `1`, but get `%d`", len(resources))
