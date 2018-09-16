@@ -275,7 +275,7 @@ func (r *Runner) LookupIssues(files ...string) issue.Issues {
 
 // WalkResourceAttributes searches for resources and passes the appropriate attributes to the walker function
 func (r *Runner) WalkResourceAttributes(resource, attributeName string, walker func(*hcl.Attribute) error) error {
-	for _, resource := range r.lookupResourcesByType(resource) {
+	for _, resource := range r.LookupResourcesByType(resource) {
 		body, _, diags := resource.Config.PartialContent(&hcl.BodySchema{
 			Attributes: []hcl.AttributeSchema{
 				{
@@ -320,6 +320,19 @@ func (r *Runner) EnsureNoError(err error, proc func() error) error {
 	}
 }
 
+// LookupResourcesByType returns `configs.Resource` list according to the resource type
+func (r *Runner) LookupResourcesByType(resourceType string) []*configs.Resource {
+	ret := []*configs.Resource{}
+
+	for _, resource := range r.TFConfig.Module.ManagedResources {
+		if resource.Type == resourceType {
+			ret = append(ret, resource)
+		}
+	}
+
+	return ret
+}
+
 // prepareVariableValues prepares Terraform variables from configs, input variables and environment variables.
 // Variables in the configuration are overwritten by environment variables.
 // Finally, they are overwritten by received input variable on the received order.
@@ -335,18 +348,6 @@ func prepareVariableValues(configVars map[string]*configs.Variable, variables ..
 		variableValues[""][k] = iv.Value
 	}
 	return variableValues
-}
-
-func (r *Runner) lookupResourcesByType(resourceType string) []*configs.Resource {
-	ret := []*configs.Resource{}
-
-	for _, resource := range r.TFConfig.Module.ManagedResources {
-		if resource.Type == resourceType {
-			ret = append(ret, resource)
-		}
-	}
-
-	return ret
 }
 
 func isEvaluable(expr hcl.Expression) bool {
