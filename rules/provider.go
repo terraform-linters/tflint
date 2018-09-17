@@ -17,16 +17,47 @@ type Rule interface {
 
 // DefaultRules is rules by default
 var DefaultRules = []Rule{
+	awsrules.NewAwsCloudwatchMetricAlarmInvalidUnitRule(),
+	awsrules.NewAwsDBInstanceDefaultParameterGroupRule(),
+	awsrules.NewAwsDBInstanceInvalidTypeRule(),
+	awsrules.NewAwsDBInstancePreviousTypeRule(),
 	awsrules.NewAwsDBInstanceReadablePasswordRule(),
+	awsrules.NewAwsElastiCacheClusterDefaultParameterGroupRule(),
+	awsrules.NewAwsElastiCacheClusterInvalidTypeRule(),
+	awsrules.NewAwsElastiCacheClusterPreviousTypeRule(),
 	awsrules.NewAwsInstanceDefaultStandardVolumeRule(),
 	awsrules.NewAwsInstanceInvalidTypeRule(),
+	awsrules.NewAwsInstancePreviousTypeRule(),
 	awsrules.NewAwsRouteNotSpecifiedTargetRule(),
 	awsrules.NewAwsRouteSpecifiedMultipleTargetsRule(),
 	terraformrules.NewTerraformModulePinnedSourceRule(),
 }
 
 var deepCheckRules = []Rule{
+	awsrules.NewAwsALBInvalidSecurityGroupRule(),
+	awsrules.NewAwsALBInvalidSubnetRule(),
+	awsrules.NewAwsDBInstanceInvalidDBSubnetGroupRule(),
+	awsrules.NewAwsDBInstanceInvalidOptionGroupRule(),
+	awsrules.NewAwsDBInstanceInvalidParameterGroupRule(),
+	awsrules.NewAwsDBInstanceInvalidVPCSecurityGroupRule(),
+	awsrules.NewAwsElastiCacheClusterInvalidParameterGroupRule(),
+	awsrules.NewAwsElastiCacheClusterInvalidSecurityGroupRule(),
+	awsrules.NewAwsElastiCacheClusterInvalidSubnetGroupRule(),
+	awsrules.NewAwsELBInvalidInstanceRule(),
+	awsrules.NewAwsELBInvalidSecurityGroupRule(),
+	awsrules.NewAwsELBInvalidSubnetRule(),
 	awsrules.NewAwsInstanceInvalidAMIRule(),
+	awsrules.NewAwsInstanceInvalidIAMProfileRule(),
+	awsrules.NewAwsInstanceInvalidKeyNameRule(),
+	awsrules.NewAwsInstanceInvalidSubnetRule(),
+	awsrules.NewAwsInstanceInvalidVPCSecurityGroupRule(),
+	awsrules.NewAwsRouteInvalidEgressOnlyGatewayRule(),
+	awsrules.NewAwsRouteInvalidGatewayRule(),
+	awsrules.NewAwsRouteInvalidInstanceRule(),
+	awsrules.NewAwsRouteInvalidNatGatewayRule(),
+	awsrules.NewAwsRouteInvalidNetworkInterfaceRule(),
+	awsrules.NewAwsRouteInvalidRouteTableRule(),
+	awsrules.NewAwsRouteInvalidVPCPeeringConnectionRule(),
 }
 
 // NewRules returns rules according to configuration
