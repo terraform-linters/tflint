@@ -47,8 +47,13 @@ func generate(fileName string, tmplName string, meta *metadata) {
 
 func toCamelCase(str string) string {
 	exceptions := map[string]string{
-		"ami": "AMI",
-		"db":  "DB",
+		"ami":         "AMI",
+		"db":          "DB",
+		"alb":         "ALB",
+		"elb":         "ELB",
+		"vpc":         "VPC",
+		"elasticache": "ElastiCache",
+		"iam":         "IAM",
 	}
 	for pattern, conv := range exceptions {
 		str = strings.Replace(str, "_"+pattern+"_", "_"+conv+"_", -1)
