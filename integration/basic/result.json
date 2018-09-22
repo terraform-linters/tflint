@@ -1,0 +1,34 @@
+[
+  {
+    "detector": "aws_route_not_specified_target",
+    "type": "ERROR",
+    "message": "The routing target is not specified, each routing must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id.",
+    "line": 1,
+    "file": "template.tf",
+    "link": "https://github.com/wata727/tflint/blob/master/docs/aws_route_not_specified_target.md"
+  },
+  {
+    "detector": "aws_route_specified_multiple_targets",
+    "type": "ERROR",
+    "message": "More than one routing target specified. It must be one.",
+    "line": 6,
+    "file": "template.tf",
+    "link": "https://github.com/wata727/tflint/blob/master/docs/aws_route_specified_multiple_targets.md"
+  },
+  {
+    "detector": "aws_cloudwatch_metric_alarm_invalid_unit",
+    "type": "ERROR",
+    "message": "\"percent\" is invalid unit.",
+    "line": 22,
+    "file": "template.tf",
+    "link": "https://github.com/wata727/tflint/blob/master/docs/aws_cloudwatch_metric_alarm_invalid_unit.md"
+  },
+  {
+    "detector": "aws_route_not_specified_target",
+    "type": "ERROR",
+    "message": "The routing target is not specified, each routing must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id.",
+    "line": 27,
+    "file": "template.tf",
+    "link": "https://github.com/wata727/tflint/blob/master/docs/aws_route_not_specified_target.md"
+  }
+]
