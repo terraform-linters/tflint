@@ -1,37 +1,10 @@
-provider "aws" {
-  region = "us-east-1"
-}
-
-variable "instance_type" {
-  type = "map"
-}
-
-variable "mysql_type" {
-  type = "list"
-}
-
-variable "redis_invalud_type" {
-  type = "string"
-}
-
-variable "redis_previous_type" {
-  type    = "string"
-  default = "cache.t2.micro"
-}
-
-// override by `template_override.tf`
-resource "aws_instance" "web" {
-  ami           = "ami-12345678"
-  instance_type = "t1.2xlarge"
-}
-
-resource "aws_route" "not_specified" {
-  route_table_id         = "rtb-1234abcd" // aws_route_not_specified_target
+resource "aws_route" "not_specified" { // aws_route_not_specified_target
+  route_table_id         = "rtb-1234abcd"
   destination_cidr_block = "10.0.1.0/22"
 }
 
-resource "aws_route" "multiple_specified" {
-  route_table_id         = "rtb-1234abcd"  // aws_route_specified_multiple_targets
+resource "aws_route" "multiple_specified" { // aws_route_specified_multiple_targets
+  route_table_id         = "rtb-1234abcd"
   destination_cidr_block = "10.0.1.0/22"
   gateway_id             = "igw-1234abcd"
   egress_only_gateway_id = "eigw-1234abcd"
@@ -51,7 +24,7 @@ resource "aws_cloudwatch_metric_alarm" "rds-writer-memory" {
   insufficient_data_actions = []
 }
 
-// override by `template_override.tf`
-module "ec2_instance" {
-  source         = "github.com/wata727/invalid_module"
+resource "aws_route" "not_specified2" { // aws_route_not_specified_target
+  route_table_id         = "rtb-1234abcd"
+  destination_cidr_block = "10.0.1.0/22"
 }
