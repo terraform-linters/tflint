@@ -32,6 +32,13 @@ type Runner struct {
 	config *Config
 }
 
+// Rule is interface for building the issue
+type Rule interface {
+	Name() string
+	Type() string
+	Link() string
+}
+
 // NewRunner returns new TFLint runner
 // It prepares built-in context (workpace metadata, variables) from
 // received `configs.Config` and `terraform.InputValues`
@@ -92,7 +99,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 				Level: ErrorLevel,
 				Message: fmt.Sprintf(
 					"Attribute of module not allowed was found in %s:%d",
-					parent.GetFileName(moduleCall.DeclRange.Filename),
+					parent.getFileName(moduleCall.DeclRange.Filename),
 					moduleCall.DeclRange.Start.Line,
 				),
 				Cause: causeErr,
@@ -111,7 +118,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 							Level: ErrorLevel,
 							Message: fmt.Sprintf(
 								"Failed to eval an expression in %s:%d",
-								parent.GetFileName(attribute.Expr.Range().Filename),
+								parent.getFileName(attribute.Expr.Range().Filename),
 								attribute.Expr.Range().Start.Line,
 							),
 							Cause: diags.Err(),
@@ -151,7 +158,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Level: WarningLevel,
 			Message: fmt.Sprintf(
 				"Unevaluable expression found in %s:%d",
-				r.GetFileName(expr.Range().Filename),
+				r.getFileName(expr.Range().Filename),
 				expr.Range().Start.Line,
 			),
 		}
@@ -166,7 +173,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Level: ErrorLevel,
 			Message: fmt.Sprintf(
 				"Failed to eval an expression in %s:%d",
-				r.GetFileName(expr.Range().Filename),
+				r.getFileName(expr.Range().Filename),
 				expr.Range().Start.Line,
 			),
 			Cause: diags.Err(),
@@ -181,7 +188,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Level: WarningLevel,
 			Message: fmt.Sprintf(
 				"Unknown value found in %s:%d; Please use environment variables or tfvars to set the value",
-				r.GetFileName(expr.Range().Filename),
+				r.getFileName(expr.Range().Filename),
 				expr.Range().Start.Line,
 			),
 		}
@@ -211,7 +218,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Level: ErrorLevel,
 			Message: fmt.Sprintf(
 				"Invalid type expression in %s:%d",
-				r.GetFileName(expr.Range().Filename),
+				r.getFileName(expr.Range().Filename),
 				expr.Range().Start.Line,
 			),
 			Cause: err,
@@ -227,7 +234,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Level: ErrorLevel,
 			Message: fmt.Sprintf(
 				"Invalid type expression in %s:%d",
-				r.GetFileName(expr.Range().Filename),
+				r.getFileName(expr.Range().Filename),
 				expr.Range().Start.Line,
 			),
 			Cause: err,
@@ -236,16 +243,6 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 		return err
 	}
 	return nil
-}
-
-// GetFileName returns user-friendly file name.
-// It returns base file name when processing root module.
-// Otherwise, it add the module name as prefix to base file name.
-func (r *Runner) GetFileName(raw string) string {
-	if r.TFConfig.Path.IsRoot() {
-		return filepath.Base(raw)
-	}
-	return filepath.Join(r.TFConfig.Path.String(), filepath.Base(raw))
 }
 
 // TFConfigPath is a wrapper of addrs.Module
@@ -331,6 +328,51 @@ func (r *Runner) LookupResourcesByType(resourceType string) []*configs.Resource 
 	}
 
 	return ret
+}
+
+// EachStringSliceExprs iterates an evaluated value and the corresponding expression
+// If the given expression is a static list, get an expression for each value
+// If not, the given expression is used as it is
+func (r *Runner) EachStringSliceExprs(expr hcl.Expression, proc func(val string, expr hcl.Expression)) error {
+	var vals []string
+	err := r.EvaluateExpr(expr, &vals)
+
+	exprs, diags := hcl.ExprList(expr)
+	if diags.HasErrors() {
+		log.Printf("[DEBUG] Expr is not static list: %s", diags)
+		for range vals {
+			exprs = append(exprs, expr)
+		}
+	}
+
+	return r.EnsureNoError(err, func() error {
+		for idx, val := range vals {
+			proc(val, exprs[idx])
+		}
+		return nil
+	})
+}
+
+// EmitIssue builds an issue and accumulates it
+func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range) {
+	r.Issues = append(r.Issues, &issue.Issue{
+		Detector: rule.Name(),
+		Type:     rule.Type(),
+		Message:  message,
+		Line:     location.Start.Line,
+		File:     r.getFileName(location.Filename),
+		Link:     rule.Link(),
+	})
+}
+
+// getFileName returns user-friendly file name.
+// It returns base file name when processing root module.
+// Otherwise, it add the module name as prefix to base file name.
+func (r *Runner) getFileName(raw string) string {
+	if r.TFConfig.Path.IsRoot() {
+		return filepath.Base(raw)
+	}
+	return filepath.Join(r.TFConfig.Path.String(), filepath.Base(raw))
 }
 
 // prepareVariableValues prepares Terraform variables from configs, input variables and environment variables.

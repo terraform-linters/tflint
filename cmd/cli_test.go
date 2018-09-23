@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/issue"
@@ -137,14 +138,29 @@ func (r *errorRule) Enabled() bool {
 	return true
 }
 
+func (r *testRule) Type() string {
+	return issue.ERROR
+}
+func (r *errorRule) Type() string {
+	return issue.ERROR
+}
+
+func (r *testRule) Link() string {
+	return ""
+}
+func (r *errorRule) Link() string {
+	return ""
+}
+
 func (r *testRule) Check(runner *tflint.Runner) error {
-	runner.Issues = append(runner.Issues, &issue.Issue{
-		Detector: r.Name(),
-		Type:     issue.ERROR,
-		Message:  "This is test error",
-		Line:     1,
-		File:     "test.tf",
-	})
+	runner.EmitIssue(
+		r,
+		"This is test error",
+		hcl.Range{
+			Filename: "test.tf",
+			Start:    hcl.Pos{Line: 1},
+		},
+	)
 	return nil
 }
 func (r *errorRule) Check(runner *tflint.Runner) error {

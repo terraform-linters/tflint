@@ -31,7 +31,7 @@ func Test_toConfig(t *testing.T) {
 				IgnoreRule:       map[string]bool{},
 				Varfile:          []string{},
 				TerraformVersion: "",
-				Rules:            map[string]*tflint.Rule{},
+				Rules:            map[string]*tflint.RuleConfig{},
 			},
 		},
 		{
@@ -48,7 +48,7 @@ func Test_toConfig(t *testing.T) {
 				IgnoreRule:       map[string]bool{},
 				Varfile:          []string{},
 				TerraformVersion: "",
-				Rules:            map[string]*tflint.Rule{},
+				Rules:            map[string]*tflint.RuleConfig{},
 			},
 		},
 		{
@@ -64,7 +64,7 @@ func Test_toConfig(t *testing.T) {
 				IgnoreRule:       map[string]bool{},
 				Varfile:          []string{},
 				TerraformVersion: "",
-				Rules:            map[string]*tflint.Rule{},
+				Rules:            map[string]*tflint.RuleConfig{},
 			},
 		},
 		{
@@ -77,7 +77,7 @@ func Test_toConfig(t *testing.T) {
 				IgnoreRule:       map[string]bool{},
 				Varfile:          []string{},
 				TerraformVersion: "",
-				Rules:            map[string]*tflint.Rule{},
+				Rules:            map[string]*tflint.RuleConfig{},
 			},
 		},
 		{
@@ -90,7 +90,7 @@ func Test_toConfig(t *testing.T) {
 				IgnoreRule:       map[string]bool{"rule1": true, "rule2": true},
 				Varfile:          []string{},
 				TerraformVersion: "",
-				Rules:            map[string]*tflint.Rule{},
+				Rules:            map[string]*tflint.RuleConfig{},
 			},
 		},
 		{
@@ -103,7 +103,7 @@ func Test_toConfig(t *testing.T) {
 				IgnoreRule:       map[string]bool{},
 				Varfile:          []string{"example1.tfvars", "example2.tfvars"},
 				TerraformVersion: "",
-				Rules:            map[string]*tflint.Rule{},
+				Rules:            map[string]*tflint.RuleConfig{},
 			},
 		},
 		{
@@ -116,7 +116,7 @@ func Test_toConfig(t *testing.T) {
 				IgnoreRule:       map[string]bool{"aws_instance_invalid_ami": true},
 				Varfile:          []string{},
 				TerraformVersion: "",
-				Rules:            map[string]*tflint.Rule{},
+				Rules:            map[string]*tflint.RuleConfig{},
 			},
 		},
 	}
