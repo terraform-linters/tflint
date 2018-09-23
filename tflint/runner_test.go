@@ -1338,3 +1338,136 @@ func Test_EnsureNoError(t *testing.T) {
 		}
 	}
 }
+
+func Test_EachStringSliceExprs(t *testing.T) {
+	cases := []struct {
+		Name    string
+		Content string
+		Vals    []string
+		Lines   []int
+	}{
+		{
+			Name: "literal list",
+			Content: `
+resource "null_resource" "test" {
+  value = [
+    "text",
+    "element",
+  ]
+}`,
+			Vals:  []string{"text", "element"},
+			Lines: []int{4, 5},
+		},
+		{
+			Name: "literal list",
+			Content: `
+variable "list" {
+  default = [
+    "text",
+    "element",
+  ]
+}
+
+resource "null_resource" "test" {
+  value = var.list
+}`,
+			Vals:  []string{"text", "element"},
+			Lines: []int{10, 10},
+		},
+	}
+
+	dir, err := ioutil.TempDir("", "EachStringSliceExprs")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+
+	for _, tc := range cases {
+		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		cfg, err := loadConfigHelper(dir)
+		if err != nil {
+			t.Fatal(err)
+		}
+		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+
+		vals := []string{}
+		lines := []int{}
+		err = runner.WalkResourceAttributes("null_resource", "value", func(attribute *hcl.Attribute) error {
+			return runner.EachStringSliceExprs(attribute.Expr, func(val string, expr hcl.Expression) {
+				vals = append(vals, val)
+				lines = append(lines, expr.Range().Start.Line)
+			})
+		})
+		if err != nil {
+			t.Fatalf("Failed `%s` test: %s", tc.Name, err)
+		}
+
+		if !cmp.Equal(vals, tc.Vals) {
+			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(vals, tc.Vals))
+		}
+		if !cmp.Equal(lines, tc.Lines) {
+			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(lines, tc.Lines))
+		}
+	}
+}
+
+type testRule struct{}
+
+func (r *testRule) Name() string {
+	return "test_rule"
+}
+func (r *testRule) Type() string {
+	return issue.ERROR
+}
+func (r *testRule) Link() string {
+	return ""
+}
+
+func Test_EmitIssue(t *testing.T) {
+	cases := []struct {
+		Name     string
+		Rule     Rule
+		Message  string
+		Location hcl.Range
+		Expected issue.Issues
+	}{
+		{
+			Name:    "basic",
+			Rule:    &testRule{},
+			Message: "This is test message",
+			Location: hcl.Range{
+				Filename: "test.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
+			Expected: issue.Issues{
+				{
+					Detector: "test_rule",
+					Type:     issue.ERROR,
+					Message:  "This is test message",
+					Line:     1,
+					File:     "test.tf",
+				},
+			},
+		},
+	}
+
+	dir, err := ioutil.TempDir("", "EmitIssue")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+
+	for _, tc := range cases {
+		runner := NewRunner(EmptyConfig(), configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
+
+		runner.EmitIssue(tc.Rule, tc.Message, tc.Location)
+
+		if !cmp.Equal(runner.Issues, tc.Expected) {
+			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(runner.Issues, tc.Expected))
+		}
+	}
+}
