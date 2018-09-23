@@ -69,6 +69,6 @@ func (opts *Options) toConfig() *tflint.Config {
 		IgnoreRule:       ignoreRule,
 		Varfile:          varfile,
 		TerraformVersion: "",
-		Rules:            map[string]*tflint.Rule{},
+		Rules:            map[string]*tflint.RuleConfig{},
 	}
 }

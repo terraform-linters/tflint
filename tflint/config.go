@@ -23,7 +23,7 @@ type rawConfig struct {
 		Varfile          *[]string          `hcl:"varfile"`
 		TerraformVersion *string            `hcl:"terraform_version"`
 	} `hcl:"config,block"`
-	Rules []Rule `hcl:"rule,block"`
+	Rules []RuleConfig `hcl:"rule,block"`
 }
 
 // Config describes the behavior of TFLint
@@ -34,11 +34,11 @@ type Config struct {
 	IgnoreRule       map[string]bool
 	Varfile          []string
 	TerraformVersion string
-	Rules            map[string]*Rule
+	Rules            map[string]*RuleConfig
 }
 
-// Rule is a TFLint's rule config
-type Rule struct {
+// RuleConfig is a TFLint's rule config
+type RuleConfig struct {
 	Name    string `hcl:"name,label"`
 	Enabled bool   `hcl:"enabled"`
 }
@@ -53,7 +53,7 @@ func EmptyConfig() *Config {
 		IgnoreRule:       map[string]bool{},
 		Varfile:          []string{},
 		TerraformVersion: "",
-		Rules:            map[string]*Rule{},
+		Rules:            map[string]*RuleConfig{},
 	}
 }
 
@@ -145,9 +145,9 @@ func (c *Config) copy() *Config {
 	varfile := make([]string, len(c.Varfile))
 	copy(varfile, c.Varfile)
 
-	rules := map[string]*Rule{}
+	rules := map[string]*RuleConfig{}
 	for k, v := range c.Rules {
-		rules[k] = &Rule{}
+		rules[k] = &RuleConfig{}
 		*rules[k] = *v
 	}
 
@@ -199,8 +199,8 @@ func mergeBoolMap(a, b map[string]bool) map[string]bool {
 	return ret
 }
 
-func mergeRuleMap(a, b map[string]*Rule) map[string]*Rule {
-	ret := map[string]*Rule{}
+func mergeRuleMap(a, b map[string]*RuleConfig) map[string]*RuleConfig {
+	ret := map[string]*RuleConfig{}
 	for k, v := range a {
 		ret[k] = v
 	}
