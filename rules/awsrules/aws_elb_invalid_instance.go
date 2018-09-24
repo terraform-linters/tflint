@@ -38,6 +38,16 @@ func (r *AwsELBInvalidInstanceRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsELBInvalidInstanceRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsELBInvalidInstanceRule) Link() string {
+	return ""
+}
+
 // Check checks whether `instances` are included in the list retrieved by `DescribeInstances`
 func (r *AwsELBInvalidInstanceRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -64,22 +74,14 @@ func (r *AwsELBInvalidInstanceRule) Check(runner *tflint.Runner) error {
 			r.dataPrepared = true
 		}
 
-		var instances []string
-		err := runner.EvaluateExpr(attribute.Expr, &instances)
-
-		return runner.EnsureNoError(err, func() error {
-			for _, instance := range instances {
-				if !r.instances[instance] {
-					runner.Issues = append(runner.Issues, &issue.Issue{
-						Detector: r.Name(),
-						Type:     issue.ERROR,
-						Message:  fmt.Sprintf("\"%s\" is invalid instance.", instance),
-						Line:     attribute.Range.Start.Line,
-						File:     runner.GetFileName(attribute.Range.Filename),
-					})
-				}
+		return runner.EachStringSliceExprs(attribute.Expr, func(instance string, expr hcl.Expression) {
+			if !r.instances[instance] {
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is invalid instance.", instance),
+					expr.Range(),
+				)
 			}
-			return nil
 		})
 	})
 }

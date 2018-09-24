@@ -38,6 +38,16 @@ func (r *AwsInstanceInvalidAMIRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsInstanceInvalidAMIRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsInstanceInvalidAMIRule) Link() string {
+	return ""
+}
+
 // Check checks whether "aws_instance" has invalid AMI ID
 func (r *AwsInstanceInvalidAMIRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -67,13 +77,11 @@ func (r *AwsInstanceInvalidAMIRule) Check(runner *tflint.Runner) error {
 
 		return runner.EnsureNoError(err, func() error {
 			if !r.amiIDs[ami] {
-				runner.Issues = append(runner.Issues, &issue.Issue{
-					Detector: r.Name(),
-					Type:     issue.ERROR,
-					Message:  fmt.Sprintf("\"%s\" is invalid AMI ID.", ami),
-					Line:     attribute.Range.Start.Line,
-					File:     runner.GetFileName(attribute.Range.Filename),
-				})
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is invalid AMI ID.", ami),
+					attribute.Expr.Range(),
+				)
 			}
 			return nil
 		})

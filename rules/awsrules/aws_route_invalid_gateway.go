@@ -38,6 +38,16 @@ func (r *AwsRouteInvalidGatewayRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsRouteInvalidGatewayRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsRouteInvalidGatewayRule) Link() string {
+	return ""
+}
+
 // Check checks whether `gateway_id` are included in the list retrieved by `DescribeInternetGateways`
 func (r *AwsRouteInvalidGatewayRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -67,13 +77,11 @@ func (r *AwsRouteInvalidGatewayRule) Check(runner *tflint.Runner) error {
 
 		return runner.EnsureNoError(err, func() error {
 			if !r.gateways[gateway] {
-				runner.Issues = append(runner.Issues, &issue.Issue{
-					Detector: r.Name(),
-					Type:     issue.ERROR,
-					Message:  fmt.Sprintf("\"%s\" is invalid internet gateway ID.", gateway),
-					Line:     attribute.Range.Start.Line,
-					File:     runner.GetFileName(attribute.Range.Filename),
-				})
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is invalid internet gateway ID.", gateway),
+					attribute.Expr.Range(),
+				)
 			}
 			return nil
 		})

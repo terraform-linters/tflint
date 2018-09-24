@@ -38,6 +38,16 @@ func (r *AwsDBInstanceInvalidOptionGroupRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsDBInstanceInvalidOptionGroupRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsDBInstanceInvalidOptionGroupRule) Link() string {
+	return ""
+}
+
 // Check checks whether `option_group_name` are included in the list retrieved by `DescribeOptionGroups`
 func (r *AwsDBInstanceInvalidOptionGroupRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -67,13 +77,11 @@ func (r *AwsDBInstanceInvalidOptionGroupRule) Check(runner *tflint.Runner) error
 
 		return runner.EnsureNoError(err, func() error {
 			if !r.optionGroups[optionGroup] {
-				runner.Issues = append(runner.Issues, &issue.Issue{
-					Detector: r.Name(),
-					Type:     issue.ERROR,
-					Message:  fmt.Sprintf("\"%s\" is invalid option group name.", optionGroup),
-					Line:     attribute.Range.Start.Line,
-					File:     runner.GetFileName(attribute.Range.Filename),
-				})
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is invalid option group name.", optionGroup),
+					attribute.Expr.Range(),
+				)
 			}
 			return nil
 		})

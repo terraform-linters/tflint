@@ -38,6 +38,16 @@ func (r *AwsELBInvalidSubnetRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsELBInvalidSubnetRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsELBInvalidSubnetRule) Link() string {
+	return ""
+}
+
 // Check checks whether `subnets` are included in the list retrieved by `DescribeSubnets`
 func (r *AwsELBInvalidSubnetRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -62,22 +72,14 @@ func (r *AwsELBInvalidSubnetRule) Check(runner *tflint.Runner) error {
 			r.dataPrepared = true
 		}
 
-		var subnets []string
-		err := runner.EvaluateExpr(attribute.Expr, &subnets)
-
-		return runner.EnsureNoError(err, func() error {
-			for _, subnet := range subnets {
-				if !r.subnets[subnet] {
-					runner.Issues = append(runner.Issues, &issue.Issue{
-						Detector: r.Name(),
-						Type:     issue.ERROR,
-						Message:  fmt.Sprintf("\"%s\" is invalid subnet ID.", subnet),
-						Line:     attribute.Range.Start.Line,
-						File:     runner.GetFileName(attribute.Range.Filename),
-					})
-				}
+		return runner.EachStringSliceExprs(attribute.Expr, func(subnet string, expr hcl.Expression) {
+			if !r.subnets[subnet] {
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is invalid subnet ID.", subnet),
+					expr.Range(),
+				)
 			}
-			return nil
 		})
 	})
 }
