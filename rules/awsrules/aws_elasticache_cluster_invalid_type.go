@@ -68,6 +68,16 @@ func (r *AwsElastiCacheClusterInvalidTypeRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsElastiCacheClusterInvalidTypeRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsElastiCacheClusterInvalidTypeRule) Link() string {
+	return "https://github.com/wata727/tflint/blob/master/docs/aws_elasticache_cluster_invalid_type.md"
+}
+
 // Check checks whether "aws_elasticache_cluster" has invalid node type.
 func (r *AwsElastiCacheClusterInvalidTypeRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -78,14 +88,11 @@ func (r *AwsElastiCacheClusterInvalidTypeRule) Check(runner *tflint.Runner) erro
 
 		return runner.EnsureNoError(err, func() error {
 			if !r.nodeTypes[nodeType] {
-				runner.Issues = append(runner.Issues, &issue.Issue{
-					Detector: r.Name(),
-					Type:     issue.ERROR,
-					Message:  fmt.Sprintf("\"%s\" is invalid node type.", nodeType),
-					Line:     attribute.Range.Start.Line,
-					File:     runner.GetFileName(attribute.Range.Filename),
-					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_elasticache_cluster_invalid_type.md",
-				})
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is invalid node type.", nodeType),
+					attribute.Expr.Range(),
+				)
 			}
 			return nil
 		})

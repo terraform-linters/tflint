@@ -34,6 +34,16 @@ func (r *AwsElastiCacheClusterDefaultParameterGroupRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsElastiCacheClusterDefaultParameterGroupRule) Type() string {
+	return issue.NOTICE
+}
+
+// Link returns the rule reference link
+func (r *AwsElastiCacheClusterDefaultParameterGroupRule) Link() string {
+	return "https://github.com/wata727/tflint/blob/master/docs/aws_elasticache_cluster_default_parameter_group.md"
+}
+
 var defaultElastiCacheParameterGroupRegexp = regexp.MustCompile("^default")
 
 // Check checks the parameter group name starts with `default`
@@ -46,14 +56,11 @@ func (r *AwsElastiCacheClusterDefaultParameterGroupRule) Check(runner *tflint.Ru
 
 		return runner.EnsureNoError(err, func() error {
 			if defaultElastiCacheParameterGroupRegexp.Match([]byte(parameterGroup)) {
-				runner.Issues = append(runner.Issues, &issue.Issue{
-					Detector: r.Name(),
-					Type:     issue.NOTICE,
-					Message:  fmt.Sprintf("\"%s\" is default parameter group. You cannot edit it.", parameterGroup),
-					Line:     attribute.Range.Start.Line,
-					File:     runner.GetFileName(attribute.Range.Filename),
-					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_elasticache_cluster_default_parameter_group.md",
-				})
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is default parameter group. You cannot edit it.", parameterGroup),
+					attribute.Expr.Range(),
+				)
 			}
 			return nil
 		})

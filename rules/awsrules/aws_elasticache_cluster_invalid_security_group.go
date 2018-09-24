@@ -38,6 +38,16 @@ func (r *AwsElastiCacheClusterInvalidSecurityGroupRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsElastiCacheClusterInvalidSecurityGroupRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsElastiCacheClusterInvalidSecurityGroupRule) Link() string {
+	return ""
+}
+
 // Check checks whether `security_group_ids` are included in the list retrieved by `DescribeSecurityGroups`
 func (r *AwsElastiCacheClusterInvalidSecurityGroupRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -62,22 +72,14 @@ func (r *AwsElastiCacheClusterInvalidSecurityGroupRule) Check(runner *tflint.Run
 			r.dataPrepared = true
 		}
 
-		var securityGroups []string
-		err := runner.EvaluateExpr(attribute.Expr, &securityGroups)
-
-		return runner.EnsureNoError(err, func() error {
-			for _, securityGroup := range securityGroups {
-				if !r.securityGroups[securityGroup] {
-					runner.Issues = append(runner.Issues, &issue.Issue{
-						Detector: r.Name(),
-						Type:     issue.ERROR,
-						Message:  fmt.Sprintf("\"%s\" is invalid security group.", securityGroup),
-						Line:     attribute.Range.Start.Line,
-						File:     runner.GetFileName(attribute.Range.Filename),
-					})
-				}
+		return runner.EachStringSliceExprs(attribute.Expr, func(securityGroup string, expr hcl.Expression) {
+			if !r.securityGroups[securityGroup] {
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is invalid security group.", securityGroup),
+					expr.Range(),
+				)
 			}
-			return nil
 		})
 	})
 }

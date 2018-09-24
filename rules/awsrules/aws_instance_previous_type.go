@@ -51,6 +51,16 @@ func (r *AwsInstancePreviousTypeRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsInstancePreviousTypeRule) Type() string {
+	return issue.WARNING
+}
+
+// Link returns the rule reference link
+func (r *AwsInstancePreviousTypeRule) Link() string {
+	return "https://github.com/wata727/tflint/blob/master/docs/aws_instance_previous_type.md"
+}
+
 // Check checks whether the resource's `instance_type` is included in the list of previous generation instance type
 func (r *AwsInstancePreviousTypeRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -61,14 +71,11 @@ func (r *AwsInstancePreviousTypeRule) Check(runner *tflint.Runner) error {
 
 		return runner.EnsureNoError(err, func() error {
 			if r.previousInstanceTypes[instanceType] {
-				runner.Issues = append(runner.Issues, &issue.Issue{
-					Detector: r.Name(),
-					Type:     issue.WARNING,
-					Message:  fmt.Sprintf("\"%s\" is previous generation instance type.", instanceType),
-					Line:     attribute.Range.Start.Line,
-					File:     runner.GetFileName(attribute.Range.Filename),
-					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_previous_type.md",
-				})
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is previous generation instance type.", instanceType),
+					attribute.Expr.Range(),
+				)
 			}
 			return nil
 		})

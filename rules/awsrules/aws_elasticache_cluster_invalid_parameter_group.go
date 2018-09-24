@@ -38,6 +38,16 @@ func (r *AwsElastiCacheClusterInvalidParameterGroupRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsElastiCacheClusterInvalidParameterGroupRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsElastiCacheClusterInvalidParameterGroupRule) Link() string {
+	return ""
+}
+
 // Check checks whether `parameter_group_name` are included in the list retrieved by `DescribeCacheParameterGroups`
 func (r *AwsElastiCacheClusterInvalidParameterGroupRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -67,13 +77,11 @@ func (r *AwsElastiCacheClusterInvalidParameterGroupRule) Check(runner *tflint.Ru
 
 		return runner.EnsureNoError(err, func() error {
 			if !r.cacheParameterGroups[parameterGroup] {
-				runner.Issues = append(runner.Issues, &issue.Issue{
-					Detector: r.Name(),
-					Type:     issue.ERROR,
-					Message:  fmt.Sprintf("\"%s\" is invalid parameter group name.", parameterGroup),
-					Line:     attribute.Range.Start.Line,
-					File:     runner.GetFileName(attribute.Range.Filename),
-				})
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is invalid parameter group name.", parameterGroup),
+					attribute.Expr.Range(),
+				)
 			}
 			return nil
 		})

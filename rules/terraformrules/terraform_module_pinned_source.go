@@ -14,14 +14,12 @@ import (
 // TerraformModulePinnedSourceRule checks unpinned or default version module source
 type TerraformModulePinnedSourceRule struct {
 	attributeName string
-	link          string
 }
 
 // NewTerraformModulePinnedSourceRule returns new rule with default attributes
 func NewTerraformModulePinnedSourceRule() *TerraformModulePinnedSourceRule {
 	return &TerraformModulePinnedSourceRule{
 		attributeName: "source",
-		link:          "https://github.com/wata727/tflint/blob/master/docs/terraform_module_pinned_source.md",
 	}
 }
 
@@ -33,6 +31,16 @@ func (r *TerraformModulePinnedSourceRule) Name() string {
 // Enabled returns whether the rule is enabled by default
 func (r *TerraformModulePinnedSourceRule) Enabled() bool {
 	return true
+}
+
+// Type returns the rule severity
+func (r *TerraformModulePinnedSourceRule) Type() string {
+	return issue.WARNING
+}
+
+// Link returns the rule reference link
+func (r *TerraformModulePinnedSourceRule) Link() string {
+	return "https://github.com/wata727/tflint/blob/master/docs/terraform_module_pinned_source.md"
 }
 
 var reGithub = regexp.MustCompile("(^github.com/(.+)/(.+)$)|(^git@github.com:(.+)/(.+)$)")
@@ -65,24 +73,18 @@ func (r *TerraformModulePinnedSourceRule) checkGitSource(runner *tflint.Runner, 
 
 	if strings.Contains(lower, "ref=") {
 		if strings.Contains(lower, "ref=master") {
-			runner.Issues = append(runner.Issues, &issue.Issue{
-				Detector: r.Name(),
-				Type:     issue.WARNING,
-				Message:  fmt.Sprintf("Module source \"%s\" uses default ref \"master\"", module.SourceAddr),
-				Line:     module.SourceAddrRange.Start.Line,
-				File:     runner.GetFileName(module.SourceAddrRange.Filename),
-				Link:     r.link,
-			})
+			runner.EmitIssue(
+				r,
+				fmt.Sprintf("Module source \"%s\" uses default ref \"master\"", module.SourceAddr),
+				module.SourceAddrRange,
+			)
 		}
 	} else {
-		runner.Issues = append(runner.Issues, &issue.Issue{
-			Detector: r.Name(),
-			Type:     issue.WARNING,
-			Message:  fmt.Sprintf("Module source \"%s\" is not pinned", module.SourceAddr),
-			Line:     module.SourceAddrRange.Start.Line,
-			File:     runner.GetFileName(module.SourceAddrRange.Filename),
-			Link:     r.link,
-		})
+		runner.EmitIssue(
+			r,
+			fmt.Sprintf("Module source \"%s\" is not pinned", module.SourceAddr),
+			module.SourceAddrRange,
+		)
 	}
 }
 
@@ -92,23 +94,17 @@ func (r *TerraformModulePinnedSourceRule) checkMercurialSource(runner *tflint.Ru
 
 	if strings.Contains(lower, "rev=") {
 		if strings.Contains(lower, "rev=default") {
-			runner.Issues = append(runner.Issues, &issue.Issue{
-				Detector: r.Name(),
-				Type:     issue.WARNING,
-				Message:  fmt.Sprintf("Module source \"%s\" uses default rev \"default\"", module.SourceAddr),
-				Line:     module.SourceAddrRange.Start.Line,
-				File:     runner.GetFileName(module.SourceAddrRange.Filename),
-				Link:     r.link,
-			})
+			runner.EmitIssue(
+				r,
+				fmt.Sprintf("Module source \"%s\" uses default rev \"default\"", module.SourceAddr),
+				module.SourceAddrRange,
+			)
 		}
 	} else {
-		runner.Issues = append(runner.Issues, &issue.Issue{
-			Detector: r.Name(),
-			Type:     issue.WARNING,
-			Message:  fmt.Sprintf("Module source \"%s\" is not pinned", module.SourceAddr),
-			Line:     module.SourceAddrRange.Start.Line,
-			File:     runner.GetFileName(module.SourceAddrRange.Filename),
-			Link:     r.link,
-		})
+		runner.EmitIssue(
+			r,
+			fmt.Sprintf("Module source \"%s\" is not pinned", module.SourceAddr),
+			module.SourceAddrRange,
+		)
 	}
 }

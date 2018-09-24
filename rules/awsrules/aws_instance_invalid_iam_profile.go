@@ -38,6 +38,16 @@ func (r *AwsInstanceInvalidIAMProfileRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsInstanceInvalidIAMProfileRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsInstanceInvalidIAMProfileRule) Link() string {
+	return ""
+}
+
 // Check checks whether `iam_instance_profile` are included in the list retrieved by `ListInstanceProfiles`
 func (r *AwsInstanceInvalidIAMProfileRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -67,13 +77,11 @@ func (r *AwsInstanceInvalidIAMProfileRule) Check(runner *tflint.Runner) error {
 
 		return runner.EnsureNoError(err, func() error {
 			if !r.profiles[profile] {
-				runner.Issues = append(runner.Issues, &issue.Issue{
-					Detector: r.Name(),
-					Type:     issue.ERROR,
-					Message:  fmt.Sprintf("\"%s\" is invalid IAM profile name.", profile),
-					Line:     attribute.Range.Start.Line,
-					File:     runner.GetFileName(attribute.Range.Filename),
-				})
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is invalid IAM profile name.", profile),
+					attribute.Expr.Range(),
+				)
 			}
 			return nil
 		})

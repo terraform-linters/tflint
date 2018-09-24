@@ -38,6 +38,16 @@ func (r *AwsRouteInvalidInstanceRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsRouteInvalidInstanceRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsRouteInvalidInstanceRule) Link() string {
+	return ""
+}
+
 // Check checks whether `instance_id` are included in the list retrieved by `DescribeInstances`
 func (r *AwsRouteInvalidInstanceRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -69,13 +79,11 @@ func (r *AwsRouteInvalidInstanceRule) Check(runner *tflint.Runner) error {
 
 		return runner.EnsureNoError(err, func() error {
 			if !r.instances[instance] {
-				runner.Issues = append(runner.Issues, &issue.Issue{
-					Detector: r.Name(),
-					Type:     issue.ERROR,
-					Message:  fmt.Sprintf("\"%s\" is invalid instance ID.", instance),
-					Line:     attribute.Range.Start.Line,
-					File:     runner.GetFileName(attribute.Range.Filename),
-				})
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is invalid instance ID.", instance),
+					attribute.Expr.Range(),
+				)
 			}
 			return nil
 		})
