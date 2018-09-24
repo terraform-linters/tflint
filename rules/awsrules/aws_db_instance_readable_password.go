@@ -34,6 +34,16 @@ func (r *AwsDBInstanceReadablePasswordRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsDBInstanceReadablePasswordRule) Type() string {
+	return issue.WARNING
+}
+
+// Link returns the rule reference link
+func (r *AwsDBInstanceReadablePasswordRule) Link() string {
+	return "https://github.com/wata727/tflint/blob/master/docs/aws_db_instance_readable_password.md"
+}
+
 // Check checks password
 func (r *AwsDBInstanceReadablePasswordRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -62,14 +72,11 @@ func (r *AwsDBInstanceReadablePasswordRule) Check(runner *tflint.Runner) error {
 		}
 
 		if len(varSubjects) == 0 || len(varSubjects) == len(readableSubjects) {
-			runner.Issues = append(runner.Issues, &issue.Issue{
-				Detector: r.Name(),
-				Type:     issue.WARNING,
-				Message:  "Password for the master DB user is readable. Recommend using environment variables or variable files.",
-				Line:     attribute.Range.Start.Line,
-				File:     runner.GetFileName(attribute.Range.Filename),
-				Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_db_instance_readable_password.md",
-			})
+			runner.EmitIssue(
+				r,
+				"Password for the master DB user is readable. Recommend using environment variables or variable files.",
+				attribute.Expr.Range(),
+			)
 		}
 
 		return nil

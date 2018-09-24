@@ -30,6 +30,16 @@ func (r *AwsRouteSpecifiedMultipleTargetsRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsRouteSpecifiedMultipleTargetsRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsRouteSpecifiedMultipleTargetsRule) Link() string {
+	return "https://github.com/wata727/tflint/blob/master/docs/aws_route_specified_multiple_targets.md"
+}
+
 // Check checks whether a resource defines `gateway_id`, `egress_only_gateway_id`, `nat_gateway_id`
 // `instance_id`, `vpc_peering_connection_id` or `network_interface_id` at the same time
 func (r *AwsRouteSpecifiedMultipleTargetsRule) Check(runner *tflint.Runner) error {
@@ -63,14 +73,11 @@ func (r *AwsRouteSpecifiedMultipleTargetsRule) Check(runner *tflint.Runner) erro
 		}
 
 		if len(body.Attributes) > 1 {
-			runner.Issues = append(runner.Issues, &issue.Issue{
-				Detector: r.Name(),
-				Type:     issue.ERROR,
-				Message:  "More than one routing target specified. It must be one.",
-				Line:     resource.DeclRange.Start.Line,
-				File:     runner.GetFileName(resource.DeclRange.Filename),
-				Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_route_specified_multiple_targets.md",
-			})
+			runner.EmitIssue(
+				r,
+				"More than one routing target specified. It must be one.",
+				resource.DeclRange,
+			)
 		}
 	}
 

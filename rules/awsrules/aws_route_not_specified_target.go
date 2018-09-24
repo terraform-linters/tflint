@@ -30,6 +30,16 @@ func (r *AwsRouteNotSpecifiedTargetRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsRouteNotSpecifiedTargetRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsRouteNotSpecifiedTargetRule) Link() string {
+	return "https://github.com/wata727/tflint/blob/master/docs/aws_route_not_specified_target.md"
+}
+
 // Check checks whether `gateway_id`, `egress_only_gateway_id`, `nat_gateway_id`, `instance_id`
 // `vpc_peering_connection_id` or `network_interface_id` is defined in a resource
 func (r *AwsRouteNotSpecifiedTargetRule) Check(runner *tflint.Runner) error {
@@ -63,14 +73,11 @@ func (r *AwsRouteNotSpecifiedTargetRule) Check(runner *tflint.Runner) error {
 		}
 
 		if len(body.Attributes) == 0 {
-			runner.Issues = append(runner.Issues, &issue.Issue{
-				Detector: r.Name(),
-				Type:     issue.ERROR,
-				Message:  "The routing target is not specified, each routing must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id.",
-				Line:     resource.DeclRange.Start.Line,
-				File:     runner.GetFileName(resource.DeclRange.Filename),
-				Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_route_not_specified_target.md",
-			})
+			runner.EmitIssue(
+				r,
+				"The routing target is not specified, each routing must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id.",
+				resource.DeclRange,
+			)
 		}
 	}
 

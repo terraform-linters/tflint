@@ -38,6 +38,16 @@ func (r *AwsInstanceInvalidKeyNameRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsInstanceInvalidKeyNameRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsInstanceInvalidKeyNameRule) Link() string {
+	return ""
+}
+
 // Check checks whether `key_name` are included in the list retrieved by `DescribeKeyPairs`
 func (r *AwsInstanceInvalidKeyNameRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -67,13 +77,11 @@ func (r *AwsInstanceInvalidKeyNameRule) Check(runner *tflint.Runner) error {
 
 		return runner.EnsureNoError(err, func() error {
 			if !r.keypairs[key] {
-				runner.Issues = append(runner.Issues, &issue.Issue{
-					Detector: r.Name(),
-					Type:     issue.ERROR,
-					Message:  fmt.Sprintf("\"%s\" is invalid key name.", key),
-					Line:     attribute.Range.Start.Line,
-					File:     runner.GetFileName(attribute.Range.Filename),
-				})
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is invalid key name.", key),
+					attribute.Expr.Range(),
+				)
 			}
 			return nil
 		})

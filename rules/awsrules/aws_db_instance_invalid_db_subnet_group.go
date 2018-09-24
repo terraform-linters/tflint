@@ -38,6 +38,16 @@ func (r *AwsDBInstanceInvalidDBSubnetGroupRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsDBInstanceInvalidDBSubnetGroupRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsDBInstanceInvalidDBSubnetGroupRule) Link() string {
+	return ""
+}
+
 // Check checks whether `db_subnet_group_name` are included in the list retrieved by `DescribeDBSubnetGroups`
 func (r *AwsDBInstanceInvalidDBSubnetGroupRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -67,13 +77,11 @@ func (r *AwsDBInstanceInvalidDBSubnetGroupRule) Check(runner *tflint.Runner) err
 
 		return runner.EnsureNoError(err, func() error {
 			if !r.subnetGroups[subnetGroup] {
-				runner.Issues = append(runner.Issues, &issue.Issue{
-					Detector: r.Name(),
-					Type:     issue.ERROR,
-					Message:  fmt.Sprintf("\"%s\" is invalid DB subnet group name.", subnetGroup),
-					Line:     attribute.Range.Start.Line,
-					File:     runner.GetFileName(attribute.Range.Filename),
-				})
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is invalid DB subnet group name.", subnetGroup),
+					attribute.Expr.Range(),
+				)
 			}
 			return nil
 		})

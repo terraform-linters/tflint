@@ -30,6 +30,16 @@ func (r *AwsInstanceDefaultStandardVolumeRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsInstanceDefaultStandardVolumeRule) Type() string {
+	return issue.WARNING
+}
+
+// Link returns the rule reference link
+func (r *AwsInstanceDefaultStandardVolumeRule) Link() string {
+	return "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md"
+}
+
 // Check checks whether `volume_type` is defined for `root_block_device` or `ebs_block_device`
 func (r *AwsInstanceDefaultStandardVolumeRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -51,14 +61,11 @@ func (r *AwsInstanceDefaultStandardVolumeRule) walker(runner *tflint.Runner, att
 
 	return runner.EnsureNoError(err, func() error {
 		if _, ok := val["volume_type"]; !ok {
-			runner.Issues = append(runner.Issues, &issue.Issue{
-				Detector: r.Name(),
-				Type:     issue.WARNING,
-				Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
-				Line:     attribute.Range.Start.Line,
-				File:     runner.GetFileName(attribute.Range.Filename),
-				Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md",
-			})
+			runner.EmitIssue(
+				r,
+				"\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
+				attribute.Range,
+			)
 		}
 		return nil
 	})

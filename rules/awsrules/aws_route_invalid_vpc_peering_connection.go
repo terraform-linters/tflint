@@ -38,6 +38,16 @@ func (r *AwsRouteInvalidVPCPeeringConnectionRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsRouteInvalidVPCPeeringConnectionRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsRouteInvalidVPCPeeringConnectionRule) Link() string {
+	return ""
+}
+
 // Check checks whether `vpc_peering_connection_id` are included in the list retrieved by `DescribeVpcPeeringConnections`
 func (r *AwsRouteInvalidVPCPeeringConnectionRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -67,13 +77,11 @@ func (r *AwsRouteInvalidVPCPeeringConnectionRule) Check(runner *tflint.Runner) e
 
 		return runner.EnsureNoError(err, func() error {
 			if !r.vpcPeeringConnections[vpcPeeringConnection] {
-				runner.Issues = append(runner.Issues, &issue.Issue{
-					Detector: r.Name(),
-					Type:     issue.ERROR,
-					Message:  fmt.Sprintf("\"%s\" is invalid VPC peering connection ID.", vpcPeeringConnection),
-					Line:     attribute.Range.Start.Line,
-					File:     runner.GetFileName(attribute.Range.Filename),
-				})
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is invalid VPC peering connection ID.", vpcPeeringConnection),
+					attribute.Expr.Range(),
+				)
 			}
 			return nil
 		})

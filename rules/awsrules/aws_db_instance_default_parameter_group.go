@@ -34,6 +34,16 @@ func (r *AwsDBInstanceDefaultParameterGroupRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsDBInstanceDefaultParameterGroupRule) Type() string {
+	return issue.NOTICE
+}
+
+// Link returns the rule reference link
+func (r *AwsDBInstanceDefaultParameterGroupRule) Link() string {
+	return "https://github.com/wata727/tflint/blob/master/docs/aws_db_instance_default_parameter_group.md"
+}
+
 var defaultDBParameterGroupRegexp = regexp.MustCompile("^default")
 
 // Check checks the parameter group name starts with `default`
@@ -46,14 +56,11 @@ func (r *AwsDBInstanceDefaultParameterGroupRule) Check(runner *tflint.Runner) er
 
 		return runner.EnsureNoError(err, func() error {
 			if defaultDBParameterGroupRegexp.Match([]byte(name)) {
-				runner.Issues = append(runner.Issues, &issue.Issue{
-					Detector: r.Name(),
-					Type:     issue.NOTICE,
-					Message:  fmt.Sprintf("\"%s\" is default parameter group. You cannot edit it.", name),
-					Line:     attribute.Range.Start.Line,
-					File:     runner.GetFileName(attribute.Range.Filename),
-					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_db_instance_default_parameter_group.md",
-				})
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is default parameter group. You cannot edit it.", name),
+					attribute.Expr.Range(),
+				)
 			}
 			return nil
 		})
