@@ -38,6 +38,16 @@ func (r *AwsRouteInvalidNetworkInterfaceRule) Enabled() bool {
 	return true
 }
 
+// Type returns the rule severity
+func (r *AwsRouteInvalidNetworkInterfaceRule) Type() string {
+	return issue.ERROR
+}
+
+// Link returns the rule reference link
+func (r *AwsRouteInvalidNetworkInterfaceRule) Link() string {
+	return ""
+}
+
 // Check checks whether `network_interface_id` are included in the list retrieved by `DescribeNetworkInterfaces`
 func (r *AwsRouteInvalidNetworkInterfaceRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
@@ -67,13 +77,11 @@ func (r *AwsRouteInvalidNetworkInterfaceRule) Check(runner *tflint.Runner) error
 
 		return runner.EnsureNoError(err, func() error {
 			if !r.networkInterfaces[networkInterface] {
-				runner.Issues = append(runner.Issues, &issue.Issue{
-					Detector: r.Name(),
-					Type:     issue.ERROR,
-					Message:  fmt.Sprintf("\"%s\" is invalid network interface ID.", networkInterface),
-					Line:     attribute.Range.Start.Line,
-					File:     runner.GetFileName(attribute.Range.Filename),
-				})
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("\"%s\" is invalid network interface ID.", networkInterface),
+					attribute.Expr.Range(),
+				)
 			}
 			return nil
 		})
