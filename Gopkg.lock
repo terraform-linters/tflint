@@ -281,8 +281,7 @@
   revision = "0dc08b1671f34c4250ce212759ebd880f743d883"
 
 [[projects]]
-  branch = "v0.12-dev"
-  digest = "1:0f37e6551f1dda532d03cc8d0a558b7f69d2f50a510f35229b16d28f2463a99a"
+  digest = "1:e063b33106976854129628cf09c2037d1def0f84798261a0cc0aa46220ca28cd"
   name = "github.com/hashicorp/terraform"
   packages = [
     "addrs",
@@ -309,6 +308,7 @@
     "registry/regsrc",
     "registry/response",
     "states",
+    "states/statefile",
     "svchost",
     "svchost/auth",
     "svchost/disco",
@@ -317,7 +317,8 @@
     "version",
   ]
   pruneopts = "UT"
-  revision = "1a129fd94e3548bf6f08aa750a558f39edc220f0"
+  revision = "0728d1cefb99ebe4db465fe1ea647cb704ca4d4b"
+  version = "v0.12.0-alpha1"
 
 [[projects]]
   branch = "master"
