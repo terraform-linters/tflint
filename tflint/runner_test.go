@@ -1282,6 +1282,80 @@ resource "aws_instance" "test" {
 	}
 }
 
+func Test_WalkResourceBlocks(t *testing.T) {
+	cases := []struct {
+		Name      string
+		Content   string
+		ErrorText string
+	}{
+		{
+			Name: "Resource not found",
+			Content: `
+resource "null_resource" "test" {
+  key {
+    foo = "bar"
+  }
+}`,
+		},
+		{
+			Name: "Block not found",
+			Content: `
+resource "aws_instance" "test" {
+  key {
+    foo = "bar"
+  }
+}`,
+		},
+		{
+			Name: "Attribute",
+			Content: `
+resource "aws_instance" "test" {
+  instance_type = "foo"
+}`,
+		},
+		{
+			Name: "walk",
+			Content: `
+resource "aws_instance" "test" {
+  instance_type {
+    foo = "bar"
+  }
+}`,
+			ErrorText: "Walk instance_type",
+		},
+	}
+
+	dir, err := ioutil.TempDir("", "WalkResourceBlocks")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+
+	for _, tc := range cases {
+		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		cfg, err := loadConfigHelper(dir)
+		if err != nil {
+			t.Fatal(err)
+		}
+		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+
+		err = runner.WalkResourceBlocks("aws_instance", "instance_type", func(block *hcl.Block) error {
+			return fmt.Errorf("Walk %s", block.Type)
+		})
+		if err == nil {
+			if tc.ErrorText != "" {
+				t.Fatalf("Failed `%s` test: expected error is not occurred `%s`", tc.Name, tc.ErrorText)
+			}
+		} else if err.Error() != tc.ErrorText {
+			t.Fatalf("Failed `%s` test: expected error is %s, but get %s", tc.Name, tc.ErrorText, err)
+		}
+	}
+}
+
 func Test_EnsureNoError(t *testing.T) {
 	cases := []struct {
 		Name      string
