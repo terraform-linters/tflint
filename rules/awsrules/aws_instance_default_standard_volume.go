@@ -44,28 +44,63 @@ func (r *AwsInstanceDefaultStandardVolumeRule) Link() string {
 func (r *AwsInstanceDefaultStandardVolumeRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
-	err := runner.WalkResourceAttributes(r.resourceType, "root_block_device", func(attribute *hcl.Attribute) error {
-		return r.walker(runner, attribute)
-	})
-	if err != nil {
+	if err := runner.WalkResourceBlocks(r.resourceType, "root_block_device", func(block *hcl.Block) error {
+		return r.blockWalker(runner, block)
+	}); err != nil {
 		return err
 	}
-	return runner.WalkResourceAttributes(r.resourceType, "ebs_block_device", func(attribute *hcl.Attribute) error {
-		return r.walker(runner, attribute)
-	})
+
+	if err := runner.WalkResourceBlocks(r.resourceType, "ebs_block_device", func(block *hcl.Block) error {
+		return r.blockWalker(runner, block)
+	}); err != nil {
+		return err
+	}
+
+	// Since Terraform v0.12, block device definitions must be defined as block, but it walks attributes for the backward compatibility.
+	if err := runner.WalkResourceAttributes(r.resourceType, "root_block_device", func(attribute *hcl.Attribute) error {
+		return r.attributeWalker(runner, attribute)
+	}); err != nil {
+		return err
+	}
+
+	if err := runner.WalkResourceAttributes(r.resourceType, "ebs_block_device", func(attribute *hcl.Attribute) error {
+		return r.attributeWalker(runner, attribute)
+	}); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (r *AwsInstanceDefaultStandardVolumeRule) walker(runner *tflint.Runner, attribute *hcl.Attribute) error {
+func (r *AwsInstanceDefaultStandardVolumeRule) message() string {
+	return "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead."
+}
+
+func (r *AwsInstanceDefaultStandardVolumeRule) blockWalker(runner *tflint.Runner, block *hcl.Block) error {
+	body, _, diags := block.Body.PartialContent(&hcl.BodySchema{
+		Attributes: []hcl.AttributeSchema{
+			{
+				Name: "volume_type",
+			},
+		},
+	})
+	if diags.HasErrors() {
+		return diags
+	}
+
+	if _, ok := body.Attributes["volume_type"]; !ok {
+		runner.EmitIssue(r, r.message(), block.TypeRange)
+	}
+	return nil
+}
+
+func (r *AwsInstanceDefaultStandardVolumeRule) attributeWalker(runner *tflint.Runner, attribute *hcl.Attribute) error {
 	var val map[string]string
 	err := runner.EvaluateExpr(attribute.Expr, &val)
 
 	return runner.EnsureNoError(err, func() error {
 		if _, ok := val["volume_type"]; !ok {
-			runner.EmitIssue(
-				r,
-				"\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
-				attribute.Range,
-			)
+			runner.EmitIssue(r, r.message(), attribute.Range)
 		}
 		return nil
 	})

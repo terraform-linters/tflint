@@ -296,6 +296,32 @@ func (r *Runner) WalkResourceAttributes(resource, attributeName string, walker f
 	return nil
 }
 
+// WalkResourceBlocks walks all blocks of the passed resource and invokes the passed function
+func (r *Runner) WalkResourceBlocks(resource, blockType string, walker func(*hcl.Block) error) error {
+	for _, resource := range r.LookupResourcesByType(resource) {
+		body, _, diags := resource.Config.PartialContent(&hcl.BodySchema{
+			Blocks: []hcl.BlockHeaderSchema{
+				{
+					Type: blockType,
+				},
+			},
+		})
+		if diags.HasErrors() {
+			return diags
+		}
+
+		for _, block := range body.Blocks {
+			log.Printf("[DEBUG] Walk `%s` block", resource.Type+"."+resource.Name+"."+blockType)
+			err := walker(block)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
 // EnsureNoError is a helper for processing when no error occurs
 // This function skips processing without returning an error to the caller when the error is warning
 func (r *Runner) EnsureNoError(err error, proc func() error) error {
