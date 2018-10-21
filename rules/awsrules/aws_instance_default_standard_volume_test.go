@@ -74,56 +74,54 @@ resource "aws_instance" "web" {
 }`,
 			Expected: []*issue.Issue{},
 		},
-		// TODO: An error occurred in Terraform v0.12. Attribute redefined; The argument "ebs_block_device" was already set
+		{
+			Name: "volume_type is not specified in multi devices",
+			Content: `
+resource "aws_instance" "web" {
+    instance_type = "c3.2xlarge"
+    ami = "ami-1234567"
 
-		// 		{
-		// 			Name: "volume_type is not specified in multi devices",
-		// 			Content: `
-		// resource "aws_instance" "web" {
-		//     instance_type = "c3.2xlarge"
-		//     ami = "ami-1234567"
+    root_block_device {
+        volume_size = "100"
+    }
 
-		//     root_block_device = {
-		//         volume_size = "100"
-		//     }
+    ebs_block_device {
+        device_name = "foo"
+        volume_size = "24"
+    }
 
-		//     ebs_block_device = {
-		//         device_name = "foo"
-		//         volume_size = "24"
-		//     }
-
-		//     ebs_block_device = {
-		//         device_name = "bar"
-		//         volume_size = "10"
-		//     }
-		// }`,
-		// 			Expected: []*issue.Issue{
-		// 				{
-		// 					Detector: "aws_instance_default_standard_volume",
-		// 					Type:     issue.WARNING,
-		// 					Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
-		// 					Line:     6,
-		// 					File:     "resource.tf",
-		// 					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md",
-		// 				},
-		// 				{
-		// 					Detector: "aws_instance_default_standard_volume",
-		// 					Type:     issue.WARNING,
-		// 					Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
-		// 					Line:     10,
-		// 					File:     "resource.tf",
-		// 					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md",
-		// 				},
-		// 				{
-		// 					Detector: "aws_instance_default_standard_volume",
-		// 					Type:     issue.WARNING,
-		// 					Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
-		// 					Line:     15,
-		// 					File:     "resource.tf",
-		// 					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md",
-		// 				},
-		// 			},
-		// 		},
+    ebs_block_device {
+        device_name = "bar"
+        volume_size = "10"
+    }
+}`,
+			Expected: []*issue.Issue{
+				{
+					Detector: "aws_instance_default_standard_volume",
+					Type:     issue.WARNING,
+					Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
+					Line:     6,
+					File:     "resource.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md",
+				},
+				{
+					Detector: "aws_instance_default_standard_volume",
+					Type:     issue.WARNING,
+					Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
+					Line:     10,
+					File:     "resource.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md",
+				},
+				{
+					Detector: "aws_instance_default_standard_volume",
+					Type:     issue.WARNING,
+					Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
+					Line:     15,
+					File:     "resource.tf",
+					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md",
+				},
+			},
+		},
 	}
 
 	dir, err := ioutil.TempDir("", "AwsInstanceDefaultStandardVolume")
