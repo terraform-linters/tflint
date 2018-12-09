@@ -61,11 +61,19 @@ var deepCheckRules = []Rule{
 }
 
 // NewRules returns rules according to configuration
-func NewRules(c *tflint.Config) []Rule {
+func NewRules(c *tflint.Config, additionalRules []Rule) []Rule {
 	log.Print("[INFO] Prepare rules")
 
 	ret := []Rule{}
 	allRules := []Rule{}
+
+	if len(additionalRules) > 0 {
+		for _, rule := range additionalRules {
+			ret = append(ret, rule)
+		}
+
+		return ret
+	}
 
 	if c.DeepCheck {
 		log.Printf("[DEBUG] Deep check mode is enabled. Add deep check rules")
