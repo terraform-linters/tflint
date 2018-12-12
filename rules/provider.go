@@ -61,14 +61,14 @@ var deepCheckRules = []Rule{
 }
 
 // NewRules returns rules according to configuration
-func NewRules(c *tflint.Config, additionalRules []Rule) []Rule {
+func NewRules(c *tflint.Config, overrideRules []Rule) []Rule {
 	log.Print("[INFO] Prepare rules")
 
 	ret := []Rule{}
 	allRules := []Rule{}
 
-	if len(additionalRules) > 0 {
-		for _, rule := range additionalRules {
+	if len(overrideRules) > 0 {
+		for _, rule := range overrideRules {
 			ret = append(ret, rule)
 		}
 

@@ -1,4 +1,4 @@
-package rulesplugin
+package plugin
 
 import (
 	"net/rpc"
