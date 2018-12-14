@@ -49,7 +49,6 @@ Please attach an output log, describe the situation and version that occurred an
 	var pluginRuleViolations []*issue.Issue
 	for _, foundPlugin := range pluginSearch.Plugins {
 		client := plugin.Client(foundPlugin)
-
 		defer client.Kill()
 
 		// Connect via RPC

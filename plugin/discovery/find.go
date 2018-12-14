@@ -30,7 +30,7 @@ func (p *PluginSearch) Find() PluginSearch {
 		log.Fatal(err)
 	}
 
-	pluginDirectory := fmt.Sprintf("%s/%s/", homeDirExpand, pluginLocation)
+	pluginDirectory := fmt.Sprintf("%s/%s", homeDirExpand, pluginLocation)
 	pluginDirectoryContents, err := ioutil.ReadDir(pluginDirectory)
 	if err != nil {
 		log.Fatal(err)

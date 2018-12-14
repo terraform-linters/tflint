@@ -18,7 +18,7 @@ var Handshake = plugin.HandshakeConfig{
 func ClientConfig(m discovery.PluginMeta) *plugin.ClientConfig {
 	logger := hclog.New(&hclog.LoggerOptions{
 		Name:   "tflint_plugin",
-		Level:  hclog.Trace,
+		Level:  hclog.Info,
 		Output: os.Stderr,
 	})
 

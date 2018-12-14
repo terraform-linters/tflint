@@ -141,7 +141,7 @@ func (cli *CLI) SanityCheck(args []string) {
 	return
 }
 
-func (cli *CLI) ProcessRules(overrideRules ...rules.Rule) {
+func (cli *CLI) ProcessRules(overrideRules *rules.OverrideRules) {
 	for _, rule := range rules.NewRules(cli.cfg, overrideRules) {
 		for _, runner := range cli.runners {
 			err := rule.Check(runner)
@@ -160,9 +160,9 @@ func (cli *CLI) ProcessRules(overrideRules ...rules.Rule) {
 	}
 }
 
-func (cli *CLI) ReportViolations(overrideIssues []*issue.Issue) {
+func (cli *CLI) ReportViolations(additionalIssues []*issue.Issue) {
 	// Print issues
-	for _, issue := range overrideIssues {
+	for _, issue := range additionalIssues {
 		cli.Issues = append(cli.Issues, issue)
 	}
 
