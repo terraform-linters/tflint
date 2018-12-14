@@ -4,28 +4,17 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 	"path"
 	"runtime"
 	"strings"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-plugin"
 	"github.com/hashicorp/logutils"
 	colorable "github.com/mattn/go-colorable"
 	"github.com/wata727/tflint/cmd"
-	"github.com/wata727/tflint/plugin/shared"
+	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/plugin"
+	"github.com/wata727/tflint/plugin/discovery"
 )
-
-var handshakeConfig = plugin.HandshakeConfig{
-	ProtocolVersion:  1,
-	MagicCookieKey:   "BASIC_PLUGIN",
-	MagicCookieValue: "hello",
-}
-
-var pluginMap = map[string]plugin.Plugin{
-	"customRulesPlugin": &rulesplugin.RuleCollectionPlugin{},
-}
 
 func main() {
 	cli := cmd.NewCLI(colorable.NewColorable(os.Stdout), colorable.NewColorable(os.Stderr))
@@ -54,38 +43,33 @@ Please attach an output log, describe the situation and version that occurred an
 		}
 	}()
 
-	logger := hclog.New(&hclog.LoggerOptions{
-		Name:   "tflint",
-		Output: os.Stdout,
-		Level:  hclog.Info,
-	})
+	pluginSearch := discovery.PluginSearch{}
+	pluginSearch.Find()
 
-	// We're a host! Start by launching the plugin process.
-	client := plugin.NewClient(&plugin.ClientConfig{
-		HandshakeConfig: handshakeConfig,
-		Plugins:         pluginMap,
-		Cmd:             exec.Command("/home/howdoicomputer/go/src/github.com/howdoicomputer/customrules/customrules"),
-		Logger:          logger,
-	})
-	defer client.Kill()
+	var pluginRuleViolations []*issue.Issue
+	for _, foundPlugin := range pluginSearch.Plugins {
+		client := plugin.Client(foundPlugin)
 
-	// Connect via RPC
-	rpcClient, err := client.Client()
-	if err != nil {
-		log.Fatal(err)
-	}
+		defer client.Kill()
 
-	// Request the plugin
-	raw, err := rpcClient.Dispense("customRulesPlugin")
-	if err != nil {
-		log.Fatal(err)
-	}
+		// Connect via RPC
+		rpcClient, err := client.Client()
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	rulesPlugin := raw.(rulesplugin.RuleCollection)
+		// Request the plugin
+		raw, err := rpcClient.Dispense("rules")
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	pluginRuleViolations := rulesPlugin.Process(os.Args)
-	if err != nil {
-		panic(err)
+		tflintPlugin := raw.(plugin.RuleCollection)
+
+		pluginRuleViolations = append(pluginRuleViolations, tflintPlugin.Process(os.Args)...)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	cli.SanityCheck(os.Args)

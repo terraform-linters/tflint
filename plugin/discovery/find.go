@@ -19,7 +19,7 @@ type PluginMeta struct {
 	Path string
 }
 
-func (p *PluginSearch) Find() {
+func (p *PluginSearch) Find() PluginSearch {
 	homeDir, err := homedir.Dir()
 	if err != nil {
 		log.Fatal(err)
@@ -47,5 +47,5 @@ func (p *PluginSearch) Find() {
 		p.Plugins = append(p.Plugins, pluginMeta)
 	}
 
-	return
+	return *p
 }
