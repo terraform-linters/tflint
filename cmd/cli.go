@@ -141,8 +141,8 @@ func (cli *CLI) SanityCheck(args []string) {
 	return
 }
 
-func (cli *CLI) ProcessRules(overrideRules *rules.OverrideRules) {
-	for _, rule := range rules.NewRules(cli.cfg, overrideRules) {
+func (cli *CLI) ProcessRules(overrideRules ...*rules.OverrideRules) {
+	for _, rule := range rules.NewRules(cli.cfg, overrideRules...) {
 		for _, runner := range cli.runners {
 			err := rule.Check(runner)
 			if err != nil {

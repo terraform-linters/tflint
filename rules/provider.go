@@ -66,7 +66,7 @@ type OverrideRules struct {
 }
 
 // NewRules returns rules according to configuration
-func NewRules(c *tflint.Config, overrideRules *OverrideRules) []Rule {
+func NewRules(c *tflint.Config, overrideRules ...*OverrideRules) []Rule {
 	log.Print("[INFO] Prepare rules")
 
 	ret := []Rule{}
@@ -77,10 +77,14 @@ func NewRules(c *tflint.Config, overrideRules *OverrideRules) []Rule {
 		if overrideRules != nil {
 			allRules = append(DefaultRules, deepCheckRules...)
 		} else {
-			allRules = append(DefaultRules, overrideRules.DeepCheckRules...)
+			for _, rule := range overrideRules {
+				allRules = append(DefaultRules, rule.DeepCheckRules...)
+			}
 		}
 	} else {
-		allRules = append(DefaultRules, overrideRules.DefaultRules...)
+		for _, rule := range overrideRules {
+			allRules = append(DefaultRules, rule.DefaultRules...)
+		}
 	}
 
 	for _, rule := range allRules {
