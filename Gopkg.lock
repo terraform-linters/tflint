@@ -281,7 +281,7 @@
   revision = "0dc08b1671f34c4250ce212759ebd880f743d883"
 
 [[projects]]
-  digest = "1:564ada905d4095625a49836f51268798d76ff9b7b99cd2627491f5d14b111a37"
+  digest = "1:31fe34a6b6ab971843a00f30ddde30b3cba9b0affee8120aa42a80eebc717830"
   name = "github.com/hashicorp/terraform"
   packages = [
     "addrs",
@@ -293,6 +293,7 @@
     "configs/configschema",
     "dag",
     "flatmap",
+    "helper/didyoumean",
     "helper/hilmapstructure",
     "helper/variables",
     "httpclient",
@@ -317,8 +318,8 @@
     "version",
   ]
   pruneopts = "UT"
-  revision = "6383ffc2aa1ba955dd16bed33e1de9ae8424097b"
-  version = "v0.12.0-alpha2"
+  revision = "2c36829d3265661d8edbd5014de8090ea7e2a076"
+  version = "v0.12.0-alpha4"
 
 [[projects]]
   branch = "master"

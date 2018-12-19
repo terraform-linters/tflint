@@ -148,28 +148,20 @@ func (l *Loader) LoadValuesFiles(files ...string) ([]terraform.InputValues, erro
 	if _, err := os.Stat(defaultValuesFile); !os.IsNotExist(err) {
 		autoLoadFiles = append([]string{defaultValuesFile}, autoLoadFiles...)
 	}
-	files = append(autoLoadFiles, files...)
 
+	for _, file := range autoLoadFiles {
+		vals, err := l.loadValuesFile(file, terraform.ValueFromAutoFile)
+		if err != nil {
+			return nil, err
+		}
+		values = append(values, vals)
+	}
 	for _, file := range files {
-		log.Printf("[INFO] Load `%s`", file)
-		vals, diags := l.loader.Parser().LoadValuesFile(file)
-		if diags.HasErrors() {
-			log.Printf("[ERROR] %s", diags)
-			if diags[0].Subject == nil {
-				// HACK: When Subject is nil, it outputs unintended message, so it replaces with actual file.
-				return nil, errors.New(strings.Replace(diags.Error(), "<nil>: ", fmt.Sprintf("%s: ", file), 1))
-			}
-			return nil, diags
+		vals, err := l.loadValuesFile(file, terraform.ValueFromNamedFile)
+		if err != nil {
+			return nil, err
 		}
-
-		ret := make(terraform.InputValues)
-		for k, v := range vals {
-			ret[k] = &terraform.InputValue{
-				Value:      v,
-				SourceType: terraform.ValueFromFile,
-			}
-		}
-		values = append(values, ret)
+		values = append(values, vals)
 	}
 
 	return values, nil
@@ -206,6 +198,28 @@ func autoLoadValuesFiles() ([]string, error) {
 	}
 	sort.Strings(ret)
 
+	return ret, nil
+}
+
+func (l *Loader) loadValuesFile(file string, sourceType terraform.ValueSourceType) (terraform.InputValues, error) {
+	log.Printf("[INFO] Load `%s`", file)
+	vals, diags := l.loader.Parser().LoadValuesFile(file)
+	if diags.HasErrors() {
+		log.Printf("[ERROR] %s", diags)
+		if diags[0].Subject == nil {
+			// HACK: When Subject is nil, it outputs unintended message, so it replaces with actual file.
+			return nil, errors.New(strings.Replace(diags.Error(), "<nil>: ", fmt.Sprintf("%s: ", file), 1))
+		}
+		return nil, diags
+	}
+
+	ret := make(terraform.InputValues)
+	for k, v := range vals {
+		ret[k] = &terraform.InputValue{
+			Value:      v,
+			SourceType: sourceType,
+		}
+	}
 	return ret, nil
 }
 
