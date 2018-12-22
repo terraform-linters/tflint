@@ -51,13 +51,11 @@ Please attach an output log, describe the situation and version that occurred an
 		client := plugin.Client(foundPlugin)
 		defer client.Kill()
 
-		// Connect via RPC
 		rpcClient, err := client.Client()
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		// Request the plugin
 		raw, err := rpcClient.Dispense("rules")
 		if err != nil {
 			log.Fatal(err)
