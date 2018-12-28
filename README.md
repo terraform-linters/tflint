@@ -25,7 +25,7 @@ If you run `terraform apply` for this template, it will obviously produce an err
 ## Installation
 Download binary built for your architecture from [latest releases](https://github.com/wata727/tflint/releases/latest). After downloading, place the binary on the directory on the PATH. The following example is the installation in macOS.
 ```
-$ wget https://github.com/wata727/tflint/releases/download/v0.7.2/tflint_darwin_amd64.zip
+$ wget https://github.com/wata727/tflint/releases/download/v0.7.3/tflint_darwin_amd64.zip
 $ unzip tflint_darwin_amd64.zip
 Archive:  tflint_darwin_amd64.zip
   inflating: tflint
