@@ -65,7 +65,7 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Stdout:  "",
 		},
 		{
-			Name:    "loading errors are occurred",
+			Name:    "loading errors have occurred",
 			Command: "./tflint",
 			LoadErr: errors.New("Load error occurred"),
 			Status:  ExitCodeError,
@@ -107,16 +107,26 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, tc.LoadErr).AnyTimes()
 		cli.loader = loader
 
-		status := cli.Run(strings.Split(tc.Command, " "))
+		args := strings.Split(tc.Command, " ")
 
-		if status != tc.Status {
-			t.Fatalf("Failed `%s`: Expected status is `%d`, but get `%d`", tc.Name, tc.Status, status)
+		err := cli.SanityCheck(args)
+		if err == nil {
+			cli.Run()
 		}
+
+		// _, err := cli.loader.LoadConfig()
+		// fmt.Println(err)
+
+		if cli.ExitCode != tc.Status {
+			t.Fatalf("Failed `%s`: Expected status is `%d`, but got `%d`", tc.Name, tc.Status, cli.ExitCode)
+		}
+
 		if !strings.Contains(outStream.String(), tc.Stdout) {
-			t.Fatalf("Failed `%s`: Expected to contain `%s` in stdout, but get `%s`", tc.Name, tc.Stdout, outStream.String())
+			t.Fatalf("Failed `%s`: Expected to contain `%s` in stdout, but got `%s`", tc.Name, tc.Stdout, outStream.String())
 		}
+
 		if !strings.Contains(errStream.String(), tc.Stderr) {
-			t.Fatalf("Failed `%s`: Expected to contain `%s` in stderr, but get `%s`", tc.Name, tc.Stderr, errStream.String())
+			t.Fatalf("Failed `%s`: Expected to contain `%s` in stderr, but got `%s`", tc.Name, tc.Stderr, errStream.String())
 		}
 	}
 }
@@ -198,7 +208,7 @@ func TestCLIRun__issuesFound(t *testing.T) {
 			Stdout:  "This is test error (test_rule)",
 		},
 		{
-			Name:    "checking errors are occurred",
+			Name:    "checking errors have occurred",
 			Command: "./tflint",
 			Rule:    &errorRule{},
 			Status:  ExitCodeError,
@@ -229,16 +239,20 @@ func TestCLIRun__issuesFound(t *testing.T) {
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, nil).AnyTimes()
 		cli.loader = loader
 
-		status := cli.Run(strings.Split(tc.Command, " "))
+		args := strings.Split(tc.Command, " ")
+		err := cli.SanityCheck(args)
+		if err == nil {
+			cli.Run()
+		}
 
-		if status != tc.Status {
-			t.Fatalf("Failed `%s`: Expected status is `%d`, but get `%d`", tc.Name, tc.Status, status)
+		if cli.ExitCode != tc.Status {
+			t.Fatalf("Failed `%s`: Expected status is `%d`, but got `%d`", tc.Name, tc.Status, cli.ExitCode)
 		}
 		if !strings.Contains(outStream.String(), tc.Stdout) {
-			t.Fatalf("Failed `%s`: Expected to contain `%s` in stdout, but get `%s`", tc.Name, tc.Stdout, outStream.String())
+			t.Fatalf("Failed `%s`: Expected to contain `%s` in stdout, but got `%s`", tc.Name, tc.Stdout, outStream.String())
 		}
 		if !strings.Contains(errStream.String(), tc.Stderr) {
-			t.Fatalf("Failed `%s`: Expected to contain `%s` in stderr, but get `%s`", tc.Name, tc.Stderr, errStream.String())
+			t.Fatalf("Failed `%s`: Expected to contain `%s` in stderr, but got `%s`", tc.Name, tc.Stderr, errStream.String())
 		}
 	}
 }
@@ -323,10 +337,14 @@ func TestCLIRun__withArguments(t *testing.T) {
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, nil).AnyTimes()
 		cli.loader = loader
 
-		status := cli.Run(strings.Split(tc.Command, " "))
+		args := strings.Split(tc.Command, " ")
+		err := cli.SanityCheck(args)
+		if err == nil {
+			cli.Run()
+		}
 
-		if status != tc.Status {
-			t.Fatalf("Failed `%s`: Expected status is `%d`, but get `%d`", tc.Name, tc.Status, status)
+		if cli.ExitCode != tc.Status {
+			t.Fatalf("Failed `%s`: Expected status is `%d`, but get `%d`", tc.Name, tc.Status, cli.ExitCode)
 		}
 		if !strings.Contains(outStream.String(), tc.Stdout) {
 			t.Fatalf("Failed `%s`: Expected to contain `%s` in stdout, but get `%s`", tc.Name, tc.Stdout, outStream.String())

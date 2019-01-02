@@ -29,10 +29,11 @@ type CLI struct {
 	outStream, errStream io.Writer
 	loader               tflint.AbstractLoader
 	testMode             bool
-	cfg                  *tflint.Config
+	Cfg                  *tflint.Config
 	opts                 Options
 	argFiles             []string
 	ExitCode             int
+	noOp                 bool
 
 	runners []*tflint.Runner
 	Issues  []*issue.Issue
@@ -46,26 +47,43 @@ func NewCLI(outStream io.Writer, errStream io.Writer) *CLI {
 	}
 }
 
-func (cli *CLI) SanityCheck(args []string) {
+func (cli *CLI) Run() int {
+	if cli.noOp == true {
+		return cli.ExitCode
+	}
+
+	cli.ProcessRules()
+	cli.ReportViolations()
+
+	return cli.ExitCode
+}
+
+func (cli *CLI) SanityCheck(args []string) error {
 	parser := flags.NewParser(&cli.opts, flags.HelpFlag)
 	parser.Usage = "[OPTIONS]"
 	parser.UnknownOptionHandler = func(option string, arg flags.SplitArgument, args []string) ([]string, error) {
 		if option == "debug" {
+			cli.noOp = true
 			return []string{}, errors.New("`debug` option was removed in v0.8.0. Please set `TFLINT_LOG` environment variables instead")
 		}
+
+		cli.noOp = true
 		return []string{}, fmt.Errorf("`%s` is unknown option. Please run `tflint --help`", option)
 	}
+
 	// Parse commandline flag
 	args, err := parser.ParseArgs(args)
 	if err != nil {
 		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {
 			fmt.Fprintln(cli.outStream, err)
 			cli.ExitCode = ExitCodeOK
-			return
+			cli.noOp = true
+			return nil
 		}
+
 		cli.printError(err)
 		cli.ExitCode = ExitCodeError
-		return
+		return err
 	}
 
 	cli.argFiles = args[1:]
@@ -74,7 +92,8 @@ func (cli *CLI) SanityCheck(args []string) {
 	if cli.opts.Version {
 		fmt.Fprintf(cli.outStream, "TFLint version %s\n", Version)
 		cli.ExitCode = ExitCodeOK
-		return
+		cli.noOp = true
+		return nil
 	}
 
 	// Setup config
@@ -82,10 +101,11 @@ func (cli *CLI) SanityCheck(args []string) {
 	if err != nil {
 		cli.printError(fmt.Errorf("Failed to load TFLint config: %s", err))
 		cli.ExitCode = ExitCodeError
-		return
+		return err
 	}
+
 	cfg = cfg.Merge(cli.opts.toConfig())
-	cli.cfg = cfg
+	cli.Cfg = cfg
 
 	// Load Terraform's configurations
 	if !cli.testMode {
@@ -93,38 +113,43 @@ func (cli *CLI) SanityCheck(args []string) {
 		if err != nil {
 			cli.printError(fmt.Errorf("Failed to prepare loading: %s", err))
 			cli.ExitCode = ExitCodeError
-			return
+			return err
 		}
 	}
+
 	// Check to see if the all the files are correct
 	for _, file := range cli.argFiles {
 		if fileInfo, err := os.Stat(file); os.IsNotExist(err) {
 			cli.printError(fmt.Errorf("Failed to load `%s`: File not found", file))
 			cli.ExitCode = ExitCodeError
-			return
+			return err
 		} else if fileInfo.IsDir() {
-			cli.printError(fmt.Errorf("Failed to load `%s`: TFLint doesn't accept directories as arguments", file))
+			err = fmt.Errorf("Failed to load `%s`: TFLint doesn't accept directories as arguments", file)
+			cli.printError(err)
 			cli.ExitCode = ExitCodeError
-			return
+			return err
 		}
 
 		if !cli.loader.IsConfigFile(file) {
-			cli.printError(fmt.Errorf("Failed to load `%s`: File is not a target of Terraform", file))
+			err = fmt.Errorf("Failed to load `%s`: File is not a target of Terraform", file)
+			cli.printError(err)
 			cli.ExitCode = ExitCodeError
-			return
+			return err
 		}
 	}
+
 	configs, err := cli.loader.LoadConfig()
 	if err != nil {
 		cli.printError(fmt.Errorf("Failed to load configurations: %s", err))
 		cli.ExitCode = ExitCodeError
-		return
+		return err
 	}
+
 	valuesFiles, err := cli.loader.LoadValuesFiles(cfg.Varfile...)
 	if err != nil {
 		cli.printError(fmt.Errorf("Failed to load values files: %s", err))
 		cli.ExitCode = ExitCodeError
-		return
+		return err
 	}
 
 	// Check configurations via Runner
@@ -133,16 +158,16 @@ func (cli *CLI) SanityCheck(args []string) {
 	if err != nil {
 		cli.printError(fmt.Errorf("Failed to prepare rule checking: %s", err))
 		cli.ExitCode = ExitCodeError
-		return
+		return err
 	}
 
 	cli.runners = append(cli.runners, runner)
 	cli.ExitCode = ExitCodeOK
-	return
+	return nil
 }
 
-func (cli *CLI) ProcessRules(overrideRules ...*rules.OverrideRules) {
-	for _, rule := range rules.NewRules(cli.cfg, overrideRules...) {
+func (cli *CLI) ProcessRules(additionalRules ...[]rules.Rule) {
+	for _, rule := range rules.NewRules(cli.Cfg) {
 		for _, runner := range cli.runners {
 			err := rule.Check(runner)
 			if err != nil {
@@ -160,10 +185,9 @@ func (cli *CLI) ProcessRules(overrideRules ...*rules.OverrideRules) {
 	}
 }
 
-func (cli *CLI) ReportViolations(additionalIssues []*issue.Issue) {
-	// Print issues
-	for _, issue := range additionalIssues {
-		cli.Issues = append(cli.Issues, issue)
+func (cli *CLI) ReportViolations() {
+	if cli.ExitCode == ExitCodeError {
+		return
 	}
 
 	printer.NewPrinter(cli.outStream, cli.errStream).Print(cli.Issues, cli.opts.Format, cli.opts.Quiet)

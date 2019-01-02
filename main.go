@@ -11,18 +11,21 @@ import (
 	"github.com/hashicorp/logutils"
 	colorable "github.com/mattn/go-colorable"
 	"github.com/wata727/tflint/cmd"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/plugin"
 	"github.com/wata727/tflint/plugin/discovery"
+	"github.com/wata727/tflint/rules"
 )
 
 func main() {
 	cli := cmd.NewCLI(colorable.NewColorable(os.Stdout), colorable.NewColorable(os.Stderr))
+	cli.SanityCheck(os.Args)
+
 	filter := &logutils.LevelFilter{
 		Levels:   []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
 		MinLevel: logutils.LogLevel(strings.ToUpper(os.Getenv("TFLINT_LOG"))),
 		Writer:   os.Stderr,
 	}
+
 	log.SetOutput(filter)
 	log.SetFlags(log.Ltime | log.Lshortfile)
 
@@ -46,7 +49,7 @@ Please attach an output log, describe the situation and version that occurred an
 	pluginSearch := discovery.PluginSearch{}
 	pluginSearch.Find()
 
-	var pluginRuleViolations []*issue.Issue
+	var pluginRules []rules.Rule
 	for _, foundPlugin := range pluginSearch.Plugins {
 		client := plugin.Client(foundPlugin)
 		defer client.Kill()
@@ -63,15 +66,12 @@ Please attach an output log, describe the situation and version that occurred an
 
 		tflintPlugin := raw.(plugin.RuleCollection)
 
-		pluginRuleViolations = append(pluginRuleViolations, tflintPlugin.Process(os.Args)...)
+		pluginRules = append(pluginRules, tflintPlugin.NewRules(cli.Cfg)...)
 		if err != nil {
 			panic(err)
 		}
 	}
 
-	cli.SanityCheck(os.Args)
-	cli.ProcessRules()
-	cli.ReportViolations(pluginRuleViolations)
-
+	cli.Run()
 	os.Exit(cli.ExitCode)
 }

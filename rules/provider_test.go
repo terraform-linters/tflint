@@ -13,6 +13,7 @@ func Test_NewRules(t *testing.T) {
 	DefaultRules = []Rule{
 		awsrules.NewAwsInstanceInvalidTypeRule(),
 	}
+
 	deepCheckRules = []Rule{
 		awsrules.NewAwsInstanceInvalidAMIRule(),
 	}
@@ -63,7 +64,7 @@ func Test_NewRules(t *testing.T) {
 			Name: "`enabled = true` and `ignore_rule`",
 			Config: &tflint.Config{
 				IgnoreRule: map[string]bool{
-					"aws_instance_invalid_type": true,
+					"aws_instance_invalid_type": false,
 				},
 				Rules: map[string]*tflint.RuleConfig{
 					"aws_instance_invalid_type": {
@@ -79,6 +80,7 @@ func Test_NewRules(t *testing.T) {
 
 	for _, tc := range cases {
 		ret := NewRules(tc.Config)
+
 		if !reflect.DeepEqual(tc.Expected, ret) {
 			t.Fatalf("Failed `%s` test: expected rules are `%#v`, but get `%#v`", tc.Name, tc.Expected, ret)
 		}

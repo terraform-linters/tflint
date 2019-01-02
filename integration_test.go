@@ -58,8 +58,11 @@ func TestIntegration(t *testing.T) {
 
 		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
 		cli := cmd.NewCLI(outStream, errStream)
+
 		args := strings.Split(tc.Command, " ")
-		cli.Run(args)
+
+		cli.SanityCheck(args)
+		cli.Run()
 
 		var b []byte
 		var err error

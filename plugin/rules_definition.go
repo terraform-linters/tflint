@@ -4,18 +4,28 @@ import (
 	"net/rpc"
 
 	"github.com/hashicorp/go-plugin"
-	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/rules"
+	"github.com/wata727/tflint/tflint"
 )
 
+/*
+The 'real' implementation of a rule collection that is transmitted over rpc.
+*/
 type RuleCollection interface {
-	Process([]string) []*issue.Issue
+	NewRules(*tflint.Config) []rules.Rule
 }
 
+/*
+RPC client struct.
+*/
 type RuleCollectionRPC struct{ client *rpc.Client }
 
-func (r *RuleCollectionRPC) Process(files []string) []*issue.Issue {
-	var resp []*issue.Issue
-	err := r.client.Call("Plugin.Process", files, &resp)
+/*
+A wrapper for the NewRules function that allows it to be called over an RPC connection.
+*/
+func (r *RuleCollectionRPC) NewRules(c *tflint.Config) []rules.Rule {
+	var resp []rules.Rule
+	err := r.client.Call("Plugin.Process", c, &resp)
 	if err != nil {
 		panic(err)
 	}
@@ -27,8 +37,8 @@ type RuleCollectionRPCServer struct {
 	Impl RuleCollection
 }
 
-func (s *RuleCollectionRPCServer) Process(files []string, resp *[]*issue.Issue) error {
-	*resp = s.Impl.Process(files)
+func (s *RuleCollectionRPCServer) Process(c *tflint.Config, resp *[]rules.Rule) error {
+	*resp = s.Impl.NewRules(c)
 	return nil
 }
 

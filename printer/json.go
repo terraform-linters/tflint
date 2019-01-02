@@ -8,6 +8,10 @@ import (
 )
 
 func (p *Printer) JSONPrint(issues []*issue.Issue) {
+	if issues == nil {
+		issues = make([]*issue.Issue, 0)
+	}
+
 	result, err := json.Marshal(issues)
 	if err != nil {
 		fmt.Fprint(p.stderr, err)

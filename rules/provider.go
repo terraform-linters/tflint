@@ -60,31 +60,30 @@ var deepCheckRules = []Rule{
 	awsrules.NewAwsRouteInvalidVPCPeeringConnectionRule(),
 }
 
-type OverrideRules struct {
+type AdditionalRules struct {
 	DefaultRules   []Rule
 	DeepCheckRules []Rule
 }
 
 // NewRules returns rules according to configuration
-func NewRules(c *tflint.Config, overrideRules ...*OverrideRules) []Rule {
+func NewRules(c *tflint.Config, additionalRules ...*AdditionalRules) []Rule {
 	log.Print("[INFO] Prepare rules")
 
 	ret := []Rule{}
 	allRules := []Rule{}
 
+	if additionalRules != nil {
+		for _, rule := range additionalRules {
+			DefaultRules = append(DefaultRules, rule.DefaultRules...)
+			deepCheckRules = append(deepCheckRules, rule.DeepCheckRules...)
+		}
+	}
+
 	if c.DeepCheck {
 		log.Printf("[DEBUG] Deep check mode is enabled. Add deep check rules")
-		if overrideRules != nil {
-			allRules = append(DefaultRules, deepCheckRules...)
-		} else {
-			for _, rule := range overrideRules {
-				allRules = append(DefaultRules, rule.DeepCheckRules...)
-			}
-		}
+		allRules = append(DefaultRules, deepCheckRules...)
 	} else {
-		for _, rule := range overrideRules {
-			allRules = append(DefaultRules, rule.DefaultRules...)
-		}
+		allRules = DefaultRules
 	}
 
 	for _, rule := range allRules {
