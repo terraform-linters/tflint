@@ -1,3 +1,13 @@
+## 0.7.3 (2018-12-28)
+
+### Enhancements
+
+- Update ec2-instances-info dependency ([#257](https://github.com/wata727/tflint/pull/257))
+
+### Others
+
+- Add "features" word to docs for people explicitly looking ([#237](https://github.com/wata727/tflint/pull/237))
+
 ## 0.7.2 (2018-08-26)
 
 ### Enhancements

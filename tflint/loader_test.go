@@ -252,31 +252,31 @@ func Test_LoadValuesFiles(t *testing.T) {
 		{
 			"default": {
 				Value:      cty.StringVal("terraform.tfvars"),
-				SourceType: terraform.ValueFromFile,
+				SourceType: terraform.ValueFromAutoFile,
 			},
 		},
 		{
 			"auto1": {
 				Value:      cty.StringVal("auto1.auto.tfvars"),
-				SourceType: terraform.ValueFromFile,
+				SourceType: terraform.ValueFromAutoFile,
 			},
 		},
 		{
 			"auto2": {
 				Value:      cty.StringVal("auto2.auto.tfvars"),
-				SourceType: terraform.ValueFromFile,
+				SourceType: terraform.ValueFromAutoFile,
 			},
 		},
 		{
 			"cli1": {
 				Value:      cty.StringVal("cli1.tfvars"),
-				SourceType: terraform.ValueFromFile,
+				SourceType: terraform.ValueFromNamedFile,
 			},
 		},
 		{
 			"cli2": {
 				Value:      cty.StringVal("cli2.tfvars"),
-				SourceType: terraform.ValueFromFile,
+				SourceType: terraform.ValueFromNamedFile,
 			},
 		},
 	}

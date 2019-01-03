@@ -721,7 +721,7 @@ resource "null_resource" "test" {
 				terraform.InputValues{
 					"instance_type": &terraform.InputValue{
 						Value:      cty.StringVal("c5.2xlarge"),
-						SourceType: terraform.ValueFromFile,
+						SourceType: terraform.ValueFromNamedFile,
 					},
 				},
 			},
@@ -739,13 +739,13 @@ resource "null_resource" "test" {
 				terraform.InputValues{
 					"instance_type": &terraform.InputValue{
 						Value:      cty.StringVal("c5.2xlarge"),
-						SourceType: terraform.ValueFromFile,
+						SourceType: terraform.ValueFromNamedFile,
 					},
 				},
 				terraform.InputValues{
 					"instance_type": &terraform.InputValue{
 						Value:      cty.StringVal("p3.8xlarge"),
-						SourceType: terraform.ValueFromFile,
+						SourceType: terraform.ValueFromNamedFile,
 					},
 				},
 			},

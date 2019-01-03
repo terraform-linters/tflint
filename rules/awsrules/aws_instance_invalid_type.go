@@ -74,7 +74,6 @@ func (r *AwsInstanceInvalidTypeRule) Check(runner *tflint.Runner) error {
 					attribute.Expr.Range(),
 				)
 			}
-
 			return nil
 		})
 	})

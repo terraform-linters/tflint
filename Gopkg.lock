@@ -118,7 +118,7 @@
     "data",
   ]
   pruneopts = "UT"
-  revision = "73c042a5558cd6d8b61fb82502d6f7aec334e9ed"
+  revision = "b8e5ad34236645ef17f7aed90a3b95987672eaf0"
 
 [[projects]]
   digest = "1:938a2672d6ebbb7f7bc63eee3e4b9464c16ffcf77ec8913d3edbf32b4e3984dd"
@@ -145,15 +145,9 @@
   revision = "22bbf0ddf08105dfa364d0a2fa619dfa71014af5"
 
 [[projects]]
-  digest = "1:17fe264ee908afc795734e8c4e63db2accabaf57326dbf21763a7d6b86096260"
+  digest = "1:15042ad3498153684d09f393bbaec6b216c8eec6d61f63dff711de7d64ed8861"
   name = "github.com/golang/protobuf"
-  packages = [
-    "proto",
-    "ptypes",
-    "ptypes/any",
-    "ptypes/duration",
-    "ptypes/timestamp",
-  ]
+  packages = ["proto"]
   pruneopts = "UT"
   revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
   version = "v1.1.0"
@@ -200,27 +194,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:0876aeb6edb07e20b6b0ce1d346655cb63dbe0a26ccfb47b68a9b7697709777b"
-  name = "github.com/hashicorp/go-hclog"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "61d530d6c27f994fb6c83b80f99a69c54125ec8a"
-
-[[projects]]
-  branch = "master"
   digest = "1:e5048c5da80697be2fcdecc944e29d2999e01fd7f48b643168443209779f3463"
   name = "github.com/hashicorp/go-multierror"
   packages = ["."]
   pruneopts = "UT"
   revision = "b7773ae218740a7be65057fc60b366a49b538a44"
-
-[[projects]]
-  branch = "master"
-  digest = "1:12fd3b73c54592003bf5214e9efff0092abaa173eedfc5390ed17431ed5dde1e"
-  name = "github.com/hashicorp/go-plugin"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "54b6ff97d8180dbbd93d2010dd4a92c86f604bb8"
 
 [[projects]]
   branch = "master"
@@ -303,7 +281,7 @@
   revision = "0dc08b1671f34c4250ce212759ebd880f743d883"
 
 [[projects]]
-  digest = "1:564ada905d4095625a49836f51268798d76ff9b7b99cd2627491f5d14b111a37"
+  digest = "1:31fe34a6b6ab971843a00f30ddde30b3cba9b0affee8120aa42a80eebc717830"
   name = "github.com/hashicorp/terraform"
   packages = [
     "addrs",
@@ -315,6 +293,7 @@
     "configs/configschema",
     "dag",
     "flatmap",
+    "helper/didyoumean",
     "helper/hilmapstructure",
     "helper/variables",
     "httpclient",
@@ -339,16 +318,8 @@
     "version",
   ]
   pruneopts = "UT"
-  revision = "6383ffc2aa1ba955dd16bed33e1de9ae8424097b"
-  version = "v0.12.0-alpha2"
-
-[[projects]]
-  branch = "master"
-  digest = "1:a4826c308e84f5f161b90b54a814f0be7d112b80164b9b884698a6903ea47ab3"
-  name = "github.com/hashicorp/yamux"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "2f1d1f20f75d5404f53b9edf6b53ed5505508675"
+  revision = "2c36829d3265661d8edbd5014de8090ea7e2a076"
+  version = "v0.12.0-alpha4"
 
 [[projects]]
   branch = "master"
@@ -560,16 +531,11 @@
   revision = "a49355c7e3f8fe157a85be2f77e6e269a0f89602"
 
 [[projects]]
-  digest = "1:49131f79ef90ca701638024267ba6e3b5cd0ce387e0b3ec79961a42430873db9"
+  digest = "1:465a33526e2f67923b633d1ff67999c13a41d5226ee8ae78ddc22bc41c5ec4b3"
   name = "golang.org/x/net"
   packages = [
     "context",
-    "http/httpguts",
-    "http2",
-    "http2/hpack",
     "idna",
-    "internal/timeseries",
-    "trace",
   ]
   pruneopts = "UT"
   revision = "57065200b4b034a1c8ad54ff77069408c2218ae6"
@@ -623,51 +589,6 @@
   revision = "b1f26356af11148e710935ed1ac8a7f5702c7612"
   version = "v1.1.0"
 
-[[projects]]
-  branch = "master"
-  digest = "1:56b0bca90b7e5d1facf5fbdacba23e4e0ce069d25381b8e2f70ef1e7ebfb9c1a"
-  name = "google.golang.org/genproto"
-  packages = ["googleapis/rpc/status"]
-  pruneopts = "UT"
-  revision = "b5d43981345bdb2c233eb4bf3277847b48c6fdc6"
-
-[[projects]]
-  digest = "1:95550b4aa2a79019c2a832c1a7d6a5446b046e3ee8cce12a042778ac0ac47baf"
-  name = "google.golang.org/grpc"
-  packages = [
-    ".",
-    "balancer",
-    "balancer/base",
-    "balancer/roundrobin",
-    "codes",
-    "connectivity",
-    "credentials",
-    "encoding",
-    "encoding/proto",
-    "grpclog",
-    "health",
-    "health/grpc_health_v1",
-    "internal",
-    "internal/backoff",
-    "internal/channelz",
-    "internal/envconfig",
-    "internal/grpcrand",
-    "internal/transport",
-    "keepalive",
-    "metadata",
-    "naming",
-    "peer",
-    "resolver",
-    "resolver/dns",
-    "resolver/passthrough",
-    "stats",
-    "status",
-    "tap",
-  ]
-  pruneopts = "UT"
-  revision = "2e463a05d100327ca47ac218281906921038fd95"
-  version = "v1.16.0"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
@@ -694,8 +615,6 @@
     "github.com/fatih/color",
     "github.com/golang/mock/gomock",
     "github.com/google/go-cmp/cmp",
-    "github.com/hashicorp/go-hclog",
-    "github.com/hashicorp/go-plugin",
     "github.com/hashicorp/go-version",
     "github.com/hashicorp/hcl",
     "github.com/hashicorp/hcl/hcl/ast",

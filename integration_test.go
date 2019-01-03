@@ -61,8 +61,10 @@ func TestIntegration(t *testing.T) {
 
 		args := strings.Split(tc.Command, " ")
 
-		cli.SanityCheck(args)
-		cli.Run()
+		err := cli.SanityCheck(args)
+		if err == nil {
+			cli.Run()
+		}
 
 		var b []byte
 		var err error

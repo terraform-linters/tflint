@@ -64,7 +64,7 @@ func Test_NewRules(t *testing.T) {
 			Name: "`enabled = true` and `ignore_rule`",
 			Config: &tflint.Config{
 				IgnoreRule: map[string]bool{
-					"aws_instance_invalid_type": false,
+					"aws_instance_invalid_type": true,
 				},
 				Rules: map[string]*tflint.RuleConfig{
 					"aws_instance_invalid_type": {
