@@ -67,7 +67,6 @@ func TestIntegration(t *testing.T) {
 		}
 
 		var b []byte
-		var err error
 		if runtime.GOOS == "windows" && IsWindowsResultExist() {
 			b, err = ioutil.ReadFile("result_windows.json")
 		} else {
