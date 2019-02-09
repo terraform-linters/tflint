@@ -1,3 +1,9 @@
+## 0.7.4 (2019-02-09)
+
+### Enhancements
+
+- Add support for db.m5 series db types ([#258](https://github.com/wata727/tflint/pull/258))
+
 ## 0.7.3 (2018-12-28)
 
 ### Enhancements
