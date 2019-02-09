@@ -6,6 +6,12 @@
 
 TFLint is a [Terraform](https://www.terraform.io/) linter for detecting errors that can not be detected by `terraform plan`
 
+## Current Project Status
+
+Currently, we are not encouraged to run TFLint on critical workflow due to incomplete features. See [#167](https://github.com/wata727/tflint/issues/167), [#168](https://github.com/wata727/tflint/issues/168).  
+This issue is scheduled to be fixed in the release of v0.8.0, but this release depends on Terraform v0.12.0, and we cannot release v0.8.0 until it is released.  
+For these reasons, feature requests and major changes have been suspended until v0.8.0 release. A small bug fixes for patch upgrade are welcome.
+
 ## Why TFLint is Required?
 Terraform is a great tool for infrastructure as a code. It generates an execution plan, we can rely on this plan to proceed with development. However, this plan does not verify values used in template. For example, following template is invalid configuration (t1.2xlarge is invalid instance type)
 
