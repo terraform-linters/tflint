@@ -1,11 +1,23 @@
-FROM alpine:3.5
+FROM golang:1.11.5-alpine3.9 as builder
 
 MAINTAINER wata727
 
-RUN apk add --no-cache ca-certificates
+WORKDIR /root
 
-COPY dist/linux_amd64/tflint /usr/local/bin
+ENV GOPATH /root/.go
+ENV PATH $GOPATH/bin:$PATH
 
-ENTRYPOINT ["tflint"]
+RUN apk add --no-cache --update git ca-certificates make gcc g++
+RUN go get -d github.com/wata727/tflint
 
-WORKDIR /data
+WORKDIR /root/.go/src/github.com/wata727/tflint
+
+RUN make build
+
+FROM alpine:3.9
+
+MAINTAINER wata727
+
+COPY --from=builder /root/.go/src/github.com/wata727/tflint/tflint /usr/local/bin/tflint
+
+CMD ["ash"]

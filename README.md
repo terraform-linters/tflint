@@ -54,7 +54,7 @@ $ brew install tflint
 We provide Docker images for each version on [DockerHub](https://hub.docker.com/r/wata727/tflint/). With docker, you can run TFLint without installing it locally.
 
 ```
-$ docker run --rm -v $(pwd):/data -t wata727/tflint
+$ docker run -itv (pwd):/project -w /project --rm wata727/tflint tflint
 ```
 
 ## Quick Start
