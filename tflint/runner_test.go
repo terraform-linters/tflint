@@ -1107,7 +1107,7 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 	runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
 	_, err = NewModuleRunners(runner)
 
-	errText := "Attribute of module not allowed was found in module.tf:1; Unexpected invalid block; Blocks are not allowed here."
+	errText := "Attribute of module not allowed was found in module.tf:1; module.tf:4,3-10: Unexpected \"invalid\" block; Blocks are not allowed here."
 	errCode := UnexpectedAttributeError
 	errLevel := ErrorLevel
 

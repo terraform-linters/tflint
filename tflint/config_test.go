@@ -127,7 +127,7 @@ func Test_LoadConfig_error(t *testing.T) {
 			Name: "syntax error",
 			File: filepath.Join(currentDir, "test-fixtures", "config", "syntax_error.hcl"),
 			Expected: fmt.Sprintf(
-				"%s:2,1-1: Invalid character; The \"`\" character is not valid. To create a multi-line string, use the \"heredoc\" syntax, like \"<<EOT\"., and 1 other diagnostic(s)",
+				"%s:1,1-2: Invalid character; The \"`\" character is not valid. To create a multi-line string, use the \"heredoc\" syntax, like \"<<EOT\"., and 1 other diagnostic(s)",
 				filepath.Join(currentDir, "test-fixtures", "config", "syntax_error.hcl"),
 			),
 		},

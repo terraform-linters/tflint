@@ -306,7 +306,7 @@ func Test_LoadValuesFiles_invalidValuesFile(t *testing.T) {
 		t.Fatal("Expected error is not occurred")
 	}
 
-	expected := "terraform.tfvars: Unexpected resource block; Blocks are not allowed here."
+	expected := "terraform.tfvars:3,1-9: Unexpected \"resource\" block; Blocks are not allowed here."
 	if err.Error() != expected {
 		t.Fatalf("Expected error is `%s`, but get `%s`", expected, err.Error())
 	}
