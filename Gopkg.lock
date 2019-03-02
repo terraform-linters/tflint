@@ -111,7 +111,7 @@
   version = "v3.5.1"
 
 [[projects]]
-  digest = "1:632b6e77d8f1cfce5d783432aefe7e335a0925fd91c9efd5dc514d76f0eb9e35"
+  digest = "1:097fd8bcde8fc0f19cb485d3d9feb206de5b34c73b518b8bb385910f6133fa48"
   name = "github.com/cristim/ec2-instances-info"
   packages = [
     ".",
@@ -217,12 +217,12 @@
   revision = "27454136f0364f2d44b1276c552d69105cf8c498"
 
 [[projects]]
-  branch = "master"
-  digest = "1:e12b92b8bb20af6e299e9829534cfe790857702a988d3f0443e772c9d82a4fd2"
+  digest = "1:950caca7dfcf796419232ba996c9c3539d09f26af27ba848c4508e604c13efbb"
   name = "github.com/hashicorp/go-version"
   packages = ["."]
   pruneopts = "UT"
-  revision = "23480c0665776210b5fbbac6eaaee40e3e6a96b7"
+  revision = "d40cf49b3a77bba84a7afdbd7f1dc295d114efb1"
+  version = "v1.1.0"
 
 [[projects]]
   branch = "master"
@@ -244,7 +244,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:4ef14a182251aa2add9b62acb92ce5610dfb150900b3bff6dcdb15d90a40fa9b"
+  digest = "1:634382fe5de6ac4cedde7154a1bb54a07d1746c0e9d947b42664a5fead84641f"
   name = "github.com/hashicorp/hcl2"
   packages = [
     "ext/dynblock",
@@ -255,9 +255,10 @@
     "hcl/json",
     "hcldec",
     "hclparse",
+    "hclwrite",
   ]
   pruneopts = "UT"
-  revision = "ed8144cda141c1f06f8ab122baff783b645cfe52"
+  revision = "7e26f2f3461267613602a534185654331d113c60"
 
 [[projects]]
   branch = "master"
@@ -281,7 +282,7 @@
   revision = "0dc08b1671f34c4250ce212759ebd880f743d883"
 
 [[projects]]
-  digest = "1:31fe34a6b6ab971843a00f30ddde30b3cba9b0affee8120aa42a80eebc717830"
+  digest = "1:d782d248185fc791cfe2ad718692f2b911aa56713ff916144522c21543a063a4"
   name = "github.com/hashicorp/terraform"
   packages = [
     "addrs",
@@ -297,6 +298,7 @@
     "helper/hilmapstructure",
     "helper/variables",
     "httpclient",
+    "internal/modsdir",
     "lang",
     "lang/funcs",
     "moduledeps",
@@ -318,8 +320,8 @@
     "version",
   ]
   pruneopts = "UT"
-  revision = "2c36829d3265661d8edbd5014de8090ea7e2a076"
-  version = "v0.12.0-alpha4"
+  revision = "e4dfd09be21ee2f69e7f9bd96b6aab2aed6885d4"
+  version = "v0.12.0-beta1"
 
 [[projects]]
   branch = "master"
@@ -489,7 +491,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:d3ff7bbb471336a697a8ca894651b0bd29d001e2de1629fa0dafb72b6f90e9a6"
+  digest = "1:c99f872488cca8352adc6250a819774c0b494901dbba0ac7334214c6e529c259"
   name = "github.com/zclconf/go-cty"
   packages = [
     "cty",
@@ -502,7 +504,7 @@
     "cty/set",
   ]
   pruneopts = "UT"
-  revision = "752f6a689f5e6cd7836c7bd0e1ac9b757814a2c7"
+  revision = "19dda139b164a5503de2051225fa6b94f5d39e05"
 
 [[projects]]
   branch = "master"
