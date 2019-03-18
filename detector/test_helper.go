@@ -39,10 +39,11 @@ func (d *TestDetector) Detect(resource *schema.Resource, issues *[]*issue.Issue)
 	})
 }
 
-func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string, c *config.Config, awsClient *config.AwsClient, issues *[]*issue.Issue) error {
+func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string, c *config.Config, awsClient *config.AwsClient, issues *[]*issue.Issue, filename string) error {
 	templates := make(map[string]*ast.File)
-	templates["test.tf"], _ = parser.Parse([]byte(src))
-	files := map[string][]byte{"test.tf": []byte(src)}
+	filename_to_use := filename || "test.tf"
+	templates[filename_to_use], _ = parser.Parse([]byte(src))
+	files := map[string][]byte{filename_to_use: []byte(src)}
 
 	tfstate := &state.TFState{}
 	if err := json.Unmarshal([]byte(stateJSON), tfstate); err != nil && stateJSON != "" {
@@ -71,6 +72,16 @@ func TestDetectByCreatorName(creatorMethod string, src string, stateJSON string,
 				detect := detector.MethodByName("Detect")
 				detect.Call([]reflect.Value{
 					reflect.ValueOf(resource),
+					reflect.ValueOf(issues),
+				})
+			}
+		}
+	case "provider":
+		for _, template := range schema {
+			for _, provider := range template.FindProviders(reflect.Indirect(detector).FieldByName("Target").String()) {
+				detect := detector.MethodByName("Detect")
+				detect.Call([]reflect.Value{
+					reflect.ValueOf(provider),
 					reflect.ValueOf(issues),
 				})
 			}

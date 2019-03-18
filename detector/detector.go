@@ -83,6 +83,7 @@ var detectorFactories = []string{
 	"CreateAwsCloudWatchMetricAlarmInvalidUnitDetector",
 	"CreateAwsECSClusterDuplicateNameDetector",
 	"CreateTerraformModulePinnedSourceDetector",
+	"CreateTerraformAWSProviderOutsideExamplesDetector",
 }
 
 func NewDetector(templates map[string]*ast.File, schema []*schema.Template, state *state.TFState, tfvars []*ast.File, c *config.Config) (*Detector, error) {

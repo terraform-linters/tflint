@@ -16,6 +16,7 @@ type Template struct {
 	File      string
 	Resources []*Resource
 	Modules   []*Module
+	Providers   []*Provider
 }
 
 func Make(files map[string][]byte) ([]*Template, error) {
@@ -157,6 +158,19 @@ func appendTemplates(templates []*Template, file string, body []byte, override b
 
 		if new {
 			template.Modules = append(template.Modules, module)
+		}
+	}
+
+	for providerType, typeProviders := range ret["resource"] {
+	for _, typeProvider := range typeProviders.([]map[string]interface{}) {
+		for providerId, attrs := range typeProvider {
+			var providerItem *ast.ObjectItem = root.Node.(*ast.ObjectList).Filter("provider", providerType, key).Items[0]
+			var providerPos token.Pos = providerItem.Val.Pos()
+			providerPos.Filename = file
+
+			provider := newProvider(file, providerPos, providerType, providerId)
+
+			template.providers = append(template.providers, provider)
 		}
 	}
 
