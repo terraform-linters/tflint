@@ -53,7 +53,7 @@ provider "aws" {
 			config.Init(),
 			config.Init().NewAwsClient(),
 			&issues,
-			tc.Filename
+			tc.Filename,
 		)
 		if err != nil {
 			t.Fatalf("\nERROR: %s", err)

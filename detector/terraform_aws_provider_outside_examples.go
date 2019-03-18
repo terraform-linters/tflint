@@ -30,7 +30,7 @@ func (d *TerraformAWSProviderOutsideExamplesDetector) Detect(provider *schema.Pr
 	}
 
 	filename := strings.ToLower(provider.Source.Filename)
-	if (!strings.Contains(filename, "examples") {
+	if (!strings.Contains(filename, "examples")) {
 		issue := &issue.Issue{
 			Detector: d.Name,
 			Type:     d.IssueType,
