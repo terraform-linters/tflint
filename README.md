@@ -9,7 +9,7 @@ TFLint is a [Terraform](https://www.terraform.io/) linter for detecting errors t
 
 ## Current Project Status
 
-Currently, we are not encouraged to run TFLint on critical workflow due to incomplete features. See [#167](https://github.com/wata727/tflint/issues/167), [#168](https://github.com/wata727/tflint/issues/168).  
+Currently, we don't encourage you to run TFLint on critical workflow due to incomplete features. See [#167](https://github.com/wata727/tflint/issues/167), [#168](https://github.com/wata727/tflint/issues/168).  
 This issue is scheduled to be fixed in the release of v0.8.0, but this release depends on Terraform v0.12.0, and we cannot release v0.8.0 until it is released.  
 For these reasons, feature requests and major changes have been suspended until v0.8.0 release. A small bug fixes for patch upgrade are welcome.
 
