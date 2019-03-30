@@ -42,6 +42,8 @@ $ install tflint /usr/local/tflint/bin
 $ tflint -v
 ```
 
+For Linux based OS, you can use the install_linux.sh to automate the installation process
+
 ### Homebrew
 
 macOS users can also use [Homebrew](https://brew.sh) to install TFLint:
