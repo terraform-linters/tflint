@@ -46,9 +46,18 @@ else
 fi
 
 echo -e "\n\n===================================================="
-echo "Unpacking and Installing tflint ..."
+echo "Unpacking /tmp/tflint.zip ..."
 unzip -u /tmp/tflint.zip -d /tmp/
-install /tmp/tflint /usr/local/bin
+echo "Installing /tmp/tflint to /usr/local/bin..."
+sudo mkdir -p /usr/local/bin
+sudo install -b -C -v /tmp/tflint /usr/local/bin/
+retVal=$?
+if [ $retVal -ne 0 ]; then
+  echo "Failed to install tflint"
+  exit $retVal
+else
+  echo "tflint installed at /usr/local/bin/ successfully"
+fi
 
 echo -e "\n\n===================================================="
 echo "Current tflint version"
