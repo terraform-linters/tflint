@@ -37,6 +37,15 @@ func (d *AwsDBInstancePreviousTypeDetector) PreProcess() {
 		"db.m2.xlarge":   true,
 		"db.m2.2xlarge":  true,
 		"db.m2.4xlarge":  true,
+		"db.m3.medium":   true,
+		"db.m3.large":    true,
+		"db.m3.xlarge":   true,
+		"db.m3.2xlarge":  true,
+		"db.r3.large":    true,
+		"db.r3.xlarge":   true,
+		"db.r3.2xlarge":  true,
+		"db.r3.4xlarge":  true,
+		"db.r3.8xlarge":  true,
 		"db.cr1.8xlarge": true,
 	}
 }
