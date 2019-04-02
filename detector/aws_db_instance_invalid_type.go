@@ -29,6 +29,12 @@ func (d *Detector) CreateAwsDBInstanceInvalidTypeDetector() *AwsDBInstanceInvali
 
 func (d *AwsDBInstanceInvalidTypeDetector) PreProcess() {
 	d.instanceTypes = map[string]bool{
+		"db.t3.micro":     true,
+		"db.t3.small":     true,
+		"db.t3.medium":    true,
+		"db.t3.large":     true,
+		"db.t3.xlarge":    true,
+		"db.t3.2xlarge":   true,
 		"db.t2.micro":     true,
 		"db.t2.small":     true,
 		"db.t2.medium":    true,
@@ -51,6 +57,12 @@ func (d *AwsDBInstanceInvalidTypeDetector) PreProcess() {
 		"db.m3.large":     true,
 		"db.m3.xlarge":    true,
 		"db.m3.2xlarge":   true,
+		"db.r5.large":     true,
+		"db.r5.xlarge":    true,
+		"db.r5.2xlarge":   true,
+		"db.r5.4xlarge":   true,
+		"db.r5.12xlarge":   true,
+		"db.r5.24xlarge":  true,
 		"db.r4.large":     true,
 		"db.r4.xlarge":    true,
 		"db.r4.2xlarge":   true,
