@@ -1,3 +1,15 @@
+## 0.7.5 (2019-04-03)
+
+### Enhancements
+
+- Update RDS DB size list ([#269](https://github.com/wata727/tflint/pull/269))
+- Add M5 and R5 families to ElastiCache ([#270](https://github.com/wata727/tflint/pull/270))
+
+### Others
+
+- Add go report card ([#261](https://github.com/wata727/tflint/pull/261))
+- automate the installation of tflint on linux ([#267](https://github.com/wata727/tflint/pull/267))
+
 ## 0.7.4 (2019-02-09)
 
 ### Enhancements
