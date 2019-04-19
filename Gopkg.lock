@@ -244,7 +244,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:634382fe5de6ac4cedde7154a1bb54a07d1746c0e9d947b42664a5fead84641f"
+  digest = "1:5a50bbb3a6c2abab3a4428cd9f730518c09257d5a898ec170accc6ba67193d90"
   name = "github.com/hashicorp/hcl2"
   packages = [
     "ext/dynblock",
@@ -258,7 +258,7 @@
     "hclwrite",
   ]
   pruneopts = "UT"
-  revision = "7e26f2f3461267613602a534185654331d113c60"
+  revision = "f7764c69544d29058a63afc2b44ed3d4168a7608"
 
 [[projects]]
   branch = "master"
@@ -282,7 +282,7 @@
   revision = "0dc08b1671f34c4250ce212759ebd880f743d883"
 
 [[projects]]
-  digest = "1:d782d248185fc791cfe2ad718692f2b911aa56713ff916144522c21543a063a4"
+  digest = "1:82b1f4dad68c8423e822d440be13ae799ba823929df27102c1cb70683a2aca3d"
   name = "github.com/hashicorp/terraform"
   packages = [
     "addrs",
@@ -300,6 +300,7 @@
     "httpclient",
     "internal/modsdir",
     "lang",
+    "lang/blocktoattr",
     "lang/funcs",
     "moduledeps",
     "plans",
@@ -320,8 +321,8 @@
     "version",
   ]
   pruneopts = "UT"
-  revision = "e4dfd09be21ee2f69e7f9bd96b6aab2aed6885d4"
-  version = "v0.12.0-beta1"
+  revision = "5bd164535d5a7143b97565335dfb17115976c195"
+  version = "v0.12.0-beta2"
 
 [[projects]]
   branch = "master"

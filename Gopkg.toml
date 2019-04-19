@@ -47,7 +47,7 @@
 
 [[constraint]]
   name = "github.com/hashicorp/terraform"
-  version = "v0.12.0-beta1"
+  version = "v0.12.0-beta2"
 
 [[constraint]]
   name = "github.com/jessevdk/go-flags"
