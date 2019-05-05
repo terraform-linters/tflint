@@ -1,8 +1,10 @@
-# AWS DB Instance Default Parameter Group
-Report this issue if you have specified the default parameter group. This issue type is NOTICE.
+# aws_db_instance_default_parameter_group
+
+Disallow using default DB parameter group.
 
 ## Example
-```
+
+```hcl
 resource "aws_db_instance" "mysql" {
   identifier             = "app"
   allocated_storage      = 50
@@ -15,12 +17,10 @@ resource "aws_db_instance" "mysql" {
   publicly_accessible    = false
   vpc_security_group_ids = ["${aws_security_group.mysql.id}"]
   db_subnet_group_name   = "app-subnet-group"
-  parameter_group_name   = "default.mysql5.7"
+  parameter_group_name   = "default.mysql5.7" // default DB parameter group!
   multi_az               = true
 }
 ```
-
-The following is the execution result of TFLint: 
 
 ```
 $ tflint
@@ -31,7 +31,9 @@ Result: 1 issues  (0 errors , 0 warnings , 1 notices)
 ```
 
 ## Why
-RDS allows you to use a parameter group structure to change setting values ​​such as MySQL and PostgreSQL. However, the default parameter group can not be changed later, and if you want to change it, you need to create and modify a dedicated parameter group.
+
+You can modify parameter values in a custom DB parameter group, but you can't change the parameter values in a default DB parameter group.
 
 ## How To Fix
-Please create a dedicated parameter group and change it to that.
+
+Create a new parameter group, and change the `parameter_group_name` to that.

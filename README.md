@@ -2,19 +2,14 @@
 [![Build Status](https://travis-ci.org/wata727/tflint.svg?branch=master)](https://travis-ci.org/wata727/tflint)
 [![GitHub release](https://img.shields.io/github/release/wata727/tflint.svg)](https://github.com/wata727/tflint/releases/latest)
 [![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/wata727/tflint/)
-[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-blue.svg)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/wata727/tflint)](https://goreportcard.com/report/github.com/wata727/tflint)
 
-TFLint is a [Terraform](https://www.terraform.io/) linter for detecting errors that can not be detected by `terraform plan`
+TFLint is a [Terraform](https://www.terraform.io/) linter focused on possible errors, best practices, and so on.
 
-## Current Project Status
+## Why TFLint is required?
 
-Currently, we don't encourage you to run TFLint on critical workflow due to incomplete features. See [#167](https://github.com/wata727/tflint/issues/167), [#168](https://github.com/wata727/tflint/issues/168).  
-This issue is scheduled to be fixed in the release of v0.8.0, but this release depends on Terraform v0.12.0, and we cannot release v0.8.0 until it is released.  
-For these reasons, feature requests and major changes have been suspended until v0.8.0 release. A small bug fixes for patch upgrade are welcome.
-
-## Why TFLint is Required?
-Terraform is a great tool for infrastructure as a code. It generates an execution plan, we can rely on this plan to proceed with development. However, this plan does not verify values used in template. For example, following template is invalid configuration (t1.2xlarge is invalid instance type)
+Terraform is a great tool for Infrastructure as Code. However, many of these tools don't validate provider-specific issues. For example, see the following configuration file:
 
 ```hcl
 resource "aws_instance" "web" {
@@ -27,10 +22,22 @@ resource "aws_instance" "web" {
 }
 ```
 
-If you run `terraform apply` for this template, it will obviously produce an error. However, `terraform plan` can get an execution plan without causing an error. This is often not a desirable result. In order to solve this problem, TFLint validates values used in template.
+Since `t1.2xlarge` is a nonexistent instance type, an error will occur when you run `terraform apply`. But `terraform plan` and `terraform validate` cannot find this possible error beforehand. That's because it's an AWS provider-specific issue and it's valid as a Terraform configuration.
+
+TFLint finds such errors in advance:
+
+```
+$ tflint
+template.tf
+        ERROR:3 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
+
+Result: 2 issues  (1 errors , 0 warnings , 1 notices)
+```
 
 ## Installation
-Download binary built for your architecture from [latest releases](https://github.com/wata727/tflint/releases/latest). After downloading, place the binary on the directory on the PATH. The following example is the installation in macOS.
+
+You can download the binary built for your architecture from [the latest release](https://github.com/wata727/tflint/releases/latest). The following is an example of installation on macOS:
+
 ```
 $ wget https://github.com/wata727/tflint/releases/download/v0.7.6/tflint_darwin_amd64.zip
 $ unzip tflint_darwin_amd64.zip
@@ -42,7 +49,7 @@ $ install tflint /usr/local/tflint/bin
 $ tflint -v
 ```
 
-For Linux based OS, you can use the install_linux.sh to automate the installation process
+For Linux based OS, you can use the [`install_linux.sh`](https://raw.githubusercontent.com/wata727/tflint/master/install_linux.sh) to automate the installation process.
 
 ### Homebrew
 
@@ -53,39 +60,34 @@ $ brew tap wata727/tflint
 $ brew install tflint
 ```
 
-### Running in Docker
-We provide Docker images for each version on [DockerHub](https://hub.docker.com/r/wata727/tflint/). With docker, you can run TFLint without installing it locally.
+### Docker
+
+You can also use [TFLint via Docker](https://hub.docker.com/r/wata727/tflint/).
 
 ```
 $ docker run --rm -v $(pwd):/data -t wata727/tflint
 ```
 
-## Quick Start
-Try running TFLint under the directory where Terraform is executed. It detect if there is a issue and output the result. For example, run on the previous invalid template.
+## Features
+
+See [Rules](docs/rules).
+
+## Limitations
+
+TFLint currently only inspect Terraform-specific issues and AWS issues.
+
+Also, load configurations in the same way as Terraform v0.12. This means that it cannot inspect configurations that cannot be parsed on Terraform v0.12.
+
+[Named values](https://www.terraform.io/docs/configuration/expressions.html#references-to-named-values) are supported only for [input variables](https://www.terraform.io/docs/configuration/variables.html) and [workspaces](https://www.terraform.io/docs/state/workspaces.html). Expressions that contain anything else are excluded from the  inspection. [Built-in Functions](https://www.terraform.io/docs/configuration/functions.html) are fully supported.
+
+## Usage
+
+TFLint inspects all configurations under the current directory by default. You can also change the behavior with the following options:
 
 ```
-$ tflint
-template.tf
-        ERROR:3 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
-
-Result: 2 issues  (1 errors , 0 warnings , 1 notices)
-```
-
-If you would like to know more about these issues and available features please check the [documentation](https://github.com/wata727/tflint/tree/master/docs).
-
-### Specify Template
-If you want to parse only a specific template, not all templates, you can specify a filename as an argument.
-
-```
-$ tflint template.tf
-```
-
-## Available Options
-Please show `tflint --help`
-
-```
+$ tflint --help
 Usage:
-  tflint [OPTIONS] [FILE]
+  tflint [OPTIONS]
 
 Application Options:
   -v, --version                             Print TFLint version
@@ -99,26 +101,26 @@ Application Options:
       --aws-secret-key=SECRET_KEY           AWS secret key used in deep check mode
       --aws-profile=PROFILE                 AWS shared credential profile name used in deep check mode
       --aws-region=REGION                   AWS region used in deep check mode
-  -d, --debug                               Enable debug mode
       --error-with-issues                   Return error code when issues exist
-      --fast                                Ignore slow rules. Currently, ignore only aws_instance_invalid_ami
-  -q, --quiet                               Do not output any message when no issues are found (Format=default only)
+      --fast                                Ignore slow rules (aws_instance_invalid_ami only)
+  -q, --quiet                               Do not output any message when no issues are found (default format only)
 
 Help Options:
   -h, --help                                Show this help message
 ```
 
-## Configuration
-By default, TFLint loads `.tflint.hcl` according to the following priority:
+### Config file
+
+By default, TFLint looks up `.tflint.hcl` according to the following priority:
 
 - Current directory (`./.tflint.hcl`)
 - Home directory (`~/.tflint.hcl`)
 
-The configuration file is described in [HCL](https://github.com/hashicorp/hcl), and options available on the command line can be described in advance. Following example:
+The config file is written in [HCL](https://github.com/hashicorp/hcl), and you can use this file instead of passing command line options.
 
 ```hcl
 config {
-  terraform_version = "0.9.11"
+  terraform_version = "0.12.0"
   deep_check = true
 
   aws_credentials = {
@@ -143,16 +145,47 @@ rule "aws_instance_previous_type" {
 }
 ```
 
-If you want to create a configuration file with a different name, specify the file name with `--config` option.
+You can also use another file as a config file with the `--config` option.
 
 ```
 $ tflint --config other_config.hcl
 ```
 
-### Terraform Version
-You can set the version of Terraform you are using. If it is set, TFLint will detect issues according to it.
+### Rules
+
+You can make settings for each rule in the `rule` block. Currently, it can set only `enabled` option. If you set `enabled = false`, TFLint doesn't inspect configuration files by this rule.
+
+```hcl
+rule "aws_instance_previous_type" {
+  enabled = false
+}
+```
+
+You can also disable rules with the `--ignore-rule` option.
+
+```
+$ tflint --ignore-rule=aws_instance_invalid_type,aws_instance_previous_type
+```
+
+See also [list of available rules](docs/rules).
+
+### Deep Checking
+
+When deep checking is enabled, TFLint invokes the provider's API to do a more detailed inspection. For example, find a non-existent IAM profile name etc. You can enable it with the `--deep` option.
+
+```
+$ tflint --deep
+template.tf
+        ERROR:3 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
+        ERROR:4 "invalid_profile" is invalid IAM profile name. (aws_instance_invalid_iam_profile)
+
+Result: 2 issues  (2 errors , 0 warnings , 0 notices)
+```
+
+In order to enable deep checking, [credentials](#credentials) are needed.
 
 ### Credentials
+
 TFLint supports various credential providers. It is used with the following priority:
 
 - Static credentials
@@ -161,7 +194,8 @@ TFLint supports various credential providers. It is used with the following prio
 - Default shared credentials
 
 #### Static Credentials
-If you have access key and secret key, you can specify these credentials.
+
+If you have an access key and a secret key, you can pass these keys.
 
 ```
 $ tflint --aws-access-key AWS_ACCESS_KEY --aws-secret-key AWS_SECRET_KEY --aws-region us-east-1
@@ -178,7 +212,8 @@ config {
 ```
 
 #### Shared Credentials
-If you have [shared credentials](https://aws.amazon.com/jp/blogs/security/a-new-and-standardized-way-to-manage-credentials-in-the-aws-sdks/), you can specify credentials profile name. However TFLint supports only `~/.aws/credentials` as shared credentials location.
+
+If you have [shared credentials](https://aws.amazon.com/jp/blogs/security/a-new-and-standardized-way-to-manage-credentials-in-the-aws-sdks/), you can pass the profile name. However, only `~/.aws/credentials` is supported as a credential location.
 
 ```
 $ tflint --aws-profile AWS_PROFILE --aws-region us-east-1
@@ -194,51 +229,68 @@ config {
 ```
 
 #### Environment Credentials
-TFLint looks `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, `AWS_REGION` environment values. This is useful when you do not want to explicitly specify credentials.
+
+TFLint looks up `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, `AWS_REGION` environment variables. This is useful when you don't want to explicitly pass credentials.
 
 ```
 $ export AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY
 $ export AWS_SECRET_ACCESS_KEY=AWS_SECRET_KEY
 ```
 
-### Rules
+### Module Inspection
 
-You can make settings for each rule in the `rule` block. Currently, it can set only `enabled` option. If you set `enabled = false`, TFLint doesn't check templates by this rule.
+TFLint can also inspect [modules](https://www.terraform.io/docs/configuration/modules.html). In this case, it checks based on the input variables passed to the calling module.
 
-```
-rule "aws_instance_previous_type" {
-  enabled = false
+```hcl
+module "aws_instance" {
+  source        = "./module"
+
+  ami           = "ami-b73b63a0"
+  instance_type = "t1.2xlarge"
 }
 ```
 
-Please see the [documentation](https://github.com/wata727/tflint/tree/master/docs) for a list of rules.
-
-## Interpolation Syntax Support
-TFLint can interpret part of [interpolation syntax](https://www.terraform.io/docs/configuration/interpolation.html). We now support only variables and terraform meta information (e.g. "${terraform.env}"). So you cannot use attributes of resource, outputs of modules and built-in functions. If you are using them, TFLint ignores it. You can check what is ignored by executing it with `--debug` option.
-
-### Variable Files
-If you use [variable files](https://www.terraform.io/docs/configuration/variables.html#variable-files), Please specify it by arguments or configuration file. TFLint interprets variables as well as Terraform. In other words, when variables are conflicting, It will be overridden or merged correctly.
-
-## Deep Check
-Deep check is an option that you can actually search resources on AWS and check invalid references and duplicate resources. You can activate it by executing it with `--deep` option as following:
-
 ```
-$ tflint --deep
-template.tf
-        ERROR:3 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
-        ERROR:4 "invalid_profile" is invalid IAM profile name. (aws_instance_invalid_iam_profile)
+$ tflint
+aws_instance/main.tf
+        ERROR:6 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
 
-Result: 2 issues  (2 errors , 0 warnings , 0 notices)
+Result: 1 issues  (1 errors , 0 warnings , 0 notices)
 ```
 
-In the above example, an IAM instance profile that does not actually exist is specified, so it is an error. In order to refer to actual resources, AWS credentials are required. You can use command line options, configuration files, environment variables, shared credentials for these specifications.
+TFLint loads modules in the same way as Terraform. So note that you need to run `terraform init` first.
+
+You can use the `--ignore-module` option if you want to skip inspection for a particular module. Note that you need to pass module sources rather than module ids for backward compatibility.
+
+```
+$ tflint --ignore-module=./module
+```
+
+### Run with a specific configuration file
+
+If you want to inspect only a specific configuration file, not all files, you can pass a file as an argument.
+
+```
+$ tflint main.tf
+```
+
+### Terraform Version
+
+You can set the version of Terraform you are using. If it is set, TFLint will detect issues according to it.
+
+NOTE: This option is now no longer used and will be removed in the future.
+
+## Debugging
+
+If you don't get the expected behavior, you can see the detailed logs when running with `TFLINT_LOG` environment variable.
+
+```
+$ TFLINT_LOG=debug tflint
+```
 
 ## Developing
-If you want to build TFLint at your environment, you can build with the following procedure. [Go](https://golang.org/) 1.9 or more is required.
 
-```
-$ make build
-```
+See [Developer Guides](docs/DEVELOPING.md).
 
 ## Author
 
