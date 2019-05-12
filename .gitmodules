@@ -1,0 +1,3 @@
+[submodule "rules/awsrules/models/aws-sdk-go"]
+	path = rules/awsrules/models/aws-sdk-go
+	url = https://github.com/aws/aws-sdk-go.git

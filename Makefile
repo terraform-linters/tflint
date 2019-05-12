@@ -4,7 +4,7 @@ prepare:
 	go mod vendor
 
 test: prepare
-	go test $$(go list ./... | grep -v vendor)
+	go test $$(go list ./... | grep -v vendor | grep -v aws-sdk-go)
 
 build: test
 	mkdir -p dist
@@ -30,5 +30,8 @@ image:
 
 rule:
 	go run tools/rule_generator.go
+
+model_rules:
+	go run github.com/wata727/tflint/tools/model-rule-gen
 
 .PHONY: default prepare test build install release clean code image rule
