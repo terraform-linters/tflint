@@ -29,7 +29,7 @@ resource "aws_route" "foo" {
 				{
 					Detector: "aws_route_not_specified_target",
 					Type:     "ERROR",
-					Message:  "The routing target is not specified, each routing must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id.",
+					Message:  "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, or vpc_peering_connection_id.",
 					Line:     2,
 					File:     "resource.tf",
 					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_route_not_specified_target.md",
@@ -87,6 +87,15 @@ resource "aws_route" "foo" {
 resource "aws_route" "foo" {
     route_table_id = "rtb-1234abcd"
     network_interface_id = "eni-1234abcd"
+}`,
+			Expected: []*issue.Issue{},
+		},
+		{
+			Name: "transit_gateway_id is specified",
+			Content: `
+resource "aws_route" "foo" {
+	route_table_id = "rtb-1234abcd"
+	transit_gateway_id = "tgw-1234abcd"
 }`,
 			Expected: []*issue.Issue{},
 		},
