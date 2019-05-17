@@ -29,6 +29,7 @@ func (d *AwsRouteNotSpecifiedTargetDetector) Detect(resource *schema.Resource, i
 		"instance_id",
 		"vpc_peering_connection_id",
 		"network_interface_id",
+		"transit_gateway_id",
 	}
 
 	for _, t := range targets {
@@ -40,7 +41,7 @@ func (d *AwsRouteNotSpecifiedTargetDetector) Detect(resource *schema.Resource, i
 	issue := &issue.Issue{
 		Detector: d.Name,
 		Type:     d.IssueType,
-		Message:  "The routing target is not specified, each routing must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id.",
+		Message:  "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, or vpc_peering_connection_id.",
 		Line:     resource.Pos.Line,
 		File:     resource.Pos.Filename,
 		Link:     d.Link,

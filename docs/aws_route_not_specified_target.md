@@ -1,7 +1,9 @@
 # AWS Route Not Specified Target
+
 Report this issue if routing target is not specified. This issue type is ERROR.
 
 ## Example
+
 ```
 resource "aws_route" "foo" {
   route_table_id         = "rtb-1234abcd"
@@ -11,17 +13,18 @@ resource "aws_route" "foo" {
 
 The following is the execution result of TFLint:
 
-
 ```
 $ tflint
 template.tf
-        ERROR:1 The routing target is not specified, each routing must contain either a gateway_id, egress_only_gateway_id a nat_gateway_id, an instance_id or a vpc_peering_connection_id or a network_interface_id. (aws_route_not_specified_target)
+        ERROR:1 The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, or vpc_peering_connection_id. (aws_route_not_specified_target)
 
 Result: 1 issues  (1 errors , 0 warnings , 0 notices)
 ```
 
 ## Why
-`aws_route` creates new routing in route tables. If a routing target is not specified, an error will occur when run `terraform apply`.
+
+[`aws_route`](https://www.terraform.io/docs/providers/aws/r/route.html) creates new routing in route tables. If a routing target is not specified, an error will occur when run `terraform apply`.
 
 ## How To Fix
-Please add a routing target. There are kinds of `gateway_id`, `egress_only_gateway_id`, `nat_gateway_id`, `instance_id`, `vpc_peering_connection_id`, `network_interface_id`.
+
+Please add a routing target. There are [kinds of](https://www.terraform.io/docs/providers/aws/r/route.html#argument-reference) `egress_only_gateway_id`, `gateway_id`, `instance_id`, `nat_gateway_id`, `network_interface_id`, `transit_gateway_id`, `vpc_peering_connection_id`.
