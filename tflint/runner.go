@@ -28,8 +28,9 @@ type Runner struct {
 	Issues    issue.Issues
 	AwsClient *client.AwsClient
 
-	ctx    terraform.BuiltinEvalContext
-	config *Config
+	ctx         terraform.BuiltinEvalContext
+	annotations map[string]Annotations
+	config      *Config
 }
 
 // Rule is interface for building the issue
@@ -42,7 +43,7 @@ type Rule interface {
 // NewRunner returns new TFLint runner
 // It prepares built-in context (workpace metadata, variables) from
 // received `configs.Config` and `terraform.InputValues`
-func NewRunner(c *Config, cfg *configs.Config, variables ...terraform.InputValues) *Runner {
+func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, variables ...terraform.InputValues) *Runner {
 	path := "root"
 	if !cfg.Path.IsRoot() {
 		path = cfg.Path.String()
@@ -64,7 +65,8 @@ func NewRunner(c *Config, cfg *configs.Config, variables ...terraform.InputValue
 				VariableValuesLock: &sync.Mutex{},
 			},
 		},
-		config: c,
+		annotations: ants,
+		config:      c,
 	}
 }
 
@@ -136,7 +138,8 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 			}
 		}
 
-		runner := NewRunner(parent.config, cfg)
+		// Annotation does not work with children modules
+		runner := NewRunner(parent.config, map[string]Annotations{}, cfg)
 		runners = append(runners, runner)
 		moudleRunners, err := NewModuleRunners(runner)
 		if err != nil {
@@ -451,14 +454,25 @@ func (r *Runner) EachStringSliceExprs(expr hcl.Expression, proc func(val string,
 
 // EmitIssue builds an issue and accumulates it
 func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range) {
-	r.Issues = append(r.Issues, &issue.Issue{
+	issue := &issue.Issue{
 		Detector: rule.Name(),
 		Type:     rule.Type(),
 		Message:  message,
 		Line:     location.Start.Line,
 		File:     r.getFileName(location.Filename),
 		Link:     rule.Link(),
-	})
+	}
+
+	if annotations, ok := r.annotations[location.Filename]; ok {
+		for _, annotation := range annotations {
+			if annotation.IsAffected(issue) {
+				log.Printf("[INFO] %s:%d (%s) is ignored by %s", issue.File, issue.Line, issue.Detector, annotation.String())
+				return
+			}
+		}
+	}
+
+	r.Issues = append(r.Issues, issue)
 }
 
 // getFileName returns user-friendly file name.

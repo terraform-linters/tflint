@@ -11,6 +11,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/hcl2/hcl"
+	"github.com/hashicorp/hcl2/hcl/hclsyntax"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/k0kubun/pp"
@@ -167,7 +168,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 
 		var ret string
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -234,7 +235,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 
 		var ret int
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -285,7 +286,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 
 		ret := []string{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -336,7 +337,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 
 		ret := []int{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -390,7 +391,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 
 		ret := map[string]string{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -444,7 +445,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 
 		ret := map[string]int{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -556,7 +557,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 
 		var ret string
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -665,7 +666,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 
 		var ret map[string]string
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -929,7 +930,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), cfg, tc.InputValues...)
+		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, tc.InputValues...)
 
 		var ret string
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -971,7 +972,7 @@ func Test_NewModuleRunners_noModules(t *testing.T) {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+	runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 	runners, err := NewModuleRunners(runner)
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
@@ -1003,7 +1004,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+	runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 	runners, err := NewModuleRunners(runner)
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
@@ -1174,7 +1175,7 @@ func Test_NewModuleRunners_ignoreModules(t *testing.T) {
 	conf := EmptyConfig()
 	conf.IgnoreModule["./module"] = true
 
-	runner := NewRunner(conf, cfg, map[string]*terraform.InputValue{})
+	runner := NewRunner(conf, map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 	runners, err := NewModuleRunners(runner)
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
@@ -1206,7 +1207,7 @@ func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+	runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 	_, err = NewModuleRunners(runner)
 
 	errText := "Failed to eval an expression in module.tf:4; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute."
@@ -1252,7 +1253,7 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+	runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 	_, err = NewModuleRunners(runner)
 
 	errText := "Attribute of module not allowed was found in module.tf:1; module.tf:4,3-10: Unexpected \"invalid\" block; Blocks are not allowed here."
@@ -1314,7 +1315,7 @@ resource "aws_route" "r" {
 		t.Fatal(err)
 	}
 
-	runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+	runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 	resources := runner.LookupResourcesByType("aws_instance")
 
 	if len(resources) != 1 {
@@ -1326,7 +1327,7 @@ resource "aws_route" "r" {
 }
 
 func Test_LookupIssues(t *testing.T) {
-	runner := NewRunner(EmptyConfig(), configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
+	runner := NewRunner(EmptyConfig(), map[string]Annotations{}, configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
 	runner.Issues = issue.Issues{
 		{
 			Detector: "test rule",
@@ -1415,7 +1416,7 @@ resource "aws_instance" "test" {
 		if err != nil {
 			t.Fatal(err)
 		}
-		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 
 		err = runner.WalkResourceAttributes("aws_instance", "instance_type", func(attribute *hcl.Attribute) error {
 			return fmt.Errorf("Walk %s", attribute.Name)
@@ -1516,7 +1517,7 @@ resource "aws_instance" "test" {
 		if err != nil {
 			t.Fatal(err)
 		}
-		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 
 		err = runner.WalkResourceBlocks("aws_instance", "instance_type", func(block *hcl.Block) error {
 			return fmt.Errorf("Walk %s", block.Type)
@@ -1573,7 +1574,7 @@ func Test_EnsureNoError(t *testing.T) {
 	defer os.RemoveAll(dir)
 
 	for _, tc := range cases {
-		runner := NewRunner(EmptyConfig(), configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
+		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
 
 		err = runner.EnsureNoError(tc.Error, func() error {
 			return errors.New("function called")
@@ -1683,7 +1684,7 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 		ret := runner.IsNullExpr(attribute.Expr)
 
 		if tc.Expected != ret {
@@ -1762,7 +1763,7 @@ resource "null_resource" "test" {
 		if err != nil {
 			t.Fatal(err)
 		}
-		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 
 		vals := []string{}
 		lines := []int{}
@@ -1799,11 +1800,12 @@ func (r *testRule) Link() string {
 
 func Test_EmitIssue(t *testing.T) {
 	cases := []struct {
-		Name     string
-		Rule     Rule
-		Message  string
-		Location hcl.Range
-		Expected issue.Issues
+		Name        string
+		Rule        Rule
+		Message     string
+		Location    hcl.Range
+		Annotations map[string]Annotations
+		Expected    issue.Issues
 	}{
 		{
 			Name:    "basic",
@@ -1813,6 +1815,7 @@ func Test_EmitIssue(t *testing.T) {
 				Filename: "test.tf",
 				Start:    hcl.Pos{Line: 1},
 			},
+			Annotations: map[string]Annotations{},
 			Expected: issue.Issues{
 				{
 					Detector: "test_rule",
@@ -1823,6 +1826,30 @@ func Test_EmitIssue(t *testing.T) {
 				},
 			},
 		},
+		{
+			Name:    "ignore",
+			Rule:    &testRule{},
+			Message: "This is test message",
+			Location: hcl.Range{
+				Filename: "test.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
+			Annotations: map[string]Annotations{
+				"test.tf": {
+					{
+						Content: "test_rule",
+						Token: hclsyntax.Token{
+							Type: hclsyntax.TokenComment,
+							Range: hcl.Range{
+								Filename: "test.tf",
+								Start:    hcl.Pos{Line: 1},
+							},
+						},
+					},
+				},
+			},
+			Expected: issue.Issues{},
+		},
 	}
 
 	dir, err := ioutil.TempDir("", "EmitIssue")
@@ -1832,7 +1859,7 @@ func Test_EmitIssue(t *testing.T) {
 	defer os.RemoveAll(dir)
 
 	for _, tc := range cases {
-		runner := NewRunner(EmptyConfig(), configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
+		runner := NewRunner(EmptyConfig(), tc.Annotations, configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
 
 		runner.EmitIssue(tc.Rule, tc.Message, tc.Location)
 

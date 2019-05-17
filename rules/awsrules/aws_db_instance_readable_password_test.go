@@ -146,7 +146,7 @@ resource "aws_db_instance" "mysql" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(tflint.EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		rule := NewAwsDBInstanceReadablePasswordRule()
 
 		if err = rule.Check(runner); err != nil {

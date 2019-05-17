@@ -14,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/mock"
 	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/rules"
 	"github.com/wata727/tflint/tflint"
@@ -103,8 +102,9 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			testMode:  true,
 		}
 
-		loader := mock.NewMockAbstractLoader(ctrl)
+		loader := tflint.NewMockAbstractLoader(ctrl)
 		loader.EXPECT().LoadConfig().Return(configs.NewEmptyConfig(), tc.LoadErr).AnyTimes()
+		loader.EXPECT().LoadAnnotations().Return(map[string]tflint.Annotations{}, tc.LoadErr).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, tc.LoadErr).AnyTimes()
 		cli.loader = loader
 
@@ -225,8 +225,9 @@ func TestCLIRun__issuesFound(t *testing.T) {
 			testMode:  true,
 		}
 
-		loader := mock.NewMockAbstractLoader(ctrl)
+		loader := tflint.NewMockAbstractLoader(ctrl)
 		loader.EXPECT().LoadConfig().Return(configs.NewEmptyConfig(), nil).AnyTimes()
+		loader.EXPECT().LoadAnnotations().Return(map[string]tflint.Annotations{}, nil).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, nil).AnyTimes()
 		cli.loader = loader
 
@@ -318,9 +319,10 @@ func TestCLIRun__withArguments(t *testing.T) {
 			testMode:  true,
 		}
 
-		loader := mock.NewMockAbstractLoader(ctrl)
+		loader := tflint.NewMockAbstractLoader(ctrl)
 		loader.EXPECT().IsConfigFile(gomock.Any()).Return(tc.IsConfigFile).AnyTimes()
 		loader.EXPECT().LoadConfig().Return(configs.NewEmptyConfig(), nil).AnyTimes()
+		loader.EXPECT().LoadAnnotations().Return(map[string]tflint.Annotations{}, nil).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, nil).AnyTimes()
 		cli.loader = loader
 

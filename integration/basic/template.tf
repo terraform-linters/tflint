@@ -28,3 +28,8 @@ resource "aws_route" "not_specified2" { // aws_route_not_specified_target
   route_table_id         = "rtb-1234abcd"
   destination_cidr_block = "10.0.1.0/22"
 }
+
+resource "aws_instance" "foo" {
+  // tflint-ignore: aws_instance_invalid_type
+  instance_type = "t1.2xlarge"
+}

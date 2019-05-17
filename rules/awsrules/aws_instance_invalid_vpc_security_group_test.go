@@ -143,7 +143,7 @@ resource "aws_instance" "web" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(tflint.EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		rule := NewAwsInstanceInvalidVPCSecurityGroupRule()
 
 		mock := mock.NewMockEC2API(ctrl)
