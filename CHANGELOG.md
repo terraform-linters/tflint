@@ -1,3 +1,9 @@
+## 0.7.6 (2019-05-17)
+
+### BugFixes
+
+- [#276](https://github.com/wata727/tflint/pull/276): Update aws_route_not_specified_target to handle transit_gateway_id. ([@davewongillies](https://github.com/davewongillies))
+
 ## 0.7.5 (2019-04-03)
 
 ### Enhancements
