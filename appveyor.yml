@@ -1,7 +1,7 @@
 clone_folder: C:\gopath\src\github.com/wata727/tflint
 environment:
   GOPATH: C:\gopath
-  GOVERSION: 1.9
+  GOVERSION: 1.12
 branches:
   only:
   - master
