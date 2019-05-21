@@ -1,10 +1,20 @@
-FROM alpine:3.5
+FROM golang:1.12-alpine as builder
 
-MAINTAINER wata727
+RUN apk --no-cache add git make gcc musl-dev zip
+
+WORKDIR /go/src/github.com/wata727/tflint/
+
+ADD . /go/src/github.com/wata727/tflint
+
+RUN make build
+
+FROM alpine:3.9 as prod
+
+LABEL maintainer=wata727
 
 RUN apk add --no-cache ca-certificates
 
-COPY dist/linux_amd64/tflint /usr/local/bin
+COPY --from=builder /go/src/github.com/wata727/tflint/tflint /usr/local/bin
 
 ENTRYPOINT ["tflint"]
 
