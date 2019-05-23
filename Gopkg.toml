@@ -38,14 +38,6 @@
   name = "github.com/golang/mock"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/hashicorp/hcl"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/hashicorp/hil"
-
-[[constraint]]
   name = "github.com/hashicorp/terraform"
   version = "v0.12.0"
 

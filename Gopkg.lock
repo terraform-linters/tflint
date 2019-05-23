@@ -282,7 +282,7 @@
   revision = "0dc08b1671f34c4250ce212759ebd880f743d883"
 
 [[projects]]
-  digest = "1:6cbc85d35595d63427c5b1b0aa2d9033e221878214b5db463e3fe8d879889a9e"
+  digest = "1:c8c312341dc667f5dec4efd00375a192600e297d0784723d0bc5a59fda074bcf"
   name = "github.com/hashicorp/terraform"
   packages = [
     "addrs",
@@ -296,7 +296,6 @@
     "flatmap",
     "helper/didyoumean",
     "helper/hilmapstructure",
-    "helper/variables",
     "httpclient",
     "internal/modsdir",
     "lang",
@@ -611,21 +610,13 @@
     "github.com/golang/mock/gomock",
     "github.com/google/go-cmp/cmp",
     "github.com/hashicorp/go-version",
-    "github.com/hashicorp/hcl",
-    "github.com/hashicorp/hcl/hcl/ast",
-    "github.com/hashicorp/hcl/hcl/parser",
-    "github.com/hashicorp/hcl/hcl/token",
-    "github.com/hashicorp/hcl/json/parser",
     "github.com/hashicorp/hcl2/gohcl",
     "github.com/hashicorp/hcl2/hcl",
     "github.com/hashicorp/hcl2/hclparse",
-    "github.com/hashicorp/hil",
-    "github.com/hashicorp/hil/ast",
     "github.com/hashicorp/logutils",
     "github.com/hashicorp/terraform/addrs",
     "github.com/hashicorp/terraform/configs",
     "github.com/hashicorp/terraform/configs/configload",
-    "github.com/hashicorp/terraform/helper/variables",
     "github.com/hashicorp/terraform/lang",
     "github.com/hashicorp/terraform/terraform",
     "github.com/iancoleman/strcase",
