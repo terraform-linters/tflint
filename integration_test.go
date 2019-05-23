@@ -4,15 +4,22 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"os"
-	"reflect"
+	"runtime"
 	"sort"
 	"strings"
 	"testing"
 
-	"github.com/k0kubun/pp"
+	"github.com/google/go-cmp/cmp"
+	"github.com/wata727/tflint/cmd"
 	"github.com/wata727/tflint/issue"
 )
+
+func TestMain(m *testing.M) {
+	log.SetOutput(ioutil.Discard)
+	os.Exit(m.Run())
+}
 
 func TestIntegration(t *testing.T) {
 	cases := []struct {
@@ -21,26 +28,50 @@ func TestIntegration(t *testing.T) {
 		Dir     string
 	}{
 		{
-			Name:    "general",
+			Name:    "basic",
 			Command: "./tflint --format json",
-			Dir:     "general",
+			Dir:     "basic",
+		},
+		{
+			Name:    "override",
+			Command: "./tflint --format json",
+			Dir:     "override",
+		},
+		{
+			Name:    "variables",
+			Command: "./tflint --format json --var-file variables.tfvars",
+			Dir:     "variables",
+		},
+		{
+			Name:    "module",
+			Command: "./tflint --format json",
+			Dir:     "module",
 		},
 	}
 
+	dir, _ := os.Getwd()
+	defer os.Chdir(dir)
+
 	for _, tc := range cases {
-		dir, _ := os.Getwd()
 		testDir := dir + "/integration/" + tc.Dir
 		os.Chdir(testDir)
 
 		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
-		cli := &CLI{
-			outStream: outStream,
-			errStream: errStream,
-		}
+		cli := cmd.NewCLI(outStream, errStream)
 		args := strings.Split(tc.Command, " ")
 		cli.Run(args)
 
-		b, _ := ioutil.ReadFile("result.json")
+		var b []byte
+		var err error
+		if runtime.GOOS == "windows" && IsWindowsResultExist() {
+			b, err = ioutil.ReadFile("result_windows.json")
+		} else {
+			b, err = ioutil.ReadFile("result.json")
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+
 		var expectedIssues []*issue.Issue
 		if err := json.Unmarshal(b, &expectedIssues); err != nil {
 			t.Fatal(err)
@@ -53,8 +84,13 @@ func TestIntegration(t *testing.T) {
 		}
 		sort.Sort(issue.ByFileLine{Issues: issue.Issues(resultIssues)})
 
-		if !reflect.DeepEqual(resultIssues, expectedIssues) {
-			t.Fatalf("\nBad: %s\nExpected: %s\n\ntestcase: %s", pp.Sprint(resultIssues), pp.Sprint(expectedIssues), tc.Name)
+		if !cmp.Equal(resultIssues, expectedIssues) {
+			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(expectedIssues, resultIssues))
 		}
 	}
+}
+
+func IsWindowsResultExist() bool {
+	_, err := os.Stat("result_windows.json")
+	return !os.IsNotExist(err)
 }
