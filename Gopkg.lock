@@ -244,7 +244,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:404dcabf7c69ee2356650dbdaefbcfcb659bf11d4435a3626ea4d26537e9e786"
+  digest = "1:06a801963173cd7b30efd89599a2a005c802aef10a6f30f7cb98152c13ec5227"
   name = "github.com/hashicorp/hcl2"
   packages = [
     "ext/dynblock",
@@ -258,7 +258,7 @@
     "hclwrite",
   ]
   pruneopts = "UT"
-  revision = "640445e16309fe82c7df763cbfa874485b5ca885"
+  revision = "4b22149b7cef7272799ac85dca150e553d667971"
 
 [[projects]]
   branch = "master"
@@ -282,7 +282,7 @@
   revision = "0dc08b1671f34c4250ce212759ebd880f743d883"
 
 [[projects]]
-  digest = "1:0b71c5d4335ac9dc66c43e455297d89e38813697bcdea30802ca22fcc0e0762f"
+  digest = "1:6cbc85d35595d63427c5b1b0aa2d9033e221878214b5db463e3fe8d879889a9e"
   name = "github.com/hashicorp/terraform"
   packages = [
     "addrs",
@@ -321,8 +321,8 @@
     "version",
   ]
   pruneopts = "UT"
-  revision = "66c5acffa6a714349b533c1408aed5de99f4e032"
-  version = "v0.12.0-rc1"
+  revision = "08918475dd08f0c45fc5aa084bacd2595c6e6c07"
+  version = "v0.12.0"
 
 [[projects]]
   branch = "master"
@@ -492,7 +492,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:3c78b66dbba40f96b51e510c13a9556401453c926989b36afebfda30cb141726"
+  digest = "1:08d3d8652ad0bf291ac3bdc05b59595ee0ec4211364ffe88528edef01dca630f"
   name = "github.com/zclconf/go-cty"
   packages = [
     "cty",
@@ -505,7 +505,7 @@
     "cty/set",
   ]
   pruneopts = "UT"
-  revision = "d36a6f0dbffd109d058c5d1fc16e74bad85fa96f"
+  revision = "4fecf87372ec204b46eb9e8ff264cdc3cafdccfe"
 
 [[projects]]
   branch = "master"
