@@ -1,3 +1,65 @@
+## 0.8.0 (2019-??-??)
+
+This release includes major changes due to being dependent on Terraform v0.12 internal API. While we try to keep backward compatibility as much as possible, it does include some breaking changes.
+
+We strongly recommend [upgrading to Terraform v0.12](https://www.terraform.io/upgrade-guides/0-12.html) before trying TFLint v0.8. `terraform 0.12upgrade` is helpful to upgrade your configuration files.
+
+### Breaking Changes
+
+- Always return an error when failed to evaluate an expression.
+  - Until now, except for module arguments, even if an error occurred, it was ignored.
+  - Expressions including unsupported named values (such as `${module.foo}`) are not evaluated, so no error occurs.
+- Drop support for `${terraform.env}`.
+  - Previously `${terraform.env}` was a valid expression that returned the same as `${terraform.workspace}`.
+  - This is because Terraform v0.12 doesn't support `${terraform.env}`.
+- The file name of a module includes module ID instead of the source attribute.
+  - Up to now it was output like `github.com/wata727/example-module/instance.tf`, but it will be changed like `module_id/instance.tf`.
+- Always parse all configuration files under the current directory.
+  - When passing a file name as an argument, TFLint only parsed that file so far, but it now parses all configuration files under the current directory.
+  - Also, file arguments are only used to filter the issues obtained. Therefore, you cannot pass files other than under the current directory.
+  - As a known issue, If file arguments are passed, module's issues are not reported. This will be improved by changing handling of module's issues in the future.
+  - These behaviors have been changed as it depends on Terraform's `configload` package.
+  - In addition, modules are always loaded regardless of `ignore_module`.
+- Raise an error when using invalid syntax as a Terraform configuration.
+  - For example, it didn't raise an error when using `resources`(not `resource`) block because it is valid as HCL syntax in previous versions.
+- Remove `--debug` option.
+  - Please use `TFLINT_LOG` environment variables instead.
+- Raise an error when a file passed by `--config` does not exist.
+  - Previously the error was ignored and the default config was referenced.
+- Remove duplicate resource rules.
+  - This is due to technical difficulty and user experience.
+
+### Enhancements
+
+- HCL2 support
+  - See also https://www.hashicorp.com/blog/terraform-0-1-2-preview
+- Built-in Functions support
+  - Until now, if an expression includes function calls, it was ignored.
+- `TF_DATA_DIR` and `TF_WORKSPACE` environment variables are now available.
+  - Until now, these variables are ignored.
+- It is now possible to handle values doesn't have a default without raising errors.
+  - In the past, an error occurred when there was a reference to a variable that had no default value in an attribute of a module. See [#205](https://github.com/wata727/tflint/issues/205)
+- Terraform v0.11 module support
+  - Until now, it is failed to properly load a part of Terraform v0.11 module. See also [#167](https://github.com/wata727/tflint/issues/167)
+- Support for automatic loading `*.auto.tfvars` files.
+  - Previously it was not loaded automatically.
+
+### BugFixes
+
+- Improve expression checks
+  - Since it used to be checked by a regular expression, there were many bugs, but it was greatly improved by using the `terraform/lang` package. See [#204](https://github.com/wata727/tflint/issues/204) [#160](https://github.com/wata727/tflint/issues/160)
+- Stop overwriting the config under the current directory by the config under the homedir.
+  - Fixed the problem that overwrites the config under the current directory by homedir config.
+- Improve to check for `aws_db_instance_readable_password`.
+  - Previously, false positive occurred when setting values files or environment variables, but this problem has been fixed.
+
+### Project Changes
+
+- Change license: MIT -> MPL 2.0
+  - See [#245](https://github.com/wata727/tflint/pull/245)
+- Update documentations
+  - See [#272](https://github.com/wata727/tflint/pull/272)
+
 ## 0.7.6 (2019-05-17)
 
 ### BugFixes

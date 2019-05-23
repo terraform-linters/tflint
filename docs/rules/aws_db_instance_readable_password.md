@@ -1,8 +1,10 @@
-# AWS DB Instance Readable Password
-Report this issue if you write password for the master DB user directly. This issue type is WARNING.
+# aws_db_instance_readable_password
+
+Disallow writing password directly to configuration files.
 
 ## Example
-```
+
+```hcl
 resource "aws_db_instance" "default" {
   allocated_storage    = 10
   engine               = "mysql"
@@ -16,8 +18,6 @@ resource "aws_db_instance" "default" {
 }
 ```
 
-The following is the execution result of TFLint:
-
 ```
 $ tflint
 template.tf
@@ -28,7 +28,7 @@ Result: 1 issues  (0 errors , 1 warnings , 0 notices)
 
 Also, detect the following case:
 
-```
+```hcl
 variable "password" {
   description = "Password for MySQL master user"
   default     = "jk4wu0o7" // readable passowrd!
@@ -47,14 +47,15 @@ resource "aws_db_instance" "default" {
 }
 ```
 
-
 ## Why
-Generally, it is a bad practice to directly embed passwords in source code and templates. One reason why is that there is a fear that it will be unintentionally published when using VCS.
+
+Generally, it is a bad practice to directly embed passwords in configuration files. One reason why is that there is a fear that it will be unintentionally published when using VCS.
 
 ## How To Fix
+
 Instead of writing password directly, use environment variables. Terraform provides a way to set variables by environment variables. For example, edit and execute as following:
 
-```
+```hcl
 variable "password" {}
 
 resource "aws_db_instance" "default" {
@@ -74,7 +75,6 @@ resource "aws_db_instance" "default" {
 $ TF_VAR_password=jk4wu0o7 terraform apply
 ```
 
-In the above case, The password cannot be read from templates. For details on how to set variables, please see the [documentation](https://www.terraform.io/intro/getting-started/variables.html).
+In the above case, The password cannot be read from files. For details on how to set variables, please see the [documentation](https://www.terraform.io/intro/getting-started/variables.html).
 
-NOTE: Unfortunately, even if you delete the password from templates, it will be stored in the state file. We recommend that encrypt state file and ignore that on VCS.
-
+NOTE: Unfortunately, even if you delete the password from files, it will be stored in the state file. We recommend that encrypt state file and ignore that on VCS.

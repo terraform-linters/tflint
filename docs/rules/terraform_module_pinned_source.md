@@ -1,8 +1,10 @@
-# Terraform Module Pinned Source
-This issue is reported if you specify a git or mercurial repository without pinning to a non-default version.
+# terraform_module_pinned_source
+
+Disallow specifying a git or mercurial repository as a module source without pinning to a non-default version.
 
 ## Example
-```
+
+```hcl
 module "unpinned" {
   source = "git://hashicorp.com/consul.git"
 }
@@ -16,8 +18,6 @@ module "default mercurial" {
 }
 ```
 
-The following is the execution result of TFLint: 
-
 ```
 $ tflint
 template.tf
@@ -29,7 +29,9 @@ Result: 3 issues  (0 errors , 3 warnings , 0 notices)
 ```
 
 ## Why
+
 Terraform allows you to checkout module definitions from source control. If you do not pin the version to checkout, the dependency you require may introduce major breaking changes without your awareness. To prevent this, always specify an explicit version to checkout.
 
 ## How To Fix
+
 Specify a version pin.  For git repositories, it should not be "master". For Mercurial repositories, it should not be "default"
