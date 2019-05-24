@@ -36,7 +36,6 @@ resource "aws_instance" "valid" {
 					Message:  "\"t1.2xlarge\" is invalid instance type.",
 					Line:     3,
 					File:     "instances.tf",
-					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_invalid_type.md",
 				},
 			},
 		},

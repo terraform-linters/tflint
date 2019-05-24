@@ -71,7 +71,7 @@ func (r *AwsCloudwatchMetricAlarmInvalidUnitRule) Type() string {
 
 // Link returns the rule reference link
 func (r *AwsCloudwatchMetricAlarmInvalidUnitRule) Link() string {
-	return "https://github.com/wata727/tflint/blob/master/docs/aws_cloudwatch_metric_alarm_invalid_unit.md"
+	return ""
 }
 
 // Check checks whether `unit` is included in the valid unit list

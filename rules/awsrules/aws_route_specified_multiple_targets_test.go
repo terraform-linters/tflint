@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -34,7 +35,7 @@ resource "aws_route" "foo" {
 					Message:  "More than one routing target specified. It must be one.",
 					Line:     2,
 					File:     "resource.tf",
-					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_route_specified_multiple_targets.md",
+					Link:     project.ReferenceLink("aws_route_specified_multiple_targets"),
 				},
 			},
 		},

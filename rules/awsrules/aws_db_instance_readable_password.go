@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform/addrs"
 	"github.com/hashicorp/terraform/lang"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -41,7 +42,7 @@ func (r *AwsDBInstanceReadablePasswordRule) Type() string {
 
 // Link returns the rule reference link
 func (r *AwsDBInstanceReadablePasswordRule) Link() string {
-	return "https://github.com/wata727/tflint/blob/master/docs/aws_db_instance_readable_password.md"
+	return project.ReferenceLink(r.Name())
 }
 
 // Check checks password

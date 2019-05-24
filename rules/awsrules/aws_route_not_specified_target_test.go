@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -32,7 +33,7 @@ resource "aws_route" "foo" {
 					Message:  "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, or vpc_peering_connection_id.",
 					Line:     2,
 					File:     "resource.tf",
-					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_route_not_specified_target.md",
+					Link:     project.ReferenceLink("aws_route_not_specified_target"),
 				},
 			},
 		},

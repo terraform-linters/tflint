@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -36,7 +37,7 @@ resource "aws_instance" "web" {
 					Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
 					Line:     5,
 					File:     "resource.tf",
-					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md",
+					Link:     project.ReferenceLink("aws_instance_default_standard_volume"),
 				},
 			},
 		},
@@ -57,7 +58,7 @@ resource "aws_instance" "web" {
 					Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
 					Line:     5,
 					File:     "resource.tf",
-					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md",
+					Link:     project.ReferenceLink("aws_instance_default_standard_volume"),
 				},
 			},
 		},
@@ -102,7 +103,7 @@ resource "aws_instance" "web" {
 					Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
 					Line:     6,
 					File:     "resource.tf",
-					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md",
+					Link:     project.ReferenceLink("aws_instance_default_standard_volume"),
 				},
 				{
 					Detector: "aws_instance_default_standard_volume",
@@ -110,7 +111,7 @@ resource "aws_instance" "web" {
 					Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
 					Line:     10,
 					File:     "resource.tf",
-					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md",
+					Link:     project.ReferenceLink("aws_instance_default_standard_volume"),
 				},
 				{
 					Detector: "aws_instance_default_standard_volume",
@@ -118,7 +119,7 @@ resource "aws_instance" "web" {
 					Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
 					Line:     15,
 					File:     "resource.tf",
-					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md",
+					Link:     project.ReferenceLink("aws_instance_default_standard_volume"),
 				},
 			},
 		},

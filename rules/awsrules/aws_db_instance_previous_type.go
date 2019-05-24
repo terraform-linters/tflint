@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -52,7 +53,7 @@ func (r *AwsDBInstancePreviousTypeRule) Type() string {
 
 // Link returns the rule reference link
 func (r *AwsDBInstancePreviousTypeRule) Link() string {
-	return "https://github.com/wata727/tflint/blob/master/docs/aws_db_instance_previous_type.md"
+	return project.ReferenceLink(r.Name())
 }
 
 // Check checks whether the resource's `instance_class` is included in the list of previous generation instance type
