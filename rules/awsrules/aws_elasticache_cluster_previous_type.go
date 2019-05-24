@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -52,7 +53,7 @@ func (r *AwsElastiCacheClusterPreviousTypeRule) Type() string {
 
 // Link returns the rule reference link
 func (r *AwsElastiCacheClusterPreviousTypeRule) Link() string {
-	return "https://github.com/wata727/tflint/blob/master/docs/aws_elasticache_cluster_previous_type.md"
+	return project.ReferenceLink(r.Name())
 }
 
 // Check checks whether the resource's `node_type` is included in the list of previous generation node type

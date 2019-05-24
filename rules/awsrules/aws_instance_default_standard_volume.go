@@ -5,6 +5,7 @@ import (
 
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -37,7 +38,7 @@ func (r *AwsInstanceDefaultStandardVolumeRule) Type() string {
 
 // Link returns the rule reference link
 func (r *AwsInstanceDefaultStandardVolumeRule) Link() string {
-	return "https://github.com/wata727/tflint/blob/master/docs/aws_instance_default_standard_volume.md"
+	return project.ReferenceLink(r.Name())
 }
 
 // Check checks whether `volume_type` is defined for `root_block_device` or `ebs_block_device`

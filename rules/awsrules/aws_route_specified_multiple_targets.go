@@ -5,6 +5,7 @@ import (
 
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -37,7 +38,7 @@ func (r *AwsRouteSpecifiedMultipleTargetsRule) Type() string {
 
 // Link returns the rule reference link
 func (r *AwsRouteSpecifiedMultipleTargetsRule) Link() string {
-	return "https://github.com/wata727/tflint/blob/master/docs/aws_route_specified_multiple_targets.md"
+	return project.ReferenceLink(r.Name())
 }
 
 // Check checks whether a resource defines `gateway_id`, `egress_only_gateway_id`, `nat_gateway_id`

@@ -11,6 +11,7 @@ import (
 
 	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/printer"
+	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/rules"
 	"github.com/wata727/tflint/tflint"
 )
@@ -64,7 +65,7 @@ func (cli *CLI) Run(args []string) int {
 
 	// Show version
 	if opts.Version {
-		fmt.Fprintf(cli.outStream, "TFLint version %s\n", Version)
+		fmt.Fprintf(cli.outStream, "TFLint version %s\n", project.Version)
 		return ExitCodeOK
 	}
 

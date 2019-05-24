@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -32,7 +33,7 @@ resource "aws_elasticache_cluster" "redis" {
 					Message:  "\"cache.t1.micro\" is previous generation node type.",
 					Line:     3,
 					File:     "resource.tf",
-					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_elasticache_cluster_previous_type.md",
+					Link:     project.ReferenceLink("aws_elasticache_cluster_previous_type"),
 				},
 			},
 		},

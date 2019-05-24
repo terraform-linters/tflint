@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -32,7 +33,7 @@ resource "aws_db_instance" "mysql" {
 					Message:  "\"db.t1.micro\" is previous generation instance type.",
 					Line:     3,
 					File:     "resource.tf",
-					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_db_instance_previous_type.md",
+					Link:     project.ReferenceLink("aws_db_instance_previous_type"),
 				},
 			},
 		},

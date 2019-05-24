@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/mock"
+	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/rules"
 	"github.com/wata727/tflint/tflint"
 )
@@ -32,7 +33,7 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Name:    "print version",
 			Command: "./tflint --version",
 			Status:  ExitCodeOK,
-			Stdout:  fmt.Sprintf("TFLint version %s", Version),
+			Stdout:  fmt.Sprintf("TFLint version %s", project.Version),
 		},
 		{
 			Name:    "print help",

@@ -7,6 +7,7 @@ import (
 
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -41,7 +42,7 @@ func (r *AwsDBInstanceDefaultParameterGroupRule) Type() string {
 
 // Link returns the rule reference link
 func (r *AwsDBInstanceDefaultParameterGroupRule) Link() string {
-	return "https://github.com/wata727/tflint/blob/master/docs/aws_db_instance_default_parameter_group.md"
+	return project.ReferenceLink(r.Name())
 }
 
 var defaultDBParameterGroupRegexp = regexp.MustCompile("^default")

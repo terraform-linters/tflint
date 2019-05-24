@@ -55,7 +55,7 @@ func (r *AwsInstanceInvalidTypeRule) Type() string {
 
 // Link returns the rule reference link
 func (r *AwsInstanceInvalidTypeRule) Link() string {
-	return "https://github.com/wata727/tflint/blob/master/docs/aws_instance_invalid_type.md"
+	return ""
 }
 
 // Check checks whether "aws_instance" has invalid instance type.

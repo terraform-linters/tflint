@@ -5,6 +5,6 @@
     "message": "\"t1.1xlarge\" is invalid instance type.",
     "line": 3,
     "file": "template_override.tf",
-    "link": "https://github.com/wata727/tflint/blob/master/docs/aws_instance_invalid_type.md"
+    "link": ""
   }
 ]
