@@ -87,6 +87,7 @@ func NewLoader() (*Loader, error) {
 }
 
 // LoadConfig loads Terraform's configurations
+// TODO: Can we use configload.LoadConfig instead?
 func (l *Loader) LoadConfig() (*configs.Config, error) {
 	log.Print("[INFO] Load configurations under the current directory")
 	rootMod, diags := l.loader.Parser().LoadConfigDir(".")
@@ -121,8 +122,15 @@ func (l *Loader) LoadConfig() (*configs.Config, error) {
 	if !diags.HasErrors() {
 		return cfg, nil
 	}
+	log.Printf("[ERROR] Failed to load modules using the v0.11.0 ~ v0.11.7 module walker; Trying the v0.12 module walker...")
+	log.Printf("[DEBUG] Original error: %s", diags)
 
-	log.Printf("[ERROR] Failed to load modules using the v0.11.0 ~ v0.11.7 module walker. %s", diags)
+	cfg, diags = configs.BuildConfig(rootMod, l.moduleWalkerV0_12())
+	if !diags.HasErrors() {
+		return cfg, nil
+	}
+
+	log.Printf("[ERROR] Failed to load modules using the v0.12 module walker: %s", diags)
 	return nil, diags
 }
 
@@ -258,6 +266,32 @@ func (l *Loader) moduleWalkerV0_11_0V0_11_7() configs.ModuleWalker {
 		path := append(buildParentModulePathTree([]string{}, req.Parent), l.getModulePath(req))
 		key := "1." + strings.Join(path, "|")
 
+		record, ok := l.moduleManifest[key]
+		if !ok {
+			log.Printf("[DEBUG] Failed to search by `%s` key.", key)
+			return nil, nil, hcl.Diagnostics{
+				{
+					Severity: hcl.DiagError,
+					Summary:  fmt.Sprintf("`%s` module is not found. Did you run `terraform init`?", req.Name),
+					Subject:  &req.CallRange,
+				},
+			}
+		}
+
+		dir := record.Dir
+		if record.Root != "" {
+			dir = filepath.Join(dir, record.Root)
+		}
+		log.Printf("[DEBUG] Trying to load the module: key=%s, version=%s, dir=%s", key, record.VersionStr, dir)
+
+		mod, diags := l.loader.Parser().LoadConfigDir(dir)
+		return mod, record.Version, diags
+	})
+}
+
+func (l *Loader) moduleWalkerV0_12() configs.ModuleWalker {
+	return configs.ModuleWalkerFunc(func(req *configs.ModuleRequest) (*configs.Module, *version.Version, hcl.Diagnostics) {
+		key := req.Path.String()
 		record, ok := l.moduleManifest[key]
 		if !ok {
 			log.Printf("[DEBUG] Failed to search by `%s` key.", key)
