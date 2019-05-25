@@ -14,7 +14,7 @@ LABEL maintainer=wata727
 
 RUN apk add --no-cache ca-certificates
 
-COPY --from=builder /go/src/github.com/wata727/tflint/tflint /usr/local/bin
+COPY --from=builder /go/src/github.com/wata727/tflint/dist/tflint /usr/local/bin
 
 ENTRYPOINT ["tflint"]
 

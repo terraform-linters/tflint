@@ -8,7 +8,8 @@ test: prepare
 	go test $$(go list ./... | grep -v vendor | grep -v mock)
 
 build: test
-	go build -v
+	mkdir -p dist
+	go build -v -o dist/tflint
 
 install: test
 	go install
