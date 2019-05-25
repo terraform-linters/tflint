@@ -73,7 +73,14 @@ func (r *AwsRouteSpecifiedMultipleTargetsRule) Check(runner *tflint.Runner) erro
 			return diags
 		}
 
-		if len(body.Attributes) > 1 {
+		var nullAttributes int
+		for _, attribute := range body.Attributes {
+			if runner.IsNullExpr(attribute.Expr) {
+				nullAttributes = nullAttributes + 1
+			}
+		}
+
+		if len(body.Attributes)-nullAttributes > 1 {
 			runner.EmitIssue(
 				r,
 				"More than one routing target specified. It must be one.",

@@ -196,6 +196,20 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 		return err
 	}
 
+	if val.IsNull() {
+		err := &Error{
+			Code:  NullValueError,
+			Level: WarningLevel,
+			Message: fmt.Sprintf(
+				"Null value found in %s:%d",
+				r.getFileName(expr.Range().Filename),
+				expr.Range().Start.Line,
+			),
+		}
+		log.Printf("[WARN] %s; TFLint ignores an expression includes an null value.", err)
+		return err
+	}
+
 	var err error
 	switch ret.(type) {
 	case *string:
@@ -341,6 +355,12 @@ func (r *Runner) EnsureNoError(err error, proc func() error) error {
 	} else {
 		return err
 	}
+}
+
+// IsNullExpr check the passed expression is null
+func (r *Runner) IsNullExpr(expr hcl.Expression) bool {
+	val, _ := r.ctx.EvaluateExpr(expr, cty.DynamicPseudoType, nil)
+	return val.IsNull()
 }
 
 // LookupResourcesByType returns `configs.Resource` list according to the resource type

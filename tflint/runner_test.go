@@ -489,6 +489,21 @@ resource "null_resource" "test" {
 			ErrorText:  "Unknown value found in resource.tf:5; Please use environment variables or tfvars to set the value",
 		},
 		{
+			Name: "null value",
+			Content: `
+variable "null_var" {
+  type    = string
+  default = null
+}
+
+resource "null_resource" "test" {
+  key = var.null_var
+}`,
+			ErrorCode:  NullValueError,
+			ErrorLevel: WarningLevel,
+			ErrorText:  "Null value found in resource.tf:8",
+		},
+		{
 			Name: "terraform env",
 			Content: `
 resource "null_resource" "test" {
@@ -1422,6 +1437,110 @@ func Test_EnsureNoError(t *testing.T) {
 			}
 		} else if err.Error() != tc.ErrorText {
 			t.Fatalf("Failed `%s` test: expected error is %s, but get %s", tc.Name, tc.ErrorText, err)
+		}
+	}
+}
+
+func Test_IsNullExpr(t *testing.T) {
+	cases := []struct {
+		Name     string
+		Content  string
+		Expected bool
+	}{
+		{
+			Name: "non null literal",
+			Content: `
+resource "null_resource" "test" {
+  key = "string"
+}`,
+			Expected: false,
+		},
+		{
+			Name: "non null variable",
+			Content: `
+variable "value" {
+  default = "string"
+}
+
+resource "null_resource" "test" {
+  key = var.value
+}`,
+			Expected: false,
+		},
+		{
+			Name: "null literal",
+			Content: `
+resource "null_resource" "test" {
+  key = null
+}`,
+			Expected: true,
+		},
+		{
+			Name: "null variable",
+			Content: `
+variable "value" {
+  default = null
+}
+	
+resource "null_resource" "test" {
+  key = var.value
+}`,
+			Expected: true,
+		},
+		{
+			Name: "unknown variable",
+			Content: `
+variable "value" {}
+	
+resource "null_resource" "test" {
+  key = var.value
+}`,
+			Expected: false,
+		},
+		{
+			Name: "unevaluable reference",
+			Content: `
+resource "null_resource" "test" {
+  key = aws_instance.id
+}`,
+			Expected: false,
+		},
+		{
+			Name: "including null literal",
+			Content: `
+resource "null_resource" "test" {
+  key = "${null}-1"
+}`,
+			Expected: false,
+		},
+	}
+
+	dir, err := ioutil.TempDir("", "IsNullExpr")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+
+	for _, tc := range cases {
+		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		cfg, err := loadConfigHelper(dir)
+		if err != nil {
+			t.Fatal(err)
+		}
+		attribute, err := extractAttributeHelper("key", cfg)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		ret := runner.IsNullExpr(attribute.Expr)
+
+		if tc.Expected != ret {
+			t.Fatalf("Failed `%s` test: expected value is %t, but get %t", tc.Name, tc.Expected, ret)
 		}
 	}
 }
