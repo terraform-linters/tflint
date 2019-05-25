@@ -141,6 +141,24 @@ resource "aws_instance" "web" {
 }`,
 			Expected: []*issue.Issue{},
 		},
+		{
+			Name: "volume_type attribute is null",
+			Content: `
+variable "volume_type" {
+	type    = string
+	default = null
+}
+
+resource "aws_instance" "web" {
+    instance_type = "c3.2xlarge"
+
+    ebs_block_device = {
+        volume_type = var.volume_type
+        volume_size = "24"
+    }
+}`,
+			Expected: []*issue.Issue{},
+		},
 	}
 
 	dir, err := ioutil.TempDir("", "AwsInstanceDefaultStandardVolume")

@@ -182,35 +182,42 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 		return err
 	}
 
-	if !val.IsKnown() {
-		err := &Error{
-			Code:  UnknownValueError,
-			Level: WarningLevel,
-			Message: fmt.Sprintf(
-				"Unknown value found in %s:%d; Please use environment variables or tfvars to set the value",
-				r.getFileName(expr.Range().Filename),
-				expr.Range().Start.Line,
-			),
+	err := cty.Walk(val, func(path cty.Path, v cty.Value) (bool, error) {
+		if !v.IsKnown() {
+			err := &Error{
+				Code:  UnknownValueError,
+				Level: WarningLevel,
+				Message: fmt.Sprintf(
+					"Unknown value found in %s:%d; Please use environment variables or tfvars to set the value",
+					r.getFileName(expr.Range().Filename),
+					expr.Range().Start.Line,
+				),
+			}
+			log.Printf("[WARN] %s; TFLint ignores an expression includes an unknown value.", err)
+			return false, err
 		}
-		log.Printf("[WARN] %s; TFLint ignores an expression includes an unknown value.", err)
+
+		if v.IsNull() {
+			err := &Error{
+				Code:  NullValueError,
+				Level: WarningLevel,
+				Message: fmt.Sprintf(
+					"Null value found in %s:%d",
+					r.getFileName(expr.Range().Filename),
+					expr.Range().Start.Line,
+				),
+			}
+			log.Printf("[WARN] %s; TFLint ignores an expression includes an null value.", err)
+			return false, err
+		}
+
+		return true, nil
+	})
+
+	if err != nil {
 		return err
 	}
 
-	if val.IsNull() {
-		err := &Error{
-			Code:  NullValueError,
-			Level: WarningLevel,
-			Message: fmt.Sprintf(
-				"Null value found in %s:%d",
-				r.getFileName(expr.Range().Filename),
-				expr.Range().Start.Line,
-			),
-		}
-		log.Printf("[WARN] %s; TFLint ignores an expression includes an null value.", err)
-		return err
-	}
-
-	var err error
 	switch ret.(type) {
 	case *string:
 		val, err = convert.Convert(val, cty.String)
