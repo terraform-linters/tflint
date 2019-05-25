@@ -1,0 +1,30 @@
+# This is an example goreleaser.yaml file with some sane defaults.
+# Make sure to check the documentation at http://goreleaser.com
+before:
+  hooks:
+    - make mock
+builds:
+  - goos:
+      - linux
+      - darwin
+      - freebsd
+      - netbsd
+      - openbsd
+      - windows
+    goarch:
+      - 386
+      - amd64
+      - arm
+archive:
+  name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+  format: zip
+  files:
+    - none*
+checksum:
+  name_template: 'checksums.txt'
+sign:
+  artifacts: checksum
+release:
+  disable: true
+snapshot:
+  name_template: "{{ .Tag }}-dev"
