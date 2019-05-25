@@ -52,6 +52,7 @@ We strongly recommend [upgrading to Terraform v0.12](https://www.terraform.io/up
   - Fixed the problem that overwrites the config under the current directory by homedir config.
 - Improve to check for `aws_db_instance_readable_password`.
   - Previously, false positive occurred when setting values files or environment variables, but this problem has been fixed.
+- Make `transit_gateway_id` as a valid target on `aws_route_specified_multiple_targets`
 
 ### Project Changes
 

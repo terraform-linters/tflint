@@ -67,6 +67,9 @@ func (r *AwsRouteSpecifiedMultipleTargetsRule) Check(runner *tflint.Runner) erro
 				{
 					Name: "network_interface_id",
 				},
+				{
+					Name: "transit_gateway_id",
+				},
 			},
 		})
 		if diags.HasErrors() {
