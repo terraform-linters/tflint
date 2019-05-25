@@ -89,7 +89,11 @@ func (r *AwsInstanceDefaultStandardVolumeRule) blockWalker(runner *tflint.Runner
 		return diags
 	}
 
-	if _, ok := body.Attributes["volume_type"]; !ok {
+	if volumeType, ok := body.Attributes["volume_type"]; ok {
+		if runner.IsNullExpr(volumeType.Expr) {
+			runner.EmitIssue(r, r.message(), volumeType.Expr.Range())
+		}
+	} else {
 		runner.EmitIssue(r, r.message(), block.TypeRange)
 	}
 	return nil

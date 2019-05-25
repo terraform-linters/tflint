@@ -139,7 +139,16 @@ resource "aws_instance" "web" {
         volume_size = "24"
     }
 }`,
-			Expected: []*issue.Issue{},
+			Expected: []*issue.Issue{
+				{
+					Detector: "aws_instance_default_standard_volume",
+					Type:     issue.WARNING,
+					Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
+					Line:     11,
+					File:     "resource.tf",
+					Link:     project.ReferenceLink("aws_instance_default_standard_volume"),
+				},
+			},
 		},
 		{
 			Name: "volume_type attribute is null",
