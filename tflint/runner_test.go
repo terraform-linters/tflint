@@ -579,6 +579,115 @@ resource "null_resource" "test" {
 	}
 }
 
+func Test_EvaluateExpr_mapWithInterpolationError(t *testing.T) {
+	cases := []struct {
+		Name       string
+		Content    string
+		ErrorCode  int
+		ErrorLevel int
+		ErrorText  string
+	}{
+		{
+			Name: "undefined variable",
+			Content: `
+resource "null_resource" "test" {
+  key = {
+		value = var.undefined_var
+	}
+}`,
+			ErrorCode:  EvaluationError,
+			ErrorLevel: ErrorLevel,
+			ErrorText:  "Failed to eval an expression in resource.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
+		},
+		{
+			Name: "no default value",
+			Content: `
+variable "no_value_var" {}
+
+resource "null_resource" "test" {
+	key = {
+		value = var.no_value_var
+	}
+}`,
+			ErrorCode:  UnknownValueError,
+			ErrorLevel: WarningLevel,
+			ErrorText:  "Unknown value found in resource.tf:5; Please use environment variables or tfvars to set the value",
+		},
+		{
+			Name: "null value",
+			Content: `
+variable "null_var" {
+	type    = string
+	default = null
+}
+
+resource "null_resource" "test" {
+	key = {
+		value = var.null_var
+	}
+}`,
+			ErrorCode:  NullValueError,
+			ErrorLevel: WarningLevel,
+			ErrorText:  "Null value found in resource.tf:8",
+		},
+		{
+			Name: "unevalauble",
+			Content: `
+resource "null_resource" "test" {
+	key = {
+		value = module.text
+	}
+}`,
+			ErrorCode:  UnevaluableError,
+			ErrorLevel: WarningLevel,
+			ErrorText:  "Unevaluable expression found in resource.tf:3",
+		},
+	}
+
+	dir, err := ioutil.TempDir("", "mapWithInterpolationError")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+
+	for _, tc := range cases {
+		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		cfg, err := loadConfigHelper(dir)
+		if err != nil {
+			t.Fatal(err)
+		}
+		attribute, err := extractAttributeHelper("key", cfg)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		runner := NewRunner(EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+
+		var ret map[string]string
+		err = runner.EvaluateExpr(attribute.Expr, &ret)
+		if appErr, ok := err.(*Error); ok {
+			if appErr == nil {
+				t.Fatalf("Failed `%s` test: expected err is `%s`, but nothing occurred", tc.Name, tc.ErrorText)
+			}
+			if appErr.Code != tc.ErrorCode {
+				t.Fatalf("Failed `%s` test: expected error code is `%d`, but get `%d`", tc.Name, tc.ErrorCode, appErr.Code)
+			}
+			if appErr.Level != tc.ErrorLevel {
+				t.Fatalf("Failed `%s` test: expected error level is `%d`, but get `%d`", tc.Name, tc.ErrorLevel, appErr.Level)
+			}
+			if appErr.Error() != tc.ErrorText {
+				t.Fatalf("Failed `%s` test: expected error is `%s`, but get `%s`", tc.Name, tc.ErrorText, appErr.Error())
+			}
+		} else {
+			t.Fatalf("Failed `%s` test: unexpected error occurred: %s", tc.Name, err)
+		}
+	}
+}
+
 func Test_isEvaluable(t *testing.T) {
 	cases := []struct {
 		Name     string
@@ -682,6 +791,17 @@ resource "null_resource" "test" {
 			Content: `
 resource "null_resource" "test" {
   key = "${var.text} ${lookup(var.roles, count.index)}"
+}`,
+			Expected: false,
+		},
+		{
+			Name: "include unsupported syntax map",
+			Content: `
+resource "null_resource" "test" {
+	key = {
+		var = var.text
+		unsupported = aws_subnet.app.id
+	}
 }`,
 			Expected: false,
 		},
