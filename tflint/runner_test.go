@@ -84,6 +84,19 @@ resource "null_resource" "test" {
 			Expected: "one",
 		},
 		{
+			Name: "object item",
+			Content: `
+variable "object" {
+  type = object({ foo = string })
+  default = { foo = "bar" }
+}
+
+resource "null_resource" "test" {
+  key = var.object.foo
+}`,
+			Expected: "bar",
+		},
+		{
 			Name: "convert from integer",
 			Content: `
 variable "string_var" {
@@ -1447,6 +1460,23 @@ resource "null_resource" "test" {
 }`,
 			Vals:  []string{"text", "element"},
 			Lines: []int{10, 10},
+		},
+		{
+			Name: "for expressions",
+			Content: `
+variable "list" {
+  default = ["text", "element", "ignored"]
+}
+
+resource "null_resource" "test" {
+  value = [
+	for e in var.list:
+	e
+	if e != "ignored"
+  ]
+}`,
+			Vals:  []string{"text", "element"},
+			Lines: []int{7, 7},
 		},
 	}
 
