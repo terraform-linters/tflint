@@ -39,7 +39,7 @@ Result: 2 issues  (1 errors , 0 warnings , 1 notices)
 You can download the binary built for your architecture from [the latest release](https://github.com/wata727/tflint/releases/latest). The following is an example of installation on macOS:
 
 ```
-$ wget https://github.com/wata727/tflint/releases/download/v0.7.6/tflint_darwin_amd64.zip
+$ wget https://github.com/wata727/tflint/releases/download/v0.8.0/tflint_darwin_amd64.zip
 $ unzip tflint_darwin_amd64.zip
 Archive:  tflint_darwin_amd64.zip
   inflating: tflint

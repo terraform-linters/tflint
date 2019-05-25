@@ -1,4 +1,4 @@
-## 0.8.0 (2019-??-??)
+## 0.8.0 (2019-05-25)
 
 This release includes major changes due to being dependent on Terraform v0.12 internal API. While we try to keep backward compatibility as much as possible, it does include some breaking changes.
 
