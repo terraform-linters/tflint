@@ -69,6 +69,19 @@ resource "aws_db_instance" "mysql" {
 			Expected: []*issue.Issue{},
 		},
 		{
+			Name: "with null variable",
+			Content: `
+variable "password" {
+	type    = string
+	default = null
+}
+
+resource "aws_db_instance" "mysql" {
+  password = var.password
+}`,
+			Expected: []*issue.Issue{},
+		},
+		{
 			Name: "with two variables, the one has default",
 			Content: `
 variable "head_password" {}
@@ -141,7 +154,7 @@ resource "aws_db_instance" "mysql" {
 		}
 
 		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+			t.Fatalf("%s - Expected issues are not matched:\n %s\n", tc.Name, cmp.Diff(tc.Expected, runner.Issues))
 		}
 	}
 }

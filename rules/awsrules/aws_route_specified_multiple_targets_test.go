@@ -48,6 +48,21 @@ resource "aws_route" "foo" {
 }`,
 			Expected: []*issue.Issue{},
 		},
+		{
+			Name: "multiple targes found, but the second one is null",
+			Content: `
+variable "egress_only_gateway_id" {
+    type    = string
+	default = null
+}
+
+resource "aws_route" "foo" {
+    route_table_id = "rtb-1234abcd"
+    gateway_id = "igw-1234abcd"
+    egress_only_gateway_id = var.egress_only_gateway_id
+}`,
+			Expected: []*issue.Issue{},
+		},
 	}
 
 	dir, err := ioutil.TempDir("", "AwsRouteSpecifiedMultipleTargets")

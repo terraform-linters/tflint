@@ -100,6 +100,29 @@ resource "aws_route" "foo" {
 }`,
 			Expected: []*issue.Issue{},
 		},
+		{
+			Name: "transit_gateway_id is specified, but the value is null",
+			Content: `
+variable "transit_gateway_id" {
+	type    = string
+	default = null
+}
+
+resource "aws_route" "foo" {
+	route_table_id = "rtb-1234abcd"
+	transit_gateway_id = var.transit_gateway_id
+}`,
+			Expected: []*issue.Issue{
+				{
+					Detector: "aws_route_not_specified_target",
+					Type:     "ERROR",
+					Message:  "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, or vpc_peering_connection_id.",
+					Line:     7,
+					File:     "resource.tf",
+					Link:     project.ReferenceLink("aws_route_not_specified_target"),
+				},
+			},
+		},
 	}
 
 	dir, err := ioutil.TempDir("", "AwsRouteNotSpecifiedTarget")

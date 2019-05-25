@@ -7,6 +7,8 @@ const (
 	EvaluationError int = 0
 	// UnknownValueError is an error when an unknown value is referenced
 	UnknownValueError int = 1 + iota
+	// NullValueError is an error when null value is referenced
+	NullValueError
 	// TypeConversionError is an error when type conversion of cty.Value failed
 	TypeConversionError
 	// TypeMismatchError is an error when a type of cty.Value is not as expected
