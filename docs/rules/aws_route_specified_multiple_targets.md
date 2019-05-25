@@ -35,3 +35,4 @@ Check if two or more of the following attributes are specified:
 - instance_id
 - vpc_peering_connection_id
 - network_interface_id
+- transit_gateway_id
