@@ -168,6 +168,36 @@ resource "aws_instance" "web" {
 }`,
 			Expected: []*issue.Issue{},
 		},
+		{
+			Name: "dynamic blocks",
+			Content: `
+variable "volumes" {
+	type    = list(string)
+	default = ["100", "200"]
+}
+
+resource "aws_instance" "web" {
+    instance_type = "c3.2xlarge"
+
+    dynamic "ebs_block_device" {
+		for_each = var.volumes
+
+		content {
+			volume_size = ebs_block_device.value
+		}
+	}
+}`,
+			Expected: []*issue.Issue{
+				{
+					Detector: "aws_instance_default_standard_volume",
+					Type:     issue.WARNING,
+					Message:  "\"volume_type\" is not specified. Default standard volume type is not recommended. You can use \"gp2\", \"io1\", etc instead.",
+					Line:     13,
+					File:     "resource.tf",
+					Link:     project.ReferenceLink("aws_instance_default_standard_volume"),
+				},
+			},
+		},
 	}
 
 	dir, err := ioutil.TempDir("", "AwsInstanceDefaultStandardVolume")
