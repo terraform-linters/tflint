@@ -79,6 +79,50 @@ func (mr *MockEC2APIMockRecorder) AcceptReservedInstancesExchangeQuoteRequest(ar
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AcceptReservedInstancesExchangeQuoteRequest", reflect.TypeOf((*MockEC2API)(nil).AcceptReservedInstancesExchangeQuoteRequest), arg0)
 }
 
+// AcceptTransitGatewayVpcAttachment mocks base method
+func (m *MockEC2API) AcceptTransitGatewayVpcAttachment(arg0 *ec2.AcceptTransitGatewayVpcAttachmentInput) (*ec2.AcceptTransitGatewayVpcAttachmentOutput, error) {
+	ret := m.ctrl.Call(m, "AcceptTransitGatewayVpcAttachment", arg0)
+	ret0, _ := ret[0].(*ec2.AcceptTransitGatewayVpcAttachmentOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AcceptTransitGatewayVpcAttachment indicates an expected call of AcceptTransitGatewayVpcAttachment
+func (mr *MockEC2APIMockRecorder) AcceptTransitGatewayVpcAttachment(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AcceptTransitGatewayVpcAttachment", reflect.TypeOf((*MockEC2API)(nil).AcceptTransitGatewayVpcAttachment), arg0)
+}
+
+// AcceptTransitGatewayVpcAttachmentWithContext mocks base method
+func (m *MockEC2API) AcceptTransitGatewayVpcAttachmentWithContext(arg0 aws.Context, arg1 *ec2.AcceptTransitGatewayVpcAttachmentInput, arg2 ...request.Option) (*ec2.AcceptTransitGatewayVpcAttachmentOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "AcceptTransitGatewayVpcAttachmentWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.AcceptTransitGatewayVpcAttachmentOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AcceptTransitGatewayVpcAttachmentWithContext indicates an expected call of AcceptTransitGatewayVpcAttachmentWithContext
+func (mr *MockEC2APIMockRecorder) AcceptTransitGatewayVpcAttachmentWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AcceptTransitGatewayVpcAttachmentWithContext", reflect.TypeOf((*MockEC2API)(nil).AcceptTransitGatewayVpcAttachmentWithContext), varargs...)
+}
+
+// AcceptTransitGatewayVpcAttachmentRequest mocks base method
+func (m *MockEC2API) AcceptTransitGatewayVpcAttachmentRequest(arg0 *ec2.AcceptTransitGatewayVpcAttachmentInput) (*request.Request, *ec2.AcceptTransitGatewayVpcAttachmentOutput) {
+	ret := m.ctrl.Call(m, "AcceptTransitGatewayVpcAttachmentRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.AcceptTransitGatewayVpcAttachmentOutput)
+	return ret0, ret1
+}
+
+// AcceptTransitGatewayVpcAttachmentRequest indicates an expected call of AcceptTransitGatewayVpcAttachmentRequest
+func (mr *MockEC2APIMockRecorder) AcceptTransitGatewayVpcAttachmentRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AcceptTransitGatewayVpcAttachmentRequest", reflect.TypeOf((*MockEC2API)(nil).AcceptTransitGatewayVpcAttachmentRequest), arg0)
+}
+
 // AcceptVpcEndpointConnections mocks base method
 func (m *MockEC2API) AcceptVpcEndpointConnections(arg0 *ec2.AcceptVpcEndpointConnectionsInput) (*ec2.AcceptVpcEndpointConnectionsOutput, error) {
 	ret := m.ctrl.Call(m, "AcceptVpcEndpointConnections", arg0)
@@ -167,6 +211,50 @@ func (mr *MockEC2APIMockRecorder) AcceptVpcPeeringConnectionRequest(arg0 interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AcceptVpcPeeringConnectionRequest", reflect.TypeOf((*MockEC2API)(nil).AcceptVpcPeeringConnectionRequest), arg0)
 }
 
+// AdvertiseByoipCidr mocks base method
+func (m *MockEC2API) AdvertiseByoipCidr(arg0 *ec2.AdvertiseByoipCidrInput) (*ec2.AdvertiseByoipCidrOutput, error) {
+	ret := m.ctrl.Call(m, "AdvertiseByoipCidr", arg0)
+	ret0, _ := ret[0].(*ec2.AdvertiseByoipCidrOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AdvertiseByoipCidr indicates an expected call of AdvertiseByoipCidr
+func (mr *MockEC2APIMockRecorder) AdvertiseByoipCidr(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AdvertiseByoipCidr", reflect.TypeOf((*MockEC2API)(nil).AdvertiseByoipCidr), arg0)
+}
+
+// AdvertiseByoipCidrWithContext mocks base method
+func (m *MockEC2API) AdvertiseByoipCidrWithContext(arg0 aws.Context, arg1 *ec2.AdvertiseByoipCidrInput, arg2 ...request.Option) (*ec2.AdvertiseByoipCidrOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "AdvertiseByoipCidrWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.AdvertiseByoipCidrOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AdvertiseByoipCidrWithContext indicates an expected call of AdvertiseByoipCidrWithContext
+func (mr *MockEC2APIMockRecorder) AdvertiseByoipCidrWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AdvertiseByoipCidrWithContext", reflect.TypeOf((*MockEC2API)(nil).AdvertiseByoipCidrWithContext), varargs...)
+}
+
+// AdvertiseByoipCidrRequest mocks base method
+func (m *MockEC2API) AdvertiseByoipCidrRequest(arg0 *ec2.AdvertiseByoipCidrInput) (*request.Request, *ec2.AdvertiseByoipCidrOutput) {
+	ret := m.ctrl.Call(m, "AdvertiseByoipCidrRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.AdvertiseByoipCidrOutput)
+	return ret0, ret1
+}
+
+// AdvertiseByoipCidrRequest indicates an expected call of AdvertiseByoipCidrRequest
+func (mr *MockEC2APIMockRecorder) AdvertiseByoipCidrRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AdvertiseByoipCidrRequest", reflect.TypeOf((*MockEC2API)(nil).AdvertiseByoipCidrRequest), arg0)
+}
+
 // AllocateAddress mocks base method
 func (m *MockEC2API) AllocateAddress(arg0 *ec2.AllocateAddressInput) (*ec2.AllocateAddressOutput, error) {
 	ret := m.ctrl.Call(m, "AllocateAddress", arg0)
@@ -253,6 +341,50 @@ func (m *MockEC2API) AllocateHostsRequest(arg0 *ec2.AllocateHostsInput) (*reques
 // AllocateHostsRequest indicates an expected call of AllocateHostsRequest
 func (mr *MockEC2APIMockRecorder) AllocateHostsRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AllocateHostsRequest", reflect.TypeOf((*MockEC2API)(nil).AllocateHostsRequest), arg0)
+}
+
+// ApplySecurityGroupsToClientVpnTargetNetwork mocks base method
+func (m *MockEC2API) ApplySecurityGroupsToClientVpnTargetNetwork(arg0 *ec2.ApplySecurityGroupsToClientVpnTargetNetworkInput) (*ec2.ApplySecurityGroupsToClientVpnTargetNetworkOutput, error) {
+	ret := m.ctrl.Call(m, "ApplySecurityGroupsToClientVpnTargetNetwork", arg0)
+	ret0, _ := ret[0].(*ec2.ApplySecurityGroupsToClientVpnTargetNetworkOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ApplySecurityGroupsToClientVpnTargetNetwork indicates an expected call of ApplySecurityGroupsToClientVpnTargetNetwork
+func (mr *MockEC2APIMockRecorder) ApplySecurityGroupsToClientVpnTargetNetwork(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ApplySecurityGroupsToClientVpnTargetNetwork", reflect.TypeOf((*MockEC2API)(nil).ApplySecurityGroupsToClientVpnTargetNetwork), arg0)
+}
+
+// ApplySecurityGroupsToClientVpnTargetNetworkWithContext mocks base method
+func (m *MockEC2API) ApplySecurityGroupsToClientVpnTargetNetworkWithContext(arg0 aws.Context, arg1 *ec2.ApplySecurityGroupsToClientVpnTargetNetworkInput, arg2 ...request.Option) (*ec2.ApplySecurityGroupsToClientVpnTargetNetworkOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ApplySecurityGroupsToClientVpnTargetNetworkWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.ApplySecurityGroupsToClientVpnTargetNetworkOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ApplySecurityGroupsToClientVpnTargetNetworkWithContext indicates an expected call of ApplySecurityGroupsToClientVpnTargetNetworkWithContext
+func (mr *MockEC2APIMockRecorder) ApplySecurityGroupsToClientVpnTargetNetworkWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ApplySecurityGroupsToClientVpnTargetNetworkWithContext", reflect.TypeOf((*MockEC2API)(nil).ApplySecurityGroupsToClientVpnTargetNetworkWithContext), varargs...)
+}
+
+// ApplySecurityGroupsToClientVpnTargetNetworkRequest mocks base method
+func (m *MockEC2API) ApplySecurityGroupsToClientVpnTargetNetworkRequest(arg0 *ec2.ApplySecurityGroupsToClientVpnTargetNetworkInput) (*request.Request, *ec2.ApplySecurityGroupsToClientVpnTargetNetworkOutput) {
+	ret := m.ctrl.Call(m, "ApplySecurityGroupsToClientVpnTargetNetworkRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ApplySecurityGroupsToClientVpnTargetNetworkOutput)
+	return ret0, ret1
+}
+
+// ApplySecurityGroupsToClientVpnTargetNetworkRequest indicates an expected call of ApplySecurityGroupsToClientVpnTargetNetworkRequest
+func (mr *MockEC2APIMockRecorder) ApplySecurityGroupsToClientVpnTargetNetworkRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ApplySecurityGroupsToClientVpnTargetNetworkRequest", reflect.TypeOf((*MockEC2API)(nil).ApplySecurityGroupsToClientVpnTargetNetworkRequest), arg0)
 }
 
 // AssignIpv6Addresses mocks base method
@@ -385,6 +517,50 @@ func (m *MockEC2API) AssociateAddressRequest(arg0 *ec2.AssociateAddressInput) (*
 // AssociateAddressRequest indicates an expected call of AssociateAddressRequest
 func (mr *MockEC2APIMockRecorder) AssociateAddressRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssociateAddressRequest", reflect.TypeOf((*MockEC2API)(nil).AssociateAddressRequest), arg0)
+}
+
+// AssociateClientVpnTargetNetwork mocks base method
+func (m *MockEC2API) AssociateClientVpnTargetNetwork(arg0 *ec2.AssociateClientVpnTargetNetworkInput) (*ec2.AssociateClientVpnTargetNetworkOutput, error) {
+	ret := m.ctrl.Call(m, "AssociateClientVpnTargetNetwork", arg0)
+	ret0, _ := ret[0].(*ec2.AssociateClientVpnTargetNetworkOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AssociateClientVpnTargetNetwork indicates an expected call of AssociateClientVpnTargetNetwork
+func (mr *MockEC2APIMockRecorder) AssociateClientVpnTargetNetwork(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssociateClientVpnTargetNetwork", reflect.TypeOf((*MockEC2API)(nil).AssociateClientVpnTargetNetwork), arg0)
+}
+
+// AssociateClientVpnTargetNetworkWithContext mocks base method
+func (m *MockEC2API) AssociateClientVpnTargetNetworkWithContext(arg0 aws.Context, arg1 *ec2.AssociateClientVpnTargetNetworkInput, arg2 ...request.Option) (*ec2.AssociateClientVpnTargetNetworkOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "AssociateClientVpnTargetNetworkWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.AssociateClientVpnTargetNetworkOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AssociateClientVpnTargetNetworkWithContext indicates an expected call of AssociateClientVpnTargetNetworkWithContext
+func (mr *MockEC2APIMockRecorder) AssociateClientVpnTargetNetworkWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssociateClientVpnTargetNetworkWithContext", reflect.TypeOf((*MockEC2API)(nil).AssociateClientVpnTargetNetworkWithContext), varargs...)
+}
+
+// AssociateClientVpnTargetNetworkRequest mocks base method
+func (m *MockEC2API) AssociateClientVpnTargetNetworkRequest(arg0 *ec2.AssociateClientVpnTargetNetworkInput) (*request.Request, *ec2.AssociateClientVpnTargetNetworkOutput) {
+	ret := m.ctrl.Call(m, "AssociateClientVpnTargetNetworkRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.AssociateClientVpnTargetNetworkOutput)
+	return ret0, ret1
+}
+
+// AssociateClientVpnTargetNetworkRequest indicates an expected call of AssociateClientVpnTargetNetworkRequest
+func (mr *MockEC2APIMockRecorder) AssociateClientVpnTargetNetworkRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssociateClientVpnTargetNetworkRequest", reflect.TypeOf((*MockEC2API)(nil).AssociateClientVpnTargetNetworkRequest), arg0)
 }
 
 // AssociateDhcpOptions mocks base method
@@ -561,6 +737,50 @@ func (m *MockEC2API) AssociateSubnetCidrBlockRequest(arg0 *ec2.AssociateSubnetCi
 // AssociateSubnetCidrBlockRequest indicates an expected call of AssociateSubnetCidrBlockRequest
 func (mr *MockEC2APIMockRecorder) AssociateSubnetCidrBlockRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssociateSubnetCidrBlockRequest", reflect.TypeOf((*MockEC2API)(nil).AssociateSubnetCidrBlockRequest), arg0)
+}
+
+// AssociateTransitGatewayRouteTable mocks base method
+func (m *MockEC2API) AssociateTransitGatewayRouteTable(arg0 *ec2.AssociateTransitGatewayRouteTableInput) (*ec2.AssociateTransitGatewayRouteTableOutput, error) {
+	ret := m.ctrl.Call(m, "AssociateTransitGatewayRouteTable", arg0)
+	ret0, _ := ret[0].(*ec2.AssociateTransitGatewayRouteTableOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AssociateTransitGatewayRouteTable indicates an expected call of AssociateTransitGatewayRouteTable
+func (mr *MockEC2APIMockRecorder) AssociateTransitGatewayRouteTable(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssociateTransitGatewayRouteTable", reflect.TypeOf((*MockEC2API)(nil).AssociateTransitGatewayRouteTable), arg0)
+}
+
+// AssociateTransitGatewayRouteTableWithContext mocks base method
+func (m *MockEC2API) AssociateTransitGatewayRouteTableWithContext(arg0 aws.Context, arg1 *ec2.AssociateTransitGatewayRouteTableInput, arg2 ...request.Option) (*ec2.AssociateTransitGatewayRouteTableOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "AssociateTransitGatewayRouteTableWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.AssociateTransitGatewayRouteTableOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AssociateTransitGatewayRouteTableWithContext indicates an expected call of AssociateTransitGatewayRouteTableWithContext
+func (mr *MockEC2APIMockRecorder) AssociateTransitGatewayRouteTableWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssociateTransitGatewayRouteTableWithContext", reflect.TypeOf((*MockEC2API)(nil).AssociateTransitGatewayRouteTableWithContext), varargs...)
+}
+
+// AssociateTransitGatewayRouteTableRequest mocks base method
+func (m *MockEC2API) AssociateTransitGatewayRouteTableRequest(arg0 *ec2.AssociateTransitGatewayRouteTableInput) (*request.Request, *ec2.AssociateTransitGatewayRouteTableOutput) {
+	ret := m.ctrl.Call(m, "AssociateTransitGatewayRouteTableRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.AssociateTransitGatewayRouteTableOutput)
+	return ret0, ret1
+}
+
+// AssociateTransitGatewayRouteTableRequest indicates an expected call of AssociateTransitGatewayRouteTableRequest
+func (mr *MockEC2APIMockRecorder) AssociateTransitGatewayRouteTableRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssociateTransitGatewayRouteTableRequest", reflect.TypeOf((*MockEC2API)(nil).AssociateTransitGatewayRouteTableRequest), arg0)
 }
 
 // AssociateVpcCidrBlock mocks base method
@@ -827,6 +1047,50 @@ func (mr *MockEC2APIMockRecorder) AttachVpnGatewayRequest(arg0 interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AttachVpnGatewayRequest", reflect.TypeOf((*MockEC2API)(nil).AttachVpnGatewayRequest), arg0)
 }
 
+// AuthorizeClientVpnIngress mocks base method
+func (m *MockEC2API) AuthorizeClientVpnIngress(arg0 *ec2.AuthorizeClientVpnIngressInput) (*ec2.AuthorizeClientVpnIngressOutput, error) {
+	ret := m.ctrl.Call(m, "AuthorizeClientVpnIngress", arg0)
+	ret0, _ := ret[0].(*ec2.AuthorizeClientVpnIngressOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AuthorizeClientVpnIngress indicates an expected call of AuthorizeClientVpnIngress
+func (mr *MockEC2APIMockRecorder) AuthorizeClientVpnIngress(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AuthorizeClientVpnIngress", reflect.TypeOf((*MockEC2API)(nil).AuthorizeClientVpnIngress), arg0)
+}
+
+// AuthorizeClientVpnIngressWithContext mocks base method
+func (m *MockEC2API) AuthorizeClientVpnIngressWithContext(arg0 aws.Context, arg1 *ec2.AuthorizeClientVpnIngressInput, arg2 ...request.Option) (*ec2.AuthorizeClientVpnIngressOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "AuthorizeClientVpnIngressWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.AuthorizeClientVpnIngressOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AuthorizeClientVpnIngressWithContext indicates an expected call of AuthorizeClientVpnIngressWithContext
+func (mr *MockEC2APIMockRecorder) AuthorizeClientVpnIngressWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AuthorizeClientVpnIngressWithContext", reflect.TypeOf((*MockEC2API)(nil).AuthorizeClientVpnIngressWithContext), varargs...)
+}
+
+// AuthorizeClientVpnIngressRequest mocks base method
+func (m *MockEC2API) AuthorizeClientVpnIngressRequest(arg0 *ec2.AuthorizeClientVpnIngressInput) (*request.Request, *ec2.AuthorizeClientVpnIngressOutput) {
+	ret := m.ctrl.Call(m, "AuthorizeClientVpnIngressRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.AuthorizeClientVpnIngressOutput)
+	return ret0, ret1
+}
+
+// AuthorizeClientVpnIngressRequest indicates an expected call of AuthorizeClientVpnIngressRequest
+func (mr *MockEC2APIMockRecorder) AuthorizeClientVpnIngressRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AuthorizeClientVpnIngressRequest", reflect.TypeOf((*MockEC2API)(nil).AuthorizeClientVpnIngressRequest), arg0)
+}
+
 // AuthorizeSecurityGroupEgress mocks base method
 func (m *MockEC2API) AuthorizeSecurityGroupEgress(arg0 *ec2.AuthorizeSecurityGroupEgressInput) (*ec2.AuthorizeSecurityGroupEgressOutput, error) {
 	ret := m.ctrl.Call(m, "AuthorizeSecurityGroupEgress", arg0)
@@ -1001,6 +1265,50 @@ func (m *MockEC2API) CancelBundleTaskRequest(arg0 *ec2.CancelBundleTaskInput) (*
 // CancelBundleTaskRequest indicates an expected call of CancelBundleTaskRequest
 func (mr *MockEC2APIMockRecorder) CancelBundleTaskRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelBundleTaskRequest", reflect.TypeOf((*MockEC2API)(nil).CancelBundleTaskRequest), arg0)
+}
+
+// CancelCapacityReservation mocks base method
+func (m *MockEC2API) CancelCapacityReservation(arg0 *ec2.CancelCapacityReservationInput) (*ec2.CancelCapacityReservationOutput, error) {
+	ret := m.ctrl.Call(m, "CancelCapacityReservation", arg0)
+	ret0, _ := ret[0].(*ec2.CancelCapacityReservationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CancelCapacityReservation indicates an expected call of CancelCapacityReservation
+func (mr *MockEC2APIMockRecorder) CancelCapacityReservation(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelCapacityReservation", reflect.TypeOf((*MockEC2API)(nil).CancelCapacityReservation), arg0)
+}
+
+// CancelCapacityReservationWithContext mocks base method
+func (m *MockEC2API) CancelCapacityReservationWithContext(arg0 aws.Context, arg1 *ec2.CancelCapacityReservationInput, arg2 ...request.Option) (*ec2.CancelCapacityReservationOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CancelCapacityReservationWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.CancelCapacityReservationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CancelCapacityReservationWithContext indicates an expected call of CancelCapacityReservationWithContext
+func (mr *MockEC2APIMockRecorder) CancelCapacityReservationWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelCapacityReservationWithContext", reflect.TypeOf((*MockEC2API)(nil).CancelCapacityReservationWithContext), varargs...)
+}
+
+// CancelCapacityReservationRequest mocks base method
+func (m *MockEC2API) CancelCapacityReservationRequest(arg0 *ec2.CancelCapacityReservationInput) (*request.Request, *ec2.CancelCapacityReservationOutput) {
+	ret := m.ctrl.Call(m, "CancelCapacityReservationRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.CancelCapacityReservationOutput)
+	return ret0, ret1
+}
+
+// CancelCapacityReservationRequest indicates an expected call of CancelCapacityReservationRequest
+func (mr *MockEC2APIMockRecorder) CancelCapacityReservationRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelCapacityReservationRequest", reflect.TypeOf((*MockEC2API)(nil).CancelCapacityReservationRequest), arg0)
 }
 
 // CancelConversionTask mocks base method
@@ -1441,6 +1749,138 @@ func (m *MockEC2API) CopySnapshotRequest(arg0 *ec2.CopySnapshotInput) (*request.
 // CopySnapshotRequest indicates an expected call of CopySnapshotRequest
 func (mr *MockEC2APIMockRecorder) CopySnapshotRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopySnapshotRequest", reflect.TypeOf((*MockEC2API)(nil).CopySnapshotRequest), arg0)
+}
+
+// CreateCapacityReservation mocks base method
+func (m *MockEC2API) CreateCapacityReservation(arg0 *ec2.CreateCapacityReservationInput) (*ec2.CreateCapacityReservationOutput, error) {
+	ret := m.ctrl.Call(m, "CreateCapacityReservation", arg0)
+	ret0, _ := ret[0].(*ec2.CreateCapacityReservationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateCapacityReservation indicates an expected call of CreateCapacityReservation
+func (mr *MockEC2APIMockRecorder) CreateCapacityReservation(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCapacityReservation", reflect.TypeOf((*MockEC2API)(nil).CreateCapacityReservation), arg0)
+}
+
+// CreateCapacityReservationWithContext mocks base method
+func (m *MockEC2API) CreateCapacityReservationWithContext(arg0 aws.Context, arg1 *ec2.CreateCapacityReservationInput, arg2 ...request.Option) (*ec2.CreateCapacityReservationOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateCapacityReservationWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.CreateCapacityReservationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateCapacityReservationWithContext indicates an expected call of CreateCapacityReservationWithContext
+func (mr *MockEC2APIMockRecorder) CreateCapacityReservationWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCapacityReservationWithContext", reflect.TypeOf((*MockEC2API)(nil).CreateCapacityReservationWithContext), varargs...)
+}
+
+// CreateCapacityReservationRequest mocks base method
+func (m *MockEC2API) CreateCapacityReservationRequest(arg0 *ec2.CreateCapacityReservationInput) (*request.Request, *ec2.CreateCapacityReservationOutput) {
+	ret := m.ctrl.Call(m, "CreateCapacityReservationRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.CreateCapacityReservationOutput)
+	return ret0, ret1
+}
+
+// CreateCapacityReservationRequest indicates an expected call of CreateCapacityReservationRequest
+func (mr *MockEC2APIMockRecorder) CreateCapacityReservationRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCapacityReservationRequest", reflect.TypeOf((*MockEC2API)(nil).CreateCapacityReservationRequest), arg0)
+}
+
+// CreateClientVpnEndpoint mocks base method
+func (m *MockEC2API) CreateClientVpnEndpoint(arg0 *ec2.CreateClientVpnEndpointInput) (*ec2.CreateClientVpnEndpointOutput, error) {
+	ret := m.ctrl.Call(m, "CreateClientVpnEndpoint", arg0)
+	ret0, _ := ret[0].(*ec2.CreateClientVpnEndpointOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateClientVpnEndpoint indicates an expected call of CreateClientVpnEndpoint
+func (mr *MockEC2APIMockRecorder) CreateClientVpnEndpoint(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateClientVpnEndpoint", reflect.TypeOf((*MockEC2API)(nil).CreateClientVpnEndpoint), arg0)
+}
+
+// CreateClientVpnEndpointWithContext mocks base method
+func (m *MockEC2API) CreateClientVpnEndpointWithContext(arg0 aws.Context, arg1 *ec2.CreateClientVpnEndpointInput, arg2 ...request.Option) (*ec2.CreateClientVpnEndpointOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateClientVpnEndpointWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.CreateClientVpnEndpointOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateClientVpnEndpointWithContext indicates an expected call of CreateClientVpnEndpointWithContext
+func (mr *MockEC2APIMockRecorder) CreateClientVpnEndpointWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateClientVpnEndpointWithContext", reflect.TypeOf((*MockEC2API)(nil).CreateClientVpnEndpointWithContext), varargs...)
+}
+
+// CreateClientVpnEndpointRequest mocks base method
+func (m *MockEC2API) CreateClientVpnEndpointRequest(arg0 *ec2.CreateClientVpnEndpointInput) (*request.Request, *ec2.CreateClientVpnEndpointOutput) {
+	ret := m.ctrl.Call(m, "CreateClientVpnEndpointRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.CreateClientVpnEndpointOutput)
+	return ret0, ret1
+}
+
+// CreateClientVpnEndpointRequest indicates an expected call of CreateClientVpnEndpointRequest
+func (mr *MockEC2APIMockRecorder) CreateClientVpnEndpointRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateClientVpnEndpointRequest", reflect.TypeOf((*MockEC2API)(nil).CreateClientVpnEndpointRequest), arg0)
+}
+
+// CreateClientVpnRoute mocks base method
+func (m *MockEC2API) CreateClientVpnRoute(arg0 *ec2.CreateClientVpnRouteInput) (*ec2.CreateClientVpnRouteOutput, error) {
+	ret := m.ctrl.Call(m, "CreateClientVpnRoute", arg0)
+	ret0, _ := ret[0].(*ec2.CreateClientVpnRouteOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateClientVpnRoute indicates an expected call of CreateClientVpnRoute
+func (mr *MockEC2APIMockRecorder) CreateClientVpnRoute(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateClientVpnRoute", reflect.TypeOf((*MockEC2API)(nil).CreateClientVpnRoute), arg0)
+}
+
+// CreateClientVpnRouteWithContext mocks base method
+func (m *MockEC2API) CreateClientVpnRouteWithContext(arg0 aws.Context, arg1 *ec2.CreateClientVpnRouteInput, arg2 ...request.Option) (*ec2.CreateClientVpnRouteOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateClientVpnRouteWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.CreateClientVpnRouteOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateClientVpnRouteWithContext indicates an expected call of CreateClientVpnRouteWithContext
+func (mr *MockEC2APIMockRecorder) CreateClientVpnRouteWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateClientVpnRouteWithContext", reflect.TypeOf((*MockEC2API)(nil).CreateClientVpnRouteWithContext), varargs...)
+}
+
+// CreateClientVpnRouteRequest mocks base method
+func (m *MockEC2API) CreateClientVpnRouteRequest(arg0 *ec2.CreateClientVpnRouteInput) (*request.Request, *ec2.CreateClientVpnRouteOutput) {
+	ret := m.ctrl.Call(m, "CreateClientVpnRouteRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.CreateClientVpnRouteOutput)
+	return ret0, ret1
+}
+
+// CreateClientVpnRouteRequest indicates an expected call of CreateClientVpnRouteRequest
+func (mr *MockEC2APIMockRecorder) CreateClientVpnRouteRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateClientVpnRouteRequest", reflect.TypeOf((*MockEC2API)(nil).CreateClientVpnRouteRequest), arg0)
 }
 
 // CreateCustomerGateway mocks base method
@@ -2675,6 +3115,182 @@ func (mr *MockEC2APIMockRecorder) CreateTagsRequest(arg0 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTagsRequest", reflect.TypeOf((*MockEC2API)(nil).CreateTagsRequest), arg0)
 }
 
+// CreateTransitGateway mocks base method
+func (m *MockEC2API) CreateTransitGateway(arg0 *ec2.CreateTransitGatewayInput) (*ec2.CreateTransitGatewayOutput, error) {
+	ret := m.ctrl.Call(m, "CreateTransitGateway", arg0)
+	ret0, _ := ret[0].(*ec2.CreateTransitGatewayOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTransitGateway indicates an expected call of CreateTransitGateway
+func (mr *MockEC2APIMockRecorder) CreateTransitGateway(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTransitGateway", reflect.TypeOf((*MockEC2API)(nil).CreateTransitGateway), arg0)
+}
+
+// CreateTransitGatewayWithContext mocks base method
+func (m *MockEC2API) CreateTransitGatewayWithContext(arg0 aws.Context, arg1 *ec2.CreateTransitGatewayInput, arg2 ...request.Option) (*ec2.CreateTransitGatewayOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateTransitGatewayWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.CreateTransitGatewayOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTransitGatewayWithContext indicates an expected call of CreateTransitGatewayWithContext
+func (mr *MockEC2APIMockRecorder) CreateTransitGatewayWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTransitGatewayWithContext", reflect.TypeOf((*MockEC2API)(nil).CreateTransitGatewayWithContext), varargs...)
+}
+
+// CreateTransitGatewayRequest mocks base method
+func (m *MockEC2API) CreateTransitGatewayRequest(arg0 *ec2.CreateTransitGatewayInput) (*request.Request, *ec2.CreateTransitGatewayOutput) {
+	ret := m.ctrl.Call(m, "CreateTransitGatewayRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.CreateTransitGatewayOutput)
+	return ret0, ret1
+}
+
+// CreateTransitGatewayRequest indicates an expected call of CreateTransitGatewayRequest
+func (mr *MockEC2APIMockRecorder) CreateTransitGatewayRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTransitGatewayRequest", reflect.TypeOf((*MockEC2API)(nil).CreateTransitGatewayRequest), arg0)
+}
+
+// CreateTransitGatewayRoute mocks base method
+func (m *MockEC2API) CreateTransitGatewayRoute(arg0 *ec2.CreateTransitGatewayRouteInput) (*ec2.CreateTransitGatewayRouteOutput, error) {
+	ret := m.ctrl.Call(m, "CreateTransitGatewayRoute", arg0)
+	ret0, _ := ret[0].(*ec2.CreateTransitGatewayRouteOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTransitGatewayRoute indicates an expected call of CreateTransitGatewayRoute
+func (mr *MockEC2APIMockRecorder) CreateTransitGatewayRoute(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTransitGatewayRoute", reflect.TypeOf((*MockEC2API)(nil).CreateTransitGatewayRoute), arg0)
+}
+
+// CreateTransitGatewayRouteWithContext mocks base method
+func (m *MockEC2API) CreateTransitGatewayRouteWithContext(arg0 aws.Context, arg1 *ec2.CreateTransitGatewayRouteInput, arg2 ...request.Option) (*ec2.CreateTransitGatewayRouteOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateTransitGatewayRouteWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.CreateTransitGatewayRouteOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTransitGatewayRouteWithContext indicates an expected call of CreateTransitGatewayRouteWithContext
+func (mr *MockEC2APIMockRecorder) CreateTransitGatewayRouteWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTransitGatewayRouteWithContext", reflect.TypeOf((*MockEC2API)(nil).CreateTransitGatewayRouteWithContext), varargs...)
+}
+
+// CreateTransitGatewayRouteRequest mocks base method
+func (m *MockEC2API) CreateTransitGatewayRouteRequest(arg0 *ec2.CreateTransitGatewayRouteInput) (*request.Request, *ec2.CreateTransitGatewayRouteOutput) {
+	ret := m.ctrl.Call(m, "CreateTransitGatewayRouteRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.CreateTransitGatewayRouteOutput)
+	return ret0, ret1
+}
+
+// CreateTransitGatewayRouteRequest indicates an expected call of CreateTransitGatewayRouteRequest
+func (mr *MockEC2APIMockRecorder) CreateTransitGatewayRouteRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTransitGatewayRouteRequest", reflect.TypeOf((*MockEC2API)(nil).CreateTransitGatewayRouteRequest), arg0)
+}
+
+// CreateTransitGatewayRouteTable mocks base method
+func (m *MockEC2API) CreateTransitGatewayRouteTable(arg0 *ec2.CreateTransitGatewayRouteTableInput) (*ec2.CreateTransitGatewayRouteTableOutput, error) {
+	ret := m.ctrl.Call(m, "CreateTransitGatewayRouteTable", arg0)
+	ret0, _ := ret[0].(*ec2.CreateTransitGatewayRouteTableOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTransitGatewayRouteTable indicates an expected call of CreateTransitGatewayRouteTable
+func (mr *MockEC2APIMockRecorder) CreateTransitGatewayRouteTable(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTransitGatewayRouteTable", reflect.TypeOf((*MockEC2API)(nil).CreateTransitGatewayRouteTable), arg0)
+}
+
+// CreateTransitGatewayRouteTableWithContext mocks base method
+func (m *MockEC2API) CreateTransitGatewayRouteTableWithContext(arg0 aws.Context, arg1 *ec2.CreateTransitGatewayRouteTableInput, arg2 ...request.Option) (*ec2.CreateTransitGatewayRouteTableOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateTransitGatewayRouteTableWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.CreateTransitGatewayRouteTableOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTransitGatewayRouteTableWithContext indicates an expected call of CreateTransitGatewayRouteTableWithContext
+func (mr *MockEC2APIMockRecorder) CreateTransitGatewayRouteTableWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTransitGatewayRouteTableWithContext", reflect.TypeOf((*MockEC2API)(nil).CreateTransitGatewayRouteTableWithContext), varargs...)
+}
+
+// CreateTransitGatewayRouteTableRequest mocks base method
+func (m *MockEC2API) CreateTransitGatewayRouteTableRequest(arg0 *ec2.CreateTransitGatewayRouteTableInput) (*request.Request, *ec2.CreateTransitGatewayRouteTableOutput) {
+	ret := m.ctrl.Call(m, "CreateTransitGatewayRouteTableRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.CreateTransitGatewayRouteTableOutput)
+	return ret0, ret1
+}
+
+// CreateTransitGatewayRouteTableRequest indicates an expected call of CreateTransitGatewayRouteTableRequest
+func (mr *MockEC2APIMockRecorder) CreateTransitGatewayRouteTableRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTransitGatewayRouteTableRequest", reflect.TypeOf((*MockEC2API)(nil).CreateTransitGatewayRouteTableRequest), arg0)
+}
+
+// CreateTransitGatewayVpcAttachment mocks base method
+func (m *MockEC2API) CreateTransitGatewayVpcAttachment(arg0 *ec2.CreateTransitGatewayVpcAttachmentInput) (*ec2.CreateTransitGatewayVpcAttachmentOutput, error) {
+	ret := m.ctrl.Call(m, "CreateTransitGatewayVpcAttachment", arg0)
+	ret0, _ := ret[0].(*ec2.CreateTransitGatewayVpcAttachmentOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTransitGatewayVpcAttachment indicates an expected call of CreateTransitGatewayVpcAttachment
+func (mr *MockEC2APIMockRecorder) CreateTransitGatewayVpcAttachment(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTransitGatewayVpcAttachment", reflect.TypeOf((*MockEC2API)(nil).CreateTransitGatewayVpcAttachment), arg0)
+}
+
+// CreateTransitGatewayVpcAttachmentWithContext mocks base method
+func (m *MockEC2API) CreateTransitGatewayVpcAttachmentWithContext(arg0 aws.Context, arg1 *ec2.CreateTransitGatewayVpcAttachmentInput, arg2 ...request.Option) (*ec2.CreateTransitGatewayVpcAttachmentOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateTransitGatewayVpcAttachmentWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.CreateTransitGatewayVpcAttachmentOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTransitGatewayVpcAttachmentWithContext indicates an expected call of CreateTransitGatewayVpcAttachmentWithContext
+func (mr *MockEC2APIMockRecorder) CreateTransitGatewayVpcAttachmentWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTransitGatewayVpcAttachmentWithContext", reflect.TypeOf((*MockEC2API)(nil).CreateTransitGatewayVpcAttachmentWithContext), varargs...)
+}
+
+// CreateTransitGatewayVpcAttachmentRequest mocks base method
+func (m *MockEC2API) CreateTransitGatewayVpcAttachmentRequest(arg0 *ec2.CreateTransitGatewayVpcAttachmentInput) (*request.Request, *ec2.CreateTransitGatewayVpcAttachmentOutput) {
+	ret := m.ctrl.Call(m, "CreateTransitGatewayVpcAttachmentRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.CreateTransitGatewayVpcAttachmentOutput)
+	return ret0, ret1
+}
+
+// CreateTransitGatewayVpcAttachmentRequest indicates an expected call of CreateTransitGatewayVpcAttachmentRequest
+func (mr *MockEC2APIMockRecorder) CreateTransitGatewayVpcAttachmentRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTransitGatewayVpcAttachmentRequest", reflect.TypeOf((*MockEC2API)(nil).CreateTransitGatewayVpcAttachmentRequest), arg0)
+}
+
 // CreateVolume mocks base method
 func (m *MockEC2API) CreateVolume(arg0 *ec2.CreateVolumeInput) (*ec2.Volume, error) {
 	ret := m.ctrl.Call(m, "CreateVolume", arg0)
@@ -3069,6 +3685,94 @@ func (m *MockEC2API) CreateVpnGatewayRequest(arg0 *ec2.CreateVpnGatewayInput) (*
 // CreateVpnGatewayRequest indicates an expected call of CreateVpnGatewayRequest
 func (mr *MockEC2APIMockRecorder) CreateVpnGatewayRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateVpnGatewayRequest", reflect.TypeOf((*MockEC2API)(nil).CreateVpnGatewayRequest), arg0)
+}
+
+// DeleteClientVpnEndpoint mocks base method
+func (m *MockEC2API) DeleteClientVpnEndpoint(arg0 *ec2.DeleteClientVpnEndpointInput) (*ec2.DeleteClientVpnEndpointOutput, error) {
+	ret := m.ctrl.Call(m, "DeleteClientVpnEndpoint", arg0)
+	ret0, _ := ret[0].(*ec2.DeleteClientVpnEndpointOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteClientVpnEndpoint indicates an expected call of DeleteClientVpnEndpoint
+func (mr *MockEC2APIMockRecorder) DeleteClientVpnEndpoint(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteClientVpnEndpoint", reflect.TypeOf((*MockEC2API)(nil).DeleteClientVpnEndpoint), arg0)
+}
+
+// DeleteClientVpnEndpointWithContext mocks base method
+func (m *MockEC2API) DeleteClientVpnEndpointWithContext(arg0 aws.Context, arg1 *ec2.DeleteClientVpnEndpointInput, arg2 ...request.Option) (*ec2.DeleteClientVpnEndpointOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteClientVpnEndpointWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DeleteClientVpnEndpointOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteClientVpnEndpointWithContext indicates an expected call of DeleteClientVpnEndpointWithContext
+func (mr *MockEC2APIMockRecorder) DeleteClientVpnEndpointWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteClientVpnEndpointWithContext", reflect.TypeOf((*MockEC2API)(nil).DeleteClientVpnEndpointWithContext), varargs...)
+}
+
+// DeleteClientVpnEndpointRequest mocks base method
+func (m *MockEC2API) DeleteClientVpnEndpointRequest(arg0 *ec2.DeleteClientVpnEndpointInput) (*request.Request, *ec2.DeleteClientVpnEndpointOutput) {
+	ret := m.ctrl.Call(m, "DeleteClientVpnEndpointRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DeleteClientVpnEndpointOutput)
+	return ret0, ret1
+}
+
+// DeleteClientVpnEndpointRequest indicates an expected call of DeleteClientVpnEndpointRequest
+func (mr *MockEC2APIMockRecorder) DeleteClientVpnEndpointRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteClientVpnEndpointRequest", reflect.TypeOf((*MockEC2API)(nil).DeleteClientVpnEndpointRequest), arg0)
+}
+
+// DeleteClientVpnRoute mocks base method
+func (m *MockEC2API) DeleteClientVpnRoute(arg0 *ec2.DeleteClientVpnRouteInput) (*ec2.DeleteClientVpnRouteOutput, error) {
+	ret := m.ctrl.Call(m, "DeleteClientVpnRoute", arg0)
+	ret0, _ := ret[0].(*ec2.DeleteClientVpnRouteOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteClientVpnRoute indicates an expected call of DeleteClientVpnRoute
+func (mr *MockEC2APIMockRecorder) DeleteClientVpnRoute(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteClientVpnRoute", reflect.TypeOf((*MockEC2API)(nil).DeleteClientVpnRoute), arg0)
+}
+
+// DeleteClientVpnRouteWithContext mocks base method
+func (m *MockEC2API) DeleteClientVpnRouteWithContext(arg0 aws.Context, arg1 *ec2.DeleteClientVpnRouteInput, arg2 ...request.Option) (*ec2.DeleteClientVpnRouteOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteClientVpnRouteWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DeleteClientVpnRouteOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteClientVpnRouteWithContext indicates an expected call of DeleteClientVpnRouteWithContext
+func (mr *MockEC2APIMockRecorder) DeleteClientVpnRouteWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteClientVpnRouteWithContext", reflect.TypeOf((*MockEC2API)(nil).DeleteClientVpnRouteWithContext), varargs...)
+}
+
+// DeleteClientVpnRouteRequest mocks base method
+func (m *MockEC2API) DeleteClientVpnRouteRequest(arg0 *ec2.DeleteClientVpnRouteInput) (*request.Request, *ec2.DeleteClientVpnRouteOutput) {
+	ret := m.ctrl.Call(m, "DeleteClientVpnRouteRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DeleteClientVpnRouteOutput)
+	return ret0, ret1
+}
+
+// DeleteClientVpnRouteRequest indicates an expected call of DeleteClientVpnRouteRequest
+func (mr *MockEC2APIMockRecorder) DeleteClientVpnRouteRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteClientVpnRouteRequest", reflect.TypeOf((*MockEC2API)(nil).DeleteClientVpnRouteRequest), arg0)
 }
 
 // DeleteCustomerGateway mocks base method
@@ -4083,6 +4787,182 @@ func (mr *MockEC2APIMockRecorder) DeleteTagsRequest(arg0 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTagsRequest", reflect.TypeOf((*MockEC2API)(nil).DeleteTagsRequest), arg0)
 }
 
+// DeleteTransitGateway mocks base method
+func (m *MockEC2API) DeleteTransitGateway(arg0 *ec2.DeleteTransitGatewayInput) (*ec2.DeleteTransitGatewayOutput, error) {
+	ret := m.ctrl.Call(m, "DeleteTransitGateway", arg0)
+	ret0, _ := ret[0].(*ec2.DeleteTransitGatewayOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTransitGateway indicates an expected call of DeleteTransitGateway
+func (mr *MockEC2APIMockRecorder) DeleteTransitGateway(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTransitGateway", reflect.TypeOf((*MockEC2API)(nil).DeleteTransitGateway), arg0)
+}
+
+// DeleteTransitGatewayWithContext mocks base method
+func (m *MockEC2API) DeleteTransitGatewayWithContext(arg0 aws.Context, arg1 *ec2.DeleteTransitGatewayInput, arg2 ...request.Option) (*ec2.DeleteTransitGatewayOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteTransitGatewayWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DeleteTransitGatewayOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTransitGatewayWithContext indicates an expected call of DeleteTransitGatewayWithContext
+func (mr *MockEC2APIMockRecorder) DeleteTransitGatewayWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTransitGatewayWithContext", reflect.TypeOf((*MockEC2API)(nil).DeleteTransitGatewayWithContext), varargs...)
+}
+
+// DeleteTransitGatewayRequest mocks base method
+func (m *MockEC2API) DeleteTransitGatewayRequest(arg0 *ec2.DeleteTransitGatewayInput) (*request.Request, *ec2.DeleteTransitGatewayOutput) {
+	ret := m.ctrl.Call(m, "DeleteTransitGatewayRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DeleteTransitGatewayOutput)
+	return ret0, ret1
+}
+
+// DeleteTransitGatewayRequest indicates an expected call of DeleteTransitGatewayRequest
+func (mr *MockEC2APIMockRecorder) DeleteTransitGatewayRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTransitGatewayRequest", reflect.TypeOf((*MockEC2API)(nil).DeleteTransitGatewayRequest), arg0)
+}
+
+// DeleteTransitGatewayRoute mocks base method
+func (m *MockEC2API) DeleteTransitGatewayRoute(arg0 *ec2.DeleteTransitGatewayRouteInput) (*ec2.DeleteTransitGatewayRouteOutput, error) {
+	ret := m.ctrl.Call(m, "DeleteTransitGatewayRoute", arg0)
+	ret0, _ := ret[0].(*ec2.DeleteTransitGatewayRouteOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTransitGatewayRoute indicates an expected call of DeleteTransitGatewayRoute
+func (mr *MockEC2APIMockRecorder) DeleteTransitGatewayRoute(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTransitGatewayRoute", reflect.TypeOf((*MockEC2API)(nil).DeleteTransitGatewayRoute), arg0)
+}
+
+// DeleteTransitGatewayRouteWithContext mocks base method
+func (m *MockEC2API) DeleteTransitGatewayRouteWithContext(arg0 aws.Context, arg1 *ec2.DeleteTransitGatewayRouteInput, arg2 ...request.Option) (*ec2.DeleteTransitGatewayRouteOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteTransitGatewayRouteWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DeleteTransitGatewayRouteOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTransitGatewayRouteWithContext indicates an expected call of DeleteTransitGatewayRouteWithContext
+func (mr *MockEC2APIMockRecorder) DeleteTransitGatewayRouteWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTransitGatewayRouteWithContext", reflect.TypeOf((*MockEC2API)(nil).DeleteTransitGatewayRouteWithContext), varargs...)
+}
+
+// DeleteTransitGatewayRouteRequest mocks base method
+func (m *MockEC2API) DeleteTransitGatewayRouteRequest(arg0 *ec2.DeleteTransitGatewayRouteInput) (*request.Request, *ec2.DeleteTransitGatewayRouteOutput) {
+	ret := m.ctrl.Call(m, "DeleteTransitGatewayRouteRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DeleteTransitGatewayRouteOutput)
+	return ret0, ret1
+}
+
+// DeleteTransitGatewayRouteRequest indicates an expected call of DeleteTransitGatewayRouteRequest
+func (mr *MockEC2APIMockRecorder) DeleteTransitGatewayRouteRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTransitGatewayRouteRequest", reflect.TypeOf((*MockEC2API)(nil).DeleteTransitGatewayRouteRequest), arg0)
+}
+
+// DeleteTransitGatewayRouteTable mocks base method
+func (m *MockEC2API) DeleteTransitGatewayRouteTable(arg0 *ec2.DeleteTransitGatewayRouteTableInput) (*ec2.DeleteTransitGatewayRouteTableOutput, error) {
+	ret := m.ctrl.Call(m, "DeleteTransitGatewayRouteTable", arg0)
+	ret0, _ := ret[0].(*ec2.DeleteTransitGatewayRouteTableOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTransitGatewayRouteTable indicates an expected call of DeleteTransitGatewayRouteTable
+func (mr *MockEC2APIMockRecorder) DeleteTransitGatewayRouteTable(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTransitGatewayRouteTable", reflect.TypeOf((*MockEC2API)(nil).DeleteTransitGatewayRouteTable), arg0)
+}
+
+// DeleteTransitGatewayRouteTableWithContext mocks base method
+func (m *MockEC2API) DeleteTransitGatewayRouteTableWithContext(arg0 aws.Context, arg1 *ec2.DeleteTransitGatewayRouteTableInput, arg2 ...request.Option) (*ec2.DeleteTransitGatewayRouteTableOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteTransitGatewayRouteTableWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DeleteTransitGatewayRouteTableOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTransitGatewayRouteTableWithContext indicates an expected call of DeleteTransitGatewayRouteTableWithContext
+func (mr *MockEC2APIMockRecorder) DeleteTransitGatewayRouteTableWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTransitGatewayRouteTableWithContext", reflect.TypeOf((*MockEC2API)(nil).DeleteTransitGatewayRouteTableWithContext), varargs...)
+}
+
+// DeleteTransitGatewayRouteTableRequest mocks base method
+func (m *MockEC2API) DeleteTransitGatewayRouteTableRequest(arg0 *ec2.DeleteTransitGatewayRouteTableInput) (*request.Request, *ec2.DeleteTransitGatewayRouteTableOutput) {
+	ret := m.ctrl.Call(m, "DeleteTransitGatewayRouteTableRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DeleteTransitGatewayRouteTableOutput)
+	return ret0, ret1
+}
+
+// DeleteTransitGatewayRouteTableRequest indicates an expected call of DeleteTransitGatewayRouteTableRequest
+func (mr *MockEC2APIMockRecorder) DeleteTransitGatewayRouteTableRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTransitGatewayRouteTableRequest", reflect.TypeOf((*MockEC2API)(nil).DeleteTransitGatewayRouteTableRequest), arg0)
+}
+
+// DeleteTransitGatewayVpcAttachment mocks base method
+func (m *MockEC2API) DeleteTransitGatewayVpcAttachment(arg0 *ec2.DeleteTransitGatewayVpcAttachmentInput) (*ec2.DeleteTransitGatewayVpcAttachmentOutput, error) {
+	ret := m.ctrl.Call(m, "DeleteTransitGatewayVpcAttachment", arg0)
+	ret0, _ := ret[0].(*ec2.DeleteTransitGatewayVpcAttachmentOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTransitGatewayVpcAttachment indicates an expected call of DeleteTransitGatewayVpcAttachment
+func (mr *MockEC2APIMockRecorder) DeleteTransitGatewayVpcAttachment(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTransitGatewayVpcAttachment", reflect.TypeOf((*MockEC2API)(nil).DeleteTransitGatewayVpcAttachment), arg0)
+}
+
+// DeleteTransitGatewayVpcAttachmentWithContext mocks base method
+func (m *MockEC2API) DeleteTransitGatewayVpcAttachmentWithContext(arg0 aws.Context, arg1 *ec2.DeleteTransitGatewayVpcAttachmentInput, arg2 ...request.Option) (*ec2.DeleteTransitGatewayVpcAttachmentOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteTransitGatewayVpcAttachmentWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DeleteTransitGatewayVpcAttachmentOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTransitGatewayVpcAttachmentWithContext indicates an expected call of DeleteTransitGatewayVpcAttachmentWithContext
+func (mr *MockEC2APIMockRecorder) DeleteTransitGatewayVpcAttachmentWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTransitGatewayVpcAttachmentWithContext", reflect.TypeOf((*MockEC2API)(nil).DeleteTransitGatewayVpcAttachmentWithContext), varargs...)
+}
+
+// DeleteTransitGatewayVpcAttachmentRequest mocks base method
+func (m *MockEC2API) DeleteTransitGatewayVpcAttachmentRequest(arg0 *ec2.DeleteTransitGatewayVpcAttachmentInput) (*request.Request, *ec2.DeleteTransitGatewayVpcAttachmentOutput) {
+	ret := m.ctrl.Call(m, "DeleteTransitGatewayVpcAttachmentRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DeleteTransitGatewayVpcAttachmentOutput)
+	return ret0, ret1
+}
+
+// DeleteTransitGatewayVpcAttachmentRequest indicates an expected call of DeleteTransitGatewayVpcAttachmentRequest
+func (mr *MockEC2APIMockRecorder) DeleteTransitGatewayVpcAttachmentRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTransitGatewayVpcAttachmentRequest", reflect.TypeOf((*MockEC2API)(nil).DeleteTransitGatewayVpcAttachmentRequest), arg0)
+}
+
 // DeleteVolume mocks base method
 func (m *MockEC2API) DeleteVolume(arg0 *ec2.DeleteVolumeInput) (*ec2.DeleteVolumeOutput, error) {
 	ret := m.ctrl.Call(m, "DeleteVolume", arg0)
@@ -4479,6 +5359,50 @@ func (mr *MockEC2APIMockRecorder) DeleteVpnGatewayRequest(arg0 interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteVpnGatewayRequest", reflect.TypeOf((*MockEC2API)(nil).DeleteVpnGatewayRequest), arg0)
 }
 
+// DeprovisionByoipCidr mocks base method
+func (m *MockEC2API) DeprovisionByoipCidr(arg0 *ec2.DeprovisionByoipCidrInput) (*ec2.DeprovisionByoipCidrOutput, error) {
+	ret := m.ctrl.Call(m, "DeprovisionByoipCidr", arg0)
+	ret0, _ := ret[0].(*ec2.DeprovisionByoipCidrOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeprovisionByoipCidr indicates an expected call of DeprovisionByoipCidr
+func (mr *MockEC2APIMockRecorder) DeprovisionByoipCidr(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeprovisionByoipCidr", reflect.TypeOf((*MockEC2API)(nil).DeprovisionByoipCidr), arg0)
+}
+
+// DeprovisionByoipCidrWithContext mocks base method
+func (m *MockEC2API) DeprovisionByoipCidrWithContext(arg0 aws.Context, arg1 *ec2.DeprovisionByoipCidrInput, arg2 ...request.Option) (*ec2.DeprovisionByoipCidrOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeprovisionByoipCidrWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DeprovisionByoipCidrOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeprovisionByoipCidrWithContext indicates an expected call of DeprovisionByoipCidrWithContext
+func (mr *MockEC2APIMockRecorder) DeprovisionByoipCidrWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeprovisionByoipCidrWithContext", reflect.TypeOf((*MockEC2API)(nil).DeprovisionByoipCidrWithContext), varargs...)
+}
+
+// DeprovisionByoipCidrRequest mocks base method
+func (m *MockEC2API) DeprovisionByoipCidrRequest(arg0 *ec2.DeprovisionByoipCidrInput) (*request.Request, *ec2.DeprovisionByoipCidrOutput) {
+	ret := m.ctrl.Call(m, "DeprovisionByoipCidrRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DeprovisionByoipCidrOutput)
+	return ret0, ret1
+}
+
+// DeprovisionByoipCidrRequest indicates an expected call of DeprovisionByoipCidrRequest
+func (mr *MockEC2APIMockRecorder) DeprovisionByoipCidrRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeprovisionByoipCidrRequest", reflect.TypeOf((*MockEC2API)(nil).DeprovisionByoipCidrRequest), arg0)
+}
+
 // DeregisterImage mocks base method
 func (m *MockEC2API) DeregisterImage(arg0 *ec2.DeregisterImageInput) (*ec2.DeregisterImageOutput, error) {
 	ret := m.ctrl.Call(m, "DeregisterImage", arg0)
@@ -4743,6 +5667,152 @@ func (mr *MockEC2APIMockRecorder) DescribeBundleTasksRequest(arg0 interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeBundleTasksRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeBundleTasksRequest), arg0)
 }
 
+// DescribeByoipCidrs mocks base method
+func (m *MockEC2API) DescribeByoipCidrs(arg0 *ec2.DescribeByoipCidrsInput) (*ec2.DescribeByoipCidrsOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeByoipCidrs", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeByoipCidrsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeByoipCidrs indicates an expected call of DescribeByoipCidrs
+func (mr *MockEC2APIMockRecorder) DescribeByoipCidrs(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeByoipCidrs", reflect.TypeOf((*MockEC2API)(nil).DescribeByoipCidrs), arg0)
+}
+
+// DescribeByoipCidrsWithContext mocks base method
+func (m *MockEC2API) DescribeByoipCidrsWithContext(arg0 aws.Context, arg1 *ec2.DescribeByoipCidrsInput, arg2 ...request.Option) (*ec2.DescribeByoipCidrsOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeByoipCidrsWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeByoipCidrsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeByoipCidrsWithContext indicates an expected call of DescribeByoipCidrsWithContext
+func (mr *MockEC2APIMockRecorder) DescribeByoipCidrsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeByoipCidrsWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeByoipCidrsWithContext), varargs...)
+}
+
+// DescribeByoipCidrsRequest mocks base method
+func (m *MockEC2API) DescribeByoipCidrsRequest(arg0 *ec2.DescribeByoipCidrsInput) (*request.Request, *ec2.DescribeByoipCidrsOutput) {
+	ret := m.ctrl.Call(m, "DescribeByoipCidrsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeByoipCidrsOutput)
+	return ret0, ret1
+}
+
+// DescribeByoipCidrsRequest indicates an expected call of DescribeByoipCidrsRequest
+func (mr *MockEC2APIMockRecorder) DescribeByoipCidrsRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeByoipCidrsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeByoipCidrsRequest), arg0)
+}
+
+// DescribeByoipCidrsPages mocks base method
+func (m *MockEC2API) DescribeByoipCidrsPages(arg0 *ec2.DescribeByoipCidrsInput, arg1 func(*ec2.DescribeByoipCidrsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeByoipCidrsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeByoipCidrsPages indicates an expected call of DescribeByoipCidrsPages
+func (mr *MockEC2APIMockRecorder) DescribeByoipCidrsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeByoipCidrsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeByoipCidrsPages), arg0, arg1)
+}
+
+// DescribeByoipCidrsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeByoipCidrsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeByoipCidrsInput, arg2 func(*ec2.DescribeByoipCidrsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeByoipCidrsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeByoipCidrsPagesWithContext indicates an expected call of DescribeByoipCidrsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeByoipCidrsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeByoipCidrsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeByoipCidrsPagesWithContext), varargs...)
+}
+
+// DescribeCapacityReservations mocks base method
+func (m *MockEC2API) DescribeCapacityReservations(arg0 *ec2.DescribeCapacityReservationsInput) (*ec2.DescribeCapacityReservationsOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeCapacityReservations", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeCapacityReservationsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeCapacityReservations indicates an expected call of DescribeCapacityReservations
+func (mr *MockEC2APIMockRecorder) DescribeCapacityReservations(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCapacityReservations", reflect.TypeOf((*MockEC2API)(nil).DescribeCapacityReservations), arg0)
+}
+
+// DescribeCapacityReservationsWithContext mocks base method
+func (m *MockEC2API) DescribeCapacityReservationsWithContext(arg0 aws.Context, arg1 *ec2.DescribeCapacityReservationsInput, arg2 ...request.Option) (*ec2.DescribeCapacityReservationsOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeCapacityReservationsWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeCapacityReservationsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeCapacityReservationsWithContext indicates an expected call of DescribeCapacityReservationsWithContext
+func (mr *MockEC2APIMockRecorder) DescribeCapacityReservationsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCapacityReservationsWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeCapacityReservationsWithContext), varargs...)
+}
+
+// DescribeCapacityReservationsRequest mocks base method
+func (m *MockEC2API) DescribeCapacityReservationsRequest(arg0 *ec2.DescribeCapacityReservationsInput) (*request.Request, *ec2.DescribeCapacityReservationsOutput) {
+	ret := m.ctrl.Call(m, "DescribeCapacityReservationsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeCapacityReservationsOutput)
+	return ret0, ret1
+}
+
+// DescribeCapacityReservationsRequest indicates an expected call of DescribeCapacityReservationsRequest
+func (mr *MockEC2APIMockRecorder) DescribeCapacityReservationsRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCapacityReservationsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeCapacityReservationsRequest), arg0)
+}
+
+// DescribeCapacityReservationsPages mocks base method
+func (m *MockEC2API) DescribeCapacityReservationsPages(arg0 *ec2.DescribeCapacityReservationsInput, arg1 func(*ec2.DescribeCapacityReservationsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeCapacityReservationsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeCapacityReservationsPages indicates an expected call of DescribeCapacityReservationsPages
+func (mr *MockEC2APIMockRecorder) DescribeCapacityReservationsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCapacityReservationsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeCapacityReservationsPages), arg0, arg1)
+}
+
+// DescribeCapacityReservationsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeCapacityReservationsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeCapacityReservationsInput, arg2 func(*ec2.DescribeCapacityReservationsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeCapacityReservationsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeCapacityReservationsPagesWithContext indicates an expected call of DescribeCapacityReservationsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeCapacityReservationsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCapacityReservationsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeCapacityReservationsPagesWithContext), varargs...)
+}
+
 // DescribeClassicLinkInstances mocks base method
 func (m *MockEC2API) DescribeClassicLinkInstances(arg0 *ec2.DescribeClassicLinkInstancesInput) (*ec2.DescribeClassicLinkInstancesOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeClassicLinkInstances", arg0)
@@ -4785,6 +5855,400 @@ func (m *MockEC2API) DescribeClassicLinkInstancesRequest(arg0 *ec2.DescribeClass
 // DescribeClassicLinkInstancesRequest indicates an expected call of DescribeClassicLinkInstancesRequest
 func (mr *MockEC2APIMockRecorder) DescribeClassicLinkInstancesRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClassicLinkInstancesRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeClassicLinkInstancesRequest), arg0)
+}
+
+// DescribeClassicLinkInstancesPages mocks base method
+func (m *MockEC2API) DescribeClassicLinkInstancesPages(arg0 *ec2.DescribeClassicLinkInstancesInput, arg1 func(*ec2.DescribeClassicLinkInstancesOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeClassicLinkInstancesPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeClassicLinkInstancesPages indicates an expected call of DescribeClassicLinkInstancesPages
+func (mr *MockEC2APIMockRecorder) DescribeClassicLinkInstancesPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClassicLinkInstancesPages", reflect.TypeOf((*MockEC2API)(nil).DescribeClassicLinkInstancesPages), arg0, arg1)
+}
+
+// DescribeClassicLinkInstancesPagesWithContext mocks base method
+func (m *MockEC2API) DescribeClassicLinkInstancesPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeClassicLinkInstancesInput, arg2 func(*ec2.DescribeClassicLinkInstancesOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeClassicLinkInstancesPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeClassicLinkInstancesPagesWithContext indicates an expected call of DescribeClassicLinkInstancesPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeClassicLinkInstancesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClassicLinkInstancesPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeClassicLinkInstancesPagesWithContext), varargs...)
+}
+
+// DescribeClientVpnAuthorizationRules mocks base method
+func (m *MockEC2API) DescribeClientVpnAuthorizationRules(arg0 *ec2.DescribeClientVpnAuthorizationRulesInput) (*ec2.DescribeClientVpnAuthorizationRulesOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeClientVpnAuthorizationRules", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeClientVpnAuthorizationRulesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeClientVpnAuthorizationRules indicates an expected call of DescribeClientVpnAuthorizationRules
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnAuthorizationRules(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnAuthorizationRules", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnAuthorizationRules), arg0)
+}
+
+// DescribeClientVpnAuthorizationRulesWithContext mocks base method
+func (m *MockEC2API) DescribeClientVpnAuthorizationRulesWithContext(arg0 aws.Context, arg1 *ec2.DescribeClientVpnAuthorizationRulesInput, arg2 ...request.Option) (*ec2.DescribeClientVpnAuthorizationRulesOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeClientVpnAuthorizationRulesWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeClientVpnAuthorizationRulesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeClientVpnAuthorizationRulesWithContext indicates an expected call of DescribeClientVpnAuthorizationRulesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnAuthorizationRulesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnAuthorizationRulesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnAuthorizationRulesWithContext), varargs...)
+}
+
+// DescribeClientVpnAuthorizationRulesRequest mocks base method
+func (m *MockEC2API) DescribeClientVpnAuthorizationRulesRequest(arg0 *ec2.DescribeClientVpnAuthorizationRulesInput) (*request.Request, *ec2.DescribeClientVpnAuthorizationRulesOutput) {
+	ret := m.ctrl.Call(m, "DescribeClientVpnAuthorizationRulesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeClientVpnAuthorizationRulesOutput)
+	return ret0, ret1
+}
+
+// DescribeClientVpnAuthorizationRulesRequest indicates an expected call of DescribeClientVpnAuthorizationRulesRequest
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnAuthorizationRulesRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnAuthorizationRulesRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnAuthorizationRulesRequest), arg0)
+}
+
+// DescribeClientVpnAuthorizationRulesPages mocks base method
+func (m *MockEC2API) DescribeClientVpnAuthorizationRulesPages(arg0 *ec2.DescribeClientVpnAuthorizationRulesInput, arg1 func(*ec2.DescribeClientVpnAuthorizationRulesOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeClientVpnAuthorizationRulesPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeClientVpnAuthorizationRulesPages indicates an expected call of DescribeClientVpnAuthorizationRulesPages
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnAuthorizationRulesPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnAuthorizationRulesPages", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnAuthorizationRulesPages), arg0, arg1)
+}
+
+// DescribeClientVpnAuthorizationRulesPagesWithContext mocks base method
+func (m *MockEC2API) DescribeClientVpnAuthorizationRulesPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeClientVpnAuthorizationRulesInput, arg2 func(*ec2.DescribeClientVpnAuthorizationRulesOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeClientVpnAuthorizationRulesPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeClientVpnAuthorizationRulesPagesWithContext indicates an expected call of DescribeClientVpnAuthorizationRulesPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnAuthorizationRulesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnAuthorizationRulesPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnAuthorizationRulesPagesWithContext), varargs...)
+}
+
+// DescribeClientVpnConnections mocks base method
+func (m *MockEC2API) DescribeClientVpnConnections(arg0 *ec2.DescribeClientVpnConnectionsInput) (*ec2.DescribeClientVpnConnectionsOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeClientVpnConnections", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeClientVpnConnectionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeClientVpnConnections indicates an expected call of DescribeClientVpnConnections
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnConnections(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnConnections", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnConnections), arg0)
+}
+
+// DescribeClientVpnConnectionsWithContext mocks base method
+func (m *MockEC2API) DescribeClientVpnConnectionsWithContext(arg0 aws.Context, arg1 *ec2.DescribeClientVpnConnectionsInput, arg2 ...request.Option) (*ec2.DescribeClientVpnConnectionsOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeClientVpnConnectionsWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeClientVpnConnectionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeClientVpnConnectionsWithContext indicates an expected call of DescribeClientVpnConnectionsWithContext
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnConnectionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnConnectionsWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnConnectionsWithContext), varargs...)
+}
+
+// DescribeClientVpnConnectionsRequest mocks base method
+func (m *MockEC2API) DescribeClientVpnConnectionsRequest(arg0 *ec2.DescribeClientVpnConnectionsInput) (*request.Request, *ec2.DescribeClientVpnConnectionsOutput) {
+	ret := m.ctrl.Call(m, "DescribeClientVpnConnectionsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeClientVpnConnectionsOutput)
+	return ret0, ret1
+}
+
+// DescribeClientVpnConnectionsRequest indicates an expected call of DescribeClientVpnConnectionsRequest
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnConnectionsRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnConnectionsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnConnectionsRequest), arg0)
+}
+
+// DescribeClientVpnConnectionsPages mocks base method
+func (m *MockEC2API) DescribeClientVpnConnectionsPages(arg0 *ec2.DescribeClientVpnConnectionsInput, arg1 func(*ec2.DescribeClientVpnConnectionsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeClientVpnConnectionsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeClientVpnConnectionsPages indicates an expected call of DescribeClientVpnConnectionsPages
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnConnectionsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnConnectionsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnConnectionsPages), arg0, arg1)
+}
+
+// DescribeClientVpnConnectionsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeClientVpnConnectionsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeClientVpnConnectionsInput, arg2 func(*ec2.DescribeClientVpnConnectionsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeClientVpnConnectionsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeClientVpnConnectionsPagesWithContext indicates an expected call of DescribeClientVpnConnectionsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnConnectionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnConnectionsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnConnectionsPagesWithContext), varargs...)
+}
+
+// DescribeClientVpnEndpoints mocks base method
+func (m *MockEC2API) DescribeClientVpnEndpoints(arg0 *ec2.DescribeClientVpnEndpointsInput) (*ec2.DescribeClientVpnEndpointsOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeClientVpnEndpoints", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeClientVpnEndpointsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeClientVpnEndpoints indicates an expected call of DescribeClientVpnEndpoints
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnEndpoints(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnEndpoints", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnEndpoints), arg0)
+}
+
+// DescribeClientVpnEndpointsWithContext mocks base method
+func (m *MockEC2API) DescribeClientVpnEndpointsWithContext(arg0 aws.Context, arg1 *ec2.DescribeClientVpnEndpointsInput, arg2 ...request.Option) (*ec2.DescribeClientVpnEndpointsOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeClientVpnEndpointsWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeClientVpnEndpointsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeClientVpnEndpointsWithContext indicates an expected call of DescribeClientVpnEndpointsWithContext
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnEndpointsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnEndpointsWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnEndpointsWithContext), varargs...)
+}
+
+// DescribeClientVpnEndpointsRequest mocks base method
+func (m *MockEC2API) DescribeClientVpnEndpointsRequest(arg0 *ec2.DescribeClientVpnEndpointsInput) (*request.Request, *ec2.DescribeClientVpnEndpointsOutput) {
+	ret := m.ctrl.Call(m, "DescribeClientVpnEndpointsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeClientVpnEndpointsOutput)
+	return ret0, ret1
+}
+
+// DescribeClientVpnEndpointsRequest indicates an expected call of DescribeClientVpnEndpointsRequest
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnEndpointsRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnEndpointsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnEndpointsRequest), arg0)
+}
+
+// DescribeClientVpnEndpointsPages mocks base method
+func (m *MockEC2API) DescribeClientVpnEndpointsPages(arg0 *ec2.DescribeClientVpnEndpointsInput, arg1 func(*ec2.DescribeClientVpnEndpointsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeClientVpnEndpointsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeClientVpnEndpointsPages indicates an expected call of DescribeClientVpnEndpointsPages
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnEndpointsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnEndpointsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnEndpointsPages), arg0, arg1)
+}
+
+// DescribeClientVpnEndpointsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeClientVpnEndpointsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeClientVpnEndpointsInput, arg2 func(*ec2.DescribeClientVpnEndpointsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeClientVpnEndpointsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeClientVpnEndpointsPagesWithContext indicates an expected call of DescribeClientVpnEndpointsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnEndpointsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnEndpointsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnEndpointsPagesWithContext), varargs...)
+}
+
+// DescribeClientVpnRoutes mocks base method
+func (m *MockEC2API) DescribeClientVpnRoutes(arg0 *ec2.DescribeClientVpnRoutesInput) (*ec2.DescribeClientVpnRoutesOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeClientVpnRoutes", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeClientVpnRoutesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeClientVpnRoutes indicates an expected call of DescribeClientVpnRoutes
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnRoutes(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnRoutes", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnRoutes), arg0)
+}
+
+// DescribeClientVpnRoutesWithContext mocks base method
+func (m *MockEC2API) DescribeClientVpnRoutesWithContext(arg0 aws.Context, arg1 *ec2.DescribeClientVpnRoutesInput, arg2 ...request.Option) (*ec2.DescribeClientVpnRoutesOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeClientVpnRoutesWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeClientVpnRoutesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeClientVpnRoutesWithContext indicates an expected call of DescribeClientVpnRoutesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnRoutesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnRoutesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnRoutesWithContext), varargs...)
+}
+
+// DescribeClientVpnRoutesRequest mocks base method
+func (m *MockEC2API) DescribeClientVpnRoutesRequest(arg0 *ec2.DescribeClientVpnRoutesInput) (*request.Request, *ec2.DescribeClientVpnRoutesOutput) {
+	ret := m.ctrl.Call(m, "DescribeClientVpnRoutesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeClientVpnRoutesOutput)
+	return ret0, ret1
+}
+
+// DescribeClientVpnRoutesRequest indicates an expected call of DescribeClientVpnRoutesRequest
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnRoutesRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnRoutesRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnRoutesRequest), arg0)
+}
+
+// DescribeClientVpnRoutesPages mocks base method
+func (m *MockEC2API) DescribeClientVpnRoutesPages(arg0 *ec2.DescribeClientVpnRoutesInput, arg1 func(*ec2.DescribeClientVpnRoutesOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeClientVpnRoutesPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeClientVpnRoutesPages indicates an expected call of DescribeClientVpnRoutesPages
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnRoutesPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnRoutesPages", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnRoutesPages), arg0, arg1)
+}
+
+// DescribeClientVpnRoutesPagesWithContext mocks base method
+func (m *MockEC2API) DescribeClientVpnRoutesPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeClientVpnRoutesInput, arg2 func(*ec2.DescribeClientVpnRoutesOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeClientVpnRoutesPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeClientVpnRoutesPagesWithContext indicates an expected call of DescribeClientVpnRoutesPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnRoutesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnRoutesPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnRoutesPagesWithContext), varargs...)
+}
+
+// DescribeClientVpnTargetNetworks mocks base method
+func (m *MockEC2API) DescribeClientVpnTargetNetworks(arg0 *ec2.DescribeClientVpnTargetNetworksInput) (*ec2.DescribeClientVpnTargetNetworksOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeClientVpnTargetNetworks", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeClientVpnTargetNetworksOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeClientVpnTargetNetworks indicates an expected call of DescribeClientVpnTargetNetworks
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnTargetNetworks(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnTargetNetworks", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnTargetNetworks), arg0)
+}
+
+// DescribeClientVpnTargetNetworksWithContext mocks base method
+func (m *MockEC2API) DescribeClientVpnTargetNetworksWithContext(arg0 aws.Context, arg1 *ec2.DescribeClientVpnTargetNetworksInput, arg2 ...request.Option) (*ec2.DescribeClientVpnTargetNetworksOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeClientVpnTargetNetworksWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeClientVpnTargetNetworksOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeClientVpnTargetNetworksWithContext indicates an expected call of DescribeClientVpnTargetNetworksWithContext
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnTargetNetworksWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnTargetNetworksWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnTargetNetworksWithContext), varargs...)
+}
+
+// DescribeClientVpnTargetNetworksRequest mocks base method
+func (m *MockEC2API) DescribeClientVpnTargetNetworksRequest(arg0 *ec2.DescribeClientVpnTargetNetworksInput) (*request.Request, *ec2.DescribeClientVpnTargetNetworksOutput) {
+	ret := m.ctrl.Call(m, "DescribeClientVpnTargetNetworksRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeClientVpnTargetNetworksOutput)
+	return ret0, ret1
+}
+
+// DescribeClientVpnTargetNetworksRequest indicates an expected call of DescribeClientVpnTargetNetworksRequest
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnTargetNetworksRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnTargetNetworksRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnTargetNetworksRequest), arg0)
+}
+
+// DescribeClientVpnTargetNetworksPages mocks base method
+func (m *MockEC2API) DescribeClientVpnTargetNetworksPages(arg0 *ec2.DescribeClientVpnTargetNetworksInput, arg1 func(*ec2.DescribeClientVpnTargetNetworksOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeClientVpnTargetNetworksPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeClientVpnTargetNetworksPages indicates an expected call of DescribeClientVpnTargetNetworksPages
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnTargetNetworksPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnTargetNetworksPages", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnTargetNetworksPages), arg0, arg1)
+}
+
+// DescribeClientVpnTargetNetworksPagesWithContext mocks base method
+func (m *MockEC2API) DescribeClientVpnTargetNetworksPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeClientVpnTargetNetworksInput, arg2 func(*ec2.DescribeClientVpnTargetNetworksOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeClientVpnTargetNetworksPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeClientVpnTargetNetworksPagesWithContext indicates an expected call of DescribeClientVpnTargetNetworksPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeClientVpnTargetNetworksPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClientVpnTargetNetworksPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeClientVpnTargetNetworksPagesWithContext), varargs...)
 }
 
 // DescribeConversionTasks mocks base method
@@ -4961,6 +6425,35 @@ func (m *MockEC2API) DescribeEgressOnlyInternetGatewaysRequest(arg0 *ec2.Describ
 // DescribeEgressOnlyInternetGatewaysRequest indicates an expected call of DescribeEgressOnlyInternetGatewaysRequest
 func (mr *MockEC2APIMockRecorder) DescribeEgressOnlyInternetGatewaysRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeEgressOnlyInternetGatewaysRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeEgressOnlyInternetGatewaysRequest), arg0)
+}
+
+// DescribeEgressOnlyInternetGatewaysPages mocks base method
+func (m *MockEC2API) DescribeEgressOnlyInternetGatewaysPages(arg0 *ec2.DescribeEgressOnlyInternetGatewaysInput, arg1 func(*ec2.DescribeEgressOnlyInternetGatewaysOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeEgressOnlyInternetGatewaysPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeEgressOnlyInternetGatewaysPages indicates an expected call of DescribeEgressOnlyInternetGatewaysPages
+func (mr *MockEC2APIMockRecorder) DescribeEgressOnlyInternetGatewaysPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeEgressOnlyInternetGatewaysPages", reflect.TypeOf((*MockEC2API)(nil).DescribeEgressOnlyInternetGatewaysPages), arg0, arg1)
+}
+
+// DescribeEgressOnlyInternetGatewaysPagesWithContext mocks base method
+func (m *MockEC2API) DescribeEgressOnlyInternetGatewaysPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeEgressOnlyInternetGatewaysInput, arg2 func(*ec2.DescribeEgressOnlyInternetGatewaysOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeEgressOnlyInternetGatewaysPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeEgressOnlyInternetGatewaysPagesWithContext indicates an expected call of DescribeEgressOnlyInternetGatewaysPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeEgressOnlyInternetGatewaysPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeEgressOnlyInternetGatewaysPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeEgressOnlyInternetGatewaysPagesWithContext), varargs...)
 }
 
 // DescribeElasticGpus mocks base method
@@ -5183,6 +6676,35 @@ func (mr *MockEC2APIMockRecorder) DescribeFleetsRequest(arg0 interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeFleetsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeFleetsRequest), arg0)
 }
 
+// DescribeFleetsPages mocks base method
+func (m *MockEC2API) DescribeFleetsPages(arg0 *ec2.DescribeFleetsInput, arg1 func(*ec2.DescribeFleetsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeFleetsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeFleetsPages indicates an expected call of DescribeFleetsPages
+func (mr *MockEC2APIMockRecorder) DescribeFleetsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeFleetsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeFleetsPages), arg0, arg1)
+}
+
+// DescribeFleetsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeFleetsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeFleetsInput, arg2 func(*ec2.DescribeFleetsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeFleetsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeFleetsPagesWithContext indicates an expected call of DescribeFleetsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeFleetsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeFleetsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeFleetsPagesWithContext), varargs...)
+}
+
 // DescribeFlowLogs mocks base method
 func (m *MockEC2API) DescribeFlowLogs(arg0 *ec2.DescribeFlowLogsInput) (*ec2.DescribeFlowLogsOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeFlowLogs", arg0)
@@ -5225,6 +6747,35 @@ func (m *MockEC2API) DescribeFlowLogsRequest(arg0 *ec2.DescribeFlowLogsInput) (*
 // DescribeFlowLogsRequest indicates an expected call of DescribeFlowLogsRequest
 func (mr *MockEC2APIMockRecorder) DescribeFlowLogsRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeFlowLogsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeFlowLogsRequest), arg0)
+}
+
+// DescribeFlowLogsPages mocks base method
+func (m *MockEC2API) DescribeFlowLogsPages(arg0 *ec2.DescribeFlowLogsInput, arg1 func(*ec2.DescribeFlowLogsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeFlowLogsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeFlowLogsPages indicates an expected call of DescribeFlowLogsPages
+func (mr *MockEC2APIMockRecorder) DescribeFlowLogsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeFlowLogsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeFlowLogsPages), arg0, arg1)
+}
+
+// DescribeFlowLogsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeFlowLogsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeFlowLogsInput, arg2 func(*ec2.DescribeFlowLogsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeFlowLogsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeFlowLogsPagesWithContext indicates an expected call of DescribeFlowLogsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeFlowLogsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeFlowLogsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeFlowLogsPagesWithContext), varargs...)
 }
 
 // DescribeFpgaImageAttribute mocks base method
@@ -5315,6 +6866,35 @@ func (mr *MockEC2APIMockRecorder) DescribeFpgaImagesRequest(arg0 interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeFpgaImagesRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeFpgaImagesRequest), arg0)
 }
 
+// DescribeFpgaImagesPages mocks base method
+func (m *MockEC2API) DescribeFpgaImagesPages(arg0 *ec2.DescribeFpgaImagesInput, arg1 func(*ec2.DescribeFpgaImagesOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeFpgaImagesPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeFpgaImagesPages indicates an expected call of DescribeFpgaImagesPages
+func (mr *MockEC2APIMockRecorder) DescribeFpgaImagesPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeFpgaImagesPages", reflect.TypeOf((*MockEC2API)(nil).DescribeFpgaImagesPages), arg0, arg1)
+}
+
+// DescribeFpgaImagesPagesWithContext mocks base method
+func (m *MockEC2API) DescribeFpgaImagesPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeFpgaImagesInput, arg2 func(*ec2.DescribeFpgaImagesOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeFpgaImagesPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeFpgaImagesPagesWithContext indicates an expected call of DescribeFpgaImagesPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeFpgaImagesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeFpgaImagesPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeFpgaImagesPagesWithContext), varargs...)
+}
+
 // DescribeHostReservationOfferings mocks base method
 func (m *MockEC2API) DescribeHostReservationOfferings(arg0 *ec2.DescribeHostReservationOfferingsInput) (*ec2.DescribeHostReservationOfferingsOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeHostReservationOfferings", arg0)
@@ -5357,6 +6937,35 @@ func (m *MockEC2API) DescribeHostReservationOfferingsRequest(arg0 *ec2.DescribeH
 // DescribeHostReservationOfferingsRequest indicates an expected call of DescribeHostReservationOfferingsRequest
 func (mr *MockEC2APIMockRecorder) DescribeHostReservationOfferingsRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeHostReservationOfferingsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeHostReservationOfferingsRequest), arg0)
+}
+
+// DescribeHostReservationOfferingsPages mocks base method
+func (m *MockEC2API) DescribeHostReservationOfferingsPages(arg0 *ec2.DescribeHostReservationOfferingsInput, arg1 func(*ec2.DescribeHostReservationOfferingsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeHostReservationOfferingsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeHostReservationOfferingsPages indicates an expected call of DescribeHostReservationOfferingsPages
+func (mr *MockEC2APIMockRecorder) DescribeHostReservationOfferingsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeHostReservationOfferingsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeHostReservationOfferingsPages), arg0, arg1)
+}
+
+// DescribeHostReservationOfferingsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeHostReservationOfferingsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeHostReservationOfferingsInput, arg2 func(*ec2.DescribeHostReservationOfferingsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeHostReservationOfferingsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeHostReservationOfferingsPagesWithContext indicates an expected call of DescribeHostReservationOfferingsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeHostReservationOfferingsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeHostReservationOfferingsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeHostReservationOfferingsPagesWithContext), varargs...)
 }
 
 // DescribeHostReservations mocks base method
@@ -5403,6 +7012,35 @@ func (mr *MockEC2APIMockRecorder) DescribeHostReservationsRequest(arg0 interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeHostReservationsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeHostReservationsRequest), arg0)
 }
 
+// DescribeHostReservationsPages mocks base method
+func (m *MockEC2API) DescribeHostReservationsPages(arg0 *ec2.DescribeHostReservationsInput, arg1 func(*ec2.DescribeHostReservationsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeHostReservationsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeHostReservationsPages indicates an expected call of DescribeHostReservationsPages
+func (mr *MockEC2APIMockRecorder) DescribeHostReservationsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeHostReservationsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeHostReservationsPages), arg0, arg1)
+}
+
+// DescribeHostReservationsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeHostReservationsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeHostReservationsInput, arg2 func(*ec2.DescribeHostReservationsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeHostReservationsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeHostReservationsPagesWithContext indicates an expected call of DescribeHostReservationsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeHostReservationsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeHostReservationsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeHostReservationsPagesWithContext), varargs...)
+}
+
 // DescribeHosts mocks base method
 func (m *MockEC2API) DescribeHosts(arg0 *ec2.DescribeHostsInput) (*ec2.DescribeHostsOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeHosts", arg0)
@@ -5447,6 +7085,35 @@ func (mr *MockEC2APIMockRecorder) DescribeHostsRequest(arg0 interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeHostsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeHostsRequest), arg0)
 }
 
+// DescribeHostsPages mocks base method
+func (m *MockEC2API) DescribeHostsPages(arg0 *ec2.DescribeHostsInput, arg1 func(*ec2.DescribeHostsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeHostsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeHostsPages indicates an expected call of DescribeHostsPages
+func (mr *MockEC2APIMockRecorder) DescribeHostsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeHostsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeHostsPages), arg0, arg1)
+}
+
+// DescribeHostsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeHostsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeHostsInput, arg2 func(*ec2.DescribeHostsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeHostsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeHostsPagesWithContext indicates an expected call of DescribeHostsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeHostsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeHostsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeHostsPagesWithContext), varargs...)
+}
+
 // DescribeIamInstanceProfileAssociations mocks base method
 func (m *MockEC2API) DescribeIamInstanceProfileAssociations(arg0 *ec2.DescribeIamInstanceProfileAssociationsInput) (*ec2.DescribeIamInstanceProfileAssociationsOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeIamInstanceProfileAssociations", arg0)
@@ -5489,6 +7156,35 @@ func (m *MockEC2API) DescribeIamInstanceProfileAssociationsRequest(arg0 *ec2.Des
 // DescribeIamInstanceProfileAssociationsRequest indicates an expected call of DescribeIamInstanceProfileAssociationsRequest
 func (mr *MockEC2APIMockRecorder) DescribeIamInstanceProfileAssociationsRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeIamInstanceProfileAssociationsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeIamInstanceProfileAssociationsRequest), arg0)
+}
+
+// DescribeIamInstanceProfileAssociationsPages mocks base method
+func (m *MockEC2API) DescribeIamInstanceProfileAssociationsPages(arg0 *ec2.DescribeIamInstanceProfileAssociationsInput, arg1 func(*ec2.DescribeIamInstanceProfileAssociationsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeIamInstanceProfileAssociationsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeIamInstanceProfileAssociationsPages indicates an expected call of DescribeIamInstanceProfileAssociationsPages
+func (mr *MockEC2APIMockRecorder) DescribeIamInstanceProfileAssociationsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeIamInstanceProfileAssociationsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeIamInstanceProfileAssociationsPages), arg0, arg1)
+}
+
+// DescribeIamInstanceProfileAssociationsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeIamInstanceProfileAssociationsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeIamInstanceProfileAssociationsInput, arg2 func(*ec2.DescribeIamInstanceProfileAssociationsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeIamInstanceProfileAssociationsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeIamInstanceProfileAssociationsPagesWithContext indicates an expected call of DescribeIamInstanceProfileAssociationsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeIamInstanceProfileAssociationsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeIamInstanceProfileAssociationsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeIamInstanceProfileAssociationsPagesWithContext), varargs...)
 }
 
 // DescribeIdFormat mocks base method
@@ -5711,6 +7407,35 @@ func (mr *MockEC2APIMockRecorder) DescribeImportImageTasksRequest(arg0 interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeImportImageTasksRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeImportImageTasksRequest), arg0)
 }
 
+// DescribeImportImageTasksPages mocks base method
+func (m *MockEC2API) DescribeImportImageTasksPages(arg0 *ec2.DescribeImportImageTasksInput, arg1 func(*ec2.DescribeImportImageTasksOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeImportImageTasksPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeImportImageTasksPages indicates an expected call of DescribeImportImageTasksPages
+func (mr *MockEC2APIMockRecorder) DescribeImportImageTasksPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeImportImageTasksPages", reflect.TypeOf((*MockEC2API)(nil).DescribeImportImageTasksPages), arg0, arg1)
+}
+
+// DescribeImportImageTasksPagesWithContext mocks base method
+func (m *MockEC2API) DescribeImportImageTasksPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeImportImageTasksInput, arg2 func(*ec2.DescribeImportImageTasksOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeImportImageTasksPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeImportImageTasksPagesWithContext indicates an expected call of DescribeImportImageTasksPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeImportImageTasksPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeImportImageTasksPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeImportImageTasksPagesWithContext), varargs...)
+}
+
 // DescribeImportSnapshotTasks mocks base method
 func (m *MockEC2API) DescribeImportSnapshotTasks(arg0 *ec2.DescribeImportSnapshotTasksInput) (*ec2.DescribeImportSnapshotTasksOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeImportSnapshotTasks", arg0)
@@ -5753,6 +7478,35 @@ func (m *MockEC2API) DescribeImportSnapshotTasksRequest(arg0 *ec2.DescribeImport
 // DescribeImportSnapshotTasksRequest indicates an expected call of DescribeImportSnapshotTasksRequest
 func (mr *MockEC2APIMockRecorder) DescribeImportSnapshotTasksRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeImportSnapshotTasksRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeImportSnapshotTasksRequest), arg0)
+}
+
+// DescribeImportSnapshotTasksPages mocks base method
+func (m *MockEC2API) DescribeImportSnapshotTasksPages(arg0 *ec2.DescribeImportSnapshotTasksInput, arg1 func(*ec2.DescribeImportSnapshotTasksOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeImportSnapshotTasksPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeImportSnapshotTasksPages indicates an expected call of DescribeImportSnapshotTasksPages
+func (mr *MockEC2APIMockRecorder) DescribeImportSnapshotTasksPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeImportSnapshotTasksPages", reflect.TypeOf((*MockEC2API)(nil).DescribeImportSnapshotTasksPages), arg0, arg1)
+}
+
+// DescribeImportSnapshotTasksPagesWithContext mocks base method
+func (m *MockEC2API) DescribeImportSnapshotTasksPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeImportSnapshotTasksInput, arg2 func(*ec2.DescribeImportSnapshotTasksOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeImportSnapshotTasksPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeImportSnapshotTasksPagesWithContext indicates an expected call of DescribeImportSnapshotTasksPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeImportSnapshotTasksPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeImportSnapshotTasksPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeImportSnapshotTasksPagesWithContext), varargs...)
 }
 
 // DescribeInstanceAttribute mocks base method
@@ -5841,6 +7595,35 @@ func (m *MockEC2API) DescribeInstanceCreditSpecificationsRequest(arg0 *ec2.Descr
 // DescribeInstanceCreditSpecificationsRequest indicates an expected call of DescribeInstanceCreditSpecificationsRequest
 func (mr *MockEC2APIMockRecorder) DescribeInstanceCreditSpecificationsRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceCreditSpecificationsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeInstanceCreditSpecificationsRequest), arg0)
+}
+
+// DescribeInstanceCreditSpecificationsPages mocks base method
+func (m *MockEC2API) DescribeInstanceCreditSpecificationsPages(arg0 *ec2.DescribeInstanceCreditSpecificationsInput, arg1 func(*ec2.DescribeInstanceCreditSpecificationsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeInstanceCreditSpecificationsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeInstanceCreditSpecificationsPages indicates an expected call of DescribeInstanceCreditSpecificationsPages
+func (mr *MockEC2APIMockRecorder) DescribeInstanceCreditSpecificationsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceCreditSpecificationsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeInstanceCreditSpecificationsPages), arg0, arg1)
+}
+
+// DescribeInstanceCreditSpecificationsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeInstanceCreditSpecificationsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeInstanceCreditSpecificationsInput, arg2 func(*ec2.DescribeInstanceCreditSpecificationsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeInstanceCreditSpecificationsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeInstanceCreditSpecificationsPagesWithContext indicates an expected call of DescribeInstanceCreditSpecificationsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeInstanceCreditSpecificationsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceCreditSpecificationsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeInstanceCreditSpecificationsPagesWithContext), varargs...)
 }
 
 // DescribeInstanceStatus mocks base method
@@ -6033,6 +7816,35 @@ func (mr *MockEC2APIMockRecorder) DescribeInternetGatewaysRequest(arg0 interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInternetGatewaysRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeInternetGatewaysRequest), arg0)
 }
 
+// DescribeInternetGatewaysPages mocks base method
+func (m *MockEC2API) DescribeInternetGatewaysPages(arg0 *ec2.DescribeInternetGatewaysInput, arg1 func(*ec2.DescribeInternetGatewaysOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeInternetGatewaysPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeInternetGatewaysPages indicates an expected call of DescribeInternetGatewaysPages
+func (mr *MockEC2APIMockRecorder) DescribeInternetGatewaysPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInternetGatewaysPages", reflect.TypeOf((*MockEC2API)(nil).DescribeInternetGatewaysPages), arg0, arg1)
+}
+
+// DescribeInternetGatewaysPagesWithContext mocks base method
+func (m *MockEC2API) DescribeInternetGatewaysPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeInternetGatewaysInput, arg2 func(*ec2.DescribeInternetGatewaysOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeInternetGatewaysPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeInternetGatewaysPagesWithContext indicates an expected call of DescribeInternetGatewaysPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeInternetGatewaysPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInternetGatewaysPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeInternetGatewaysPagesWithContext), varargs...)
+}
+
 // DescribeKeyPairs mocks base method
 func (m *MockEC2API) DescribeKeyPairs(arg0 *ec2.DescribeKeyPairsInput) (*ec2.DescribeKeyPairsOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeKeyPairs", arg0)
@@ -6121,6 +7933,35 @@ func (mr *MockEC2APIMockRecorder) DescribeLaunchTemplateVersionsRequest(arg0 int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeLaunchTemplateVersionsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeLaunchTemplateVersionsRequest), arg0)
 }
 
+// DescribeLaunchTemplateVersionsPages mocks base method
+func (m *MockEC2API) DescribeLaunchTemplateVersionsPages(arg0 *ec2.DescribeLaunchTemplateVersionsInput, arg1 func(*ec2.DescribeLaunchTemplateVersionsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeLaunchTemplateVersionsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeLaunchTemplateVersionsPages indicates an expected call of DescribeLaunchTemplateVersionsPages
+func (mr *MockEC2APIMockRecorder) DescribeLaunchTemplateVersionsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeLaunchTemplateVersionsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeLaunchTemplateVersionsPages), arg0, arg1)
+}
+
+// DescribeLaunchTemplateVersionsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeLaunchTemplateVersionsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeLaunchTemplateVersionsInput, arg2 func(*ec2.DescribeLaunchTemplateVersionsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeLaunchTemplateVersionsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeLaunchTemplateVersionsPagesWithContext indicates an expected call of DescribeLaunchTemplateVersionsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeLaunchTemplateVersionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeLaunchTemplateVersionsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeLaunchTemplateVersionsPagesWithContext), varargs...)
+}
+
 // DescribeLaunchTemplates mocks base method
 func (m *MockEC2API) DescribeLaunchTemplates(arg0 *ec2.DescribeLaunchTemplatesInput) (*ec2.DescribeLaunchTemplatesOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeLaunchTemplates", arg0)
@@ -6165,6 +8006,35 @@ func (mr *MockEC2APIMockRecorder) DescribeLaunchTemplatesRequest(arg0 interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeLaunchTemplatesRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeLaunchTemplatesRequest), arg0)
 }
 
+// DescribeLaunchTemplatesPages mocks base method
+func (m *MockEC2API) DescribeLaunchTemplatesPages(arg0 *ec2.DescribeLaunchTemplatesInput, arg1 func(*ec2.DescribeLaunchTemplatesOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeLaunchTemplatesPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeLaunchTemplatesPages indicates an expected call of DescribeLaunchTemplatesPages
+func (mr *MockEC2APIMockRecorder) DescribeLaunchTemplatesPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeLaunchTemplatesPages", reflect.TypeOf((*MockEC2API)(nil).DescribeLaunchTemplatesPages), arg0, arg1)
+}
+
+// DescribeLaunchTemplatesPagesWithContext mocks base method
+func (m *MockEC2API) DescribeLaunchTemplatesPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeLaunchTemplatesInput, arg2 func(*ec2.DescribeLaunchTemplatesOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeLaunchTemplatesPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeLaunchTemplatesPagesWithContext indicates an expected call of DescribeLaunchTemplatesPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeLaunchTemplatesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeLaunchTemplatesPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeLaunchTemplatesPagesWithContext), varargs...)
+}
+
 // DescribeMovingAddresses mocks base method
 func (m *MockEC2API) DescribeMovingAddresses(arg0 *ec2.DescribeMovingAddressesInput) (*ec2.DescribeMovingAddressesOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeMovingAddresses", arg0)
@@ -6207,6 +8077,35 @@ func (m *MockEC2API) DescribeMovingAddressesRequest(arg0 *ec2.DescribeMovingAddr
 // DescribeMovingAddressesRequest indicates an expected call of DescribeMovingAddressesRequest
 func (mr *MockEC2APIMockRecorder) DescribeMovingAddressesRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeMovingAddressesRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeMovingAddressesRequest), arg0)
+}
+
+// DescribeMovingAddressesPages mocks base method
+func (m *MockEC2API) DescribeMovingAddressesPages(arg0 *ec2.DescribeMovingAddressesInput, arg1 func(*ec2.DescribeMovingAddressesOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeMovingAddressesPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeMovingAddressesPages indicates an expected call of DescribeMovingAddressesPages
+func (mr *MockEC2APIMockRecorder) DescribeMovingAddressesPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeMovingAddressesPages", reflect.TypeOf((*MockEC2API)(nil).DescribeMovingAddressesPages), arg0, arg1)
+}
+
+// DescribeMovingAddressesPagesWithContext mocks base method
+func (m *MockEC2API) DescribeMovingAddressesPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeMovingAddressesInput, arg2 func(*ec2.DescribeMovingAddressesOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeMovingAddressesPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeMovingAddressesPagesWithContext indicates an expected call of DescribeMovingAddressesPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeMovingAddressesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeMovingAddressesPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeMovingAddressesPagesWithContext), varargs...)
 }
 
 // DescribeNatGateways mocks base method
@@ -6326,6 +8225,35 @@ func (mr *MockEC2APIMockRecorder) DescribeNetworkAclsRequest(arg0 interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeNetworkAclsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeNetworkAclsRequest), arg0)
 }
 
+// DescribeNetworkAclsPages mocks base method
+func (m *MockEC2API) DescribeNetworkAclsPages(arg0 *ec2.DescribeNetworkAclsInput, arg1 func(*ec2.DescribeNetworkAclsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeNetworkAclsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeNetworkAclsPages indicates an expected call of DescribeNetworkAclsPages
+func (mr *MockEC2APIMockRecorder) DescribeNetworkAclsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeNetworkAclsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeNetworkAclsPages), arg0, arg1)
+}
+
+// DescribeNetworkAclsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeNetworkAclsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeNetworkAclsInput, arg2 func(*ec2.DescribeNetworkAclsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeNetworkAclsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeNetworkAclsPagesWithContext indicates an expected call of DescribeNetworkAclsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeNetworkAclsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeNetworkAclsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeNetworkAclsPagesWithContext), varargs...)
+}
+
 // DescribeNetworkInterfaceAttribute mocks base method
 func (m *MockEC2API) DescribeNetworkInterfaceAttribute(arg0 *ec2.DescribeNetworkInterfaceAttributeInput) (*ec2.DescribeNetworkInterfaceAttributeOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeNetworkInterfaceAttribute", arg0)
@@ -6414,6 +8342,35 @@ func (mr *MockEC2APIMockRecorder) DescribeNetworkInterfacePermissionsRequest(arg
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeNetworkInterfacePermissionsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeNetworkInterfacePermissionsRequest), arg0)
 }
 
+// DescribeNetworkInterfacePermissionsPages mocks base method
+func (m *MockEC2API) DescribeNetworkInterfacePermissionsPages(arg0 *ec2.DescribeNetworkInterfacePermissionsInput, arg1 func(*ec2.DescribeNetworkInterfacePermissionsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeNetworkInterfacePermissionsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeNetworkInterfacePermissionsPages indicates an expected call of DescribeNetworkInterfacePermissionsPages
+func (mr *MockEC2APIMockRecorder) DescribeNetworkInterfacePermissionsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeNetworkInterfacePermissionsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeNetworkInterfacePermissionsPages), arg0, arg1)
+}
+
+// DescribeNetworkInterfacePermissionsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeNetworkInterfacePermissionsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeNetworkInterfacePermissionsInput, arg2 func(*ec2.DescribeNetworkInterfacePermissionsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeNetworkInterfacePermissionsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeNetworkInterfacePermissionsPagesWithContext indicates an expected call of DescribeNetworkInterfacePermissionsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeNetworkInterfacePermissionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeNetworkInterfacePermissionsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeNetworkInterfacePermissionsPagesWithContext), varargs...)
+}
+
 // DescribeNetworkInterfaces mocks base method
 func (m *MockEC2API) DescribeNetworkInterfaces(arg0 *ec2.DescribeNetworkInterfacesInput) (*ec2.DescribeNetworkInterfacesOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeNetworkInterfaces", arg0)
@@ -6456,6 +8413,35 @@ func (m *MockEC2API) DescribeNetworkInterfacesRequest(arg0 *ec2.DescribeNetworkI
 // DescribeNetworkInterfacesRequest indicates an expected call of DescribeNetworkInterfacesRequest
 func (mr *MockEC2APIMockRecorder) DescribeNetworkInterfacesRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeNetworkInterfacesRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeNetworkInterfacesRequest), arg0)
+}
+
+// DescribeNetworkInterfacesPages mocks base method
+func (m *MockEC2API) DescribeNetworkInterfacesPages(arg0 *ec2.DescribeNetworkInterfacesInput, arg1 func(*ec2.DescribeNetworkInterfacesOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeNetworkInterfacesPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeNetworkInterfacesPages indicates an expected call of DescribeNetworkInterfacesPages
+func (mr *MockEC2APIMockRecorder) DescribeNetworkInterfacesPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeNetworkInterfacesPages", reflect.TypeOf((*MockEC2API)(nil).DescribeNetworkInterfacesPages), arg0, arg1)
+}
+
+// DescribeNetworkInterfacesPagesWithContext mocks base method
+func (m *MockEC2API) DescribeNetworkInterfacesPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeNetworkInterfacesInput, arg2 func(*ec2.DescribeNetworkInterfacesOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeNetworkInterfacesPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeNetworkInterfacesPagesWithContext indicates an expected call of DescribeNetworkInterfacesPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeNetworkInterfacesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeNetworkInterfacesPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeNetworkInterfacesPagesWithContext), varargs...)
 }
 
 // DescribePlacementGroups mocks base method
@@ -6546,6 +8532,35 @@ func (mr *MockEC2APIMockRecorder) DescribePrefixListsRequest(arg0 interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePrefixListsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribePrefixListsRequest), arg0)
 }
 
+// DescribePrefixListsPages mocks base method
+func (m *MockEC2API) DescribePrefixListsPages(arg0 *ec2.DescribePrefixListsInput, arg1 func(*ec2.DescribePrefixListsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribePrefixListsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribePrefixListsPages indicates an expected call of DescribePrefixListsPages
+func (mr *MockEC2APIMockRecorder) DescribePrefixListsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePrefixListsPages", reflect.TypeOf((*MockEC2API)(nil).DescribePrefixListsPages), arg0, arg1)
+}
+
+// DescribePrefixListsPagesWithContext mocks base method
+func (m *MockEC2API) DescribePrefixListsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribePrefixListsInput, arg2 func(*ec2.DescribePrefixListsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribePrefixListsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribePrefixListsPagesWithContext indicates an expected call of DescribePrefixListsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribePrefixListsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePrefixListsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribePrefixListsPagesWithContext), varargs...)
+}
+
 // DescribePrincipalIdFormat mocks base method
 func (m *MockEC2API) DescribePrincipalIdFormat(arg0 *ec2.DescribePrincipalIdFormatInput) (*ec2.DescribePrincipalIdFormatOutput, error) {
 	ret := m.ctrl.Call(m, "DescribePrincipalIdFormat", arg0)
@@ -6588,6 +8603,108 @@ func (m *MockEC2API) DescribePrincipalIdFormatRequest(arg0 *ec2.DescribePrincipa
 // DescribePrincipalIdFormatRequest indicates an expected call of DescribePrincipalIdFormatRequest
 func (mr *MockEC2APIMockRecorder) DescribePrincipalIdFormatRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePrincipalIdFormatRequest", reflect.TypeOf((*MockEC2API)(nil).DescribePrincipalIdFormatRequest), arg0)
+}
+
+// DescribePrincipalIdFormatPages mocks base method
+func (m *MockEC2API) DescribePrincipalIdFormatPages(arg0 *ec2.DescribePrincipalIdFormatInput, arg1 func(*ec2.DescribePrincipalIdFormatOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribePrincipalIdFormatPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribePrincipalIdFormatPages indicates an expected call of DescribePrincipalIdFormatPages
+func (mr *MockEC2APIMockRecorder) DescribePrincipalIdFormatPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePrincipalIdFormatPages", reflect.TypeOf((*MockEC2API)(nil).DescribePrincipalIdFormatPages), arg0, arg1)
+}
+
+// DescribePrincipalIdFormatPagesWithContext mocks base method
+func (m *MockEC2API) DescribePrincipalIdFormatPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribePrincipalIdFormatInput, arg2 func(*ec2.DescribePrincipalIdFormatOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribePrincipalIdFormatPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribePrincipalIdFormatPagesWithContext indicates an expected call of DescribePrincipalIdFormatPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribePrincipalIdFormatPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePrincipalIdFormatPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribePrincipalIdFormatPagesWithContext), varargs...)
+}
+
+// DescribePublicIpv4Pools mocks base method
+func (m *MockEC2API) DescribePublicIpv4Pools(arg0 *ec2.DescribePublicIpv4PoolsInput) (*ec2.DescribePublicIpv4PoolsOutput, error) {
+	ret := m.ctrl.Call(m, "DescribePublicIpv4Pools", arg0)
+	ret0, _ := ret[0].(*ec2.DescribePublicIpv4PoolsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribePublicIpv4Pools indicates an expected call of DescribePublicIpv4Pools
+func (mr *MockEC2APIMockRecorder) DescribePublicIpv4Pools(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePublicIpv4Pools", reflect.TypeOf((*MockEC2API)(nil).DescribePublicIpv4Pools), arg0)
+}
+
+// DescribePublicIpv4PoolsWithContext mocks base method
+func (m *MockEC2API) DescribePublicIpv4PoolsWithContext(arg0 aws.Context, arg1 *ec2.DescribePublicIpv4PoolsInput, arg2 ...request.Option) (*ec2.DescribePublicIpv4PoolsOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribePublicIpv4PoolsWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribePublicIpv4PoolsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribePublicIpv4PoolsWithContext indicates an expected call of DescribePublicIpv4PoolsWithContext
+func (mr *MockEC2APIMockRecorder) DescribePublicIpv4PoolsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePublicIpv4PoolsWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribePublicIpv4PoolsWithContext), varargs...)
+}
+
+// DescribePublicIpv4PoolsRequest mocks base method
+func (m *MockEC2API) DescribePublicIpv4PoolsRequest(arg0 *ec2.DescribePublicIpv4PoolsInput) (*request.Request, *ec2.DescribePublicIpv4PoolsOutput) {
+	ret := m.ctrl.Call(m, "DescribePublicIpv4PoolsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribePublicIpv4PoolsOutput)
+	return ret0, ret1
+}
+
+// DescribePublicIpv4PoolsRequest indicates an expected call of DescribePublicIpv4PoolsRequest
+func (mr *MockEC2APIMockRecorder) DescribePublicIpv4PoolsRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePublicIpv4PoolsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribePublicIpv4PoolsRequest), arg0)
+}
+
+// DescribePublicIpv4PoolsPages mocks base method
+func (m *MockEC2API) DescribePublicIpv4PoolsPages(arg0 *ec2.DescribePublicIpv4PoolsInput, arg1 func(*ec2.DescribePublicIpv4PoolsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribePublicIpv4PoolsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribePublicIpv4PoolsPages indicates an expected call of DescribePublicIpv4PoolsPages
+func (mr *MockEC2APIMockRecorder) DescribePublicIpv4PoolsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePublicIpv4PoolsPages", reflect.TypeOf((*MockEC2API)(nil).DescribePublicIpv4PoolsPages), arg0, arg1)
+}
+
+// DescribePublicIpv4PoolsPagesWithContext mocks base method
+func (m *MockEC2API) DescribePublicIpv4PoolsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribePublicIpv4PoolsInput, arg2 func(*ec2.DescribePublicIpv4PoolsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribePublicIpv4PoolsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribePublicIpv4PoolsPagesWithContext indicates an expected call of DescribePublicIpv4PoolsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribePublicIpv4PoolsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePublicIpv4PoolsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribePublicIpv4PoolsPagesWithContext), varargs...)
 }
 
 // DescribeRegions mocks base method
@@ -6912,6 +9029,35 @@ func (mr *MockEC2APIMockRecorder) DescribeRouteTablesRequest(arg0 interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeRouteTablesRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeRouteTablesRequest), arg0)
 }
 
+// DescribeRouteTablesPages mocks base method
+func (m *MockEC2API) DescribeRouteTablesPages(arg0 *ec2.DescribeRouteTablesInput, arg1 func(*ec2.DescribeRouteTablesOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeRouteTablesPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeRouteTablesPages indicates an expected call of DescribeRouteTablesPages
+func (mr *MockEC2APIMockRecorder) DescribeRouteTablesPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeRouteTablesPages", reflect.TypeOf((*MockEC2API)(nil).DescribeRouteTablesPages), arg0, arg1)
+}
+
+// DescribeRouteTablesPagesWithContext mocks base method
+func (m *MockEC2API) DescribeRouteTablesPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeRouteTablesInput, arg2 func(*ec2.DescribeRouteTablesOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeRouteTablesPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeRouteTablesPagesWithContext indicates an expected call of DescribeRouteTablesPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeRouteTablesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeRouteTablesPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeRouteTablesPagesWithContext), varargs...)
+}
+
 // DescribeScheduledInstanceAvailability mocks base method
 func (m *MockEC2API) DescribeScheduledInstanceAvailability(arg0 *ec2.DescribeScheduledInstanceAvailabilityInput) (*ec2.DescribeScheduledInstanceAvailabilityOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeScheduledInstanceAvailability", arg0)
@@ -6956,6 +9102,35 @@ func (mr *MockEC2APIMockRecorder) DescribeScheduledInstanceAvailabilityRequest(a
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeScheduledInstanceAvailabilityRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeScheduledInstanceAvailabilityRequest), arg0)
 }
 
+// DescribeScheduledInstanceAvailabilityPages mocks base method
+func (m *MockEC2API) DescribeScheduledInstanceAvailabilityPages(arg0 *ec2.DescribeScheduledInstanceAvailabilityInput, arg1 func(*ec2.DescribeScheduledInstanceAvailabilityOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeScheduledInstanceAvailabilityPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeScheduledInstanceAvailabilityPages indicates an expected call of DescribeScheduledInstanceAvailabilityPages
+func (mr *MockEC2APIMockRecorder) DescribeScheduledInstanceAvailabilityPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeScheduledInstanceAvailabilityPages", reflect.TypeOf((*MockEC2API)(nil).DescribeScheduledInstanceAvailabilityPages), arg0, arg1)
+}
+
+// DescribeScheduledInstanceAvailabilityPagesWithContext mocks base method
+func (m *MockEC2API) DescribeScheduledInstanceAvailabilityPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeScheduledInstanceAvailabilityInput, arg2 func(*ec2.DescribeScheduledInstanceAvailabilityOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeScheduledInstanceAvailabilityPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeScheduledInstanceAvailabilityPagesWithContext indicates an expected call of DescribeScheduledInstanceAvailabilityPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeScheduledInstanceAvailabilityPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeScheduledInstanceAvailabilityPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeScheduledInstanceAvailabilityPagesWithContext), varargs...)
+}
+
 // DescribeScheduledInstances mocks base method
 func (m *MockEC2API) DescribeScheduledInstances(arg0 *ec2.DescribeScheduledInstancesInput) (*ec2.DescribeScheduledInstancesOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeScheduledInstances", arg0)
@@ -6998,6 +9173,35 @@ func (m *MockEC2API) DescribeScheduledInstancesRequest(arg0 *ec2.DescribeSchedul
 // DescribeScheduledInstancesRequest indicates an expected call of DescribeScheduledInstancesRequest
 func (mr *MockEC2APIMockRecorder) DescribeScheduledInstancesRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeScheduledInstancesRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeScheduledInstancesRequest), arg0)
+}
+
+// DescribeScheduledInstancesPages mocks base method
+func (m *MockEC2API) DescribeScheduledInstancesPages(arg0 *ec2.DescribeScheduledInstancesInput, arg1 func(*ec2.DescribeScheduledInstancesOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeScheduledInstancesPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeScheduledInstancesPages indicates an expected call of DescribeScheduledInstancesPages
+func (mr *MockEC2APIMockRecorder) DescribeScheduledInstancesPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeScheduledInstancesPages", reflect.TypeOf((*MockEC2API)(nil).DescribeScheduledInstancesPages), arg0, arg1)
+}
+
+// DescribeScheduledInstancesPagesWithContext mocks base method
+func (m *MockEC2API) DescribeScheduledInstancesPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeScheduledInstancesInput, arg2 func(*ec2.DescribeScheduledInstancesOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeScheduledInstancesPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeScheduledInstancesPagesWithContext indicates an expected call of DescribeScheduledInstancesPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeScheduledInstancesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeScheduledInstancesPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeScheduledInstancesPagesWithContext), varargs...)
 }
 
 // DescribeSecurityGroupReferences mocks base method
@@ -7086,6 +9290,35 @@ func (m *MockEC2API) DescribeSecurityGroupsRequest(arg0 *ec2.DescribeSecurityGro
 // DescribeSecurityGroupsRequest indicates an expected call of DescribeSecurityGroupsRequest
 func (mr *MockEC2APIMockRecorder) DescribeSecurityGroupsRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSecurityGroupsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeSecurityGroupsRequest), arg0)
+}
+
+// DescribeSecurityGroupsPages mocks base method
+func (m *MockEC2API) DescribeSecurityGroupsPages(arg0 *ec2.DescribeSecurityGroupsInput, arg1 func(*ec2.DescribeSecurityGroupsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeSecurityGroupsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeSecurityGroupsPages indicates an expected call of DescribeSecurityGroupsPages
+func (mr *MockEC2APIMockRecorder) DescribeSecurityGroupsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSecurityGroupsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeSecurityGroupsPages), arg0, arg1)
+}
+
+// DescribeSecurityGroupsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeSecurityGroupsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeSecurityGroupsInput, arg2 func(*ec2.DescribeSecurityGroupsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeSecurityGroupsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeSecurityGroupsPagesWithContext indicates an expected call of DescribeSecurityGroupsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeSecurityGroupsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSecurityGroupsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeSecurityGroupsPagesWithContext), varargs...)
 }
 
 // DescribeSnapshotAttribute mocks base method
@@ -7454,6 +9687,35 @@ func (mr *MockEC2APIMockRecorder) DescribeSpotInstanceRequestsRequest(arg0 inter
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSpotInstanceRequestsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeSpotInstanceRequestsRequest), arg0)
 }
 
+// DescribeSpotInstanceRequestsPages mocks base method
+func (m *MockEC2API) DescribeSpotInstanceRequestsPages(arg0 *ec2.DescribeSpotInstanceRequestsInput, arg1 func(*ec2.DescribeSpotInstanceRequestsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeSpotInstanceRequestsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeSpotInstanceRequestsPages indicates an expected call of DescribeSpotInstanceRequestsPages
+func (mr *MockEC2APIMockRecorder) DescribeSpotInstanceRequestsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSpotInstanceRequestsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeSpotInstanceRequestsPages), arg0, arg1)
+}
+
+// DescribeSpotInstanceRequestsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeSpotInstanceRequestsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeSpotInstanceRequestsInput, arg2 func(*ec2.DescribeSpotInstanceRequestsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeSpotInstanceRequestsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeSpotInstanceRequestsPagesWithContext indicates an expected call of DescribeSpotInstanceRequestsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeSpotInstanceRequestsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSpotInstanceRequestsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeSpotInstanceRequestsPagesWithContext), varargs...)
+}
+
 // DescribeSpotPriceHistory mocks base method
 func (m *MockEC2API) DescribeSpotPriceHistory(arg0 *ec2.DescribeSpotPriceHistoryInput) (*ec2.DescribeSpotPriceHistoryOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeSpotPriceHistory", arg0)
@@ -7571,6 +9833,35 @@ func (mr *MockEC2APIMockRecorder) DescribeStaleSecurityGroupsRequest(arg0 interf
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeStaleSecurityGroupsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeStaleSecurityGroupsRequest), arg0)
 }
 
+// DescribeStaleSecurityGroupsPages mocks base method
+func (m *MockEC2API) DescribeStaleSecurityGroupsPages(arg0 *ec2.DescribeStaleSecurityGroupsInput, arg1 func(*ec2.DescribeStaleSecurityGroupsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeStaleSecurityGroupsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeStaleSecurityGroupsPages indicates an expected call of DescribeStaleSecurityGroupsPages
+func (mr *MockEC2APIMockRecorder) DescribeStaleSecurityGroupsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeStaleSecurityGroupsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeStaleSecurityGroupsPages), arg0, arg1)
+}
+
+// DescribeStaleSecurityGroupsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeStaleSecurityGroupsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeStaleSecurityGroupsInput, arg2 func(*ec2.DescribeStaleSecurityGroupsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeStaleSecurityGroupsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeStaleSecurityGroupsPagesWithContext indicates an expected call of DescribeStaleSecurityGroupsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeStaleSecurityGroupsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeStaleSecurityGroupsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeStaleSecurityGroupsPagesWithContext), varargs...)
+}
+
 // DescribeSubnets mocks base method
 func (m *MockEC2API) DescribeSubnets(arg0 *ec2.DescribeSubnetsInput) (*ec2.DescribeSubnetsOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeSubnets", arg0)
@@ -7686,6 +9977,298 @@ func (m *MockEC2API) DescribeTagsPagesWithContext(arg0 aws.Context, arg1 *ec2.De
 func (mr *MockEC2APIMockRecorder) DescribeTagsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTagsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTagsPagesWithContext), varargs...)
+}
+
+// DescribeTransitGatewayAttachments mocks base method
+func (m *MockEC2API) DescribeTransitGatewayAttachments(arg0 *ec2.DescribeTransitGatewayAttachmentsInput) (*ec2.DescribeTransitGatewayAttachmentsOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeTransitGatewayAttachments", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeTransitGatewayAttachmentsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTransitGatewayAttachments indicates an expected call of DescribeTransitGatewayAttachments
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewayAttachments(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewayAttachments", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewayAttachments), arg0)
+}
+
+// DescribeTransitGatewayAttachmentsWithContext mocks base method
+func (m *MockEC2API) DescribeTransitGatewayAttachmentsWithContext(arg0 aws.Context, arg1 *ec2.DescribeTransitGatewayAttachmentsInput, arg2 ...request.Option) (*ec2.DescribeTransitGatewayAttachmentsOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeTransitGatewayAttachmentsWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeTransitGatewayAttachmentsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTransitGatewayAttachmentsWithContext indicates an expected call of DescribeTransitGatewayAttachmentsWithContext
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewayAttachmentsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewayAttachmentsWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewayAttachmentsWithContext), varargs...)
+}
+
+// DescribeTransitGatewayAttachmentsRequest mocks base method
+func (m *MockEC2API) DescribeTransitGatewayAttachmentsRequest(arg0 *ec2.DescribeTransitGatewayAttachmentsInput) (*request.Request, *ec2.DescribeTransitGatewayAttachmentsOutput) {
+	ret := m.ctrl.Call(m, "DescribeTransitGatewayAttachmentsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeTransitGatewayAttachmentsOutput)
+	return ret0, ret1
+}
+
+// DescribeTransitGatewayAttachmentsRequest indicates an expected call of DescribeTransitGatewayAttachmentsRequest
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewayAttachmentsRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewayAttachmentsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewayAttachmentsRequest), arg0)
+}
+
+// DescribeTransitGatewayAttachmentsPages mocks base method
+func (m *MockEC2API) DescribeTransitGatewayAttachmentsPages(arg0 *ec2.DescribeTransitGatewayAttachmentsInput, arg1 func(*ec2.DescribeTransitGatewayAttachmentsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeTransitGatewayAttachmentsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeTransitGatewayAttachmentsPages indicates an expected call of DescribeTransitGatewayAttachmentsPages
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewayAttachmentsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewayAttachmentsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewayAttachmentsPages), arg0, arg1)
+}
+
+// DescribeTransitGatewayAttachmentsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeTransitGatewayAttachmentsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeTransitGatewayAttachmentsInput, arg2 func(*ec2.DescribeTransitGatewayAttachmentsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeTransitGatewayAttachmentsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeTransitGatewayAttachmentsPagesWithContext indicates an expected call of DescribeTransitGatewayAttachmentsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewayAttachmentsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewayAttachmentsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewayAttachmentsPagesWithContext), varargs...)
+}
+
+// DescribeTransitGatewayRouteTables mocks base method
+func (m *MockEC2API) DescribeTransitGatewayRouteTables(arg0 *ec2.DescribeTransitGatewayRouteTablesInput) (*ec2.DescribeTransitGatewayRouteTablesOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeTransitGatewayRouteTables", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeTransitGatewayRouteTablesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTransitGatewayRouteTables indicates an expected call of DescribeTransitGatewayRouteTables
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewayRouteTables(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewayRouteTables", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewayRouteTables), arg0)
+}
+
+// DescribeTransitGatewayRouteTablesWithContext mocks base method
+func (m *MockEC2API) DescribeTransitGatewayRouteTablesWithContext(arg0 aws.Context, arg1 *ec2.DescribeTransitGatewayRouteTablesInput, arg2 ...request.Option) (*ec2.DescribeTransitGatewayRouteTablesOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeTransitGatewayRouteTablesWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeTransitGatewayRouteTablesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTransitGatewayRouteTablesWithContext indicates an expected call of DescribeTransitGatewayRouteTablesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewayRouteTablesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewayRouteTablesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewayRouteTablesWithContext), varargs...)
+}
+
+// DescribeTransitGatewayRouteTablesRequest mocks base method
+func (m *MockEC2API) DescribeTransitGatewayRouteTablesRequest(arg0 *ec2.DescribeTransitGatewayRouteTablesInput) (*request.Request, *ec2.DescribeTransitGatewayRouteTablesOutput) {
+	ret := m.ctrl.Call(m, "DescribeTransitGatewayRouteTablesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeTransitGatewayRouteTablesOutput)
+	return ret0, ret1
+}
+
+// DescribeTransitGatewayRouteTablesRequest indicates an expected call of DescribeTransitGatewayRouteTablesRequest
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewayRouteTablesRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewayRouteTablesRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewayRouteTablesRequest), arg0)
+}
+
+// DescribeTransitGatewayRouteTablesPages mocks base method
+func (m *MockEC2API) DescribeTransitGatewayRouteTablesPages(arg0 *ec2.DescribeTransitGatewayRouteTablesInput, arg1 func(*ec2.DescribeTransitGatewayRouteTablesOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeTransitGatewayRouteTablesPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeTransitGatewayRouteTablesPages indicates an expected call of DescribeTransitGatewayRouteTablesPages
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewayRouteTablesPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewayRouteTablesPages", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewayRouteTablesPages), arg0, arg1)
+}
+
+// DescribeTransitGatewayRouteTablesPagesWithContext mocks base method
+func (m *MockEC2API) DescribeTransitGatewayRouteTablesPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeTransitGatewayRouteTablesInput, arg2 func(*ec2.DescribeTransitGatewayRouteTablesOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeTransitGatewayRouteTablesPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeTransitGatewayRouteTablesPagesWithContext indicates an expected call of DescribeTransitGatewayRouteTablesPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewayRouteTablesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewayRouteTablesPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewayRouteTablesPagesWithContext), varargs...)
+}
+
+// DescribeTransitGatewayVpcAttachments mocks base method
+func (m *MockEC2API) DescribeTransitGatewayVpcAttachments(arg0 *ec2.DescribeTransitGatewayVpcAttachmentsInput) (*ec2.DescribeTransitGatewayVpcAttachmentsOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeTransitGatewayVpcAttachments", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeTransitGatewayVpcAttachmentsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTransitGatewayVpcAttachments indicates an expected call of DescribeTransitGatewayVpcAttachments
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewayVpcAttachments(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewayVpcAttachments", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewayVpcAttachments), arg0)
+}
+
+// DescribeTransitGatewayVpcAttachmentsWithContext mocks base method
+func (m *MockEC2API) DescribeTransitGatewayVpcAttachmentsWithContext(arg0 aws.Context, arg1 *ec2.DescribeTransitGatewayVpcAttachmentsInput, arg2 ...request.Option) (*ec2.DescribeTransitGatewayVpcAttachmentsOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeTransitGatewayVpcAttachmentsWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeTransitGatewayVpcAttachmentsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTransitGatewayVpcAttachmentsWithContext indicates an expected call of DescribeTransitGatewayVpcAttachmentsWithContext
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewayVpcAttachmentsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewayVpcAttachmentsWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewayVpcAttachmentsWithContext), varargs...)
+}
+
+// DescribeTransitGatewayVpcAttachmentsRequest mocks base method
+func (m *MockEC2API) DescribeTransitGatewayVpcAttachmentsRequest(arg0 *ec2.DescribeTransitGatewayVpcAttachmentsInput) (*request.Request, *ec2.DescribeTransitGatewayVpcAttachmentsOutput) {
+	ret := m.ctrl.Call(m, "DescribeTransitGatewayVpcAttachmentsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeTransitGatewayVpcAttachmentsOutput)
+	return ret0, ret1
+}
+
+// DescribeTransitGatewayVpcAttachmentsRequest indicates an expected call of DescribeTransitGatewayVpcAttachmentsRequest
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewayVpcAttachmentsRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewayVpcAttachmentsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewayVpcAttachmentsRequest), arg0)
+}
+
+// DescribeTransitGatewayVpcAttachmentsPages mocks base method
+func (m *MockEC2API) DescribeTransitGatewayVpcAttachmentsPages(arg0 *ec2.DescribeTransitGatewayVpcAttachmentsInput, arg1 func(*ec2.DescribeTransitGatewayVpcAttachmentsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeTransitGatewayVpcAttachmentsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeTransitGatewayVpcAttachmentsPages indicates an expected call of DescribeTransitGatewayVpcAttachmentsPages
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewayVpcAttachmentsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewayVpcAttachmentsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewayVpcAttachmentsPages), arg0, arg1)
+}
+
+// DescribeTransitGatewayVpcAttachmentsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeTransitGatewayVpcAttachmentsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeTransitGatewayVpcAttachmentsInput, arg2 func(*ec2.DescribeTransitGatewayVpcAttachmentsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeTransitGatewayVpcAttachmentsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeTransitGatewayVpcAttachmentsPagesWithContext indicates an expected call of DescribeTransitGatewayVpcAttachmentsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewayVpcAttachmentsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewayVpcAttachmentsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewayVpcAttachmentsPagesWithContext), varargs...)
+}
+
+// DescribeTransitGateways mocks base method
+func (m *MockEC2API) DescribeTransitGateways(arg0 *ec2.DescribeTransitGatewaysInput) (*ec2.DescribeTransitGatewaysOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeTransitGateways", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeTransitGatewaysOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTransitGateways indicates an expected call of DescribeTransitGateways
+func (mr *MockEC2APIMockRecorder) DescribeTransitGateways(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGateways", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGateways), arg0)
+}
+
+// DescribeTransitGatewaysWithContext mocks base method
+func (m *MockEC2API) DescribeTransitGatewaysWithContext(arg0 aws.Context, arg1 *ec2.DescribeTransitGatewaysInput, arg2 ...request.Option) (*ec2.DescribeTransitGatewaysOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeTransitGatewaysWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeTransitGatewaysOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTransitGatewaysWithContext indicates an expected call of DescribeTransitGatewaysWithContext
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewaysWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewaysWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewaysWithContext), varargs...)
+}
+
+// DescribeTransitGatewaysRequest mocks base method
+func (m *MockEC2API) DescribeTransitGatewaysRequest(arg0 *ec2.DescribeTransitGatewaysInput) (*request.Request, *ec2.DescribeTransitGatewaysOutput) {
+	ret := m.ctrl.Call(m, "DescribeTransitGatewaysRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeTransitGatewaysOutput)
+	return ret0, ret1
+}
+
+// DescribeTransitGatewaysRequest indicates an expected call of DescribeTransitGatewaysRequest
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewaysRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewaysRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewaysRequest), arg0)
+}
+
+// DescribeTransitGatewaysPages mocks base method
+func (m *MockEC2API) DescribeTransitGatewaysPages(arg0 *ec2.DescribeTransitGatewaysInput, arg1 func(*ec2.DescribeTransitGatewaysOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeTransitGatewaysPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeTransitGatewaysPages indicates an expected call of DescribeTransitGatewaysPages
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewaysPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewaysPages", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewaysPages), arg0, arg1)
+}
+
+// DescribeTransitGatewaysPagesWithContext mocks base method
+func (m *MockEC2API) DescribeTransitGatewaysPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeTransitGatewaysInput, arg2 func(*ec2.DescribeTransitGatewaysOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeTransitGatewaysPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeTransitGatewaysPagesWithContext indicates an expected call of DescribeTransitGatewaysPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeTransitGatewaysPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTransitGatewaysPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTransitGatewaysPagesWithContext), varargs...)
 }
 
 // DescribeVolumeAttribute mocks base method
@@ -7922,6 +10505,35 @@ func (mr *MockEC2APIMockRecorder) DescribeVolumesModificationsRequest(arg0 inter
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVolumesModificationsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeVolumesModificationsRequest), arg0)
 }
 
+// DescribeVolumesModificationsPages mocks base method
+func (m *MockEC2API) DescribeVolumesModificationsPages(arg0 *ec2.DescribeVolumesModificationsInput, arg1 func(*ec2.DescribeVolumesModificationsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeVolumesModificationsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVolumesModificationsPages indicates an expected call of DescribeVolumesModificationsPages
+func (mr *MockEC2APIMockRecorder) DescribeVolumesModificationsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVolumesModificationsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeVolumesModificationsPages), arg0, arg1)
+}
+
+// DescribeVolumesModificationsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeVolumesModificationsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeVolumesModificationsInput, arg2 func(*ec2.DescribeVolumesModificationsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeVolumesModificationsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVolumesModificationsPagesWithContext indicates an expected call of DescribeVolumesModificationsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeVolumesModificationsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVolumesModificationsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeVolumesModificationsPagesWithContext), varargs...)
+}
+
 // DescribeVpcAttribute mocks base method
 func (m *MockEC2API) DescribeVpcAttribute(arg0 *ec2.DescribeVpcAttributeInput) (*ec2.DescribeVpcAttributeOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeVpcAttribute", arg0)
@@ -8054,6 +10666,35 @@ func (mr *MockEC2APIMockRecorder) DescribeVpcClassicLinkDnsSupportRequest(arg0 i
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcClassicLinkDnsSupportRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcClassicLinkDnsSupportRequest), arg0)
 }
 
+// DescribeVpcClassicLinkDnsSupportPages mocks base method
+func (m *MockEC2API) DescribeVpcClassicLinkDnsSupportPages(arg0 *ec2.DescribeVpcClassicLinkDnsSupportInput, arg1 func(*ec2.DescribeVpcClassicLinkDnsSupportOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeVpcClassicLinkDnsSupportPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcClassicLinkDnsSupportPages indicates an expected call of DescribeVpcClassicLinkDnsSupportPages
+func (mr *MockEC2APIMockRecorder) DescribeVpcClassicLinkDnsSupportPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcClassicLinkDnsSupportPages", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcClassicLinkDnsSupportPages), arg0, arg1)
+}
+
+// DescribeVpcClassicLinkDnsSupportPagesWithContext mocks base method
+func (m *MockEC2API) DescribeVpcClassicLinkDnsSupportPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeVpcClassicLinkDnsSupportInput, arg2 func(*ec2.DescribeVpcClassicLinkDnsSupportOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeVpcClassicLinkDnsSupportPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcClassicLinkDnsSupportPagesWithContext indicates an expected call of DescribeVpcClassicLinkDnsSupportPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeVpcClassicLinkDnsSupportPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcClassicLinkDnsSupportPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcClassicLinkDnsSupportPagesWithContext), varargs...)
+}
+
 // DescribeVpcEndpointConnectionNotifications mocks base method
 func (m *MockEC2API) DescribeVpcEndpointConnectionNotifications(arg0 *ec2.DescribeVpcEndpointConnectionNotificationsInput) (*ec2.DescribeVpcEndpointConnectionNotificationsOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeVpcEndpointConnectionNotifications", arg0)
@@ -8096,6 +10737,35 @@ func (m *MockEC2API) DescribeVpcEndpointConnectionNotificationsRequest(arg0 *ec2
 // DescribeVpcEndpointConnectionNotificationsRequest indicates an expected call of DescribeVpcEndpointConnectionNotificationsRequest
 func (mr *MockEC2APIMockRecorder) DescribeVpcEndpointConnectionNotificationsRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcEndpointConnectionNotificationsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcEndpointConnectionNotificationsRequest), arg0)
+}
+
+// DescribeVpcEndpointConnectionNotificationsPages mocks base method
+func (m *MockEC2API) DescribeVpcEndpointConnectionNotificationsPages(arg0 *ec2.DescribeVpcEndpointConnectionNotificationsInput, arg1 func(*ec2.DescribeVpcEndpointConnectionNotificationsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeVpcEndpointConnectionNotificationsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcEndpointConnectionNotificationsPages indicates an expected call of DescribeVpcEndpointConnectionNotificationsPages
+func (mr *MockEC2APIMockRecorder) DescribeVpcEndpointConnectionNotificationsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcEndpointConnectionNotificationsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcEndpointConnectionNotificationsPages), arg0, arg1)
+}
+
+// DescribeVpcEndpointConnectionNotificationsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeVpcEndpointConnectionNotificationsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeVpcEndpointConnectionNotificationsInput, arg2 func(*ec2.DescribeVpcEndpointConnectionNotificationsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeVpcEndpointConnectionNotificationsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcEndpointConnectionNotificationsPagesWithContext indicates an expected call of DescribeVpcEndpointConnectionNotificationsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeVpcEndpointConnectionNotificationsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcEndpointConnectionNotificationsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcEndpointConnectionNotificationsPagesWithContext), varargs...)
 }
 
 // DescribeVpcEndpointConnections mocks base method
@@ -8142,6 +10812,35 @@ func (mr *MockEC2APIMockRecorder) DescribeVpcEndpointConnectionsRequest(arg0 int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcEndpointConnectionsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcEndpointConnectionsRequest), arg0)
 }
 
+// DescribeVpcEndpointConnectionsPages mocks base method
+func (m *MockEC2API) DescribeVpcEndpointConnectionsPages(arg0 *ec2.DescribeVpcEndpointConnectionsInput, arg1 func(*ec2.DescribeVpcEndpointConnectionsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeVpcEndpointConnectionsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcEndpointConnectionsPages indicates an expected call of DescribeVpcEndpointConnectionsPages
+func (mr *MockEC2APIMockRecorder) DescribeVpcEndpointConnectionsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcEndpointConnectionsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcEndpointConnectionsPages), arg0, arg1)
+}
+
+// DescribeVpcEndpointConnectionsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeVpcEndpointConnectionsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeVpcEndpointConnectionsInput, arg2 func(*ec2.DescribeVpcEndpointConnectionsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeVpcEndpointConnectionsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcEndpointConnectionsPagesWithContext indicates an expected call of DescribeVpcEndpointConnectionsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeVpcEndpointConnectionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcEndpointConnectionsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcEndpointConnectionsPagesWithContext), varargs...)
+}
+
 // DescribeVpcEndpointServiceConfigurations mocks base method
 func (m *MockEC2API) DescribeVpcEndpointServiceConfigurations(arg0 *ec2.DescribeVpcEndpointServiceConfigurationsInput) (*ec2.DescribeVpcEndpointServiceConfigurationsOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeVpcEndpointServiceConfigurations", arg0)
@@ -8186,6 +10885,35 @@ func (mr *MockEC2APIMockRecorder) DescribeVpcEndpointServiceConfigurationsReques
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcEndpointServiceConfigurationsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcEndpointServiceConfigurationsRequest), arg0)
 }
 
+// DescribeVpcEndpointServiceConfigurationsPages mocks base method
+func (m *MockEC2API) DescribeVpcEndpointServiceConfigurationsPages(arg0 *ec2.DescribeVpcEndpointServiceConfigurationsInput, arg1 func(*ec2.DescribeVpcEndpointServiceConfigurationsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeVpcEndpointServiceConfigurationsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcEndpointServiceConfigurationsPages indicates an expected call of DescribeVpcEndpointServiceConfigurationsPages
+func (mr *MockEC2APIMockRecorder) DescribeVpcEndpointServiceConfigurationsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcEndpointServiceConfigurationsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcEndpointServiceConfigurationsPages), arg0, arg1)
+}
+
+// DescribeVpcEndpointServiceConfigurationsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeVpcEndpointServiceConfigurationsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeVpcEndpointServiceConfigurationsInput, arg2 func(*ec2.DescribeVpcEndpointServiceConfigurationsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeVpcEndpointServiceConfigurationsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcEndpointServiceConfigurationsPagesWithContext indicates an expected call of DescribeVpcEndpointServiceConfigurationsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeVpcEndpointServiceConfigurationsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcEndpointServiceConfigurationsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcEndpointServiceConfigurationsPagesWithContext), varargs...)
+}
+
 // DescribeVpcEndpointServicePermissions mocks base method
 func (m *MockEC2API) DescribeVpcEndpointServicePermissions(arg0 *ec2.DescribeVpcEndpointServicePermissionsInput) (*ec2.DescribeVpcEndpointServicePermissionsOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeVpcEndpointServicePermissions", arg0)
@@ -8228,6 +10956,35 @@ func (m *MockEC2API) DescribeVpcEndpointServicePermissionsRequest(arg0 *ec2.Desc
 // DescribeVpcEndpointServicePermissionsRequest indicates an expected call of DescribeVpcEndpointServicePermissionsRequest
 func (mr *MockEC2APIMockRecorder) DescribeVpcEndpointServicePermissionsRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcEndpointServicePermissionsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcEndpointServicePermissionsRequest), arg0)
+}
+
+// DescribeVpcEndpointServicePermissionsPages mocks base method
+func (m *MockEC2API) DescribeVpcEndpointServicePermissionsPages(arg0 *ec2.DescribeVpcEndpointServicePermissionsInput, arg1 func(*ec2.DescribeVpcEndpointServicePermissionsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeVpcEndpointServicePermissionsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcEndpointServicePermissionsPages indicates an expected call of DescribeVpcEndpointServicePermissionsPages
+func (mr *MockEC2APIMockRecorder) DescribeVpcEndpointServicePermissionsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcEndpointServicePermissionsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcEndpointServicePermissionsPages), arg0, arg1)
+}
+
+// DescribeVpcEndpointServicePermissionsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeVpcEndpointServicePermissionsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeVpcEndpointServicePermissionsInput, arg2 func(*ec2.DescribeVpcEndpointServicePermissionsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeVpcEndpointServicePermissionsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcEndpointServicePermissionsPagesWithContext indicates an expected call of DescribeVpcEndpointServicePermissionsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeVpcEndpointServicePermissionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcEndpointServicePermissionsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcEndpointServicePermissionsPagesWithContext), varargs...)
 }
 
 // DescribeVpcEndpointServices mocks base method
@@ -8318,6 +11075,35 @@ func (mr *MockEC2APIMockRecorder) DescribeVpcEndpointsRequest(arg0 interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcEndpointsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcEndpointsRequest), arg0)
 }
 
+// DescribeVpcEndpointsPages mocks base method
+func (m *MockEC2API) DescribeVpcEndpointsPages(arg0 *ec2.DescribeVpcEndpointsInput, arg1 func(*ec2.DescribeVpcEndpointsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeVpcEndpointsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcEndpointsPages indicates an expected call of DescribeVpcEndpointsPages
+func (mr *MockEC2APIMockRecorder) DescribeVpcEndpointsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcEndpointsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcEndpointsPages), arg0, arg1)
+}
+
+// DescribeVpcEndpointsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeVpcEndpointsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeVpcEndpointsInput, arg2 func(*ec2.DescribeVpcEndpointsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeVpcEndpointsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcEndpointsPagesWithContext indicates an expected call of DescribeVpcEndpointsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeVpcEndpointsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcEndpointsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcEndpointsPagesWithContext), varargs...)
+}
+
 // DescribeVpcPeeringConnections mocks base method
 func (m *MockEC2API) DescribeVpcPeeringConnections(arg0 *ec2.DescribeVpcPeeringConnectionsInput) (*ec2.DescribeVpcPeeringConnectionsOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeVpcPeeringConnections", arg0)
@@ -8362,6 +11148,35 @@ func (mr *MockEC2APIMockRecorder) DescribeVpcPeeringConnectionsRequest(arg0 inte
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcPeeringConnectionsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcPeeringConnectionsRequest), arg0)
 }
 
+// DescribeVpcPeeringConnectionsPages mocks base method
+func (m *MockEC2API) DescribeVpcPeeringConnectionsPages(arg0 *ec2.DescribeVpcPeeringConnectionsInput, arg1 func(*ec2.DescribeVpcPeeringConnectionsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeVpcPeeringConnectionsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcPeeringConnectionsPages indicates an expected call of DescribeVpcPeeringConnectionsPages
+func (mr *MockEC2APIMockRecorder) DescribeVpcPeeringConnectionsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcPeeringConnectionsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcPeeringConnectionsPages), arg0, arg1)
+}
+
+// DescribeVpcPeeringConnectionsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeVpcPeeringConnectionsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeVpcPeeringConnectionsInput, arg2 func(*ec2.DescribeVpcPeeringConnectionsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeVpcPeeringConnectionsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcPeeringConnectionsPagesWithContext indicates an expected call of DescribeVpcPeeringConnectionsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeVpcPeeringConnectionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcPeeringConnectionsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcPeeringConnectionsPagesWithContext), varargs...)
+}
+
 // DescribeVpcs mocks base method
 func (m *MockEC2API) DescribeVpcs(arg0 *ec2.DescribeVpcsInput) (*ec2.DescribeVpcsOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeVpcs", arg0)
@@ -8404,6 +11219,35 @@ func (m *MockEC2API) DescribeVpcsRequest(arg0 *ec2.DescribeVpcsInput) (*request.
 // DescribeVpcsRequest indicates an expected call of DescribeVpcsRequest
 func (mr *MockEC2APIMockRecorder) DescribeVpcsRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcsRequest), arg0)
+}
+
+// DescribeVpcsPages mocks base method
+func (m *MockEC2API) DescribeVpcsPages(arg0 *ec2.DescribeVpcsInput, arg1 func(*ec2.DescribeVpcsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeVpcsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcsPages indicates an expected call of DescribeVpcsPages
+func (mr *MockEC2APIMockRecorder) DescribeVpcsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcsPages), arg0, arg1)
+}
+
+// DescribeVpcsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeVpcsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeVpcsInput, arg2 func(*ec2.DescribeVpcsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeVpcsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeVpcsPagesWithContext indicates an expected call of DescribeVpcsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeVpcsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeVpcsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeVpcsPagesWithContext), varargs...)
 }
 
 // DescribeVpnConnections mocks base method
@@ -8714,6 +11558,50 @@ func (mr *MockEC2APIMockRecorder) DetachVpnGatewayRequest(arg0 interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DetachVpnGatewayRequest", reflect.TypeOf((*MockEC2API)(nil).DetachVpnGatewayRequest), arg0)
 }
 
+// DisableTransitGatewayRouteTablePropagation mocks base method
+func (m *MockEC2API) DisableTransitGatewayRouteTablePropagation(arg0 *ec2.DisableTransitGatewayRouteTablePropagationInput) (*ec2.DisableTransitGatewayRouteTablePropagationOutput, error) {
+	ret := m.ctrl.Call(m, "DisableTransitGatewayRouteTablePropagation", arg0)
+	ret0, _ := ret[0].(*ec2.DisableTransitGatewayRouteTablePropagationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DisableTransitGatewayRouteTablePropagation indicates an expected call of DisableTransitGatewayRouteTablePropagation
+func (mr *MockEC2APIMockRecorder) DisableTransitGatewayRouteTablePropagation(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisableTransitGatewayRouteTablePropagation", reflect.TypeOf((*MockEC2API)(nil).DisableTransitGatewayRouteTablePropagation), arg0)
+}
+
+// DisableTransitGatewayRouteTablePropagationWithContext mocks base method
+func (m *MockEC2API) DisableTransitGatewayRouteTablePropagationWithContext(arg0 aws.Context, arg1 *ec2.DisableTransitGatewayRouteTablePropagationInput, arg2 ...request.Option) (*ec2.DisableTransitGatewayRouteTablePropagationOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DisableTransitGatewayRouteTablePropagationWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DisableTransitGatewayRouteTablePropagationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DisableTransitGatewayRouteTablePropagationWithContext indicates an expected call of DisableTransitGatewayRouteTablePropagationWithContext
+func (mr *MockEC2APIMockRecorder) DisableTransitGatewayRouteTablePropagationWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisableTransitGatewayRouteTablePropagationWithContext", reflect.TypeOf((*MockEC2API)(nil).DisableTransitGatewayRouteTablePropagationWithContext), varargs...)
+}
+
+// DisableTransitGatewayRouteTablePropagationRequest mocks base method
+func (m *MockEC2API) DisableTransitGatewayRouteTablePropagationRequest(arg0 *ec2.DisableTransitGatewayRouteTablePropagationInput) (*request.Request, *ec2.DisableTransitGatewayRouteTablePropagationOutput) {
+	ret := m.ctrl.Call(m, "DisableTransitGatewayRouteTablePropagationRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DisableTransitGatewayRouteTablePropagationOutput)
+	return ret0, ret1
+}
+
+// DisableTransitGatewayRouteTablePropagationRequest indicates an expected call of DisableTransitGatewayRouteTablePropagationRequest
+func (mr *MockEC2APIMockRecorder) DisableTransitGatewayRouteTablePropagationRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisableTransitGatewayRouteTablePropagationRequest", reflect.TypeOf((*MockEC2API)(nil).DisableTransitGatewayRouteTablePropagationRequest), arg0)
+}
+
 // DisableVgwRoutePropagation mocks base method
 func (m *MockEC2API) DisableVgwRoutePropagation(arg0 *ec2.DisableVgwRoutePropagationInput) (*ec2.DisableVgwRoutePropagationOutput, error) {
 	ret := m.ctrl.Call(m, "DisableVgwRoutePropagation", arg0)
@@ -8890,6 +11778,50 @@ func (mr *MockEC2APIMockRecorder) DisassociateAddressRequest(arg0 interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateAddressRequest", reflect.TypeOf((*MockEC2API)(nil).DisassociateAddressRequest), arg0)
 }
 
+// DisassociateClientVpnTargetNetwork mocks base method
+func (m *MockEC2API) DisassociateClientVpnTargetNetwork(arg0 *ec2.DisassociateClientVpnTargetNetworkInput) (*ec2.DisassociateClientVpnTargetNetworkOutput, error) {
+	ret := m.ctrl.Call(m, "DisassociateClientVpnTargetNetwork", arg0)
+	ret0, _ := ret[0].(*ec2.DisassociateClientVpnTargetNetworkOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DisassociateClientVpnTargetNetwork indicates an expected call of DisassociateClientVpnTargetNetwork
+func (mr *MockEC2APIMockRecorder) DisassociateClientVpnTargetNetwork(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateClientVpnTargetNetwork", reflect.TypeOf((*MockEC2API)(nil).DisassociateClientVpnTargetNetwork), arg0)
+}
+
+// DisassociateClientVpnTargetNetworkWithContext mocks base method
+func (m *MockEC2API) DisassociateClientVpnTargetNetworkWithContext(arg0 aws.Context, arg1 *ec2.DisassociateClientVpnTargetNetworkInput, arg2 ...request.Option) (*ec2.DisassociateClientVpnTargetNetworkOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DisassociateClientVpnTargetNetworkWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DisassociateClientVpnTargetNetworkOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DisassociateClientVpnTargetNetworkWithContext indicates an expected call of DisassociateClientVpnTargetNetworkWithContext
+func (mr *MockEC2APIMockRecorder) DisassociateClientVpnTargetNetworkWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateClientVpnTargetNetworkWithContext", reflect.TypeOf((*MockEC2API)(nil).DisassociateClientVpnTargetNetworkWithContext), varargs...)
+}
+
+// DisassociateClientVpnTargetNetworkRequest mocks base method
+func (m *MockEC2API) DisassociateClientVpnTargetNetworkRequest(arg0 *ec2.DisassociateClientVpnTargetNetworkInput) (*request.Request, *ec2.DisassociateClientVpnTargetNetworkOutput) {
+	ret := m.ctrl.Call(m, "DisassociateClientVpnTargetNetworkRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DisassociateClientVpnTargetNetworkOutput)
+	return ret0, ret1
+}
+
+// DisassociateClientVpnTargetNetworkRequest indicates an expected call of DisassociateClientVpnTargetNetworkRequest
+func (mr *MockEC2APIMockRecorder) DisassociateClientVpnTargetNetworkRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateClientVpnTargetNetworkRequest", reflect.TypeOf((*MockEC2API)(nil).DisassociateClientVpnTargetNetworkRequest), arg0)
+}
+
 // DisassociateIamInstanceProfile mocks base method
 func (m *MockEC2API) DisassociateIamInstanceProfile(arg0 *ec2.DisassociateIamInstanceProfileInput) (*ec2.DisassociateIamInstanceProfileOutput, error) {
 	ret := m.ctrl.Call(m, "DisassociateIamInstanceProfile", arg0)
@@ -9022,6 +11954,50 @@ func (mr *MockEC2APIMockRecorder) DisassociateSubnetCidrBlockRequest(arg0 interf
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateSubnetCidrBlockRequest", reflect.TypeOf((*MockEC2API)(nil).DisassociateSubnetCidrBlockRequest), arg0)
 }
 
+// DisassociateTransitGatewayRouteTable mocks base method
+func (m *MockEC2API) DisassociateTransitGatewayRouteTable(arg0 *ec2.DisassociateTransitGatewayRouteTableInput) (*ec2.DisassociateTransitGatewayRouteTableOutput, error) {
+	ret := m.ctrl.Call(m, "DisassociateTransitGatewayRouteTable", arg0)
+	ret0, _ := ret[0].(*ec2.DisassociateTransitGatewayRouteTableOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DisassociateTransitGatewayRouteTable indicates an expected call of DisassociateTransitGatewayRouteTable
+func (mr *MockEC2APIMockRecorder) DisassociateTransitGatewayRouteTable(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateTransitGatewayRouteTable", reflect.TypeOf((*MockEC2API)(nil).DisassociateTransitGatewayRouteTable), arg0)
+}
+
+// DisassociateTransitGatewayRouteTableWithContext mocks base method
+func (m *MockEC2API) DisassociateTransitGatewayRouteTableWithContext(arg0 aws.Context, arg1 *ec2.DisassociateTransitGatewayRouteTableInput, arg2 ...request.Option) (*ec2.DisassociateTransitGatewayRouteTableOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DisassociateTransitGatewayRouteTableWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DisassociateTransitGatewayRouteTableOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DisassociateTransitGatewayRouteTableWithContext indicates an expected call of DisassociateTransitGatewayRouteTableWithContext
+func (mr *MockEC2APIMockRecorder) DisassociateTransitGatewayRouteTableWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateTransitGatewayRouteTableWithContext", reflect.TypeOf((*MockEC2API)(nil).DisassociateTransitGatewayRouteTableWithContext), varargs...)
+}
+
+// DisassociateTransitGatewayRouteTableRequest mocks base method
+func (m *MockEC2API) DisassociateTransitGatewayRouteTableRequest(arg0 *ec2.DisassociateTransitGatewayRouteTableInput) (*request.Request, *ec2.DisassociateTransitGatewayRouteTableOutput) {
+	ret := m.ctrl.Call(m, "DisassociateTransitGatewayRouteTableRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DisassociateTransitGatewayRouteTableOutput)
+	return ret0, ret1
+}
+
+// DisassociateTransitGatewayRouteTableRequest indicates an expected call of DisassociateTransitGatewayRouteTableRequest
+func (mr *MockEC2APIMockRecorder) DisassociateTransitGatewayRouteTableRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateTransitGatewayRouteTableRequest", reflect.TypeOf((*MockEC2API)(nil).DisassociateTransitGatewayRouteTableRequest), arg0)
+}
+
 // DisassociateVpcCidrBlock mocks base method
 func (m *MockEC2API) DisassociateVpcCidrBlock(arg0 *ec2.DisassociateVpcCidrBlockInput) (*ec2.DisassociateVpcCidrBlockOutput, error) {
 	ret := m.ctrl.Call(m, "DisassociateVpcCidrBlock", arg0)
@@ -9064,6 +12040,50 @@ func (m *MockEC2API) DisassociateVpcCidrBlockRequest(arg0 *ec2.DisassociateVpcCi
 // DisassociateVpcCidrBlockRequest indicates an expected call of DisassociateVpcCidrBlockRequest
 func (mr *MockEC2APIMockRecorder) DisassociateVpcCidrBlockRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateVpcCidrBlockRequest", reflect.TypeOf((*MockEC2API)(nil).DisassociateVpcCidrBlockRequest), arg0)
+}
+
+// EnableTransitGatewayRouteTablePropagation mocks base method
+func (m *MockEC2API) EnableTransitGatewayRouteTablePropagation(arg0 *ec2.EnableTransitGatewayRouteTablePropagationInput) (*ec2.EnableTransitGatewayRouteTablePropagationOutput, error) {
+	ret := m.ctrl.Call(m, "EnableTransitGatewayRouteTablePropagation", arg0)
+	ret0, _ := ret[0].(*ec2.EnableTransitGatewayRouteTablePropagationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// EnableTransitGatewayRouteTablePropagation indicates an expected call of EnableTransitGatewayRouteTablePropagation
+func (mr *MockEC2APIMockRecorder) EnableTransitGatewayRouteTablePropagation(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableTransitGatewayRouteTablePropagation", reflect.TypeOf((*MockEC2API)(nil).EnableTransitGatewayRouteTablePropagation), arg0)
+}
+
+// EnableTransitGatewayRouteTablePropagationWithContext mocks base method
+func (m *MockEC2API) EnableTransitGatewayRouteTablePropagationWithContext(arg0 aws.Context, arg1 *ec2.EnableTransitGatewayRouteTablePropagationInput, arg2 ...request.Option) (*ec2.EnableTransitGatewayRouteTablePropagationOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "EnableTransitGatewayRouteTablePropagationWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.EnableTransitGatewayRouteTablePropagationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// EnableTransitGatewayRouteTablePropagationWithContext indicates an expected call of EnableTransitGatewayRouteTablePropagationWithContext
+func (mr *MockEC2APIMockRecorder) EnableTransitGatewayRouteTablePropagationWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableTransitGatewayRouteTablePropagationWithContext", reflect.TypeOf((*MockEC2API)(nil).EnableTransitGatewayRouteTablePropagationWithContext), varargs...)
+}
+
+// EnableTransitGatewayRouteTablePropagationRequest mocks base method
+func (m *MockEC2API) EnableTransitGatewayRouteTablePropagationRequest(arg0 *ec2.EnableTransitGatewayRouteTablePropagationInput) (*request.Request, *ec2.EnableTransitGatewayRouteTablePropagationOutput) {
+	ret := m.ctrl.Call(m, "EnableTransitGatewayRouteTablePropagationRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.EnableTransitGatewayRouteTablePropagationOutput)
+	return ret0, ret1
+}
+
+// EnableTransitGatewayRouteTablePropagationRequest indicates an expected call of EnableTransitGatewayRouteTablePropagationRequest
+func (mr *MockEC2APIMockRecorder) EnableTransitGatewayRouteTablePropagationRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableTransitGatewayRouteTablePropagationRequest", reflect.TypeOf((*MockEC2API)(nil).EnableTransitGatewayRouteTablePropagationRequest), arg0)
 }
 
 // EnableVgwRoutePropagation mocks base method
@@ -9240,6 +12260,138 @@ func (m *MockEC2API) EnableVpcClassicLinkDnsSupportRequest(arg0 *ec2.EnableVpcCl
 // EnableVpcClassicLinkDnsSupportRequest indicates an expected call of EnableVpcClassicLinkDnsSupportRequest
 func (mr *MockEC2APIMockRecorder) EnableVpcClassicLinkDnsSupportRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableVpcClassicLinkDnsSupportRequest", reflect.TypeOf((*MockEC2API)(nil).EnableVpcClassicLinkDnsSupportRequest), arg0)
+}
+
+// ExportClientVpnClientCertificateRevocationList mocks base method
+func (m *MockEC2API) ExportClientVpnClientCertificateRevocationList(arg0 *ec2.ExportClientVpnClientCertificateRevocationListInput) (*ec2.ExportClientVpnClientCertificateRevocationListOutput, error) {
+	ret := m.ctrl.Call(m, "ExportClientVpnClientCertificateRevocationList", arg0)
+	ret0, _ := ret[0].(*ec2.ExportClientVpnClientCertificateRevocationListOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExportClientVpnClientCertificateRevocationList indicates an expected call of ExportClientVpnClientCertificateRevocationList
+func (mr *MockEC2APIMockRecorder) ExportClientVpnClientCertificateRevocationList(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExportClientVpnClientCertificateRevocationList", reflect.TypeOf((*MockEC2API)(nil).ExportClientVpnClientCertificateRevocationList), arg0)
+}
+
+// ExportClientVpnClientCertificateRevocationListWithContext mocks base method
+func (m *MockEC2API) ExportClientVpnClientCertificateRevocationListWithContext(arg0 aws.Context, arg1 *ec2.ExportClientVpnClientCertificateRevocationListInput, arg2 ...request.Option) (*ec2.ExportClientVpnClientCertificateRevocationListOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ExportClientVpnClientCertificateRevocationListWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.ExportClientVpnClientCertificateRevocationListOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExportClientVpnClientCertificateRevocationListWithContext indicates an expected call of ExportClientVpnClientCertificateRevocationListWithContext
+func (mr *MockEC2APIMockRecorder) ExportClientVpnClientCertificateRevocationListWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExportClientVpnClientCertificateRevocationListWithContext", reflect.TypeOf((*MockEC2API)(nil).ExportClientVpnClientCertificateRevocationListWithContext), varargs...)
+}
+
+// ExportClientVpnClientCertificateRevocationListRequest mocks base method
+func (m *MockEC2API) ExportClientVpnClientCertificateRevocationListRequest(arg0 *ec2.ExportClientVpnClientCertificateRevocationListInput) (*request.Request, *ec2.ExportClientVpnClientCertificateRevocationListOutput) {
+	ret := m.ctrl.Call(m, "ExportClientVpnClientCertificateRevocationListRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ExportClientVpnClientCertificateRevocationListOutput)
+	return ret0, ret1
+}
+
+// ExportClientVpnClientCertificateRevocationListRequest indicates an expected call of ExportClientVpnClientCertificateRevocationListRequest
+func (mr *MockEC2APIMockRecorder) ExportClientVpnClientCertificateRevocationListRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExportClientVpnClientCertificateRevocationListRequest", reflect.TypeOf((*MockEC2API)(nil).ExportClientVpnClientCertificateRevocationListRequest), arg0)
+}
+
+// ExportClientVpnClientConfiguration mocks base method
+func (m *MockEC2API) ExportClientVpnClientConfiguration(arg0 *ec2.ExportClientVpnClientConfigurationInput) (*ec2.ExportClientVpnClientConfigurationOutput, error) {
+	ret := m.ctrl.Call(m, "ExportClientVpnClientConfiguration", arg0)
+	ret0, _ := ret[0].(*ec2.ExportClientVpnClientConfigurationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExportClientVpnClientConfiguration indicates an expected call of ExportClientVpnClientConfiguration
+func (mr *MockEC2APIMockRecorder) ExportClientVpnClientConfiguration(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExportClientVpnClientConfiguration", reflect.TypeOf((*MockEC2API)(nil).ExportClientVpnClientConfiguration), arg0)
+}
+
+// ExportClientVpnClientConfigurationWithContext mocks base method
+func (m *MockEC2API) ExportClientVpnClientConfigurationWithContext(arg0 aws.Context, arg1 *ec2.ExportClientVpnClientConfigurationInput, arg2 ...request.Option) (*ec2.ExportClientVpnClientConfigurationOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ExportClientVpnClientConfigurationWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.ExportClientVpnClientConfigurationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExportClientVpnClientConfigurationWithContext indicates an expected call of ExportClientVpnClientConfigurationWithContext
+func (mr *MockEC2APIMockRecorder) ExportClientVpnClientConfigurationWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExportClientVpnClientConfigurationWithContext", reflect.TypeOf((*MockEC2API)(nil).ExportClientVpnClientConfigurationWithContext), varargs...)
+}
+
+// ExportClientVpnClientConfigurationRequest mocks base method
+func (m *MockEC2API) ExportClientVpnClientConfigurationRequest(arg0 *ec2.ExportClientVpnClientConfigurationInput) (*request.Request, *ec2.ExportClientVpnClientConfigurationOutput) {
+	ret := m.ctrl.Call(m, "ExportClientVpnClientConfigurationRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ExportClientVpnClientConfigurationOutput)
+	return ret0, ret1
+}
+
+// ExportClientVpnClientConfigurationRequest indicates an expected call of ExportClientVpnClientConfigurationRequest
+func (mr *MockEC2APIMockRecorder) ExportClientVpnClientConfigurationRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExportClientVpnClientConfigurationRequest", reflect.TypeOf((*MockEC2API)(nil).ExportClientVpnClientConfigurationRequest), arg0)
+}
+
+// ExportTransitGatewayRoutes mocks base method
+func (m *MockEC2API) ExportTransitGatewayRoutes(arg0 *ec2.ExportTransitGatewayRoutesInput) (*ec2.ExportTransitGatewayRoutesOutput, error) {
+	ret := m.ctrl.Call(m, "ExportTransitGatewayRoutes", arg0)
+	ret0, _ := ret[0].(*ec2.ExportTransitGatewayRoutesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExportTransitGatewayRoutes indicates an expected call of ExportTransitGatewayRoutes
+func (mr *MockEC2APIMockRecorder) ExportTransitGatewayRoutes(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExportTransitGatewayRoutes", reflect.TypeOf((*MockEC2API)(nil).ExportTransitGatewayRoutes), arg0)
+}
+
+// ExportTransitGatewayRoutesWithContext mocks base method
+func (m *MockEC2API) ExportTransitGatewayRoutesWithContext(arg0 aws.Context, arg1 *ec2.ExportTransitGatewayRoutesInput, arg2 ...request.Option) (*ec2.ExportTransitGatewayRoutesOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ExportTransitGatewayRoutesWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.ExportTransitGatewayRoutesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExportTransitGatewayRoutesWithContext indicates an expected call of ExportTransitGatewayRoutesWithContext
+func (mr *MockEC2APIMockRecorder) ExportTransitGatewayRoutesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExportTransitGatewayRoutesWithContext", reflect.TypeOf((*MockEC2API)(nil).ExportTransitGatewayRoutesWithContext), varargs...)
+}
+
+// ExportTransitGatewayRoutesRequest mocks base method
+func (m *MockEC2API) ExportTransitGatewayRoutesRequest(arg0 *ec2.ExportTransitGatewayRoutesInput) (*request.Request, *ec2.ExportTransitGatewayRoutesOutput) {
+	ret := m.ctrl.Call(m, "ExportTransitGatewayRoutesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ExportTransitGatewayRoutesOutput)
+	return ret0, ret1
+}
+
+// ExportTransitGatewayRoutesRequest indicates an expected call of ExportTransitGatewayRoutesRequest
+func (mr *MockEC2APIMockRecorder) ExportTransitGatewayRoutesRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExportTransitGatewayRoutesRequest", reflect.TypeOf((*MockEC2API)(nil).ExportTransitGatewayRoutesRequest), arg0)
 }
 
 // GetConsoleOutput mocks base method
@@ -9506,6 +12658,269 @@ func (mr *MockEC2APIMockRecorder) GetReservedInstancesExchangeQuoteRequest(arg0 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetReservedInstancesExchangeQuoteRequest", reflect.TypeOf((*MockEC2API)(nil).GetReservedInstancesExchangeQuoteRequest), arg0)
 }
 
+// GetTransitGatewayAttachmentPropagations mocks base method
+func (m *MockEC2API) GetTransitGatewayAttachmentPropagations(arg0 *ec2.GetTransitGatewayAttachmentPropagationsInput) (*ec2.GetTransitGatewayAttachmentPropagationsOutput, error) {
+	ret := m.ctrl.Call(m, "GetTransitGatewayAttachmentPropagations", arg0)
+	ret0, _ := ret[0].(*ec2.GetTransitGatewayAttachmentPropagationsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTransitGatewayAttachmentPropagations indicates an expected call of GetTransitGatewayAttachmentPropagations
+func (mr *MockEC2APIMockRecorder) GetTransitGatewayAttachmentPropagations(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransitGatewayAttachmentPropagations", reflect.TypeOf((*MockEC2API)(nil).GetTransitGatewayAttachmentPropagations), arg0)
+}
+
+// GetTransitGatewayAttachmentPropagationsWithContext mocks base method
+func (m *MockEC2API) GetTransitGatewayAttachmentPropagationsWithContext(arg0 aws.Context, arg1 *ec2.GetTransitGatewayAttachmentPropagationsInput, arg2 ...request.Option) (*ec2.GetTransitGatewayAttachmentPropagationsOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetTransitGatewayAttachmentPropagationsWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.GetTransitGatewayAttachmentPropagationsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTransitGatewayAttachmentPropagationsWithContext indicates an expected call of GetTransitGatewayAttachmentPropagationsWithContext
+func (mr *MockEC2APIMockRecorder) GetTransitGatewayAttachmentPropagationsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransitGatewayAttachmentPropagationsWithContext", reflect.TypeOf((*MockEC2API)(nil).GetTransitGatewayAttachmentPropagationsWithContext), varargs...)
+}
+
+// GetTransitGatewayAttachmentPropagationsRequest mocks base method
+func (m *MockEC2API) GetTransitGatewayAttachmentPropagationsRequest(arg0 *ec2.GetTransitGatewayAttachmentPropagationsInput) (*request.Request, *ec2.GetTransitGatewayAttachmentPropagationsOutput) {
+	ret := m.ctrl.Call(m, "GetTransitGatewayAttachmentPropagationsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.GetTransitGatewayAttachmentPropagationsOutput)
+	return ret0, ret1
+}
+
+// GetTransitGatewayAttachmentPropagationsRequest indicates an expected call of GetTransitGatewayAttachmentPropagationsRequest
+func (mr *MockEC2APIMockRecorder) GetTransitGatewayAttachmentPropagationsRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransitGatewayAttachmentPropagationsRequest", reflect.TypeOf((*MockEC2API)(nil).GetTransitGatewayAttachmentPropagationsRequest), arg0)
+}
+
+// GetTransitGatewayAttachmentPropagationsPages mocks base method
+func (m *MockEC2API) GetTransitGatewayAttachmentPropagationsPages(arg0 *ec2.GetTransitGatewayAttachmentPropagationsInput, arg1 func(*ec2.GetTransitGatewayAttachmentPropagationsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "GetTransitGatewayAttachmentPropagationsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetTransitGatewayAttachmentPropagationsPages indicates an expected call of GetTransitGatewayAttachmentPropagationsPages
+func (mr *MockEC2APIMockRecorder) GetTransitGatewayAttachmentPropagationsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransitGatewayAttachmentPropagationsPages", reflect.TypeOf((*MockEC2API)(nil).GetTransitGatewayAttachmentPropagationsPages), arg0, arg1)
+}
+
+// GetTransitGatewayAttachmentPropagationsPagesWithContext mocks base method
+func (m *MockEC2API) GetTransitGatewayAttachmentPropagationsPagesWithContext(arg0 aws.Context, arg1 *ec2.GetTransitGatewayAttachmentPropagationsInput, arg2 func(*ec2.GetTransitGatewayAttachmentPropagationsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetTransitGatewayAttachmentPropagationsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetTransitGatewayAttachmentPropagationsPagesWithContext indicates an expected call of GetTransitGatewayAttachmentPropagationsPagesWithContext
+func (mr *MockEC2APIMockRecorder) GetTransitGatewayAttachmentPropagationsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransitGatewayAttachmentPropagationsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).GetTransitGatewayAttachmentPropagationsPagesWithContext), varargs...)
+}
+
+// GetTransitGatewayRouteTableAssociations mocks base method
+func (m *MockEC2API) GetTransitGatewayRouteTableAssociations(arg0 *ec2.GetTransitGatewayRouteTableAssociationsInput) (*ec2.GetTransitGatewayRouteTableAssociationsOutput, error) {
+	ret := m.ctrl.Call(m, "GetTransitGatewayRouteTableAssociations", arg0)
+	ret0, _ := ret[0].(*ec2.GetTransitGatewayRouteTableAssociationsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTransitGatewayRouteTableAssociations indicates an expected call of GetTransitGatewayRouteTableAssociations
+func (mr *MockEC2APIMockRecorder) GetTransitGatewayRouteTableAssociations(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransitGatewayRouteTableAssociations", reflect.TypeOf((*MockEC2API)(nil).GetTransitGatewayRouteTableAssociations), arg0)
+}
+
+// GetTransitGatewayRouteTableAssociationsWithContext mocks base method
+func (m *MockEC2API) GetTransitGatewayRouteTableAssociationsWithContext(arg0 aws.Context, arg1 *ec2.GetTransitGatewayRouteTableAssociationsInput, arg2 ...request.Option) (*ec2.GetTransitGatewayRouteTableAssociationsOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetTransitGatewayRouteTableAssociationsWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.GetTransitGatewayRouteTableAssociationsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTransitGatewayRouteTableAssociationsWithContext indicates an expected call of GetTransitGatewayRouteTableAssociationsWithContext
+func (mr *MockEC2APIMockRecorder) GetTransitGatewayRouteTableAssociationsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransitGatewayRouteTableAssociationsWithContext", reflect.TypeOf((*MockEC2API)(nil).GetTransitGatewayRouteTableAssociationsWithContext), varargs...)
+}
+
+// GetTransitGatewayRouteTableAssociationsRequest mocks base method
+func (m *MockEC2API) GetTransitGatewayRouteTableAssociationsRequest(arg0 *ec2.GetTransitGatewayRouteTableAssociationsInput) (*request.Request, *ec2.GetTransitGatewayRouteTableAssociationsOutput) {
+	ret := m.ctrl.Call(m, "GetTransitGatewayRouteTableAssociationsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.GetTransitGatewayRouteTableAssociationsOutput)
+	return ret0, ret1
+}
+
+// GetTransitGatewayRouteTableAssociationsRequest indicates an expected call of GetTransitGatewayRouteTableAssociationsRequest
+func (mr *MockEC2APIMockRecorder) GetTransitGatewayRouteTableAssociationsRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransitGatewayRouteTableAssociationsRequest", reflect.TypeOf((*MockEC2API)(nil).GetTransitGatewayRouteTableAssociationsRequest), arg0)
+}
+
+// GetTransitGatewayRouteTableAssociationsPages mocks base method
+func (m *MockEC2API) GetTransitGatewayRouteTableAssociationsPages(arg0 *ec2.GetTransitGatewayRouteTableAssociationsInput, arg1 func(*ec2.GetTransitGatewayRouteTableAssociationsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "GetTransitGatewayRouteTableAssociationsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetTransitGatewayRouteTableAssociationsPages indicates an expected call of GetTransitGatewayRouteTableAssociationsPages
+func (mr *MockEC2APIMockRecorder) GetTransitGatewayRouteTableAssociationsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransitGatewayRouteTableAssociationsPages", reflect.TypeOf((*MockEC2API)(nil).GetTransitGatewayRouteTableAssociationsPages), arg0, arg1)
+}
+
+// GetTransitGatewayRouteTableAssociationsPagesWithContext mocks base method
+func (m *MockEC2API) GetTransitGatewayRouteTableAssociationsPagesWithContext(arg0 aws.Context, arg1 *ec2.GetTransitGatewayRouteTableAssociationsInput, arg2 func(*ec2.GetTransitGatewayRouteTableAssociationsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetTransitGatewayRouteTableAssociationsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetTransitGatewayRouteTableAssociationsPagesWithContext indicates an expected call of GetTransitGatewayRouteTableAssociationsPagesWithContext
+func (mr *MockEC2APIMockRecorder) GetTransitGatewayRouteTableAssociationsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransitGatewayRouteTableAssociationsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).GetTransitGatewayRouteTableAssociationsPagesWithContext), varargs...)
+}
+
+// GetTransitGatewayRouteTablePropagations mocks base method
+func (m *MockEC2API) GetTransitGatewayRouteTablePropagations(arg0 *ec2.GetTransitGatewayRouteTablePropagationsInput) (*ec2.GetTransitGatewayRouteTablePropagationsOutput, error) {
+	ret := m.ctrl.Call(m, "GetTransitGatewayRouteTablePropagations", arg0)
+	ret0, _ := ret[0].(*ec2.GetTransitGatewayRouteTablePropagationsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTransitGatewayRouteTablePropagations indicates an expected call of GetTransitGatewayRouteTablePropagations
+func (mr *MockEC2APIMockRecorder) GetTransitGatewayRouteTablePropagations(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransitGatewayRouteTablePropagations", reflect.TypeOf((*MockEC2API)(nil).GetTransitGatewayRouteTablePropagations), arg0)
+}
+
+// GetTransitGatewayRouteTablePropagationsWithContext mocks base method
+func (m *MockEC2API) GetTransitGatewayRouteTablePropagationsWithContext(arg0 aws.Context, arg1 *ec2.GetTransitGatewayRouteTablePropagationsInput, arg2 ...request.Option) (*ec2.GetTransitGatewayRouteTablePropagationsOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetTransitGatewayRouteTablePropagationsWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.GetTransitGatewayRouteTablePropagationsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTransitGatewayRouteTablePropagationsWithContext indicates an expected call of GetTransitGatewayRouteTablePropagationsWithContext
+func (mr *MockEC2APIMockRecorder) GetTransitGatewayRouteTablePropagationsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransitGatewayRouteTablePropagationsWithContext", reflect.TypeOf((*MockEC2API)(nil).GetTransitGatewayRouteTablePropagationsWithContext), varargs...)
+}
+
+// GetTransitGatewayRouteTablePropagationsRequest mocks base method
+func (m *MockEC2API) GetTransitGatewayRouteTablePropagationsRequest(arg0 *ec2.GetTransitGatewayRouteTablePropagationsInput) (*request.Request, *ec2.GetTransitGatewayRouteTablePropagationsOutput) {
+	ret := m.ctrl.Call(m, "GetTransitGatewayRouteTablePropagationsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.GetTransitGatewayRouteTablePropagationsOutput)
+	return ret0, ret1
+}
+
+// GetTransitGatewayRouteTablePropagationsRequest indicates an expected call of GetTransitGatewayRouteTablePropagationsRequest
+func (mr *MockEC2APIMockRecorder) GetTransitGatewayRouteTablePropagationsRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransitGatewayRouteTablePropagationsRequest", reflect.TypeOf((*MockEC2API)(nil).GetTransitGatewayRouteTablePropagationsRequest), arg0)
+}
+
+// GetTransitGatewayRouteTablePropagationsPages mocks base method
+func (m *MockEC2API) GetTransitGatewayRouteTablePropagationsPages(arg0 *ec2.GetTransitGatewayRouteTablePropagationsInput, arg1 func(*ec2.GetTransitGatewayRouteTablePropagationsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "GetTransitGatewayRouteTablePropagationsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetTransitGatewayRouteTablePropagationsPages indicates an expected call of GetTransitGatewayRouteTablePropagationsPages
+func (mr *MockEC2APIMockRecorder) GetTransitGatewayRouteTablePropagationsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransitGatewayRouteTablePropagationsPages", reflect.TypeOf((*MockEC2API)(nil).GetTransitGatewayRouteTablePropagationsPages), arg0, arg1)
+}
+
+// GetTransitGatewayRouteTablePropagationsPagesWithContext mocks base method
+func (m *MockEC2API) GetTransitGatewayRouteTablePropagationsPagesWithContext(arg0 aws.Context, arg1 *ec2.GetTransitGatewayRouteTablePropagationsInput, arg2 func(*ec2.GetTransitGatewayRouteTablePropagationsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetTransitGatewayRouteTablePropagationsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetTransitGatewayRouteTablePropagationsPagesWithContext indicates an expected call of GetTransitGatewayRouteTablePropagationsPagesWithContext
+func (mr *MockEC2APIMockRecorder) GetTransitGatewayRouteTablePropagationsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransitGatewayRouteTablePropagationsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).GetTransitGatewayRouteTablePropagationsPagesWithContext), varargs...)
+}
+
+// ImportClientVpnClientCertificateRevocationList mocks base method
+func (m *MockEC2API) ImportClientVpnClientCertificateRevocationList(arg0 *ec2.ImportClientVpnClientCertificateRevocationListInput) (*ec2.ImportClientVpnClientCertificateRevocationListOutput, error) {
+	ret := m.ctrl.Call(m, "ImportClientVpnClientCertificateRevocationList", arg0)
+	ret0, _ := ret[0].(*ec2.ImportClientVpnClientCertificateRevocationListOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ImportClientVpnClientCertificateRevocationList indicates an expected call of ImportClientVpnClientCertificateRevocationList
+func (mr *MockEC2APIMockRecorder) ImportClientVpnClientCertificateRevocationList(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ImportClientVpnClientCertificateRevocationList", reflect.TypeOf((*MockEC2API)(nil).ImportClientVpnClientCertificateRevocationList), arg0)
+}
+
+// ImportClientVpnClientCertificateRevocationListWithContext mocks base method
+func (m *MockEC2API) ImportClientVpnClientCertificateRevocationListWithContext(arg0 aws.Context, arg1 *ec2.ImportClientVpnClientCertificateRevocationListInput, arg2 ...request.Option) (*ec2.ImportClientVpnClientCertificateRevocationListOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ImportClientVpnClientCertificateRevocationListWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.ImportClientVpnClientCertificateRevocationListOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ImportClientVpnClientCertificateRevocationListWithContext indicates an expected call of ImportClientVpnClientCertificateRevocationListWithContext
+func (mr *MockEC2APIMockRecorder) ImportClientVpnClientCertificateRevocationListWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ImportClientVpnClientCertificateRevocationListWithContext", reflect.TypeOf((*MockEC2API)(nil).ImportClientVpnClientCertificateRevocationListWithContext), varargs...)
+}
+
+// ImportClientVpnClientCertificateRevocationListRequest mocks base method
+func (m *MockEC2API) ImportClientVpnClientCertificateRevocationListRequest(arg0 *ec2.ImportClientVpnClientCertificateRevocationListInput) (*request.Request, *ec2.ImportClientVpnClientCertificateRevocationListOutput) {
+	ret := m.ctrl.Call(m, "ImportClientVpnClientCertificateRevocationListRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ImportClientVpnClientCertificateRevocationListOutput)
+	return ret0, ret1
+}
+
+// ImportClientVpnClientCertificateRevocationListRequest indicates an expected call of ImportClientVpnClientCertificateRevocationListRequest
+func (mr *MockEC2APIMockRecorder) ImportClientVpnClientCertificateRevocationListRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ImportClientVpnClientCertificateRevocationListRequest", reflect.TypeOf((*MockEC2API)(nil).ImportClientVpnClientCertificateRevocationListRequest), arg0)
+}
+
 // ImportImage mocks base method
 func (m *MockEC2API) ImportImage(arg0 *ec2.ImportImageInput) (*ec2.ImportImageOutput, error) {
 	ret := m.ctrl.Call(m, "ImportImage", arg0)
@@ -9724,6 +13139,94 @@ func (m *MockEC2API) ImportVolumeRequest(arg0 *ec2.ImportVolumeInput) (*request.
 // ImportVolumeRequest indicates an expected call of ImportVolumeRequest
 func (mr *MockEC2APIMockRecorder) ImportVolumeRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ImportVolumeRequest", reflect.TypeOf((*MockEC2API)(nil).ImportVolumeRequest), arg0)
+}
+
+// ModifyCapacityReservation mocks base method
+func (m *MockEC2API) ModifyCapacityReservation(arg0 *ec2.ModifyCapacityReservationInput) (*ec2.ModifyCapacityReservationOutput, error) {
+	ret := m.ctrl.Call(m, "ModifyCapacityReservation", arg0)
+	ret0, _ := ret[0].(*ec2.ModifyCapacityReservationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyCapacityReservation indicates an expected call of ModifyCapacityReservation
+func (mr *MockEC2APIMockRecorder) ModifyCapacityReservation(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyCapacityReservation", reflect.TypeOf((*MockEC2API)(nil).ModifyCapacityReservation), arg0)
+}
+
+// ModifyCapacityReservationWithContext mocks base method
+func (m *MockEC2API) ModifyCapacityReservationWithContext(arg0 aws.Context, arg1 *ec2.ModifyCapacityReservationInput, arg2 ...request.Option) (*ec2.ModifyCapacityReservationOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ModifyCapacityReservationWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.ModifyCapacityReservationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyCapacityReservationWithContext indicates an expected call of ModifyCapacityReservationWithContext
+func (mr *MockEC2APIMockRecorder) ModifyCapacityReservationWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyCapacityReservationWithContext", reflect.TypeOf((*MockEC2API)(nil).ModifyCapacityReservationWithContext), varargs...)
+}
+
+// ModifyCapacityReservationRequest mocks base method
+func (m *MockEC2API) ModifyCapacityReservationRequest(arg0 *ec2.ModifyCapacityReservationInput) (*request.Request, *ec2.ModifyCapacityReservationOutput) {
+	ret := m.ctrl.Call(m, "ModifyCapacityReservationRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ModifyCapacityReservationOutput)
+	return ret0, ret1
+}
+
+// ModifyCapacityReservationRequest indicates an expected call of ModifyCapacityReservationRequest
+func (mr *MockEC2APIMockRecorder) ModifyCapacityReservationRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyCapacityReservationRequest", reflect.TypeOf((*MockEC2API)(nil).ModifyCapacityReservationRequest), arg0)
+}
+
+// ModifyClientVpnEndpoint mocks base method
+func (m *MockEC2API) ModifyClientVpnEndpoint(arg0 *ec2.ModifyClientVpnEndpointInput) (*ec2.ModifyClientVpnEndpointOutput, error) {
+	ret := m.ctrl.Call(m, "ModifyClientVpnEndpoint", arg0)
+	ret0, _ := ret[0].(*ec2.ModifyClientVpnEndpointOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyClientVpnEndpoint indicates an expected call of ModifyClientVpnEndpoint
+func (mr *MockEC2APIMockRecorder) ModifyClientVpnEndpoint(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyClientVpnEndpoint", reflect.TypeOf((*MockEC2API)(nil).ModifyClientVpnEndpoint), arg0)
+}
+
+// ModifyClientVpnEndpointWithContext mocks base method
+func (m *MockEC2API) ModifyClientVpnEndpointWithContext(arg0 aws.Context, arg1 *ec2.ModifyClientVpnEndpointInput, arg2 ...request.Option) (*ec2.ModifyClientVpnEndpointOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ModifyClientVpnEndpointWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.ModifyClientVpnEndpointOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyClientVpnEndpointWithContext indicates an expected call of ModifyClientVpnEndpointWithContext
+func (mr *MockEC2APIMockRecorder) ModifyClientVpnEndpointWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyClientVpnEndpointWithContext", reflect.TypeOf((*MockEC2API)(nil).ModifyClientVpnEndpointWithContext), varargs...)
+}
+
+// ModifyClientVpnEndpointRequest mocks base method
+func (m *MockEC2API) ModifyClientVpnEndpointRequest(arg0 *ec2.ModifyClientVpnEndpointInput) (*request.Request, *ec2.ModifyClientVpnEndpointOutput) {
+	ret := m.ctrl.Call(m, "ModifyClientVpnEndpointRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ModifyClientVpnEndpointOutput)
+	return ret0, ret1
+}
+
+// ModifyClientVpnEndpointRequest indicates an expected call of ModifyClientVpnEndpointRequest
+func (mr *MockEC2APIMockRecorder) ModifyClientVpnEndpointRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyClientVpnEndpointRequest", reflect.TypeOf((*MockEC2API)(nil).ModifyClientVpnEndpointRequest), arg0)
 }
 
 // ModifyFleet mocks base method
@@ -10034,6 +13537,50 @@ func (mr *MockEC2APIMockRecorder) ModifyInstanceAttributeRequest(arg0 interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyInstanceAttributeRequest", reflect.TypeOf((*MockEC2API)(nil).ModifyInstanceAttributeRequest), arg0)
 }
 
+// ModifyInstanceCapacityReservationAttributes mocks base method
+func (m *MockEC2API) ModifyInstanceCapacityReservationAttributes(arg0 *ec2.ModifyInstanceCapacityReservationAttributesInput) (*ec2.ModifyInstanceCapacityReservationAttributesOutput, error) {
+	ret := m.ctrl.Call(m, "ModifyInstanceCapacityReservationAttributes", arg0)
+	ret0, _ := ret[0].(*ec2.ModifyInstanceCapacityReservationAttributesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyInstanceCapacityReservationAttributes indicates an expected call of ModifyInstanceCapacityReservationAttributes
+func (mr *MockEC2APIMockRecorder) ModifyInstanceCapacityReservationAttributes(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyInstanceCapacityReservationAttributes", reflect.TypeOf((*MockEC2API)(nil).ModifyInstanceCapacityReservationAttributes), arg0)
+}
+
+// ModifyInstanceCapacityReservationAttributesWithContext mocks base method
+func (m *MockEC2API) ModifyInstanceCapacityReservationAttributesWithContext(arg0 aws.Context, arg1 *ec2.ModifyInstanceCapacityReservationAttributesInput, arg2 ...request.Option) (*ec2.ModifyInstanceCapacityReservationAttributesOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ModifyInstanceCapacityReservationAttributesWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.ModifyInstanceCapacityReservationAttributesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyInstanceCapacityReservationAttributesWithContext indicates an expected call of ModifyInstanceCapacityReservationAttributesWithContext
+func (mr *MockEC2APIMockRecorder) ModifyInstanceCapacityReservationAttributesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyInstanceCapacityReservationAttributesWithContext", reflect.TypeOf((*MockEC2API)(nil).ModifyInstanceCapacityReservationAttributesWithContext), varargs...)
+}
+
+// ModifyInstanceCapacityReservationAttributesRequest mocks base method
+func (m *MockEC2API) ModifyInstanceCapacityReservationAttributesRequest(arg0 *ec2.ModifyInstanceCapacityReservationAttributesInput) (*request.Request, *ec2.ModifyInstanceCapacityReservationAttributesOutput) {
+	ret := m.ctrl.Call(m, "ModifyInstanceCapacityReservationAttributesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ModifyInstanceCapacityReservationAttributesOutput)
+	return ret0, ret1
+}
+
+// ModifyInstanceCapacityReservationAttributesRequest indicates an expected call of ModifyInstanceCapacityReservationAttributesRequest
+func (mr *MockEC2APIMockRecorder) ModifyInstanceCapacityReservationAttributesRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyInstanceCapacityReservationAttributesRequest", reflect.TypeOf((*MockEC2API)(nil).ModifyInstanceCapacityReservationAttributesRequest), arg0)
+}
+
 // ModifyInstanceCreditSpecification mocks base method
 func (m *MockEC2API) ModifyInstanceCreditSpecification(arg0 *ec2.ModifyInstanceCreditSpecificationInput) (*ec2.ModifyInstanceCreditSpecificationOutput, error) {
 	ret := m.ctrl.Call(m, "ModifyInstanceCreditSpecification", arg0)
@@ -10076,6 +13623,50 @@ func (m *MockEC2API) ModifyInstanceCreditSpecificationRequest(arg0 *ec2.ModifyIn
 // ModifyInstanceCreditSpecificationRequest indicates an expected call of ModifyInstanceCreditSpecificationRequest
 func (mr *MockEC2APIMockRecorder) ModifyInstanceCreditSpecificationRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyInstanceCreditSpecificationRequest", reflect.TypeOf((*MockEC2API)(nil).ModifyInstanceCreditSpecificationRequest), arg0)
+}
+
+// ModifyInstanceEventStartTime mocks base method
+func (m *MockEC2API) ModifyInstanceEventStartTime(arg0 *ec2.ModifyInstanceEventStartTimeInput) (*ec2.ModifyInstanceEventStartTimeOutput, error) {
+	ret := m.ctrl.Call(m, "ModifyInstanceEventStartTime", arg0)
+	ret0, _ := ret[0].(*ec2.ModifyInstanceEventStartTimeOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyInstanceEventStartTime indicates an expected call of ModifyInstanceEventStartTime
+func (mr *MockEC2APIMockRecorder) ModifyInstanceEventStartTime(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyInstanceEventStartTime", reflect.TypeOf((*MockEC2API)(nil).ModifyInstanceEventStartTime), arg0)
+}
+
+// ModifyInstanceEventStartTimeWithContext mocks base method
+func (m *MockEC2API) ModifyInstanceEventStartTimeWithContext(arg0 aws.Context, arg1 *ec2.ModifyInstanceEventStartTimeInput, arg2 ...request.Option) (*ec2.ModifyInstanceEventStartTimeOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ModifyInstanceEventStartTimeWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.ModifyInstanceEventStartTimeOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyInstanceEventStartTimeWithContext indicates an expected call of ModifyInstanceEventStartTimeWithContext
+func (mr *MockEC2APIMockRecorder) ModifyInstanceEventStartTimeWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyInstanceEventStartTimeWithContext", reflect.TypeOf((*MockEC2API)(nil).ModifyInstanceEventStartTimeWithContext), varargs...)
+}
+
+// ModifyInstanceEventStartTimeRequest mocks base method
+func (m *MockEC2API) ModifyInstanceEventStartTimeRequest(arg0 *ec2.ModifyInstanceEventStartTimeInput) (*request.Request, *ec2.ModifyInstanceEventStartTimeOutput) {
+	ret := m.ctrl.Call(m, "ModifyInstanceEventStartTimeRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ModifyInstanceEventStartTimeOutput)
+	return ret0, ret1
+}
+
+// ModifyInstanceEventStartTimeRequest indicates an expected call of ModifyInstanceEventStartTimeRequest
+func (mr *MockEC2APIMockRecorder) ModifyInstanceEventStartTimeRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyInstanceEventStartTimeRequest", reflect.TypeOf((*MockEC2API)(nil).ModifyInstanceEventStartTimeRequest), arg0)
 }
 
 // ModifyInstancePlacement mocks base method
@@ -10384,6 +13975,50 @@ func (m *MockEC2API) ModifySubnetAttributeRequest(arg0 *ec2.ModifySubnetAttribut
 // ModifySubnetAttributeRequest indicates an expected call of ModifySubnetAttributeRequest
 func (mr *MockEC2APIMockRecorder) ModifySubnetAttributeRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifySubnetAttributeRequest", reflect.TypeOf((*MockEC2API)(nil).ModifySubnetAttributeRequest), arg0)
+}
+
+// ModifyTransitGatewayVpcAttachment mocks base method
+func (m *MockEC2API) ModifyTransitGatewayVpcAttachment(arg0 *ec2.ModifyTransitGatewayVpcAttachmentInput) (*ec2.ModifyTransitGatewayVpcAttachmentOutput, error) {
+	ret := m.ctrl.Call(m, "ModifyTransitGatewayVpcAttachment", arg0)
+	ret0, _ := ret[0].(*ec2.ModifyTransitGatewayVpcAttachmentOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyTransitGatewayVpcAttachment indicates an expected call of ModifyTransitGatewayVpcAttachment
+func (mr *MockEC2APIMockRecorder) ModifyTransitGatewayVpcAttachment(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyTransitGatewayVpcAttachment", reflect.TypeOf((*MockEC2API)(nil).ModifyTransitGatewayVpcAttachment), arg0)
+}
+
+// ModifyTransitGatewayVpcAttachmentWithContext mocks base method
+func (m *MockEC2API) ModifyTransitGatewayVpcAttachmentWithContext(arg0 aws.Context, arg1 *ec2.ModifyTransitGatewayVpcAttachmentInput, arg2 ...request.Option) (*ec2.ModifyTransitGatewayVpcAttachmentOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ModifyTransitGatewayVpcAttachmentWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.ModifyTransitGatewayVpcAttachmentOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyTransitGatewayVpcAttachmentWithContext indicates an expected call of ModifyTransitGatewayVpcAttachmentWithContext
+func (mr *MockEC2APIMockRecorder) ModifyTransitGatewayVpcAttachmentWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyTransitGatewayVpcAttachmentWithContext", reflect.TypeOf((*MockEC2API)(nil).ModifyTransitGatewayVpcAttachmentWithContext), varargs...)
+}
+
+// ModifyTransitGatewayVpcAttachmentRequest mocks base method
+func (m *MockEC2API) ModifyTransitGatewayVpcAttachmentRequest(arg0 *ec2.ModifyTransitGatewayVpcAttachmentInput) (*request.Request, *ec2.ModifyTransitGatewayVpcAttachmentOutput) {
+	ret := m.ctrl.Call(m, "ModifyTransitGatewayVpcAttachmentRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ModifyTransitGatewayVpcAttachmentOutput)
+	return ret0, ret1
+}
+
+// ModifyTransitGatewayVpcAttachmentRequest indicates an expected call of ModifyTransitGatewayVpcAttachmentRequest
+func (mr *MockEC2APIMockRecorder) ModifyTransitGatewayVpcAttachmentRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyTransitGatewayVpcAttachmentRequest", reflect.TypeOf((*MockEC2API)(nil).ModifyTransitGatewayVpcAttachmentRequest), arg0)
 }
 
 // ModifyVolume mocks base method
@@ -10870,6 +14505,50 @@ func (mr *MockEC2APIMockRecorder) MoveAddressToVpcRequest(arg0 interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MoveAddressToVpcRequest", reflect.TypeOf((*MockEC2API)(nil).MoveAddressToVpcRequest), arg0)
 }
 
+// ProvisionByoipCidr mocks base method
+func (m *MockEC2API) ProvisionByoipCidr(arg0 *ec2.ProvisionByoipCidrInput) (*ec2.ProvisionByoipCidrOutput, error) {
+	ret := m.ctrl.Call(m, "ProvisionByoipCidr", arg0)
+	ret0, _ := ret[0].(*ec2.ProvisionByoipCidrOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ProvisionByoipCidr indicates an expected call of ProvisionByoipCidr
+func (mr *MockEC2APIMockRecorder) ProvisionByoipCidr(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProvisionByoipCidr", reflect.TypeOf((*MockEC2API)(nil).ProvisionByoipCidr), arg0)
+}
+
+// ProvisionByoipCidrWithContext mocks base method
+func (m *MockEC2API) ProvisionByoipCidrWithContext(arg0 aws.Context, arg1 *ec2.ProvisionByoipCidrInput, arg2 ...request.Option) (*ec2.ProvisionByoipCidrOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ProvisionByoipCidrWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.ProvisionByoipCidrOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ProvisionByoipCidrWithContext indicates an expected call of ProvisionByoipCidrWithContext
+func (mr *MockEC2APIMockRecorder) ProvisionByoipCidrWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProvisionByoipCidrWithContext", reflect.TypeOf((*MockEC2API)(nil).ProvisionByoipCidrWithContext), varargs...)
+}
+
+// ProvisionByoipCidrRequest mocks base method
+func (m *MockEC2API) ProvisionByoipCidrRequest(arg0 *ec2.ProvisionByoipCidrInput) (*request.Request, *ec2.ProvisionByoipCidrOutput) {
+	ret := m.ctrl.Call(m, "ProvisionByoipCidrRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ProvisionByoipCidrOutput)
+	return ret0, ret1
+}
+
+// ProvisionByoipCidrRequest indicates an expected call of ProvisionByoipCidrRequest
+func (mr *MockEC2APIMockRecorder) ProvisionByoipCidrRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProvisionByoipCidrRequest", reflect.TypeOf((*MockEC2API)(nil).ProvisionByoipCidrRequest), arg0)
+}
+
 // PurchaseHostReservation mocks base method
 func (m *MockEC2API) PurchaseHostReservation(arg0 *ec2.PurchaseHostReservationInput) (*ec2.PurchaseHostReservationOutput, error) {
 	ret := m.ctrl.Call(m, "PurchaseHostReservation", arg0)
@@ -11088,6 +14767,50 @@ func (m *MockEC2API) RegisterImageRequest(arg0 *ec2.RegisterImageInput) (*reques
 // RegisterImageRequest indicates an expected call of RegisterImageRequest
 func (mr *MockEC2APIMockRecorder) RegisterImageRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterImageRequest", reflect.TypeOf((*MockEC2API)(nil).RegisterImageRequest), arg0)
+}
+
+// RejectTransitGatewayVpcAttachment mocks base method
+func (m *MockEC2API) RejectTransitGatewayVpcAttachment(arg0 *ec2.RejectTransitGatewayVpcAttachmentInput) (*ec2.RejectTransitGatewayVpcAttachmentOutput, error) {
+	ret := m.ctrl.Call(m, "RejectTransitGatewayVpcAttachment", arg0)
+	ret0, _ := ret[0].(*ec2.RejectTransitGatewayVpcAttachmentOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RejectTransitGatewayVpcAttachment indicates an expected call of RejectTransitGatewayVpcAttachment
+func (mr *MockEC2APIMockRecorder) RejectTransitGatewayVpcAttachment(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RejectTransitGatewayVpcAttachment", reflect.TypeOf((*MockEC2API)(nil).RejectTransitGatewayVpcAttachment), arg0)
+}
+
+// RejectTransitGatewayVpcAttachmentWithContext mocks base method
+func (m *MockEC2API) RejectTransitGatewayVpcAttachmentWithContext(arg0 aws.Context, arg1 *ec2.RejectTransitGatewayVpcAttachmentInput, arg2 ...request.Option) (*ec2.RejectTransitGatewayVpcAttachmentOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "RejectTransitGatewayVpcAttachmentWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.RejectTransitGatewayVpcAttachmentOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RejectTransitGatewayVpcAttachmentWithContext indicates an expected call of RejectTransitGatewayVpcAttachmentWithContext
+func (mr *MockEC2APIMockRecorder) RejectTransitGatewayVpcAttachmentWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RejectTransitGatewayVpcAttachmentWithContext", reflect.TypeOf((*MockEC2API)(nil).RejectTransitGatewayVpcAttachmentWithContext), varargs...)
+}
+
+// RejectTransitGatewayVpcAttachmentRequest mocks base method
+func (m *MockEC2API) RejectTransitGatewayVpcAttachmentRequest(arg0 *ec2.RejectTransitGatewayVpcAttachmentInput) (*request.Request, *ec2.RejectTransitGatewayVpcAttachmentOutput) {
+	ret := m.ctrl.Call(m, "RejectTransitGatewayVpcAttachmentRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.RejectTransitGatewayVpcAttachmentOutput)
+	return ret0, ret1
+}
+
+// RejectTransitGatewayVpcAttachmentRequest indicates an expected call of RejectTransitGatewayVpcAttachmentRequest
+func (mr *MockEC2APIMockRecorder) RejectTransitGatewayVpcAttachmentRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RejectTransitGatewayVpcAttachmentRequest", reflect.TypeOf((*MockEC2API)(nil).RejectTransitGatewayVpcAttachmentRequest), arg0)
 }
 
 // RejectVpcEndpointConnections mocks base method
@@ -11486,6 +15209,50 @@ func (mr *MockEC2APIMockRecorder) ReplaceRouteTableAssociationRequest(arg0 inter
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReplaceRouteTableAssociationRequest", reflect.TypeOf((*MockEC2API)(nil).ReplaceRouteTableAssociationRequest), arg0)
 }
 
+// ReplaceTransitGatewayRoute mocks base method
+func (m *MockEC2API) ReplaceTransitGatewayRoute(arg0 *ec2.ReplaceTransitGatewayRouteInput) (*ec2.ReplaceTransitGatewayRouteOutput, error) {
+	ret := m.ctrl.Call(m, "ReplaceTransitGatewayRoute", arg0)
+	ret0, _ := ret[0].(*ec2.ReplaceTransitGatewayRouteOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ReplaceTransitGatewayRoute indicates an expected call of ReplaceTransitGatewayRoute
+func (mr *MockEC2APIMockRecorder) ReplaceTransitGatewayRoute(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReplaceTransitGatewayRoute", reflect.TypeOf((*MockEC2API)(nil).ReplaceTransitGatewayRoute), arg0)
+}
+
+// ReplaceTransitGatewayRouteWithContext mocks base method
+func (m *MockEC2API) ReplaceTransitGatewayRouteWithContext(arg0 aws.Context, arg1 *ec2.ReplaceTransitGatewayRouteInput, arg2 ...request.Option) (*ec2.ReplaceTransitGatewayRouteOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ReplaceTransitGatewayRouteWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.ReplaceTransitGatewayRouteOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ReplaceTransitGatewayRouteWithContext indicates an expected call of ReplaceTransitGatewayRouteWithContext
+func (mr *MockEC2APIMockRecorder) ReplaceTransitGatewayRouteWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReplaceTransitGatewayRouteWithContext", reflect.TypeOf((*MockEC2API)(nil).ReplaceTransitGatewayRouteWithContext), varargs...)
+}
+
+// ReplaceTransitGatewayRouteRequest mocks base method
+func (m *MockEC2API) ReplaceTransitGatewayRouteRequest(arg0 *ec2.ReplaceTransitGatewayRouteInput) (*request.Request, *ec2.ReplaceTransitGatewayRouteOutput) {
+	ret := m.ctrl.Call(m, "ReplaceTransitGatewayRouteRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ReplaceTransitGatewayRouteOutput)
+	return ret0, ret1
+}
+
+// ReplaceTransitGatewayRouteRequest indicates an expected call of ReplaceTransitGatewayRouteRequest
+func (mr *MockEC2APIMockRecorder) ReplaceTransitGatewayRouteRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReplaceTransitGatewayRouteRequest", reflect.TypeOf((*MockEC2API)(nil).ReplaceTransitGatewayRouteRequest), arg0)
+}
+
 // ReportInstanceStatus mocks base method
 func (m *MockEC2API) ReportInstanceStatus(arg0 *ec2.ReportInstanceStatusInput) (*ec2.ReportInstanceStatusOutput, error) {
 	ret := m.ctrl.Call(m, "ReportInstanceStatus", arg0)
@@ -11882,6 +15649,50 @@ func (mr *MockEC2APIMockRecorder) RestoreAddressToClassicRequest(arg0 interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RestoreAddressToClassicRequest", reflect.TypeOf((*MockEC2API)(nil).RestoreAddressToClassicRequest), arg0)
 }
 
+// RevokeClientVpnIngress mocks base method
+func (m *MockEC2API) RevokeClientVpnIngress(arg0 *ec2.RevokeClientVpnIngressInput) (*ec2.RevokeClientVpnIngressOutput, error) {
+	ret := m.ctrl.Call(m, "RevokeClientVpnIngress", arg0)
+	ret0, _ := ret[0].(*ec2.RevokeClientVpnIngressOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RevokeClientVpnIngress indicates an expected call of RevokeClientVpnIngress
+func (mr *MockEC2APIMockRecorder) RevokeClientVpnIngress(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RevokeClientVpnIngress", reflect.TypeOf((*MockEC2API)(nil).RevokeClientVpnIngress), arg0)
+}
+
+// RevokeClientVpnIngressWithContext mocks base method
+func (m *MockEC2API) RevokeClientVpnIngressWithContext(arg0 aws.Context, arg1 *ec2.RevokeClientVpnIngressInput, arg2 ...request.Option) (*ec2.RevokeClientVpnIngressOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "RevokeClientVpnIngressWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.RevokeClientVpnIngressOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RevokeClientVpnIngressWithContext indicates an expected call of RevokeClientVpnIngressWithContext
+func (mr *MockEC2APIMockRecorder) RevokeClientVpnIngressWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RevokeClientVpnIngressWithContext", reflect.TypeOf((*MockEC2API)(nil).RevokeClientVpnIngressWithContext), varargs...)
+}
+
+// RevokeClientVpnIngressRequest mocks base method
+func (m *MockEC2API) RevokeClientVpnIngressRequest(arg0 *ec2.RevokeClientVpnIngressInput) (*request.Request, *ec2.RevokeClientVpnIngressOutput) {
+	ret := m.ctrl.Call(m, "RevokeClientVpnIngressRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.RevokeClientVpnIngressOutput)
+	return ret0, ret1
+}
+
+// RevokeClientVpnIngressRequest indicates an expected call of RevokeClientVpnIngressRequest
+func (mr *MockEC2APIMockRecorder) RevokeClientVpnIngressRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RevokeClientVpnIngressRequest", reflect.TypeOf((*MockEC2API)(nil).RevokeClientVpnIngressRequest), arg0)
+}
+
 // RevokeSecurityGroupEgress mocks base method
 func (m *MockEC2API) RevokeSecurityGroupEgress(arg0 *ec2.RevokeSecurityGroupEgressInput) (*ec2.RevokeSecurityGroupEgressOutput, error) {
 	ret := m.ctrl.Call(m, "RevokeSecurityGroupEgress", arg0)
@@ -12058,6 +15869,50 @@ func (mr *MockEC2APIMockRecorder) RunScheduledInstancesRequest(arg0 interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RunScheduledInstancesRequest", reflect.TypeOf((*MockEC2API)(nil).RunScheduledInstancesRequest), arg0)
 }
 
+// SearchTransitGatewayRoutes mocks base method
+func (m *MockEC2API) SearchTransitGatewayRoutes(arg0 *ec2.SearchTransitGatewayRoutesInput) (*ec2.SearchTransitGatewayRoutesOutput, error) {
+	ret := m.ctrl.Call(m, "SearchTransitGatewayRoutes", arg0)
+	ret0, _ := ret[0].(*ec2.SearchTransitGatewayRoutesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SearchTransitGatewayRoutes indicates an expected call of SearchTransitGatewayRoutes
+func (mr *MockEC2APIMockRecorder) SearchTransitGatewayRoutes(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchTransitGatewayRoutes", reflect.TypeOf((*MockEC2API)(nil).SearchTransitGatewayRoutes), arg0)
+}
+
+// SearchTransitGatewayRoutesWithContext mocks base method
+func (m *MockEC2API) SearchTransitGatewayRoutesWithContext(arg0 aws.Context, arg1 *ec2.SearchTransitGatewayRoutesInput, arg2 ...request.Option) (*ec2.SearchTransitGatewayRoutesOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "SearchTransitGatewayRoutesWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.SearchTransitGatewayRoutesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SearchTransitGatewayRoutesWithContext indicates an expected call of SearchTransitGatewayRoutesWithContext
+func (mr *MockEC2APIMockRecorder) SearchTransitGatewayRoutesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchTransitGatewayRoutesWithContext", reflect.TypeOf((*MockEC2API)(nil).SearchTransitGatewayRoutesWithContext), varargs...)
+}
+
+// SearchTransitGatewayRoutesRequest mocks base method
+func (m *MockEC2API) SearchTransitGatewayRoutesRequest(arg0 *ec2.SearchTransitGatewayRoutesInput) (*request.Request, *ec2.SearchTransitGatewayRoutesOutput) {
+	ret := m.ctrl.Call(m, "SearchTransitGatewayRoutesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.SearchTransitGatewayRoutesOutput)
+	return ret0, ret1
+}
+
+// SearchTransitGatewayRoutesRequest indicates an expected call of SearchTransitGatewayRoutesRequest
+func (mr *MockEC2APIMockRecorder) SearchTransitGatewayRoutesRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchTransitGatewayRoutesRequest", reflect.TypeOf((*MockEC2API)(nil).SearchTransitGatewayRoutesRequest), arg0)
+}
+
 // StartInstances mocks base method
 func (m *MockEC2API) StartInstances(arg0 *ec2.StartInstancesInput) (*ec2.StartInstancesOutput, error) {
 	ret := m.ctrl.Call(m, "StartInstances", arg0)
@@ -12144,6 +15999,50 @@ func (m *MockEC2API) StopInstancesRequest(arg0 *ec2.StopInstancesInput) (*reques
 // StopInstancesRequest indicates an expected call of StopInstancesRequest
 func (mr *MockEC2APIMockRecorder) StopInstancesRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StopInstancesRequest", reflect.TypeOf((*MockEC2API)(nil).StopInstancesRequest), arg0)
+}
+
+// TerminateClientVpnConnections mocks base method
+func (m *MockEC2API) TerminateClientVpnConnections(arg0 *ec2.TerminateClientVpnConnectionsInput) (*ec2.TerminateClientVpnConnectionsOutput, error) {
+	ret := m.ctrl.Call(m, "TerminateClientVpnConnections", arg0)
+	ret0, _ := ret[0].(*ec2.TerminateClientVpnConnectionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// TerminateClientVpnConnections indicates an expected call of TerminateClientVpnConnections
+func (mr *MockEC2APIMockRecorder) TerminateClientVpnConnections(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TerminateClientVpnConnections", reflect.TypeOf((*MockEC2API)(nil).TerminateClientVpnConnections), arg0)
+}
+
+// TerminateClientVpnConnectionsWithContext mocks base method
+func (m *MockEC2API) TerminateClientVpnConnectionsWithContext(arg0 aws.Context, arg1 *ec2.TerminateClientVpnConnectionsInput, arg2 ...request.Option) (*ec2.TerminateClientVpnConnectionsOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "TerminateClientVpnConnectionsWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.TerminateClientVpnConnectionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// TerminateClientVpnConnectionsWithContext indicates an expected call of TerminateClientVpnConnectionsWithContext
+func (mr *MockEC2APIMockRecorder) TerminateClientVpnConnectionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TerminateClientVpnConnectionsWithContext", reflect.TypeOf((*MockEC2API)(nil).TerminateClientVpnConnectionsWithContext), varargs...)
+}
+
+// TerminateClientVpnConnectionsRequest mocks base method
+func (m *MockEC2API) TerminateClientVpnConnectionsRequest(arg0 *ec2.TerminateClientVpnConnectionsInput) (*request.Request, *ec2.TerminateClientVpnConnectionsOutput) {
+	ret := m.ctrl.Call(m, "TerminateClientVpnConnectionsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.TerminateClientVpnConnectionsOutput)
+	return ret0, ret1
+}
+
+// TerminateClientVpnConnectionsRequest indicates an expected call of TerminateClientVpnConnectionsRequest
+func (mr *MockEC2APIMockRecorder) TerminateClientVpnConnectionsRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TerminateClientVpnConnectionsRequest", reflect.TypeOf((*MockEC2API)(nil).TerminateClientVpnConnectionsRequest), arg0)
 }
 
 // TerminateInstances mocks base method
@@ -12408,6 +16307,50 @@ func (m *MockEC2API) UpdateSecurityGroupRuleDescriptionsIngressRequest(arg0 *ec2
 // UpdateSecurityGroupRuleDescriptionsIngressRequest indicates an expected call of UpdateSecurityGroupRuleDescriptionsIngressRequest
 func (mr *MockEC2APIMockRecorder) UpdateSecurityGroupRuleDescriptionsIngressRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSecurityGroupRuleDescriptionsIngressRequest", reflect.TypeOf((*MockEC2API)(nil).UpdateSecurityGroupRuleDescriptionsIngressRequest), arg0)
+}
+
+// WithdrawByoipCidr mocks base method
+func (m *MockEC2API) WithdrawByoipCidr(arg0 *ec2.WithdrawByoipCidrInput) (*ec2.WithdrawByoipCidrOutput, error) {
+	ret := m.ctrl.Call(m, "WithdrawByoipCidr", arg0)
+	ret0, _ := ret[0].(*ec2.WithdrawByoipCidrOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// WithdrawByoipCidr indicates an expected call of WithdrawByoipCidr
+func (mr *MockEC2APIMockRecorder) WithdrawByoipCidr(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WithdrawByoipCidr", reflect.TypeOf((*MockEC2API)(nil).WithdrawByoipCidr), arg0)
+}
+
+// WithdrawByoipCidrWithContext mocks base method
+func (m *MockEC2API) WithdrawByoipCidrWithContext(arg0 aws.Context, arg1 *ec2.WithdrawByoipCidrInput, arg2 ...request.Option) (*ec2.WithdrawByoipCidrOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "WithdrawByoipCidrWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.WithdrawByoipCidrOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// WithdrawByoipCidrWithContext indicates an expected call of WithdrawByoipCidrWithContext
+func (mr *MockEC2APIMockRecorder) WithdrawByoipCidrWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WithdrawByoipCidrWithContext", reflect.TypeOf((*MockEC2API)(nil).WithdrawByoipCidrWithContext), varargs...)
+}
+
+// WithdrawByoipCidrRequest mocks base method
+func (m *MockEC2API) WithdrawByoipCidrRequest(arg0 *ec2.WithdrawByoipCidrInput) (*request.Request, *ec2.WithdrawByoipCidrOutput) {
+	ret := m.ctrl.Call(m, "WithdrawByoipCidrRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.WithdrawByoipCidrOutput)
+	return ret0, ret1
+}
+
+// WithdrawByoipCidrRequest indicates an expected call of WithdrawByoipCidrRequest
+func (mr *MockEC2APIMockRecorder) WithdrawByoipCidrRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WithdrawByoipCidrRequest", reflect.TypeOf((*MockEC2API)(nil).WithdrawByoipCidrRequest), arg0)
 }
 
 // WaitUntilBundleTaskComplete mocks base method
