@@ -6,6 +6,9 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/hashicorp/hcl2/hcl"
+	"github.com/hashicorp/hcl2/hcl/hclsyntax"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/zclconf/go-cty/cty"
 )
@@ -303,6 +306,63 @@ func Test_LoadConfig_invalidConfiguration(t *testing.T) {
 	expected := "resource.tf:1,1-10: Unsupported block type; Blocks of type \"resources\" are not expected here. Did you mean \"resource\"?"
 	if err.Error() != expected {
 		t.Fatalf("Expected error is `%s`, but get `%s`", expected, err.Error())
+	}
+}
+
+func Test_LoadAnnotations(t *testing.T) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "annotation_files"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	loader, err := NewLoader()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+	ret, err := loader.LoadAnnotations()
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+
+	expected := map[string]Annotations{
+		"file1.tf": {
+			{
+				Content: "aws_instance_invalid_type",
+				Token: hclsyntax.Token{
+					Type:  hclsyntax.TokenComment,
+					Bytes: []byte("// tflint-ignore: aws_instance_invalid_type\n"),
+					Range: hcl.Range{
+						Filename: "file1.tf",
+						Start:    hcl.Pos{Line: 2, Column: 5, Byte: 36},
+						End:      hcl.Pos{Line: 3, Column: 1, Byte: 80},
+					},
+				},
+			},
+		},
+		"file2.tf": {
+			{
+				Content: "aws_instance_invalid_type",
+				Token: hclsyntax.Token{
+					Type:  hclsyntax.TokenComment,
+					Bytes: []byte("// tflint-ignore: aws_instance_invalid_type\n"),
+					Range: hcl.Range{
+						Filename: "file2.tf",
+						Start:    hcl.Pos{Line: 2, Column: 32, Byte: 63},
+						End:      hcl.Pos{Line: 3, Column: 1, Byte: 107},
+					},
+				},
+			},
+		},
+		"file3.tf": {},
+	}
+
+	if !cmp.Equal(expected, ret) {
+		t.Fatalf("Test failed. Diff: %s", cmp.Diff(expected, ret))
 	}
 }
 

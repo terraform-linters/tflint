@@ -310,7 +310,7 @@ module "pinned_mercurial" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(tflint.EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		rule := NewTerraformModulePinnedSourceRule()
 
 		if err = rule.Check(runner); err != nil {

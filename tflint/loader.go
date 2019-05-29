@@ -15,16 +15,18 @@ import (
 
 	version "github.com/hashicorp/go-version"
 	"github.com/hashicorp/hcl2/hcl"
+	"github.com/hashicorp/hcl2/hcl/hclsyntax"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
 )
 
-//go:generate mockgen -source loader.go -destination ../mock/loader.go -package mock
+//go:generate mockgen -source loader.go -destination loader_mock.go -package tflint
 
 // AbstractLoader is a loader interface for mock
 type AbstractLoader interface {
 	LoadConfig() (*configs.Config, error)
+	LoadAnnotations() (map[string]Annotations, error)
 	LoadValuesFiles(...string) ([]terraform.InputValues, error)
 	IsConfigFile(string) bool
 }
@@ -132,6 +134,25 @@ func (l *Loader) LoadConfig() (*configs.Config, error) {
 
 	log.Printf("[ERROR] Failed to load modules using the v0.12 module walker: %s", diags)
 	return nil, diags
+}
+
+// LoadAnnotations load TFLint annotation comments as HCL tokens.
+func (l *Loader) LoadAnnotations() (map[string]Annotations, error) {
+	ret := map[string]Annotations{}
+
+	for _, configFile := range l.configFiles {
+		src, err := ioutil.ReadFile(configFile)
+		if err != nil {
+			return nil, err
+		}
+		tokens, diags := hclsyntax.LexConfig(src, configFile, hcl.Pos{Byte: 0, Line: 1, Column: 1})
+		if diags.HasErrors() {
+			return nil, diags
+		}
+		ret[configFile] = NewAnnotations(tokens)
+	}
+
+	return ret, nil
 }
 
 // LoadValuesFiles reads Terraform's values files and returns terraform.InputValues list in order of priority

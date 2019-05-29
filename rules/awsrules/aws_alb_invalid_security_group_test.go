@@ -144,7 +144,7 @@ resource "aws_alb" "balancer" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(tflint.EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		rule := NewAwsALBInvalidSecurityGroupRule()
 
 		mock := mock.NewMockEC2API(ctrl)
@@ -217,7 +217,7 @@ resource "aws_alb" "balancer" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(tflint.EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		rule := NewAwsALBInvalidSecurityGroupRule()
 
 		mock := mock.NewMockEC2API(ctrl)

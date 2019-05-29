@@ -67,7 +67,7 @@ resource "aws_instance" "valid" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(tflint.EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		rule := NewAwsInstanceInvalidTypeRule()
 		if err = rule.Check(runner); err != nil {
 			t.Fatalf("Unexpected error occurred: %s", err)

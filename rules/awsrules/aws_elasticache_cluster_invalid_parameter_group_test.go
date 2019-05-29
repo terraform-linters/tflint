@@ -98,7 +98,7 @@ resource "aws_elasticache_cluster" "redis" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(tflint.EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		rule := NewAwsElastiCacheClusterInvalidParameterGroupRule()
 
 		mock := mock.NewMockElastiCacheAPI(ctrl)

@@ -105,7 +105,7 @@ resource "aws_cloudwatch_metric_alarm" "test" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(tflint.EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		rule := NewAwsCloudwatchMetricAlarmInvalidUnitRule()
 
 		if err = rule.Check(runner); err != nil {
