@@ -1,3 +1,19 @@
+## 0.8.1 (2019-05-30)
+
+### Enhancements
+
+- [#277](https://github.com/wata727/tflint/pull/277): Ignore annotation support.
+  - `tflint-ignore: rule_name` annotation is now availble. See [README.md](https://github.com/wata727/tflint/blob/v0.8.1/README.md#rules).
+
+### BugFixes
+
+- [#293](https://github.com/wata727/tflint/pull/293): Fix false negatives when `aws_instance_default_standard_volume` rule checks `dynamic` blocks.
+- [#297](https://github.com/wata727/tflint/pull/297): Fix panic when checking whether an expression is null.
+
+### Others
+
+- [#292](https://github.com/wata727/tflint/pull/292): Migrating to Go Modules.
+
 ## 0.8.0 (2019-05-25)
 
 This release includes major changes due to being dependent on Terraform v0.12 internal API. While we try to keep backward compatibility as much as possible, it does include some breaking changes.
