@@ -1471,6 +1471,33 @@ resource "aws_instance" "test" {
 }`,
 			ErrorText: "Walk instance_type",
 		},
+		{
+			Name: "walk dynamic blocks",
+			Content: `
+resource "aws_instance" "test" {
+  dynamic "instance_type" {
+    for_each = ["foo", "bar"]
+
+    content {
+      foo = instance_type.value
+    }
+  }
+}`,
+			ErrorText: "Walk content",
+		},
+		{
+			Name: "Another dynamic block",
+			Content: `
+resource "aws_instance" "test" {
+  dynamic "key" {
+    for_each = ["foo", "bar"]
+
+    content {
+      foo = key.value
+    }
+  }
+}`,
+		},
 	}
 
 	dir, err := ioutil.TempDir("", "WalkResourceBlocks")

@@ -338,6 +338,43 @@ func (r *Runner) WalkResourceBlocks(resource, blockType string, walker func(*hcl
 				return err
 			}
 		}
+
+		// Walk in the same way for dynamic blocks. Note that we are not expanding blocks.
+		// Therefore, expressions that use iterator are unevaluable.
+		dynBody, _, diags := resource.Config.PartialContent(&hcl.BodySchema{
+			Blocks: []hcl.BlockHeaderSchema{
+				{
+					Type:       "dynamic",
+					LabelNames: []string{"name"},
+				},
+			},
+		})
+		if diags.HasErrors() {
+			return diags
+		}
+
+		for _, block := range dynBody.Blocks {
+			if len(block.Labels) == 1 && block.Labels[0] == blockType {
+				body, _, diags = block.Body.PartialContent(&hcl.BodySchema{
+					Blocks: []hcl.BlockHeaderSchema{
+						{
+							Type: "content",
+						},
+					},
+				})
+				if diags.HasErrors() {
+					return diags
+				}
+
+				for _, block := range body.Blocks {
+					log.Printf("[DEBUG] Walk dynamic `%s` block", resource.Type+"."+resource.Name+"."+blockType)
+					err := walker(block)
+					if err != nil {
+						return err
+					}
+				}
+			}
+		}
 	}
 
 	return nil
