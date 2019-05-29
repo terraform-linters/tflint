@@ -366,7 +366,13 @@ func (r *Runner) EnsureNoError(err error, proc func() error) error {
 
 // IsNullExpr check the passed expression is null
 func (r *Runner) IsNullExpr(expr hcl.Expression) bool {
-	val, _ := r.ctx.EvaluateExpr(expr, cty.DynamicPseudoType, nil)
+	if !isEvaluable(expr) {
+		return false
+	}
+	val, diags := r.ctx.EvaluateExpr(expr, cty.DynamicPseudoType, nil)
+	if diags.HasErrors() {
+		return false
+	}
 	return val.IsNull()
 }
 
