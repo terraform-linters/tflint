@@ -4,7 +4,7 @@ env:
   - GO111MODULE=on
 before:
   hooks:
-    - make mock
+    - make code
 builds:
   - goos:
       - linux

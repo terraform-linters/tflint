@@ -4,7 +4,7 @@ prepare:
 	go mod vendor
 
 test: prepare
-	go test $$(go list ./... | grep -v vendor | grep -v mock)
+	go test $$(go list ./... | grep -v vendor)
 
 build: test
 	mkdir -p dist
@@ -19,15 +19,8 @@ release: test
 clean:
 	rm -rf dist/
 
-mock: prepare
+code: prepare
 	go generate ./...
-	mockgen -source vendor/github.com/aws/aws-sdk-go/service/ec2/ec2iface/interface.go -destination mock/ec2mock.go -package mock
-	mockgen -source vendor/github.com/aws/aws-sdk-go/service/elasticache/elasticacheiface/interface.go --destination mock/elasticachemock.go -package mock
-	mockgen -source vendor/github.com/aws/aws-sdk-go/service/elb/elbiface/interface.go -destination mock/elbmock.go -package mock
-	mockgen -source vendor/github.com/aws/aws-sdk-go/service/elbv2/elbv2iface/interface.go -destination mock/elbv2mock.go -package mock
-	mockgen -source vendor/github.com/aws/aws-sdk-go/service/iam/iamiface/interface.go -destination mock/iammock.go -package mock
-	mockgen -source vendor/github.com/aws/aws-sdk-go/service/rds/rdsiface/interface.go -destination mock/rdsmock.go -package mock
-	mockgen -source vendor/github.com/aws/aws-sdk-go/service/ecs/ecsiface/interface.go  -destination mock/ecsmock.go -package mock
 
 image:
 	docker build -t wata727/tflint:${VERSION} .
@@ -38,4 +31,4 @@ image:
 rule:
 	go run tools/rule_generator.go
 
-.PHONY: default prepare test build install release clean mock image rule
+.PHONY: default prepare test build install release clean code image rule

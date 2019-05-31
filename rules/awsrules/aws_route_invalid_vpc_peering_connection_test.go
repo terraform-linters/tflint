@@ -12,8 +12,8 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/wata727/tflint/client"
 	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/mock"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -98,7 +98,7 @@ resource "aws_route" "foo" {
 		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		rule := NewAwsRouteInvalidVPCPeeringConnectionRule()
 
-		mock := mock.NewMockEC2API(ctrl)
+		mock := client.NewMockEC2API(ctrl)
 		mock.EXPECT().DescribeVpcPeeringConnections(&ec2.DescribeVpcPeeringConnectionsInput{}).Return(&ec2.DescribeVpcPeeringConnectionsOutput{
 			VpcPeeringConnections: tc.Response,
 		}, nil)
