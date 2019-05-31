@@ -17,7 +17,7 @@ require (
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
 	github.com/k0kubun/pp v2.3.0+incompatible
-	github.com/mattn/go-colorable v0.1.1
+	github.com/mattn/go-colorable v0.1.2
 	github.com/mitchellh/go-homedir v1.0.0
 	github.com/pkg/errors v0.0.0-20180311214515-816c9085562c // indirect
 	github.com/zclconf/go-cty v0.0.0-20190516203816-4fecf87372ec
