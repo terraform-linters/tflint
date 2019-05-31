@@ -3,7 +3,7 @@ module github.com/wata727/tflint
 go 1.12
 
 require (
-	github.com/aws/aws-sdk-go v1.19.18
+	github.com/aws/aws-sdk-go v1.19.41
 	github.com/cristim/ec2-instances-info v0.0.0-20181219144937-b8e5ad342366
 	github.com/fatih/color v1.7.0
 	github.com/golang/mock v1.2.0
