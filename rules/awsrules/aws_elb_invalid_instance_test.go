@@ -12,8 +12,8 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/wata727/tflint/client"
 	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/mock"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -146,7 +146,7 @@ resource "aws_elb" "balancer" {
 		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		rule := NewAwsELBInvalidInstanceRule()
 
-		mock := mock.NewMockEC2API(ctrl)
+		mock := client.NewMockEC2API(ctrl)
 		mock.EXPECT().DescribeInstances(&ec2.DescribeInstancesInput{}).Return(&ec2.DescribeInstancesOutput{
 			Reservations: []*ec2.Reservation{
 				{

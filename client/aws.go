@@ -23,6 +23,14 @@ import (
 	homedir "github.com/mitchellh/go-homedir"
 )
 
+//go:generate mockgen -source ../vendor/github.com/aws/aws-sdk-go/service/ec2/ec2iface/interface.go -destination aws_ec2_mock.go -package client
+//go:generate mockgen -source ../vendor/github.com/aws/aws-sdk-go/service/elasticache/elasticacheiface/interface.go -destination aws_elasticache_mock.go -package client
+//go:generate mockgen -source ../vendor/github.com/aws/aws-sdk-go/service/elb/elbiface/interface.go -destination aws_elb_mock.go -package client
+//go:generate mockgen -source ../vendor/github.com/aws/aws-sdk-go/service/elbv2/elbv2iface/interface.go -destination aws_elbv2_mock.go -package client
+//go:generate mockgen -source ../vendor/github.com/aws/aws-sdk-go/service/iam/iamiface/interface.go -destination aws_iam_mock.go -package client
+//go:generate mockgen -source ../vendor/github.com/aws/aws-sdk-go/service/rds/rdsiface/interface.go -destination aws_rds_mock.go -package client
+//go:generate mockgen -source ../vendor/github.com/aws/aws-sdk-go/service/ecs/ecsiface/interface.go -destination aws_ecs_mock.go -package client
+
 // AwsClient is a wrapper of the AWS SDK client
 // It has interfaces for each services to make testing easier
 type AwsClient struct {

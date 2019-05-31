@@ -12,8 +12,8 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/wata727/tflint/client"
 	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/mock"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -101,7 +101,7 @@ resource "aws_elasticache_cluster" "redis" {
 		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		rule := NewAwsElastiCacheClusterInvalidParameterGroupRule()
 
-		mock := mock.NewMockElastiCacheAPI(ctrl)
+		mock := client.NewMockElastiCacheAPI(ctrl)
 		mock.EXPECT().DescribeCacheParameterGroups(&elasticache.DescribeCacheParameterGroupsInput{}).Return(&elasticache.DescribeCacheParameterGroupsOutput{
 			CacheParameterGroups: tc.Response,
 		}, nil)
