@@ -6,7 +6,6 @@ environment:
 branches:
   only:
   - master
-  - next_tflint_dev
 build_script:
   - set PATH=%GOPATH%\bin;c:\go\bin;%PATH%
   - c:\MinGW\bin\mingw32-make.exe build
