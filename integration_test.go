@@ -3,9 +3,11 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"runtime"
 	"sort"
 	"strings"
@@ -25,6 +27,7 @@ func TestIntegration(t *testing.T) {
 	cases := []struct {
 		Name    string
 		Command string
+		Env     map[string]string
 		Dir     string
 	}{
 		{
@@ -47,6 +50,14 @@ func TestIntegration(t *testing.T) {
 			Command: "./tflint --format json",
 			Dir:     "module",
 		},
+		{
+			Name:    "arguments",
+			Command: fmt.Sprintf("./tflint --format json %s", filepath.Join("dir", "template.tf")),
+			Env: map[string]string{
+				"TF_DATA_DIR": filepath.Join("dir", ".terraform"),
+			},
+			Dir: "arguments",
+		},
 	}
 
 	dir, _ := os.Getwd()
@@ -55,6 +66,12 @@ func TestIntegration(t *testing.T) {
 	for _, tc := range cases {
 		testDir := dir + "/integration/" + tc.Dir
 		os.Chdir(testDir)
+
+		if tc.Env != nil {
+			for k, v := range tc.Env {
+				os.Setenv(k, v)
+			}
+		}
 
 		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
 		cli := cmd.NewCLI(outStream, errStream)
@@ -86,6 +103,12 @@ func TestIntegration(t *testing.T) {
 
 		if !cmp.Equal(resultIssues, expectedIssues) {
 			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(expectedIssues, resultIssues))
+		}
+
+		if tc.Env != nil {
+			for k := range tc.Env {
+				os.Unsetenv(k)
+			}
 		}
 	}
 }

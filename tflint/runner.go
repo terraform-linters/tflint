@@ -476,11 +476,11 @@ func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range) {
 }
 
 // getFileName returns user-friendly file name.
-// It returns base file name when processing root module.
+// It returns a raw path when processing root module.
 // Otherwise, it add the module name as prefix to base file name.
 func (r *Runner) getFileName(raw string) string {
 	if r.TFConfig.Path.IsRoot() {
-		return filepath.Base(raw)
+		return raw
 	}
 	return filepath.Join(r.TFConfig.Path.String(), filepath.Base(raw))
 }

@@ -288,6 +288,17 @@ module "pinned_mercurial" {
 	}
 	defer os.RemoveAll(dir)
 
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	for _, tc := range cases {
 		loader, err := configload.NewLoader(&configload.Config{})
 		if err != nil {
@@ -299,7 +310,7 @@ module "pinned_mercurial" {
 			t.Fatal(err)
 		}
 
-		mod, diags := loader.Parser().LoadConfigDir(dir)
+		mod, diags := loader.Parser().LoadConfigDir(".")
 		if diags.HasErrors() {
 			t.Fatal(diags)
 		}

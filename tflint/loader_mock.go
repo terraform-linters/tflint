@@ -35,29 +35,29 @@ func (m *MockAbstractLoader) EXPECT() *MockAbstractLoaderMockRecorder {
 }
 
 // LoadConfig mocks base method
-func (m *MockAbstractLoader) LoadConfig() (*configs.Config, error) {
-	ret := m.ctrl.Call(m, "LoadConfig")
+func (m *MockAbstractLoader) LoadConfig(arg0 string) (*configs.Config, error) {
+	ret := m.ctrl.Call(m, "LoadConfig", arg0)
 	ret0, _ := ret[0].(*configs.Config)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // LoadConfig indicates an expected call of LoadConfig
-func (mr *MockAbstractLoaderMockRecorder) LoadConfig() *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadConfig", reflect.TypeOf((*MockAbstractLoader)(nil).LoadConfig))
+func (mr *MockAbstractLoaderMockRecorder) LoadConfig(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadConfig", reflect.TypeOf((*MockAbstractLoader)(nil).LoadConfig), arg0)
 }
 
 // LoadAnnotations mocks base method
-func (m *MockAbstractLoader) LoadAnnotations() (map[string]Annotations, error) {
-	ret := m.ctrl.Call(m, "LoadAnnotations")
+func (m *MockAbstractLoader) LoadAnnotations(arg0 string) (map[string]Annotations, error) {
+	ret := m.ctrl.Call(m, "LoadAnnotations", arg0)
 	ret0, _ := ret[0].(map[string]Annotations)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // LoadAnnotations indicates an expected call of LoadAnnotations
-func (mr *MockAbstractLoaderMockRecorder) LoadAnnotations() *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadAnnotations", reflect.TypeOf((*MockAbstractLoader)(nil).LoadAnnotations))
+func (mr *MockAbstractLoaderMockRecorder) LoadAnnotations(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadAnnotations", reflect.TypeOf((*MockAbstractLoader)(nil).LoadAnnotations), arg0)
 }
 
 // LoadValuesFiles mocks base method
@@ -75,16 +75,4 @@ func (m *MockAbstractLoader) LoadValuesFiles(arg0 ...string) ([]terraform.InputV
 // LoadValuesFiles indicates an expected call of LoadValuesFiles
 func (mr *MockAbstractLoaderMockRecorder) LoadValuesFiles(arg0 ...interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadValuesFiles", reflect.TypeOf((*MockAbstractLoader)(nil).LoadValuesFiles), arg0...)
-}
-
-// IsConfigFile mocks base method
-func (m *MockAbstractLoader) IsConfigFile(arg0 string) bool {
-	ret := m.ctrl.Call(m, "IsConfigFile", arg0)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// IsConfigFile indicates an expected call of IsConfigFile
-func (mr *MockAbstractLoaderMockRecorder) IsConfigFile(arg0 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsConfigFile", reflect.TypeOf((*MockAbstractLoader)(nil).IsConfigFile), arg0)
 }
