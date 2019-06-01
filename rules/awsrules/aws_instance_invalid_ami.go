@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/wata727/tflint/issue"
@@ -15,7 +16,6 @@ type AwsInstanceInvalidAMIRule struct {
 	resourceType  string
 	attributeName string
 	amiIDs        map[string]bool
-	dataPrepared  bool
 }
 
 // NewAwsInstanceInvalidAMIRule returns new rule with default attributes
@@ -24,7 +24,6 @@ func NewAwsInstanceInvalidAMIRule() *AwsInstanceInvalidAMIRule {
 		resourceType:  "aws_instance",
 		attributeName: "ami",
 		amiIDs:        map[string]bool{},
-		dataPrepared:  false,
 	}
 }
 
@@ -53,35 +52,37 @@ func (r *AwsInstanceInvalidAMIRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
-		if !r.dataPrepared {
-			log.Print("[DEBUG] Fetch AMI images")
-			resp, err := runner.AwsClient.EC2.DescribeImages(&ec2.DescribeImagesInput{})
-			if err != nil {
-				err := &tflint.Error{
-					Code:    tflint.ExternalAPIError,
-					Level:   tflint.ErrorLevel,
-					Message: "An error occurred while describing images",
-					Cause:   err,
-				}
-				log.Printf("[ERROR] %s", err)
-				return err
-			}
-			for _, image := range resp.Images {
-				r.amiIDs[*image.ImageId] = true
-			}
-			r.dataPrepared = true
-		}
-
 		var ami string
 		err := runner.EvaluateExpr(attribute.Expr, &ami)
 
 		return runner.EnsureNoError(err, func() error {
 			if !r.amiIDs[ami] {
-				runner.EmitIssue(
-					r,
-					fmt.Sprintf("\"%s\" is invalid AMI ID.", ami),
-					attribute.Expr.Range(),
-				)
+				log.Printf("[DEBUG] Fetch AMI images: %s", ami)
+				resp, err := runner.AwsClient.EC2.DescribeImages(&ec2.DescribeImagesInput{
+					ImageIds: aws.StringSlice([]string{ami}),
+				})
+				if err != nil {
+					err := &tflint.Error{
+						Code:    tflint.ExternalAPIError,
+						Level:   tflint.ErrorLevel,
+						Message: "An error occurred while describing images",
+						Cause:   err,
+					}
+					log.Printf("[ERROR] %s", err)
+					return err
+				}
+
+				if len(resp.Images) != 0 {
+					for _, image := range resp.Images {
+						r.amiIDs[*image.ImageId] = true
+					}
+				} else {
+					runner.EmitIssue(
+						r,
+						fmt.Sprintf("\"%s\" is invalid AMI ID.", ami),
+						attribute.Expr.Range(),
+					)
+				}
 			}
 			return nil
 		})
