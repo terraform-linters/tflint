@@ -8,7 +8,7 @@ require (
 	github.com/fatih/color v1.7.0
 	github.com/golang/mock v1.2.0
 	github.com/google/go-cmp v0.3.0
-	github.com/hashicorp/go-version v1.1.0
+	github.com/hashicorp/go-version v1.2.0
 	github.com/hashicorp/hcl v0.0.0-20180404174102-ef8a98b0bbce // indirect
 	github.com/hashicorp/hcl2 v0.0.0-20190515223218-4b22149b7cef
 	github.com/hashicorp/logutils v1.0.0
