@@ -72,6 +72,17 @@ resource "aws_instance" "web" {
 	}
 	defer os.RemoveAll(dir)
 
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -86,7 +97,7 @@ resource "aws_instance" "web" {
 			t.Fatal(err)
 		}
 
-		mod, diags := loader.Parser().LoadConfigDir(dir)
+		mod, diags := loader.Parser().LoadConfigDir(".")
 		if diags.HasErrors() {
 			t.Fatal(diags)
 		}

@@ -103,8 +103,8 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 		}
 
 		loader := tflint.NewMockAbstractLoader(ctrl)
-		loader.EXPECT().LoadConfig().Return(configs.NewEmptyConfig(), tc.LoadErr).AnyTimes()
-		loader.EXPECT().LoadAnnotations().Return(map[string]tflint.Annotations{}, tc.LoadErr).AnyTimes()
+		loader.EXPECT().LoadConfig(".").Return(configs.NewEmptyConfig(), tc.LoadErr).AnyTimes()
+		loader.EXPECT().LoadAnnotations(".").Return(map[string]tflint.Annotations{}, tc.LoadErr).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, tc.LoadErr).AnyTimes()
 		cli.loader = loader
 
@@ -122,7 +122,9 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 	}
 }
 
-type testRule struct{}
+type testRule struct {
+	dir string
+}
 type errorRule struct{}
 
 func (r *testRule) Name() string {
@@ -154,11 +156,16 @@ func (r *errorRule) Link() string {
 }
 
 func (r *testRule) Check(runner *tflint.Runner) error {
+	filename := "test.tf"
+	if r.dir != "" {
+		filename = filepath.Join(r.dir, filename)
+	}
+
 	runner.EmitIssue(
 		r,
 		"This is test error",
 		hcl.Range{
-			Filename: "test.tf",
+			Filename: filename,
 			Start:    hcl.Pos{Line: 1},
 		},
 	)
@@ -226,8 +233,8 @@ func TestCLIRun__issuesFound(t *testing.T) {
 		}
 
 		loader := tflint.NewMockAbstractLoader(ctrl)
-		loader.EXPECT().LoadConfig().Return(configs.NewEmptyConfig(), nil).AnyTimes()
-		loader.EXPECT().LoadAnnotations().Return(map[string]tflint.Annotations{}, nil).AnyTimes()
+		loader.EXPECT().LoadConfig(".").Return(configs.NewEmptyConfig(), nil).AnyTimes()
+		loader.EXPECT().LoadAnnotations(".").Return(map[string]tflint.Annotations{}, nil).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, nil).AnyTimes()
 		cli.loader = loader
 
@@ -247,46 +254,82 @@ func TestCLIRun__issuesFound(t *testing.T) {
 
 func TestCLIRun__withArguments(t *testing.T) {
 	cases := []struct {
-		Name         string
-		Command      string
-		IsConfigFile bool
-		Status       int
-		Stdout       string
-		Stderr       string
+		Name    string
+		Command string
+		Dir     string
+		Status  int
+		Stdout  string
+		Stderr  string
 	}{
 		{
 			Name:    "no arguments",
 			Command: "./tflint",
+			Dir:     ".",
 			Status:  ExitCodeOK,
 			Stdout:  "This is test error (test_rule)",
 		},
 		{
-			Name:         "files arguments",
-			Command:      "./tflint template.tf",
-			IsConfigFile: true,
-			Status:       ExitCodeOK,
-			Stdout:       "Awesome! Your code is following the best practices :)",
+			Name:    "files arguments",
+			Command: "./tflint template.tf",
+			Dir:     ".",
+			Status:  ExitCodeOK,
+			Stdout:  "Awesome! Your code is following the best practices :)",
 		},
 		{
-			Name:         "directories arguments",
-			Command:      "./tflint ./",
-			IsConfigFile: true,
-			Status:       ExitCodeError,
-			Stderr:       "Failed to load `./`: TFLint doesn't accept directories as arguments",
+			Name:    "file not found",
+			Command: "./tflint not_found.tf",
+			Dir:     ".",
+			Status:  ExitCodeError,
+			Stderr:  "Failed to load `not_found.tf`: File not found",
 		},
 		{
-			Name:         "file not found",
-			Command:      "./tflint not_found.tf",
-			IsConfigFile: true,
-			Status:       ExitCodeError,
-			Stderr:       "Failed to load `not_found.tf`: File not found",
+			Name:    "not Terraform configuration",
+			Command: "./tflint README",
+			Dir:     ".",
+			Status:  ExitCodeError,
+			Stderr:  "Failed to load `README`: File is not a target of Terraform",
 		},
 		{
-			Name:         "not Terraform configuration",
-			Command:      "./tflint README",
-			IsConfigFile: false,
-			Status:       ExitCodeError,
-			Stderr:       "Failed to load `README`: File is not a target of Terraform",
+			Name:    "multiple files",
+			Command: "./tflint template.tf test.tf",
+			Dir:     ".",
+			Status:  ExitCodeOK,
+			Stdout:  "This is test error (test_rule)",
+		},
+		{
+			Name:    "directory argument",
+			Command: "./tflint example",
+			Dir:     "example",
+			Status:  ExitCodeOK,
+			Stdout:  "This is test error (test_rule)",
+		},
+		{
+			Name:    "file under the directory",
+			Command: fmt.Sprintf("./tflint %s", filepath.Join("example", "test.tf")),
+			Dir:     "example",
+			Status:  ExitCodeOK,
+			Stdout:  "This is test error (test_rule)",
+		},
+		{
+			Name:    "multiple directories",
+			Command: "./tflint example ./",
+			Dir:     "example",
+			Status:  ExitCodeError,
+			Stderr:  "Failed to load `example`: Multiple arguments are not allowed when passing a directory",
+		},
+		{
+			Name:    "file and directory",
+			Command: "./tflint template.tf example",
+			Dir:     "example",
+			Status:  ExitCodeError,
+			Stderr:  "Failed to load `example`: Multiple arguments are not allowed when passing a directory",
+		},
+		{
+			Name:    "multiple files in different directories",
+			Command: fmt.Sprintf("./tflint test.tf %s", filepath.Join("example", "test.tf")),
+			Dir:     "example",
+			Status:  ExitCodeError,
+			Stderr:  fmt.Sprintf("Failed to load `%s`: Multiple files in different directories are not allowed", filepath.Join("example", "test.tf")),
 		},
 	}
 
@@ -310,7 +353,7 @@ func TestCLIRun__withArguments(t *testing.T) {
 
 	for _, tc := range cases {
 		// Mock rules
-		rules.DefaultRules = []rules.Rule{&testRule{}}
+		rules.DefaultRules = []rules.Rule{&testRule{dir: tc.Dir}}
 
 		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
 		cli := &CLI{
@@ -320,9 +363,8 @@ func TestCLIRun__withArguments(t *testing.T) {
 		}
 
 		loader := tflint.NewMockAbstractLoader(ctrl)
-		loader.EXPECT().IsConfigFile(gomock.Any()).Return(tc.IsConfigFile).AnyTimes()
-		loader.EXPECT().LoadConfig().Return(configs.NewEmptyConfig(), nil).AnyTimes()
-		loader.EXPECT().LoadAnnotations().Return(map[string]tflint.Annotations{}, nil).AnyTimes()
+		loader.EXPECT().LoadConfig(tc.Dir).Return(configs.NewEmptyConfig(), nil).AnyTimes()
+		loader.EXPECT().LoadAnnotations(tc.Dir).Return(map[string]tflint.Annotations{}, nil).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, nil).AnyTimes()
 		cli.loader = loader
 

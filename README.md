@@ -87,7 +87,7 @@ TFLint inspects all configurations under the current directory by default. You c
 ```
 $ tflint --help
 Usage:
-  tflint [OPTIONS]
+  tflint [OPTIONS] [FILE or DIR...]
 
 Application Options:
   -v, --version                             Print TFLint version

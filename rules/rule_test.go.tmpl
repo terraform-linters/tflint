@@ -48,6 +48,11 @@ resource "null_resource" "null" {
 	}
 	defer os.RemoveAll(dir)
 
+	err = os.Chdir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -62,7 +67,7 @@ resource "null_resource" "null" {
 			t.Fatal(err)
 		}
 
-		mod, diags := loader.Parser().LoadConfigDir(dir)
+		mod, diags := loader.Parser().LoadConfigDir(".")
 		if diags.HasErrors() {
 			t.Fatal(diags)
 		}
@@ -71,7 +76,7 @@ resource "null_resource" "null" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(tflint.EmptyConfig(), cfg, map[string]*terraform.InputValue{})
+		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		rule := New{{ .RuleNameCC }}Rule()
 
 		mock := mock.NewMockAPI(ctrl)

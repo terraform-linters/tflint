@@ -25,6 +25,17 @@ func Test_AwsInstanceInvalidAMI_invalid(t *testing.T) {
 	}
 	defer os.RemoveAll(dir)
 
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	loader, err := configload.NewLoader(&configload.Config{})
 	if err != nil {
 		t.Fatal(err)
@@ -42,7 +53,7 @@ resource "aws_instance" "invalid" {
 		t.Fatal(err)
 	}
 
-	mod, diags := loader.Parser().LoadConfigDir(dir)
+	mod, diags := loader.Parser().LoadConfigDir(".")
 	if diags.HasErrors() {
 		t.Fatal(diags)
 	}
@@ -87,6 +98,17 @@ func Test_AwsInstanceInvalidAMI_valid(t *testing.T) {
 	}
 	defer os.RemoveAll(dir)
 
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	loader, err := configload.NewLoader(&configload.Config{})
 	if err != nil {
 		t.Fatal(err)
@@ -104,7 +126,7 @@ resource "aws_instance" "valid" {
 		t.Fatal(err)
 	}
 
-	mod, diags := loader.Parser().LoadConfigDir(dir)
+	mod, diags := loader.Parser().LoadConfigDir(".")
 	if diags.HasErrors() {
 		t.Fatal(diags)
 	}
@@ -170,6 +192,17 @@ resource "aws_instance" "valid" {
 	}
 	defer os.RemoveAll(dir)
 
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	loader, err := configload.NewLoader(&configload.Config{})
 	if err != nil {
 		t.Fatal(err)
@@ -184,7 +217,7 @@ resource "aws_instance" "valid" {
 			t.Fatal(err)
 		}
 
-		mod, diags := loader.Parser().LoadConfigDir(dir)
+		mod, diags := loader.Parser().LoadConfigDir(".")
 		if diags.HasErrors() {
 			t.Fatal(diags)
 		}

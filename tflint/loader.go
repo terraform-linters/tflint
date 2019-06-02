@@ -25,16 +25,15 @@ import (
 
 // AbstractLoader is a loader interface for mock
 type AbstractLoader interface {
-	LoadConfig() (*configs.Config, error)
-	LoadAnnotations() (map[string]Annotations, error)
+	LoadConfig(string) (*configs.Config, error)
+	LoadAnnotations(string) (map[string]Annotations, error)
 	LoadValuesFiles(...string) ([]terraform.InputValues, error)
-	IsConfigFile(string) bool
 }
 
 // Loader is a wrapper of Terraform's configload.Loader
 type Loader struct {
 	loader               *configload.Loader
-	configFiles          []string
+	currentDir           string
 	moduleSourceVersions map[string][]*version.Version
 	moduleManifest       map[string]*moduleManifest
 }
@@ -64,15 +63,8 @@ func NewLoader() (*Loader, error) {
 		return nil, err
 	}
 
-	primary, override, diags := loader.Parser().ConfigDirFiles(".")
-	if diags != nil {
-		log.Printf("[ERROR] %s", diags)
-		return nil, diags
-	}
-
 	l := &Loader{
 		loader:               loader,
-		configFiles:          append(primary, override...),
 		moduleSourceVersions: map[string][]*version.Version{},
 		moduleManifest:       map[string]*moduleManifest{},
 	}
@@ -90,9 +82,10 @@ func NewLoader() (*Loader, error) {
 
 // LoadConfig loads Terraform's configurations
 // TODO: Can we use configload.LoadConfig instead?
-func (l *Loader) LoadConfig() (*configs.Config, error) {
-	log.Print("[INFO] Load configurations under the current directory")
-	rootMod, diags := l.loader.Parser().LoadConfigDir(".")
+func (l *Loader) LoadConfig(dir string) (*configs.Config, error) {
+	l.currentDir = dir
+	log.Printf("[INFO] Load configurations under %s", dir)
+	rootMod, diags := l.loader.Parser().LoadConfigDir(dir)
 	if diags.HasErrors() {
 		log.Printf("[ERROR] %s", diags)
 		return nil, diags
@@ -137,10 +130,17 @@ func (l *Loader) LoadConfig() (*configs.Config, error) {
 }
 
 // LoadAnnotations load TFLint annotation comments as HCL tokens.
-func (l *Loader) LoadAnnotations() (map[string]Annotations, error) {
+func (l *Loader) LoadAnnotations(dir string) (map[string]Annotations, error) {
+	primary, override, diags := l.loader.Parser().ConfigDirFiles(dir)
+	if diags != nil {
+		log.Printf("[ERROR] %s", diags)
+		return nil, diags
+	}
+	configFiles := append(primary, override...)
+
 	ret := map[string]Annotations{}
 
-	for _, configFile := range l.configFiles {
+	for _, configFile := range configFiles {
 		src, err := ioutil.ReadFile(configFile)
 		if err != nil {
 			return nil, err
@@ -196,16 +196,6 @@ func (l *Loader) LoadValuesFiles(files ...string) ([]terraform.InputValues, erro
 	return values, nil
 }
 
-// IsConfigFile checks whether the configuration files includes the file
-func (l *Loader) IsConfigFile(file string) bool {
-	for _, configFile := range l.configFiles {
-		if file == configFile {
-			return true
-		}
-	}
-	return false
-}
-
 // autoLoadValuesFiles returns all files which match *.auto.tfvars present in the current directory
 // The list is sorted alphabetically. This is equivalent to priority
 // Please note that terraform.tfvars is not included in this list
@@ -255,7 +245,7 @@ func (l *Loader) loadValuesFile(file string, sourceType terraform.ValueSourceTyp
 func (l *Loader) moduleWalkerLegacy() configs.ModuleWalker {
 	return configs.ModuleWalkerFunc(func(req *configs.ModuleRequest) (*configs.Module, *version.Version, hcl.Diagnostics) {
 		key := "root." + req.Name + "-" + req.SourceAddr
-		dir := makeModuleDirFromKey(key)
+		dir := filepath.Join(l.currentDir, makeModuleDirFromKey(key))
 		log.Printf("[DEBUG] Trying to load the module: key=%s, dir=%s", key, dir)
 		mod, diags := l.loader.Parser().LoadConfigDir(dir)
 		return mod, nil, diags
@@ -265,7 +255,7 @@ func (l *Loader) moduleWalkerLegacy() configs.ModuleWalker {
 func (l *Loader) moduleWalkerV0_10_6() configs.ModuleWalker {
 	return configs.ModuleWalkerFunc(func(req *configs.ModuleRequest) (*configs.Module, *version.Version, hcl.Diagnostics) {
 		key := "module." + req.Name + "-" + req.SourceAddr
-		dir := makeModuleDirFromKey(key)
+		dir := filepath.Join(l.currentDir, makeModuleDirFromKey(key))
 		log.Printf("[DEBUG] Trying to load the module: key=%s, dir=%s", key, dir)
 		mod, diags := l.loader.Parser().LoadConfigDir(dir)
 		return mod, nil, diags
@@ -275,7 +265,7 @@ func (l *Loader) moduleWalkerV0_10_6() configs.ModuleWalker {
 func (l *Loader) moduleWalkerV0_10_7V0_10_8() configs.ModuleWalker {
 	return configs.ModuleWalkerFunc(func(req *configs.ModuleRequest) (*configs.Module, *version.Version, hcl.Diagnostics) {
 		key := "0.root." + req.Name + "-" + req.SourceAddr
-		dir := makeModuleDirFromKey(key)
+		dir := filepath.Join(l.currentDir, makeModuleDirFromKey(key))
 		log.Printf("[DEBUG] Trying to load the module: key=%s, dir=%s", key, dir)
 		mod, diags := l.loader.Parser().LoadConfigDir(dir)
 		return mod, nil, diags
@@ -299,7 +289,7 @@ func (l *Loader) moduleWalkerV0_11_0V0_11_7() configs.ModuleWalker {
 			}
 		}
 
-		dir := record.Dir
+		dir := filepath.Join(l.currentDir, record.Dir)
 		if record.Root != "" {
 			dir = filepath.Join(dir, record.Root)
 		}
@@ -325,7 +315,7 @@ func (l *Loader) moduleWalkerV0_12() configs.ModuleWalker {
 			}
 		}
 
-		dir := record.Dir
+		dir := filepath.Join(l.currentDir, record.Dir)
 		if record.Root != "" {
 			dir = filepath.Join(dir, record.Root)
 		}

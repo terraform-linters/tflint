@@ -29,7 +29,7 @@ func Test_LoadConfig_v0_10_5(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
-	config, err := loader.LoadConfig()
+	config, err := loader.LoadConfig(".")
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -59,7 +59,7 @@ func Test_LoadConfig_v0_10_6(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
-	config, err := loader.LoadConfig()
+	config, err := loader.LoadConfig(".")
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -89,7 +89,7 @@ func Test_LoadConfig_v0_10_7(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
-	config, err := loader.LoadConfig()
+	config, err := loader.LoadConfig(".")
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -119,7 +119,7 @@ func Test_LoadConfig_v0_11_0(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
-	config, err := loader.LoadConfig()
+	config, err := loader.LoadConfig(".")
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -193,7 +193,7 @@ func Test_LoadConfig_v0_12_0(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
-	config, err := loader.LoadConfig()
+	config, err := loader.LoadConfig(".")
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -271,7 +271,7 @@ func Test_LoadConfig_moduleNotFound(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
-	_, err = loader.LoadConfig()
+	_, err = loader.LoadConfig(".")
 	if err == nil {
 		t.Fatal("Expected error is not occurred")
 	}
@@ -298,7 +298,7 @@ func Test_LoadConfig_invalidConfiguration(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
-	_, err = loader.LoadConfig()
+	_, err = loader.LoadConfig(".")
 	if err == nil {
 		t.Fatal("Expected error is not occurred")
 	}
@@ -324,7 +324,7 @@ func Test_LoadAnnotations(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
-	ret, err := loader.LoadAnnotations()
+	ret, err := loader.LoadAnnotations(".")
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -447,52 +447,5 @@ func Test_LoadValuesFiles_invalidValuesFile(t *testing.T) {
 	expected := "terraform.tfvars:3,1-9: Unexpected \"resource\" block; Blocks are not allowed here."
 	if err.Error() != expected {
 		t.Fatalf("Expected error is `%s`, but get `%s`", expected, err.Error())
-	}
-}
-
-func Test_IsConfigFile(t *testing.T) {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.Chdir(currentDir)
-
-	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "is_config_file"))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	loader, err := NewLoader()
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-
-	cases := []struct {
-		Name     string
-		File     string
-		Expected bool
-	}{
-		{
-			Name:     "config file",
-			File:     "template.tf",
-			Expected: true,
-		},
-		{
-			Name:     "not config file",
-			File:     "README",
-			Expected: false,
-		},
-		{
-			Name:     "not found",
-			File:     "not_found.tf",
-			Expected: false,
-		},
-	}
-
-	for _, tc := range cases {
-		ret := loader.IsConfigFile(tc.File)
-		if ret != tc.Expected {
-			t.Fatalf("Test `%s` failed: expected is `%t`, but get `%t`", tc.Name, tc.Expected, ret)
-		}
 	}
 }

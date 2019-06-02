@@ -475,7 +475,7 @@ resource "null_resource" "test" {
 }`,
 			ErrorCode:  EvaluationError,
 			ErrorLevel: ErrorLevel,
-			ErrorText:  "Failed to eval an expression in resource.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
+			ErrorText:  "Failed to eval an expression in %s:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
 		},
 		{
 			Name: "no default value",
@@ -487,7 +487,7 @@ resource "null_resource" "test" {
 }`,
 			ErrorCode:  UnknownValueError,
 			ErrorLevel: WarningLevel,
-			ErrorText:  "Unknown value found in resource.tf:5; Please use environment variables or tfvars to set the value",
+			ErrorText:  "Unknown value found in %s:5; Please use environment variables or tfvars to set the value",
 		},
 		{
 			Name: "null value",
@@ -502,7 +502,7 @@ resource "null_resource" "test" {
 }`,
 			ErrorCode:  NullValueError,
 			ErrorLevel: WarningLevel,
-			ErrorText:  "Null value found in resource.tf:8",
+			ErrorText:  "Null value found in %s:8",
 		},
 		{
 			Name: "terraform env",
@@ -512,7 +512,7 @@ resource "null_resource" "test" {
 }`,
 			ErrorCode:  EvaluationError,
 			ErrorLevel: ErrorLevel,
-			ErrorText:  "Failed to eval an expression in resource.tf:3; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
+			ErrorText:  "Failed to eval an expression in %s:3; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
 		},
 		{
 			Name: "type mismatch",
@@ -522,7 +522,7 @@ resource "null_resource" "test" {
 }`,
 			ErrorCode:  TypeConversionError,
 			ErrorLevel: ErrorLevel,
-			ErrorText:  "Invalid type expression in resource.tf:3; string required",
+			ErrorText:  "Invalid type expression in %s:3; string required",
 		},
 		{
 			Name: "unevalauble",
@@ -532,7 +532,7 @@ resource "null_resource" "test" {
 }`,
 			ErrorCode:  UnevaluableError,
 			ErrorLevel: WarningLevel,
-			ErrorText:  "Unevaluable expression found in resource.tf:3",
+			ErrorText:  "Unevaluable expression found in %s:3",
 		},
 	}
 
@@ -559,11 +559,13 @@ resource "null_resource" "test" {
 
 		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 
+		expectedText := fmt.Sprintf(tc.ErrorText, filepath.Join(dir, "resource.tf"))
+
 		var ret string
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
 		if appErr, ok := err.(*Error); ok {
 			if appErr == nil {
-				t.Fatalf("Failed `%s` test: expected err is `%s`, but nothing occurred", tc.Name, tc.ErrorText)
+				t.Fatalf("Failed `%s` test: expected err is `%s`, but nothing occurred", tc.Name, expectedText)
 			}
 			if appErr.Code != tc.ErrorCode {
 				t.Fatalf("Failed `%s` test: expected error code is `%d`, but get `%d`", tc.Name, tc.ErrorCode, appErr.Code)
@@ -571,8 +573,8 @@ resource "null_resource" "test" {
 			if appErr.Level != tc.ErrorLevel {
 				t.Fatalf("Failed `%s` test: expected error level is `%d`, but get `%d`", tc.Name, tc.ErrorLevel, appErr.Level)
 			}
-			if appErr.Error() != tc.ErrorText {
-				t.Fatalf("Failed `%s` test: expected error is `%s`, but get `%s`", tc.Name, tc.ErrorText, appErr.Error())
+			if appErr.Error() != expectedText {
+				t.Fatalf("Failed `%s` test: expected error is `%s`, but get `%s`", tc.Name, expectedText, appErr.Error())
 			}
 		} else {
 			t.Fatalf("Failed `%s` test: unexpected error occurred: %s", tc.Name, err)
@@ -598,7 +600,7 @@ resource "null_resource" "test" {
 }`,
 			ErrorCode:  EvaluationError,
 			ErrorLevel: ErrorLevel,
-			ErrorText:  "Failed to eval an expression in resource.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
+			ErrorText:  "Failed to eval an expression in %s:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
 		},
 		{
 			Name: "no default value",
@@ -612,7 +614,7 @@ resource "null_resource" "test" {
 }`,
 			ErrorCode:  UnknownValueError,
 			ErrorLevel: WarningLevel,
-			ErrorText:  "Unknown value found in resource.tf:5; Please use environment variables or tfvars to set the value",
+			ErrorText:  "Unknown value found in %s:5; Please use environment variables or tfvars to set the value",
 		},
 		{
 			Name: "null value",
@@ -629,7 +631,7 @@ resource "null_resource" "test" {
 }`,
 			ErrorCode:  NullValueError,
 			ErrorLevel: WarningLevel,
-			ErrorText:  "Null value found in resource.tf:8",
+			ErrorText:  "Null value found in %s:8",
 		},
 		{
 			Name: "unevalauble",
@@ -641,7 +643,7 @@ resource "null_resource" "test" {
 }`,
 			ErrorCode:  UnevaluableError,
 			ErrorLevel: WarningLevel,
-			ErrorText:  "Unevaluable expression found in resource.tf:3",
+			ErrorText:  "Unevaluable expression found in %s:3",
 		},
 	}
 
@@ -668,11 +670,13 @@ resource "null_resource" "test" {
 
 		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 
+		expectedText := fmt.Sprintf(tc.ErrorText, filepath.Join(dir, "resource.tf"))
+
 		var ret map[string]string
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
 		if appErr, ok := err.(*Error); ok {
 			if appErr == nil {
-				t.Fatalf("Failed `%s` test: expected err is `%s`, but nothing occurred", tc.Name, tc.ErrorText)
+				t.Fatalf("Failed `%s` test: expected err is `%s`, but nothing occurred", tc.Name, expectedText)
 			}
 			if appErr.Code != tc.ErrorCode {
 				t.Fatalf("Failed `%s` test: expected error code is `%d`, but get `%d`", tc.Name, tc.ErrorCode, appErr.Code)
@@ -680,8 +684,8 @@ resource "null_resource" "test" {
 			if appErr.Level != tc.ErrorLevel {
 				t.Fatalf("Failed `%s` test: expected error level is `%d`, but get `%d`", tc.Name, tc.ErrorLevel, appErr.Level)
 			}
-			if appErr.Error() != tc.ErrorText {
-				t.Fatalf("Failed `%s` test: expected error is `%s`, but get `%s`", tc.Name, tc.ErrorText, appErr.Error())
+			if appErr.Error() != expectedText {
+				t.Fatalf("Failed `%s` test: expected error is `%s`, but get `%s`", tc.Name, expectedText, appErr.Error())
 			}
 		} else {
 			t.Fatalf("Failed `%s` test: unexpected error occurred: %s", tc.Name, err)
@@ -967,7 +971,7 @@ func Test_NewModuleRunners_noModules(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
-	cfg, err := loader.LoadConfig()
+	cfg, err := loader.LoadConfig(".")
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -999,7 +1003,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
-	cfg, err := loader.LoadConfig()
+	cfg, err := loader.LoadConfig(".")
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -1167,7 +1171,7 @@ func Test_NewModuleRunners_ignoreModules(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
-	cfg, err := loader.LoadConfig()
+	cfg, err := loader.LoadConfig(".")
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -1202,7 +1206,7 @@ func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
-	cfg, err := loader.LoadConfig()
+	cfg, err := loader.LoadConfig(".")
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -1248,7 +1252,7 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
-	cfg, err := loader.LoadConfig()
+	cfg, err := loader.LoadConfig(".")
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
