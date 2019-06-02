@@ -51,6 +51,9 @@ func (cli *CLI) Run(args []string) int {
 		if option == "debug" {
 			return []string{}, errors.New("`debug` option was removed in v0.8.0. Please set `TFLINT_LOG` environment variables instead")
 		}
+		if option == "fast" {
+			return []string{}, errors.New("`fast` option was removed in v0.9.0. The `aws_instance_invalid_ami` rule is already fast enough")
+		}
 		return []string{}, fmt.Errorf("`%s` is unknown option. Please run `tflint --help`", option)
 	}
 	// Parse commandline flag

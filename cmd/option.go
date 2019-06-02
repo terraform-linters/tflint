@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/wata727/tflint/client"
-	"github.com/wata727/tflint/rules/awsrules"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -24,7 +23,6 @@ type Options struct {
 	AwsProfile      string   `long:"aws-profile" description:"AWS shared credential profile name used in deep check mode" value-name:"PROFILE"`
 	AwsRegion       string   `long:"aws-region" description:"AWS region used in deep check mode" value-name:"REGION"`
 	ErrorWithIssues bool     `long:"error-with-issues" description:"Return error code when issues exist"`
-	Fast            bool     `long:"fast" description:"Ignore slow rules (aws_instance_invalid_ami only)"`
 	Quiet           bool     `short:"q" long:"quiet" description:"Do not output any message when no issues are found (default format only)"`
 }
 
@@ -41,10 +39,6 @@ func (opts *Options) toConfig() *tflint.Config {
 		for _, r := range strings.Split(opts.IgnoreRule, ",") {
 			ignoreRule[r] = true
 		}
-	}
-	if opts.Fast {
-		// `aws_instance_invalid_ami` is very slow...
-		ignoreRule[awsrules.NewAwsInstanceInvalidAMIRule().Name()] = true
 	}
 
 	varfile := []string{}

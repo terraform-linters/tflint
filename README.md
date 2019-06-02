@@ -103,7 +103,6 @@ Application Options:
       --aws-profile=PROFILE                 AWS shared credential profile name used in deep check mode
       --aws-region=REGION                   AWS region used in deep check mode
       --error-with-issues                   Return error code when issues exist
-      --fast                                Ignore slow rules (aws_instance_invalid_ami only)
   -q, --quiet                               Do not output any message when no issues are found (default format only)
 
 Help Options:

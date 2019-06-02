@@ -126,20 +126,6 @@ func Test_toConfig(t *testing.T) {
 				Rules:            map[string]*tflint.RuleConfig{},
 			},
 		},
-		{
-			Name:    "--fast",
-			Command: "./tflint --fast",
-			Expected: &tflint.Config{
-				DeepCheck:        false,
-				AwsCredentials:   client.AwsCredentials{},
-				IgnoreModule:     map[string]bool{},
-				IgnoreRule:       map[string]bool{"aws_instance_invalid_ami": true},
-				Varfile:          []string{},
-				Variables:        []string{},
-				TerraformVersion: "",
-				Rules:            map[string]*tflint.RuleConfig{},
-			},
-		},
 	}
 
 	for _, tc := range cases {
