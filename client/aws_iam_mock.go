@@ -5747,6 +5747,50 @@ func (mr *MockIAMAPIMockRecorder) SetDefaultPolicyVersionRequest(arg0 interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetDefaultPolicyVersionRequest", reflect.TypeOf((*MockIAMAPI)(nil).SetDefaultPolicyVersionRequest), arg0)
 }
 
+// SetSecurityTokenServicePreferences mocks base method
+func (m *MockIAMAPI) SetSecurityTokenServicePreferences(arg0 *iam.SetSecurityTokenServicePreferencesInput) (*iam.SetSecurityTokenServicePreferencesOutput, error) {
+	ret := m.ctrl.Call(m, "SetSecurityTokenServicePreferences", arg0)
+	ret0, _ := ret[0].(*iam.SetSecurityTokenServicePreferencesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SetSecurityTokenServicePreferences indicates an expected call of SetSecurityTokenServicePreferences
+func (mr *MockIAMAPIMockRecorder) SetSecurityTokenServicePreferences(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetSecurityTokenServicePreferences", reflect.TypeOf((*MockIAMAPI)(nil).SetSecurityTokenServicePreferences), arg0)
+}
+
+// SetSecurityTokenServicePreferencesWithContext mocks base method
+func (m *MockIAMAPI) SetSecurityTokenServicePreferencesWithContext(arg0 aws.Context, arg1 *iam.SetSecurityTokenServicePreferencesInput, arg2 ...request.Option) (*iam.SetSecurityTokenServicePreferencesOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "SetSecurityTokenServicePreferencesWithContext", varargs...)
+	ret0, _ := ret[0].(*iam.SetSecurityTokenServicePreferencesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SetSecurityTokenServicePreferencesWithContext indicates an expected call of SetSecurityTokenServicePreferencesWithContext
+func (mr *MockIAMAPIMockRecorder) SetSecurityTokenServicePreferencesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetSecurityTokenServicePreferencesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).SetSecurityTokenServicePreferencesWithContext), varargs...)
+}
+
+// SetSecurityTokenServicePreferencesRequest mocks base method
+func (m *MockIAMAPI) SetSecurityTokenServicePreferencesRequest(arg0 *iam.SetSecurityTokenServicePreferencesInput) (*request.Request, *iam.SetSecurityTokenServicePreferencesOutput) {
+	ret := m.ctrl.Call(m, "SetSecurityTokenServicePreferencesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.SetSecurityTokenServicePreferencesOutput)
+	return ret0, ret1
+}
+
+// SetSecurityTokenServicePreferencesRequest indicates an expected call of SetSecurityTokenServicePreferencesRequest
+func (mr *MockIAMAPIMockRecorder) SetSecurityTokenServicePreferencesRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetSecurityTokenServicePreferencesRequest", reflect.TypeOf((*MockIAMAPI)(nil).SetSecurityTokenServicePreferencesRequest), arg0)
+}
+
 // SimulateCustomPolicy mocks base method
 func (m *MockIAMAPI) SimulateCustomPolicy(arg0 *iam.SimulateCustomPolicyInput) (*iam.SimulatePolicyResponse, error) {
 	ret := m.ctrl.Call(m, "SimulateCustomPolicy", arg0)
@@ -6844,6 +6888,64 @@ func (m *MockIAMAPI) WaitUntilInstanceProfileExistsWithContext(arg0 aws.Context,
 func (mr *MockIAMAPIMockRecorder) WaitUntilInstanceProfileExistsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilInstanceProfileExistsWithContext", reflect.TypeOf((*MockIAMAPI)(nil).WaitUntilInstanceProfileExistsWithContext), varargs...)
+}
+
+// WaitUntilPolicyExists mocks base method
+func (m *MockIAMAPI) WaitUntilPolicyExists(arg0 *iam.GetPolicyInput) error {
+	ret := m.ctrl.Call(m, "WaitUntilPolicyExists", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// WaitUntilPolicyExists indicates an expected call of WaitUntilPolicyExists
+func (mr *MockIAMAPIMockRecorder) WaitUntilPolicyExists(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilPolicyExists", reflect.TypeOf((*MockIAMAPI)(nil).WaitUntilPolicyExists), arg0)
+}
+
+// WaitUntilPolicyExistsWithContext mocks base method
+func (m *MockIAMAPI) WaitUntilPolicyExistsWithContext(arg0 aws.Context, arg1 *iam.GetPolicyInput, arg2 ...request.WaiterOption) error {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "WaitUntilPolicyExistsWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// WaitUntilPolicyExistsWithContext indicates an expected call of WaitUntilPolicyExistsWithContext
+func (mr *MockIAMAPIMockRecorder) WaitUntilPolicyExistsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilPolicyExistsWithContext", reflect.TypeOf((*MockIAMAPI)(nil).WaitUntilPolicyExistsWithContext), varargs...)
+}
+
+// WaitUntilRoleExists mocks base method
+func (m *MockIAMAPI) WaitUntilRoleExists(arg0 *iam.GetRoleInput) error {
+	ret := m.ctrl.Call(m, "WaitUntilRoleExists", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// WaitUntilRoleExists indicates an expected call of WaitUntilRoleExists
+func (mr *MockIAMAPIMockRecorder) WaitUntilRoleExists(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilRoleExists", reflect.TypeOf((*MockIAMAPI)(nil).WaitUntilRoleExists), arg0)
+}
+
+// WaitUntilRoleExistsWithContext mocks base method
+func (m *MockIAMAPI) WaitUntilRoleExistsWithContext(arg0 aws.Context, arg1 *iam.GetRoleInput, arg2 ...request.WaiterOption) error {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "WaitUntilRoleExistsWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// WaitUntilRoleExistsWithContext indicates an expected call of WaitUntilRoleExistsWithContext
+func (mr *MockIAMAPIMockRecorder) WaitUntilRoleExistsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilRoleExistsWithContext", reflect.TypeOf((*MockIAMAPI)(nil).WaitUntilRoleExistsWithContext), varargs...)
 }
 
 // WaitUntilUserExists mocks base method
