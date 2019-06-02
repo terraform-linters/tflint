@@ -1,3 +1,23 @@
+## 0.8.2 (2019-06-03)
+
+### Enhancements
+
+- [#308](https://github.com/wata727/tflint/pull/308): Make aws_instance_invalid_ami rule faster.
+  - The `--fast` option to disable this rule will be removed in v0.9.
+- [#309](https://github.com/wata727/tflint/pull/309): Accept a directory as an argument.
+
+### Others
+
+- [#298](https://github.com/wata727/tflint/pull/298): Revise docker image.
+- [#300](https://github.com/wata727/tflint/pull/300): Bump github.com/mattn/go-colorable from 0.1.1 to 0.1.2.
+- [#301](https://github.com/wata727/tflint/pull/301): Bump github.com/mitchellh/go-homedir from 1.0.0 to 1.1.0.
+- [#302](https://github.com/wata727/tflint/pull/302): Bump github.com/aws/aws-sdk-go from 1.19.18 to 1.19.41.
+- [#303](https://github.com/wata727/tflint/pull/303): Bump github.com/k0kubun/pp from 2.3.0+incompatible to 2.4.0+incompatible.
+- [#304](https://github.com/wata727/tflint/pull/304): Bump github.com/hashicorp/go-version from 1.1.0 to 1.2.0.
+- [#305](https://github.com/wata727/tflint/pull/305): Bump github.com/golang/mock from 1.2.0 to 1.3.1.
+- [#306](https://github.com/wata727/tflint/pull/306): Bump github.com/google/go-cmp from 0.2.0 to 0.3.0.
+- [#307](https://github.com/wata727/tflint/pull/307): Remove mock package.
+
 ## 0.8.1 (2019-05-30)
 
 ### Enhancements
