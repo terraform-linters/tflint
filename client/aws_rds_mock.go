@@ -5235,6 +5235,50 @@ func (mr *MockRDSAPIMockRecorder) RevokeDBSecurityGroupIngressRequest(arg0 inter
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RevokeDBSecurityGroupIngressRequest", reflect.TypeOf((*MockRDSAPI)(nil).RevokeDBSecurityGroupIngressRequest), arg0)
 }
 
+// StartActivityStream mocks base method
+func (m *MockRDSAPI) StartActivityStream(arg0 *rds.StartActivityStreamInput) (*rds.StartActivityStreamOutput, error) {
+	ret := m.ctrl.Call(m, "StartActivityStream", arg0)
+	ret0, _ := ret[0].(*rds.StartActivityStreamOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StartActivityStream indicates an expected call of StartActivityStream
+func (mr *MockRDSAPIMockRecorder) StartActivityStream(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartActivityStream", reflect.TypeOf((*MockRDSAPI)(nil).StartActivityStream), arg0)
+}
+
+// StartActivityStreamWithContext mocks base method
+func (m *MockRDSAPI) StartActivityStreamWithContext(arg0 aws.Context, arg1 *rds.StartActivityStreamInput, arg2 ...request.Option) (*rds.StartActivityStreamOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "StartActivityStreamWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.StartActivityStreamOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StartActivityStreamWithContext indicates an expected call of StartActivityStreamWithContext
+func (mr *MockRDSAPIMockRecorder) StartActivityStreamWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartActivityStreamWithContext", reflect.TypeOf((*MockRDSAPI)(nil).StartActivityStreamWithContext), varargs...)
+}
+
+// StartActivityStreamRequest mocks base method
+func (m *MockRDSAPI) StartActivityStreamRequest(arg0 *rds.StartActivityStreamInput) (*request.Request, *rds.StartActivityStreamOutput) {
+	ret := m.ctrl.Call(m, "StartActivityStreamRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.StartActivityStreamOutput)
+	return ret0, ret1
+}
+
+// StartActivityStreamRequest indicates an expected call of StartActivityStreamRequest
+func (mr *MockRDSAPIMockRecorder) StartActivityStreamRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartActivityStreamRequest", reflect.TypeOf((*MockRDSAPI)(nil).StartActivityStreamRequest), arg0)
+}
+
 // StartDBCluster mocks base method
 func (m *MockRDSAPI) StartDBCluster(arg0 *rds.StartDBClusterInput) (*rds.StartDBClusterOutput, error) {
 	ret := m.ctrl.Call(m, "StartDBCluster", arg0)
@@ -5321,6 +5365,50 @@ func (m *MockRDSAPI) StartDBInstanceRequest(arg0 *rds.StartDBInstanceInput) (*re
 // StartDBInstanceRequest indicates an expected call of StartDBInstanceRequest
 func (mr *MockRDSAPIMockRecorder) StartDBInstanceRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartDBInstanceRequest", reflect.TypeOf((*MockRDSAPI)(nil).StartDBInstanceRequest), arg0)
+}
+
+// StopActivityStream mocks base method
+func (m *MockRDSAPI) StopActivityStream(arg0 *rds.StopActivityStreamInput) (*rds.StopActivityStreamOutput, error) {
+	ret := m.ctrl.Call(m, "StopActivityStream", arg0)
+	ret0, _ := ret[0].(*rds.StopActivityStreamOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StopActivityStream indicates an expected call of StopActivityStream
+func (mr *MockRDSAPIMockRecorder) StopActivityStream(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StopActivityStream", reflect.TypeOf((*MockRDSAPI)(nil).StopActivityStream), arg0)
+}
+
+// StopActivityStreamWithContext mocks base method
+func (m *MockRDSAPI) StopActivityStreamWithContext(arg0 aws.Context, arg1 *rds.StopActivityStreamInput, arg2 ...request.Option) (*rds.StopActivityStreamOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "StopActivityStreamWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.StopActivityStreamOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StopActivityStreamWithContext indicates an expected call of StopActivityStreamWithContext
+func (mr *MockRDSAPIMockRecorder) StopActivityStreamWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StopActivityStreamWithContext", reflect.TypeOf((*MockRDSAPI)(nil).StopActivityStreamWithContext), varargs...)
+}
+
+// StopActivityStreamRequest mocks base method
+func (m *MockRDSAPI) StopActivityStreamRequest(arg0 *rds.StopActivityStreamInput) (*request.Request, *rds.StopActivityStreamOutput) {
+	ret := m.ctrl.Call(m, "StopActivityStreamRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.StopActivityStreamOutput)
+	return ret0, ret1
+}
+
+// StopActivityStreamRequest indicates an expected call of StopActivityStreamRequest
+func (mr *MockRDSAPIMockRecorder) StopActivityStreamRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StopActivityStreamRequest", reflect.TypeOf((*MockRDSAPI)(nil).StopActivityStreamRequest), arg0)
 }
 
 // StopDBCluster mocks base method
