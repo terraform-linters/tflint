@@ -1,4 +1,5 @@
 config {
+  terraform_version = "0.12.0"
   deep_check = true
 
   aws_credentials = {

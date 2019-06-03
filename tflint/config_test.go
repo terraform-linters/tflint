@@ -39,9 +39,8 @@ func Test_LoadConfig(t *testing.T) {
 				IgnoreModule: map[string]bool{
 					"github.com/wata727/example-module": true,
 				},
-				Varfile:          []string{"example1.tfvars", "example2.tfvars"},
-				Variables:        []string{"foo=bar", "bar=['foo']"},
-				TerraformVersion: "0.9.11",
+				Varfile:   []string{"example1.tfvars", "example2.tfvars"},
+				Variables: []string{"foo=bar", "bar=['foo']"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -70,12 +69,11 @@ func Test_LoadConfig(t *testing.T) {
 					SecretKey: "AWS_SECRET_KEY",
 					Region:    "us-east-1",
 				},
-				IgnoreRule:       map[string]bool{},
-				IgnoreModule:     map[string]bool{},
-				Varfile:          []string{},
-				Variables:        []string{},
-				TerraformVersion: "0.9.11",
-				Rules:            map[string]*RuleConfig{},
+				IgnoreRule:   map[string]bool{},
+				IgnoreModule: map[string]bool{},
+				Varfile:      []string{},
+				Variables:    []string{},
+				Rules:        map[string]*RuleConfig{},
 			},
 		},
 		{
@@ -141,6 +139,11 @@ func Test_LoadConfig_error(t *testing.T) {
 				filepath.Join(currentDir, "test-fixtures", "config", "invalid.hcl"),
 			),
 		},
+		{
+			Name:     "terraform_version",
+			File:     filepath.Join(currentDir, "test-fixtures", "config", "terraform_version.hcl"),
+			Expected: "`terraform_version` was removed in v0.9.0 because the option is no longer used",
+		},
 	}
 
 	for _, tc := range cases {
@@ -171,9 +174,8 @@ func Test_Merge(t *testing.T) {
 			"aws_instance_invalid_type": false,
 			"aws_instance_invalid_ami":  true,
 		},
-		Varfile:          []string{"example1.tfvars", "example2.tfvars"},
-		Variables:        []string{"foo=bar"},
-		TerraformVersion: "0.11.1",
+		Varfile:   []string{"example1.tfvars", "example2.tfvars"},
+		Variables: []string{"foo=bar"},
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
 				Name:    "aws_instance_invalid_type",
@@ -228,9 +230,8 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_invalid_type": false,
 					"aws_instance_invalid_ami":  true,
 				},
-				Varfile:          []string{"example1.tfvars", "example2.tfvars"},
-				Variables:        []string{"foo=bar"},
-				TerraformVersion: "0.11.1",
+				Varfile:   []string{"example1.tfvars", "example2.tfvars"},
+				Variables: []string{"foo=bar"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -257,9 +258,8 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_invalid_ami":   false,
 					"aws_instance_previous_type": true,
 				},
-				Varfile:          []string{"example3.tfvars"},
-				Variables:        []string{"bar=baz"},
-				TerraformVersion: "0.12.0",
+				Varfile:   []string{"example3.tfvars"},
+				Variables: []string{"bar=baz"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_ami": {
 						Name:    "aws_instance_invalid_ami",
@@ -289,9 +289,8 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_invalid_ami":   false,
 					"aws_instance_previous_type": true,
 				},
-				Varfile:          []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
-				Variables:        []string{"foo=bar", "bar=baz"},
-				TerraformVersion: "0.12.0",
+				Varfile:   []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
+				Variables: []string{"foo=bar", "bar=baz"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -334,9 +333,8 @@ func Test_copy(t *testing.T) {
 			"aws_instance_invalid_type": false,
 			"aws_instance_invalid_ami":  true,
 		},
-		Varfile:          []string{"example1.tfvars", "example2.tfvars"},
-		Variables:        []string{},
-		TerraformVersion: "0.11.1",
+		Varfile:   []string{"example1.tfvars", "example2.tfvars"},
+		Variables: []string{},
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
 				Name:    "aws_instance_invalid_type",
@@ -390,12 +388,6 @@ func Test_copy(t *testing.T) {
 			Name: "Variables",
 			SideEffect: func(c *Config) {
 				c.Variables = append(c.Variables, "baz=foo")
-			},
-		},
-		{
-			Name: "TerraformVersion",
-			SideEffect: func(c *Config) {
-				c.TerraformVersion = "0.12.0"
 			},
 		},
 		{
