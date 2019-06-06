@@ -59,7 +59,7 @@ func (r *AwsLaunchConfigurationInvalidImageIDRule) Check(runner *tflint.Runner) 
 			if !r.amiIDs[ami] {
 				log.Printf("[DEBUG] Fetch AMI images: %s", ami)
 				resp, err := runner.AwsClient.EC2.DescribeImages(&ec2.DescribeImagesInput{
-					ImageIDs: aws.StringSlice([]string{ami}),
+					ImageIds: aws.StringSlice([]string{ami}),
 				})
 				if err != nil {
 					err := &tflint.Error{
@@ -74,7 +74,7 @@ func (r *AwsLaunchConfigurationInvalidImageIDRule) Check(runner *tflint.Runner) 
 
 				if len(resp.Images) != 0 {
 					for _, image := range resp.Images {
-						r.amiIDs[*image.ImageID] = true
+						r.amiIDs[*image.ImageId] = true
 					}
 				} else {
 					runner.EmitIssue(

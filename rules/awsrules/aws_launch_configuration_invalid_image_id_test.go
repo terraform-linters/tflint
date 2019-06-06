@@ -67,7 +67,7 @@ resource "aws_launch_configuration" "invalid" {
 
 	ec2mock := client.NewMockEC2API(ctrl)
 	ec2mock.EXPECT().DescribeImages(&ec2.DescribeImagesInput{
-		ImageIDs: aws.StringSlice([]string{"ami-1234abcd"}),
+		ImageIds: aws.StringSlice([]string{"ami-1234abcd"}),
 	}).Return(&ec2.DescribeImagesOutput{
 		Images: []*ec2.Image{},
 	}, nil)
@@ -140,11 +140,11 @@ resource "aws_launch_configuration" "valid" {
 
 	ec2mock := client.NewMockEC2API(ctrl)
 	ec2mock.EXPECT().DescribeImages(&ec2.DescribeImagesInput{
-		ImageIDs: aws.StringSlice([]string{"ami-9ad76sd1"}),
+		ImageIds: aws.StringSlice([]string{"ami-9ad76sd1"}),
 	}).Return(&ec2.DescribeImagesOutput{
 		Images: []*ec2.Image{
 			{
-				ImageID: aws.String("ami-9ad76sd1"),
+				ImageId: aws.String("ami-9ad76sd1"),
 			},
 		},
 	}, nil)
@@ -177,7 +177,7 @@ resource "aws_launch_configuration" "valid" {
   image_id = "ami-9ad76sd1"
 }`,
 			Request: &ec2.DescribeImagesInput{
-				ImageIDs: aws.StringSlice([]string{"ami-9ad76sd1"}),
+				ImageIds: aws.StringSlice([]string{"ami-9ad76sd1"}),
 			},
 			Response:   errors.New("MissingRegion: could not find region configuration"),
 			ErrorCode:  tflint.ExternalAPIError,

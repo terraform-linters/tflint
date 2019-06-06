@@ -52,7 +52,7 @@ var deepCheckRules = []Rule{
 	awsrules.NewAwsInstanceInvalidKeyNameRule(),
 	awsrules.NewAwsInstanceInvalidSubnetRule(),
 	awsrules.NewAwsInstanceInvalidVPCSecurityGroupRule(),
-  awsrules.NewAwsLaunchConfigurationInvalidImageIdRule(),
+  awsrules.NewAwsLaunchConfigurationInvalidImageIDRule(),
   awsrules.NewAwsLaunchConfigurationInvalidIAMProfileRule(),
 	awsrules.NewAwsRouteInvalidEgressOnlyGatewayRule(),
 	awsrules.NewAwsRouteInvalidGatewayRule(),
