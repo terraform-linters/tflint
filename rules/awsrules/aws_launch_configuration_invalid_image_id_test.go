@@ -18,8 +18,8 @@ import (
 	"github.com/wata727/tflint/tflint"
 )
 
-func Test_AwsLaunchConfigurationInvalidImageId_invalid(t *testing.T) {
-	dir, err := ioutil.TempDir("", "AwsLaunchConfigurationInvalidImageId_invalid")
+func Test_AwsLaunchConfigurationInvalidImageID_invalid(t *testing.T) {
+	dir, err := ioutil.TempDir("", "AwsLaunchConfigurationInvalidImageID_invalid")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -63,11 +63,11 @@ resource "aws_launch_configuration" "invalid" {
 	}
 
 	runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
-	rule := NewAwsLaunchConfigurationInvalidImageIdRule()
+	rule := NewAwsLaunchConfigurationInvalidImageIDRule()
 
 	ec2mock := client.NewMockEC2API(ctrl)
 	ec2mock.EXPECT().DescribeImages(&ec2.DescribeImagesInput{
-		ImageIds: aws.StringSlice([]string{"ami-1234abcd"}),
+		ImageIDs: aws.StringSlice([]string{"ami-1234abcd"}),
 	}).Return(&ec2.DescribeImagesOutput{
 		Images: []*ec2.Image{},
 	}, nil)
@@ -81,7 +81,7 @@ resource "aws_launch_configuration" "invalid" {
 		{
       Detector: "aws_launch_configuration_invalid_image_id",
 			Type:     issue.ERROR,
-			Message:  "\"ami-1234abcd\" is invalid image id.",
+			Message:  "\"ami-1234abcd\" is invalid image ID.",
 			Line:     3,
 			File:     "instances.tf",
 		},
@@ -91,8 +91,8 @@ resource "aws_launch_configuration" "invalid" {
 	}
 }
 
-func Test_AwsLaunchConfigurationInvalidImageId_valid(t *testing.T) {
-	dir, err := ioutil.TempDir("", "AwsLaunchConfigurationInvalidImageId_invalid")
+func Test_AwsLaunchConfigurationInvalidImageID_valid(t *testing.T) {
+	dir, err := ioutil.TempDir("", "AwsLaunchConfigurationInvalidImageID_invalid")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -136,15 +136,15 @@ resource "aws_launch_configuration" "valid" {
 	}
 
 	runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
-	rule := NewAwsLaunchConfigurationInvalidImageIdRule()
+	rule := NewAwsLaunchConfigurationInvalidImageIDRule()
 
 	ec2mock := client.NewMockEC2API(ctrl)
 	ec2mock.EXPECT().DescribeImages(&ec2.DescribeImagesInput{
-		ImageIds: aws.StringSlice([]string{"ami-9ad76sd1"}),
+		ImageIDs: aws.StringSlice([]string{"ami-9ad76sd1"}),
 	}).Return(&ec2.DescribeImagesOutput{
 		Images: []*ec2.Image{
 			{
-				ImageId: aws.String("ami-9ad76sd1"),
+				ImageID: aws.String("ami-9ad76sd1"),
 			},
 		},
 	}, nil)
@@ -160,7 +160,7 @@ resource "aws_launch_configuration" "valid" {
 	}
 }
 
-func Test_AwsLaunchConfigurationInvalidImageId_error(t *testing.T) {
+func Test_AwsLaunchConfigurationInvalidImageID_error(t *testing.T) {
 	cases := []struct {
 		Name       string
 		Content    string
@@ -177,7 +177,7 @@ resource "aws_launch_configuration" "valid" {
   image_id = "ami-9ad76sd1"
 }`,
 			Request: &ec2.DescribeImagesInput{
-				ImageIds: aws.StringSlice([]string{"ami-9ad76sd1"}),
+				ImageIDs: aws.StringSlice([]string{"ami-9ad76sd1"}),
 			},
 			Response:   errors.New("MissingRegion: could not find region configuration"),
 			ErrorCode:  tflint.ExternalAPIError,
@@ -186,7 +186,7 @@ resource "aws_launch_configuration" "valid" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "AwsLaunchConfigurationInvalidImageId_error")
+	dir, err := ioutil.TempDir("", "AwsLaunchConfigurationInvalidImageID_error")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -227,7 +227,7 @@ resource "aws_launch_configuration" "valid" {
 		}
 
 		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
-		rule := NewAwsLaunchConfigurationInvalidImageIdRule()
+		rule := NewAwsLaunchConfigurationInvalidImageIDRule()
 
 		ec2mock := client.NewMockEC2API(ctrl)
 		ec2mock.EXPECT().DescribeImages(tc.Request).Return(nil, tc.Response)
