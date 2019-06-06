@@ -21,7 +21,7 @@ type AwsLaunchConfigurationInvalidIAMProfileRule struct {
 // NewAwsLaunchConfigurationInvalidIAMProfileRule returns new rule with default attributes
 func NewAwsLaunchConfigurationInvalidIAMProfileRule() *AwsLaunchConfigurationInvalidIAMProfileRule {
 	return &AwsLaunchConfigurationInvalidIAMProfileRule{
-    resourceType:  "aws_launch_configuration",
+		resourceType:  "aws_launch_configuration",
 		attributeName: "iam_instance_profile",
 		profiles:      map[string]bool{},
 		dataPrepared:  false,

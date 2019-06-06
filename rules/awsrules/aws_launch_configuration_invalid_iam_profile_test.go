@@ -40,7 +40,7 @@ resource "aws_launch_configuration" "web" {
 			},
 			Expected: []*issue.Issue{
 				{
-          Detector: "aws_launch_configuration_invalid_iam_profile",
+					Detector: "aws_launch_configuration_invalid_iam_profile",
 					Type:     "ERROR",
 					Message:  "\"app-server\" is invalid IAM profile name.",
 					Line:     3,

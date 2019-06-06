@@ -79,7 +79,7 @@ resource "aws_launch_configuration" "invalid" {
 
 	expected := issue.Issues{
 		{
-      Detector: "aws_launch_configuration_invalid_image_id",
+			Detector: "aws_launch_configuration_invalid_image_id",
 			Type:     issue.ERROR,
 			Message:  "\"ami-1234abcd\" is invalid image ID.",
 			Line:     3,
