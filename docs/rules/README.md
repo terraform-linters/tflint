@@ -178,6 +178,9 @@ The following table shows the correspondence between resources and rules. Rules 
 ||aws_instance_invalid_vpc_security_group|✔|
 |`aws_key_pair`|||
 |`aws_launch_configuration`|||
+||aws_launch_configuration_invalid_iam_profile|✔|
+||aws_launch_configuration_invalid_image_id|✔|
+||aws_launch_configuration_invalid_type||
 |`aws_launch_template`|||
 |`aws_placement_group`|||
 |`aws_snapshot_create_volume_permission`|||
