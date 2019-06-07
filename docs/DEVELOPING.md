@@ -60,6 +60,6 @@ A template of rules and tests is generated. In order to inspect configuration fi
 Finally, don't forget to register the created rule with [the provider](https://github.com/wata727/tflint/blob/master/rules/provider.go). After that the rule you created is enabled in TFLint.
 
 
-## Commiting
+## Committing
 
 Before commit, please install [pre-commit](https://pre-commit.com/) and install pre-commit hooks by running `pre-commit install` in root directory of your local checkout.
