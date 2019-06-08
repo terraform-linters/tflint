@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/wata727/tflint/issue"
@@ -62,6 +63,21 @@ func (r *AwsLaunchConfigurationInvalidImageIDRule) Check(runner *tflint.Runner) 
 					ImageIds: aws.StringSlice([]string{ami}),
 				})
 				if err != nil {
+					if aerr, ok := err.(awserr.Error); ok {
+						switch aerr.Code() {
+						case "InvalidAMIID.Malformed":
+							fallthrough
+						case "InvalidAMIID.NotFound":
+							fallthrough
+						case "InvalidAMIID.Unavailable":
+							runner.EmitIssue(
+								r,
+								fmt.Sprintf("\"%s\" is invalid image ID.", ami),
+								attribute.Expr.Range(),
+							)
+							return nil
+						}
+					}
 					err := &tflint.Error{
 						Code:    tflint.ExternalAPIError,
 						Level:   tflint.ErrorLevel,
