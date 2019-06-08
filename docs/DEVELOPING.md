@@ -58,3 +58,8 @@ Create: rules/awsrules/aws_instance_example_test.go
 A template of rules and tests is generated. In order to inspect configuration files, you need to understand [the Runner API](https://github.com/wata727/tflint/blob/master/tflint/runner.go).
 
 Finally, don't forget to register the created rule with [the provider](https://github.com/wata727/tflint/blob/master/rules/provider.go). After that the rule you created is enabled in TFLint.
+
+
+## Committing
+
+Before commit, please install [pre-commit](https://pre-commit.com/) and install pre-commit hooks by running `pre-commit install` in root directory of your local checkout.
