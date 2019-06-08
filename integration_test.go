@@ -42,7 +42,7 @@ func TestIntegration(t *testing.T) {
 		},
 		{
 			Name:    "variables",
-			Command: "./tflint --format json --var-file variables.tfvars",
+			Command: "./tflint --format json --var-file variables.tfvars --var var=var",
 			Dir:     "variables",
 		},
 		{

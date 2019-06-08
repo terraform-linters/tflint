@@ -6,9 +6,124 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/zclconf/go-cty/cty"
 )
+
+func Test_ParseTFVariables(t *testing.T) {
+	cases := []struct {
+		Name     string
+		DeclVars map[string]*configs.Variable
+		Vars     []string
+		Expected terraform.InputValues
+	}{
+		{
+			Name:     "undeclared",
+			DeclVars: map[string]*configs.Variable{},
+			Vars: []string{
+				"foo=bar",
+				"bar=[\"foo\"]",
+				"baz={ foo=\"bar\" }",
+			},
+			Expected: terraform.InputValues{
+				"foo": &terraform.InputValue{
+					Value:      cty.StringVal("bar"),
+					SourceType: terraform.ValueFromCLIArg,
+				},
+				"bar": &terraform.InputValue{
+					Value:      cty.StringVal("[\"foo\"]"),
+					SourceType: terraform.ValueFromCLIArg,
+				},
+				"baz": &terraform.InputValue{
+					Value:      cty.StringVal("{ foo=\"bar\" }"),
+					SourceType: terraform.ValueFromCLIArg,
+				},
+			},
+		},
+		{
+			Name: "declared",
+			DeclVars: map[string]*configs.Variable{
+				"foo": &configs.Variable{ParsingMode: configs.VariableParseLiteral},
+				"bar": &configs.Variable{ParsingMode: configs.VariableParseHCL},
+				"baz": &configs.Variable{ParsingMode: configs.VariableParseHCL},
+			},
+			Vars: []string{
+				"foo=bar",
+				"bar=[\"foo\"]",
+				"baz={ foo=\"bar\" }",
+			},
+			Expected: terraform.InputValues{
+				"foo": &terraform.InputValue{
+					Value:      cty.StringVal("bar"),
+					SourceType: terraform.ValueFromCLIArg,
+				},
+				"bar": &terraform.InputValue{
+					Value:      cty.TupleVal([]cty.Value{cty.StringVal("foo")}),
+					SourceType: terraform.ValueFromCLIArg,
+				},
+				"baz": &terraform.InputValue{
+					Value:      cty.ObjectVal(map[string]cty.Value{"foo": cty.StringVal("bar")}),
+					SourceType: terraform.ValueFromCLIArg,
+				},
+			},
+		},
+	}
+
+	for _, tc := range cases {
+		ret, err := ParseTFVariables(tc.Vars, tc.DeclVars)
+		if err != nil {
+			t.Fatalf("Failed `%s` test: Unexpected error occurred: %s", tc.Name, err)
+		}
+
+		if !reflect.DeepEqual(tc.Expected, ret) {
+			t.Fatalf("Failed `%s` test:\n Expected: %#v\n Actual: %#v", tc.Name, tc.Expected, ret)
+		}
+	}
+}
+
+func Test_ParseTFVariables_errors(t *testing.T) {
+	cases := []struct {
+		Name     string
+		DeclVars map[string]*configs.Variable
+		Vars     []string
+		Expected string
+	}{
+		{
+			Name:     "invalid format",
+			DeclVars: map[string]*configs.Variable{},
+			Vars:     []string{"foo"},
+			Expected: "`foo` is invalid. Variables must be `key=value` format",
+		},
+		{
+			Name: "invalid parsing mode",
+			DeclVars: map[string]*configs.Variable{
+				"foo": &configs.Variable{ParsingMode: configs.VariableParseHCL},
+			},
+			Vars:     []string{"foo=bar"},
+			Expected: "<value for var.foo>:1,1-4: Variables not allowed; Variables may not be used here.",
+		},
+		{
+			Name: "invalid expression",
+			DeclVars: map[string]*configs.Variable{
+				"foo": &configs.Variable{ParsingMode: configs.VariableParseHCL},
+			},
+			Vars:     []string{"foo="},
+			Expected: "<value for var.foo>:1,1-1: Invalid expression; Expected the start of an expression, but found an invalid expression token.",
+		},
+	}
+
+	for _, tc := range cases {
+		_, err := ParseTFVariables(tc.Vars, tc.DeclVars)
+		if err == nil {
+			t.Fatalf("Failed `%s` test: Expected an error, but nothing occurred", tc.Name)
+		}
+
+		if err.Error() != tc.Expected {
+			t.Fatalf("Failed `%s` test: Expected `%s`, but got `%s`", tc.Name, tc.Expected, err.Error())
+		}
+	}
+}
 
 func Test_getTFDataDir(t *testing.T) {
 	cases := []struct {

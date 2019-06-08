@@ -3,14 +3,6 @@
     "detector": "aws_instance_invalid_type",
     "type": "ERROR",
     "message": "\"default\" is invalid instance type.",
-    "line": 24,
-    "file": "template.tf",
-    "link": ""
-  },
-  {
-    "detector": "aws_instance_invalid_type",
-    "type": "ERROR",
-    "message": "\"default_values_file\" is invalid instance type.",
     "line": 28,
     "file": "template.tf",
     "link": ""
@@ -18,7 +10,7 @@
   {
     "detector": "aws_instance_invalid_type",
     "type": "ERROR",
-    "message": "\"auto_values_file\" is invalid instance type.",
+    "message": "\"default_values_file\" is invalid instance type.",
     "line": 32,
     "file": "template.tf",
     "link": ""
@@ -26,8 +18,23 @@
   {
     "detector": "aws_instance_invalid_type",
     "type": "ERROR",
-    "message": "\"values_file\" is invalid instance type.",
+    "message": "\"auto_values_file\" is invalid instance type.",
     "line": 36,
+    "file": "template.tf",
+    "link": ""
+  },
+  {
+    "detector": "aws_instance_invalid_type",
+    "type": "ERROR",
+    "message": "\"values_file\" is invalid instance type.",
+    "line": 40,
+    "file": "template.tf",
+    "link": ""
+  },  {
+    "detector": "aws_instance_invalid_type",
+    "type": "ERROR",
+    "message": "\"var\" is invalid instance type.",
+    "line": 44,
     "file": "template.tf",
     "link": ""
   }

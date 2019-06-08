@@ -40,6 +40,7 @@ func Test_LoadConfig(t *testing.T) {
 					"github.com/wata727/example-module": true,
 				},
 				Varfile:          []string{"example1.tfvars", "example2.tfvars"},
+				Variables:        []string{"foo=bar", "bar=['foo']"},
 				TerraformVersion: "0.9.11",
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
@@ -72,6 +73,7 @@ func Test_LoadConfig(t *testing.T) {
 				IgnoreRule:       map[string]bool{},
 				IgnoreModule:     map[string]bool{},
 				Varfile:          []string{},
+				Variables:        []string{},
 				TerraformVersion: "0.9.11",
 				Rules:            map[string]*RuleConfig{},
 			},
@@ -170,6 +172,7 @@ func Test_Merge(t *testing.T) {
 			"aws_instance_invalid_ami":  true,
 		},
 		Varfile:          []string{"example1.tfvars", "example2.tfvars"},
+		Variables:        []string{"foo=bar"},
 		TerraformVersion: "0.11.1",
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
@@ -226,6 +229,7 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_invalid_ami":  true,
 				},
 				Varfile:          []string{"example1.tfvars", "example2.tfvars"},
+				Variables:        []string{"foo=bar"},
 				TerraformVersion: "0.11.1",
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
@@ -254,6 +258,7 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_previous_type": true,
 				},
 				Varfile:          []string{"example3.tfvars"},
+				Variables:        []string{"bar=baz"},
 				TerraformVersion: "0.12.0",
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_ami": {
@@ -285,6 +290,7 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_previous_type": true,
 				},
 				Varfile:          []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
+				Variables:        []string{"foo=bar", "bar=baz"},
 				TerraformVersion: "0.12.0",
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
@@ -329,6 +335,7 @@ func Test_copy(t *testing.T) {
 			"aws_instance_invalid_ami":  true,
 		},
 		Varfile:          []string{"example1.tfvars", "example2.tfvars"},
+		Variables:        []string{},
 		TerraformVersion: "0.11.1",
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
@@ -377,6 +384,12 @@ func Test_copy(t *testing.T) {
 			Name: "Varfile",
 			SideEffect: func(c *Config) {
 				c.Varfile = append(c.Varfile, "new.tfvars")
+			},
+		},
+		{
+			Name: "Variables",
+			SideEffect: func(c *Config) {
+				c.Variables = append(c.Variables, "baz=foo")
 			},
 		},
 		{

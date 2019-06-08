@@ -21,6 +21,7 @@ type rawConfig struct {
 		IgnoreModule     *map[string]bool   `hcl:"ignore_module"`
 		IgnoreRule       *map[string]bool   `hcl:"ignore_rule"`
 		Varfile          *[]string          `hcl:"varfile"`
+		Variables        *[]string          `hcl:"variables"`
 		TerraformVersion *string            `hcl:"terraform_version"`
 	} `hcl:"config,block"`
 	Rules []RuleConfig `hcl:"rule,block"`
@@ -33,6 +34,7 @@ type Config struct {
 	IgnoreModule     map[string]bool
 	IgnoreRule       map[string]bool
 	Varfile          []string
+	Variables        []string
 	TerraformVersion string
 	Rules            map[string]*RuleConfig
 }
@@ -52,6 +54,7 @@ func EmptyConfig() *Config {
 		IgnoreModule:     map[string]bool{},
 		IgnoreRule:       map[string]bool{},
 		Varfile:          []string{},
+		Variables:        []string{},
 		TerraformVersion: "",
 		Rules:            map[string]*RuleConfig{},
 	}
@@ -121,6 +124,7 @@ func (c *Config) Merge(other *Config) *Config {
 	ret.IgnoreModule = mergeBoolMap(ret.IgnoreModule, other.IgnoreModule)
 	ret.IgnoreRule = mergeBoolMap(ret.IgnoreRule, other.IgnoreRule)
 	ret.Varfile = append(ret.Varfile, other.Varfile...)
+	ret.Variables = append(ret.Variables, other.Variables...)
 
 	if other.TerraformVersion != "" {
 		ret.TerraformVersion = other.TerraformVersion
@@ -145,6 +149,9 @@ func (c *Config) copy() *Config {
 	varfile := make([]string, len(c.Varfile))
 	copy(varfile, c.Varfile)
 
+	variables := make([]string, len(c.Variables))
+	copy(variables, c.Variables)
+
 	rules := map[string]*RuleConfig{}
 	for k, v := range c.Rules {
 		rules[k] = &RuleConfig{}
@@ -157,6 +164,7 @@ func (c *Config) copy() *Config {
 		IgnoreModule:     ignoreModule,
 		IgnoreRule:       ignoreRule,
 		Varfile:          varfile,
+		Variables:        variables,
 		TerraformVersion: c.TerraformVersion,
 		Rules:            rules,
 	}
@@ -182,6 +190,7 @@ func loadConfigFromFile(file string) (*Config, error) {
 	log.Printf("[DEBUG]   IgnoreModule: %#v", cfg.IgnoreModule)
 	log.Printf("[DEBUG]   IgnoreRule: %#v", cfg.IgnoreRule)
 	log.Printf("[DEBUG]   Varfile: %#v", cfg.Varfile)
+	log.Printf("[DEBUG]   Variables: %#v", cfg.Variables)
 	log.Printf("[DEBUG]   TerraformVersion: %s", cfg.TerraformVersion)
 	log.Printf("[DEBUG]   Rules: %#v", cfg.Rules)
 
@@ -233,6 +242,9 @@ func (raw *rawConfig) toConfig() *Config {
 		}
 		if rc.Varfile != nil {
 			ret.Varfile = *rc.Varfile
+		}
+		if rc.Variables != nil {
+			ret.Variables = *rc.Variables
 		}
 		if rc.TerraformVersion != nil {
 			ret.TerraformVersion = *rc.TerraformVersion

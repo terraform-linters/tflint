@@ -102,14 +102,20 @@ func (cli *CLI) Run(args []string) int {
 		cli.printError(fmt.Errorf("Failed to load configuration tokens: %s", err))
 		return ExitCodeError
 	}
-	valuesFiles, err := cli.loader.LoadValuesFiles(cfg.Varfile...)
+	variables, err := cli.loader.LoadValuesFiles(cfg.Varfile...)
 	if err != nil {
 		cli.printError(fmt.Errorf("Failed to load values files: %s", err))
 		return ExitCodeError
 	}
+	cliVars, err := tflint.ParseTFVariables(cfg.Variables, configs.Module.Variables)
+	if err != nil {
+		cli.printError(fmt.Errorf("Failed to parse variables: %s", err))
+		return ExitCodeError
+	}
+	variables = append(variables, cliVars)
 
 	// Check configurations via Runner
-	runner := tflint.NewRunner(cfg, annotations, configs, valuesFiles...)
+	runner := tflint.NewRunner(cfg, annotations, configs, variables...)
 	runners, err := tflint.NewModuleRunners(runner)
 	if err != nil {
 		cli.printError(fmt.Errorf("Failed to prepare rule checking: %s", err))
