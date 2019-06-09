@@ -1,3 +1,25 @@
+## 0.8.3 (2019-06-09)
+
+### Enhancements
+
+- [#318](https://github.com/wata727/tflint/pull/318): Added 3 checks for AWS Launch Configuration. ([@krzyzakp](https://github.com/krzyzakp))
+  - `aws_launch_configuration_invalid_iam_profile`
+  - `aws_launch_configuration_invalid_image_id`
+  - `aws_launch_configuration_invalid_type`
+- [#321](https://github.com/wata727/tflint/pull/321): Add `--var` options.
+- [#322](https://github.com/wata727/tflint/pull/322): Add new rule: aws_s3_bucket_invalid_acl. ([@ineffyble](https://github.com/ineffyble))
+- [#324](https://github.com/wata727/tflint/pull/324): TFLint is now compatible with Terraform v0.12.1.
+  - See also https://github.com/hashicorp/terraform/releases/tag/v0.12.1
+
+### BugFixes
+
+- [#320](https://github.com/wata727/tflint/pull/320): Avoid InvalidAMIID errors.
+
+### Others
+
+- [#319](https://github.com/wata727/tflint/pull/319): Added pre-commit hooks. ([@krzyzakp](https://github.com/krzyzakp))
+- [#323](https://github.com/wata727/tflint/pull/323): Bump github.com/aws/aws-sdk-go from 1.19.41 to 1.19.46
+
 ## 0.8.2 (2019-06-03)
 
 ### Enhancements
