@@ -177,8 +177,7 @@ The following table shows the correspondence between resources and rules. Rules 
 ||aws_instance_invalid_subnet|✔|
 ||aws_instance_invalid_vpc_security_group|✔|
 |`aws_key_pair`|||
-|`aws_launch_configuration`|||
-||aws_launch_configuration_invalid_iam_profile|✔|
+|`aws_launch_configuration`|aws_launch_configuration_invalid_iam_profile|✔|
 ||aws_launch_configuration_invalid_image_id|✔|
 ||aws_launch_configuration_invalid_type||
 |`aws_launch_template`|||
@@ -391,7 +390,7 @@ The following table shows the correspondence between resources and rules. Rules 
 |`aws_route53_resolver_rule`|||
 |`aws_route53_resolver_rule_association`|||
 |`aws_s3_account_public_access_block`|||
-|`aws_s3_bucket`|||
+|`aws_s3_bucket`|aws_s3_bucket_invalid_acl||
 |`aws_s3_bucket_inventory`|||
 |`aws_s3_bucket_metric`|||
 |`aws_s3_bucket_notification`|||
