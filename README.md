@@ -96,6 +96,7 @@ Application Options:
       --ignore-module=SOURCE1,SOURCE2...    Ignore module sources
       --ignore-rule=RULE1,RULE2...          Ignore rule names
       --var-file=FILE1,FILE2...             Terraform variable file names
+      --var='foo=bar'                       Set a Terraform variable
       --deep                                Enable deep check mode
       --aws-access-key=ACCESS_KEY           AWS access key used in deep check mode
       --aws-secret-key=SECRET_KEY           AWS secret key used in deep check mode
@@ -134,6 +135,8 @@ config {
   }
 
   varfile = ["example1.tfvars", "example2.tfvars"]
+
+  variables = ["foo=bar", "bar=[\"baz\"]"]
 }
 
 rule "aws_instance_invalid_type" {
