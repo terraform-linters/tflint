@@ -123,6 +123,94 @@ func (mr *MockElastiCacheAPIMockRecorder) AuthorizeCacheSecurityGroupIngressRequ
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AuthorizeCacheSecurityGroupIngressRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).AuthorizeCacheSecurityGroupIngressRequest), arg0)
 }
 
+// BatchApplyUpdateAction mocks base method
+func (m *MockElastiCacheAPI) BatchApplyUpdateAction(arg0 *elasticache.BatchApplyUpdateActionInput) (*elasticache.BatchApplyUpdateActionOutput, error) {
+	ret := m.ctrl.Call(m, "BatchApplyUpdateAction", arg0)
+	ret0, _ := ret[0].(*elasticache.BatchApplyUpdateActionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BatchApplyUpdateAction indicates an expected call of BatchApplyUpdateAction
+func (mr *MockElastiCacheAPIMockRecorder) BatchApplyUpdateAction(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchApplyUpdateAction", reflect.TypeOf((*MockElastiCacheAPI)(nil).BatchApplyUpdateAction), arg0)
+}
+
+// BatchApplyUpdateActionWithContext mocks base method
+func (m *MockElastiCacheAPI) BatchApplyUpdateActionWithContext(arg0 aws.Context, arg1 *elasticache.BatchApplyUpdateActionInput, arg2 ...request.Option) (*elasticache.BatchApplyUpdateActionOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "BatchApplyUpdateActionWithContext", varargs...)
+	ret0, _ := ret[0].(*elasticache.BatchApplyUpdateActionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BatchApplyUpdateActionWithContext indicates an expected call of BatchApplyUpdateActionWithContext
+func (mr *MockElastiCacheAPIMockRecorder) BatchApplyUpdateActionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchApplyUpdateActionWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).BatchApplyUpdateActionWithContext), varargs...)
+}
+
+// BatchApplyUpdateActionRequest mocks base method
+func (m *MockElastiCacheAPI) BatchApplyUpdateActionRequest(arg0 *elasticache.BatchApplyUpdateActionInput) (*request.Request, *elasticache.BatchApplyUpdateActionOutput) {
+	ret := m.ctrl.Call(m, "BatchApplyUpdateActionRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.BatchApplyUpdateActionOutput)
+	return ret0, ret1
+}
+
+// BatchApplyUpdateActionRequest indicates an expected call of BatchApplyUpdateActionRequest
+func (mr *MockElastiCacheAPIMockRecorder) BatchApplyUpdateActionRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchApplyUpdateActionRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).BatchApplyUpdateActionRequest), arg0)
+}
+
+// BatchStopUpdateAction mocks base method
+func (m *MockElastiCacheAPI) BatchStopUpdateAction(arg0 *elasticache.BatchStopUpdateActionInput) (*elasticache.BatchStopUpdateActionOutput, error) {
+	ret := m.ctrl.Call(m, "BatchStopUpdateAction", arg0)
+	ret0, _ := ret[0].(*elasticache.BatchStopUpdateActionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BatchStopUpdateAction indicates an expected call of BatchStopUpdateAction
+func (mr *MockElastiCacheAPIMockRecorder) BatchStopUpdateAction(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchStopUpdateAction", reflect.TypeOf((*MockElastiCacheAPI)(nil).BatchStopUpdateAction), arg0)
+}
+
+// BatchStopUpdateActionWithContext mocks base method
+func (m *MockElastiCacheAPI) BatchStopUpdateActionWithContext(arg0 aws.Context, arg1 *elasticache.BatchStopUpdateActionInput, arg2 ...request.Option) (*elasticache.BatchStopUpdateActionOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "BatchStopUpdateActionWithContext", varargs...)
+	ret0, _ := ret[0].(*elasticache.BatchStopUpdateActionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BatchStopUpdateActionWithContext indicates an expected call of BatchStopUpdateActionWithContext
+func (mr *MockElastiCacheAPIMockRecorder) BatchStopUpdateActionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchStopUpdateActionWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).BatchStopUpdateActionWithContext), varargs...)
+}
+
+// BatchStopUpdateActionRequest mocks base method
+func (m *MockElastiCacheAPI) BatchStopUpdateActionRequest(arg0 *elasticache.BatchStopUpdateActionInput) (*request.Request, *elasticache.BatchStopUpdateActionOutput) {
+	ret := m.ctrl.Call(m, "BatchStopUpdateActionRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.BatchStopUpdateActionOutput)
+	return ret0, ret1
+}
+
+// BatchStopUpdateActionRequest indicates an expected call of BatchStopUpdateActionRequest
+func (mr *MockElastiCacheAPIMockRecorder) BatchStopUpdateActionRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchStopUpdateActionRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).BatchStopUpdateActionRequest), arg0)
+}
+
 // CopySnapshot mocks base method
 func (m *MockElastiCacheAPI) CopySnapshot(arg0 *elasticache.CopySnapshotInput) (*elasticache.CopySnapshotOutput, error) {
 	ret := m.ctrl.Call(m, "CopySnapshot", arg0)
@@ -1542,6 +1630,79 @@ func (mr *MockElastiCacheAPIMockRecorder) DescribeReservedCacheNodesOfferingsPag
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeReservedCacheNodesOfferingsPagesWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeReservedCacheNodesOfferingsPagesWithContext), varargs...)
 }
 
+// DescribeServiceUpdates mocks base method
+func (m *MockElastiCacheAPI) DescribeServiceUpdates(arg0 *elasticache.DescribeServiceUpdatesInput) (*elasticache.DescribeServiceUpdatesOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeServiceUpdates", arg0)
+	ret0, _ := ret[0].(*elasticache.DescribeServiceUpdatesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeServiceUpdates indicates an expected call of DescribeServiceUpdates
+func (mr *MockElastiCacheAPIMockRecorder) DescribeServiceUpdates(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeServiceUpdates", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeServiceUpdates), arg0)
+}
+
+// DescribeServiceUpdatesWithContext mocks base method
+func (m *MockElastiCacheAPI) DescribeServiceUpdatesWithContext(arg0 aws.Context, arg1 *elasticache.DescribeServiceUpdatesInput, arg2 ...request.Option) (*elasticache.DescribeServiceUpdatesOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeServiceUpdatesWithContext", varargs...)
+	ret0, _ := ret[0].(*elasticache.DescribeServiceUpdatesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeServiceUpdatesWithContext indicates an expected call of DescribeServiceUpdatesWithContext
+func (mr *MockElastiCacheAPIMockRecorder) DescribeServiceUpdatesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeServiceUpdatesWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeServiceUpdatesWithContext), varargs...)
+}
+
+// DescribeServiceUpdatesRequest mocks base method
+func (m *MockElastiCacheAPI) DescribeServiceUpdatesRequest(arg0 *elasticache.DescribeServiceUpdatesInput) (*request.Request, *elasticache.DescribeServiceUpdatesOutput) {
+	ret := m.ctrl.Call(m, "DescribeServiceUpdatesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DescribeServiceUpdatesOutput)
+	return ret0, ret1
+}
+
+// DescribeServiceUpdatesRequest indicates an expected call of DescribeServiceUpdatesRequest
+func (mr *MockElastiCacheAPIMockRecorder) DescribeServiceUpdatesRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeServiceUpdatesRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeServiceUpdatesRequest), arg0)
+}
+
+// DescribeServiceUpdatesPages mocks base method
+func (m *MockElastiCacheAPI) DescribeServiceUpdatesPages(arg0 *elasticache.DescribeServiceUpdatesInput, arg1 func(*elasticache.DescribeServiceUpdatesOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeServiceUpdatesPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeServiceUpdatesPages indicates an expected call of DescribeServiceUpdatesPages
+func (mr *MockElastiCacheAPIMockRecorder) DescribeServiceUpdatesPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeServiceUpdatesPages", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeServiceUpdatesPages), arg0, arg1)
+}
+
+// DescribeServiceUpdatesPagesWithContext mocks base method
+func (m *MockElastiCacheAPI) DescribeServiceUpdatesPagesWithContext(arg0 aws.Context, arg1 *elasticache.DescribeServiceUpdatesInput, arg2 func(*elasticache.DescribeServiceUpdatesOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeServiceUpdatesPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeServiceUpdatesPagesWithContext indicates an expected call of DescribeServiceUpdatesPagesWithContext
+func (mr *MockElastiCacheAPIMockRecorder) DescribeServiceUpdatesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeServiceUpdatesPagesWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeServiceUpdatesPagesWithContext), varargs...)
+}
+
 // DescribeSnapshots mocks base method
 func (m *MockElastiCacheAPI) DescribeSnapshots(arg0 *elasticache.DescribeSnapshotsInput) (*elasticache.DescribeSnapshotsOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeSnapshots", arg0)
@@ -1613,6 +1774,79 @@ func (m *MockElastiCacheAPI) DescribeSnapshotsPagesWithContext(arg0 aws.Context,
 func (mr *MockElastiCacheAPIMockRecorder) DescribeSnapshotsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSnapshotsPagesWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeSnapshotsPagesWithContext), varargs...)
+}
+
+// DescribeUpdateActions mocks base method
+func (m *MockElastiCacheAPI) DescribeUpdateActions(arg0 *elasticache.DescribeUpdateActionsInput) (*elasticache.DescribeUpdateActionsOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeUpdateActions", arg0)
+	ret0, _ := ret[0].(*elasticache.DescribeUpdateActionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeUpdateActions indicates an expected call of DescribeUpdateActions
+func (mr *MockElastiCacheAPIMockRecorder) DescribeUpdateActions(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeUpdateActions", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeUpdateActions), arg0)
+}
+
+// DescribeUpdateActionsWithContext mocks base method
+func (m *MockElastiCacheAPI) DescribeUpdateActionsWithContext(arg0 aws.Context, arg1 *elasticache.DescribeUpdateActionsInput, arg2 ...request.Option) (*elasticache.DescribeUpdateActionsOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeUpdateActionsWithContext", varargs...)
+	ret0, _ := ret[0].(*elasticache.DescribeUpdateActionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeUpdateActionsWithContext indicates an expected call of DescribeUpdateActionsWithContext
+func (mr *MockElastiCacheAPIMockRecorder) DescribeUpdateActionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeUpdateActionsWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeUpdateActionsWithContext), varargs...)
+}
+
+// DescribeUpdateActionsRequest mocks base method
+func (m *MockElastiCacheAPI) DescribeUpdateActionsRequest(arg0 *elasticache.DescribeUpdateActionsInput) (*request.Request, *elasticache.DescribeUpdateActionsOutput) {
+	ret := m.ctrl.Call(m, "DescribeUpdateActionsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DescribeUpdateActionsOutput)
+	return ret0, ret1
+}
+
+// DescribeUpdateActionsRequest indicates an expected call of DescribeUpdateActionsRequest
+func (mr *MockElastiCacheAPIMockRecorder) DescribeUpdateActionsRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeUpdateActionsRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeUpdateActionsRequest), arg0)
+}
+
+// DescribeUpdateActionsPages mocks base method
+func (m *MockElastiCacheAPI) DescribeUpdateActionsPages(arg0 *elasticache.DescribeUpdateActionsInput, arg1 func(*elasticache.DescribeUpdateActionsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeUpdateActionsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeUpdateActionsPages indicates an expected call of DescribeUpdateActionsPages
+func (mr *MockElastiCacheAPIMockRecorder) DescribeUpdateActionsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeUpdateActionsPages", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeUpdateActionsPages), arg0, arg1)
+}
+
+// DescribeUpdateActionsPagesWithContext mocks base method
+func (m *MockElastiCacheAPI) DescribeUpdateActionsPagesWithContext(arg0 aws.Context, arg1 *elasticache.DescribeUpdateActionsInput, arg2 func(*elasticache.DescribeUpdateActionsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeUpdateActionsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeUpdateActionsPagesWithContext indicates an expected call of DescribeUpdateActionsPagesWithContext
+func (mr *MockElastiCacheAPIMockRecorder) DescribeUpdateActionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeUpdateActionsPagesWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeUpdateActionsPagesWithContext), varargs...)
 }
 
 // IncreaseReplicaCount mocks base method

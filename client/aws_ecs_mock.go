@@ -1705,6 +1705,50 @@ func (mr *MockECSAPIMockRecorder) StopTaskRequest(arg0 interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StopTaskRequest", reflect.TypeOf((*MockECSAPI)(nil).StopTaskRequest), arg0)
 }
 
+// SubmitAttachmentStateChanges mocks base method
+func (m *MockECSAPI) SubmitAttachmentStateChanges(arg0 *ecs.SubmitAttachmentStateChangesInput) (*ecs.SubmitAttachmentStateChangesOutput, error) {
+	ret := m.ctrl.Call(m, "SubmitAttachmentStateChanges", arg0)
+	ret0, _ := ret[0].(*ecs.SubmitAttachmentStateChangesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SubmitAttachmentStateChanges indicates an expected call of SubmitAttachmentStateChanges
+func (mr *MockECSAPIMockRecorder) SubmitAttachmentStateChanges(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubmitAttachmentStateChanges", reflect.TypeOf((*MockECSAPI)(nil).SubmitAttachmentStateChanges), arg0)
+}
+
+// SubmitAttachmentStateChangesWithContext mocks base method
+func (m *MockECSAPI) SubmitAttachmentStateChangesWithContext(arg0 aws.Context, arg1 *ecs.SubmitAttachmentStateChangesInput, arg2 ...request.Option) (*ecs.SubmitAttachmentStateChangesOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "SubmitAttachmentStateChangesWithContext", varargs...)
+	ret0, _ := ret[0].(*ecs.SubmitAttachmentStateChangesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SubmitAttachmentStateChangesWithContext indicates an expected call of SubmitAttachmentStateChangesWithContext
+func (mr *MockECSAPIMockRecorder) SubmitAttachmentStateChangesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubmitAttachmentStateChangesWithContext", reflect.TypeOf((*MockECSAPI)(nil).SubmitAttachmentStateChangesWithContext), varargs...)
+}
+
+// SubmitAttachmentStateChangesRequest mocks base method
+func (m *MockECSAPI) SubmitAttachmentStateChangesRequest(arg0 *ecs.SubmitAttachmentStateChangesInput) (*request.Request, *ecs.SubmitAttachmentStateChangesOutput) {
+	ret := m.ctrl.Call(m, "SubmitAttachmentStateChangesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ecs.SubmitAttachmentStateChangesOutput)
+	return ret0, ret1
+}
+
+// SubmitAttachmentStateChangesRequest indicates an expected call of SubmitAttachmentStateChangesRequest
+func (mr *MockECSAPIMockRecorder) SubmitAttachmentStateChangesRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubmitAttachmentStateChangesRequest", reflect.TypeOf((*MockECSAPI)(nil).SubmitAttachmentStateChangesRequest), arg0)
+}
+
 // SubmitContainerStateChange mocks base method
 func (m *MockECSAPI) SubmitContainerStateChange(arg0 *ecs.SubmitContainerStateChangeInput) (*ecs.SubmitContainerStateChangeOutput, error) {
 	ret := m.ctrl.Call(m, "SubmitContainerStateChange", arg0)
