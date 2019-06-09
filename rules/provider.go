@@ -31,6 +31,7 @@ var DefaultRules = []Rule{
 	awsrules.NewAwsLaunchConfigurationInvalidTypeRule(),
 	awsrules.NewAwsRouteNotSpecifiedTargetRule(),
 	awsrules.NewAwsRouteSpecifiedMultipleTargetsRule(),
+	awsrules.NewAwsS3BucketInvalidAclRule(),
 	terraformrules.NewTerraformModulePinnedSourceRule(),
 }
 
