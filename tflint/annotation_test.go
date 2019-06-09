@@ -1,12 +1,14 @@
 package tflint
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/hcl2/hcl/hclsyntax"
 	"github.com/wata727/tflint/issue"
@@ -37,8 +39,8 @@ func Test_NewAnnotations(t *testing.T) {
 				Bytes: []byte("/* tflint-ignore: aws_instance_invalid_type */"),
 				Range: hcl.Range{
 					Filename: "resource.tf",
-					Start:    hcl.Pos{Line: 2, Column: 5, Byte: 36},
-					End:      hcl.Pos{Line: 2, Column: 51, Byte: 82},
+					Start:    hcl.Pos{Line: 2, Column: 5},
+					End:      hcl.Pos{Line: 2, Column: 51},
 				},
 			},
 		},
@@ -46,11 +48,11 @@ func Test_NewAnnotations(t *testing.T) {
 			Content: "aws_instance_invalid_type",
 			Token: hclsyntax.Token{
 				Type:  hclsyntax.TokenComment,
-				Bytes: []byte("// tflint-ignore: aws_instance_invalid_type\n"),
+				Bytes: []byte(fmt.Sprintf("// tflint-ignore: aws_instance_invalid_type%s", newLine())),
 				Range: hcl.Range{
 					Filename: "resource.tf",
-					Start:    hcl.Pos{Line: 3, Column: 32, Byte: 114},
-					End:      hcl.Pos{Line: 4, Column: 1, Byte: 158},
+					Start:    hcl.Pos{Line: 3, Column: 32},
+					End:      hcl.Pos{Line: 4, Column: 1},
 				},
 			},
 		},
@@ -58,18 +60,19 @@ func Test_NewAnnotations(t *testing.T) {
 			Content: "aws_instance_invalid_type",
 			Token: hclsyntax.Token{
 				Type:  hclsyntax.TokenComment,
-				Bytes: []byte("# tflint-ignore: aws_instance_invalid_type This is also comment\n"),
+				Bytes: []byte(fmt.Sprintf("# tflint-ignore: aws_instance_invalid_type This is also comment%s", newLine())),
 				Range: hcl.Range{
 					Filename: "resource.tf",
-					Start:    hcl.Pos{Line: 4, Column: 5, Byte: 162},
-					End:      hcl.Pos{Line: 5, Column: 1, Byte: 226},
+					Start:    hcl.Pos{Line: 4, Column: 5},
+					End:      hcl.Pos{Line: 5, Column: 1},
 				},
 			},
 		},
 	}
 
-	if !cmp.Equal(expected, ret) {
-		t.Fatalf("Test failed. Diff: %s", cmp.Diff(expected, ret))
+	opts := cmpopts.IgnoreFields(hcl.Pos{}, "Byte")
+	if !cmp.Equal(expected, ret, opts) {
+		t.Fatalf("Test failed. Diff: %s", cmp.Diff(expected, ret, opts))
 	}
 }
 

@@ -1,12 +1,14 @@
 package tflint
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/hcl2/hcl/hclsyntax"
 	"github.com/hashicorp/terraform/terraform"
@@ -335,11 +337,11 @@ func Test_LoadAnnotations(t *testing.T) {
 				Content: "aws_instance_invalid_type",
 				Token: hclsyntax.Token{
 					Type:  hclsyntax.TokenComment,
-					Bytes: []byte("// tflint-ignore: aws_instance_invalid_type\n"),
+					Bytes: []byte(fmt.Sprintf("// tflint-ignore: aws_instance_invalid_type%s", newLine())),
 					Range: hcl.Range{
 						Filename: "file1.tf",
-						Start:    hcl.Pos{Line: 2, Column: 5, Byte: 36},
-						End:      hcl.Pos{Line: 3, Column: 1, Byte: 80},
+						Start:    hcl.Pos{Line: 2, Column: 5},
+						End:      hcl.Pos{Line: 3, Column: 1},
 					},
 				},
 			},
@@ -349,11 +351,11 @@ func Test_LoadAnnotations(t *testing.T) {
 				Content: "aws_instance_invalid_type",
 				Token: hclsyntax.Token{
 					Type:  hclsyntax.TokenComment,
-					Bytes: []byte("// tflint-ignore: aws_instance_invalid_type\n"),
+					Bytes: []byte(fmt.Sprintf("// tflint-ignore: aws_instance_invalid_type%s", newLine())),
 					Range: hcl.Range{
 						Filename: "file2.tf",
-						Start:    hcl.Pos{Line: 2, Column: 32, Byte: 63},
-						End:      hcl.Pos{Line: 3, Column: 1, Byte: 107},
+						Start:    hcl.Pos{Line: 2, Column: 32},
+						End:      hcl.Pos{Line: 3, Column: 1},
 					},
 				},
 			},
@@ -361,8 +363,9 @@ func Test_LoadAnnotations(t *testing.T) {
 		"file3.tf": {},
 	}
 
-	if !cmp.Equal(expected, ret) {
-		t.Fatalf("Test failed. Diff: %s", cmp.Diff(expected, ret))
+	opts := cmpopts.IgnoreFields(hcl.Pos{}, "Byte")
+	if !cmp.Equal(expected, ret, opts) {
+		t.Fatalf("Test failed. Diff: %s", cmp.Diff(expected, ret, opts))
 	}
 }
 

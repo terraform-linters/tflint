@@ -6,15 +6,14 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"reflect"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/hcl2/hcl/hclsyntax"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/k0kubun/pp"
 	"github.com/wata727/tflint/issue"
 	"github.com/zclconf/go-cty/cty"
 )
@@ -1031,16 +1030,8 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 			ParsingMode: configs.VariableParseLiteral,
 			DeclRange: hcl.Range{
 				Filename: filepath.Join(".terraform", "modules", "07be448a6067a2bba065bff4beea229d", "module.tf"),
-				Start: hcl.Pos{
-					Line:   1,
-					Column: 1,
-					Byte:   0,
-				},
-				End: hcl.Pos{
-					Line:   1,
-					Column: 20,
-					Byte:   19,
-				},
+				Start:    hcl.Pos{Line: 1, Column: 1},
+				End:      hcl.Pos{Line: 1, Column: 20},
 			},
 		},
 		"no_default": {
@@ -1050,16 +1041,8 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 			ParsingMode: configs.VariableParseLiteral,
 			DeclRange: hcl.Range{
 				Filename: filepath.Join(".terraform", "modules", "07be448a6067a2bba065bff4beea229d", "module.tf"),
-				Start: hcl.Pos{
-					Line:   4,
-					Column: 1,
-					Byte:   42,
-				},
-				End: hcl.Pos{
-					Line:   4,
-					Column: 22,
-					Byte:   63,
-				},
+				Start:    hcl.Pos{Line: 4, Column: 1},
+				End:      hcl.Pos{Line: 4, Column: 22},
 			},
 		},
 		"unknown": {
@@ -1069,21 +1052,17 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 			ParsingMode: configs.VariableParseLiteral,
 			DeclRange: hcl.Range{
 				Filename: filepath.Join(".terraform", "modules", "07be448a6067a2bba065bff4beea229d", "module.tf"),
-				Start: hcl.Pos{
-					Line:   5,
-					Column: 1,
-					Byte:   67,
-				},
-				End: hcl.Pos{
-					Line:   5,
-					Column: 19,
-					Byte:   85,
-				},
+				Start:    hcl.Pos{Line: 5, Column: 1},
+				End:      hcl.Pos{Line: 5, Column: 19},
 			},
 		},
 	}
-	if !reflect.DeepEqual(expected, child.Module.Variables) {
-		t.Fatalf("`%s` module variables are unmatch:\n Expected: %s\n Actual: %s", child.Path.String(), pp.Sprint(expected), pp.Sprint(child.Module.Variables))
+	opts := []cmp.Option{
+		cmpopts.IgnoreUnexported(cty.Type{}, cty.Value{}),
+		cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+	}
+	if !cmp.Equal(expected, child.Module.Variables, opts...) {
+		t.Fatalf("`%s` module variables are unmatched: Diff=%s", child.Path.String(), cmp.Diff(expected, child.Module.Variables, opts...))
 	}
 
 	grandchild := runners[1].TFConfig
@@ -1099,16 +1078,8 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 			ParsingMode: configs.VariableParseLiteral,
 			DeclRange: hcl.Range{
 				Filename: filepath.Join(".terraform", "modules", "a8d8930bc3c2ae53bf6e3bbcb3083d7b", "resource.tf"),
-				Start: hcl.Pos{
-					Line:   1,
-					Column: 1,
-					Byte:   0,
-				},
-				End: hcl.Pos{
-					Line:   1,
-					Column: 20,
-					Byte:   19,
-				},
+				Start:    hcl.Pos{Line: 1, Column: 1},
+				End:      hcl.Pos{Line: 1, Column: 20},
 			},
 		},
 		"no_default": {
@@ -1118,16 +1089,8 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 			ParsingMode: configs.VariableParseLiteral,
 			DeclRange: hcl.Range{
 				Filename: filepath.Join(".terraform", "modules", "a8d8930bc3c2ae53bf6e3bbcb3083d7b", "resource.tf"),
-				Start: hcl.Pos{
-					Line:   4,
-					Column: 1,
-					Byte:   42,
-				},
-				End: hcl.Pos{
-					Line:   4,
-					Column: 22,
-					Byte:   63,
-				},
+				Start:    hcl.Pos{Line: 4, Column: 1},
+				End:      hcl.Pos{Line: 4, Column: 22},
 			},
 		},
 		"unknown": {
@@ -1137,21 +1100,17 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 			ParsingMode: configs.VariableParseLiteral,
 			DeclRange: hcl.Range{
 				Filename: filepath.Join(".terraform", "modules", "a8d8930bc3c2ae53bf6e3bbcb3083d7b", "resource.tf"),
-				Start: hcl.Pos{
-					Line:   5,
-					Column: 1,
-					Byte:   67,
-				},
-				End: hcl.Pos{
-					Line:   5,
-					Column: 19,
-					Byte:   85,
-				},
+				Start:    hcl.Pos{Line: 5, Column: 1},
+				End:      hcl.Pos{Line: 5, Column: 19},
 			},
 		},
 	}
-	if !reflect.DeepEqual(expected, grandchild.Module.Variables) {
-		t.Fatalf("`%s` module variables are unmatch:\n Expected: %s\n Actual: %s", child.Path.String(), pp.Sprint(expected), pp.Sprint(grandchild.Module.Variables))
+	opts = []cmp.Option{
+		cmpopts.IgnoreUnexported(cty.Type{}, cty.Value{}),
+		cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+	}
+	if !cmp.Equal(expected, grandchild.Module.Variables, opts...) {
+		t.Fatalf("`%s` module variables are unmatched: Diff=%s", grandchild.Path.String(), cmp.Diff(expected, grandchild.Module.Variables, opts...))
 	}
 }
 

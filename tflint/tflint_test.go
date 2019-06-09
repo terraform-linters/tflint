@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"runtime"
 	"testing"
 
 	"github.com/hashicorp/hcl2/hcl"
@@ -56,4 +57,11 @@ func extractAttributeHelper(key string, cfg *configs.Config) (*hcl.Attribute, er
 		return nil, fmt.Errorf("Expected attribute is not found: %s", key)
 	}
 	return attribute, nil
+}
+
+func newLine() string {
+	if runtime.GOOS == "windows" {
+		return "\r\n"
+	}
+	return "\n"
 }
