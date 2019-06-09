@@ -13,7 +13,7 @@ import (
 	"github.com/wata727/tflint/tflint"
 )
 
-func Test_AwsS3BucketInvalidAcl(t *testing.T) {
+func Test_AwsS3BucketInvalidACL(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
@@ -47,7 +47,7 @@ resource "aws_s3_bucket" "bucket" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "AwsS3BucketInvalidAcl")
+	dir, err := ioutil.TempDir("", "AwsS3BucketInvalidACL")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -79,7 +79,7 @@ resource "aws_s3_bucket" "bucket" {
 		}
 
 		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
-		rule := NewAwsS3BucketInvalidAclRule()
+		rule := NewAwsS3BucketInvalidACLRule()
 
 		if err = rule.Check(runner); err != nil {
 			t.Fatalf("Unexpected error occurred: %s", err)

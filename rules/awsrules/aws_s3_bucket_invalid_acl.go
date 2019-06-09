@@ -9,16 +9,16 @@ import (
 	"github.com/wata727/tflint/tflint"
 )
 
-// AwsS3BucketInvalidAclRule checks whether "aws_s3_bucket" has invalid ACL setting.
-type AwsS3BucketInvalidAclRule struct {
+// AwsS3BucketInvalidACLRule checks whether "aws_s3_bucket" has invalid ACL setting.
+type AwsS3BucketInvalidACLRule struct {
 	resourceType  string
 	attributeName string
 	aclTypes      map[string]bool
 }
 
-// NewAwsS3BucketInvalidAclRule returns new rule with default attributes
-func NewAwsS3BucketInvalidAclRule() *AwsS3BucketInvalidAclRule {
-	return &AwsS3BucketInvalidAclRule{
+// NewAwsS3BucketInvalidACLRule returns new rule with default attributes
+func NewAwsS3BucketInvalidACLRule() *AwsS3BucketInvalidACLRule {
+	return &AwsS3BucketInvalidACLRule{
 		resourceType:  "aws_s3_bucket",
 		attributeName: "acl",
 		aclTypes: map[string]bool{
@@ -35,27 +35,27 @@ func NewAwsS3BucketInvalidAclRule() *AwsS3BucketInvalidAclRule {
 }
 
 // Name returns the rule name
-func (r *AwsS3BucketInvalidAclRule) Name() string {
+func (r *AwsS3BucketInvalidACLRule) Name() string {
 	return "aws_s3_bucket_invalid_acl"
 }
 
 // Enabled returns whether the rule is enabled by default
-func (r *AwsS3BucketInvalidAclRule) Enabled() bool {
+func (r *AwsS3BucketInvalidACLRule) Enabled() bool {
 	return true
 }
 
 // Type returns the rule severity
-func (r *AwsS3BucketInvalidAclRule) Type() string {
+func (r *AwsS3BucketInvalidACLRule) Type() string {
 	return issue.ERROR
 }
 
 // Link returns the rule reference link
-func (r *AwsS3BucketInvalidAclRule) Link() string {
+func (r *AwsS3BucketInvalidACLRule) Link() string {
 	return ""
 }
 
 // Check checks whether "aws_s3_bucket" has invalid ACL type.
-func (r *AwsS3BucketInvalidAclRule) Check(runner *tflint.Runner) error {
+func (r *AwsS3BucketInvalidACLRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
