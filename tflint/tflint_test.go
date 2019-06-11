@@ -59,6 +59,12 @@ func extractAttributeHelper(key string, cfg *configs.Config) (*hcl.Attribute, er
 	return attribute, nil
 }
 
+func moduleConfig() *Config {
+	c := EmptyConfig()
+	c.Module = true
+	return c
+}
+
 func newLine() string {
 	if runtime.GOOS == "windows" {
 		return "\r\n"

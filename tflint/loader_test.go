@@ -27,7 +27,7 @@ func Test_LoadConfig_v0_10_5(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader()
+	loader, err := NewLoader(moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -57,7 +57,7 @@ func Test_LoadConfig_v0_10_6(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader()
+	loader, err := NewLoader(moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -87,7 +87,7 @@ func Test_LoadConfig_v0_10_7(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader()
+	loader, err := NewLoader(moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -117,7 +117,7 @@ func Test_LoadConfig_v0_11_0(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader()
+	loader, err := NewLoader(moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -191,7 +191,7 @@ func Test_LoadConfig_v0_12_0(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader()
+	loader, err := NewLoader(moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -269,7 +269,7 @@ func Test_LoadConfig_moduleNotFound(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader()
+	loader, err := NewLoader(moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -281,6 +281,32 @@ func Test_LoadConfig_moduleNotFound(t *testing.T) {
 	expected := "module.tf:1,1-22: `ec2_instance` module is not found. Did you run `terraform init`?; "
 	if err.Error() != expected {
 		t.Fatalf("Expected error is `%s`, but get `%s`", expected, err.Error())
+	}
+}
+
+func Test_LoadConfig_disableModules(t *testing.T) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "before_terraform_init"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	loader, err := NewLoader(EmptyConfig())
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+	config, err := loader.LoadConfig(".")
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+
+	if len(config.Children) != 0 {
+		t.Fatalf("Root module has children unexpectedly: %#v", config.Children)
 	}
 }
 
@@ -296,7 +322,7 @@ func Test_LoadConfig_invalidConfiguration(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader()
+	loader, err := NewLoader(EmptyConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -322,7 +348,7 @@ func Test_LoadAnnotations(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	loader, err := NewLoader()
+	loader, err := NewLoader(EmptyConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -380,7 +406,7 @@ func Test_LoadValuesFiles(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	loader, err := NewLoader()
+	loader, err := NewLoader(EmptyConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -438,7 +464,7 @@ func Test_LoadValuesFiles_invalidValuesFile(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	loader, err := NewLoader()
+	loader, err := NewLoader(EmptyConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}

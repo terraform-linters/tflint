@@ -47,8 +47,13 @@ func TestIntegration(t *testing.T) {
 		},
 		{
 			Name:    "module",
-			Command: "./tflint --format json",
+			Command: "./tflint --format json --module",
 			Dir:     "module",
+		},
+		{
+			Name:    "without_module_init",
+			Command: "./tflint --format json",
+			Dir:     "without_module_init",
 		},
 		{
 			Name:    "arguments",

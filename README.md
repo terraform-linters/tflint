@@ -97,6 +97,7 @@ Application Options:
       --ignore-rule=RULE1,RULE2...          Ignore rule names
       --var-file=FILE1,FILE2...             Terraform variable file names
       --var='foo=bar'                       Set a Terraform variable
+      --module                              Inspect modules
       --deep                                Enable deep check mode
       --aws-access-key=ACCESS_KEY           AWS access key used in deep check mode
       --aws-secret-key=SECRET_KEY           AWS secret key used in deep check mode
@@ -120,6 +121,7 @@ The config file is written in [HCL](https://github.com/hashicorp/hcl), and you c
 
 ```hcl
 config {
+  module = true
   deep_check = true
   force = false
 
@@ -264,14 +266,14 @@ module "aws_instance" {
 ```
 
 ```
-$ tflint
+$ tflint --module
 aws_instance/main.tf
         ERROR:6 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
 
 Result: 1 issues  (1 errors , 0 warnings , 0 notices)
 ```
 
-TFLint loads modules in the same way as Terraform. So note that you need to run `terraform init` first.
+Module inspection is disabled by default. Inspection is enabled by running with the `--module` option. Note that you need to run `terraform init` first because of TFLint loads modules in the same way as Terraform. 
 
 You can use the `--ignore-module` option if you want to skip inspection for a particular module. Note that you need to pass module sources rather than module ids for backward compatibility.
 
