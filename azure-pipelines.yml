@@ -16,5 +16,13 @@ steps:
 - script: go version
   displayName: 'Go version'
 
-- script: make build
+- script: |
+    choco install bzr
+    set PATH=C:\Program Files (x86)\Bazaar\;%PATH%
+    bzr version
+  displayName: 'Install Bazaar'
+
+- script: |
+    set PATH=C:\Program Files (x86)\Bazaar\;%PATH%
+    make build
   displayName: 'make build'
