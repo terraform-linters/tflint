@@ -10,6 +10,8 @@ import (
 	"github.com/hashicorp/hcl2/gohcl"
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/hcl2/hclparse"
+	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/terraform-providers/terraform-provider-aws/aws"
 )
 
 type mappingFile struct {
@@ -52,6 +54,8 @@ func main() {
 		mappingFiles = append(mappingFiles, mf)
 	}
 
+	awsProvider := aws.Provider().(*schema.Provider)
+
 	generatedRules := []string{}
 	for _, mappingFile := range mappingFiles {
 		raw, err := ioutil.ReadFile(fmt.Sprintf("rules/awsrules/models/%s", mappingFile.Import))
@@ -73,6 +77,7 @@ func main() {
 					continue
 				}
 				model := shapes[shapeName].(map[string]interface{})
+				checkAttributeType(mapping.Resource, attribute, model, awsProvider)
 				if validMapping(model) {
 					generateRuleFile(mapping.Resource, attribute, model)
 					for _, test := range mappingFile.Tests {
@@ -88,6 +93,26 @@ func main() {
 
 	sort.Strings(generatedRules)
 	generateProviderFile(generatedRules)
+}
+
+func checkAttributeType(resource, attribute string, model map[string]interface{}, provider *schema.Provider) {
+	resourceSchema, ok := provider.ResourcesMap[resource]
+	if !ok {
+		panic(fmt.Sprintf("resource `%s` not found in the Terraform schema", resource))
+	}
+	attrSchema, ok := resourceSchema.Schema[attribute]
+	if !ok {
+		panic(fmt.Sprintf("`%s.%s` not found in the Terraform schema", resource, attribute))
+	}
+
+	switch model["type"].(string) {
+	case "string":
+		if attrSchema.Type != schema.TypeString {
+			panic(fmt.Sprintf("`%s.%s` is expected as string, but not", resource, attribute))
+		}
+	default:
+		// noop
+	}
 }
 
 func validMapping(model map[string]interface{}) bool {
