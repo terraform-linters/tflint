@@ -47,9 +47,9 @@ mapping "aws_iot_thing_principal_attachment" {
 
 mapping "aws_iot_thing_type" {
   name                  = ThingTypeName
-  description           = any // ThingTypeDescription
+  // description           = any // ThingTypeDescription
   deprecated            = UndoDeprecate
-  searchable_attributes = SearchableAttributes
+  // searchable_attributes = SearchableAttributes
 }
 
 mapping "aws_iot_role_alias" {

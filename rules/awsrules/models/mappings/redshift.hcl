@@ -20,7 +20,7 @@ mapping "aws_redshift_cluster" {
   number_of_nodes                     = IntegerOptional
   publicly_accessible                 = BooleanOptional
   encrypted                           = BooleanOptional
-  enhanced_vpc_routing                = String
+  enhanced_vpc_routing                = Boolean
   kms_key_id                          = String
   elastic_ip                          = String
   skip_final_snapshot                 = Boolean
