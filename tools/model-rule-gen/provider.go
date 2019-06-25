@@ -13,5 +13,5 @@ func generateProviderFile(ruleNames []string) {
 		meta.RuleNameCCList = append(meta.RuleNameCCList, utils.ToCamel(ruleName))
 	}
 
-	utils.GenerateFile("rules/provider_model.go", "rules/provider_model.go.tmpl", meta)
+	utils.GenerateFile("../rules/provider_model.go", "../rules/provider_model.go.tmpl", meta)
 }
