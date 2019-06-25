@@ -31,7 +31,4 @@ image:
 rule:
 	go run tools/rule_generator.go
 
-model_rules:
-	go run github.com/wata727/tflint/tools/model-rule-gen
-
 .PHONY: default prepare test build install release clean code image rule

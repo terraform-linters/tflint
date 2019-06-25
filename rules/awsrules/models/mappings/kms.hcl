@@ -21,7 +21,7 @@ mapping "aws_kms_grant" {
   key_id                = KeyIdType
   grantee_principal     = PrincipalIdType
   operations            = GrantOperationList
-  retiree_principal     = PrincipalIdType
+  retiring_principal    = PrincipalIdType
   constraints           = GrantConstraints
   grant_creation_tokens = GrantTokenList
   retire_on_delete      = BooleanType

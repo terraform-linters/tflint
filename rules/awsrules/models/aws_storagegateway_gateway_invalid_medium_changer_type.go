@@ -10,46 +10,46 @@ import (
 	"github.com/wata727/tflint/tflint"
 )
 
-// AwsStoragegatewayGatewayInvalidMediaChangerTypeRule checks the pattern is valid
-type AwsStoragegatewayGatewayInvalidMediaChangerTypeRule struct {
+// AwsStoragegatewayGatewayInvalidMediumChangerTypeRule checks the pattern is valid
+type AwsStoragegatewayGatewayInvalidMediumChangerTypeRule struct {
 	resourceType  string
 	attributeName string
 	max           int
 	min           int
 }
 
-// NewAwsStoragegatewayGatewayInvalidMediaChangerTypeRule returns new rule with default attributes
-func NewAwsStoragegatewayGatewayInvalidMediaChangerTypeRule() *AwsStoragegatewayGatewayInvalidMediaChangerTypeRule {
-	return &AwsStoragegatewayGatewayInvalidMediaChangerTypeRule{
+// NewAwsStoragegatewayGatewayInvalidMediumChangerTypeRule returns new rule with default attributes
+func NewAwsStoragegatewayGatewayInvalidMediumChangerTypeRule() *AwsStoragegatewayGatewayInvalidMediumChangerTypeRule {
+	return &AwsStoragegatewayGatewayInvalidMediumChangerTypeRule{
 		resourceType:  "aws_storagegateway_gateway",
-		attributeName: "media_changer_type",
+		attributeName: "medium_changer_type",
 		max:           50,
 		min:           2,
 	}
 }
 
 // Name returns the rule name
-func (r *AwsStoragegatewayGatewayInvalidMediaChangerTypeRule) Name() string {
-	return "aws_storagegateway_gateway_invalid_media_changer_type"
+func (r *AwsStoragegatewayGatewayInvalidMediumChangerTypeRule) Name() string {
+	return "aws_storagegateway_gateway_invalid_medium_changer_type"
 }
 
 // Enabled returns whether the rule is enabled by default
-func (r *AwsStoragegatewayGatewayInvalidMediaChangerTypeRule) Enabled() bool {
+func (r *AwsStoragegatewayGatewayInvalidMediumChangerTypeRule) Enabled() bool {
 	return true
 }
 
 // Type returns the rule severity
-func (r *AwsStoragegatewayGatewayInvalidMediaChangerTypeRule) Type() string {
+func (r *AwsStoragegatewayGatewayInvalidMediumChangerTypeRule) Type() string {
 	return issue.ERROR
 }
 
 // Link returns the rule reference link
-func (r *AwsStoragegatewayGatewayInvalidMediaChangerTypeRule) Link() string {
+func (r *AwsStoragegatewayGatewayInvalidMediumChangerTypeRule) Link() string {
 	return ""
 }
 
 // Check checks the pattern is valid
-func (r *AwsStoragegatewayGatewayInvalidMediaChangerTypeRule) Check(runner *tflint.Runner) error {
+func (r *AwsStoragegatewayGatewayInvalidMediumChangerTypeRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
@@ -60,14 +60,14 @@ func (r *AwsStoragegatewayGatewayInvalidMediaChangerTypeRule) Check(runner *tfli
 			if len(val) > r.max {
 				runner.EmitIssue(
 					r,
-					"media_changer_type must be 50 characters or less",
+					"medium_changer_type must be 50 characters or less",
 					attribute.Expr.Range(),
 				)
 			}
 			if len(val) < r.min {
 				runner.EmitIssue(
 					r,
-					"media_changer_type must be 2 characters or higher",
+					"medium_changer_type must be 2 characters or higher",
 					attribute.Expr.Range(),
 				)
 			}

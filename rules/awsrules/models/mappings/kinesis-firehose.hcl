@@ -10,8 +10,8 @@ mapping "aws_kinesis_firehose_delivery_stream" {
   redshift_configuration       = RedshiftDestinationConfiguration
   elasticsearch_configuration  = ElasticsearchDestinationConfiguration
   splunk_configuration         = SplunkDestinationConfiguration
-  cloudwatch_logging_options   = CloudWatchLoggingOptions
-  processing_configuration     = ProcessingConfiguration
-  processors                   = ProcessorList
-  parameters                   = ProcessorParameterList
+  // cloudwatch_logging_options   = CloudWatchLoggingOptions
+  // processing_configuration     = ProcessingConfiguration
+  // processors                   = ProcessorList
+  // parameters                   = ProcessorParameterList
 }
