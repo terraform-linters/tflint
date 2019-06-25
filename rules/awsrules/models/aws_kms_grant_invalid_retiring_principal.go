@@ -11,8 +11,8 @@ import (
 	"github.com/wata727/tflint/tflint"
 )
 
-// AwsKmsGrantInvalidRetireePrincipalRule checks the pattern is valid
-type AwsKmsGrantInvalidRetireePrincipalRule struct {
+// AwsKmsGrantInvalidRetiringPrincipalRule checks the pattern is valid
+type AwsKmsGrantInvalidRetiringPrincipalRule struct {
 	resourceType  string
 	attributeName string
 	max           int
@@ -20,11 +20,11 @@ type AwsKmsGrantInvalidRetireePrincipalRule struct {
 	pattern       *regexp.Regexp
 }
 
-// NewAwsKmsGrantInvalidRetireePrincipalRule returns new rule with default attributes
-func NewAwsKmsGrantInvalidRetireePrincipalRule() *AwsKmsGrantInvalidRetireePrincipalRule {
-	return &AwsKmsGrantInvalidRetireePrincipalRule{
+// NewAwsKmsGrantInvalidRetiringPrincipalRule returns new rule with default attributes
+func NewAwsKmsGrantInvalidRetiringPrincipalRule() *AwsKmsGrantInvalidRetiringPrincipalRule {
+	return &AwsKmsGrantInvalidRetiringPrincipalRule{
 		resourceType:  "aws_kms_grant",
-		attributeName: "retiree_principal",
+		attributeName: "retiring_principal",
 		max:           256,
 		min:           1,
 		pattern:       regexp.MustCompile(`^[\w+=,.@:/-]+$`),
@@ -32,27 +32,27 @@ func NewAwsKmsGrantInvalidRetireePrincipalRule() *AwsKmsGrantInvalidRetireePrinc
 }
 
 // Name returns the rule name
-func (r *AwsKmsGrantInvalidRetireePrincipalRule) Name() string {
-	return "aws_kms_grant_invalid_retiree_principal"
+func (r *AwsKmsGrantInvalidRetiringPrincipalRule) Name() string {
+	return "aws_kms_grant_invalid_retiring_principal"
 }
 
 // Enabled returns whether the rule is enabled by default
-func (r *AwsKmsGrantInvalidRetireePrincipalRule) Enabled() bool {
+func (r *AwsKmsGrantInvalidRetiringPrincipalRule) Enabled() bool {
 	return true
 }
 
 // Type returns the rule severity
-func (r *AwsKmsGrantInvalidRetireePrincipalRule) Type() string {
+func (r *AwsKmsGrantInvalidRetiringPrincipalRule) Type() string {
 	return issue.ERROR
 }
 
 // Link returns the rule reference link
-func (r *AwsKmsGrantInvalidRetireePrincipalRule) Link() string {
+func (r *AwsKmsGrantInvalidRetiringPrincipalRule) Link() string {
 	return ""
 }
 
 // Check checks the pattern is valid
-func (r *AwsKmsGrantInvalidRetireePrincipalRule) Check(runner *tflint.Runner) error {
+func (r *AwsKmsGrantInvalidRetiringPrincipalRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
@@ -63,21 +63,21 @@ func (r *AwsKmsGrantInvalidRetireePrincipalRule) Check(runner *tflint.Runner) er
 			if len(val) > r.max {
 				runner.EmitIssue(
 					r,
-					"retiree_principal must be 256 characters or less",
+					"retiring_principal must be 256 characters or less",
 					attribute.Expr.Range(),
 				)
 			}
 			if len(val) < r.min {
 				runner.EmitIssue(
 					r,
-					"retiree_principal must be 1 characters or higher",
+					"retiring_principal must be 1 characters or higher",
 					attribute.Expr.Range(),
 				)
 			}
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`retiree_principal does not match valid pattern ^[\w+=,.@:/-]+$`,
+					`retiring_principal does not match valid pattern ^[\w+=,.@:/-]+$`,
 					attribute.Expr.Range(),
 				)
 			}

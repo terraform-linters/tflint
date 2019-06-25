@@ -20,8 +20,8 @@ mapping "aws_cognito_user_group" {
 }
 
 mapping "aws_cognito_user_pool" {
-  alias_attributes           = AliasAttributeType
-  auto_verified_attributes   = VerifiedAttributeType
+  alias_attributes           = AliasAttributesListType
+  auto_verified_attributes   = VerifiedAttributesListType
   name                       = UserPoolNameType
   email_verification_subject = EmailVerificationSubjectType
   email_verification_message = EmailVerificationMessageType
@@ -76,16 +76,6 @@ test "aws_cognito_user_group" "name" {
 test "aws_cognito_user_group" "role_arn" {
   ok = "arn:aws:iam::123456789012:role/s3access"
   ng = "aws:iam::123456789012:instance-profile/s3access-profile"
-}
-
-test "aws_cognito_user_pool" "alias_attributes" {
-  ok = "email"
-  ng = "account"
-}
-
-test "aws_cognito_user_pool" "auto_verified_attributes" {
-  ok = "phone_number"
-  ng = "preferred_username"
 }
 
 test "aws_cognito_user_pool" "name" {

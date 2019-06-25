@@ -72,7 +72,7 @@ mapping "aws_opsworks_ganglia_layer" {
 
 mapping "aws_opsworks_haproxy_layer" {
   stack_id                    = String
-  stats_password              = String
+  // stats_password           = String
   name                        = String
   auto_assign_elastic_ips     = Boolean
   auto_assign_public_ips      = Boolean
@@ -85,9 +85,9 @@ mapping "aws_opsworks_haproxy_layer" {
   instance_shutdown_timeout   = Integer
   elastic_load_balancer       = String
   drain_elb_on_shutdown       = Boolean
-  stats_enabled               = String
-  stats_url                   = String
-  stats_user                  = String
+  // stats_enabled            = String
+  // stats_url                = String
+  // stats_user               = String
   system_packages             = Strings
   use_ebs_optimized_instances = Boolean
   ebs_volume                  = VolumeConfiguration
@@ -154,7 +154,7 @@ mapping "aws_opsworks_java_app_layer" {
 mapping "aws_opsworks_memcached_layer" {
   stack_id                    = String
   name                        = String
-  allocated_memory            = String
+  // allocated_memory         = String
   auto_assign_elastic_ips     = Boolean
   auto_assign_public_ips      = Boolean
   custom_instance_profile_arn = String
@@ -187,8 +187,8 @@ mapping "aws_opsworks_mysql_layer" {
   instance_shutdown_timeout      = Integer
   elastic_load_balancer          = String
   drain_elb_on_shutdown          = Boolean
-  root_password                  = String
-  root_password_on_all_instances = String
+  // root_password                  = String
+  // root_password_on_all_instances = String
   system_packages                = Strings
   use_ebs_optimized_instances    = Boolean
   ebs_volume                     = VolumeConfiguration
@@ -258,10 +258,10 @@ mapping "aws_opsworks_php_app_layer" {
 mapping "aws_opsworks_rails_app_layer" {
   stack_id                    = String
   name                        = String
-  app_server                  = String
+  // app_server               = String
   auto_assign_elastic_ips     = Boolean
   auto_assign_public_ips      = Boolean
-  bundler_version             = String
+  // bundler_version          = String
   custom_instance_profile_arn = String
   custom_security_group_ids   = Strings
   auto_healing                = Boolean
@@ -269,10 +269,10 @@ mapping "aws_opsworks_rails_app_layer" {
   instance_shutdown_timeout   = Integer
   elastic_load_balancer       = String
   drain_elb_on_shutdown       = Boolean
-  manage_bundler              = String
-  passenger_version           = String
-  ruby_version                = String
-  rubygems_version            = String
+  // manage_bundler           = Boolean
+  // passenger_version        = String
+  // ruby_version             = String
+  // rubygems_version         = String
   system_packages             = Strings
   use_ebs_optimized_instances = Boolean
   ebs_volume                  = VolumeConfiguration

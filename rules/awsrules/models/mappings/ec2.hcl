@@ -275,7 +275,6 @@ mapping "aws_spot_fleet_request" {
   fleet_type                          = FleetType
   valid_until                         = DateTime
   valid_from                          = DateTime
-  tags                                = TagSpecificationList
 }
 
 mapping "aws_spot_instance_request" {

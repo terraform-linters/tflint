@@ -20,7 +20,7 @@ mapping "aws_storagegateway_gateway" {
   activation_key                = ActivationKey
   gateway_ip_address            = any
   gateway_type                  = GatewayType
-  media_changer_type            = MediumChangerType
+  medium_changer_type           = MediumChangerType
   smb_active_directory_settings = any
   smb_guest_password            = SMBGuestPassword
   tape_drive_type               = TapeDriveType
@@ -52,7 +52,7 @@ mapping "aws_storagegateway_smb_file_share" {
   invalid_user_list       = FileShareUserList
   kms_encrypted           = Boolean
   kms_key_arn             = KMSKey
-  smb_file_share_defaults = NFSFileShareDefaults
+  // smb_file_share_defaults = NFSFileShareDefaults
   object_acl              = ObjectACL
   read_only               = Boolean
   requester_pays          = Boolean
