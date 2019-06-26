@@ -170,7 +170,7 @@ The following table shows the correspondence between resources and rules. Rules 
 |`aws_ec2_transit_gateway_vpc_attachment`|||
 |`aws_eip`|||
 |`aws_eip_association`|||
-|`aws_instance`|aws_instance_invalid_type||
+|`aws_instance`|aws_instance_invalid_instance_type||
 ||aws_instance_invalid_iam_profile|✔|
 ||aws_instance_invalid_ami|✔|
 ||aws_instance_invalid_key_name|✔|

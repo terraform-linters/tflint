@@ -11,7 +11,7 @@ import (
 func Test_NewRules(t *testing.T) {
 	// Mock rules in test
 	DefaultRules = []Rule{
-		awsrules.NewAwsInstanceInvalidTypeRule(),
+		awsrules.NewAwsRouteNotSpecifiedTargetRule(),
 	}
 	deepCheckRules = []Rule{
 		awsrules.NewAwsInstanceInvalidAMIRule(),
@@ -26,7 +26,7 @@ func Test_NewRules(t *testing.T) {
 			Name:   "default",
 			Config: tflint.EmptyConfig(),
 			Expected: []Rule{
-				awsrules.NewAwsInstanceInvalidTypeRule(),
+				awsrules.NewAwsRouteNotSpecifiedTargetRule(),
 			},
 		},
 		{
@@ -35,7 +35,7 @@ func Test_NewRules(t *testing.T) {
 				DeepCheck: true,
 			},
 			Expected: []Rule{
-				awsrules.NewAwsInstanceInvalidTypeRule(),
+				awsrules.NewAwsRouteNotSpecifiedTargetRule(),
 				awsrules.NewAwsInstanceInvalidAMIRule(),
 			},
 		},
@@ -43,7 +43,7 @@ func Test_NewRules(t *testing.T) {
 			Name: "ignore_rule",
 			Config: &tflint.Config{
 				IgnoreRule: map[string]bool{
-					"aws_instance_invalid_type": true,
+					"aws_route_not_specified_target": true,
 				},
 			},
 			Expected: []Rule{},
@@ -52,7 +52,7 @@ func Test_NewRules(t *testing.T) {
 			Name: "enabled = false",
 			Config: &tflint.Config{
 				Rules: map[string]*tflint.RuleConfig{
-					"aws_instance_invalid_type": {
+					"aws_route_not_specified_target": {
 						Enabled: false,
 					},
 				},
@@ -63,16 +63,16 @@ func Test_NewRules(t *testing.T) {
 			Name: "`enabled = true` and `ignore_rule`",
 			Config: &tflint.Config{
 				IgnoreRule: map[string]bool{
-					"aws_instance_invalid_type": true,
+					"aws_route_not_specified_target": true,
 				},
 				Rules: map[string]*tflint.RuleConfig{
-					"aws_instance_invalid_type": {
+					"aws_route_not_specified_target": {
 						Enabled: true,
 					},
 				},
 			},
 			Expected: []Rule{
-				awsrules.NewAwsInstanceInvalidTypeRule(),
+				awsrules.NewAwsRouteNotSpecifiedTargetRule(),
 			},
 		},
 	}

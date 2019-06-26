@@ -33,22 +33,22 @@ func Test_NewAnnotations(t *testing.T) {
 
 	expected := Annotations{
 		{
-			Content: "aws_instance_invalid_type",
+			Content: "aws_instance_invalid_instance_type",
 			Token: hclsyntax.Token{
 				Type:  hclsyntax.TokenComment,
-				Bytes: []byte("/* tflint-ignore: aws_instance_invalid_type */"),
+				Bytes: []byte("/* tflint-ignore: aws_instance_invalid_instance_type */"),
 				Range: hcl.Range{
 					Filename: "resource.tf",
 					Start:    hcl.Pos{Line: 2, Column: 5},
-					End:      hcl.Pos{Line: 2, Column: 51},
+					End:      hcl.Pos{Line: 2, Column: 60},
 				},
 			},
 		},
 		{
-			Content: "aws_instance_invalid_type",
+			Content: "aws_instance_invalid_instance_type",
 			Token: hclsyntax.Token{
 				Type:  hclsyntax.TokenComment,
-				Bytes: []byte(fmt.Sprintf("// tflint-ignore: aws_instance_invalid_type%s", newLine())),
+				Bytes: []byte(fmt.Sprintf("// tflint-ignore: aws_instance_invalid_instance_type%s", newLine())),
 				Range: hcl.Range{
 					Filename: "resource.tf",
 					Start:    hcl.Pos{Line: 3, Column: 32},
@@ -57,10 +57,10 @@ func Test_NewAnnotations(t *testing.T) {
 			},
 		},
 		{
-			Content: "aws_instance_invalid_type",
+			Content: "aws_instance_invalid_instance_type",
 			Token: hclsyntax.Token{
 				Type:  hclsyntax.TokenComment,
-				Bytes: []byte(fmt.Sprintf("# tflint-ignore: aws_instance_invalid_type This is also comment%s", newLine())),
+				Bytes: []byte(fmt.Sprintf("# tflint-ignore: aws_instance_invalid_instance_type This is also comment%s", newLine())),
 				Range: hcl.Range{
 					Filename: "resource.tf",
 					Start:    hcl.Pos{Line: 4, Column: 5},

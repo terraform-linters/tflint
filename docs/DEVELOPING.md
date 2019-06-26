@@ -50,7 +50,7 @@ You can use the rule generator to add new rules (Currently, this generator suppo
 ```
 $ make rule
 go run tools/rule_generator.go
-Rule name? (e.g. aws_instance_invalid_type): aws_instance_example
+Rule name? (e.g. aws_instance_invalid_instance_type): aws_instance_example
 Create: rules/awsrules/aws_instance_example.go
 Create: rules/awsrules/aws_instance_example_test.go
 ```

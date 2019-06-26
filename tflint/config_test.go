@@ -33,8 +33,8 @@ func Test_LoadConfig(t *testing.T) {
 					Region:    "us-east-1",
 				},
 				IgnoreRule: map[string]bool{
-					"aws_instance_invalid_type":  true,
-					"aws_instance_previous_type": true,
+					"aws_instance_invalid_instance_type": true,
+					"aws_instance_previous_type":         true,
 				},
 				IgnoreModule: map[string]bool{
 					"github.com/wata727/example-module": true,
@@ -43,8 +43,8 @@ func Test_LoadConfig(t *testing.T) {
 				Variables:        []string{"foo=bar", "bar=['foo']"},
 				TerraformVersion: "0.9.11",
 				Rules: map[string]*RuleConfig{
-					"aws_instance_invalid_type": {
-						Name:    "aws_instance_invalid_type",
+					"aws_instance_invalid_instance_type": {
+						Name:    "aws_instance_invalid_instance_type",
 						Enabled: false,
 					},
 					"aws_instance_previous_type": {
@@ -137,7 +137,7 @@ func Test_LoadConfig_error(t *testing.T) {
 			Name: "invalid config",
 			File: filepath.Join(currentDir, "test-fixtures", "config", "invalid.hcl"),
 			Expected: fmt.Sprintf(
-				"%s:1,34-42: Extraneous label for rule; Only 1 labels (name) are expected for rule blocks.",
+				"%s:1,43-51: Extraneous label for rule; Only 1 labels (name) are expected for rule blocks.",
 				filepath.Join(currentDir, "test-fixtures", "config", "invalid.hcl"),
 			),
 		},
@@ -168,15 +168,15 @@ func Test_Merge(t *testing.T) {
 			"github.com/wata727/example-2": false,
 		},
 		IgnoreRule: map[string]bool{
-			"aws_instance_invalid_type": false,
-			"aws_instance_invalid_ami":  true,
+			"aws_instance_invalid_instance_type": false,
+			"aws_instance_invalid_ami":           true,
 		},
 		Varfile:          []string{"example1.tfvars", "example2.tfvars"},
 		Variables:        []string{"foo=bar"},
 		TerraformVersion: "0.11.1",
 		Rules: map[string]*RuleConfig{
-			"aws_instance_invalid_type": {
-				Name:    "aws_instance_invalid_type",
+			"aws_instance_invalid_instance_type": {
+				Name:    "aws_instance_invalid_instance_type",
 				Enabled: false,
 			},
 			"aws_instance_invalid_ami": {
@@ -225,15 +225,15 @@ func Test_Merge(t *testing.T) {
 					"github.com/wata727/example-2": false,
 				},
 				IgnoreRule: map[string]bool{
-					"aws_instance_invalid_type": false,
-					"aws_instance_invalid_ami":  true,
+					"aws_instance_invalid_instance_type": false,
+					"aws_instance_invalid_ami":           true,
 				},
 				Varfile:          []string{"example1.tfvars", "example2.tfvars"},
 				Variables:        []string{"foo=bar"},
 				TerraformVersion: "0.11.1",
 				Rules: map[string]*RuleConfig{
-					"aws_instance_invalid_type": {
-						Name:    "aws_instance_invalid_type",
+					"aws_instance_invalid_instance_type": {
+						Name:    "aws_instance_invalid_instance_type",
 						Enabled: false,
 					},
 					"aws_instance_invalid_ami": {
@@ -285,16 +285,16 @@ func Test_Merge(t *testing.T) {
 					"github.com/wata727/example-3": false,
 				},
 				IgnoreRule: map[string]bool{
-					"aws_instance_invalid_type":  false,
-					"aws_instance_invalid_ami":   false,
-					"aws_instance_previous_type": true,
+					"aws_instance_invalid_instance_type": false,
+					"aws_instance_invalid_ami":           false,
+					"aws_instance_previous_type":         true,
 				},
 				Varfile:          []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
 				Variables:        []string{"foo=bar", "bar=baz"},
 				TerraformVersion: "0.12.0",
 				Rules: map[string]*RuleConfig{
-					"aws_instance_invalid_type": {
-						Name:    "aws_instance_invalid_type",
+					"aws_instance_invalid_instance_type": {
+						Name:    "aws_instance_invalid_instance_type",
 						Enabled: false,
 					},
 					"aws_instance_invalid_ami": {
@@ -331,15 +331,15 @@ func Test_copy(t *testing.T) {
 			"github.com/wata727/example-2": false,
 		},
 		IgnoreRule: map[string]bool{
-			"aws_instance_invalid_type": false,
-			"aws_instance_invalid_ami":  true,
+			"aws_instance_invalid_instance_type": false,
+			"aws_instance_invalid_ami":           true,
 		},
 		Varfile:          []string{"example1.tfvars", "example2.tfvars"},
 		Variables:        []string{},
 		TerraformVersion: "0.11.1",
 		Rules: map[string]*RuleConfig{
-			"aws_instance_invalid_type": {
-				Name:    "aws_instance_invalid_type",
+			"aws_instance_invalid_instance_type": {
+				Name:    "aws_instance_invalid_instance_type",
 				Enabled: false,
 			},
 			"aws_instance_invalid_ami": {
@@ -377,7 +377,7 @@ func Test_copy(t *testing.T) {
 		{
 			Name: "IgnoreRule",
 			SideEffect: func(c *Config) {
-				c.IgnoreRule["aws_instance_invalid_type"] = true
+				c.IgnoreRule["aws_instance_invalid_instance_type"] = true
 			},
 		},
 		{
@@ -401,7 +401,7 @@ func Test_copy(t *testing.T) {
 		{
 			Name: "Rules",
 			SideEffect: func(c *Config) {
-				c.Rules["aws_instance_invalid_type"].Enabled = true
+				c.Rules["aws_instance_invalid_instance_type"].Enabled = true
 			},
 		},
 	}

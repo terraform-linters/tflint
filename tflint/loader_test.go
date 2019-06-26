@@ -334,10 +334,10 @@ func Test_LoadAnnotations(t *testing.T) {
 	expected := map[string]Annotations{
 		"file1.tf": {
 			{
-				Content: "aws_instance_invalid_type",
+				Content: "aws_instance_invalid_instance_type",
 				Token: hclsyntax.Token{
 					Type:  hclsyntax.TokenComment,
-					Bytes: []byte(fmt.Sprintf("// tflint-ignore: aws_instance_invalid_type%s", newLine())),
+					Bytes: []byte(fmt.Sprintf("// tflint-ignore: aws_instance_invalid_instance_type%s", newLine())),
 					Range: hcl.Range{
 						Filename: "file1.tf",
 						Start:    hcl.Pos{Line: 2, Column: 5},
@@ -348,10 +348,10 @@ func Test_LoadAnnotations(t *testing.T) {
 		},
 		"file2.tf": {
 			{
-				Content: "aws_instance_invalid_type",
+				Content: "aws_instance_invalid_instance_type",
 				Token: hclsyntax.Token{
 					Type:  hclsyntax.TokenComment,
-					Bytes: []byte(fmt.Sprintf("// tflint-ignore: aws_instance_invalid_type%s", newLine())),
+					Bytes: []byte(fmt.Sprintf("// tflint-ignore: aws_instance_invalid_instance_type%s", newLine())),
 					Range: hcl.Range{
 						Filename: "file2.tf",
 						Start:    hcl.Pos{Line: 2, Column: 32},

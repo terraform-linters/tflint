@@ -29,7 +29,7 @@ TFLint finds such errors in advance:
 ```
 $ tflint
 template.tf
-        ERROR:3 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
+        ERROR:3 instance_type is not a valid value (aws_instance_invalid_instance_type)
 
 Result: 2 issues  (1 errors , 0 warnings , 1 notices)
 ```
@@ -139,7 +139,7 @@ config {
   variables = ["foo=bar", "bar=[\"baz\"]"]
 }
 
-rule "aws_instance_invalid_type" {
+rule "aws_instance_invalid_instance_type" {
   enabled = false
 }
 
@@ -167,14 +167,14 @@ rule "aws_instance_previous_type" {
 You can also disable rules with the `--ignore-rule` option.
 
 ```
-$ tflint --ignore-rule=aws_instance_invalid_type,aws_instance_previous_type
+$ tflint --ignore-rule=aws_instance_invalid_instance_type,aws_instance_previous_type
 ```
 
 Also, annotation comments can disable rules on specific lines:
 
 ```hcl
 resource "aws_instance" "foo" {
-    # tflint-ignore: aws_instance_invalid_type
+    # tflint-ignore: aws_instance_invalid_instance_type
     instance_type = "t1.2xlarge"
 }
 ```
@@ -190,7 +190,7 @@ When deep checking is enabled, TFLint invokes the provider's API to do a more de
 ```
 $ tflint --deep
 template.tf
-        ERROR:3 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
+        ERROR:3 instance_type is not a valid value (aws_instance_invalid_instance_type)
         ERROR:4 "invalid_profile" is invalid IAM profile name. (aws_instance_invalid_iam_profile)
 
 Result: 2 issues  (2 errors , 0 warnings , 0 notices)
@@ -267,7 +267,7 @@ module "aws_instance" {
 ```
 $ tflint
 aws_instance/main.tf
-        ERROR:6 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
+        ERROR:6 instance_type is not a valid value (aws_instance_invalid_instance_type)
 
 Result: 1 issues  (1 errors , 0 warnings , 0 notices)
 ```

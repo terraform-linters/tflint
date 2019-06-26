@@ -1,3 +1,3 @@
-rule "aws_instance_invalid_type" "myrule" {
+rule "aws_instance_invalid_instance_type" "myrule" {
   enabled = false
 }

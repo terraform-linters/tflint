@@ -16,7 +16,7 @@ type metadata struct {
 
 func main() {
 	buf := bufio.NewReader(os.Stdin)
-	fmt.Print("Rule name? (e.g. aws_instance_invalid_type): ")
+	fmt.Print("Rule name? (e.g. aws_instance_invalid_instance_type): ")
 	ruleName, err := buf.ReadString('\n')
 	if err != nil {
 		panic(err)

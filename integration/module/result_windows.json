@@ -1,8 +1,8 @@
 [
   {
-    "detector": "aws_instance_invalid_type",
+    "detector": "aws_instance_invalid_instance_type",
     "type": "ERROR",
-    "message": "\"t1.2xlarge\" is invalid instance type.",
+    "message": "instance_type is not a valid value",
     "line": 12,
     "file": "instances\\template.tf",
     "link": ""

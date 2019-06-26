@@ -30,6 +30,6 @@ resource "aws_route" "not_specified2" { // aws_route_not_specified_target
 }
 
 resource "aws_instance" "foo" {
-  // tflint-ignore: aws_instance_invalid_type
+  // tflint-ignore: aws_instance_invalid_instance_type
   instance_type = "t1.2xlarge"
 }
