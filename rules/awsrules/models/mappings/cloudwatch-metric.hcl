@@ -7,8 +7,7 @@ mapping "aws_cloudwatch_metric_alarm" {
   namespace                             = Namespace
   statistic                             = Statistic
   alarm_description                     = AlarmDescription
-  // TODO: Remove original aws_cloudwatch_metric_alarm_invalid_unit rule
-  // unit                               = StandardUnit
+  unit                                  = StandardUnit
   extended_statistic                    = ExtendedStatistic
   treat_missing_data                    = TreatMissingData
   evaluate_low_sample_count_percentiles = EvaluateLowSampleCountPercentile
@@ -29,13 +28,10 @@ test "aws_cloudwatch_metric_alarm" "statistic" {
   ng = "Median"
 }
 
-# TODO: Remove original aws_cloudwatch_metric_alarm_invalid_unit rule
-/*
 test "aws_cloudwatch_metric_alarm" "unit" {
   ok = "Gigabytes"
   ng = "GB"
 }
-*/
 
 test "aws_cloudwatch_metric_alarm" "extended_statistic" {
   ok = "p100"
