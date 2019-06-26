@@ -11,7 +11,7 @@ mapping "aws_s3_account_public_access_block" {
 mapping "aws_s3_bucket" {
   bucket                               = BucketName
   bucket_prefix                        = any
-  acl                                  = any // TODO: BucketCannedACL
+  acl                                  = BucketCannedACL
   policy                               = Policy
   tags                                 = TagSet
   force_destroy                        = any
