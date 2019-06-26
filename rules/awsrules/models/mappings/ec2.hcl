@@ -184,8 +184,7 @@ mapping "aws_instance" {
   ebs_optimized                        = Boolean
   disable_api_termination              = Boolean
   instance_initiated_shutdown_behavior = ShutdownBehavior
-  // TODO: Remove original aws_instance_invalid_instance_type
-  // instance_type                     = InstanceType
+  instance_type                        = InstanceType
   key_name                             = String
   get_password_data                    = Boolean
   monitoring                           = RunInstancesMonitoringEnabled
