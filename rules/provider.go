@@ -32,7 +32,6 @@ var manualRules = []Rule{
 	awsrules.NewAwsLaunchConfigurationInvalidTypeRule(),
 	awsrules.NewAwsRouteNotSpecifiedTargetRule(),
 	awsrules.NewAwsRouteSpecifiedMultipleTargetsRule(),
-	awsrules.NewAwsS3BucketInvalidACLRule(),
 	terraformrules.NewTerraformModulePinnedSourceRule(),
 }
 
