@@ -85,7 +85,7 @@ func main() {
 							generateRuleTestFile(mapping.Resource, attribute, model, test)
 						}
 					}
-					generatedRules = append(generatedRules, fmt.Sprintf("%s_invalid_%s", mapping.Resource, attribute))
+					generatedRules = append(generatedRules, makeRuleName(mapping.Resource, attribute))
 				}
 			}
 		}

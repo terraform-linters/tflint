@@ -29,7 +29,7 @@ TFLint finds such errors in advance:
 ```
 $ tflint
 template.tf
-        ERROR:3 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
+        ERROR:3 instance_type is not a valid value (aws_instance_invalid_type)
 
 Result: 2 issues  (1 errors , 0 warnings , 1 notices)
 ```
@@ -191,7 +191,7 @@ When deep checking is enabled, TFLint invokes the provider's API to do a more de
 ```
 $ tflint --deep
 template.tf
-        ERROR:3 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
+        ERROR:3 instance_type is not a valid value (aws_instance_invalid_type)
         ERROR:4 "invalid_profile" is invalid IAM profile name. (aws_instance_invalid_iam_profile)
 
 Result: 2 issues  (2 errors , 0 warnings , 0 notices)
@@ -268,7 +268,7 @@ module "aws_instance" {
 ```
 $ tflint --module
 aws_instance/main.tf
-        ERROR:6 "t1.2xlarge" is invalid instance type. (aws_instance_invalid_type)
+        ERROR:6 instance_type is not a valid value (aws_instance_invalid_type)
 
 Result: 1 issues  (1 errors , 0 warnings , 0 notices)
 ```

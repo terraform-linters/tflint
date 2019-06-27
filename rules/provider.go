@@ -27,7 +27,6 @@ var manualRules = []Rule{
 	awsrules.NewAwsElastiCacheClusterInvalidTypeRule(),
 	awsrules.NewAwsElastiCacheClusterPreviousTypeRule(),
 	awsrules.NewAwsInstanceDefaultStandardVolumeRule(),
-	awsrules.NewAwsInstanceInvalidTypeRule(),
 	awsrules.NewAwsInstancePreviousTypeRule(),
 	awsrules.NewAwsLaunchConfigurationInvalidTypeRule(),
 	awsrules.NewAwsRouteNotSpecifiedTargetRule(),

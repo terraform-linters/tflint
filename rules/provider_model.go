@@ -381,6 +381,7 @@ var modelRules = []Rule{
 	awsmodelrules.NewAwsInspectorAssessmentTemplateInvalidTargetArnRule(),
 	awsmodelrules.NewAwsInstanceInvalidInstanceInitiatedShutdownBehaviorRule(),
 	awsmodelrules.NewAwsInstanceInvalidTenancyRule(),
+	awsmodelrules.NewAwsInstanceInvalidTypeRule(),
 	awsmodelrules.NewAwsIotPolicyAttachmentInvalidPolicyRule(),
 	awsmodelrules.NewAwsIotPolicyInvalidNameRule(),
 	awsmodelrules.NewAwsIotRoleAliasInvalidAliasRule(),
