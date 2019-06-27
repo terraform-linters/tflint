@@ -22,7 +22,7 @@ type ruleMeta struct {
 }
 
 func generateRuleFile(resource, attribute string, model map[string]interface{}) {
-	ruleName := fmt.Sprintf("%s_invalid_%s", resource, attribute)
+	ruleName := makeRuleName(resource, attribute)
 
 	meta := &ruleMeta{
 		RuleName:      ruleName,
@@ -42,7 +42,7 @@ func generateRuleFile(resource, attribute string, model map[string]interface{}) 
 }
 
 func generateRuleTestFile(resource, attribute string, model map[string]interface{}, test test) {
-	ruleName := fmt.Sprintf("%s_invalid_%s", resource, attribute)
+	ruleName := makeRuleName(resource, attribute)
 
 	meta := &ruleMeta{
 		RuleName:      ruleName,
@@ -61,6 +61,14 @@ func generateRuleTestFile(resource, attribute string, model map[string]interface
 	regexp.MustCompile(meta.Pattern)
 
 	utils.GenerateFile(fmt.Sprintf("../rules/awsrules/models/%s_test.go", ruleName), "../rules/awsrules/models/pattern_rule_test.go.tmpl", meta)
+}
+
+func makeRuleName(resource, attribute string) string {
+	// XXX: Change the naming convention for the backward compatibility.
+	if resource == "aws_instance" && attribute == "instance_type" {
+		return "aws_instance_invalid_type"
+	}
+	return fmt.Sprintf("%s_invalid_%s", resource, attribute)
 }
 
 func fetchNumber(model map[string]interface{}, key string) int {
