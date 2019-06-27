@@ -26,6 +26,21 @@ func Test_toConfig(t *testing.T) {
 			Command: "./tflint --deep",
 			Expected: &tflint.Config{
 				DeepCheck:      true,
+				Force:          false,
+				AwsCredentials: client.AwsCredentials{},
+				IgnoreModule:   map[string]bool{},
+				IgnoreRule:     map[string]bool{},
+				Varfile:        []string{},
+				Variables:      []string{},
+				Rules:          map[string]*tflint.RuleConfig{},
+			},
+		},
+		{
+			Name:    "--force",
+			Command: "./tflint --force",
+			Expected: &tflint.Config{
+				DeepCheck:      false,
+				Force:          true,
 				AwsCredentials: client.AwsCredentials{},
 				IgnoreModule:   map[string]bool{},
 				IgnoreRule:     map[string]bool{},
@@ -39,6 +54,7 @@ func Test_toConfig(t *testing.T) {
 			Command: "./tflint --aws-access-key AWS_ACCESS_KEY_ID --aws-secret-key AWS_SECRET_ACCESS_KEY --aws-region us-east-1",
 			Expected: &tflint.Config{
 				DeepCheck: false,
+				Force:     false,
 				AwsCredentials: client.AwsCredentials{
 					AccessKey: "AWS_ACCESS_KEY_ID",
 					SecretKey: "AWS_SECRET_ACCESS_KEY",
@@ -56,6 +72,7 @@ func Test_toConfig(t *testing.T) {
 			Command: "./tflint --aws-profile production --aws-region us-east-1",
 			Expected: &tflint.Config{
 				DeepCheck: false,
+				Force:     false,
 				AwsCredentials: client.AwsCredentials{
 					Profile: "production",
 					Region:  "us-east-1",
@@ -72,6 +89,7 @@ func Test_toConfig(t *testing.T) {
 			Command: "./tflint --ignore-module module1,module2",
 			Expected: &tflint.Config{
 				DeepCheck:      false,
+				Force:          false,
 				AwsCredentials: client.AwsCredentials{},
 				IgnoreModule:   map[string]bool{"module1": true, "module2": true},
 				IgnoreRule:     map[string]bool{},
@@ -85,6 +103,7 @@ func Test_toConfig(t *testing.T) {
 			Command: "./tflint --ignore-rule rule1,rule2",
 			Expected: &tflint.Config{
 				DeepCheck:      false,
+				Force:          false,
 				AwsCredentials: client.AwsCredentials{},
 				IgnoreModule:   map[string]bool{},
 				IgnoreRule:     map[string]bool{"rule1": true, "rule2": true},
@@ -98,6 +117,7 @@ func Test_toConfig(t *testing.T) {
 			Command: "./tflint --var-file example1.tfvars,example2.tfvars",
 			Expected: &tflint.Config{
 				DeepCheck:      false,
+				Force:          false,
 				AwsCredentials: client.AwsCredentials{},
 				IgnoreModule:   map[string]bool{},
 				IgnoreRule:     map[string]bool{},
@@ -111,6 +131,7 @@ func Test_toConfig(t *testing.T) {
 			Command: "./tflint --var foo=bar --var bar=baz",
 			Expected: &tflint.Config{
 				DeepCheck:      false,
+				Force:          false,
 				AwsCredentials: client.AwsCredentials{},
 				IgnoreModule:   map[string]bool{},
 				IgnoreRule:     map[string]bool{},
