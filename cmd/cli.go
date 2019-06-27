@@ -91,7 +91,7 @@ func (cli *CLI) Run(args []string) int {
 
 	// Load Terraform's configurations
 	if !cli.testMode {
-		cli.loader, err = tflint.NewLoader()
+		cli.loader, err = tflint.NewLoader(cfg)
 		if err != nil {
 			cli.printError(fmt.Errorf("Failed to prepare loading: %s", err))
 			return ExitCodeError

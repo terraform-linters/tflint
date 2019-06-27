@@ -26,6 +26,7 @@ func Test_LoadConfig(t *testing.T) {
 			Name: "load file",
 			File: filepath.Join(currentDir, "test-fixtures", "config", "config.hcl"),
 			Expected: &Config{
+				Module:    true,
 				DeepCheck: true,
 				Force:     true,
 				AwsCredentials: client.AwsCredentials{
@@ -64,6 +65,7 @@ func Test_LoadConfig(t *testing.T) {
 			File:     filepath.Join(currentDir, "test-fixtures", "config", "not_found.hcl"),
 			Fallback: filepath.Join(currentDir, "test-fixtures", "config", "fallback.hcl"),
 			Expected: &Config{
+				Module:    false,
 				DeepCheck: true,
 				Force:     true,
 				AwsCredentials: client.AwsCredentials{
@@ -162,6 +164,7 @@ func Test_LoadConfig_error(t *testing.T) {
 
 func Test_Merge(t *testing.T) {
 	cfg := &Config{
+		Module:    true,
 		DeepCheck: true,
 		Force:     true,
 		AwsCredentials: client.AwsCredentials{
@@ -218,6 +221,7 @@ func Test_Merge(t *testing.T) {
 		{
 			Name: "override and merge",
 			Base: &Config{
+				Module:    true,
 				DeepCheck: true,
 				Force:     false,
 				AwsCredentials: client.AwsCredentials{
@@ -248,6 +252,7 @@ func Test_Merge(t *testing.T) {
 				},
 			},
 			Other: &Config{
+				Module:    false,
 				DeepCheck: false,
 				Force:     true,
 				AwsCredentials: client.AwsCredentials{
@@ -277,6 +282,7 @@ func Test_Merge(t *testing.T) {
 				},
 			},
 			Expected: &Config{
+				Module:    true,
 				DeepCheck: true, // DeepCheck will not override
 				Force:     true,
 				AwsCredentials: client.AwsCredentials{
@@ -325,6 +331,7 @@ func Test_Merge(t *testing.T) {
 
 func Test_copy(t *testing.T) {
 	cfg := &Config{
+		Module:    true,
 		DeepCheck: true,
 		Force:     true,
 		AwsCredentials: client.AwsCredentials{
@@ -358,6 +365,12 @@ func Test_copy(t *testing.T) {
 		Name       string
 		SideEffect func(*Config)
 	}{
+		{
+			Name: "Module",
+			SideEffect: func(c *Config) {
+				c.Module = false
+			},
+		},
 		{
 			Name: "DeepCheck",
 			SideEffect: func(c *Config) {

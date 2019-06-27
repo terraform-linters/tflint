@@ -34,6 +34,7 @@ type AbstractLoader interface {
 type Loader struct {
 	loader               *configload.Loader
 	currentDir           string
+	config               *Config
 	moduleSourceVersions map[string][]*version.Version
 	moduleManifest       map[string]*moduleManifest
 }
@@ -52,7 +53,7 @@ type moduleManifestFile struct {
 }
 
 // NewLoader returns a loader with module manifests
-func NewLoader() (*Loader, error) {
+func NewLoader(cfg *Config) (*Loader, error) {
 	log.Print("[INFO] Initialize new loader")
 
 	loader, err := configload.NewLoader(&configload.Config{
@@ -65,6 +66,7 @@ func NewLoader() (*Loader, error) {
 
 	l := &Loader{
 		loader:               loader,
+		config:               cfg,
 		moduleSourceVersions: map[string][]*version.Version{},
 		moduleManifest:       map[string]*moduleManifest{},
 	}
@@ -90,6 +92,16 @@ func (l *Loader) LoadConfig(dir string) (*configs.Config, error) {
 		log.Printf("[ERROR] %s", diags)
 		return nil, diags
 	}
+
+	if !l.config.Module {
+		log.Print("[INFO] Module inspection is disabled. Building a root module without children...")
+		cfg, diags := configs.BuildConfig(rootMod, l.ignoreModuleWalker())
+		if diags.HasErrors() {
+			return nil, diags
+		}
+		return cfg, nil
+	}
+	log.Print("[INFO] Module inspection is enabled. Building a root module with children...")
 
 	log.Print("[DEBUG] Trying to load modules using the legacy module walker...")
 	cfg, diags := configs.BuildConfig(rootMod, l.moduleWalkerLegacy())
@@ -323,6 +335,12 @@ func (l *Loader) moduleWalkerV0_12() configs.ModuleWalker {
 
 		mod, diags := l.loader.Parser().LoadConfigDir(dir)
 		return mod, record.Version, diags
+	})
+}
+
+func (l *Loader) ignoreModuleWalker() configs.ModuleWalker {
+	return configs.ModuleWalkerFunc(func(req *configs.ModuleRequest) (*configs.Module, *version.Version, hcl.Diagnostics) {
+		return nil, nil, nil
 	})
 }
 

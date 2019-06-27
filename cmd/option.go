@@ -17,6 +17,7 @@ type Options struct {
 	IgnoreRule   string   `long:"ignore-rule" description:"Ignore rule names" value-name:"RULE1,RULE2..."`
 	Varfile      string   `long:"var-file" description:"Terraform variable file names" value-name:"FILE1,FILE2..."`
 	Variables    []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
+	Module       bool     `long:"module" description:"Inspect modules"`
 	Deep         bool     `long:"deep" description:"Enable deep check mode"`
 	AwsAccessKey string   `long:"aws-access-key" description:"AWS access key used in deep check mode" value-name:"ACCESS_KEY"`
 	AwsSecretKey string   `long:"aws-secret-key" description:"AWS secret key used in deep check mode" value-name:"SECRET_KEY"`
@@ -50,6 +51,7 @@ func (opts *Options) toConfig() *tflint.Config {
 	}
 
 	log.Printf("[DEBUG] CLI Options")
+	log.Printf("[DEBUG]   Module: %t", opts.Module)
 	log.Printf("[DEBUG]   DeepCheck: %t", opts.Deep)
 	log.Printf("[DEBUG]   Force: %t", opts.Force)
 	log.Printf("[DEBUG]   IgnoreModule: %#v", ignoreModule)
@@ -58,6 +60,7 @@ func (opts *Options) toConfig() *tflint.Config {
 	log.Printf("[DEBUG]   Variables: %#v", opts.Variables)
 
 	return &tflint.Config{
+		Module:    opts.Module,
 		DeepCheck: opts.Deep,
 		Force:     opts.Force,
 		AwsCredentials: client.AwsCredentials{

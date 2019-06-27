@@ -966,7 +966,7 @@ func Test_NewModuleRunners_noModules(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader()
+	loader, err := NewLoader(moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -998,7 +998,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader()
+	loader, err := NewLoader(moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -1126,7 +1126,7 @@ func Test_NewModuleRunners_ignoreModules(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader()
+	loader, err := NewLoader(moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -1161,7 +1161,7 @@ func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader()
+	loader, err := NewLoader(moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -1207,7 +1207,7 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader()
+	loader, err := NewLoader(moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}

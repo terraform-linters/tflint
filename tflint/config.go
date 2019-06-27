@@ -17,6 +17,7 @@ var fallbackConfigFile = "~/.tflint.hcl"
 
 type rawConfig struct {
 	Config *struct {
+		Module           *bool              `hcl:"module"`
 		DeepCheck        *bool              `hcl:"deep_check"`
 		Force            *bool              `hcl:"force"`
 		AwsCredentials   *map[string]string `hcl:"aws_credentials"`
@@ -31,6 +32,7 @@ type rawConfig struct {
 
 // Config describes the behavior of TFLint
 type Config struct {
+	Module         bool
 	DeepCheck      bool
 	Force          bool
 	AwsCredentials client.AwsCredentials
@@ -51,6 +53,7 @@ type RuleConfig struct {
 // It is mainly used for testing
 func EmptyConfig() *Config {
 	return &Config{
+		Module:         false,
 		DeepCheck:      false,
 		Force:          false,
 		AwsCredentials: client.AwsCredentials{},
@@ -106,6 +109,9 @@ func LoadConfig(file string) (*Config, error) {
 func (c *Config) Merge(other *Config) *Config {
 	ret := c.copy()
 
+	if other.Module {
+		ret.Module = true
+	}
 	if other.DeepCheck {
 		ret.DeepCheck = true
 	}
@@ -160,6 +166,7 @@ func (c *Config) copy() *Config {
 	}
 
 	return &Config{
+		Module:         c.Module,
 		DeepCheck:      c.DeepCheck,
 		Force:          c.Force,
 		AwsCredentials: c.AwsCredentials,
@@ -191,6 +198,7 @@ func loadConfigFromFile(file string) (*Config, error) {
 
 	cfg := raw.toConfig()
 	log.Printf("[DEBUG] Config loaded")
+	log.Printf("[DEBUG]   Module: %t", cfg.Module)
 	log.Printf("[DEBUG]   DeepCheck: %t", cfg.DeepCheck)
 	log.Printf("[DEBUG]   Force: %t", cfg.Force)
 	log.Printf("[DEBUG]   IgnoreModule: %#v", cfg.IgnoreModule)
@@ -229,6 +237,9 @@ func (raw *rawConfig) toConfig() *Config {
 	rc := raw.Config
 
 	if rc != nil {
+		if rc.Module != nil {
+			ret.Module = *rc.Module
+		}
 		if rc.DeepCheck != nil {
 			ret.DeepCheck = *rc.DeepCheck
 		}
