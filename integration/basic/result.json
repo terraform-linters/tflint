@@ -18,7 +18,7 @@
   {
     "detector": "aws_cloudwatch_metric_alarm_invalid_unit",
     "type": "ERROR",
-    "message": "\"percent\" is invalid unit.",
+    "message": "unit is not a valid value",
     "line": 22,
     "file": "template.tf",
     "link": ""

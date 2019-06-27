@@ -19,7 +19,6 @@ type Rule interface {
 var DefaultRules = append(manualRules, modelRules...)
 
 var manualRules = []Rule{
-	awsrules.NewAwsCloudwatchMetricAlarmInvalidUnitRule(),
 	awsrules.NewAwsDBInstanceDefaultParameterGroupRule(),
 	awsrules.NewAwsDBInstanceInvalidTypeRule(),
 	awsrules.NewAwsDBInstancePreviousTypeRule(),

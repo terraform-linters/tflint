@@ -125,6 +125,7 @@ var modelRules = []Rule{
 	awsmodelrules.NewAwsCloudwatchMetricAlarmInvalidNamespaceRule(),
 	awsmodelrules.NewAwsCloudwatchMetricAlarmInvalidStatisticRule(),
 	awsmodelrules.NewAwsCloudwatchMetricAlarmInvalidTreatMissingDataRule(),
+	awsmodelrules.NewAwsCloudwatchMetricAlarmInvalidUnitRule(),
 	awsmodelrules.NewAwsCodebuildProjectInvalidDescriptionRule(),
 	awsmodelrules.NewAwsCodecommitRepositoryInvalidDefaultBranchRule(),
 	awsmodelrules.NewAwsCodecommitRepositoryInvalidDescriptionRule(),
