@@ -72,10 +72,16 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Stderr:  "Load error occurred",
 		},
 		{
-			Name:    "deprecated options",
+			Name:    "removed `debug` options",
 			Command: "./tflint --debug",
 			Status:  ExitCodeError,
 			Stderr:  "`debug` option was removed in v0.8.0. Please set `TFLINT_LOG` environment variables instead",
+		},
+		{
+			Name:    "removed `fast` option",
+			Command: "./tflint --fast",
+			Status:  ExitCodeError,
+			Stderr:  "`fast` option was removed in v0.9.0. The `aws_instance_invalid_ami` rule is already fast enough",
 		},
 		{
 			Name:    "invalid options",
