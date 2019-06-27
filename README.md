@@ -120,7 +120,6 @@ The config file is written in [HCL](https://github.com/hashicorp/hcl), and you c
 
 ```hcl
 config {
-  terraform_version = "0.12.0"
   deep_check = true
 
   aws_credentials = {
@@ -286,12 +285,6 @@ If you want to inspect only a specific configuration file, not all files, you ca
 ```
 $ tflint main.tf
 ```
-
-### Terraform Version
-
-You can set the version of Terraform you are using. If it is set, TFLint will detect issues according to it.
-
-NOTE: This option is now no longer used and will be removed in the future.
 
 ## Debugging
 

@@ -64,11 +64,10 @@ func (opts *Options) toConfig() *tflint.Config {
 			Profile:   opts.AwsProfile,
 			Region:    opts.AwsRegion,
 		},
-		IgnoreModule:     ignoreModule,
-		IgnoreRule:       ignoreRule,
-		Varfile:          varfile,
-		Variables:        opts.Variables,
-		TerraformVersion: "",
-		Rules:            map[string]*tflint.RuleConfig{},
+		IgnoreModule: ignoreModule,
+		IgnoreRule:   ignoreRule,
+		Varfile:      varfile,
+		Variables:    opts.Variables,
+		Rules:        map[string]*tflint.RuleConfig{},
 	}
 }
