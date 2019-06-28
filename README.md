@@ -5,7 +5,7 @@
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-blue.svg)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/wata727/tflint)](https://goreportcard.com/report/github.com/wata727/tflint)
 
-TFLint is a [Terraform](https://www.terraform.io/) linter focused on possible errors, best practices, and so on.
+TFLint is a [Terraform](https://www.terraform.io/) linter focused on possible errors, best practices, etc.
 
 ## Why TFLint is required?
 
@@ -70,15 +70,15 @@ $ docker run --rm -v $(pwd):/data -t wata727/tflint
 
 ## Features
 
-See [Rules](docs/rules).
+700+ rules are available. See [Rules](docs/rules).
 
 ## Limitations
 
-TFLint currently only inspect Terraform-specific issues and AWS issues.
+TFLint currently only inspects Terraform-specific issues and AWS issues.
 
 Also, load configurations in the same way as Terraform v0.12. This means that it cannot inspect configurations that cannot be parsed on Terraform v0.12.
 
-[Named values](https://www.terraform.io/docs/configuration/expressions.html#references-to-named-values) are supported only for [input variables](https://www.terraform.io/docs/configuration/variables.html) and [workspaces](https://www.terraform.io/docs/state/workspaces.html). Expressions that contain anything else are excluded from the  inspection. [Built-in Functions](https://www.terraform.io/docs/configuration/functions.html) are fully supported.
+See [Limitations](docs/guides/limitations.md) for details.
 
 ## Usage
 
@@ -110,184 +110,7 @@ Help Options:
   -h, --help                                Show this help message
 ```
 
-### Config file
-
-By default, TFLint looks up `.tflint.hcl` according to the following priority:
-
-- Current directory (`./.tflint.hcl`)
-- Home directory (`~/.tflint.hcl`)
-
-The config file is written in [HCL](https://github.com/hashicorp/hcl), and you can use this file instead of passing command line options.
-
-```hcl
-config {
-  module = true
-  deep_check = true
-  force = false
-
-  aws_credentials = {
-    access_key = "AWS_ACCESS_KEY"
-    secret_key = "AWS_SECRET_KEY"
-    region     = "us-east-1"
-  }
-
-  ignore_module = {
-    "github.com/wata727/example-module" = true
-  }
-
-  varfile = ["example1.tfvars", "example2.tfvars"]
-
-  variables = ["foo=bar", "bar=[\"baz\"]"]
-}
-
-rule "aws_instance_invalid_type" {
-  enabled = false
-}
-
-rule "aws_instance_previous_type" {
-  enabled = false
-}
-```
-
-You can also use another file as a config file with the `--config` option.
-
-```
-$ tflint --config other_config.hcl
-```
-
-### Rules
-
-You can make settings for each rule in the `rule` block. Currently, it can set only `enabled` option. If you set `enabled = false`, TFLint doesn't inspect configuration files by this rule.
-
-```hcl
-rule "aws_instance_previous_type" {
-  enabled = false
-}
-```
-
-You can also disable rules with the `--ignore-rule` option.
-
-```
-$ tflint --ignore-rule=aws_instance_invalid_type,aws_instance_previous_type
-```
-
-Also, annotation comments can disable rules on specific lines:
-
-```hcl
-resource "aws_instance" "foo" {
-    # tflint-ignore: aws_instance_invalid_type
-    instance_type = "t1.2xlarge"
-}
-```
-
-The annotation works only for the same line or the line below it. You can also use `tflint-ignore: all` if you want to ignore all the rules.
-
-See also [list of available rules](docs/rules).
-
-### Deep Checking
-
-When deep checking is enabled, TFLint invokes the provider's API to do a more detailed inspection. For example, find a non-existent IAM profile name etc. You can enable it with the `--deep` option.
-
-```
-$ tflint --deep
-template.tf
-        ERROR:3 instance_type is not a valid value (aws_instance_invalid_type)
-        ERROR:4 "invalid_profile" is invalid IAM profile name. (aws_instance_invalid_iam_profile)
-
-Result: 2 issues  (2 errors , 0 warnings , 0 notices)
-```
-
-In order to enable deep checking, [credentials](#credentials) are needed.
-
-### Credentials
-
-TFLint supports various credential providers. It is used with the following priority:
-
-- Static credentials
-- Shared credentials
-- Environment credentials
-- Default shared credentials
-
-#### Static Credentials
-
-If you have an access key and a secret key, you can pass these keys.
-
-```
-$ tflint --aws-access-key AWS_ACCESS_KEY --aws-secret-key AWS_SECRET_KEY --aws-region us-east-1
-```
-
-```hcl
-config {
-  aws_credentials = {
-    access_key = "AWS_ACCESS_KEY"
-    secret_key = "AWS_SECRET_KEY"
-    region     = "us-east-1"
-  }
-}
-```
-
-#### Shared Credentials
-
-If you have [shared credentials](https://aws.amazon.com/jp/blogs/security/a-new-and-standardized-way-to-manage-credentials-in-the-aws-sdks/), you can pass the profile name. However, only `~/.aws/credentials` is supported as a credential location.
-
-```
-$ tflint --aws-profile AWS_PROFILE --aws-region us-east-1
-```
-
-```hcl
-config {
-  aws_credentials = {
-    profile = "AWS_PROFILE"
-    region  = "us-east-1"
-  }
-}
-```
-
-#### Environment Credentials
-
-TFLint looks up `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, `AWS_REGION` environment variables. This is useful when you don't want to explicitly pass credentials.
-
-```
-$ export AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY
-$ export AWS_SECRET_ACCESS_KEY=AWS_SECRET_KEY
-```
-
-### Module Inspection
-
-TFLint can also inspect [modules](https://www.terraform.io/docs/configuration/modules.html). In this case, it checks based on the input variables passed to the calling module.
-
-```hcl
-module "aws_instance" {
-  source        = "./module"
-
-  ami           = "ami-b73b63a0"
-  instance_type = "t1.2xlarge"
-}
-```
-
-```
-$ tflint --module
-aws_instance/main.tf
-        ERROR:6 instance_type is not a valid value (aws_instance_invalid_type)
-
-Result: 1 issues  (1 errors , 0 warnings , 0 notices)
-```
-
-Module inspection is disabled by default. Inspection is enabled by running with the `--module` option. Note that you need to run `terraform init` first because of TFLint loads modules in the same way as Terraform. 
-
-You can use the `--ignore-module` option if you want to skip inspection for a particular module. Note that you need to pass module sources rather than module ids for backward compatibility.
-
-```
-$ tflint --ignore-module=./module
-```
-
-### Run with a specific configuration file
-
-If you want to inspect only a specific configuration file, not all files, you can pass a file as an argument.
-
-```
-$ tflint main.tf
-```
+See [User guide](docs/guides) for each option.
 
 ## Exit Statuses
 
@@ -307,7 +130,7 @@ $ TFLINT_LOG=debug tflint
 
 ## Developing
 
-See [Developer Guides](docs/DEVELOPING.md).
+See [Developer guide](docs/DEVELOPING.md).
 
 ## Author
 
