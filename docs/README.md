@@ -1,5 +1,5 @@
 # TFLint Documentation
 
-- [User Guides](../README.md) (README)
+- [User guide](guides)
 - [Rules](rules)
-- [Developer Guides](DEVELOPING.md)
+- [Developer guide](DEVELOPING.md)
