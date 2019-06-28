@@ -1,3 +1,47 @@
+## 0.9.0 (2019-06-29)
+
+This release includes breaking changes due to the removal of some CLI flags and options. Please see the "Breaking Changes" section for details.
+
+As a major improvement, added 700+ rules in this release. These rules are automatically generated from aws-sdk validations and can be used without deep checking. For example, you can check whether a resource name matches the regular expression, whether it satisfies length constraints, whether it is included in the list of valid values, etc. before running `terraform plan` or `terraform apply`.
+
+### Breaking Changes
+
+- [#310](https://github.com/wata727/tflint/pull/310): Remove `--fast` option
+  - It disables only `aws_instance_invalid_ami` when passed this flag. But the rule is already faster in v0.8.2. Therefore, this flag is not necessary.
+- [#311](https://github.com/wata727/tflint/pull/311): Remove terraform_version option
+  - `terraform_version` option is no longer used.
+- [#313](https://github.com/wata727/tflint/pull/313): Make non-zero exit status default if issues found
+  - Previously, it has return 0 as exit status even if an issue was found, but now it will return 2.
+  - If you would like to keep the previous behavior, you can use `--force` option.
+- [#329](https://github.com/wata727/tflint/pull/329): Disable module inspection by default
+  - You no longer need to run `terraform init` just to run` tflint`.
+  - If you also want to check module calls, pass the `--module` option. In that case, you need to run `terraform init` as before.
+
+### Changes
+
+- [#340](https://github.com/wata727/tflint/pull/340): Replace aws_cloudwatch_metric_alarm_invalid_init with auto-generated
+  - The output message has changed, but there has been no other change.
+
+### Enhancements
+
+- [#274](https://github.com/wata727/tflint/pull/274): Auto generate rules from AWS API models
+  - These rules are based on Terraform AWS provider v2.16.0.
+- [#332](https://github.com/wata727/tflint/pull/332), [#336](https://github.com/wata727/tflint/pull/336): TFLint is now compatible with Terraform v0.12.3
+  - See also https://github.com/hashicorp/terraform/releases/tag/v0.12.3
+- [#343](https://github.com/wata727/tflint/pull/343): Update valid instance type list
+
+### BugFixes
+
+- [#341](https://github.com/wata727/tflint/pull/341): Fix false negatives in the S3 invalid ACL rule
+
+### Chores
+
+- [#326](https://github.com/wata727/tflint/pull/326): Set up CI with Azure Pipelines
+- [#337](https://github.com/wata727/tflint/pull/337): Check mapping attribute types
+- [#339](https://github.com/wata727/tflint/pull/339): Remove appveyor.yml
+- [#338](https://github.com/wata727/tflint/pull/338): Mappings are checked based on Terraform v0.12.3 schema
+- [#345](https://github.com/wata727/tflint/pull/345): Revise documentations
+
 ## 0.8.3 (2019-06-09)
 
 ### Enhancements
