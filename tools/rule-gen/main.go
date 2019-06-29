@@ -25,6 +25,6 @@ func main() {
 
 	meta := &metadata{RuleNameCC: utils.ToCamel(ruleName), RuleName: ruleName}
 
-	utils.GenerateFileWithLogs(fmt.Sprintf("rules/awsrules/%s.go", ruleName), "rules/rule.go.tmpl", meta)
-	utils.GenerateFileWithLogs(fmt.Sprintf("rules/awsrules/%s_test.go", ruleName), "rules/rule_test.go.tmpl", meta)
+	utils.GenerateFileWithLogs(fmt.Sprintf("../rules/awsrules/%s.go", ruleName), "../rules/rule.go.tmpl", meta)
+	utils.GenerateFileWithLogs(fmt.Sprintf("../rules/awsrules/%s_test.go", ruleName), "../rules/rule_test.go.tmpl", meta)
 }

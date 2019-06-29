@@ -48,8 +48,8 @@ $ make build
 You can use the rule generator to add new rules (Currently, this generator supports only AWS rules).
 
 ```
-$ make rule
-go run tools/rule_generator.go
+$ cd tools
+$ go run ./rule-gen
 Rule name? (e.g. aws_instance_invalid_type): aws_instance_example
 Create: rules/awsrules/aws_instance_example.go
 Create: rules/awsrules/aws_instance_example_test.go
