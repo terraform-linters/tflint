@@ -10,17 +10,17 @@ import (
 	"github.com/wata727/tflint/tflint"
 )
 
-// AwsWafregionalWebACLAssociationInvalidWebACLIdRule checks the pattern is valid
-type AwsWafregionalWebACLAssociationInvalidWebACLIdRule struct {
+// AwsWafregionalWebACLAssociationInvalidWebACLIDRule checks the pattern is valid
+type AwsWafregionalWebACLAssociationInvalidWebACLIDRule struct {
 	resourceType  string
 	attributeName string
 	max           int
 	min           int
 }
 
-// NewAwsWafregionalWebACLAssociationInvalidWebACLIdRule returns new rule with default attributes
-func NewAwsWafregionalWebACLAssociationInvalidWebACLIdRule() *AwsWafregionalWebACLAssociationInvalidWebACLIdRule {
-	return &AwsWafregionalWebACLAssociationInvalidWebACLIdRule{
+// NewAwsWafregionalWebACLAssociationInvalidWebACLIDRule returns new rule with default attributes
+func NewAwsWafregionalWebACLAssociationInvalidWebACLIDRule() *AwsWafregionalWebACLAssociationInvalidWebACLIDRule {
+	return &AwsWafregionalWebACLAssociationInvalidWebACLIDRule{
 		resourceType:  "aws_wafregional_web_acl_association",
 		attributeName: "web_acl_id",
 		max:           128,
@@ -29,27 +29,27 @@ func NewAwsWafregionalWebACLAssociationInvalidWebACLIdRule() *AwsWafregionalWebA
 }
 
 // Name returns the rule name
-func (r *AwsWafregionalWebACLAssociationInvalidWebACLIdRule) Name() string {
+func (r *AwsWafregionalWebACLAssociationInvalidWebACLIDRule) Name() string {
 	return "aws_wafregional_web_acl_association_invalid_web_acl_id"
 }
 
 // Enabled returns whether the rule is enabled by default
-func (r *AwsWafregionalWebACLAssociationInvalidWebACLIdRule) Enabled() bool {
+func (r *AwsWafregionalWebACLAssociationInvalidWebACLIDRule) Enabled() bool {
 	return true
 }
 
 // Type returns the rule severity
-func (r *AwsWafregionalWebACLAssociationInvalidWebACLIdRule) Type() string {
+func (r *AwsWafregionalWebACLAssociationInvalidWebACLIDRule) Type() string {
 	return issue.ERROR
 }
 
 // Link returns the rule reference link
-func (r *AwsWafregionalWebACLAssociationInvalidWebACLIdRule) Link() string {
+func (r *AwsWafregionalWebACLAssociationInvalidWebACLIDRule) Link() string {
 	return ""
 }
 
 // Check checks the pattern is valid
-func (r *AwsWafregionalWebACLAssociationInvalidWebACLIdRule) Check(runner *tflint.Runner) error {
+func (r *AwsWafregionalWebACLAssociationInvalidWebACLIDRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {

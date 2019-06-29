@@ -689,7 +689,7 @@ var modelRules = []Rule{
 	awsmodelrules.NewAwsWafregionalSizeConstraintSetInvalidNameRule(),
 	awsmodelrules.NewAwsWafregionalSQLInjectionMatchSetInvalidNameRule(),
 	awsmodelrules.NewAwsWafregionalWebACLAssociationInvalidResourceArnRule(),
-	awsmodelrules.NewAwsWafregionalWebACLAssociationInvalidWebACLIdRule(),
+	awsmodelrules.NewAwsWafregionalWebACLAssociationInvalidWebACLIDRule(),
 	awsmodelrules.NewAwsWafregionalWebACLInvalidNameRule(),
 	awsmodelrules.NewAwsWafregionalXSSMatchSetInvalidNameRule(),
 	awsmodelrules.NewAwsWorklinkFleetInvalidDeviceCaCertificateRule(),
