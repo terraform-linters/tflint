@@ -78,7 +78,7 @@ TFLint currently only inspects Terraform-specific issues and AWS issues.
 
 Also, load configurations in the same way as Terraform v0.12. This means that it cannot inspect configurations that cannot be parsed on Terraform v0.12.
 
-See [Limitations](docs/guides/limitations.md) for details.
+See [Compatibility with Terraform](docs/guides/compatibility.md) for details.
 
 ## Usage
 
