@@ -28,7 +28,4 @@ image:
 	docker push wata727/tflint:${VERSION}
 	docker push wata727/tflint:latest
 
-rule:
-	go run tools/rule_generator.go
-
-.PHONY: default prepare test build install release clean code image rule
+.PHONY: default prepare test build install release clean code image
