@@ -30,6 +30,8 @@ var manualRules = []Rule{
 	awsrules.NewAwsInstancePreviousTypeRule(),
 	awsrules.NewAwsRouteNotSpecifiedTargetRule(),
 	awsrules.NewAwsRouteSpecifiedMultipleTargetsRule(),
+	terraformrules.NewTerraformDocumentedOutputsRule(),
+	terraformrules.NewTerraformDocumentedVariablesRule(),
 	terraformrules.NewTerraformModulePinnedSourceRule(),
 }
 

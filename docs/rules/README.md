@@ -67,4 +67,8 @@ These rules relate to Terraform itself, not providers.
 
 These rules suggest to better ways.
 
-- [terraform_module_pinned_source](terraform_module_pinned_source.md)
+|Rule|Enabled by default|
+| --- | --- |
+|[terraform_documented_outputs](terraform_documented_outputs.md)||
+|[terraform_documented_variables](terraform_documented_variables.md)||
+|[terraform_module_pinned_source](terraform_module_pinned_source.md)|✔|
