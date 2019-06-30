@@ -28,7 +28,6 @@ var manualRules = []Rule{
 	awsrules.NewAwsElastiCacheClusterPreviousTypeRule(),
 	awsrules.NewAwsInstanceDefaultStandardVolumeRule(),
 	awsrules.NewAwsInstancePreviousTypeRule(),
-	awsrules.NewAwsLaunchConfigurationInvalidTypeRule(),
 	awsrules.NewAwsRouteNotSpecifiedTargetRule(),
 	awsrules.NewAwsRouteSpecifiedMultipleTargetsRule(),
 	terraformrules.NewTerraformModulePinnedSourceRule(),

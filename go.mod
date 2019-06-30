@@ -4,7 +4,6 @@ go 1.12
 
 require (
 	github.com/aws/aws-sdk-go v1.20.4
-	github.com/cristim/ec2-instances-info v0.0.0-20181219144937-b8e5ad342366
 	github.com/fatih/color v1.7.0
 	github.com/golang/mock v1.3.1
 	github.com/google/go-cmp v0.3.0
@@ -16,6 +15,5 @@ require (
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/mattn/go-colorable v0.1.2
 	github.com/mitchellh/go-homedir v1.1.0
-	github.com/pkg/errors v0.0.0-20180311214515-816c9085562c // indirect
 	github.com/zclconf/go-cty v1.0.0
 )

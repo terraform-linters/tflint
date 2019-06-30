@@ -438,6 +438,7 @@ var modelRules = []Rule{
 	awsmodelrules.NewAwsLambdaPermissionInvalidSourceArnRule(),
 	awsmodelrules.NewAwsLambdaPermissionInvalidStatementIDRule(),
 	awsmodelrules.NewAwsLaunchConfigurationInvalidSpotPriceRule(),
+	awsmodelrules.NewAwsLaunchConfigurationInvalidTypeRule(),
 	awsmodelrules.NewAwsLaunchTemplateInvalidDescriptionRule(),
 	awsmodelrules.NewAwsLaunchTemplateInvalidInstanceInitiatedShutdownBehaviorRule(),
 	awsmodelrules.NewAwsLaunchTemplateInvalidInstanceTypeRule(),

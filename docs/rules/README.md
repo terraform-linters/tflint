@@ -33,7 +33,6 @@ These rules warn of possible errors that can occur at `terraform apply`. Rules m
 |aws_instance_invalid_vpc_security_group|✔|
 |aws_launch_configuration_invalid_iam_profile|✔|
 |aws_launch_configuration_invalid_image_id|✔|
-|aws_launch_configuration_invalid_type||
 |aws_route_invalid_egress_only_gateway|✔|
 |aws_route_invalid_gateway|✔|
 |aws_route_invalid_instance|✔|

@@ -68,6 +68,9 @@ func makeRuleName(resource, attribute string) string {
 	if resource == "aws_instance" && attribute == "instance_type" {
 		return "aws_instance_invalid_type"
 	}
+	if resource == "aws_launch_configuration" && attribute == "instance_type" {
+		return "aws_launch_configuration_invalid_type"
+	}
 	return fmt.Sprintf("%s_invalid_%s", resource, attribute)
 }
 
