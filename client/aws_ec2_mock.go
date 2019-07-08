@@ -3159,6 +3159,182 @@ func (mr *MockEC2APIMockRecorder) CreateTagsRequest(arg0 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTagsRequest", reflect.TypeOf((*MockEC2API)(nil).CreateTagsRequest), arg0)
 }
 
+// CreateTrafficMirrorFilter mocks base method
+func (m *MockEC2API) CreateTrafficMirrorFilter(arg0 *ec2.CreateTrafficMirrorFilterInput) (*ec2.CreateTrafficMirrorFilterOutput, error) {
+	ret := m.ctrl.Call(m, "CreateTrafficMirrorFilter", arg0)
+	ret0, _ := ret[0].(*ec2.CreateTrafficMirrorFilterOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTrafficMirrorFilter indicates an expected call of CreateTrafficMirrorFilter
+func (mr *MockEC2APIMockRecorder) CreateTrafficMirrorFilter(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTrafficMirrorFilter", reflect.TypeOf((*MockEC2API)(nil).CreateTrafficMirrorFilter), arg0)
+}
+
+// CreateTrafficMirrorFilterWithContext mocks base method
+func (m *MockEC2API) CreateTrafficMirrorFilterWithContext(arg0 aws.Context, arg1 *ec2.CreateTrafficMirrorFilterInput, arg2 ...request.Option) (*ec2.CreateTrafficMirrorFilterOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateTrafficMirrorFilterWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.CreateTrafficMirrorFilterOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTrafficMirrorFilterWithContext indicates an expected call of CreateTrafficMirrorFilterWithContext
+func (mr *MockEC2APIMockRecorder) CreateTrafficMirrorFilterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTrafficMirrorFilterWithContext", reflect.TypeOf((*MockEC2API)(nil).CreateTrafficMirrorFilterWithContext), varargs...)
+}
+
+// CreateTrafficMirrorFilterRequest mocks base method
+func (m *MockEC2API) CreateTrafficMirrorFilterRequest(arg0 *ec2.CreateTrafficMirrorFilterInput) (*request.Request, *ec2.CreateTrafficMirrorFilterOutput) {
+	ret := m.ctrl.Call(m, "CreateTrafficMirrorFilterRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.CreateTrafficMirrorFilterOutput)
+	return ret0, ret1
+}
+
+// CreateTrafficMirrorFilterRequest indicates an expected call of CreateTrafficMirrorFilterRequest
+func (mr *MockEC2APIMockRecorder) CreateTrafficMirrorFilterRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTrafficMirrorFilterRequest", reflect.TypeOf((*MockEC2API)(nil).CreateTrafficMirrorFilterRequest), arg0)
+}
+
+// CreateTrafficMirrorFilterRule mocks base method
+func (m *MockEC2API) CreateTrafficMirrorFilterRule(arg0 *ec2.CreateTrafficMirrorFilterRuleInput) (*ec2.CreateTrafficMirrorFilterRuleOutput, error) {
+	ret := m.ctrl.Call(m, "CreateTrafficMirrorFilterRule", arg0)
+	ret0, _ := ret[0].(*ec2.CreateTrafficMirrorFilterRuleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTrafficMirrorFilterRule indicates an expected call of CreateTrafficMirrorFilterRule
+func (mr *MockEC2APIMockRecorder) CreateTrafficMirrorFilterRule(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTrafficMirrorFilterRule", reflect.TypeOf((*MockEC2API)(nil).CreateTrafficMirrorFilterRule), arg0)
+}
+
+// CreateTrafficMirrorFilterRuleWithContext mocks base method
+func (m *MockEC2API) CreateTrafficMirrorFilterRuleWithContext(arg0 aws.Context, arg1 *ec2.CreateTrafficMirrorFilterRuleInput, arg2 ...request.Option) (*ec2.CreateTrafficMirrorFilterRuleOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateTrafficMirrorFilterRuleWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.CreateTrafficMirrorFilterRuleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTrafficMirrorFilterRuleWithContext indicates an expected call of CreateTrafficMirrorFilterRuleWithContext
+func (mr *MockEC2APIMockRecorder) CreateTrafficMirrorFilterRuleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTrafficMirrorFilterRuleWithContext", reflect.TypeOf((*MockEC2API)(nil).CreateTrafficMirrorFilterRuleWithContext), varargs...)
+}
+
+// CreateTrafficMirrorFilterRuleRequest mocks base method
+func (m *MockEC2API) CreateTrafficMirrorFilterRuleRequest(arg0 *ec2.CreateTrafficMirrorFilterRuleInput) (*request.Request, *ec2.CreateTrafficMirrorFilterRuleOutput) {
+	ret := m.ctrl.Call(m, "CreateTrafficMirrorFilterRuleRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.CreateTrafficMirrorFilterRuleOutput)
+	return ret0, ret1
+}
+
+// CreateTrafficMirrorFilterRuleRequest indicates an expected call of CreateTrafficMirrorFilterRuleRequest
+func (mr *MockEC2APIMockRecorder) CreateTrafficMirrorFilterRuleRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTrafficMirrorFilterRuleRequest", reflect.TypeOf((*MockEC2API)(nil).CreateTrafficMirrorFilterRuleRequest), arg0)
+}
+
+// CreateTrafficMirrorSession mocks base method
+func (m *MockEC2API) CreateTrafficMirrorSession(arg0 *ec2.CreateTrafficMirrorSessionInput) (*ec2.CreateTrafficMirrorSessionOutput, error) {
+	ret := m.ctrl.Call(m, "CreateTrafficMirrorSession", arg0)
+	ret0, _ := ret[0].(*ec2.CreateTrafficMirrorSessionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTrafficMirrorSession indicates an expected call of CreateTrafficMirrorSession
+func (mr *MockEC2APIMockRecorder) CreateTrafficMirrorSession(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTrafficMirrorSession", reflect.TypeOf((*MockEC2API)(nil).CreateTrafficMirrorSession), arg0)
+}
+
+// CreateTrafficMirrorSessionWithContext mocks base method
+func (m *MockEC2API) CreateTrafficMirrorSessionWithContext(arg0 aws.Context, arg1 *ec2.CreateTrafficMirrorSessionInput, arg2 ...request.Option) (*ec2.CreateTrafficMirrorSessionOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateTrafficMirrorSessionWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.CreateTrafficMirrorSessionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTrafficMirrorSessionWithContext indicates an expected call of CreateTrafficMirrorSessionWithContext
+func (mr *MockEC2APIMockRecorder) CreateTrafficMirrorSessionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTrafficMirrorSessionWithContext", reflect.TypeOf((*MockEC2API)(nil).CreateTrafficMirrorSessionWithContext), varargs...)
+}
+
+// CreateTrafficMirrorSessionRequest mocks base method
+func (m *MockEC2API) CreateTrafficMirrorSessionRequest(arg0 *ec2.CreateTrafficMirrorSessionInput) (*request.Request, *ec2.CreateTrafficMirrorSessionOutput) {
+	ret := m.ctrl.Call(m, "CreateTrafficMirrorSessionRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.CreateTrafficMirrorSessionOutput)
+	return ret0, ret1
+}
+
+// CreateTrafficMirrorSessionRequest indicates an expected call of CreateTrafficMirrorSessionRequest
+func (mr *MockEC2APIMockRecorder) CreateTrafficMirrorSessionRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTrafficMirrorSessionRequest", reflect.TypeOf((*MockEC2API)(nil).CreateTrafficMirrorSessionRequest), arg0)
+}
+
+// CreateTrafficMirrorTarget mocks base method
+func (m *MockEC2API) CreateTrafficMirrorTarget(arg0 *ec2.CreateTrafficMirrorTargetInput) (*ec2.CreateTrafficMirrorTargetOutput, error) {
+	ret := m.ctrl.Call(m, "CreateTrafficMirrorTarget", arg0)
+	ret0, _ := ret[0].(*ec2.CreateTrafficMirrorTargetOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTrafficMirrorTarget indicates an expected call of CreateTrafficMirrorTarget
+func (mr *MockEC2APIMockRecorder) CreateTrafficMirrorTarget(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTrafficMirrorTarget", reflect.TypeOf((*MockEC2API)(nil).CreateTrafficMirrorTarget), arg0)
+}
+
+// CreateTrafficMirrorTargetWithContext mocks base method
+func (m *MockEC2API) CreateTrafficMirrorTargetWithContext(arg0 aws.Context, arg1 *ec2.CreateTrafficMirrorTargetInput, arg2 ...request.Option) (*ec2.CreateTrafficMirrorTargetOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateTrafficMirrorTargetWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.CreateTrafficMirrorTargetOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTrafficMirrorTargetWithContext indicates an expected call of CreateTrafficMirrorTargetWithContext
+func (mr *MockEC2APIMockRecorder) CreateTrafficMirrorTargetWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTrafficMirrorTargetWithContext", reflect.TypeOf((*MockEC2API)(nil).CreateTrafficMirrorTargetWithContext), varargs...)
+}
+
+// CreateTrafficMirrorTargetRequest mocks base method
+func (m *MockEC2API) CreateTrafficMirrorTargetRequest(arg0 *ec2.CreateTrafficMirrorTargetInput) (*request.Request, *ec2.CreateTrafficMirrorTargetOutput) {
+	ret := m.ctrl.Call(m, "CreateTrafficMirrorTargetRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.CreateTrafficMirrorTargetOutput)
+	return ret0, ret1
+}
+
+// CreateTrafficMirrorTargetRequest indicates an expected call of CreateTrafficMirrorTargetRequest
+func (mr *MockEC2APIMockRecorder) CreateTrafficMirrorTargetRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTrafficMirrorTargetRequest", reflect.TypeOf((*MockEC2API)(nil).CreateTrafficMirrorTargetRequest), arg0)
+}
+
 // CreateTransitGateway mocks base method
 func (m *MockEC2API) CreateTransitGateway(arg0 *ec2.CreateTransitGatewayInput) (*ec2.CreateTransitGatewayOutput, error) {
 	ret := m.ctrl.Call(m, "CreateTransitGateway", arg0)
@@ -4829,6 +5005,182 @@ func (m *MockEC2API) DeleteTagsRequest(arg0 *ec2.DeleteTagsInput) (*request.Requ
 // DeleteTagsRequest indicates an expected call of DeleteTagsRequest
 func (mr *MockEC2APIMockRecorder) DeleteTagsRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTagsRequest", reflect.TypeOf((*MockEC2API)(nil).DeleteTagsRequest), arg0)
+}
+
+// DeleteTrafficMirrorFilter mocks base method
+func (m *MockEC2API) DeleteTrafficMirrorFilter(arg0 *ec2.DeleteTrafficMirrorFilterInput) (*ec2.DeleteTrafficMirrorFilterOutput, error) {
+	ret := m.ctrl.Call(m, "DeleteTrafficMirrorFilter", arg0)
+	ret0, _ := ret[0].(*ec2.DeleteTrafficMirrorFilterOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTrafficMirrorFilter indicates an expected call of DeleteTrafficMirrorFilter
+func (mr *MockEC2APIMockRecorder) DeleteTrafficMirrorFilter(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTrafficMirrorFilter", reflect.TypeOf((*MockEC2API)(nil).DeleteTrafficMirrorFilter), arg0)
+}
+
+// DeleteTrafficMirrorFilterWithContext mocks base method
+func (m *MockEC2API) DeleteTrafficMirrorFilterWithContext(arg0 aws.Context, arg1 *ec2.DeleteTrafficMirrorFilterInput, arg2 ...request.Option) (*ec2.DeleteTrafficMirrorFilterOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteTrafficMirrorFilterWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DeleteTrafficMirrorFilterOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTrafficMirrorFilterWithContext indicates an expected call of DeleteTrafficMirrorFilterWithContext
+func (mr *MockEC2APIMockRecorder) DeleteTrafficMirrorFilterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTrafficMirrorFilterWithContext", reflect.TypeOf((*MockEC2API)(nil).DeleteTrafficMirrorFilterWithContext), varargs...)
+}
+
+// DeleteTrafficMirrorFilterRequest mocks base method
+func (m *MockEC2API) DeleteTrafficMirrorFilterRequest(arg0 *ec2.DeleteTrafficMirrorFilterInput) (*request.Request, *ec2.DeleteTrafficMirrorFilterOutput) {
+	ret := m.ctrl.Call(m, "DeleteTrafficMirrorFilterRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DeleteTrafficMirrorFilterOutput)
+	return ret0, ret1
+}
+
+// DeleteTrafficMirrorFilterRequest indicates an expected call of DeleteTrafficMirrorFilterRequest
+func (mr *MockEC2APIMockRecorder) DeleteTrafficMirrorFilterRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTrafficMirrorFilterRequest", reflect.TypeOf((*MockEC2API)(nil).DeleteTrafficMirrorFilterRequest), arg0)
+}
+
+// DeleteTrafficMirrorFilterRule mocks base method
+func (m *MockEC2API) DeleteTrafficMirrorFilterRule(arg0 *ec2.DeleteTrafficMirrorFilterRuleInput) (*ec2.DeleteTrafficMirrorFilterRuleOutput, error) {
+	ret := m.ctrl.Call(m, "DeleteTrafficMirrorFilterRule", arg0)
+	ret0, _ := ret[0].(*ec2.DeleteTrafficMirrorFilterRuleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTrafficMirrorFilterRule indicates an expected call of DeleteTrafficMirrorFilterRule
+func (mr *MockEC2APIMockRecorder) DeleteTrafficMirrorFilterRule(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTrafficMirrorFilterRule", reflect.TypeOf((*MockEC2API)(nil).DeleteTrafficMirrorFilterRule), arg0)
+}
+
+// DeleteTrafficMirrorFilterRuleWithContext mocks base method
+func (m *MockEC2API) DeleteTrafficMirrorFilterRuleWithContext(arg0 aws.Context, arg1 *ec2.DeleteTrafficMirrorFilterRuleInput, arg2 ...request.Option) (*ec2.DeleteTrafficMirrorFilterRuleOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteTrafficMirrorFilterRuleWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DeleteTrafficMirrorFilterRuleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTrafficMirrorFilterRuleWithContext indicates an expected call of DeleteTrafficMirrorFilterRuleWithContext
+func (mr *MockEC2APIMockRecorder) DeleteTrafficMirrorFilterRuleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTrafficMirrorFilterRuleWithContext", reflect.TypeOf((*MockEC2API)(nil).DeleteTrafficMirrorFilterRuleWithContext), varargs...)
+}
+
+// DeleteTrafficMirrorFilterRuleRequest mocks base method
+func (m *MockEC2API) DeleteTrafficMirrorFilterRuleRequest(arg0 *ec2.DeleteTrafficMirrorFilterRuleInput) (*request.Request, *ec2.DeleteTrafficMirrorFilterRuleOutput) {
+	ret := m.ctrl.Call(m, "DeleteTrafficMirrorFilterRuleRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DeleteTrafficMirrorFilterRuleOutput)
+	return ret0, ret1
+}
+
+// DeleteTrafficMirrorFilterRuleRequest indicates an expected call of DeleteTrafficMirrorFilterRuleRequest
+func (mr *MockEC2APIMockRecorder) DeleteTrafficMirrorFilterRuleRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTrafficMirrorFilterRuleRequest", reflect.TypeOf((*MockEC2API)(nil).DeleteTrafficMirrorFilterRuleRequest), arg0)
+}
+
+// DeleteTrafficMirrorSession mocks base method
+func (m *MockEC2API) DeleteTrafficMirrorSession(arg0 *ec2.DeleteTrafficMirrorSessionInput) (*ec2.DeleteTrafficMirrorSessionOutput, error) {
+	ret := m.ctrl.Call(m, "DeleteTrafficMirrorSession", arg0)
+	ret0, _ := ret[0].(*ec2.DeleteTrafficMirrorSessionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTrafficMirrorSession indicates an expected call of DeleteTrafficMirrorSession
+func (mr *MockEC2APIMockRecorder) DeleteTrafficMirrorSession(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTrafficMirrorSession", reflect.TypeOf((*MockEC2API)(nil).DeleteTrafficMirrorSession), arg0)
+}
+
+// DeleteTrafficMirrorSessionWithContext mocks base method
+func (m *MockEC2API) DeleteTrafficMirrorSessionWithContext(arg0 aws.Context, arg1 *ec2.DeleteTrafficMirrorSessionInput, arg2 ...request.Option) (*ec2.DeleteTrafficMirrorSessionOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteTrafficMirrorSessionWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DeleteTrafficMirrorSessionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTrafficMirrorSessionWithContext indicates an expected call of DeleteTrafficMirrorSessionWithContext
+func (mr *MockEC2APIMockRecorder) DeleteTrafficMirrorSessionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTrafficMirrorSessionWithContext", reflect.TypeOf((*MockEC2API)(nil).DeleteTrafficMirrorSessionWithContext), varargs...)
+}
+
+// DeleteTrafficMirrorSessionRequest mocks base method
+func (m *MockEC2API) DeleteTrafficMirrorSessionRequest(arg0 *ec2.DeleteTrafficMirrorSessionInput) (*request.Request, *ec2.DeleteTrafficMirrorSessionOutput) {
+	ret := m.ctrl.Call(m, "DeleteTrafficMirrorSessionRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DeleteTrafficMirrorSessionOutput)
+	return ret0, ret1
+}
+
+// DeleteTrafficMirrorSessionRequest indicates an expected call of DeleteTrafficMirrorSessionRequest
+func (mr *MockEC2APIMockRecorder) DeleteTrafficMirrorSessionRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTrafficMirrorSessionRequest", reflect.TypeOf((*MockEC2API)(nil).DeleteTrafficMirrorSessionRequest), arg0)
+}
+
+// DeleteTrafficMirrorTarget mocks base method
+func (m *MockEC2API) DeleteTrafficMirrorTarget(arg0 *ec2.DeleteTrafficMirrorTargetInput) (*ec2.DeleteTrafficMirrorTargetOutput, error) {
+	ret := m.ctrl.Call(m, "DeleteTrafficMirrorTarget", arg0)
+	ret0, _ := ret[0].(*ec2.DeleteTrafficMirrorTargetOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTrafficMirrorTarget indicates an expected call of DeleteTrafficMirrorTarget
+func (mr *MockEC2APIMockRecorder) DeleteTrafficMirrorTarget(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTrafficMirrorTarget", reflect.TypeOf((*MockEC2API)(nil).DeleteTrafficMirrorTarget), arg0)
+}
+
+// DeleteTrafficMirrorTargetWithContext mocks base method
+func (m *MockEC2API) DeleteTrafficMirrorTargetWithContext(arg0 aws.Context, arg1 *ec2.DeleteTrafficMirrorTargetInput, arg2 ...request.Option) (*ec2.DeleteTrafficMirrorTargetOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteTrafficMirrorTargetWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DeleteTrafficMirrorTargetOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteTrafficMirrorTargetWithContext indicates an expected call of DeleteTrafficMirrorTargetWithContext
+func (mr *MockEC2APIMockRecorder) DeleteTrafficMirrorTargetWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTrafficMirrorTargetWithContext", reflect.TypeOf((*MockEC2API)(nil).DeleteTrafficMirrorTargetWithContext), varargs...)
+}
+
+// DeleteTrafficMirrorTargetRequest mocks base method
+func (m *MockEC2API) DeleteTrafficMirrorTargetRequest(arg0 *ec2.DeleteTrafficMirrorTargetInput) (*request.Request, *ec2.DeleteTrafficMirrorTargetOutput) {
+	ret := m.ctrl.Call(m, "DeleteTrafficMirrorTargetRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DeleteTrafficMirrorTargetOutput)
+	return ret0, ret1
+}
+
+// DeleteTrafficMirrorTargetRequest indicates an expected call of DeleteTrafficMirrorTargetRequest
+func (mr *MockEC2APIMockRecorder) DeleteTrafficMirrorTargetRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTrafficMirrorTargetRequest", reflect.TypeOf((*MockEC2API)(nil).DeleteTrafficMirrorTargetRequest), arg0)
 }
 
 // DeleteTransitGateway mocks base method
@@ -10081,6 +10433,225 @@ func (mr *MockEC2APIMockRecorder) DescribeTagsPagesWithContext(arg0, arg1, arg2 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTagsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTagsPagesWithContext), varargs...)
 }
 
+// DescribeTrafficMirrorFilters mocks base method
+func (m *MockEC2API) DescribeTrafficMirrorFilters(arg0 *ec2.DescribeTrafficMirrorFiltersInput) (*ec2.DescribeTrafficMirrorFiltersOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeTrafficMirrorFilters", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeTrafficMirrorFiltersOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTrafficMirrorFilters indicates an expected call of DescribeTrafficMirrorFilters
+func (mr *MockEC2APIMockRecorder) DescribeTrafficMirrorFilters(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrafficMirrorFilters", reflect.TypeOf((*MockEC2API)(nil).DescribeTrafficMirrorFilters), arg0)
+}
+
+// DescribeTrafficMirrorFiltersWithContext mocks base method
+func (m *MockEC2API) DescribeTrafficMirrorFiltersWithContext(arg0 aws.Context, arg1 *ec2.DescribeTrafficMirrorFiltersInput, arg2 ...request.Option) (*ec2.DescribeTrafficMirrorFiltersOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeTrafficMirrorFiltersWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeTrafficMirrorFiltersOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTrafficMirrorFiltersWithContext indicates an expected call of DescribeTrafficMirrorFiltersWithContext
+func (mr *MockEC2APIMockRecorder) DescribeTrafficMirrorFiltersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrafficMirrorFiltersWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTrafficMirrorFiltersWithContext), varargs...)
+}
+
+// DescribeTrafficMirrorFiltersRequest mocks base method
+func (m *MockEC2API) DescribeTrafficMirrorFiltersRequest(arg0 *ec2.DescribeTrafficMirrorFiltersInput) (*request.Request, *ec2.DescribeTrafficMirrorFiltersOutput) {
+	ret := m.ctrl.Call(m, "DescribeTrafficMirrorFiltersRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeTrafficMirrorFiltersOutput)
+	return ret0, ret1
+}
+
+// DescribeTrafficMirrorFiltersRequest indicates an expected call of DescribeTrafficMirrorFiltersRequest
+func (mr *MockEC2APIMockRecorder) DescribeTrafficMirrorFiltersRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrafficMirrorFiltersRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeTrafficMirrorFiltersRequest), arg0)
+}
+
+// DescribeTrafficMirrorFiltersPages mocks base method
+func (m *MockEC2API) DescribeTrafficMirrorFiltersPages(arg0 *ec2.DescribeTrafficMirrorFiltersInput, arg1 func(*ec2.DescribeTrafficMirrorFiltersOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeTrafficMirrorFiltersPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeTrafficMirrorFiltersPages indicates an expected call of DescribeTrafficMirrorFiltersPages
+func (mr *MockEC2APIMockRecorder) DescribeTrafficMirrorFiltersPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrafficMirrorFiltersPages", reflect.TypeOf((*MockEC2API)(nil).DescribeTrafficMirrorFiltersPages), arg0, arg1)
+}
+
+// DescribeTrafficMirrorFiltersPagesWithContext mocks base method
+func (m *MockEC2API) DescribeTrafficMirrorFiltersPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeTrafficMirrorFiltersInput, arg2 func(*ec2.DescribeTrafficMirrorFiltersOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeTrafficMirrorFiltersPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeTrafficMirrorFiltersPagesWithContext indicates an expected call of DescribeTrafficMirrorFiltersPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeTrafficMirrorFiltersPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrafficMirrorFiltersPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTrafficMirrorFiltersPagesWithContext), varargs...)
+}
+
+// DescribeTrafficMirrorSessions mocks base method
+func (m *MockEC2API) DescribeTrafficMirrorSessions(arg0 *ec2.DescribeTrafficMirrorSessionsInput) (*ec2.DescribeTrafficMirrorSessionsOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeTrafficMirrorSessions", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeTrafficMirrorSessionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTrafficMirrorSessions indicates an expected call of DescribeTrafficMirrorSessions
+func (mr *MockEC2APIMockRecorder) DescribeTrafficMirrorSessions(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrafficMirrorSessions", reflect.TypeOf((*MockEC2API)(nil).DescribeTrafficMirrorSessions), arg0)
+}
+
+// DescribeTrafficMirrorSessionsWithContext mocks base method
+func (m *MockEC2API) DescribeTrafficMirrorSessionsWithContext(arg0 aws.Context, arg1 *ec2.DescribeTrafficMirrorSessionsInput, arg2 ...request.Option) (*ec2.DescribeTrafficMirrorSessionsOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeTrafficMirrorSessionsWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeTrafficMirrorSessionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTrafficMirrorSessionsWithContext indicates an expected call of DescribeTrafficMirrorSessionsWithContext
+func (mr *MockEC2APIMockRecorder) DescribeTrafficMirrorSessionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrafficMirrorSessionsWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTrafficMirrorSessionsWithContext), varargs...)
+}
+
+// DescribeTrafficMirrorSessionsRequest mocks base method
+func (m *MockEC2API) DescribeTrafficMirrorSessionsRequest(arg0 *ec2.DescribeTrafficMirrorSessionsInput) (*request.Request, *ec2.DescribeTrafficMirrorSessionsOutput) {
+	ret := m.ctrl.Call(m, "DescribeTrafficMirrorSessionsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeTrafficMirrorSessionsOutput)
+	return ret0, ret1
+}
+
+// DescribeTrafficMirrorSessionsRequest indicates an expected call of DescribeTrafficMirrorSessionsRequest
+func (mr *MockEC2APIMockRecorder) DescribeTrafficMirrorSessionsRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrafficMirrorSessionsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeTrafficMirrorSessionsRequest), arg0)
+}
+
+// DescribeTrafficMirrorSessionsPages mocks base method
+func (m *MockEC2API) DescribeTrafficMirrorSessionsPages(arg0 *ec2.DescribeTrafficMirrorSessionsInput, arg1 func(*ec2.DescribeTrafficMirrorSessionsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeTrafficMirrorSessionsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeTrafficMirrorSessionsPages indicates an expected call of DescribeTrafficMirrorSessionsPages
+func (mr *MockEC2APIMockRecorder) DescribeTrafficMirrorSessionsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrafficMirrorSessionsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeTrafficMirrorSessionsPages), arg0, arg1)
+}
+
+// DescribeTrafficMirrorSessionsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeTrafficMirrorSessionsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeTrafficMirrorSessionsInput, arg2 func(*ec2.DescribeTrafficMirrorSessionsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeTrafficMirrorSessionsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeTrafficMirrorSessionsPagesWithContext indicates an expected call of DescribeTrafficMirrorSessionsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeTrafficMirrorSessionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrafficMirrorSessionsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTrafficMirrorSessionsPagesWithContext), varargs...)
+}
+
+// DescribeTrafficMirrorTargets mocks base method
+func (m *MockEC2API) DescribeTrafficMirrorTargets(arg0 *ec2.DescribeTrafficMirrorTargetsInput) (*ec2.DescribeTrafficMirrorTargetsOutput, error) {
+	ret := m.ctrl.Call(m, "DescribeTrafficMirrorTargets", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeTrafficMirrorTargetsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTrafficMirrorTargets indicates an expected call of DescribeTrafficMirrorTargets
+func (mr *MockEC2APIMockRecorder) DescribeTrafficMirrorTargets(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrafficMirrorTargets", reflect.TypeOf((*MockEC2API)(nil).DescribeTrafficMirrorTargets), arg0)
+}
+
+// DescribeTrafficMirrorTargetsWithContext mocks base method
+func (m *MockEC2API) DescribeTrafficMirrorTargetsWithContext(arg0 aws.Context, arg1 *ec2.DescribeTrafficMirrorTargetsInput, arg2 ...request.Option) (*ec2.DescribeTrafficMirrorTargetsOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeTrafficMirrorTargetsWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeTrafficMirrorTargetsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeTrafficMirrorTargetsWithContext indicates an expected call of DescribeTrafficMirrorTargetsWithContext
+func (mr *MockEC2APIMockRecorder) DescribeTrafficMirrorTargetsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrafficMirrorTargetsWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTrafficMirrorTargetsWithContext), varargs...)
+}
+
+// DescribeTrafficMirrorTargetsRequest mocks base method
+func (m *MockEC2API) DescribeTrafficMirrorTargetsRequest(arg0 *ec2.DescribeTrafficMirrorTargetsInput) (*request.Request, *ec2.DescribeTrafficMirrorTargetsOutput) {
+	ret := m.ctrl.Call(m, "DescribeTrafficMirrorTargetsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeTrafficMirrorTargetsOutput)
+	return ret0, ret1
+}
+
+// DescribeTrafficMirrorTargetsRequest indicates an expected call of DescribeTrafficMirrorTargetsRequest
+func (mr *MockEC2APIMockRecorder) DescribeTrafficMirrorTargetsRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrafficMirrorTargetsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeTrafficMirrorTargetsRequest), arg0)
+}
+
+// DescribeTrafficMirrorTargetsPages mocks base method
+func (m *MockEC2API) DescribeTrafficMirrorTargetsPages(arg0 *ec2.DescribeTrafficMirrorTargetsInput, arg1 func(*ec2.DescribeTrafficMirrorTargetsOutput, bool) bool) error {
+	ret := m.ctrl.Call(m, "DescribeTrafficMirrorTargetsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeTrafficMirrorTargetsPages indicates an expected call of DescribeTrafficMirrorTargetsPages
+func (mr *MockEC2APIMockRecorder) DescribeTrafficMirrorTargetsPages(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrafficMirrorTargetsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeTrafficMirrorTargetsPages), arg0, arg1)
+}
+
+// DescribeTrafficMirrorTargetsPagesWithContext mocks base method
+func (m *MockEC2API) DescribeTrafficMirrorTargetsPagesWithContext(arg0 aws.Context, arg1 *ec2.DescribeTrafficMirrorTargetsInput, arg2 func(*ec2.DescribeTrafficMirrorTargetsOutput, bool) bool, arg3 ...request.Option) error {
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeTrafficMirrorTargetsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeTrafficMirrorTargetsPagesWithContext indicates an expected call of DescribeTrafficMirrorTargetsPagesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeTrafficMirrorTargetsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrafficMirrorTargetsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeTrafficMirrorTargetsPagesWithContext), varargs...)
+}
+
 // DescribeTransitGatewayAttachments mocks base method
 func (m *MockEC2API) DescribeTransitGatewayAttachments(arg0 *ec2.DescribeTransitGatewayAttachmentsInput) (*ec2.DescribeTransitGatewayAttachmentsOutput, error) {
 	ret := m.ctrl.Call(m, "DescribeTransitGatewayAttachments", arg0)
@@ -14297,6 +14868,138 @@ func (m *MockEC2API) ModifySubnetAttributeRequest(arg0 *ec2.ModifySubnetAttribut
 // ModifySubnetAttributeRequest indicates an expected call of ModifySubnetAttributeRequest
 func (mr *MockEC2APIMockRecorder) ModifySubnetAttributeRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifySubnetAttributeRequest", reflect.TypeOf((*MockEC2API)(nil).ModifySubnetAttributeRequest), arg0)
+}
+
+// ModifyTrafficMirrorFilterNetworkServices mocks base method
+func (m *MockEC2API) ModifyTrafficMirrorFilterNetworkServices(arg0 *ec2.ModifyTrafficMirrorFilterNetworkServicesInput) (*ec2.ModifyTrafficMirrorFilterNetworkServicesOutput, error) {
+	ret := m.ctrl.Call(m, "ModifyTrafficMirrorFilterNetworkServices", arg0)
+	ret0, _ := ret[0].(*ec2.ModifyTrafficMirrorFilterNetworkServicesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyTrafficMirrorFilterNetworkServices indicates an expected call of ModifyTrafficMirrorFilterNetworkServices
+func (mr *MockEC2APIMockRecorder) ModifyTrafficMirrorFilterNetworkServices(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyTrafficMirrorFilterNetworkServices", reflect.TypeOf((*MockEC2API)(nil).ModifyTrafficMirrorFilterNetworkServices), arg0)
+}
+
+// ModifyTrafficMirrorFilterNetworkServicesWithContext mocks base method
+func (m *MockEC2API) ModifyTrafficMirrorFilterNetworkServicesWithContext(arg0 aws.Context, arg1 *ec2.ModifyTrafficMirrorFilterNetworkServicesInput, arg2 ...request.Option) (*ec2.ModifyTrafficMirrorFilterNetworkServicesOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ModifyTrafficMirrorFilterNetworkServicesWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.ModifyTrafficMirrorFilterNetworkServicesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyTrafficMirrorFilterNetworkServicesWithContext indicates an expected call of ModifyTrafficMirrorFilterNetworkServicesWithContext
+func (mr *MockEC2APIMockRecorder) ModifyTrafficMirrorFilterNetworkServicesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyTrafficMirrorFilterNetworkServicesWithContext", reflect.TypeOf((*MockEC2API)(nil).ModifyTrafficMirrorFilterNetworkServicesWithContext), varargs...)
+}
+
+// ModifyTrafficMirrorFilterNetworkServicesRequest mocks base method
+func (m *MockEC2API) ModifyTrafficMirrorFilterNetworkServicesRequest(arg0 *ec2.ModifyTrafficMirrorFilterNetworkServicesInput) (*request.Request, *ec2.ModifyTrafficMirrorFilterNetworkServicesOutput) {
+	ret := m.ctrl.Call(m, "ModifyTrafficMirrorFilterNetworkServicesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ModifyTrafficMirrorFilterNetworkServicesOutput)
+	return ret0, ret1
+}
+
+// ModifyTrafficMirrorFilterNetworkServicesRequest indicates an expected call of ModifyTrafficMirrorFilterNetworkServicesRequest
+func (mr *MockEC2APIMockRecorder) ModifyTrafficMirrorFilterNetworkServicesRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyTrafficMirrorFilterNetworkServicesRequest", reflect.TypeOf((*MockEC2API)(nil).ModifyTrafficMirrorFilterNetworkServicesRequest), arg0)
+}
+
+// ModifyTrafficMirrorFilterRule mocks base method
+func (m *MockEC2API) ModifyTrafficMirrorFilterRule(arg0 *ec2.ModifyTrafficMirrorFilterRuleInput) (*ec2.ModifyTrafficMirrorFilterRuleOutput, error) {
+	ret := m.ctrl.Call(m, "ModifyTrafficMirrorFilterRule", arg0)
+	ret0, _ := ret[0].(*ec2.ModifyTrafficMirrorFilterRuleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyTrafficMirrorFilterRule indicates an expected call of ModifyTrafficMirrorFilterRule
+func (mr *MockEC2APIMockRecorder) ModifyTrafficMirrorFilterRule(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyTrafficMirrorFilterRule", reflect.TypeOf((*MockEC2API)(nil).ModifyTrafficMirrorFilterRule), arg0)
+}
+
+// ModifyTrafficMirrorFilterRuleWithContext mocks base method
+func (m *MockEC2API) ModifyTrafficMirrorFilterRuleWithContext(arg0 aws.Context, arg1 *ec2.ModifyTrafficMirrorFilterRuleInput, arg2 ...request.Option) (*ec2.ModifyTrafficMirrorFilterRuleOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ModifyTrafficMirrorFilterRuleWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.ModifyTrafficMirrorFilterRuleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyTrafficMirrorFilterRuleWithContext indicates an expected call of ModifyTrafficMirrorFilterRuleWithContext
+func (mr *MockEC2APIMockRecorder) ModifyTrafficMirrorFilterRuleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyTrafficMirrorFilterRuleWithContext", reflect.TypeOf((*MockEC2API)(nil).ModifyTrafficMirrorFilterRuleWithContext), varargs...)
+}
+
+// ModifyTrafficMirrorFilterRuleRequest mocks base method
+func (m *MockEC2API) ModifyTrafficMirrorFilterRuleRequest(arg0 *ec2.ModifyTrafficMirrorFilterRuleInput) (*request.Request, *ec2.ModifyTrafficMirrorFilterRuleOutput) {
+	ret := m.ctrl.Call(m, "ModifyTrafficMirrorFilterRuleRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ModifyTrafficMirrorFilterRuleOutput)
+	return ret0, ret1
+}
+
+// ModifyTrafficMirrorFilterRuleRequest indicates an expected call of ModifyTrafficMirrorFilterRuleRequest
+func (mr *MockEC2APIMockRecorder) ModifyTrafficMirrorFilterRuleRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyTrafficMirrorFilterRuleRequest", reflect.TypeOf((*MockEC2API)(nil).ModifyTrafficMirrorFilterRuleRequest), arg0)
+}
+
+// ModifyTrafficMirrorSession mocks base method
+func (m *MockEC2API) ModifyTrafficMirrorSession(arg0 *ec2.ModifyTrafficMirrorSessionInput) (*ec2.ModifyTrafficMirrorSessionOutput, error) {
+	ret := m.ctrl.Call(m, "ModifyTrafficMirrorSession", arg0)
+	ret0, _ := ret[0].(*ec2.ModifyTrafficMirrorSessionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyTrafficMirrorSession indicates an expected call of ModifyTrafficMirrorSession
+func (mr *MockEC2APIMockRecorder) ModifyTrafficMirrorSession(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyTrafficMirrorSession", reflect.TypeOf((*MockEC2API)(nil).ModifyTrafficMirrorSession), arg0)
+}
+
+// ModifyTrafficMirrorSessionWithContext mocks base method
+func (m *MockEC2API) ModifyTrafficMirrorSessionWithContext(arg0 aws.Context, arg1 *ec2.ModifyTrafficMirrorSessionInput, arg2 ...request.Option) (*ec2.ModifyTrafficMirrorSessionOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ModifyTrafficMirrorSessionWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.ModifyTrafficMirrorSessionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyTrafficMirrorSessionWithContext indicates an expected call of ModifyTrafficMirrorSessionWithContext
+func (mr *MockEC2APIMockRecorder) ModifyTrafficMirrorSessionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyTrafficMirrorSessionWithContext", reflect.TypeOf((*MockEC2API)(nil).ModifyTrafficMirrorSessionWithContext), varargs...)
+}
+
+// ModifyTrafficMirrorSessionRequest mocks base method
+func (m *MockEC2API) ModifyTrafficMirrorSessionRequest(arg0 *ec2.ModifyTrafficMirrorSessionInput) (*request.Request, *ec2.ModifyTrafficMirrorSessionOutput) {
+	ret := m.ctrl.Call(m, "ModifyTrafficMirrorSessionRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.ModifyTrafficMirrorSessionOutput)
+	return ret0, ret1
+}
+
+// ModifyTrafficMirrorSessionRequest indicates an expected call of ModifyTrafficMirrorSessionRequest
+func (mr *MockEC2APIMockRecorder) ModifyTrafficMirrorSessionRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyTrafficMirrorSessionRequest", reflect.TypeOf((*MockEC2API)(nil).ModifyTrafficMirrorSessionRequest), arg0)
 }
 
 // ModifyTransitGatewayVpcAttachment mocks base method

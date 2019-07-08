@@ -25,7 +25,7 @@ func Test_AwsLbListenerInvalidProtocolRule(t *testing.T) {
 			Name: "It includes invalid characters",
 			Content: `
 resource "aws_lb_listener" "foo" {
-	protocol = "UDP"
+	protocol = "INVALID"
 }`,
 			Expected: []*issue.Issue{
 				{

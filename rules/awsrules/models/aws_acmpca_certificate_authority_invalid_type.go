@@ -23,6 +23,7 @@ func NewAwsAcmpcaCertificateAuthorityInvalidTypeRule() *AwsAcmpcaCertificateAuth
 		resourceType:  "aws_acmpca_certificate_authority",
 		attributeName: "type",
 		enum: []string{
+			"ROOT",
 			"SUBORDINATE",
 		},
 	}
