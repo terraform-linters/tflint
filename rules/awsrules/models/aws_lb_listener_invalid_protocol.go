@@ -27,6 +27,8 @@ func NewAwsLbListenerInvalidProtocolRule() *AwsLbListenerInvalidProtocolRule {
 			"HTTPS",
 			"TCP",
 			"TLS",
+			"UDP",
+			"TCP_UDP",
 		},
 	}
 }

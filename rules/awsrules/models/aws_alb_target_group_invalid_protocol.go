@@ -27,6 +27,8 @@ func NewAwsALBTargetGroupInvalidProtocolRule() *AwsALBTargetGroupInvalidProtocol
 			"HTTPS",
 			"TCP",
 			"TLS",
+			"UDP",
+			"TCP_UDP",
 		},
 	}
 }
