@@ -1,3 +1,20 @@
+## 0.9.1 (2019-07-09)
+
+### Enhancements
+
+- [#348](https://github.com/wata727/tflint/pull/348): Update launch configuration instance types
+- [#350](https://github.com/wata727/tflint/pull/350): Add terraform_documented_variables/outputs rules
+- [#356](https://github.com/wata727/tflint/pull/356): Bump terraform-aws-provider from v2.16.0 to v2.18.0
+
+### BugFixes
+
+- [#355](https://github.com/wata727/tflint/pull/355): Fix a false positive for `log-delivery-write` ACL
+
+### Chores
+
+- [#346](https://github.com/wata727/tflint/pull/346): Docs: Limitations -> Compatibility with Terraform
+- [#347](https://github.com/wata727/tflint/pull/347): Fix rule generator
+
 ## 0.9.0 (2019-06-29)
 
 This release includes breaking changes due to the removal of some CLI flags and options. Please see the "Breaking Changes" section for details.
