@@ -2235,6 +2235,50 @@ func (mr *MockIAMAPIMockRecorder) GenerateCredentialReportRequest(arg0 interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateCredentialReportRequest", reflect.TypeOf((*MockIAMAPI)(nil).GenerateCredentialReportRequest), arg0)
 }
 
+// GenerateOrganizationsAccessReport mocks base method
+func (m *MockIAMAPI) GenerateOrganizationsAccessReport(arg0 *iam.GenerateOrganizationsAccessReportInput) (*iam.GenerateOrganizationsAccessReportOutput, error) {
+	ret := m.ctrl.Call(m, "GenerateOrganizationsAccessReport", arg0)
+	ret0, _ := ret[0].(*iam.GenerateOrganizationsAccessReportOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GenerateOrganizationsAccessReport indicates an expected call of GenerateOrganizationsAccessReport
+func (mr *MockIAMAPIMockRecorder) GenerateOrganizationsAccessReport(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateOrganizationsAccessReport", reflect.TypeOf((*MockIAMAPI)(nil).GenerateOrganizationsAccessReport), arg0)
+}
+
+// GenerateOrganizationsAccessReportWithContext mocks base method
+func (m *MockIAMAPI) GenerateOrganizationsAccessReportWithContext(arg0 aws.Context, arg1 *iam.GenerateOrganizationsAccessReportInput, arg2 ...request.Option) (*iam.GenerateOrganizationsAccessReportOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GenerateOrganizationsAccessReportWithContext", varargs...)
+	ret0, _ := ret[0].(*iam.GenerateOrganizationsAccessReportOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GenerateOrganizationsAccessReportWithContext indicates an expected call of GenerateOrganizationsAccessReportWithContext
+func (mr *MockIAMAPIMockRecorder) GenerateOrganizationsAccessReportWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateOrganizationsAccessReportWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GenerateOrganizationsAccessReportWithContext), varargs...)
+}
+
+// GenerateOrganizationsAccessReportRequest mocks base method
+func (m *MockIAMAPI) GenerateOrganizationsAccessReportRequest(arg0 *iam.GenerateOrganizationsAccessReportInput) (*request.Request, *iam.GenerateOrganizationsAccessReportOutput) {
+	ret := m.ctrl.Call(m, "GenerateOrganizationsAccessReportRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GenerateOrganizationsAccessReportOutput)
+	return ret0, ret1
+}
+
+// GenerateOrganizationsAccessReportRequest indicates an expected call of GenerateOrganizationsAccessReportRequest
+func (mr *MockIAMAPIMockRecorder) GenerateOrganizationsAccessReportRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateOrganizationsAccessReportRequest", reflect.TypeOf((*MockIAMAPI)(nil).GenerateOrganizationsAccessReportRequest), arg0)
+}
+
 // GenerateServiceLastAccessedDetails mocks base method
 func (m *MockIAMAPI) GenerateServiceLastAccessedDetails(arg0 *iam.GenerateServiceLastAccessedDetailsInput) (*iam.GenerateServiceLastAccessedDetailsOutput, error) {
 	ret := m.ctrl.Call(m, "GenerateServiceLastAccessedDetails", arg0)
@@ -2863,6 +2907,50 @@ func (m *MockIAMAPI) GetOpenIDConnectProviderRequest(arg0 *iam.GetOpenIDConnectP
 // GetOpenIDConnectProviderRequest indicates an expected call of GetOpenIDConnectProviderRequest
 func (mr *MockIAMAPIMockRecorder) GetOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOpenIDConnectProviderRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetOpenIDConnectProviderRequest), arg0)
+}
+
+// GetOrganizationsAccessReport mocks base method
+func (m *MockIAMAPI) GetOrganizationsAccessReport(arg0 *iam.GetOrganizationsAccessReportInput) (*iam.GetOrganizationsAccessReportOutput, error) {
+	ret := m.ctrl.Call(m, "GetOrganizationsAccessReport", arg0)
+	ret0, _ := ret[0].(*iam.GetOrganizationsAccessReportOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetOrganizationsAccessReport indicates an expected call of GetOrganizationsAccessReport
+func (mr *MockIAMAPIMockRecorder) GetOrganizationsAccessReport(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrganizationsAccessReport", reflect.TypeOf((*MockIAMAPI)(nil).GetOrganizationsAccessReport), arg0)
+}
+
+// GetOrganizationsAccessReportWithContext mocks base method
+func (m *MockIAMAPI) GetOrganizationsAccessReportWithContext(arg0 aws.Context, arg1 *iam.GetOrganizationsAccessReportInput, arg2 ...request.Option) (*iam.GetOrganizationsAccessReportOutput, error) {
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetOrganizationsAccessReportWithContext", varargs...)
+	ret0, _ := ret[0].(*iam.GetOrganizationsAccessReportOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetOrganizationsAccessReportWithContext indicates an expected call of GetOrganizationsAccessReportWithContext
+func (mr *MockIAMAPIMockRecorder) GetOrganizationsAccessReportWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrganizationsAccessReportWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetOrganizationsAccessReportWithContext), varargs...)
+}
+
+// GetOrganizationsAccessReportRequest mocks base method
+func (m *MockIAMAPI) GetOrganizationsAccessReportRequest(arg0 *iam.GetOrganizationsAccessReportInput) (*request.Request, *iam.GetOrganizationsAccessReportOutput) {
+	ret := m.ctrl.Call(m, "GetOrganizationsAccessReportRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*iam.GetOrganizationsAccessReportOutput)
+	return ret0, ret1
+}
+
+// GetOrganizationsAccessReportRequest indicates an expected call of GetOrganizationsAccessReportRequest
+func (mr *MockIAMAPIMockRecorder) GetOrganizationsAccessReportRequest(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrganizationsAccessReportRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetOrganizationsAccessReportRequest), arg0)
 }
 
 // GetPolicy mocks base method
