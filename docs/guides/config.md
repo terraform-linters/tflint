@@ -63,7 +63,7 @@ Return zero exit status even if issues found. TFLint returns non-zero exit statu
 
 ## `aws_credentials`
 
-CLI flag: `--aws-access-key`, `--aws-secret-key`, `--aws-profile` and `--aws-region`
+CLI flag: `--aws-access-key`, `--aws-secret-key`, `--aws-profile`, `--aws-creds-file` and `--aws-region`
 
 Configure AWS service crendetials. See [Credentials](credentials.md).
 

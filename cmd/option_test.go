@@ -104,6 +104,25 @@ func Test_toConfig(t *testing.T) {
 			},
 		},
 		{
+			Name:    "AWS shared credentials in another file",
+			Command: "./tflint --aws-creds-file ~/.aws/myapp --aws-profile production --aws-region us-east-1",
+			Expected: &tflint.Config{
+				Module:    false,
+				DeepCheck: false,
+				Force:     false,
+				AwsCredentials: client.AwsCredentials{
+					CredsFile: "~/.aws/myapp",
+					Profile:   "production",
+					Region:    "us-east-1",
+				},
+				IgnoreModule: map[string]bool{},
+				IgnoreRule:   map[string]bool{},
+				Varfile:      []string{},
+				Variables:    []string{},
+				Rules:        map[string]*tflint.RuleConfig{},
+			},
+		},
+		{
 			Name:    "--ignore-module",
 			Command: "./tflint --ignore-module module1,module2",
 			Expected: &tflint.Config{

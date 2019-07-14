@@ -102,6 +102,7 @@ Application Options:
       --aws-access-key=ACCESS_KEY           AWS access key used in deep check mode
       --aws-secret-key=SECRET_KEY           AWS secret key used in deep check mode
       --aws-profile=PROFILE                 AWS shared credential profile name used in deep check mode
+      --aws-creds-file=FILE                 AWS shared credentials file path used in deep checking
       --aws-region=REGION                   AWS region used in deep check mode
       --force                               Return zero exit status even if issues found
   -q, --quiet                               Do not output any message when no issues are found (default format only)

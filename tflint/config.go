@@ -128,6 +128,9 @@ func (c *Config) Merge(other *Config) *Config {
 	if other.AwsCredentials.Profile != "" {
 		ret.AwsCredentials.Profile = other.AwsCredentials.Profile
 	}
+	if other.AwsCredentials.CredsFile != "" {
+		ret.AwsCredentials.CredsFile = other.AwsCredentials.CredsFile
+	}
 	if other.AwsCredentials.Region != "" {
 		ret.AwsCredentials.Region = other.AwsCredentials.Region
 	}
@@ -251,6 +254,7 @@ func (raw *rawConfig) toConfig() *Config {
 			ret.AwsCredentials.AccessKey = credentials["access_key"]
 			ret.AwsCredentials.SecretKey = credentials["secret_key"]
 			ret.AwsCredentials.Profile = credentials["profile"]
+			ret.AwsCredentials.CredsFile = credentials["shared_credentials_file"]
 			ret.AwsCredentials.Region = credentials["region"]
 		}
 		if rc.IgnoreModule != nil {
