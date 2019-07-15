@@ -1,26 +1,33 @@
 package client
 
 import (
-	"reflect"
+	"os"
+	"path/filepath"
 	"testing"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/google/go-cmp/cmp"
+	awsbase "github.com/hashicorp/aws-sdk-go-base"
+	"github.com/hashicorp/hcl2/hcl"
+	"github.com/hashicorp/hcl2/hclparse"
+	"github.com/hashicorp/terraform/configs"
 	homedir "github.com/mitchellh/go-homedir"
 )
 
-func Test_newAwsSession(t *testing.T) {
-	type Result struct {
-		Credentials *credentials.Credentials
-		Region      *string
+func Test_getBaseConfig(t *testing.T) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
 	}
-	path, _ := homedir.Expand("~/.aws/credentials")
-	credPath, _ := homedir.Expand("~/.aws/creds")
+	home, err := homedir.Expand("~/")
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	cases := []struct {
 		Name     string
 		Creds    AwsCredentials
-		Expected Result
+		File     string
+		Expected *awsbase.Config
 	}{
 		{
 			Name: "static credentials",
@@ -29,46 +36,110 @@ func Test_newAwsSession(t *testing.T) {
 				SecretKey: "AWS_SECRET_KEY",
 				Region:    "us-east-1",
 			},
-			Expected: Result{
-				Credentials: credentials.NewStaticCredentials("AWS_ACCESS_KEY", "AWS_SECRET_KEY", ""),
-				Region:      aws.String("us-east-1"),
+			Expected: &awsbase.Config{
+				AccessKey: "AWS_ACCESS_KEY",
+				SecretKey: "AWS_SECRET_KEY",
+				Region:    "us-east-1",
 			},
 		},
 		{
 			Name: "shared credentials",
 			Creds: AwsCredentials{
-				Profile: "production",
-				Region:  "us-east-1",
-			},
-			Expected: Result{
-				Credentials: credentials.NewSharedCredentials(path, "production"),
-				Region:      aws.String("us-east-1"),
-			},
-		},
-		{
-			Name: "shared credentials path",
-			Creds: AwsCredentials{
 				Profile:   "default",
 				CredsFile: "~/.aws/creds",
 				Region:    "us-east-1",
 			},
-			Expected: Result{
-				Credentials: credentials.NewSharedCredentials(credPath, "default"),
-				Region:      aws.String("us-east-1"),
+			Expected: &awsbase.Config{
+				Profile:       "default",
+				CredsFilename: filepath.Join(home, ".aws", "creds"),
+				Region:        "us-east-1",
+			},
+		},
+		{
+			Name: "static credentials provider",
+			File: "static-creds.tf",
+			Expected: &awsbase.Config{
+				AccessKey: "AWS_ACCESS_KEY",
+				SecretKey: "AWS_SECRET_KEY",
+				Region:    "us-east-1",
+			},
+		},
+		{
+			Name: "shared credentials provider",
+			File: "shared-creds.tf",
+			Expected: &awsbase.Config{
+				Profile:       "default",
+				CredsFilename: filepath.Join(home, ".aws", "creds"),
+				Region:        "us-east-1",
+			},
+		},
+		{
+			Name:     "assume role provider",
+			File:     "assume-role.tf",
+			Expected: &awsbase.Config{},
+		},
+		{
+			Name: "prefer tflint static credentials over provider",
+			File: "static-creds.tf",
+			Creds: AwsCredentials{
+				AccessKey: "TFLINT_AWS_ACCESS_KEY",
+				SecretKey: "TFLINT_AWS_SECRET_KEY",
+				Region:    "us-east-2",
+			},
+			Expected: &awsbase.Config{
+				AccessKey: "TFLINT_AWS_ACCESS_KEY",
+				SecretKey: "TFLINT_AWS_SECRET_KEY",
+				Region:    "us-east-2",
+			},
+		},
+		{
+			Name: "prefer tflint shared credentials over provider",
+			File: "shared-creds.tf",
+			Creds: AwsCredentials{
+				Profile:   "terraform",
+				CredsFile: "~/.aws/tf_credentials",
+				Region:    "us-east-2",
+			},
+			Expected: &awsbase.Config{
+				Profile:       "terraform",
+				CredsFilename: filepath.Join(home, ".aws", "tf_credentials"),
+				Region:        "us-east-2",
 			},
 		},
 	}
 
 	for _, tc := range cases {
-		s, err := newAwsSession(tc.Creds)
+		var pc *configs.Provider
+		if tc.File != "" {
+			parser := hclparse.NewParser()
+			f, diags := parser.ParseHCLFile(filepath.Join(currentDir, "test-fixtures", tc.File))
+			if diags.HasErrors() {
+				t.Fatal(diags)
+			}
+
+			body, _, diags := f.Body.PartialContent(&hcl.BodySchema{
+				Blocks: []hcl.BlockHeaderSchema{
+					{
+						Type:       "provider",
+						LabelNames: []string{"name"},
+					},
+				},
+			})
+			if diags.HasErrors() {
+				t.Fatal(diags)
+			}
+
+			pc = &configs.Provider{
+				Config: body.Blocks[0].Body,
+			}
+		}
+
+		base, err := getBaseConfig(pc, tc.Creds)
 		if err != nil {
 			t.Fatalf("Failed `%s` test: Unexpected error occurred: %s", tc.Name, err)
 		}
-		if !reflect.DeepEqual(tc.Expected.Credentials, s.Config.Credentials) {
-			t.Fatalf("Failed `%s` test: expected credentials are `%#v`, but get `%#v`", tc.Name, tc.Expected.Credentials, s.Config.Credentials)
-		}
-		if !reflect.DeepEqual(tc.Expected.Region, s.Config.Region) {
-			t.Fatalf("Failed `%s` test: expected region are `%#v`, but get `%#v`", tc.Name, tc.Expected.Region, s.Config.Region)
+		if !cmp.Equal(tc.Expected, base) {
+			t.Fatalf("Failed `%s` test: Diff=%s", tc.Name, cmp.Diff(tc.Expected, base))
 		}
 	}
 }

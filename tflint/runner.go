@@ -50,9 +50,14 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, vari
 	}
 	log.Printf("[INFO] Initialize new runner for %s", path)
 
-	awsClient, err := client.NewAwsClient(c.AwsCredentials)
-	if err != nil {
-		return nil, err
+	awsClient := &client.AwsClient{}
+	var err error
+	if c.DeepCheck {
+		// FIXME: Alias providers are not considered
+		awsClient, err = client.NewAwsClient(cfg.Module.ProviderConfigs["aws"], c.AwsCredentials)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &Runner{
@@ -148,6 +153,8 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 		if err != nil {
 			return runners, err
 		}
+		// Inherit parent's AwsClient
+		runner.AwsClient = parent.AwsClient
 		runners = append(runners, runner)
 		moudleRunners, err := NewModuleRunners(runner)
 		if err != nil {

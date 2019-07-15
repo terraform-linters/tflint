@@ -7,6 +7,7 @@ require (
 	github.com/fatih/color v1.7.0
 	github.com/golang/mock v1.3.1
 	github.com/google/go-cmp v0.3.0
+	github.com/hashicorp/aws-sdk-go-base v0.3.0
 	github.com/hashicorp/go-version v1.2.0
 	github.com/hashicorp/hcl v0.0.0-20180404174102-ef8a98b0bbce // indirect
 	github.com/hashicorp/hcl2 v0.0.0-20190702185634-5b39d9ff3a9a
