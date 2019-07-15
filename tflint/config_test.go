@@ -33,6 +33,8 @@ func Test_LoadConfig(t *testing.T) {
 					AccessKey: "AWS_ACCESS_KEY",
 					SecretKey: "AWS_SECRET_KEY",
 					Region:    "us-east-1",
+					Profile:   "production",
+					CredsFile: "~/.aws/myapp",
 				},
 				IgnoreRule: map[string]bool{
 					"aws_instance_invalid_type":  true,
@@ -259,6 +261,7 @@ func Test_Merge(t *testing.T) {
 					AccessKey: "ACCESS_KEY",
 					SecretKey: "SECRET_KEY",
 					Region:    "ap-northeast-1",
+					CredsFile: "~/.aws/myapp",
 				},
 				IgnoreModule: map[string]bool{
 					"github.com/wata727/example-2": true,
@@ -290,6 +293,7 @@ func Test_Merge(t *testing.T) {
 					SecretKey: "SECRET_KEY",
 					Profile:   "production",
 					Region:    "ap-northeast-1",
+					CredsFile: "~/.aws/myapp",
 				},
 				IgnoreModule: map[string]bool{
 					"github.com/wata727/example-1": true,

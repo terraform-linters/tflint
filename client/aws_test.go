@@ -15,6 +15,7 @@ func Test_newAwsSession(t *testing.T) {
 		Region      *string
 	}
 	path, _ := homedir.Expand("~/.aws/credentials")
+	credPath, _ := homedir.Expand("~/.aws/creds")
 
 	cases := []struct {
 		Name     string
@@ -44,10 +45,25 @@ func Test_newAwsSession(t *testing.T) {
 				Region:      aws.String("us-east-1"),
 			},
 		},
+		{
+			Name: "shared credentials path",
+			Creds: AwsCredentials{
+				Profile:   "default",
+				CredsFile: "~/.aws/creds",
+				Region:    "us-east-1",
+			},
+			Expected: Result{
+				Credentials: credentials.NewSharedCredentials(credPath, "default"),
+				Region:      aws.String("us-east-1"),
+			},
+		},
 	}
 
 	for _, tc := range cases {
-		s := newAwsSession(tc.Creds)
+		s, err := newAwsSession(tc.Creds)
+		if err != nil {
+			t.Fatalf("Failed `%s` test: Unexpected error occurred: %s", tc.Name, err)
+		}
 		if !reflect.DeepEqual(tc.Expected.Credentials, s.Config.Credentials) {
 			t.Fatalf("Failed `%s` test: expected credentials are `%#v`, but get `%#v`", tc.Name, tc.Expected.Credentials, s.Config.Credentials)
 		}

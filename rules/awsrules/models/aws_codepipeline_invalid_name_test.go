@@ -84,7 +84,10 @@ resource "aws_codepipeline" "foo" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatal(err)
+		}
 		rule := NewAwsCodepipelineInvalidNameRule()
 
 		if err = rule.Check(runner); err != nil {

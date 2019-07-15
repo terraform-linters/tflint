@@ -22,6 +22,7 @@ type Options struct {
 	AwsAccessKey string   `long:"aws-access-key" description:"AWS access key used in deep check mode" value-name:"ACCESS_KEY"`
 	AwsSecretKey string   `long:"aws-secret-key" description:"AWS secret key used in deep check mode" value-name:"SECRET_KEY"`
 	AwsProfile   string   `long:"aws-profile" description:"AWS shared credential profile name used in deep check mode" value-name:"PROFILE"`
+	AwsCredsFile string   `long:"aws-creds-file" description:"AWS shared credentials file path used in deep checking" value-name:"FILE"`
 	AwsRegion    string   `long:"aws-region" description:"AWS region used in deep check mode" value-name:"REGION"`
 	Force        bool     `long:"force" description:"Return zero exit status even if issues found"`
 	Quiet        bool     `short:"q" long:"quiet" description:"Do not output any message when no issues are found (default format only)"`
@@ -67,6 +68,7 @@ func (opts *Options) toConfig() *tflint.Config {
 			AccessKey: opts.AwsAccessKey,
 			SecretKey: opts.AwsSecretKey,
 			Profile:   opts.AwsProfile,
+			CredsFile: opts.AwsCredsFile,
 			Region:    opts.AwsRegion,
 		},
 		IgnoreModule: ignoreModule,

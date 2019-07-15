@@ -43,17 +43,22 @@ type Rule interface {
 // NewRunner returns new TFLint runner
 // It prepares built-in context (workpace metadata, variables) from
 // received `configs.Config` and `terraform.InputValues`
-func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, variables ...terraform.InputValues) *Runner {
+func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, variables ...terraform.InputValues) (*Runner, error) {
 	path := "root"
 	if !cfg.Path.IsRoot() {
 		path = cfg.Path.String()
 	}
 	log.Printf("[INFO] Initialize new runner for %s", path)
 
+	awsClient, err := client.NewAwsClient(c.AwsCredentials)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Runner{
 		TFConfig:  cfg,
 		Issues:    []*issue.Issue{},
-		AwsClient: client.NewAwsClient(c.AwsCredentials),
+		AwsClient: awsClient,
 
 		ctx: terraform.BuiltinEvalContext{
 			Evaluator: &terraform.Evaluator{
@@ -67,7 +72,7 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, vari
 		},
 		annotations: ants,
 		config:      c,
-	}
+	}, nil
 }
 
 // NewModuleRunners returns new TFLint runners for child modules
@@ -139,7 +144,10 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 		}
 
 		// Annotation does not work with children modules
-		runner := NewRunner(parent.config, map[string]Annotations{}, cfg)
+		runner, err := NewRunner(parent.config, map[string]Annotations{}, cfg)
+		if err != nil {
+			return runners, err
+		}
 		runners = append(runners, runner)
 		moudleRunners, err := NewModuleRunners(runner)
 		if err != nil {

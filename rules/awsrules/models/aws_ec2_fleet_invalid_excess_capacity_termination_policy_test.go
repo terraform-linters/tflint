@@ -84,7 +84,10 @@ resource "aws_ec2_fleet" "foo" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatal(err)
+		}
 		rule := NewAwsEc2FleetInvalidExcessCapacityTerminationPolicyRule()
 
 		if err = rule.Check(runner); err != nil {

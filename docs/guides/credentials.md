@@ -29,17 +29,18 @@ config {
 
 ## Shared Credentials
 
-If you have [shared credentials](https://aws.amazon.com/jp/blogs/security/a-new-and-standardized-way-to-manage-credentials-in-the-aws-sdks/), you can pass the profile name. However, only `~/.aws/credentials` is supported as a credential location.
+If you have [shared credentials](https://aws.amazon.com/jp/blogs/security/a-new-and-standardized-way-to-manage-credentials-in-the-aws-sdks/), you can pass a profile name and credentials file path. If omitted, these will be `default` and `~/.aws/credentials`.
 
 ```
-$ tflint --aws-profile AWS_PROFILE --aws-region us-east-1
+$ tflint --aws-profile AWS_PROFILE --aws-region us-east-1 --aws-creds-file ~/.aws/myapp
 ```
 
 ```hcl
 config {
   aws_credentials = {
-    profile = "AWS_PROFILE"
-    region  = "us-east-1"
+    profile                 = "AWS_PROFILE"
+    region                  = "us-east-1"
+    shared_credentials_file = "~/.aws/myapp"
   }
 }
 ```

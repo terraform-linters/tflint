@@ -121,7 +121,11 @@ func (cli *CLI) Run(args []string) int {
 	variables = append(variables, cliVars)
 
 	// Check configurations via Runner
-	runner := tflint.NewRunner(cfg, annotations, configs, variables...)
+	runner, err := tflint.NewRunner(cfg, annotations, configs, variables...)
+	if err != nil {
+		cli.printError(fmt.Errorf("Failed to initialize a runner: %s", err))
+		return ExitCodeError
+	}
 	runners, err := tflint.NewModuleRunners(runner)
 	if err != nil {
 		cli.printError(fmt.Errorf("Failed to prepare rule checking: %s", err))

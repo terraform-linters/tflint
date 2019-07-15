@@ -48,14 +48,18 @@ type AwsCredentials struct {
 	AccessKey string
 	SecretKey string
 	Profile   string
+	CredsFile string
 	Region    string
 }
 
 // NewAwsClient returns new AwsClient with configured session
-func NewAwsClient(creds AwsCredentials) *AwsClient {
+func NewAwsClient(creds AwsCredentials) (*AwsClient, error) {
 	log.Print("[INFO] Initialize AWS Client")
 
-	s := newAwsSession(creds)
+	s, err := newAwsSession(creds)
+	if err != nil {
+		return nil, err
+	}
 
 	return &AwsClient{
 		IAM:         iam.New(s),
@@ -65,11 +69,11 @@ func NewAwsClient(creds AwsCredentials) *AwsClient {
 		ELB:         elb.New(s),
 		ELBV2:       elbv2.New(s),
 		ECS:         ecs.New(s),
-	}
+	}, nil
 }
 
 // newAwsSession returns a session necessary for initialization of the AWS SDK
-func newAwsSession(creds AwsCredentials) *session.Session {
+func newAwsSession(creds AwsCredentials) (*session.Session, error) {
 	s := session.New()
 
 	if creds.Region != "" {
@@ -79,14 +83,23 @@ func newAwsSession(creds AwsCredentials) *session.Session {
 		})
 	}
 	if creds.Profile != "" && creds.Region != "" {
-		log.Printf("[INFO] Set AWS shared credentials")
-		path, err := homedir.Expand("~/.aws/credentials")
-		if err != nil {
-			// Maybe this is bug
-			panic(err)
+		var credsFile string
+		var err error
+		if creds.CredsFile != "" {
+			credsFile, err = homedir.Expand(creds.CredsFile)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			credsFile, err = homedir.Expand("~/.aws/credentials")
+			if err != nil {
+				// Maybe this is bug
+				panic(err)
+			}
 		}
+		log.Printf("[INFO] Set AWS shared credentials: %s", credsFile)
 		s = session.New(&aws.Config{
-			Credentials: credentials.NewSharedCredentials(path, creds.Profile),
+			Credentials: credentials.NewSharedCredentials(credsFile, creds.Profile),
 			Region:      aws.String(creds.Region),
 		})
 	}
@@ -98,5 +111,5 @@ func newAwsSession(creds AwsCredentials) *session.Session {
 		})
 	}
 
-	return s
+	return s, nil
 }

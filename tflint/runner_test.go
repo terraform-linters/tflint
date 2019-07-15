@@ -167,7 +167,10 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
+		}
 
 		var ret string
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -234,7 +237,10 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
+		}
 
 		var ret int
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -285,7 +291,10 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
+		}
 
 		ret := []string{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -336,7 +345,10 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
+		}
 
 		ret := []int{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -390,7 +402,10 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
+		}
 
 		ret := map[string]string{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -444,7 +459,10 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
+		}
 
 		ret := map[string]int{}
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -556,7 +574,10 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
+		}
 
 		expectedText := fmt.Sprintf(tc.ErrorText, filepath.Join(dir, "resource.tf"))
 
@@ -667,7 +688,10 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
+		}
 
 		expectedText := fmt.Sprintf(tc.ErrorText, filepath.Join(dir, "resource.tf"))
 
@@ -933,7 +957,10 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, tc.InputValues...)
+		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, tc.InputValues...)
+		if err != nil {
+			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
+		}
 
 		var ret string
 		err = runner.EvaluateExpr(attribute.Expr, &ret)
@@ -975,7 +1002,7 @@ func Test_NewModuleRunners_noModules(t *testing.T) {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 	runners, err := NewModuleRunners(runner)
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
@@ -1007,7 +1034,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 	runners, err := NewModuleRunners(runner)
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
@@ -1138,7 +1165,7 @@ func Test_NewModuleRunners_ignoreModules(t *testing.T) {
 	conf := EmptyConfig()
 	conf.IgnoreModule["./module"] = true
 
-	runner := NewRunner(conf, map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	runner, err := NewRunner(conf, map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 	runners, err := NewModuleRunners(runner)
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
@@ -1170,7 +1197,11 @@ func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+
 	_, err = NewModuleRunners(runner)
 
 	errText := "Failed to eval an expression in module.tf:4; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute."
@@ -1216,7 +1247,11 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+
 	_, err = NewModuleRunners(runner)
 
 	errText := "Attribute of module not allowed was found in module.tf:1; module.tf:4,3-10: Unexpected \"invalid\" block; Blocks are not allowed here."
@@ -1278,7 +1313,11 @@ resource "aws_route" "r" {
 		t.Fatal(err)
 	}
 
-	runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+
 	resources := runner.LookupResourcesByType("aws_instance")
 
 	if len(resources) != 1 {
@@ -1290,7 +1329,11 @@ resource "aws_route" "r" {
 }
 
 func Test_LookupIssues(t *testing.T) {
-	runner := NewRunner(EmptyConfig(), map[string]Annotations{}, configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
+	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+
 	runner.Issues = issue.Issues{
 		{
 			Detector: "test rule",
@@ -1379,7 +1422,10 @@ resource "aws_instance" "test" {
 		if err != nil {
 			t.Fatal(err)
 		}
-		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
+		}
 
 		err = runner.WalkResourceAttributes("aws_instance", "instance_type", func(attribute *hcl.Attribute) error {
 			return fmt.Errorf("Walk %s", attribute.Name)
@@ -1480,7 +1526,10 @@ resource "aws_instance" "test" {
 		if err != nil {
 			t.Fatal(err)
 		}
-		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
+		}
 
 		err = runner.WalkResourceBlocks("aws_instance", "instance_type", func(block *hcl.Block) error {
 			return fmt.Errorf("Walk %s", block.Type)
@@ -1537,7 +1586,10 @@ func Test_EnsureNoError(t *testing.T) {
 	defer os.RemoveAll(dir)
 
 	for _, tc := range cases {
-		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
+		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
+		}
 
 		err = runner.EnsureNoError(tc.Error, func() error {
 			return errors.New("function called")
@@ -1647,7 +1699,10 @@ resource "null_resource" "test" {
 			t.Fatal(err)
 		}
 
-		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
+		}
 		ret := runner.IsNullExpr(attribute.Expr)
 
 		if tc.Expected != ret {
@@ -1726,7 +1781,10 @@ resource "null_resource" "test" {
 		if err != nil {
 			t.Fatal(err)
 		}
-		runner := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
+		}
 
 		vals := []string{}
 		lines := []int{}
@@ -1822,7 +1880,10 @@ func Test_EmitIssue(t *testing.T) {
 	defer os.RemoveAll(dir)
 
 	for _, tc := range cases {
-		runner := NewRunner(EmptyConfig(), tc.Annotations, configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
+		runner, err := NewRunner(EmptyConfig(), tc.Annotations, configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
+		}
 
 		runner.EmitIssue(tc.Rule, tc.Message, tc.Location)
 

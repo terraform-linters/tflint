@@ -84,7 +84,10 @@ resource "aws_datasync_location_s3" "foo" {
 			t.Fatal(tfdiags)
 		}
 
-		runner := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		if err != nil {
+			t.Fatal(err)
+		}
 		rule := NewAwsDatasyncLocationS3InvalidS3BucketArnRule()
 
 		if err = rule.Check(runner); err != nil {
