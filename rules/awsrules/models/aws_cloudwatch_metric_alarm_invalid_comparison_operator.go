@@ -27,6 +27,9 @@ func NewAwsCloudwatchMetricAlarmInvalidComparisonOperatorRule() *AwsCloudwatchMe
 			"GreaterThanThreshold",
 			"LessThanThreshold",
 			"LessThanOrEqualToThreshold",
+			"LessThanLowerOrGreaterThanUpperThreshold",
+			"LessThanLowerThreshold",
+			"GreaterThanUpperThreshold",
 		},
 	}
 }
