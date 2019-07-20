@@ -1,3 +1,16 @@
+## 0.9.2 (2019-07-20)
+
+### Enhancements
+
+- [#360](https://github.com/wata727/tflint/pull/360): Allow settings shared credentials file path
+  - Added `--aws-creds-file` in CLI flags
+  - Added `shared_credentials_file` in config attributes
+- [#365](https://github.com/wata727/tflint/pull/365): TFLint is now compatible with Terraform v0.12.5
+  - See https://github.com/hashicorp/terraform/releases/tag/v0.12.4
+  - See https://github.com/hashicorp/terraform/releases/tag/v0.12.5
+- [#367](https://github.com/wata727/tflint/pull/367): TFLint is now compatible with Terraform AWS provider v2.20.0
+  - Updated `aws_cloudwatch_metric_alarm_invalid_comparison_operator` rule
+
 ## 0.9.1 (2019-07-09)
 
 ### Enhancements
