@@ -56,7 +56,6 @@ For Linux based OS, you can use the [`install_linux.sh`](https://raw.githubuserc
 macOS users can also use [Homebrew](https://brew.sh) to install TFLint:
 
 ```
-$ brew tap wata727/tflint
 $ brew install tflint
 ```
 
