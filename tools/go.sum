@@ -475,6 +475,8 @@ github.com/svanharmelen/jsonapi v0.0.0-20180618144545-0c0828c3f16d/go.mod h1:BST
 github.com/tarm/serial v0.0.0-20180830185346-98f6abe2eb07/go.mod h1:kDXzergiv9cbyO7IOYJZWg1U88JhDg3PB6klq9Hg2pA=
 github.com/terraform-providers/terraform-provider-aws v2.20.0+incompatible h1:2lcY95v8QwTr0zU05t6Odqo6oCjtBdJpU0FnO2NlagM=
 github.com/terraform-providers/terraform-provider-aws v2.20.0+incompatible/go.mod h1:xsjWNY1dACAD8z7DLra9168ll7ggCrWG5MKSzEdR4dk=
+github.com/terraform-providers/terraform-provider-aws v2.22.0+incompatible h1:ixebL89WXMqiNhYGB7XJGAWqIBt/v6FGYedSt9GcaTY=
+github.com/terraform-providers/terraform-provider-aws v2.22.0+incompatible/go.mod h1:JdKn1ERRnxg9xUtGlSR7RgKDqE/8/3kSq6kBe//Cbao=
 github.com/terraform-providers/terraform-provider-openstack v1.15.0 h1:adpjqej+F8BAX9dHmuPF47sUIkgifeqBu6p7iCsyj0Y=
 github.com/terraform-providers/terraform-provider-openstack v1.15.0/go.mod h1:2aQ6n/BtChAl1y2S60vebhyJyZXBsuAI5G4+lHrT1Ew=
 github.com/terraform-providers/terraform-provider-template v2.1.2+incompatible h1:imLvtj+kEr7z3xsHlHed+CAw4Z/mnlLYXfynKLv12SI=
