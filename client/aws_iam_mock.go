@@ -37,6 +37,7 @@ func (m *MockIAMAPI) EXPECT() *MockIAMAPIMockRecorder {
 
 // AddClientIDToOpenIDConnectProvider mocks base method
 func (m *MockIAMAPI) AddClientIDToOpenIDConnectProvider(arg0 *iam.AddClientIDToOpenIDConnectProviderInput) (*iam.AddClientIDToOpenIDConnectProviderOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddClientIDToOpenIDConnectProvider", arg0)
 	ret0, _ := ret[0].(*iam.AddClientIDToOpenIDConnectProviderOutput)
 	ret1, _ := ret[1].(error)
@@ -45,11 +46,13 @@ func (m *MockIAMAPI) AddClientIDToOpenIDConnectProvider(arg0 *iam.AddClientIDToO
 
 // AddClientIDToOpenIDConnectProvider indicates an expected call of AddClientIDToOpenIDConnectProvider
 func (mr *MockIAMAPIMockRecorder) AddClientIDToOpenIDConnectProvider(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddClientIDToOpenIDConnectProvider", reflect.TypeOf((*MockIAMAPI)(nil).AddClientIDToOpenIDConnectProvider), arg0)
 }
 
 // AddClientIDToOpenIDConnectProviderWithContext mocks base method
 func (m *MockIAMAPI) AddClientIDToOpenIDConnectProviderWithContext(arg0 aws.Context, arg1 *iam.AddClientIDToOpenIDConnectProviderInput, arg2 ...request.Option) (*iam.AddClientIDToOpenIDConnectProviderOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -62,12 +65,14 @@ func (m *MockIAMAPI) AddClientIDToOpenIDConnectProviderWithContext(arg0 aws.Cont
 
 // AddClientIDToOpenIDConnectProviderWithContext indicates an expected call of AddClientIDToOpenIDConnectProviderWithContext
 func (mr *MockIAMAPIMockRecorder) AddClientIDToOpenIDConnectProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddClientIDToOpenIDConnectProviderWithContext", reflect.TypeOf((*MockIAMAPI)(nil).AddClientIDToOpenIDConnectProviderWithContext), varargs...)
 }
 
 // AddClientIDToOpenIDConnectProviderRequest mocks base method
 func (m *MockIAMAPI) AddClientIDToOpenIDConnectProviderRequest(arg0 *iam.AddClientIDToOpenIDConnectProviderInput) (*request.Request, *iam.AddClientIDToOpenIDConnectProviderOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddClientIDToOpenIDConnectProviderRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.AddClientIDToOpenIDConnectProviderOutput)
@@ -76,11 +81,13 @@ func (m *MockIAMAPI) AddClientIDToOpenIDConnectProviderRequest(arg0 *iam.AddClie
 
 // AddClientIDToOpenIDConnectProviderRequest indicates an expected call of AddClientIDToOpenIDConnectProviderRequest
 func (mr *MockIAMAPIMockRecorder) AddClientIDToOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddClientIDToOpenIDConnectProviderRequest", reflect.TypeOf((*MockIAMAPI)(nil).AddClientIDToOpenIDConnectProviderRequest), arg0)
 }
 
 // AddRoleToInstanceProfile mocks base method
 func (m *MockIAMAPI) AddRoleToInstanceProfile(arg0 *iam.AddRoleToInstanceProfileInput) (*iam.AddRoleToInstanceProfileOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddRoleToInstanceProfile", arg0)
 	ret0, _ := ret[0].(*iam.AddRoleToInstanceProfileOutput)
 	ret1, _ := ret[1].(error)
@@ -89,11 +96,13 @@ func (m *MockIAMAPI) AddRoleToInstanceProfile(arg0 *iam.AddRoleToInstanceProfile
 
 // AddRoleToInstanceProfile indicates an expected call of AddRoleToInstanceProfile
 func (mr *MockIAMAPIMockRecorder) AddRoleToInstanceProfile(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddRoleToInstanceProfile", reflect.TypeOf((*MockIAMAPI)(nil).AddRoleToInstanceProfile), arg0)
 }
 
 // AddRoleToInstanceProfileWithContext mocks base method
 func (m *MockIAMAPI) AddRoleToInstanceProfileWithContext(arg0 aws.Context, arg1 *iam.AddRoleToInstanceProfileInput, arg2 ...request.Option) (*iam.AddRoleToInstanceProfileOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -106,12 +115,14 @@ func (m *MockIAMAPI) AddRoleToInstanceProfileWithContext(arg0 aws.Context, arg1 
 
 // AddRoleToInstanceProfileWithContext indicates an expected call of AddRoleToInstanceProfileWithContext
 func (mr *MockIAMAPIMockRecorder) AddRoleToInstanceProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddRoleToInstanceProfileWithContext", reflect.TypeOf((*MockIAMAPI)(nil).AddRoleToInstanceProfileWithContext), varargs...)
 }
 
 // AddRoleToInstanceProfileRequest mocks base method
 func (m *MockIAMAPI) AddRoleToInstanceProfileRequest(arg0 *iam.AddRoleToInstanceProfileInput) (*request.Request, *iam.AddRoleToInstanceProfileOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddRoleToInstanceProfileRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.AddRoleToInstanceProfileOutput)
@@ -120,11 +131,13 @@ func (m *MockIAMAPI) AddRoleToInstanceProfileRequest(arg0 *iam.AddRoleToInstance
 
 // AddRoleToInstanceProfileRequest indicates an expected call of AddRoleToInstanceProfileRequest
 func (mr *MockIAMAPIMockRecorder) AddRoleToInstanceProfileRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddRoleToInstanceProfileRequest", reflect.TypeOf((*MockIAMAPI)(nil).AddRoleToInstanceProfileRequest), arg0)
 }
 
 // AddUserToGroup mocks base method
 func (m *MockIAMAPI) AddUserToGroup(arg0 *iam.AddUserToGroupInput) (*iam.AddUserToGroupOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddUserToGroup", arg0)
 	ret0, _ := ret[0].(*iam.AddUserToGroupOutput)
 	ret1, _ := ret[1].(error)
@@ -133,11 +146,13 @@ func (m *MockIAMAPI) AddUserToGroup(arg0 *iam.AddUserToGroupInput) (*iam.AddUser
 
 // AddUserToGroup indicates an expected call of AddUserToGroup
 func (mr *MockIAMAPIMockRecorder) AddUserToGroup(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddUserToGroup", reflect.TypeOf((*MockIAMAPI)(nil).AddUserToGroup), arg0)
 }
 
 // AddUserToGroupWithContext mocks base method
 func (m *MockIAMAPI) AddUserToGroupWithContext(arg0 aws.Context, arg1 *iam.AddUserToGroupInput, arg2 ...request.Option) (*iam.AddUserToGroupOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -150,12 +165,14 @@ func (m *MockIAMAPI) AddUserToGroupWithContext(arg0 aws.Context, arg1 *iam.AddUs
 
 // AddUserToGroupWithContext indicates an expected call of AddUserToGroupWithContext
 func (mr *MockIAMAPIMockRecorder) AddUserToGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddUserToGroupWithContext", reflect.TypeOf((*MockIAMAPI)(nil).AddUserToGroupWithContext), varargs...)
 }
 
 // AddUserToGroupRequest mocks base method
 func (m *MockIAMAPI) AddUserToGroupRequest(arg0 *iam.AddUserToGroupInput) (*request.Request, *iam.AddUserToGroupOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddUserToGroupRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.AddUserToGroupOutput)
@@ -164,11 +181,13 @@ func (m *MockIAMAPI) AddUserToGroupRequest(arg0 *iam.AddUserToGroupInput) (*requ
 
 // AddUserToGroupRequest indicates an expected call of AddUserToGroupRequest
 func (mr *MockIAMAPIMockRecorder) AddUserToGroupRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddUserToGroupRequest", reflect.TypeOf((*MockIAMAPI)(nil).AddUserToGroupRequest), arg0)
 }
 
 // AttachGroupPolicy mocks base method
 func (m *MockIAMAPI) AttachGroupPolicy(arg0 *iam.AttachGroupPolicyInput) (*iam.AttachGroupPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AttachGroupPolicy", arg0)
 	ret0, _ := ret[0].(*iam.AttachGroupPolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -177,11 +196,13 @@ func (m *MockIAMAPI) AttachGroupPolicy(arg0 *iam.AttachGroupPolicyInput) (*iam.A
 
 // AttachGroupPolicy indicates an expected call of AttachGroupPolicy
 func (mr *MockIAMAPIMockRecorder) AttachGroupPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AttachGroupPolicy", reflect.TypeOf((*MockIAMAPI)(nil).AttachGroupPolicy), arg0)
 }
 
 // AttachGroupPolicyWithContext mocks base method
 func (m *MockIAMAPI) AttachGroupPolicyWithContext(arg0 aws.Context, arg1 *iam.AttachGroupPolicyInput, arg2 ...request.Option) (*iam.AttachGroupPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -194,12 +215,14 @@ func (m *MockIAMAPI) AttachGroupPolicyWithContext(arg0 aws.Context, arg1 *iam.At
 
 // AttachGroupPolicyWithContext indicates an expected call of AttachGroupPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) AttachGroupPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AttachGroupPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).AttachGroupPolicyWithContext), varargs...)
 }
 
 // AttachGroupPolicyRequest mocks base method
 func (m *MockIAMAPI) AttachGroupPolicyRequest(arg0 *iam.AttachGroupPolicyInput) (*request.Request, *iam.AttachGroupPolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AttachGroupPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.AttachGroupPolicyOutput)
@@ -208,11 +231,13 @@ func (m *MockIAMAPI) AttachGroupPolicyRequest(arg0 *iam.AttachGroupPolicyInput) 
 
 // AttachGroupPolicyRequest indicates an expected call of AttachGroupPolicyRequest
 func (mr *MockIAMAPIMockRecorder) AttachGroupPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AttachGroupPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).AttachGroupPolicyRequest), arg0)
 }
 
 // AttachRolePolicy mocks base method
 func (m *MockIAMAPI) AttachRolePolicy(arg0 *iam.AttachRolePolicyInput) (*iam.AttachRolePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AttachRolePolicy", arg0)
 	ret0, _ := ret[0].(*iam.AttachRolePolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -221,11 +246,13 @@ func (m *MockIAMAPI) AttachRolePolicy(arg0 *iam.AttachRolePolicyInput) (*iam.Att
 
 // AttachRolePolicy indicates an expected call of AttachRolePolicy
 func (mr *MockIAMAPIMockRecorder) AttachRolePolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AttachRolePolicy", reflect.TypeOf((*MockIAMAPI)(nil).AttachRolePolicy), arg0)
 }
 
 // AttachRolePolicyWithContext mocks base method
 func (m *MockIAMAPI) AttachRolePolicyWithContext(arg0 aws.Context, arg1 *iam.AttachRolePolicyInput, arg2 ...request.Option) (*iam.AttachRolePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -238,12 +265,14 @@ func (m *MockIAMAPI) AttachRolePolicyWithContext(arg0 aws.Context, arg1 *iam.Att
 
 // AttachRolePolicyWithContext indicates an expected call of AttachRolePolicyWithContext
 func (mr *MockIAMAPIMockRecorder) AttachRolePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AttachRolePolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).AttachRolePolicyWithContext), varargs...)
 }
 
 // AttachRolePolicyRequest mocks base method
 func (m *MockIAMAPI) AttachRolePolicyRequest(arg0 *iam.AttachRolePolicyInput) (*request.Request, *iam.AttachRolePolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AttachRolePolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.AttachRolePolicyOutput)
@@ -252,11 +281,13 @@ func (m *MockIAMAPI) AttachRolePolicyRequest(arg0 *iam.AttachRolePolicyInput) (*
 
 // AttachRolePolicyRequest indicates an expected call of AttachRolePolicyRequest
 func (mr *MockIAMAPIMockRecorder) AttachRolePolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AttachRolePolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).AttachRolePolicyRequest), arg0)
 }
 
 // AttachUserPolicy mocks base method
 func (m *MockIAMAPI) AttachUserPolicy(arg0 *iam.AttachUserPolicyInput) (*iam.AttachUserPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AttachUserPolicy", arg0)
 	ret0, _ := ret[0].(*iam.AttachUserPolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -265,11 +296,13 @@ func (m *MockIAMAPI) AttachUserPolicy(arg0 *iam.AttachUserPolicyInput) (*iam.Att
 
 // AttachUserPolicy indicates an expected call of AttachUserPolicy
 func (mr *MockIAMAPIMockRecorder) AttachUserPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AttachUserPolicy", reflect.TypeOf((*MockIAMAPI)(nil).AttachUserPolicy), arg0)
 }
 
 // AttachUserPolicyWithContext mocks base method
 func (m *MockIAMAPI) AttachUserPolicyWithContext(arg0 aws.Context, arg1 *iam.AttachUserPolicyInput, arg2 ...request.Option) (*iam.AttachUserPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -282,12 +315,14 @@ func (m *MockIAMAPI) AttachUserPolicyWithContext(arg0 aws.Context, arg1 *iam.Att
 
 // AttachUserPolicyWithContext indicates an expected call of AttachUserPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) AttachUserPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AttachUserPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).AttachUserPolicyWithContext), varargs...)
 }
 
 // AttachUserPolicyRequest mocks base method
 func (m *MockIAMAPI) AttachUserPolicyRequest(arg0 *iam.AttachUserPolicyInput) (*request.Request, *iam.AttachUserPolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AttachUserPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.AttachUserPolicyOutput)
@@ -296,11 +331,13 @@ func (m *MockIAMAPI) AttachUserPolicyRequest(arg0 *iam.AttachUserPolicyInput) (*
 
 // AttachUserPolicyRequest indicates an expected call of AttachUserPolicyRequest
 func (mr *MockIAMAPIMockRecorder) AttachUserPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AttachUserPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).AttachUserPolicyRequest), arg0)
 }
 
 // ChangePassword mocks base method
 func (m *MockIAMAPI) ChangePassword(arg0 *iam.ChangePasswordInput) (*iam.ChangePasswordOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ChangePassword", arg0)
 	ret0, _ := ret[0].(*iam.ChangePasswordOutput)
 	ret1, _ := ret[1].(error)
@@ -309,11 +346,13 @@ func (m *MockIAMAPI) ChangePassword(arg0 *iam.ChangePasswordInput) (*iam.ChangeP
 
 // ChangePassword indicates an expected call of ChangePassword
 func (mr *MockIAMAPIMockRecorder) ChangePassword(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ChangePassword", reflect.TypeOf((*MockIAMAPI)(nil).ChangePassword), arg0)
 }
 
 // ChangePasswordWithContext mocks base method
 func (m *MockIAMAPI) ChangePasswordWithContext(arg0 aws.Context, arg1 *iam.ChangePasswordInput, arg2 ...request.Option) (*iam.ChangePasswordOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -326,12 +365,14 @@ func (m *MockIAMAPI) ChangePasswordWithContext(arg0 aws.Context, arg1 *iam.Chang
 
 // ChangePasswordWithContext indicates an expected call of ChangePasswordWithContext
 func (mr *MockIAMAPIMockRecorder) ChangePasswordWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ChangePasswordWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ChangePasswordWithContext), varargs...)
 }
 
 // ChangePasswordRequest mocks base method
 func (m *MockIAMAPI) ChangePasswordRequest(arg0 *iam.ChangePasswordInput) (*request.Request, *iam.ChangePasswordOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ChangePasswordRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ChangePasswordOutput)
@@ -340,11 +381,13 @@ func (m *MockIAMAPI) ChangePasswordRequest(arg0 *iam.ChangePasswordInput) (*requ
 
 // ChangePasswordRequest indicates an expected call of ChangePasswordRequest
 func (mr *MockIAMAPIMockRecorder) ChangePasswordRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ChangePasswordRequest", reflect.TypeOf((*MockIAMAPI)(nil).ChangePasswordRequest), arg0)
 }
 
 // CreateAccessKey mocks base method
 func (m *MockIAMAPI) CreateAccessKey(arg0 *iam.CreateAccessKeyInput) (*iam.CreateAccessKeyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateAccessKey", arg0)
 	ret0, _ := ret[0].(*iam.CreateAccessKeyOutput)
 	ret1, _ := ret[1].(error)
@@ -353,11 +396,13 @@ func (m *MockIAMAPI) CreateAccessKey(arg0 *iam.CreateAccessKeyInput) (*iam.Creat
 
 // CreateAccessKey indicates an expected call of CreateAccessKey
 func (mr *MockIAMAPIMockRecorder) CreateAccessKey(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccessKey", reflect.TypeOf((*MockIAMAPI)(nil).CreateAccessKey), arg0)
 }
 
 // CreateAccessKeyWithContext mocks base method
 func (m *MockIAMAPI) CreateAccessKeyWithContext(arg0 aws.Context, arg1 *iam.CreateAccessKeyInput, arg2 ...request.Option) (*iam.CreateAccessKeyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -370,12 +415,14 @@ func (m *MockIAMAPI) CreateAccessKeyWithContext(arg0 aws.Context, arg1 *iam.Crea
 
 // CreateAccessKeyWithContext indicates an expected call of CreateAccessKeyWithContext
 func (mr *MockIAMAPIMockRecorder) CreateAccessKeyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccessKeyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).CreateAccessKeyWithContext), varargs...)
 }
 
 // CreateAccessKeyRequest mocks base method
 func (m *MockIAMAPI) CreateAccessKeyRequest(arg0 *iam.CreateAccessKeyInput) (*request.Request, *iam.CreateAccessKeyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateAccessKeyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.CreateAccessKeyOutput)
@@ -384,11 +431,13 @@ func (m *MockIAMAPI) CreateAccessKeyRequest(arg0 *iam.CreateAccessKeyInput) (*re
 
 // CreateAccessKeyRequest indicates an expected call of CreateAccessKeyRequest
 func (mr *MockIAMAPIMockRecorder) CreateAccessKeyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccessKeyRequest", reflect.TypeOf((*MockIAMAPI)(nil).CreateAccessKeyRequest), arg0)
 }
 
 // CreateAccountAlias mocks base method
 func (m *MockIAMAPI) CreateAccountAlias(arg0 *iam.CreateAccountAliasInput) (*iam.CreateAccountAliasOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateAccountAlias", arg0)
 	ret0, _ := ret[0].(*iam.CreateAccountAliasOutput)
 	ret1, _ := ret[1].(error)
@@ -397,11 +446,13 @@ func (m *MockIAMAPI) CreateAccountAlias(arg0 *iam.CreateAccountAliasInput) (*iam
 
 // CreateAccountAlias indicates an expected call of CreateAccountAlias
 func (mr *MockIAMAPIMockRecorder) CreateAccountAlias(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccountAlias", reflect.TypeOf((*MockIAMAPI)(nil).CreateAccountAlias), arg0)
 }
 
 // CreateAccountAliasWithContext mocks base method
 func (m *MockIAMAPI) CreateAccountAliasWithContext(arg0 aws.Context, arg1 *iam.CreateAccountAliasInput, arg2 ...request.Option) (*iam.CreateAccountAliasOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -414,12 +465,14 @@ func (m *MockIAMAPI) CreateAccountAliasWithContext(arg0 aws.Context, arg1 *iam.C
 
 // CreateAccountAliasWithContext indicates an expected call of CreateAccountAliasWithContext
 func (mr *MockIAMAPIMockRecorder) CreateAccountAliasWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccountAliasWithContext", reflect.TypeOf((*MockIAMAPI)(nil).CreateAccountAliasWithContext), varargs...)
 }
 
 // CreateAccountAliasRequest mocks base method
 func (m *MockIAMAPI) CreateAccountAliasRequest(arg0 *iam.CreateAccountAliasInput) (*request.Request, *iam.CreateAccountAliasOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateAccountAliasRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.CreateAccountAliasOutput)
@@ -428,11 +481,13 @@ func (m *MockIAMAPI) CreateAccountAliasRequest(arg0 *iam.CreateAccountAliasInput
 
 // CreateAccountAliasRequest indicates an expected call of CreateAccountAliasRequest
 func (mr *MockIAMAPIMockRecorder) CreateAccountAliasRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccountAliasRequest", reflect.TypeOf((*MockIAMAPI)(nil).CreateAccountAliasRequest), arg0)
 }
 
 // CreateGroup mocks base method
 func (m *MockIAMAPI) CreateGroup(arg0 *iam.CreateGroupInput) (*iam.CreateGroupOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateGroup", arg0)
 	ret0, _ := ret[0].(*iam.CreateGroupOutput)
 	ret1, _ := ret[1].(error)
@@ -441,11 +496,13 @@ func (m *MockIAMAPI) CreateGroup(arg0 *iam.CreateGroupInput) (*iam.CreateGroupOu
 
 // CreateGroup indicates an expected call of CreateGroup
 func (mr *MockIAMAPIMockRecorder) CreateGroup(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateGroup", reflect.TypeOf((*MockIAMAPI)(nil).CreateGroup), arg0)
 }
 
 // CreateGroupWithContext mocks base method
 func (m *MockIAMAPI) CreateGroupWithContext(arg0 aws.Context, arg1 *iam.CreateGroupInput, arg2 ...request.Option) (*iam.CreateGroupOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -458,12 +515,14 @@ func (m *MockIAMAPI) CreateGroupWithContext(arg0 aws.Context, arg1 *iam.CreateGr
 
 // CreateGroupWithContext indicates an expected call of CreateGroupWithContext
 func (mr *MockIAMAPIMockRecorder) CreateGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateGroupWithContext", reflect.TypeOf((*MockIAMAPI)(nil).CreateGroupWithContext), varargs...)
 }
 
 // CreateGroupRequest mocks base method
 func (m *MockIAMAPI) CreateGroupRequest(arg0 *iam.CreateGroupInput) (*request.Request, *iam.CreateGroupOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateGroupRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.CreateGroupOutput)
@@ -472,11 +531,13 @@ func (m *MockIAMAPI) CreateGroupRequest(arg0 *iam.CreateGroupInput) (*request.Re
 
 // CreateGroupRequest indicates an expected call of CreateGroupRequest
 func (mr *MockIAMAPIMockRecorder) CreateGroupRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateGroupRequest", reflect.TypeOf((*MockIAMAPI)(nil).CreateGroupRequest), arg0)
 }
 
 // CreateInstanceProfile mocks base method
 func (m *MockIAMAPI) CreateInstanceProfile(arg0 *iam.CreateInstanceProfileInput) (*iam.CreateInstanceProfileOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateInstanceProfile", arg0)
 	ret0, _ := ret[0].(*iam.CreateInstanceProfileOutput)
 	ret1, _ := ret[1].(error)
@@ -485,11 +546,13 @@ func (m *MockIAMAPI) CreateInstanceProfile(arg0 *iam.CreateInstanceProfileInput)
 
 // CreateInstanceProfile indicates an expected call of CreateInstanceProfile
 func (mr *MockIAMAPIMockRecorder) CreateInstanceProfile(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateInstanceProfile", reflect.TypeOf((*MockIAMAPI)(nil).CreateInstanceProfile), arg0)
 }
 
 // CreateInstanceProfileWithContext mocks base method
 func (m *MockIAMAPI) CreateInstanceProfileWithContext(arg0 aws.Context, arg1 *iam.CreateInstanceProfileInput, arg2 ...request.Option) (*iam.CreateInstanceProfileOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -502,12 +565,14 @@ func (m *MockIAMAPI) CreateInstanceProfileWithContext(arg0 aws.Context, arg1 *ia
 
 // CreateInstanceProfileWithContext indicates an expected call of CreateInstanceProfileWithContext
 func (mr *MockIAMAPIMockRecorder) CreateInstanceProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateInstanceProfileWithContext", reflect.TypeOf((*MockIAMAPI)(nil).CreateInstanceProfileWithContext), varargs...)
 }
 
 // CreateInstanceProfileRequest mocks base method
 func (m *MockIAMAPI) CreateInstanceProfileRequest(arg0 *iam.CreateInstanceProfileInput) (*request.Request, *iam.CreateInstanceProfileOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateInstanceProfileRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.CreateInstanceProfileOutput)
@@ -516,11 +581,13 @@ func (m *MockIAMAPI) CreateInstanceProfileRequest(arg0 *iam.CreateInstanceProfil
 
 // CreateInstanceProfileRequest indicates an expected call of CreateInstanceProfileRequest
 func (mr *MockIAMAPIMockRecorder) CreateInstanceProfileRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateInstanceProfileRequest", reflect.TypeOf((*MockIAMAPI)(nil).CreateInstanceProfileRequest), arg0)
 }
 
 // CreateLoginProfile mocks base method
 func (m *MockIAMAPI) CreateLoginProfile(arg0 *iam.CreateLoginProfileInput) (*iam.CreateLoginProfileOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateLoginProfile", arg0)
 	ret0, _ := ret[0].(*iam.CreateLoginProfileOutput)
 	ret1, _ := ret[1].(error)
@@ -529,11 +596,13 @@ func (m *MockIAMAPI) CreateLoginProfile(arg0 *iam.CreateLoginProfileInput) (*iam
 
 // CreateLoginProfile indicates an expected call of CreateLoginProfile
 func (mr *MockIAMAPIMockRecorder) CreateLoginProfile(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateLoginProfile", reflect.TypeOf((*MockIAMAPI)(nil).CreateLoginProfile), arg0)
 }
 
 // CreateLoginProfileWithContext mocks base method
 func (m *MockIAMAPI) CreateLoginProfileWithContext(arg0 aws.Context, arg1 *iam.CreateLoginProfileInput, arg2 ...request.Option) (*iam.CreateLoginProfileOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -546,12 +615,14 @@ func (m *MockIAMAPI) CreateLoginProfileWithContext(arg0 aws.Context, arg1 *iam.C
 
 // CreateLoginProfileWithContext indicates an expected call of CreateLoginProfileWithContext
 func (mr *MockIAMAPIMockRecorder) CreateLoginProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateLoginProfileWithContext", reflect.TypeOf((*MockIAMAPI)(nil).CreateLoginProfileWithContext), varargs...)
 }
 
 // CreateLoginProfileRequest mocks base method
 func (m *MockIAMAPI) CreateLoginProfileRequest(arg0 *iam.CreateLoginProfileInput) (*request.Request, *iam.CreateLoginProfileOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateLoginProfileRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.CreateLoginProfileOutput)
@@ -560,11 +631,13 @@ func (m *MockIAMAPI) CreateLoginProfileRequest(arg0 *iam.CreateLoginProfileInput
 
 // CreateLoginProfileRequest indicates an expected call of CreateLoginProfileRequest
 func (mr *MockIAMAPIMockRecorder) CreateLoginProfileRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateLoginProfileRequest", reflect.TypeOf((*MockIAMAPI)(nil).CreateLoginProfileRequest), arg0)
 }
 
 // CreateOpenIDConnectProvider mocks base method
 func (m *MockIAMAPI) CreateOpenIDConnectProvider(arg0 *iam.CreateOpenIDConnectProviderInput) (*iam.CreateOpenIDConnectProviderOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateOpenIDConnectProvider", arg0)
 	ret0, _ := ret[0].(*iam.CreateOpenIDConnectProviderOutput)
 	ret1, _ := ret[1].(error)
@@ -573,11 +646,13 @@ func (m *MockIAMAPI) CreateOpenIDConnectProvider(arg0 *iam.CreateOpenIDConnectPr
 
 // CreateOpenIDConnectProvider indicates an expected call of CreateOpenIDConnectProvider
 func (mr *MockIAMAPIMockRecorder) CreateOpenIDConnectProvider(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOpenIDConnectProvider", reflect.TypeOf((*MockIAMAPI)(nil).CreateOpenIDConnectProvider), arg0)
 }
 
 // CreateOpenIDConnectProviderWithContext mocks base method
 func (m *MockIAMAPI) CreateOpenIDConnectProviderWithContext(arg0 aws.Context, arg1 *iam.CreateOpenIDConnectProviderInput, arg2 ...request.Option) (*iam.CreateOpenIDConnectProviderOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -590,12 +665,14 @@ func (m *MockIAMAPI) CreateOpenIDConnectProviderWithContext(arg0 aws.Context, ar
 
 // CreateOpenIDConnectProviderWithContext indicates an expected call of CreateOpenIDConnectProviderWithContext
 func (mr *MockIAMAPIMockRecorder) CreateOpenIDConnectProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOpenIDConnectProviderWithContext", reflect.TypeOf((*MockIAMAPI)(nil).CreateOpenIDConnectProviderWithContext), varargs...)
 }
 
 // CreateOpenIDConnectProviderRequest mocks base method
 func (m *MockIAMAPI) CreateOpenIDConnectProviderRequest(arg0 *iam.CreateOpenIDConnectProviderInput) (*request.Request, *iam.CreateOpenIDConnectProviderOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateOpenIDConnectProviderRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.CreateOpenIDConnectProviderOutput)
@@ -604,11 +681,13 @@ func (m *MockIAMAPI) CreateOpenIDConnectProviderRequest(arg0 *iam.CreateOpenIDCo
 
 // CreateOpenIDConnectProviderRequest indicates an expected call of CreateOpenIDConnectProviderRequest
 func (mr *MockIAMAPIMockRecorder) CreateOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOpenIDConnectProviderRequest", reflect.TypeOf((*MockIAMAPI)(nil).CreateOpenIDConnectProviderRequest), arg0)
 }
 
 // CreatePolicy mocks base method
 func (m *MockIAMAPI) CreatePolicy(arg0 *iam.CreatePolicyInput) (*iam.CreatePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreatePolicy", arg0)
 	ret0, _ := ret[0].(*iam.CreatePolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -617,11 +696,13 @@ func (m *MockIAMAPI) CreatePolicy(arg0 *iam.CreatePolicyInput) (*iam.CreatePolic
 
 // CreatePolicy indicates an expected call of CreatePolicy
 func (mr *MockIAMAPIMockRecorder) CreatePolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePolicy", reflect.TypeOf((*MockIAMAPI)(nil).CreatePolicy), arg0)
 }
 
 // CreatePolicyWithContext mocks base method
 func (m *MockIAMAPI) CreatePolicyWithContext(arg0 aws.Context, arg1 *iam.CreatePolicyInput, arg2 ...request.Option) (*iam.CreatePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -634,12 +715,14 @@ func (m *MockIAMAPI) CreatePolicyWithContext(arg0 aws.Context, arg1 *iam.CreateP
 
 // CreatePolicyWithContext indicates an expected call of CreatePolicyWithContext
 func (mr *MockIAMAPIMockRecorder) CreatePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).CreatePolicyWithContext), varargs...)
 }
 
 // CreatePolicyRequest mocks base method
 func (m *MockIAMAPI) CreatePolicyRequest(arg0 *iam.CreatePolicyInput) (*request.Request, *iam.CreatePolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreatePolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.CreatePolicyOutput)
@@ -648,11 +731,13 @@ func (m *MockIAMAPI) CreatePolicyRequest(arg0 *iam.CreatePolicyInput) (*request.
 
 // CreatePolicyRequest indicates an expected call of CreatePolicyRequest
 func (mr *MockIAMAPIMockRecorder) CreatePolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).CreatePolicyRequest), arg0)
 }
 
 // CreatePolicyVersion mocks base method
 func (m *MockIAMAPI) CreatePolicyVersion(arg0 *iam.CreatePolicyVersionInput) (*iam.CreatePolicyVersionOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreatePolicyVersion", arg0)
 	ret0, _ := ret[0].(*iam.CreatePolicyVersionOutput)
 	ret1, _ := ret[1].(error)
@@ -661,11 +746,13 @@ func (m *MockIAMAPI) CreatePolicyVersion(arg0 *iam.CreatePolicyVersionInput) (*i
 
 // CreatePolicyVersion indicates an expected call of CreatePolicyVersion
 func (mr *MockIAMAPIMockRecorder) CreatePolicyVersion(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePolicyVersion", reflect.TypeOf((*MockIAMAPI)(nil).CreatePolicyVersion), arg0)
 }
 
 // CreatePolicyVersionWithContext mocks base method
 func (m *MockIAMAPI) CreatePolicyVersionWithContext(arg0 aws.Context, arg1 *iam.CreatePolicyVersionInput, arg2 ...request.Option) (*iam.CreatePolicyVersionOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -678,12 +765,14 @@ func (m *MockIAMAPI) CreatePolicyVersionWithContext(arg0 aws.Context, arg1 *iam.
 
 // CreatePolicyVersionWithContext indicates an expected call of CreatePolicyVersionWithContext
 func (mr *MockIAMAPIMockRecorder) CreatePolicyVersionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePolicyVersionWithContext", reflect.TypeOf((*MockIAMAPI)(nil).CreatePolicyVersionWithContext), varargs...)
 }
 
 // CreatePolicyVersionRequest mocks base method
 func (m *MockIAMAPI) CreatePolicyVersionRequest(arg0 *iam.CreatePolicyVersionInput) (*request.Request, *iam.CreatePolicyVersionOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreatePolicyVersionRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.CreatePolicyVersionOutput)
@@ -692,11 +781,13 @@ func (m *MockIAMAPI) CreatePolicyVersionRequest(arg0 *iam.CreatePolicyVersionInp
 
 // CreatePolicyVersionRequest indicates an expected call of CreatePolicyVersionRequest
 func (mr *MockIAMAPIMockRecorder) CreatePolicyVersionRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePolicyVersionRequest", reflect.TypeOf((*MockIAMAPI)(nil).CreatePolicyVersionRequest), arg0)
 }
 
 // CreateRole mocks base method
 func (m *MockIAMAPI) CreateRole(arg0 *iam.CreateRoleInput) (*iam.CreateRoleOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateRole", arg0)
 	ret0, _ := ret[0].(*iam.CreateRoleOutput)
 	ret1, _ := ret[1].(error)
@@ -705,11 +796,13 @@ func (m *MockIAMAPI) CreateRole(arg0 *iam.CreateRoleInput) (*iam.CreateRoleOutpu
 
 // CreateRole indicates an expected call of CreateRole
 func (mr *MockIAMAPIMockRecorder) CreateRole(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRole", reflect.TypeOf((*MockIAMAPI)(nil).CreateRole), arg0)
 }
 
 // CreateRoleWithContext mocks base method
 func (m *MockIAMAPI) CreateRoleWithContext(arg0 aws.Context, arg1 *iam.CreateRoleInput, arg2 ...request.Option) (*iam.CreateRoleOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -722,12 +815,14 @@ func (m *MockIAMAPI) CreateRoleWithContext(arg0 aws.Context, arg1 *iam.CreateRol
 
 // CreateRoleWithContext indicates an expected call of CreateRoleWithContext
 func (mr *MockIAMAPIMockRecorder) CreateRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRoleWithContext", reflect.TypeOf((*MockIAMAPI)(nil).CreateRoleWithContext), varargs...)
 }
 
 // CreateRoleRequest mocks base method
 func (m *MockIAMAPI) CreateRoleRequest(arg0 *iam.CreateRoleInput) (*request.Request, *iam.CreateRoleOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateRoleRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.CreateRoleOutput)
@@ -736,11 +831,13 @@ func (m *MockIAMAPI) CreateRoleRequest(arg0 *iam.CreateRoleInput) (*request.Requ
 
 // CreateRoleRequest indicates an expected call of CreateRoleRequest
 func (mr *MockIAMAPIMockRecorder) CreateRoleRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRoleRequest", reflect.TypeOf((*MockIAMAPI)(nil).CreateRoleRequest), arg0)
 }
 
 // CreateSAMLProvider mocks base method
 func (m *MockIAMAPI) CreateSAMLProvider(arg0 *iam.CreateSAMLProviderInput) (*iam.CreateSAMLProviderOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateSAMLProvider", arg0)
 	ret0, _ := ret[0].(*iam.CreateSAMLProviderOutput)
 	ret1, _ := ret[1].(error)
@@ -749,11 +846,13 @@ func (m *MockIAMAPI) CreateSAMLProvider(arg0 *iam.CreateSAMLProviderInput) (*iam
 
 // CreateSAMLProvider indicates an expected call of CreateSAMLProvider
 func (mr *MockIAMAPIMockRecorder) CreateSAMLProvider(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSAMLProvider", reflect.TypeOf((*MockIAMAPI)(nil).CreateSAMLProvider), arg0)
 }
 
 // CreateSAMLProviderWithContext mocks base method
 func (m *MockIAMAPI) CreateSAMLProviderWithContext(arg0 aws.Context, arg1 *iam.CreateSAMLProviderInput, arg2 ...request.Option) (*iam.CreateSAMLProviderOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -766,12 +865,14 @@ func (m *MockIAMAPI) CreateSAMLProviderWithContext(arg0 aws.Context, arg1 *iam.C
 
 // CreateSAMLProviderWithContext indicates an expected call of CreateSAMLProviderWithContext
 func (mr *MockIAMAPIMockRecorder) CreateSAMLProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSAMLProviderWithContext", reflect.TypeOf((*MockIAMAPI)(nil).CreateSAMLProviderWithContext), varargs...)
 }
 
 // CreateSAMLProviderRequest mocks base method
 func (m *MockIAMAPI) CreateSAMLProviderRequest(arg0 *iam.CreateSAMLProviderInput) (*request.Request, *iam.CreateSAMLProviderOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateSAMLProviderRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.CreateSAMLProviderOutput)
@@ -780,11 +881,13 @@ func (m *MockIAMAPI) CreateSAMLProviderRequest(arg0 *iam.CreateSAMLProviderInput
 
 // CreateSAMLProviderRequest indicates an expected call of CreateSAMLProviderRequest
 func (mr *MockIAMAPIMockRecorder) CreateSAMLProviderRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSAMLProviderRequest", reflect.TypeOf((*MockIAMAPI)(nil).CreateSAMLProviderRequest), arg0)
 }
 
 // CreateServiceLinkedRole mocks base method
 func (m *MockIAMAPI) CreateServiceLinkedRole(arg0 *iam.CreateServiceLinkedRoleInput) (*iam.CreateServiceLinkedRoleOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateServiceLinkedRole", arg0)
 	ret0, _ := ret[0].(*iam.CreateServiceLinkedRoleOutput)
 	ret1, _ := ret[1].(error)
@@ -793,11 +896,13 @@ func (m *MockIAMAPI) CreateServiceLinkedRole(arg0 *iam.CreateServiceLinkedRoleIn
 
 // CreateServiceLinkedRole indicates an expected call of CreateServiceLinkedRole
 func (mr *MockIAMAPIMockRecorder) CreateServiceLinkedRole(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateServiceLinkedRole", reflect.TypeOf((*MockIAMAPI)(nil).CreateServiceLinkedRole), arg0)
 }
 
 // CreateServiceLinkedRoleWithContext mocks base method
 func (m *MockIAMAPI) CreateServiceLinkedRoleWithContext(arg0 aws.Context, arg1 *iam.CreateServiceLinkedRoleInput, arg2 ...request.Option) (*iam.CreateServiceLinkedRoleOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -810,12 +915,14 @@ func (m *MockIAMAPI) CreateServiceLinkedRoleWithContext(arg0 aws.Context, arg1 *
 
 // CreateServiceLinkedRoleWithContext indicates an expected call of CreateServiceLinkedRoleWithContext
 func (mr *MockIAMAPIMockRecorder) CreateServiceLinkedRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateServiceLinkedRoleWithContext", reflect.TypeOf((*MockIAMAPI)(nil).CreateServiceLinkedRoleWithContext), varargs...)
 }
 
 // CreateServiceLinkedRoleRequest mocks base method
 func (m *MockIAMAPI) CreateServiceLinkedRoleRequest(arg0 *iam.CreateServiceLinkedRoleInput) (*request.Request, *iam.CreateServiceLinkedRoleOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateServiceLinkedRoleRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.CreateServiceLinkedRoleOutput)
@@ -824,11 +931,13 @@ func (m *MockIAMAPI) CreateServiceLinkedRoleRequest(arg0 *iam.CreateServiceLinke
 
 // CreateServiceLinkedRoleRequest indicates an expected call of CreateServiceLinkedRoleRequest
 func (mr *MockIAMAPIMockRecorder) CreateServiceLinkedRoleRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateServiceLinkedRoleRequest", reflect.TypeOf((*MockIAMAPI)(nil).CreateServiceLinkedRoleRequest), arg0)
 }
 
 // CreateServiceSpecificCredential mocks base method
 func (m *MockIAMAPI) CreateServiceSpecificCredential(arg0 *iam.CreateServiceSpecificCredentialInput) (*iam.CreateServiceSpecificCredentialOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateServiceSpecificCredential", arg0)
 	ret0, _ := ret[0].(*iam.CreateServiceSpecificCredentialOutput)
 	ret1, _ := ret[1].(error)
@@ -837,11 +946,13 @@ func (m *MockIAMAPI) CreateServiceSpecificCredential(arg0 *iam.CreateServiceSpec
 
 // CreateServiceSpecificCredential indicates an expected call of CreateServiceSpecificCredential
 func (mr *MockIAMAPIMockRecorder) CreateServiceSpecificCredential(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateServiceSpecificCredential", reflect.TypeOf((*MockIAMAPI)(nil).CreateServiceSpecificCredential), arg0)
 }
 
 // CreateServiceSpecificCredentialWithContext mocks base method
 func (m *MockIAMAPI) CreateServiceSpecificCredentialWithContext(arg0 aws.Context, arg1 *iam.CreateServiceSpecificCredentialInput, arg2 ...request.Option) (*iam.CreateServiceSpecificCredentialOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -854,12 +965,14 @@ func (m *MockIAMAPI) CreateServiceSpecificCredentialWithContext(arg0 aws.Context
 
 // CreateServiceSpecificCredentialWithContext indicates an expected call of CreateServiceSpecificCredentialWithContext
 func (mr *MockIAMAPIMockRecorder) CreateServiceSpecificCredentialWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateServiceSpecificCredentialWithContext", reflect.TypeOf((*MockIAMAPI)(nil).CreateServiceSpecificCredentialWithContext), varargs...)
 }
 
 // CreateServiceSpecificCredentialRequest mocks base method
 func (m *MockIAMAPI) CreateServiceSpecificCredentialRequest(arg0 *iam.CreateServiceSpecificCredentialInput) (*request.Request, *iam.CreateServiceSpecificCredentialOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateServiceSpecificCredentialRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.CreateServiceSpecificCredentialOutput)
@@ -868,11 +981,13 @@ func (m *MockIAMAPI) CreateServiceSpecificCredentialRequest(arg0 *iam.CreateServ
 
 // CreateServiceSpecificCredentialRequest indicates an expected call of CreateServiceSpecificCredentialRequest
 func (mr *MockIAMAPIMockRecorder) CreateServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateServiceSpecificCredentialRequest", reflect.TypeOf((*MockIAMAPI)(nil).CreateServiceSpecificCredentialRequest), arg0)
 }
 
 // CreateUser mocks base method
 func (m *MockIAMAPI) CreateUser(arg0 *iam.CreateUserInput) (*iam.CreateUserOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", arg0)
 	ret0, _ := ret[0].(*iam.CreateUserOutput)
 	ret1, _ := ret[1].(error)
@@ -881,11 +996,13 @@ func (m *MockIAMAPI) CreateUser(arg0 *iam.CreateUserInput) (*iam.CreateUserOutpu
 
 // CreateUser indicates an expected call of CreateUser
 func (mr *MockIAMAPIMockRecorder) CreateUser(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockIAMAPI)(nil).CreateUser), arg0)
 }
 
 // CreateUserWithContext mocks base method
 func (m *MockIAMAPI) CreateUserWithContext(arg0 aws.Context, arg1 *iam.CreateUserInput, arg2 ...request.Option) (*iam.CreateUserOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -898,12 +1015,14 @@ func (m *MockIAMAPI) CreateUserWithContext(arg0 aws.Context, arg1 *iam.CreateUse
 
 // CreateUserWithContext indicates an expected call of CreateUserWithContext
 func (mr *MockIAMAPIMockRecorder) CreateUserWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUserWithContext", reflect.TypeOf((*MockIAMAPI)(nil).CreateUserWithContext), varargs...)
 }
 
 // CreateUserRequest mocks base method
 func (m *MockIAMAPI) CreateUserRequest(arg0 *iam.CreateUserInput) (*request.Request, *iam.CreateUserOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUserRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.CreateUserOutput)
@@ -912,11 +1031,13 @@ func (m *MockIAMAPI) CreateUserRequest(arg0 *iam.CreateUserInput) (*request.Requ
 
 // CreateUserRequest indicates an expected call of CreateUserRequest
 func (mr *MockIAMAPIMockRecorder) CreateUserRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUserRequest", reflect.TypeOf((*MockIAMAPI)(nil).CreateUserRequest), arg0)
 }
 
 // CreateVirtualMFADevice mocks base method
 func (m *MockIAMAPI) CreateVirtualMFADevice(arg0 *iam.CreateVirtualMFADeviceInput) (*iam.CreateVirtualMFADeviceOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateVirtualMFADevice", arg0)
 	ret0, _ := ret[0].(*iam.CreateVirtualMFADeviceOutput)
 	ret1, _ := ret[1].(error)
@@ -925,11 +1046,13 @@ func (m *MockIAMAPI) CreateVirtualMFADevice(arg0 *iam.CreateVirtualMFADeviceInpu
 
 // CreateVirtualMFADevice indicates an expected call of CreateVirtualMFADevice
 func (mr *MockIAMAPIMockRecorder) CreateVirtualMFADevice(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateVirtualMFADevice", reflect.TypeOf((*MockIAMAPI)(nil).CreateVirtualMFADevice), arg0)
 }
 
 // CreateVirtualMFADeviceWithContext mocks base method
 func (m *MockIAMAPI) CreateVirtualMFADeviceWithContext(arg0 aws.Context, arg1 *iam.CreateVirtualMFADeviceInput, arg2 ...request.Option) (*iam.CreateVirtualMFADeviceOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -942,12 +1065,14 @@ func (m *MockIAMAPI) CreateVirtualMFADeviceWithContext(arg0 aws.Context, arg1 *i
 
 // CreateVirtualMFADeviceWithContext indicates an expected call of CreateVirtualMFADeviceWithContext
 func (mr *MockIAMAPIMockRecorder) CreateVirtualMFADeviceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateVirtualMFADeviceWithContext", reflect.TypeOf((*MockIAMAPI)(nil).CreateVirtualMFADeviceWithContext), varargs...)
 }
 
 // CreateVirtualMFADeviceRequest mocks base method
 func (m *MockIAMAPI) CreateVirtualMFADeviceRequest(arg0 *iam.CreateVirtualMFADeviceInput) (*request.Request, *iam.CreateVirtualMFADeviceOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateVirtualMFADeviceRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.CreateVirtualMFADeviceOutput)
@@ -956,11 +1081,13 @@ func (m *MockIAMAPI) CreateVirtualMFADeviceRequest(arg0 *iam.CreateVirtualMFADev
 
 // CreateVirtualMFADeviceRequest indicates an expected call of CreateVirtualMFADeviceRequest
 func (mr *MockIAMAPIMockRecorder) CreateVirtualMFADeviceRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateVirtualMFADeviceRequest", reflect.TypeOf((*MockIAMAPI)(nil).CreateVirtualMFADeviceRequest), arg0)
 }
 
 // DeactivateMFADevice mocks base method
 func (m *MockIAMAPI) DeactivateMFADevice(arg0 *iam.DeactivateMFADeviceInput) (*iam.DeactivateMFADeviceOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeactivateMFADevice", arg0)
 	ret0, _ := ret[0].(*iam.DeactivateMFADeviceOutput)
 	ret1, _ := ret[1].(error)
@@ -969,11 +1096,13 @@ func (m *MockIAMAPI) DeactivateMFADevice(arg0 *iam.DeactivateMFADeviceInput) (*i
 
 // DeactivateMFADevice indicates an expected call of DeactivateMFADevice
 func (mr *MockIAMAPIMockRecorder) DeactivateMFADevice(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeactivateMFADevice", reflect.TypeOf((*MockIAMAPI)(nil).DeactivateMFADevice), arg0)
 }
 
 // DeactivateMFADeviceWithContext mocks base method
 func (m *MockIAMAPI) DeactivateMFADeviceWithContext(arg0 aws.Context, arg1 *iam.DeactivateMFADeviceInput, arg2 ...request.Option) (*iam.DeactivateMFADeviceOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -986,12 +1115,14 @@ func (m *MockIAMAPI) DeactivateMFADeviceWithContext(arg0 aws.Context, arg1 *iam.
 
 // DeactivateMFADeviceWithContext indicates an expected call of DeactivateMFADeviceWithContext
 func (mr *MockIAMAPIMockRecorder) DeactivateMFADeviceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeactivateMFADeviceWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeactivateMFADeviceWithContext), varargs...)
 }
 
 // DeactivateMFADeviceRequest mocks base method
 func (m *MockIAMAPI) DeactivateMFADeviceRequest(arg0 *iam.DeactivateMFADeviceInput) (*request.Request, *iam.DeactivateMFADeviceOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeactivateMFADeviceRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeactivateMFADeviceOutput)
@@ -1000,11 +1131,13 @@ func (m *MockIAMAPI) DeactivateMFADeviceRequest(arg0 *iam.DeactivateMFADeviceInp
 
 // DeactivateMFADeviceRequest indicates an expected call of DeactivateMFADeviceRequest
 func (mr *MockIAMAPIMockRecorder) DeactivateMFADeviceRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeactivateMFADeviceRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeactivateMFADeviceRequest), arg0)
 }
 
 // DeleteAccessKey mocks base method
 func (m *MockIAMAPI) DeleteAccessKey(arg0 *iam.DeleteAccessKeyInput) (*iam.DeleteAccessKeyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAccessKey", arg0)
 	ret0, _ := ret[0].(*iam.DeleteAccessKeyOutput)
 	ret1, _ := ret[1].(error)
@@ -1013,11 +1146,13 @@ func (m *MockIAMAPI) DeleteAccessKey(arg0 *iam.DeleteAccessKeyInput) (*iam.Delet
 
 // DeleteAccessKey indicates an expected call of DeleteAccessKey
 func (mr *MockIAMAPIMockRecorder) DeleteAccessKey(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccessKey", reflect.TypeOf((*MockIAMAPI)(nil).DeleteAccessKey), arg0)
 }
 
 // DeleteAccessKeyWithContext mocks base method
 func (m *MockIAMAPI) DeleteAccessKeyWithContext(arg0 aws.Context, arg1 *iam.DeleteAccessKeyInput, arg2 ...request.Option) (*iam.DeleteAccessKeyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1030,12 +1165,14 @@ func (m *MockIAMAPI) DeleteAccessKeyWithContext(arg0 aws.Context, arg1 *iam.Dele
 
 // DeleteAccessKeyWithContext indicates an expected call of DeleteAccessKeyWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteAccessKeyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccessKeyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteAccessKeyWithContext), varargs...)
 }
 
 // DeleteAccessKeyRequest mocks base method
 func (m *MockIAMAPI) DeleteAccessKeyRequest(arg0 *iam.DeleteAccessKeyInput) (*request.Request, *iam.DeleteAccessKeyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAccessKeyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteAccessKeyOutput)
@@ -1044,11 +1181,13 @@ func (m *MockIAMAPI) DeleteAccessKeyRequest(arg0 *iam.DeleteAccessKeyInput) (*re
 
 // DeleteAccessKeyRequest indicates an expected call of DeleteAccessKeyRequest
 func (mr *MockIAMAPIMockRecorder) DeleteAccessKeyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccessKeyRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteAccessKeyRequest), arg0)
 }
 
 // DeleteAccountAlias mocks base method
 func (m *MockIAMAPI) DeleteAccountAlias(arg0 *iam.DeleteAccountAliasInput) (*iam.DeleteAccountAliasOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAccountAlias", arg0)
 	ret0, _ := ret[0].(*iam.DeleteAccountAliasOutput)
 	ret1, _ := ret[1].(error)
@@ -1057,11 +1196,13 @@ func (m *MockIAMAPI) DeleteAccountAlias(arg0 *iam.DeleteAccountAliasInput) (*iam
 
 // DeleteAccountAlias indicates an expected call of DeleteAccountAlias
 func (mr *MockIAMAPIMockRecorder) DeleteAccountAlias(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccountAlias", reflect.TypeOf((*MockIAMAPI)(nil).DeleteAccountAlias), arg0)
 }
 
 // DeleteAccountAliasWithContext mocks base method
 func (m *MockIAMAPI) DeleteAccountAliasWithContext(arg0 aws.Context, arg1 *iam.DeleteAccountAliasInput, arg2 ...request.Option) (*iam.DeleteAccountAliasOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1074,12 +1215,14 @@ func (m *MockIAMAPI) DeleteAccountAliasWithContext(arg0 aws.Context, arg1 *iam.D
 
 // DeleteAccountAliasWithContext indicates an expected call of DeleteAccountAliasWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteAccountAliasWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccountAliasWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteAccountAliasWithContext), varargs...)
 }
 
 // DeleteAccountAliasRequest mocks base method
 func (m *MockIAMAPI) DeleteAccountAliasRequest(arg0 *iam.DeleteAccountAliasInput) (*request.Request, *iam.DeleteAccountAliasOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAccountAliasRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteAccountAliasOutput)
@@ -1088,11 +1231,13 @@ func (m *MockIAMAPI) DeleteAccountAliasRequest(arg0 *iam.DeleteAccountAliasInput
 
 // DeleteAccountAliasRequest indicates an expected call of DeleteAccountAliasRequest
 func (mr *MockIAMAPIMockRecorder) DeleteAccountAliasRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccountAliasRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteAccountAliasRequest), arg0)
 }
 
 // DeleteAccountPasswordPolicy mocks base method
 func (m *MockIAMAPI) DeleteAccountPasswordPolicy(arg0 *iam.DeleteAccountPasswordPolicyInput) (*iam.DeleteAccountPasswordPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAccountPasswordPolicy", arg0)
 	ret0, _ := ret[0].(*iam.DeleteAccountPasswordPolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -1101,11 +1246,13 @@ func (m *MockIAMAPI) DeleteAccountPasswordPolicy(arg0 *iam.DeleteAccountPassword
 
 // DeleteAccountPasswordPolicy indicates an expected call of DeleteAccountPasswordPolicy
 func (mr *MockIAMAPIMockRecorder) DeleteAccountPasswordPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccountPasswordPolicy", reflect.TypeOf((*MockIAMAPI)(nil).DeleteAccountPasswordPolicy), arg0)
 }
 
 // DeleteAccountPasswordPolicyWithContext mocks base method
 func (m *MockIAMAPI) DeleteAccountPasswordPolicyWithContext(arg0 aws.Context, arg1 *iam.DeleteAccountPasswordPolicyInput, arg2 ...request.Option) (*iam.DeleteAccountPasswordPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1118,12 +1265,14 @@ func (m *MockIAMAPI) DeleteAccountPasswordPolicyWithContext(arg0 aws.Context, ar
 
 // DeleteAccountPasswordPolicyWithContext indicates an expected call of DeleteAccountPasswordPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteAccountPasswordPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccountPasswordPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteAccountPasswordPolicyWithContext), varargs...)
 }
 
 // DeleteAccountPasswordPolicyRequest mocks base method
 func (m *MockIAMAPI) DeleteAccountPasswordPolicyRequest(arg0 *iam.DeleteAccountPasswordPolicyInput) (*request.Request, *iam.DeleteAccountPasswordPolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAccountPasswordPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteAccountPasswordPolicyOutput)
@@ -1132,11 +1281,13 @@ func (m *MockIAMAPI) DeleteAccountPasswordPolicyRequest(arg0 *iam.DeleteAccountP
 
 // DeleteAccountPasswordPolicyRequest indicates an expected call of DeleteAccountPasswordPolicyRequest
 func (mr *MockIAMAPIMockRecorder) DeleteAccountPasswordPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccountPasswordPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteAccountPasswordPolicyRequest), arg0)
 }
 
 // DeleteGroup mocks base method
 func (m *MockIAMAPI) DeleteGroup(arg0 *iam.DeleteGroupInput) (*iam.DeleteGroupOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteGroup", arg0)
 	ret0, _ := ret[0].(*iam.DeleteGroupOutput)
 	ret1, _ := ret[1].(error)
@@ -1145,11 +1296,13 @@ func (m *MockIAMAPI) DeleteGroup(arg0 *iam.DeleteGroupInput) (*iam.DeleteGroupOu
 
 // DeleteGroup indicates an expected call of DeleteGroup
 func (mr *MockIAMAPIMockRecorder) DeleteGroup(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteGroup", reflect.TypeOf((*MockIAMAPI)(nil).DeleteGroup), arg0)
 }
 
 // DeleteGroupWithContext mocks base method
 func (m *MockIAMAPI) DeleteGroupWithContext(arg0 aws.Context, arg1 *iam.DeleteGroupInput, arg2 ...request.Option) (*iam.DeleteGroupOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1162,12 +1315,14 @@ func (m *MockIAMAPI) DeleteGroupWithContext(arg0 aws.Context, arg1 *iam.DeleteGr
 
 // DeleteGroupWithContext indicates an expected call of DeleteGroupWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteGroupWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteGroupWithContext), varargs...)
 }
 
 // DeleteGroupRequest mocks base method
 func (m *MockIAMAPI) DeleteGroupRequest(arg0 *iam.DeleteGroupInput) (*request.Request, *iam.DeleteGroupOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteGroupRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteGroupOutput)
@@ -1176,11 +1331,13 @@ func (m *MockIAMAPI) DeleteGroupRequest(arg0 *iam.DeleteGroupInput) (*request.Re
 
 // DeleteGroupRequest indicates an expected call of DeleteGroupRequest
 func (mr *MockIAMAPIMockRecorder) DeleteGroupRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteGroupRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteGroupRequest), arg0)
 }
 
 // DeleteGroupPolicy mocks base method
 func (m *MockIAMAPI) DeleteGroupPolicy(arg0 *iam.DeleteGroupPolicyInput) (*iam.DeleteGroupPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteGroupPolicy", arg0)
 	ret0, _ := ret[0].(*iam.DeleteGroupPolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -1189,11 +1346,13 @@ func (m *MockIAMAPI) DeleteGroupPolicy(arg0 *iam.DeleteGroupPolicyInput) (*iam.D
 
 // DeleteGroupPolicy indicates an expected call of DeleteGroupPolicy
 func (mr *MockIAMAPIMockRecorder) DeleteGroupPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteGroupPolicy", reflect.TypeOf((*MockIAMAPI)(nil).DeleteGroupPolicy), arg0)
 }
 
 // DeleteGroupPolicyWithContext mocks base method
 func (m *MockIAMAPI) DeleteGroupPolicyWithContext(arg0 aws.Context, arg1 *iam.DeleteGroupPolicyInput, arg2 ...request.Option) (*iam.DeleteGroupPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1206,12 +1365,14 @@ func (m *MockIAMAPI) DeleteGroupPolicyWithContext(arg0 aws.Context, arg1 *iam.De
 
 // DeleteGroupPolicyWithContext indicates an expected call of DeleteGroupPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteGroupPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteGroupPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteGroupPolicyWithContext), varargs...)
 }
 
 // DeleteGroupPolicyRequest mocks base method
 func (m *MockIAMAPI) DeleteGroupPolicyRequest(arg0 *iam.DeleteGroupPolicyInput) (*request.Request, *iam.DeleteGroupPolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteGroupPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteGroupPolicyOutput)
@@ -1220,11 +1381,13 @@ func (m *MockIAMAPI) DeleteGroupPolicyRequest(arg0 *iam.DeleteGroupPolicyInput) 
 
 // DeleteGroupPolicyRequest indicates an expected call of DeleteGroupPolicyRequest
 func (mr *MockIAMAPIMockRecorder) DeleteGroupPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteGroupPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteGroupPolicyRequest), arg0)
 }
 
 // DeleteInstanceProfile mocks base method
 func (m *MockIAMAPI) DeleteInstanceProfile(arg0 *iam.DeleteInstanceProfileInput) (*iam.DeleteInstanceProfileOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteInstanceProfile", arg0)
 	ret0, _ := ret[0].(*iam.DeleteInstanceProfileOutput)
 	ret1, _ := ret[1].(error)
@@ -1233,11 +1396,13 @@ func (m *MockIAMAPI) DeleteInstanceProfile(arg0 *iam.DeleteInstanceProfileInput)
 
 // DeleteInstanceProfile indicates an expected call of DeleteInstanceProfile
 func (mr *MockIAMAPIMockRecorder) DeleteInstanceProfile(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteInstanceProfile", reflect.TypeOf((*MockIAMAPI)(nil).DeleteInstanceProfile), arg0)
 }
 
 // DeleteInstanceProfileWithContext mocks base method
 func (m *MockIAMAPI) DeleteInstanceProfileWithContext(arg0 aws.Context, arg1 *iam.DeleteInstanceProfileInput, arg2 ...request.Option) (*iam.DeleteInstanceProfileOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1250,12 +1415,14 @@ func (m *MockIAMAPI) DeleteInstanceProfileWithContext(arg0 aws.Context, arg1 *ia
 
 // DeleteInstanceProfileWithContext indicates an expected call of DeleteInstanceProfileWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteInstanceProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteInstanceProfileWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteInstanceProfileWithContext), varargs...)
 }
 
 // DeleteInstanceProfileRequest mocks base method
 func (m *MockIAMAPI) DeleteInstanceProfileRequest(arg0 *iam.DeleteInstanceProfileInput) (*request.Request, *iam.DeleteInstanceProfileOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteInstanceProfileRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteInstanceProfileOutput)
@@ -1264,11 +1431,13 @@ func (m *MockIAMAPI) DeleteInstanceProfileRequest(arg0 *iam.DeleteInstanceProfil
 
 // DeleteInstanceProfileRequest indicates an expected call of DeleteInstanceProfileRequest
 func (mr *MockIAMAPIMockRecorder) DeleteInstanceProfileRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteInstanceProfileRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteInstanceProfileRequest), arg0)
 }
 
 // DeleteLoginProfile mocks base method
 func (m *MockIAMAPI) DeleteLoginProfile(arg0 *iam.DeleteLoginProfileInput) (*iam.DeleteLoginProfileOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteLoginProfile", arg0)
 	ret0, _ := ret[0].(*iam.DeleteLoginProfileOutput)
 	ret1, _ := ret[1].(error)
@@ -1277,11 +1446,13 @@ func (m *MockIAMAPI) DeleteLoginProfile(arg0 *iam.DeleteLoginProfileInput) (*iam
 
 // DeleteLoginProfile indicates an expected call of DeleteLoginProfile
 func (mr *MockIAMAPIMockRecorder) DeleteLoginProfile(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteLoginProfile", reflect.TypeOf((*MockIAMAPI)(nil).DeleteLoginProfile), arg0)
 }
 
 // DeleteLoginProfileWithContext mocks base method
 func (m *MockIAMAPI) DeleteLoginProfileWithContext(arg0 aws.Context, arg1 *iam.DeleteLoginProfileInput, arg2 ...request.Option) (*iam.DeleteLoginProfileOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1294,12 +1465,14 @@ func (m *MockIAMAPI) DeleteLoginProfileWithContext(arg0 aws.Context, arg1 *iam.D
 
 // DeleteLoginProfileWithContext indicates an expected call of DeleteLoginProfileWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteLoginProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteLoginProfileWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteLoginProfileWithContext), varargs...)
 }
 
 // DeleteLoginProfileRequest mocks base method
 func (m *MockIAMAPI) DeleteLoginProfileRequest(arg0 *iam.DeleteLoginProfileInput) (*request.Request, *iam.DeleteLoginProfileOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteLoginProfileRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteLoginProfileOutput)
@@ -1308,11 +1481,13 @@ func (m *MockIAMAPI) DeleteLoginProfileRequest(arg0 *iam.DeleteLoginProfileInput
 
 // DeleteLoginProfileRequest indicates an expected call of DeleteLoginProfileRequest
 func (mr *MockIAMAPIMockRecorder) DeleteLoginProfileRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteLoginProfileRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteLoginProfileRequest), arg0)
 }
 
 // DeleteOpenIDConnectProvider mocks base method
 func (m *MockIAMAPI) DeleteOpenIDConnectProvider(arg0 *iam.DeleteOpenIDConnectProviderInput) (*iam.DeleteOpenIDConnectProviderOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteOpenIDConnectProvider", arg0)
 	ret0, _ := ret[0].(*iam.DeleteOpenIDConnectProviderOutput)
 	ret1, _ := ret[1].(error)
@@ -1321,11 +1496,13 @@ func (m *MockIAMAPI) DeleteOpenIDConnectProvider(arg0 *iam.DeleteOpenIDConnectPr
 
 // DeleteOpenIDConnectProvider indicates an expected call of DeleteOpenIDConnectProvider
 func (mr *MockIAMAPIMockRecorder) DeleteOpenIDConnectProvider(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOpenIDConnectProvider", reflect.TypeOf((*MockIAMAPI)(nil).DeleteOpenIDConnectProvider), arg0)
 }
 
 // DeleteOpenIDConnectProviderWithContext mocks base method
 func (m *MockIAMAPI) DeleteOpenIDConnectProviderWithContext(arg0 aws.Context, arg1 *iam.DeleteOpenIDConnectProviderInput, arg2 ...request.Option) (*iam.DeleteOpenIDConnectProviderOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1338,12 +1515,14 @@ func (m *MockIAMAPI) DeleteOpenIDConnectProviderWithContext(arg0 aws.Context, ar
 
 // DeleteOpenIDConnectProviderWithContext indicates an expected call of DeleteOpenIDConnectProviderWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteOpenIDConnectProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOpenIDConnectProviderWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteOpenIDConnectProviderWithContext), varargs...)
 }
 
 // DeleteOpenIDConnectProviderRequest mocks base method
 func (m *MockIAMAPI) DeleteOpenIDConnectProviderRequest(arg0 *iam.DeleteOpenIDConnectProviderInput) (*request.Request, *iam.DeleteOpenIDConnectProviderOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteOpenIDConnectProviderRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteOpenIDConnectProviderOutput)
@@ -1352,11 +1531,13 @@ func (m *MockIAMAPI) DeleteOpenIDConnectProviderRequest(arg0 *iam.DeleteOpenIDCo
 
 // DeleteOpenIDConnectProviderRequest indicates an expected call of DeleteOpenIDConnectProviderRequest
 func (mr *MockIAMAPIMockRecorder) DeleteOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOpenIDConnectProviderRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteOpenIDConnectProviderRequest), arg0)
 }
 
 // DeletePolicy mocks base method
 func (m *MockIAMAPI) DeletePolicy(arg0 *iam.DeletePolicyInput) (*iam.DeletePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeletePolicy", arg0)
 	ret0, _ := ret[0].(*iam.DeletePolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -1365,11 +1546,13 @@ func (m *MockIAMAPI) DeletePolicy(arg0 *iam.DeletePolicyInput) (*iam.DeletePolic
 
 // DeletePolicy indicates an expected call of DeletePolicy
 func (mr *MockIAMAPIMockRecorder) DeletePolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePolicy", reflect.TypeOf((*MockIAMAPI)(nil).DeletePolicy), arg0)
 }
 
 // DeletePolicyWithContext mocks base method
 func (m *MockIAMAPI) DeletePolicyWithContext(arg0 aws.Context, arg1 *iam.DeletePolicyInput, arg2 ...request.Option) (*iam.DeletePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1382,12 +1565,14 @@ func (m *MockIAMAPI) DeletePolicyWithContext(arg0 aws.Context, arg1 *iam.DeleteP
 
 // DeletePolicyWithContext indicates an expected call of DeletePolicyWithContext
 func (mr *MockIAMAPIMockRecorder) DeletePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeletePolicyWithContext), varargs...)
 }
 
 // DeletePolicyRequest mocks base method
 func (m *MockIAMAPI) DeletePolicyRequest(arg0 *iam.DeletePolicyInput) (*request.Request, *iam.DeletePolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeletePolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeletePolicyOutput)
@@ -1396,11 +1581,13 @@ func (m *MockIAMAPI) DeletePolicyRequest(arg0 *iam.DeletePolicyInput) (*request.
 
 // DeletePolicyRequest indicates an expected call of DeletePolicyRequest
 func (mr *MockIAMAPIMockRecorder) DeletePolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeletePolicyRequest), arg0)
 }
 
 // DeletePolicyVersion mocks base method
 func (m *MockIAMAPI) DeletePolicyVersion(arg0 *iam.DeletePolicyVersionInput) (*iam.DeletePolicyVersionOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeletePolicyVersion", arg0)
 	ret0, _ := ret[0].(*iam.DeletePolicyVersionOutput)
 	ret1, _ := ret[1].(error)
@@ -1409,11 +1596,13 @@ func (m *MockIAMAPI) DeletePolicyVersion(arg0 *iam.DeletePolicyVersionInput) (*i
 
 // DeletePolicyVersion indicates an expected call of DeletePolicyVersion
 func (mr *MockIAMAPIMockRecorder) DeletePolicyVersion(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePolicyVersion", reflect.TypeOf((*MockIAMAPI)(nil).DeletePolicyVersion), arg0)
 }
 
 // DeletePolicyVersionWithContext mocks base method
 func (m *MockIAMAPI) DeletePolicyVersionWithContext(arg0 aws.Context, arg1 *iam.DeletePolicyVersionInput, arg2 ...request.Option) (*iam.DeletePolicyVersionOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1426,12 +1615,14 @@ func (m *MockIAMAPI) DeletePolicyVersionWithContext(arg0 aws.Context, arg1 *iam.
 
 // DeletePolicyVersionWithContext indicates an expected call of DeletePolicyVersionWithContext
 func (mr *MockIAMAPIMockRecorder) DeletePolicyVersionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePolicyVersionWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeletePolicyVersionWithContext), varargs...)
 }
 
 // DeletePolicyVersionRequest mocks base method
 func (m *MockIAMAPI) DeletePolicyVersionRequest(arg0 *iam.DeletePolicyVersionInput) (*request.Request, *iam.DeletePolicyVersionOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeletePolicyVersionRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeletePolicyVersionOutput)
@@ -1440,11 +1631,13 @@ func (m *MockIAMAPI) DeletePolicyVersionRequest(arg0 *iam.DeletePolicyVersionInp
 
 // DeletePolicyVersionRequest indicates an expected call of DeletePolicyVersionRequest
 func (mr *MockIAMAPIMockRecorder) DeletePolicyVersionRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePolicyVersionRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeletePolicyVersionRequest), arg0)
 }
 
 // DeleteRole mocks base method
 func (m *MockIAMAPI) DeleteRole(arg0 *iam.DeleteRoleInput) (*iam.DeleteRoleOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteRole", arg0)
 	ret0, _ := ret[0].(*iam.DeleteRoleOutput)
 	ret1, _ := ret[1].(error)
@@ -1453,11 +1646,13 @@ func (m *MockIAMAPI) DeleteRole(arg0 *iam.DeleteRoleInput) (*iam.DeleteRoleOutpu
 
 // DeleteRole indicates an expected call of DeleteRole
 func (mr *MockIAMAPIMockRecorder) DeleteRole(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRole", reflect.TypeOf((*MockIAMAPI)(nil).DeleteRole), arg0)
 }
 
 // DeleteRoleWithContext mocks base method
 func (m *MockIAMAPI) DeleteRoleWithContext(arg0 aws.Context, arg1 *iam.DeleteRoleInput, arg2 ...request.Option) (*iam.DeleteRoleOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1470,12 +1665,14 @@ func (m *MockIAMAPI) DeleteRoleWithContext(arg0 aws.Context, arg1 *iam.DeleteRol
 
 // DeleteRoleWithContext indicates an expected call of DeleteRoleWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRoleWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteRoleWithContext), varargs...)
 }
 
 // DeleteRoleRequest mocks base method
 func (m *MockIAMAPI) DeleteRoleRequest(arg0 *iam.DeleteRoleInput) (*request.Request, *iam.DeleteRoleOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteRoleRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteRoleOutput)
@@ -1484,11 +1681,13 @@ func (m *MockIAMAPI) DeleteRoleRequest(arg0 *iam.DeleteRoleInput) (*request.Requ
 
 // DeleteRoleRequest indicates an expected call of DeleteRoleRequest
 func (mr *MockIAMAPIMockRecorder) DeleteRoleRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRoleRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteRoleRequest), arg0)
 }
 
 // DeleteRolePermissionsBoundary mocks base method
 func (m *MockIAMAPI) DeleteRolePermissionsBoundary(arg0 *iam.DeleteRolePermissionsBoundaryInput) (*iam.DeleteRolePermissionsBoundaryOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteRolePermissionsBoundary", arg0)
 	ret0, _ := ret[0].(*iam.DeleteRolePermissionsBoundaryOutput)
 	ret1, _ := ret[1].(error)
@@ -1497,11 +1696,13 @@ func (m *MockIAMAPI) DeleteRolePermissionsBoundary(arg0 *iam.DeleteRolePermissio
 
 // DeleteRolePermissionsBoundary indicates an expected call of DeleteRolePermissionsBoundary
 func (mr *MockIAMAPIMockRecorder) DeleteRolePermissionsBoundary(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRolePermissionsBoundary", reflect.TypeOf((*MockIAMAPI)(nil).DeleteRolePermissionsBoundary), arg0)
 }
 
 // DeleteRolePermissionsBoundaryWithContext mocks base method
 func (m *MockIAMAPI) DeleteRolePermissionsBoundaryWithContext(arg0 aws.Context, arg1 *iam.DeleteRolePermissionsBoundaryInput, arg2 ...request.Option) (*iam.DeleteRolePermissionsBoundaryOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1514,12 +1715,14 @@ func (m *MockIAMAPI) DeleteRolePermissionsBoundaryWithContext(arg0 aws.Context, 
 
 // DeleteRolePermissionsBoundaryWithContext indicates an expected call of DeleteRolePermissionsBoundaryWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteRolePermissionsBoundaryWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRolePermissionsBoundaryWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteRolePermissionsBoundaryWithContext), varargs...)
 }
 
 // DeleteRolePermissionsBoundaryRequest mocks base method
 func (m *MockIAMAPI) DeleteRolePermissionsBoundaryRequest(arg0 *iam.DeleteRolePermissionsBoundaryInput) (*request.Request, *iam.DeleteRolePermissionsBoundaryOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteRolePermissionsBoundaryRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteRolePermissionsBoundaryOutput)
@@ -1528,11 +1731,13 @@ func (m *MockIAMAPI) DeleteRolePermissionsBoundaryRequest(arg0 *iam.DeleteRolePe
 
 // DeleteRolePermissionsBoundaryRequest indicates an expected call of DeleteRolePermissionsBoundaryRequest
 func (mr *MockIAMAPIMockRecorder) DeleteRolePermissionsBoundaryRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRolePermissionsBoundaryRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteRolePermissionsBoundaryRequest), arg0)
 }
 
 // DeleteRolePolicy mocks base method
 func (m *MockIAMAPI) DeleteRolePolicy(arg0 *iam.DeleteRolePolicyInput) (*iam.DeleteRolePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteRolePolicy", arg0)
 	ret0, _ := ret[0].(*iam.DeleteRolePolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -1541,11 +1746,13 @@ func (m *MockIAMAPI) DeleteRolePolicy(arg0 *iam.DeleteRolePolicyInput) (*iam.Del
 
 // DeleteRolePolicy indicates an expected call of DeleteRolePolicy
 func (mr *MockIAMAPIMockRecorder) DeleteRolePolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRolePolicy", reflect.TypeOf((*MockIAMAPI)(nil).DeleteRolePolicy), arg0)
 }
 
 // DeleteRolePolicyWithContext mocks base method
 func (m *MockIAMAPI) DeleteRolePolicyWithContext(arg0 aws.Context, arg1 *iam.DeleteRolePolicyInput, arg2 ...request.Option) (*iam.DeleteRolePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1558,12 +1765,14 @@ func (m *MockIAMAPI) DeleteRolePolicyWithContext(arg0 aws.Context, arg1 *iam.Del
 
 // DeleteRolePolicyWithContext indicates an expected call of DeleteRolePolicyWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteRolePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRolePolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteRolePolicyWithContext), varargs...)
 }
 
 // DeleteRolePolicyRequest mocks base method
 func (m *MockIAMAPI) DeleteRolePolicyRequest(arg0 *iam.DeleteRolePolicyInput) (*request.Request, *iam.DeleteRolePolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteRolePolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteRolePolicyOutput)
@@ -1572,11 +1781,13 @@ func (m *MockIAMAPI) DeleteRolePolicyRequest(arg0 *iam.DeleteRolePolicyInput) (*
 
 // DeleteRolePolicyRequest indicates an expected call of DeleteRolePolicyRequest
 func (mr *MockIAMAPIMockRecorder) DeleteRolePolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRolePolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteRolePolicyRequest), arg0)
 }
 
 // DeleteSAMLProvider mocks base method
 func (m *MockIAMAPI) DeleteSAMLProvider(arg0 *iam.DeleteSAMLProviderInput) (*iam.DeleteSAMLProviderOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteSAMLProvider", arg0)
 	ret0, _ := ret[0].(*iam.DeleteSAMLProviderOutput)
 	ret1, _ := ret[1].(error)
@@ -1585,11 +1796,13 @@ func (m *MockIAMAPI) DeleteSAMLProvider(arg0 *iam.DeleteSAMLProviderInput) (*iam
 
 // DeleteSAMLProvider indicates an expected call of DeleteSAMLProvider
 func (mr *MockIAMAPIMockRecorder) DeleteSAMLProvider(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteSAMLProvider", reflect.TypeOf((*MockIAMAPI)(nil).DeleteSAMLProvider), arg0)
 }
 
 // DeleteSAMLProviderWithContext mocks base method
 func (m *MockIAMAPI) DeleteSAMLProviderWithContext(arg0 aws.Context, arg1 *iam.DeleteSAMLProviderInput, arg2 ...request.Option) (*iam.DeleteSAMLProviderOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1602,12 +1815,14 @@ func (m *MockIAMAPI) DeleteSAMLProviderWithContext(arg0 aws.Context, arg1 *iam.D
 
 // DeleteSAMLProviderWithContext indicates an expected call of DeleteSAMLProviderWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteSAMLProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteSAMLProviderWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteSAMLProviderWithContext), varargs...)
 }
 
 // DeleteSAMLProviderRequest mocks base method
 func (m *MockIAMAPI) DeleteSAMLProviderRequest(arg0 *iam.DeleteSAMLProviderInput) (*request.Request, *iam.DeleteSAMLProviderOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteSAMLProviderRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteSAMLProviderOutput)
@@ -1616,11 +1831,13 @@ func (m *MockIAMAPI) DeleteSAMLProviderRequest(arg0 *iam.DeleteSAMLProviderInput
 
 // DeleteSAMLProviderRequest indicates an expected call of DeleteSAMLProviderRequest
 func (mr *MockIAMAPIMockRecorder) DeleteSAMLProviderRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteSAMLProviderRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteSAMLProviderRequest), arg0)
 }
 
 // DeleteSSHPublicKey mocks base method
 func (m *MockIAMAPI) DeleteSSHPublicKey(arg0 *iam.DeleteSSHPublicKeyInput) (*iam.DeleteSSHPublicKeyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteSSHPublicKey", arg0)
 	ret0, _ := ret[0].(*iam.DeleteSSHPublicKeyOutput)
 	ret1, _ := ret[1].(error)
@@ -1629,11 +1846,13 @@ func (m *MockIAMAPI) DeleteSSHPublicKey(arg0 *iam.DeleteSSHPublicKeyInput) (*iam
 
 // DeleteSSHPublicKey indicates an expected call of DeleteSSHPublicKey
 func (mr *MockIAMAPIMockRecorder) DeleteSSHPublicKey(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteSSHPublicKey", reflect.TypeOf((*MockIAMAPI)(nil).DeleteSSHPublicKey), arg0)
 }
 
 // DeleteSSHPublicKeyWithContext mocks base method
 func (m *MockIAMAPI) DeleteSSHPublicKeyWithContext(arg0 aws.Context, arg1 *iam.DeleteSSHPublicKeyInput, arg2 ...request.Option) (*iam.DeleteSSHPublicKeyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1646,12 +1865,14 @@ func (m *MockIAMAPI) DeleteSSHPublicKeyWithContext(arg0 aws.Context, arg1 *iam.D
 
 // DeleteSSHPublicKeyWithContext indicates an expected call of DeleteSSHPublicKeyWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteSSHPublicKeyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteSSHPublicKeyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteSSHPublicKeyWithContext), varargs...)
 }
 
 // DeleteSSHPublicKeyRequest mocks base method
 func (m *MockIAMAPI) DeleteSSHPublicKeyRequest(arg0 *iam.DeleteSSHPublicKeyInput) (*request.Request, *iam.DeleteSSHPublicKeyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteSSHPublicKeyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteSSHPublicKeyOutput)
@@ -1660,11 +1881,13 @@ func (m *MockIAMAPI) DeleteSSHPublicKeyRequest(arg0 *iam.DeleteSSHPublicKeyInput
 
 // DeleteSSHPublicKeyRequest indicates an expected call of DeleteSSHPublicKeyRequest
 func (mr *MockIAMAPIMockRecorder) DeleteSSHPublicKeyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteSSHPublicKeyRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteSSHPublicKeyRequest), arg0)
 }
 
 // DeleteServerCertificate mocks base method
 func (m *MockIAMAPI) DeleteServerCertificate(arg0 *iam.DeleteServerCertificateInput) (*iam.DeleteServerCertificateOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteServerCertificate", arg0)
 	ret0, _ := ret[0].(*iam.DeleteServerCertificateOutput)
 	ret1, _ := ret[1].(error)
@@ -1673,11 +1896,13 @@ func (m *MockIAMAPI) DeleteServerCertificate(arg0 *iam.DeleteServerCertificateIn
 
 // DeleteServerCertificate indicates an expected call of DeleteServerCertificate
 func (mr *MockIAMAPIMockRecorder) DeleteServerCertificate(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteServerCertificate", reflect.TypeOf((*MockIAMAPI)(nil).DeleteServerCertificate), arg0)
 }
 
 // DeleteServerCertificateWithContext mocks base method
 func (m *MockIAMAPI) DeleteServerCertificateWithContext(arg0 aws.Context, arg1 *iam.DeleteServerCertificateInput, arg2 ...request.Option) (*iam.DeleteServerCertificateOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1690,12 +1915,14 @@ func (m *MockIAMAPI) DeleteServerCertificateWithContext(arg0 aws.Context, arg1 *
 
 // DeleteServerCertificateWithContext indicates an expected call of DeleteServerCertificateWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteServerCertificateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteServerCertificateWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteServerCertificateWithContext), varargs...)
 }
 
 // DeleteServerCertificateRequest mocks base method
 func (m *MockIAMAPI) DeleteServerCertificateRequest(arg0 *iam.DeleteServerCertificateInput) (*request.Request, *iam.DeleteServerCertificateOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteServerCertificateRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteServerCertificateOutput)
@@ -1704,11 +1931,13 @@ func (m *MockIAMAPI) DeleteServerCertificateRequest(arg0 *iam.DeleteServerCertif
 
 // DeleteServerCertificateRequest indicates an expected call of DeleteServerCertificateRequest
 func (mr *MockIAMAPIMockRecorder) DeleteServerCertificateRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteServerCertificateRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteServerCertificateRequest), arg0)
 }
 
 // DeleteServiceLinkedRole mocks base method
 func (m *MockIAMAPI) DeleteServiceLinkedRole(arg0 *iam.DeleteServiceLinkedRoleInput) (*iam.DeleteServiceLinkedRoleOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteServiceLinkedRole", arg0)
 	ret0, _ := ret[0].(*iam.DeleteServiceLinkedRoleOutput)
 	ret1, _ := ret[1].(error)
@@ -1717,11 +1946,13 @@ func (m *MockIAMAPI) DeleteServiceLinkedRole(arg0 *iam.DeleteServiceLinkedRoleIn
 
 // DeleteServiceLinkedRole indicates an expected call of DeleteServiceLinkedRole
 func (mr *MockIAMAPIMockRecorder) DeleteServiceLinkedRole(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteServiceLinkedRole", reflect.TypeOf((*MockIAMAPI)(nil).DeleteServiceLinkedRole), arg0)
 }
 
 // DeleteServiceLinkedRoleWithContext mocks base method
 func (m *MockIAMAPI) DeleteServiceLinkedRoleWithContext(arg0 aws.Context, arg1 *iam.DeleteServiceLinkedRoleInput, arg2 ...request.Option) (*iam.DeleteServiceLinkedRoleOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1734,12 +1965,14 @@ func (m *MockIAMAPI) DeleteServiceLinkedRoleWithContext(arg0 aws.Context, arg1 *
 
 // DeleteServiceLinkedRoleWithContext indicates an expected call of DeleteServiceLinkedRoleWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteServiceLinkedRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteServiceLinkedRoleWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteServiceLinkedRoleWithContext), varargs...)
 }
 
 // DeleteServiceLinkedRoleRequest mocks base method
 func (m *MockIAMAPI) DeleteServiceLinkedRoleRequest(arg0 *iam.DeleteServiceLinkedRoleInput) (*request.Request, *iam.DeleteServiceLinkedRoleOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteServiceLinkedRoleRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteServiceLinkedRoleOutput)
@@ -1748,11 +1981,13 @@ func (m *MockIAMAPI) DeleteServiceLinkedRoleRequest(arg0 *iam.DeleteServiceLinke
 
 // DeleteServiceLinkedRoleRequest indicates an expected call of DeleteServiceLinkedRoleRequest
 func (mr *MockIAMAPIMockRecorder) DeleteServiceLinkedRoleRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteServiceLinkedRoleRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteServiceLinkedRoleRequest), arg0)
 }
 
 // DeleteServiceSpecificCredential mocks base method
 func (m *MockIAMAPI) DeleteServiceSpecificCredential(arg0 *iam.DeleteServiceSpecificCredentialInput) (*iam.DeleteServiceSpecificCredentialOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteServiceSpecificCredential", arg0)
 	ret0, _ := ret[0].(*iam.DeleteServiceSpecificCredentialOutput)
 	ret1, _ := ret[1].(error)
@@ -1761,11 +1996,13 @@ func (m *MockIAMAPI) DeleteServiceSpecificCredential(arg0 *iam.DeleteServiceSpec
 
 // DeleteServiceSpecificCredential indicates an expected call of DeleteServiceSpecificCredential
 func (mr *MockIAMAPIMockRecorder) DeleteServiceSpecificCredential(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteServiceSpecificCredential", reflect.TypeOf((*MockIAMAPI)(nil).DeleteServiceSpecificCredential), arg0)
 }
 
 // DeleteServiceSpecificCredentialWithContext mocks base method
 func (m *MockIAMAPI) DeleteServiceSpecificCredentialWithContext(arg0 aws.Context, arg1 *iam.DeleteServiceSpecificCredentialInput, arg2 ...request.Option) (*iam.DeleteServiceSpecificCredentialOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1778,12 +2015,14 @@ func (m *MockIAMAPI) DeleteServiceSpecificCredentialWithContext(arg0 aws.Context
 
 // DeleteServiceSpecificCredentialWithContext indicates an expected call of DeleteServiceSpecificCredentialWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteServiceSpecificCredentialWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteServiceSpecificCredentialWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteServiceSpecificCredentialWithContext), varargs...)
 }
 
 // DeleteServiceSpecificCredentialRequest mocks base method
 func (m *MockIAMAPI) DeleteServiceSpecificCredentialRequest(arg0 *iam.DeleteServiceSpecificCredentialInput) (*request.Request, *iam.DeleteServiceSpecificCredentialOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteServiceSpecificCredentialRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteServiceSpecificCredentialOutput)
@@ -1792,11 +2031,13 @@ func (m *MockIAMAPI) DeleteServiceSpecificCredentialRequest(arg0 *iam.DeleteServ
 
 // DeleteServiceSpecificCredentialRequest indicates an expected call of DeleteServiceSpecificCredentialRequest
 func (mr *MockIAMAPIMockRecorder) DeleteServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteServiceSpecificCredentialRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteServiceSpecificCredentialRequest), arg0)
 }
 
 // DeleteSigningCertificate mocks base method
 func (m *MockIAMAPI) DeleteSigningCertificate(arg0 *iam.DeleteSigningCertificateInput) (*iam.DeleteSigningCertificateOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteSigningCertificate", arg0)
 	ret0, _ := ret[0].(*iam.DeleteSigningCertificateOutput)
 	ret1, _ := ret[1].(error)
@@ -1805,11 +2046,13 @@ func (m *MockIAMAPI) DeleteSigningCertificate(arg0 *iam.DeleteSigningCertificate
 
 // DeleteSigningCertificate indicates an expected call of DeleteSigningCertificate
 func (mr *MockIAMAPIMockRecorder) DeleteSigningCertificate(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteSigningCertificate", reflect.TypeOf((*MockIAMAPI)(nil).DeleteSigningCertificate), arg0)
 }
 
 // DeleteSigningCertificateWithContext mocks base method
 func (m *MockIAMAPI) DeleteSigningCertificateWithContext(arg0 aws.Context, arg1 *iam.DeleteSigningCertificateInput, arg2 ...request.Option) (*iam.DeleteSigningCertificateOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1822,12 +2065,14 @@ func (m *MockIAMAPI) DeleteSigningCertificateWithContext(arg0 aws.Context, arg1 
 
 // DeleteSigningCertificateWithContext indicates an expected call of DeleteSigningCertificateWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteSigningCertificateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteSigningCertificateWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteSigningCertificateWithContext), varargs...)
 }
 
 // DeleteSigningCertificateRequest mocks base method
 func (m *MockIAMAPI) DeleteSigningCertificateRequest(arg0 *iam.DeleteSigningCertificateInput) (*request.Request, *iam.DeleteSigningCertificateOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteSigningCertificateRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteSigningCertificateOutput)
@@ -1836,11 +2081,13 @@ func (m *MockIAMAPI) DeleteSigningCertificateRequest(arg0 *iam.DeleteSigningCert
 
 // DeleteSigningCertificateRequest indicates an expected call of DeleteSigningCertificateRequest
 func (mr *MockIAMAPIMockRecorder) DeleteSigningCertificateRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteSigningCertificateRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteSigningCertificateRequest), arg0)
 }
 
 // DeleteUser mocks base method
 func (m *MockIAMAPI) DeleteUser(arg0 *iam.DeleteUserInput) (*iam.DeleteUserOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteUser", arg0)
 	ret0, _ := ret[0].(*iam.DeleteUserOutput)
 	ret1, _ := ret[1].(error)
@@ -1849,11 +2096,13 @@ func (m *MockIAMAPI) DeleteUser(arg0 *iam.DeleteUserInput) (*iam.DeleteUserOutpu
 
 // DeleteUser indicates an expected call of DeleteUser
 func (mr *MockIAMAPIMockRecorder) DeleteUser(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockIAMAPI)(nil).DeleteUser), arg0)
 }
 
 // DeleteUserWithContext mocks base method
 func (m *MockIAMAPI) DeleteUserWithContext(arg0 aws.Context, arg1 *iam.DeleteUserInput, arg2 ...request.Option) (*iam.DeleteUserOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1866,12 +2115,14 @@ func (m *MockIAMAPI) DeleteUserWithContext(arg0 aws.Context, arg1 *iam.DeleteUse
 
 // DeleteUserWithContext indicates an expected call of DeleteUserWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteUserWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteUserWithContext), varargs...)
 }
 
 // DeleteUserRequest mocks base method
 func (m *MockIAMAPI) DeleteUserRequest(arg0 *iam.DeleteUserInput) (*request.Request, *iam.DeleteUserOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteUserRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteUserOutput)
@@ -1880,11 +2131,13 @@ func (m *MockIAMAPI) DeleteUserRequest(arg0 *iam.DeleteUserInput) (*request.Requ
 
 // DeleteUserRequest indicates an expected call of DeleteUserRequest
 func (mr *MockIAMAPIMockRecorder) DeleteUserRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteUserRequest), arg0)
 }
 
 // DeleteUserPermissionsBoundary mocks base method
 func (m *MockIAMAPI) DeleteUserPermissionsBoundary(arg0 *iam.DeleteUserPermissionsBoundaryInput) (*iam.DeleteUserPermissionsBoundaryOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteUserPermissionsBoundary", arg0)
 	ret0, _ := ret[0].(*iam.DeleteUserPermissionsBoundaryOutput)
 	ret1, _ := ret[1].(error)
@@ -1893,11 +2146,13 @@ func (m *MockIAMAPI) DeleteUserPermissionsBoundary(arg0 *iam.DeleteUserPermissio
 
 // DeleteUserPermissionsBoundary indicates an expected call of DeleteUserPermissionsBoundary
 func (mr *MockIAMAPIMockRecorder) DeleteUserPermissionsBoundary(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserPermissionsBoundary", reflect.TypeOf((*MockIAMAPI)(nil).DeleteUserPermissionsBoundary), arg0)
 }
 
 // DeleteUserPermissionsBoundaryWithContext mocks base method
 func (m *MockIAMAPI) DeleteUserPermissionsBoundaryWithContext(arg0 aws.Context, arg1 *iam.DeleteUserPermissionsBoundaryInput, arg2 ...request.Option) (*iam.DeleteUserPermissionsBoundaryOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1910,12 +2165,14 @@ func (m *MockIAMAPI) DeleteUserPermissionsBoundaryWithContext(arg0 aws.Context, 
 
 // DeleteUserPermissionsBoundaryWithContext indicates an expected call of DeleteUserPermissionsBoundaryWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteUserPermissionsBoundaryWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserPermissionsBoundaryWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteUserPermissionsBoundaryWithContext), varargs...)
 }
 
 // DeleteUserPermissionsBoundaryRequest mocks base method
 func (m *MockIAMAPI) DeleteUserPermissionsBoundaryRequest(arg0 *iam.DeleteUserPermissionsBoundaryInput) (*request.Request, *iam.DeleteUserPermissionsBoundaryOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteUserPermissionsBoundaryRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteUserPermissionsBoundaryOutput)
@@ -1924,11 +2181,13 @@ func (m *MockIAMAPI) DeleteUserPermissionsBoundaryRequest(arg0 *iam.DeleteUserPe
 
 // DeleteUserPermissionsBoundaryRequest indicates an expected call of DeleteUserPermissionsBoundaryRequest
 func (mr *MockIAMAPIMockRecorder) DeleteUserPermissionsBoundaryRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserPermissionsBoundaryRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteUserPermissionsBoundaryRequest), arg0)
 }
 
 // DeleteUserPolicy mocks base method
 func (m *MockIAMAPI) DeleteUserPolicy(arg0 *iam.DeleteUserPolicyInput) (*iam.DeleteUserPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteUserPolicy", arg0)
 	ret0, _ := ret[0].(*iam.DeleteUserPolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -1937,11 +2196,13 @@ func (m *MockIAMAPI) DeleteUserPolicy(arg0 *iam.DeleteUserPolicyInput) (*iam.Del
 
 // DeleteUserPolicy indicates an expected call of DeleteUserPolicy
 func (mr *MockIAMAPIMockRecorder) DeleteUserPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserPolicy", reflect.TypeOf((*MockIAMAPI)(nil).DeleteUserPolicy), arg0)
 }
 
 // DeleteUserPolicyWithContext mocks base method
 func (m *MockIAMAPI) DeleteUserPolicyWithContext(arg0 aws.Context, arg1 *iam.DeleteUserPolicyInput, arg2 ...request.Option) (*iam.DeleteUserPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1954,12 +2215,14 @@ func (m *MockIAMAPI) DeleteUserPolicyWithContext(arg0 aws.Context, arg1 *iam.Del
 
 // DeleteUserPolicyWithContext indicates an expected call of DeleteUserPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteUserPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteUserPolicyWithContext), varargs...)
 }
 
 // DeleteUserPolicyRequest mocks base method
 func (m *MockIAMAPI) DeleteUserPolicyRequest(arg0 *iam.DeleteUserPolicyInput) (*request.Request, *iam.DeleteUserPolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteUserPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteUserPolicyOutput)
@@ -1968,11 +2231,13 @@ func (m *MockIAMAPI) DeleteUserPolicyRequest(arg0 *iam.DeleteUserPolicyInput) (*
 
 // DeleteUserPolicyRequest indicates an expected call of DeleteUserPolicyRequest
 func (mr *MockIAMAPIMockRecorder) DeleteUserPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteUserPolicyRequest), arg0)
 }
 
 // DeleteVirtualMFADevice mocks base method
 func (m *MockIAMAPI) DeleteVirtualMFADevice(arg0 *iam.DeleteVirtualMFADeviceInput) (*iam.DeleteVirtualMFADeviceOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteVirtualMFADevice", arg0)
 	ret0, _ := ret[0].(*iam.DeleteVirtualMFADeviceOutput)
 	ret1, _ := ret[1].(error)
@@ -1981,11 +2246,13 @@ func (m *MockIAMAPI) DeleteVirtualMFADevice(arg0 *iam.DeleteVirtualMFADeviceInpu
 
 // DeleteVirtualMFADevice indicates an expected call of DeleteVirtualMFADevice
 func (mr *MockIAMAPIMockRecorder) DeleteVirtualMFADevice(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteVirtualMFADevice", reflect.TypeOf((*MockIAMAPI)(nil).DeleteVirtualMFADevice), arg0)
 }
 
 // DeleteVirtualMFADeviceWithContext mocks base method
 func (m *MockIAMAPI) DeleteVirtualMFADeviceWithContext(arg0 aws.Context, arg1 *iam.DeleteVirtualMFADeviceInput, arg2 ...request.Option) (*iam.DeleteVirtualMFADeviceOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1998,12 +2265,14 @@ func (m *MockIAMAPI) DeleteVirtualMFADeviceWithContext(arg0 aws.Context, arg1 *i
 
 // DeleteVirtualMFADeviceWithContext indicates an expected call of DeleteVirtualMFADeviceWithContext
 func (mr *MockIAMAPIMockRecorder) DeleteVirtualMFADeviceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteVirtualMFADeviceWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DeleteVirtualMFADeviceWithContext), varargs...)
 }
 
 // DeleteVirtualMFADeviceRequest mocks base method
 func (m *MockIAMAPI) DeleteVirtualMFADeviceRequest(arg0 *iam.DeleteVirtualMFADeviceInput) (*request.Request, *iam.DeleteVirtualMFADeviceOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteVirtualMFADeviceRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DeleteVirtualMFADeviceOutput)
@@ -2012,11 +2281,13 @@ func (m *MockIAMAPI) DeleteVirtualMFADeviceRequest(arg0 *iam.DeleteVirtualMFADev
 
 // DeleteVirtualMFADeviceRequest indicates an expected call of DeleteVirtualMFADeviceRequest
 func (mr *MockIAMAPIMockRecorder) DeleteVirtualMFADeviceRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteVirtualMFADeviceRequest", reflect.TypeOf((*MockIAMAPI)(nil).DeleteVirtualMFADeviceRequest), arg0)
 }
 
 // DetachGroupPolicy mocks base method
 func (m *MockIAMAPI) DetachGroupPolicy(arg0 *iam.DetachGroupPolicyInput) (*iam.DetachGroupPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DetachGroupPolicy", arg0)
 	ret0, _ := ret[0].(*iam.DetachGroupPolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -2025,11 +2296,13 @@ func (m *MockIAMAPI) DetachGroupPolicy(arg0 *iam.DetachGroupPolicyInput) (*iam.D
 
 // DetachGroupPolicy indicates an expected call of DetachGroupPolicy
 func (mr *MockIAMAPIMockRecorder) DetachGroupPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DetachGroupPolicy", reflect.TypeOf((*MockIAMAPI)(nil).DetachGroupPolicy), arg0)
 }
 
 // DetachGroupPolicyWithContext mocks base method
 func (m *MockIAMAPI) DetachGroupPolicyWithContext(arg0 aws.Context, arg1 *iam.DetachGroupPolicyInput, arg2 ...request.Option) (*iam.DetachGroupPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2042,12 +2315,14 @@ func (m *MockIAMAPI) DetachGroupPolicyWithContext(arg0 aws.Context, arg1 *iam.De
 
 // DetachGroupPolicyWithContext indicates an expected call of DetachGroupPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) DetachGroupPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DetachGroupPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DetachGroupPolicyWithContext), varargs...)
 }
 
 // DetachGroupPolicyRequest mocks base method
 func (m *MockIAMAPI) DetachGroupPolicyRequest(arg0 *iam.DetachGroupPolicyInput) (*request.Request, *iam.DetachGroupPolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DetachGroupPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DetachGroupPolicyOutput)
@@ -2056,11 +2331,13 @@ func (m *MockIAMAPI) DetachGroupPolicyRequest(arg0 *iam.DetachGroupPolicyInput) 
 
 // DetachGroupPolicyRequest indicates an expected call of DetachGroupPolicyRequest
 func (mr *MockIAMAPIMockRecorder) DetachGroupPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DetachGroupPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).DetachGroupPolicyRequest), arg0)
 }
 
 // DetachRolePolicy mocks base method
 func (m *MockIAMAPI) DetachRolePolicy(arg0 *iam.DetachRolePolicyInput) (*iam.DetachRolePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DetachRolePolicy", arg0)
 	ret0, _ := ret[0].(*iam.DetachRolePolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -2069,11 +2346,13 @@ func (m *MockIAMAPI) DetachRolePolicy(arg0 *iam.DetachRolePolicyInput) (*iam.Det
 
 // DetachRolePolicy indicates an expected call of DetachRolePolicy
 func (mr *MockIAMAPIMockRecorder) DetachRolePolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DetachRolePolicy", reflect.TypeOf((*MockIAMAPI)(nil).DetachRolePolicy), arg0)
 }
 
 // DetachRolePolicyWithContext mocks base method
 func (m *MockIAMAPI) DetachRolePolicyWithContext(arg0 aws.Context, arg1 *iam.DetachRolePolicyInput, arg2 ...request.Option) (*iam.DetachRolePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2086,12 +2365,14 @@ func (m *MockIAMAPI) DetachRolePolicyWithContext(arg0 aws.Context, arg1 *iam.Det
 
 // DetachRolePolicyWithContext indicates an expected call of DetachRolePolicyWithContext
 func (mr *MockIAMAPIMockRecorder) DetachRolePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DetachRolePolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DetachRolePolicyWithContext), varargs...)
 }
 
 // DetachRolePolicyRequest mocks base method
 func (m *MockIAMAPI) DetachRolePolicyRequest(arg0 *iam.DetachRolePolicyInput) (*request.Request, *iam.DetachRolePolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DetachRolePolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DetachRolePolicyOutput)
@@ -2100,11 +2381,13 @@ func (m *MockIAMAPI) DetachRolePolicyRequest(arg0 *iam.DetachRolePolicyInput) (*
 
 // DetachRolePolicyRequest indicates an expected call of DetachRolePolicyRequest
 func (mr *MockIAMAPIMockRecorder) DetachRolePolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DetachRolePolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).DetachRolePolicyRequest), arg0)
 }
 
 // DetachUserPolicy mocks base method
 func (m *MockIAMAPI) DetachUserPolicy(arg0 *iam.DetachUserPolicyInput) (*iam.DetachUserPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DetachUserPolicy", arg0)
 	ret0, _ := ret[0].(*iam.DetachUserPolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -2113,11 +2396,13 @@ func (m *MockIAMAPI) DetachUserPolicy(arg0 *iam.DetachUserPolicyInput) (*iam.Det
 
 // DetachUserPolicy indicates an expected call of DetachUserPolicy
 func (mr *MockIAMAPIMockRecorder) DetachUserPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DetachUserPolicy", reflect.TypeOf((*MockIAMAPI)(nil).DetachUserPolicy), arg0)
 }
 
 // DetachUserPolicyWithContext mocks base method
 func (m *MockIAMAPI) DetachUserPolicyWithContext(arg0 aws.Context, arg1 *iam.DetachUserPolicyInput, arg2 ...request.Option) (*iam.DetachUserPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2130,12 +2415,14 @@ func (m *MockIAMAPI) DetachUserPolicyWithContext(arg0 aws.Context, arg1 *iam.Det
 
 // DetachUserPolicyWithContext indicates an expected call of DetachUserPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) DetachUserPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DetachUserPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).DetachUserPolicyWithContext), varargs...)
 }
 
 // DetachUserPolicyRequest mocks base method
 func (m *MockIAMAPI) DetachUserPolicyRequest(arg0 *iam.DetachUserPolicyInput) (*request.Request, *iam.DetachUserPolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DetachUserPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.DetachUserPolicyOutput)
@@ -2144,11 +2431,13 @@ func (m *MockIAMAPI) DetachUserPolicyRequest(arg0 *iam.DetachUserPolicyInput) (*
 
 // DetachUserPolicyRequest indicates an expected call of DetachUserPolicyRequest
 func (mr *MockIAMAPIMockRecorder) DetachUserPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DetachUserPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).DetachUserPolicyRequest), arg0)
 }
 
 // EnableMFADevice mocks base method
 func (m *MockIAMAPI) EnableMFADevice(arg0 *iam.EnableMFADeviceInput) (*iam.EnableMFADeviceOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "EnableMFADevice", arg0)
 	ret0, _ := ret[0].(*iam.EnableMFADeviceOutput)
 	ret1, _ := ret[1].(error)
@@ -2157,11 +2446,13 @@ func (m *MockIAMAPI) EnableMFADevice(arg0 *iam.EnableMFADeviceInput) (*iam.Enabl
 
 // EnableMFADevice indicates an expected call of EnableMFADevice
 func (mr *MockIAMAPIMockRecorder) EnableMFADevice(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableMFADevice", reflect.TypeOf((*MockIAMAPI)(nil).EnableMFADevice), arg0)
 }
 
 // EnableMFADeviceWithContext mocks base method
 func (m *MockIAMAPI) EnableMFADeviceWithContext(arg0 aws.Context, arg1 *iam.EnableMFADeviceInput, arg2 ...request.Option) (*iam.EnableMFADeviceOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2174,12 +2465,14 @@ func (m *MockIAMAPI) EnableMFADeviceWithContext(arg0 aws.Context, arg1 *iam.Enab
 
 // EnableMFADeviceWithContext indicates an expected call of EnableMFADeviceWithContext
 func (mr *MockIAMAPIMockRecorder) EnableMFADeviceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableMFADeviceWithContext", reflect.TypeOf((*MockIAMAPI)(nil).EnableMFADeviceWithContext), varargs...)
 }
 
 // EnableMFADeviceRequest mocks base method
 func (m *MockIAMAPI) EnableMFADeviceRequest(arg0 *iam.EnableMFADeviceInput) (*request.Request, *iam.EnableMFADeviceOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "EnableMFADeviceRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.EnableMFADeviceOutput)
@@ -2188,11 +2481,13 @@ func (m *MockIAMAPI) EnableMFADeviceRequest(arg0 *iam.EnableMFADeviceInput) (*re
 
 // EnableMFADeviceRequest indicates an expected call of EnableMFADeviceRequest
 func (mr *MockIAMAPIMockRecorder) EnableMFADeviceRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableMFADeviceRequest", reflect.TypeOf((*MockIAMAPI)(nil).EnableMFADeviceRequest), arg0)
 }
 
 // GenerateCredentialReport mocks base method
 func (m *MockIAMAPI) GenerateCredentialReport(arg0 *iam.GenerateCredentialReportInput) (*iam.GenerateCredentialReportOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GenerateCredentialReport", arg0)
 	ret0, _ := ret[0].(*iam.GenerateCredentialReportOutput)
 	ret1, _ := ret[1].(error)
@@ -2201,11 +2496,13 @@ func (m *MockIAMAPI) GenerateCredentialReport(arg0 *iam.GenerateCredentialReport
 
 // GenerateCredentialReport indicates an expected call of GenerateCredentialReport
 func (mr *MockIAMAPIMockRecorder) GenerateCredentialReport(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateCredentialReport", reflect.TypeOf((*MockIAMAPI)(nil).GenerateCredentialReport), arg0)
 }
 
 // GenerateCredentialReportWithContext mocks base method
 func (m *MockIAMAPI) GenerateCredentialReportWithContext(arg0 aws.Context, arg1 *iam.GenerateCredentialReportInput, arg2 ...request.Option) (*iam.GenerateCredentialReportOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2218,12 +2515,14 @@ func (m *MockIAMAPI) GenerateCredentialReportWithContext(arg0 aws.Context, arg1 
 
 // GenerateCredentialReportWithContext indicates an expected call of GenerateCredentialReportWithContext
 func (mr *MockIAMAPIMockRecorder) GenerateCredentialReportWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateCredentialReportWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GenerateCredentialReportWithContext), varargs...)
 }
 
 // GenerateCredentialReportRequest mocks base method
 func (m *MockIAMAPI) GenerateCredentialReportRequest(arg0 *iam.GenerateCredentialReportInput) (*request.Request, *iam.GenerateCredentialReportOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GenerateCredentialReportRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GenerateCredentialReportOutput)
@@ -2232,11 +2531,13 @@ func (m *MockIAMAPI) GenerateCredentialReportRequest(arg0 *iam.GenerateCredentia
 
 // GenerateCredentialReportRequest indicates an expected call of GenerateCredentialReportRequest
 func (mr *MockIAMAPIMockRecorder) GenerateCredentialReportRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateCredentialReportRequest", reflect.TypeOf((*MockIAMAPI)(nil).GenerateCredentialReportRequest), arg0)
 }
 
 // GenerateOrganizationsAccessReport mocks base method
 func (m *MockIAMAPI) GenerateOrganizationsAccessReport(arg0 *iam.GenerateOrganizationsAccessReportInput) (*iam.GenerateOrganizationsAccessReportOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GenerateOrganizationsAccessReport", arg0)
 	ret0, _ := ret[0].(*iam.GenerateOrganizationsAccessReportOutput)
 	ret1, _ := ret[1].(error)
@@ -2245,11 +2546,13 @@ func (m *MockIAMAPI) GenerateOrganizationsAccessReport(arg0 *iam.GenerateOrganiz
 
 // GenerateOrganizationsAccessReport indicates an expected call of GenerateOrganizationsAccessReport
 func (mr *MockIAMAPIMockRecorder) GenerateOrganizationsAccessReport(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateOrganizationsAccessReport", reflect.TypeOf((*MockIAMAPI)(nil).GenerateOrganizationsAccessReport), arg0)
 }
 
 // GenerateOrganizationsAccessReportWithContext mocks base method
 func (m *MockIAMAPI) GenerateOrganizationsAccessReportWithContext(arg0 aws.Context, arg1 *iam.GenerateOrganizationsAccessReportInput, arg2 ...request.Option) (*iam.GenerateOrganizationsAccessReportOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2262,12 +2565,14 @@ func (m *MockIAMAPI) GenerateOrganizationsAccessReportWithContext(arg0 aws.Conte
 
 // GenerateOrganizationsAccessReportWithContext indicates an expected call of GenerateOrganizationsAccessReportWithContext
 func (mr *MockIAMAPIMockRecorder) GenerateOrganizationsAccessReportWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateOrganizationsAccessReportWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GenerateOrganizationsAccessReportWithContext), varargs...)
 }
 
 // GenerateOrganizationsAccessReportRequest mocks base method
 func (m *MockIAMAPI) GenerateOrganizationsAccessReportRequest(arg0 *iam.GenerateOrganizationsAccessReportInput) (*request.Request, *iam.GenerateOrganizationsAccessReportOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GenerateOrganizationsAccessReportRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GenerateOrganizationsAccessReportOutput)
@@ -2276,11 +2581,13 @@ func (m *MockIAMAPI) GenerateOrganizationsAccessReportRequest(arg0 *iam.Generate
 
 // GenerateOrganizationsAccessReportRequest indicates an expected call of GenerateOrganizationsAccessReportRequest
 func (mr *MockIAMAPIMockRecorder) GenerateOrganizationsAccessReportRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateOrganizationsAccessReportRequest", reflect.TypeOf((*MockIAMAPI)(nil).GenerateOrganizationsAccessReportRequest), arg0)
 }
 
 // GenerateServiceLastAccessedDetails mocks base method
 func (m *MockIAMAPI) GenerateServiceLastAccessedDetails(arg0 *iam.GenerateServiceLastAccessedDetailsInput) (*iam.GenerateServiceLastAccessedDetailsOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GenerateServiceLastAccessedDetails", arg0)
 	ret0, _ := ret[0].(*iam.GenerateServiceLastAccessedDetailsOutput)
 	ret1, _ := ret[1].(error)
@@ -2289,11 +2596,13 @@ func (m *MockIAMAPI) GenerateServiceLastAccessedDetails(arg0 *iam.GenerateServic
 
 // GenerateServiceLastAccessedDetails indicates an expected call of GenerateServiceLastAccessedDetails
 func (mr *MockIAMAPIMockRecorder) GenerateServiceLastAccessedDetails(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateServiceLastAccessedDetails", reflect.TypeOf((*MockIAMAPI)(nil).GenerateServiceLastAccessedDetails), arg0)
 }
 
 // GenerateServiceLastAccessedDetailsWithContext mocks base method
 func (m *MockIAMAPI) GenerateServiceLastAccessedDetailsWithContext(arg0 aws.Context, arg1 *iam.GenerateServiceLastAccessedDetailsInput, arg2 ...request.Option) (*iam.GenerateServiceLastAccessedDetailsOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2306,12 +2615,14 @@ func (m *MockIAMAPI) GenerateServiceLastAccessedDetailsWithContext(arg0 aws.Cont
 
 // GenerateServiceLastAccessedDetailsWithContext indicates an expected call of GenerateServiceLastAccessedDetailsWithContext
 func (mr *MockIAMAPIMockRecorder) GenerateServiceLastAccessedDetailsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateServiceLastAccessedDetailsWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GenerateServiceLastAccessedDetailsWithContext), varargs...)
 }
 
 // GenerateServiceLastAccessedDetailsRequest mocks base method
 func (m *MockIAMAPI) GenerateServiceLastAccessedDetailsRequest(arg0 *iam.GenerateServiceLastAccessedDetailsInput) (*request.Request, *iam.GenerateServiceLastAccessedDetailsOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GenerateServiceLastAccessedDetailsRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GenerateServiceLastAccessedDetailsOutput)
@@ -2320,11 +2631,13 @@ func (m *MockIAMAPI) GenerateServiceLastAccessedDetailsRequest(arg0 *iam.Generat
 
 // GenerateServiceLastAccessedDetailsRequest indicates an expected call of GenerateServiceLastAccessedDetailsRequest
 func (mr *MockIAMAPIMockRecorder) GenerateServiceLastAccessedDetailsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateServiceLastAccessedDetailsRequest", reflect.TypeOf((*MockIAMAPI)(nil).GenerateServiceLastAccessedDetailsRequest), arg0)
 }
 
 // GetAccessKeyLastUsed mocks base method
 func (m *MockIAMAPI) GetAccessKeyLastUsed(arg0 *iam.GetAccessKeyLastUsedInput) (*iam.GetAccessKeyLastUsedOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccessKeyLastUsed", arg0)
 	ret0, _ := ret[0].(*iam.GetAccessKeyLastUsedOutput)
 	ret1, _ := ret[1].(error)
@@ -2333,11 +2646,13 @@ func (m *MockIAMAPI) GetAccessKeyLastUsed(arg0 *iam.GetAccessKeyLastUsedInput) (
 
 // GetAccessKeyLastUsed indicates an expected call of GetAccessKeyLastUsed
 func (mr *MockIAMAPIMockRecorder) GetAccessKeyLastUsed(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccessKeyLastUsed", reflect.TypeOf((*MockIAMAPI)(nil).GetAccessKeyLastUsed), arg0)
 }
 
 // GetAccessKeyLastUsedWithContext mocks base method
 func (m *MockIAMAPI) GetAccessKeyLastUsedWithContext(arg0 aws.Context, arg1 *iam.GetAccessKeyLastUsedInput, arg2 ...request.Option) (*iam.GetAccessKeyLastUsedOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2350,12 +2665,14 @@ func (m *MockIAMAPI) GetAccessKeyLastUsedWithContext(arg0 aws.Context, arg1 *iam
 
 // GetAccessKeyLastUsedWithContext indicates an expected call of GetAccessKeyLastUsedWithContext
 func (mr *MockIAMAPIMockRecorder) GetAccessKeyLastUsedWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccessKeyLastUsedWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetAccessKeyLastUsedWithContext), varargs...)
 }
 
 // GetAccessKeyLastUsedRequest mocks base method
 func (m *MockIAMAPI) GetAccessKeyLastUsedRequest(arg0 *iam.GetAccessKeyLastUsedInput) (*request.Request, *iam.GetAccessKeyLastUsedOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccessKeyLastUsedRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetAccessKeyLastUsedOutput)
@@ -2364,11 +2681,13 @@ func (m *MockIAMAPI) GetAccessKeyLastUsedRequest(arg0 *iam.GetAccessKeyLastUsedI
 
 // GetAccessKeyLastUsedRequest indicates an expected call of GetAccessKeyLastUsedRequest
 func (mr *MockIAMAPIMockRecorder) GetAccessKeyLastUsedRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccessKeyLastUsedRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetAccessKeyLastUsedRequest), arg0)
 }
 
 // GetAccountAuthorizationDetails mocks base method
 func (m *MockIAMAPI) GetAccountAuthorizationDetails(arg0 *iam.GetAccountAuthorizationDetailsInput) (*iam.GetAccountAuthorizationDetailsOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountAuthorizationDetails", arg0)
 	ret0, _ := ret[0].(*iam.GetAccountAuthorizationDetailsOutput)
 	ret1, _ := ret[1].(error)
@@ -2377,11 +2696,13 @@ func (m *MockIAMAPI) GetAccountAuthorizationDetails(arg0 *iam.GetAccountAuthoriz
 
 // GetAccountAuthorizationDetails indicates an expected call of GetAccountAuthorizationDetails
 func (mr *MockIAMAPIMockRecorder) GetAccountAuthorizationDetails(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountAuthorizationDetails", reflect.TypeOf((*MockIAMAPI)(nil).GetAccountAuthorizationDetails), arg0)
 }
 
 // GetAccountAuthorizationDetailsWithContext mocks base method
 func (m *MockIAMAPI) GetAccountAuthorizationDetailsWithContext(arg0 aws.Context, arg1 *iam.GetAccountAuthorizationDetailsInput, arg2 ...request.Option) (*iam.GetAccountAuthorizationDetailsOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2394,12 +2715,14 @@ func (m *MockIAMAPI) GetAccountAuthorizationDetailsWithContext(arg0 aws.Context,
 
 // GetAccountAuthorizationDetailsWithContext indicates an expected call of GetAccountAuthorizationDetailsWithContext
 func (mr *MockIAMAPIMockRecorder) GetAccountAuthorizationDetailsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountAuthorizationDetailsWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetAccountAuthorizationDetailsWithContext), varargs...)
 }
 
 // GetAccountAuthorizationDetailsRequest mocks base method
 func (m *MockIAMAPI) GetAccountAuthorizationDetailsRequest(arg0 *iam.GetAccountAuthorizationDetailsInput) (*request.Request, *iam.GetAccountAuthorizationDetailsOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountAuthorizationDetailsRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetAccountAuthorizationDetailsOutput)
@@ -2408,11 +2731,13 @@ func (m *MockIAMAPI) GetAccountAuthorizationDetailsRequest(arg0 *iam.GetAccountA
 
 // GetAccountAuthorizationDetailsRequest indicates an expected call of GetAccountAuthorizationDetailsRequest
 func (mr *MockIAMAPIMockRecorder) GetAccountAuthorizationDetailsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountAuthorizationDetailsRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetAccountAuthorizationDetailsRequest), arg0)
 }
 
 // GetAccountAuthorizationDetailsPages mocks base method
 func (m *MockIAMAPI) GetAccountAuthorizationDetailsPages(arg0 *iam.GetAccountAuthorizationDetailsInput, arg1 func(*iam.GetAccountAuthorizationDetailsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountAuthorizationDetailsPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -2420,11 +2745,13 @@ func (m *MockIAMAPI) GetAccountAuthorizationDetailsPages(arg0 *iam.GetAccountAut
 
 // GetAccountAuthorizationDetailsPages indicates an expected call of GetAccountAuthorizationDetailsPages
 func (mr *MockIAMAPIMockRecorder) GetAccountAuthorizationDetailsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountAuthorizationDetailsPages", reflect.TypeOf((*MockIAMAPI)(nil).GetAccountAuthorizationDetailsPages), arg0, arg1)
 }
 
 // GetAccountAuthorizationDetailsPagesWithContext mocks base method
 func (m *MockIAMAPI) GetAccountAuthorizationDetailsPagesWithContext(arg0 aws.Context, arg1 *iam.GetAccountAuthorizationDetailsInput, arg2 func(*iam.GetAccountAuthorizationDetailsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -2436,12 +2763,14 @@ func (m *MockIAMAPI) GetAccountAuthorizationDetailsPagesWithContext(arg0 aws.Con
 
 // GetAccountAuthorizationDetailsPagesWithContext indicates an expected call of GetAccountAuthorizationDetailsPagesWithContext
 func (mr *MockIAMAPIMockRecorder) GetAccountAuthorizationDetailsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountAuthorizationDetailsPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetAccountAuthorizationDetailsPagesWithContext), varargs...)
 }
 
 // GetAccountPasswordPolicy mocks base method
 func (m *MockIAMAPI) GetAccountPasswordPolicy(arg0 *iam.GetAccountPasswordPolicyInput) (*iam.GetAccountPasswordPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountPasswordPolicy", arg0)
 	ret0, _ := ret[0].(*iam.GetAccountPasswordPolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -2450,11 +2779,13 @@ func (m *MockIAMAPI) GetAccountPasswordPolicy(arg0 *iam.GetAccountPasswordPolicy
 
 // GetAccountPasswordPolicy indicates an expected call of GetAccountPasswordPolicy
 func (mr *MockIAMAPIMockRecorder) GetAccountPasswordPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountPasswordPolicy", reflect.TypeOf((*MockIAMAPI)(nil).GetAccountPasswordPolicy), arg0)
 }
 
 // GetAccountPasswordPolicyWithContext mocks base method
 func (m *MockIAMAPI) GetAccountPasswordPolicyWithContext(arg0 aws.Context, arg1 *iam.GetAccountPasswordPolicyInput, arg2 ...request.Option) (*iam.GetAccountPasswordPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2467,12 +2798,14 @@ func (m *MockIAMAPI) GetAccountPasswordPolicyWithContext(arg0 aws.Context, arg1 
 
 // GetAccountPasswordPolicyWithContext indicates an expected call of GetAccountPasswordPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) GetAccountPasswordPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountPasswordPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetAccountPasswordPolicyWithContext), varargs...)
 }
 
 // GetAccountPasswordPolicyRequest mocks base method
 func (m *MockIAMAPI) GetAccountPasswordPolicyRequest(arg0 *iam.GetAccountPasswordPolicyInput) (*request.Request, *iam.GetAccountPasswordPolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountPasswordPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetAccountPasswordPolicyOutput)
@@ -2481,11 +2814,13 @@ func (m *MockIAMAPI) GetAccountPasswordPolicyRequest(arg0 *iam.GetAccountPasswor
 
 // GetAccountPasswordPolicyRequest indicates an expected call of GetAccountPasswordPolicyRequest
 func (mr *MockIAMAPIMockRecorder) GetAccountPasswordPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountPasswordPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetAccountPasswordPolicyRequest), arg0)
 }
 
 // GetAccountSummary mocks base method
 func (m *MockIAMAPI) GetAccountSummary(arg0 *iam.GetAccountSummaryInput) (*iam.GetAccountSummaryOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountSummary", arg0)
 	ret0, _ := ret[0].(*iam.GetAccountSummaryOutput)
 	ret1, _ := ret[1].(error)
@@ -2494,11 +2829,13 @@ func (m *MockIAMAPI) GetAccountSummary(arg0 *iam.GetAccountSummaryInput) (*iam.G
 
 // GetAccountSummary indicates an expected call of GetAccountSummary
 func (mr *MockIAMAPIMockRecorder) GetAccountSummary(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountSummary", reflect.TypeOf((*MockIAMAPI)(nil).GetAccountSummary), arg0)
 }
 
 // GetAccountSummaryWithContext mocks base method
 func (m *MockIAMAPI) GetAccountSummaryWithContext(arg0 aws.Context, arg1 *iam.GetAccountSummaryInput, arg2 ...request.Option) (*iam.GetAccountSummaryOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2511,12 +2848,14 @@ func (m *MockIAMAPI) GetAccountSummaryWithContext(arg0 aws.Context, arg1 *iam.Ge
 
 // GetAccountSummaryWithContext indicates an expected call of GetAccountSummaryWithContext
 func (mr *MockIAMAPIMockRecorder) GetAccountSummaryWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountSummaryWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetAccountSummaryWithContext), varargs...)
 }
 
 // GetAccountSummaryRequest mocks base method
 func (m *MockIAMAPI) GetAccountSummaryRequest(arg0 *iam.GetAccountSummaryInput) (*request.Request, *iam.GetAccountSummaryOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountSummaryRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetAccountSummaryOutput)
@@ -2525,11 +2864,13 @@ func (m *MockIAMAPI) GetAccountSummaryRequest(arg0 *iam.GetAccountSummaryInput) 
 
 // GetAccountSummaryRequest indicates an expected call of GetAccountSummaryRequest
 func (mr *MockIAMAPIMockRecorder) GetAccountSummaryRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountSummaryRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetAccountSummaryRequest), arg0)
 }
 
 // GetContextKeysForCustomPolicy mocks base method
 func (m *MockIAMAPI) GetContextKeysForCustomPolicy(arg0 *iam.GetContextKeysForCustomPolicyInput) (*iam.GetContextKeysForPolicyResponse, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetContextKeysForCustomPolicy", arg0)
 	ret0, _ := ret[0].(*iam.GetContextKeysForPolicyResponse)
 	ret1, _ := ret[1].(error)
@@ -2538,11 +2879,13 @@ func (m *MockIAMAPI) GetContextKeysForCustomPolicy(arg0 *iam.GetContextKeysForCu
 
 // GetContextKeysForCustomPolicy indicates an expected call of GetContextKeysForCustomPolicy
 func (mr *MockIAMAPIMockRecorder) GetContextKeysForCustomPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContextKeysForCustomPolicy", reflect.TypeOf((*MockIAMAPI)(nil).GetContextKeysForCustomPolicy), arg0)
 }
 
 // GetContextKeysForCustomPolicyWithContext mocks base method
 func (m *MockIAMAPI) GetContextKeysForCustomPolicyWithContext(arg0 aws.Context, arg1 *iam.GetContextKeysForCustomPolicyInput, arg2 ...request.Option) (*iam.GetContextKeysForPolicyResponse, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2555,12 +2898,14 @@ func (m *MockIAMAPI) GetContextKeysForCustomPolicyWithContext(arg0 aws.Context, 
 
 // GetContextKeysForCustomPolicyWithContext indicates an expected call of GetContextKeysForCustomPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) GetContextKeysForCustomPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContextKeysForCustomPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetContextKeysForCustomPolicyWithContext), varargs...)
 }
 
 // GetContextKeysForCustomPolicyRequest mocks base method
 func (m *MockIAMAPI) GetContextKeysForCustomPolicyRequest(arg0 *iam.GetContextKeysForCustomPolicyInput) (*request.Request, *iam.GetContextKeysForPolicyResponse) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetContextKeysForCustomPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetContextKeysForPolicyResponse)
@@ -2569,11 +2914,13 @@ func (m *MockIAMAPI) GetContextKeysForCustomPolicyRequest(arg0 *iam.GetContextKe
 
 // GetContextKeysForCustomPolicyRequest indicates an expected call of GetContextKeysForCustomPolicyRequest
 func (mr *MockIAMAPIMockRecorder) GetContextKeysForCustomPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContextKeysForCustomPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetContextKeysForCustomPolicyRequest), arg0)
 }
 
 // GetContextKeysForPrincipalPolicy mocks base method
 func (m *MockIAMAPI) GetContextKeysForPrincipalPolicy(arg0 *iam.GetContextKeysForPrincipalPolicyInput) (*iam.GetContextKeysForPolicyResponse, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetContextKeysForPrincipalPolicy", arg0)
 	ret0, _ := ret[0].(*iam.GetContextKeysForPolicyResponse)
 	ret1, _ := ret[1].(error)
@@ -2582,11 +2929,13 @@ func (m *MockIAMAPI) GetContextKeysForPrincipalPolicy(arg0 *iam.GetContextKeysFo
 
 // GetContextKeysForPrincipalPolicy indicates an expected call of GetContextKeysForPrincipalPolicy
 func (mr *MockIAMAPIMockRecorder) GetContextKeysForPrincipalPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContextKeysForPrincipalPolicy", reflect.TypeOf((*MockIAMAPI)(nil).GetContextKeysForPrincipalPolicy), arg0)
 }
 
 // GetContextKeysForPrincipalPolicyWithContext mocks base method
 func (m *MockIAMAPI) GetContextKeysForPrincipalPolicyWithContext(arg0 aws.Context, arg1 *iam.GetContextKeysForPrincipalPolicyInput, arg2 ...request.Option) (*iam.GetContextKeysForPolicyResponse, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2599,12 +2948,14 @@ func (m *MockIAMAPI) GetContextKeysForPrincipalPolicyWithContext(arg0 aws.Contex
 
 // GetContextKeysForPrincipalPolicyWithContext indicates an expected call of GetContextKeysForPrincipalPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) GetContextKeysForPrincipalPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContextKeysForPrincipalPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetContextKeysForPrincipalPolicyWithContext), varargs...)
 }
 
 // GetContextKeysForPrincipalPolicyRequest mocks base method
 func (m *MockIAMAPI) GetContextKeysForPrincipalPolicyRequest(arg0 *iam.GetContextKeysForPrincipalPolicyInput) (*request.Request, *iam.GetContextKeysForPolicyResponse) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetContextKeysForPrincipalPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetContextKeysForPolicyResponse)
@@ -2613,11 +2964,13 @@ func (m *MockIAMAPI) GetContextKeysForPrincipalPolicyRequest(arg0 *iam.GetContex
 
 // GetContextKeysForPrincipalPolicyRequest indicates an expected call of GetContextKeysForPrincipalPolicyRequest
 func (mr *MockIAMAPIMockRecorder) GetContextKeysForPrincipalPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContextKeysForPrincipalPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetContextKeysForPrincipalPolicyRequest), arg0)
 }
 
 // GetCredentialReport mocks base method
 func (m *MockIAMAPI) GetCredentialReport(arg0 *iam.GetCredentialReportInput) (*iam.GetCredentialReportOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetCredentialReport", arg0)
 	ret0, _ := ret[0].(*iam.GetCredentialReportOutput)
 	ret1, _ := ret[1].(error)
@@ -2626,11 +2979,13 @@ func (m *MockIAMAPI) GetCredentialReport(arg0 *iam.GetCredentialReportInput) (*i
 
 // GetCredentialReport indicates an expected call of GetCredentialReport
 func (mr *MockIAMAPIMockRecorder) GetCredentialReport(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCredentialReport", reflect.TypeOf((*MockIAMAPI)(nil).GetCredentialReport), arg0)
 }
 
 // GetCredentialReportWithContext mocks base method
 func (m *MockIAMAPI) GetCredentialReportWithContext(arg0 aws.Context, arg1 *iam.GetCredentialReportInput, arg2 ...request.Option) (*iam.GetCredentialReportOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2643,12 +2998,14 @@ func (m *MockIAMAPI) GetCredentialReportWithContext(arg0 aws.Context, arg1 *iam.
 
 // GetCredentialReportWithContext indicates an expected call of GetCredentialReportWithContext
 func (mr *MockIAMAPIMockRecorder) GetCredentialReportWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCredentialReportWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetCredentialReportWithContext), varargs...)
 }
 
 // GetCredentialReportRequest mocks base method
 func (m *MockIAMAPI) GetCredentialReportRequest(arg0 *iam.GetCredentialReportInput) (*request.Request, *iam.GetCredentialReportOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetCredentialReportRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetCredentialReportOutput)
@@ -2657,11 +3014,13 @@ func (m *MockIAMAPI) GetCredentialReportRequest(arg0 *iam.GetCredentialReportInp
 
 // GetCredentialReportRequest indicates an expected call of GetCredentialReportRequest
 func (mr *MockIAMAPIMockRecorder) GetCredentialReportRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCredentialReportRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetCredentialReportRequest), arg0)
 }
 
 // GetGroup mocks base method
 func (m *MockIAMAPI) GetGroup(arg0 *iam.GetGroupInput) (*iam.GetGroupOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetGroup", arg0)
 	ret0, _ := ret[0].(*iam.GetGroupOutput)
 	ret1, _ := ret[1].(error)
@@ -2670,11 +3029,13 @@ func (m *MockIAMAPI) GetGroup(arg0 *iam.GetGroupInput) (*iam.GetGroupOutput, err
 
 // GetGroup indicates an expected call of GetGroup
 func (mr *MockIAMAPIMockRecorder) GetGroup(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroup", reflect.TypeOf((*MockIAMAPI)(nil).GetGroup), arg0)
 }
 
 // GetGroupWithContext mocks base method
 func (m *MockIAMAPI) GetGroupWithContext(arg0 aws.Context, arg1 *iam.GetGroupInput, arg2 ...request.Option) (*iam.GetGroupOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2687,12 +3048,14 @@ func (m *MockIAMAPI) GetGroupWithContext(arg0 aws.Context, arg1 *iam.GetGroupInp
 
 // GetGroupWithContext indicates an expected call of GetGroupWithContext
 func (mr *MockIAMAPIMockRecorder) GetGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroupWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetGroupWithContext), varargs...)
 }
 
 // GetGroupRequest mocks base method
 func (m *MockIAMAPI) GetGroupRequest(arg0 *iam.GetGroupInput) (*request.Request, *iam.GetGroupOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetGroupRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetGroupOutput)
@@ -2701,11 +3064,13 @@ func (m *MockIAMAPI) GetGroupRequest(arg0 *iam.GetGroupInput) (*request.Request,
 
 // GetGroupRequest indicates an expected call of GetGroupRequest
 func (mr *MockIAMAPIMockRecorder) GetGroupRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroupRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetGroupRequest), arg0)
 }
 
 // GetGroupPages mocks base method
 func (m *MockIAMAPI) GetGroupPages(arg0 *iam.GetGroupInput, arg1 func(*iam.GetGroupOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetGroupPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -2713,11 +3078,13 @@ func (m *MockIAMAPI) GetGroupPages(arg0 *iam.GetGroupInput, arg1 func(*iam.GetGr
 
 // GetGroupPages indicates an expected call of GetGroupPages
 func (mr *MockIAMAPIMockRecorder) GetGroupPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroupPages", reflect.TypeOf((*MockIAMAPI)(nil).GetGroupPages), arg0, arg1)
 }
 
 // GetGroupPagesWithContext mocks base method
 func (m *MockIAMAPI) GetGroupPagesWithContext(arg0 aws.Context, arg1 *iam.GetGroupInput, arg2 func(*iam.GetGroupOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -2729,12 +3096,14 @@ func (m *MockIAMAPI) GetGroupPagesWithContext(arg0 aws.Context, arg1 *iam.GetGro
 
 // GetGroupPagesWithContext indicates an expected call of GetGroupPagesWithContext
 func (mr *MockIAMAPIMockRecorder) GetGroupPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroupPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetGroupPagesWithContext), varargs...)
 }
 
 // GetGroupPolicy mocks base method
 func (m *MockIAMAPI) GetGroupPolicy(arg0 *iam.GetGroupPolicyInput) (*iam.GetGroupPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetGroupPolicy", arg0)
 	ret0, _ := ret[0].(*iam.GetGroupPolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -2743,11 +3112,13 @@ func (m *MockIAMAPI) GetGroupPolicy(arg0 *iam.GetGroupPolicyInput) (*iam.GetGrou
 
 // GetGroupPolicy indicates an expected call of GetGroupPolicy
 func (mr *MockIAMAPIMockRecorder) GetGroupPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroupPolicy", reflect.TypeOf((*MockIAMAPI)(nil).GetGroupPolicy), arg0)
 }
 
 // GetGroupPolicyWithContext mocks base method
 func (m *MockIAMAPI) GetGroupPolicyWithContext(arg0 aws.Context, arg1 *iam.GetGroupPolicyInput, arg2 ...request.Option) (*iam.GetGroupPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2760,12 +3131,14 @@ func (m *MockIAMAPI) GetGroupPolicyWithContext(arg0 aws.Context, arg1 *iam.GetGr
 
 // GetGroupPolicyWithContext indicates an expected call of GetGroupPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) GetGroupPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroupPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetGroupPolicyWithContext), varargs...)
 }
 
 // GetGroupPolicyRequest mocks base method
 func (m *MockIAMAPI) GetGroupPolicyRequest(arg0 *iam.GetGroupPolicyInput) (*request.Request, *iam.GetGroupPolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetGroupPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetGroupPolicyOutput)
@@ -2774,11 +3147,13 @@ func (m *MockIAMAPI) GetGroupPolicyRequest(arg0 *iam.GetGroupPolicyInput) (*requ
 
 // GetGroupPolicyRequest indicates an expected call of GetGroupPolicyRequest
 func (mr *MockIAMAPIMockRecorder) GetGroupPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroupPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetGroupPolicyRequest), arg0)
 }
 
 // GetInstanceProfile mocks base method
 func (m *MockIAMAPI) GetInstanceProfile(arg0 *iam.GetInstanceProfileInput) (*iam.GetInstanceProfileOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetInstanceProfile", arg0)
 	ret0, _ := ret[0].(*iam.GetInstanceProfileOutput)
 	ret1, _ := ret[1].(error)
@@ -2787,11 +3162,13 @@ func (m *MockIAMAPI) GetInstanceProfile(arg0 *iam.GetInstanceProfileInput) (*iam
 
 // GetInstanceProfile indicates an expected call of GetInstanceProfile
 func (mr *MockIAMAPIMockRecorder) GetInstanceProfile(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetInstanceProfile", reflect.TypeOf((*MockIAMAPI)(nil).GetInstanceProfile), arg0)
 }
 
 // GetInstanceProfileWithContext mocks base method
 func (m *MockIAMAPI) GetInstanceProfileWithContext(arg0 aws.Context, arg1 *iam.GetInstanceProfileInput, arg2 ...request.Option) (*iam.GetInstanceProfileOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2804,12 +3181,14 @@ func (m *MockIAMAPI) GetInstanceProfileWithContext(arg0 aws.Context, arg1 *iam.G
 
 // GetInstanceProfileWithContext indicates an expected call of GetInstanceProfileWithContext
 func (mr *MockIAMAPIMockRecorder) GetInstanceProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetInstanceProfileWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetInstanceProfileWithContext), varargs...)
 }
 
 // GetInstanceProfileRequest mocks base method
 func (m *MockIAMAPI) GetInstanceProfileRequest(arg0 *iam.GetInstanceProfileInput) (*request.Request, *iam.GetInstanceProfileOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetInstanceProfileRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetInstanceProfileOutput)
@@ -2818,11 +3197,13 @@ func (m *MockIAMAPI) GetInstanceProfileRequest(arg0 *iam.GetInstanceProfileInput
 
 // GetInstanceProfileRequest indicates an expected call of GetInstanceProfileRequest
 func (mr *MockIAMAPIMockRecorder) GetInstanceProfileRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetInstanceProfileRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetInstanceProfileRequest), arg0)
 }
 
 // GetLoginProfile mocks base method
 func (m *MockIAMAPI) GetLoginProfile(arg0 *iam.GetLoginProfileInput) (*iam.GetLoginProfileOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetLoginProfile", arg0)
 	ret0, _ := ret[0].(*iam.GetLoginProfileOutput)
 	ret1, _ := ret[1].(error)
@@ -2831,11 +3212,13 @@ func (m *MockIAMAPI) GetLoginProfile(arg0 *iam.GetLoginProfileInput) (*iam.GetLo
 
 // GetLoginProfile indicates an expected call of GetLoginProfile
 func (mr *MockIAMAPIMockRecorder) GetLoginProfile(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLoginProfile", reflect.TypeOf((*MockIAMAPI)(nil).GetLoginProfile), arg0)
 }
 
 // GetLoginProfileWithContext mocks base method
 func (m *MockIAMAPI) GetLoginProfileWithContext(arg0 aws.Context, arg1 *iam.GetLoginProfileInput, arg2 ...request.Option) (*iam.GetLoginProfileOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2848,12 +3231,14 @@ func (m *MockIAMAPI) GetLoginProfileWithContext(arg0 aws.Context, arg1 *iam.GetL
 
 // GetLoginProfileWithContext indicates an expected call of GetLoginProfileWithContext
 func (mr *MockIAMAPIMockRecorder) GetLoginProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLoginProfileWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetLoginProfileWithContext), varargs...)
 }
 
 // GetLoginProfileRequest mocks base method
 func (m *MockIAMAPI) GetLoginProfileRequest(arg0 *iam.GetLoginProfileInput) (*request.Request, *iam.GetLoginProfileOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetLoginProfileRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetLoginProfileOutput)
@@ -2862,11 +3247,13 @@ func (m *MockIAMAPI) GetLoginProfileRequest(arg0 *iam.GetLoginProfileInput) (*re
 
 // GetLoginProfileRequest indicates an expected call of GetLoginProfileRequest
 func (mr *MockIAMAPIMockRecorder) GetLoginProfileRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLoginProfileRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetLoginProfileRequest), arg0)
 }
 
 // GetOpenIDConnectProvider mocks base method
 func (m *MockIAMAPI) GetOpenIDConnectProvider(arg0 *iam.GetOpenIDConnectProviderInput) (*iam.GetOpenIDConnectProviderOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetOpenIDConnectProvider", arg0)
 	ret0, _ := ret[0].(*iam.GetOpenIDConnectProviderOutput)
 	ret1, _ := ret[1].(error)
@@ -2875,11 +3262,13 @@ func (m *MockIAMAPI) GetOpenIDConnectProvider(arg0 *iam.GetOpenIDConnectProvider
 
 // GetOpenIDConnectProvider indicates an expected call of GetOpenIDConnectProvider
 func (mr *MockIAMAPIMockRecorder) GetOpenIDConnectProvider(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOpenIDConnectProvider", reflect.TypeOf((*MockIAMAPI)(nil).GetOpenIDConnectProvider), arg0)
 }
 
 // GetOpenIDConnectProviderWithContext mocks base method
 func (m *MockIAMAPI) GetOpenIDConnectProviderWithContext(arg0 aws.Context, arg1 *iam.GetOpenIDConnectProviderInput, arg2 ...request.Option) (*iam.GetOpenIDConnectProviderOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2892,12 +3281,14 @@ func (m *MockIAMAPI) GetOpenIDConnectProviderWithContext(arg0 aws.Context, arg1 
 
 // GetOpenIDConnectProviderWithContext indicates an expected call of GetOpenIDConnectProviderWithContext
 func (mr *MockIAMAPIMockRecorder) GetOpenIDConnectProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOpenIDConnectProviderWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetOpenIDConnectProviderWithContext), varargs...)
 }
 
 // GetOpenIDConnectProviderRequest mocks base method
 func (m *MockIAMAPI) GetOpenIDConnectProviderRequest(arg0 *iam.GetOpenIDConnectProviderInput) (*request.Request, *iam.GetOpenIDConnectProviderOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetOpenIDConnectProviderRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetOpenIDConnectProviderOutput)
@@ -2906,11 +3297,13 @@ func (m *MockIAMAPI) GetOpenIDConnectProviderRequest(arg0 *iam.GetOpenIDConnectP
 
 // GetOpenIDConnectProviderRequest indicates an expected call of GetOpenIDConnectProviderRequest
 func (mr *MockIAMAPIMockRecorder) GetOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOpenIDConnectProviderRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetOpenIDConnectProviderRequest), arg0)
 }
 
 // GetOrganizationsAccessReport mocks base method
 func (m *MockIAMAPI) GetOrganizationsAccessReport(arg0 *iam.GetOrganizationsAccessReportInput) (*iam.GetOrganizationsAccessReportOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetOrganizationsAccessReport", arg0)
 	ret0, _ := ret[0].(*iam.GetOrganizationsAccessReportOutput)
 	ret1, _ := ret[1].(error)
@@ -2919,11 +3312,13 @@ func (m *MockIAMAPI) GetOrganizationsAccessReport(arg0 *iam.GetOrganizationsAcce
 
 // GetOrganizationsAccessReport indicates an expected call of GetOrganizationsAccessReport
 func (mr *MockIAMAPIMockRecorder) GetOrganizationsAccessReport(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrganizationsAccessReport", reflect.TypeOf((*MockIAMAPI)(nil).GetOrganizationsAccessReport), arg0)
 }
 
 // GetOrganizationsAccessReportWithContext mocks base method
 func (m *MockIAMAPI) GetOrganizationsAccessReportWithContext(arg0 aws.Context, arg1 *iam.GetOrganizationsAccessReportInput, arg2 ...request.Option) (*iam.GetOrganizationsAccessReportOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2936,12 +3331,14 @@ func (m *MockIAMAPI) GetOrganizationsAccessReportWithContext(arg0 aws.Context, a
 
 // GetOrganizationsAccessReportWithContext indicates an expected call of GetOrganizationsAccessReportWithContext
 func (mr *MockIAMAPIMockRecorder) GetOrganizationsAccessReportWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrganizationsAccessReportWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetOrganizationsAccessReportWithContext), varargs...)
 }
 
 // GetOrganizationsAccessReportRequest mocks base method
 func (m *MockIAMAPI) GetOrganizationsAccessReportRequest(arg0 *iam.GetOrganizationsAccessReportInput) (*request.Request, *iam.GetOrganizationsAccessReportOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetOrganizationsAccessReportRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetOrganizationsAccessReportOutput)
@@ -2950,11 +3347,13 @@ func (m *MockIAMAPI) GetOrganizationsAccessReportRequest(arg0 *iam.GetOrganizati
 
 // GetOrganizationsAccessReportRequest indicates an expected call of GetOrganizationsAccessReportRequest
 func (mr *MockIAMAPIMockRecorder) GetOrganizationsAccessReportRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrganizationsAccessReportRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetOrganizationsAccessReportRequest), arg0)
 }
 
 // GetPolicy mocks base method
 func (m *MockIAMAPI) GetPolicy(arg0 *iam.GetPolicyInput) (*iam.GetPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetPolicy", arg0)
 	ret0, _ := ret[0].(*iam.GetPolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -2963,11 +3362,13 @@ func (m *MockIAMAPI) GetPolicy(arg0 *iam.GetPolicyInput) (*iam.GetPolicyOutput, 
 
 // GetPolicy indicates an expected call of GetPolicy
 func (mr *MockIAMAPIMockRecorder) GetPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPolicy", reflect.TypeOf((*MockIAMAPI)(nil).GetPolicy), arg0)
 }
 
 // GetPolicyWithContext mocks base method
 func (m *MockIAMAPI) GetPolicyWithContext(arg0 aws.Context, arg1 *iam.GetPolicyInput, arg2 ...request.Option) (*iam.GetPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2980,12 +3381,14 @@ func (m *MockIAMAPI) GetPolicyWithContext(arg0 aws.Context, arg1 *iam.GetPolicyI
 
 // GetPolicyWithContext indicates an expected call of GetPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) GetPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetPolicyWithContext), varargs...)
 }
 
 // GetPolicyRequest mocks base method
 func (m *MockIAMAPI) GetPolicyRequest(arg0 *iam.GetPolicyInput) (*request.Request, *iam.GetPolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetPolicyOutput)
@@ -2994,11 +3397,13 @@ func (m *MockIAMAPI) GetPolicyRequest(arg0 *iam.GetPolicyInput) (*request.Reques
 
 // GetPolicyRequest indicates an expected call of GetPolicyRequest
 func (mr *MockIAMAPIMockRecorder) GetPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetPolicyRequest), arg0)
 }
 
 // GetPolicyVersion mocks base method
 func (m *MockIAMAPI) GetPolicyVersion(arg0 *iam.GetPolicyVersionInput) (*iam.GetPolicyVersionOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetPolicyVersion", arg0)
 	ret0, _ := ret[0].(*iam.GetPolicyVersionOutput)
 	ret1, _ := ret[1].(error)
@@ -3007,11 +3412,13 @@ func (m *MockIAMAPI) GetPolicyVersion(arg0 *iam.GetPolicyVersionInput) (*iam.Get
 
 // GetPolicyVersion indicates an expected call of GetPolicyVersion
 func (mr *MockIAMAPIMockRecorder) GetPolicyVersion(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPolicyVersion", reflect.TypeOf((*MockIAMAPI)(nil).GetPolicyVersion), arg0)
 }
 
 // GetPolicyVersionWithContext mocks base method
 func (m *MockIAMAPI) GetPolicyVersionWithContext(arg0 aws.Context, arg1 *iam.GetPolicyVersionInput, arg2 ...request.Option) (*iam.GetPolicyVersionOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3024,12 +3431,14 @@ func (m *MockIAMAPI) GetPolicyVersionWithContext(arg0 aws.Context, arg1 *iam.Get
 
 // GetPolicyVersionWithContext indicates an expected call of GetPolicyVersionWithContext
 func (mr *MockIAMAPIMockRecorder) GetPolicyVersionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPolicyVersionWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetPolicyVersionWithContext), varargs...)
 }
 
 // GetPolicyVersionRequest mocks base method
 func (m *MockIAMAPI) GetPolicyVersionRequest(arg0 *iam.GetPolicyVersionInput) (*request.Request, *iam.GetPolicyVersionOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetPolicyVersionRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetPolicyVersionOutput)
@@ -3038,11 +3447,13 @@ func (m *MockIAMAPI) GetPolicyVersionRequest(arg0 *iam.GetPolicyVersionInput) (*
 
 // GetPolicyVersionRequest indicates an expected call of GetPolicyVersionRequest
 func (mr *MockIAMAPIMockRecorder) GetPolicyVersionRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPolicyVersionRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetPolicyVersionRequest), arg0)
 }
 
 // GetRole mocks base method
 func (m *MockIAMAPI) GetRole(arg0 *iam.GetRoleInput) (*iam.GetRoleOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetRole", arg0)
 	ret0, _ := ret[0].(*iam.GetRoleOutput)
 	ret1, _ := ret[1].(error)
@@ -3051,11 +3462,13 @@ func (m *MockIAMAPI) GetRole(arg0 *iam.GetRoleInput) (*iam.GetRoleOutput, error)
 
 // GetRole indicates an expected call of GetRole
 func (mr *MockIAMAPIMockRecorder) GetRole(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRole", reflect.TypeOf((*MockIAMAPI)(nil).GetRole), arg0)
 }
 
 // GetRoleWithContext mocks base method
 func (m *MockIAMAPI) GetRoleWithContext(arg0 aws.Context, arg1 *iam.GetRoleInput, arg2 ...request.Option) (*iam.GetRoleOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3068,12 +3481,14 @@ func (m *MockIAMAPI) GetRoleWithContext(arg0 aws.Context, arg1 *iam.GetRoleInput
 
 // GetRoleWithContext indicates an expected call of GetRoleWithContext
 func (mr *MockIAMAPIMockRecorder) GetRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoleWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetRoleWithContext), varargs...)
 }
 
 // GetRoleRequest mocks base method
 func (m *MockIAMAPI) GetRoleRequest(arg0 *iam.GetRoleInput) (*request.Request, *iam.GetRoleOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetRoleRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetRoleOutput)
@@ -3082,11 +3497,13 @@ func (m *MockIAMAPI) GetRoleRequest(arg0 *iam.GetRoleInput) (*request.Request, *
 
 // GetRoleRequest indicates an expected call of GetRoleRequest
 func (mr *MockIAMAPIMockRecorder) GetRoleRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoleRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetRoleRequest), arg0)
 }
 
 // GetRolePolicy mocks base method
 func (m *MockIAMAPI) GetRolePolicy(arg0 *iam.GetRolePolicyInput) (*iam.GetRolePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetRolePolicy", arg0)
 	ret0, _ := ret[0].(*iam.GetRolePolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -3095,11 +3512,13 @@ func (m *MockIAMAPI) GetRolePolicy(arg0 *iam.GetRolePolicyInput) (*iam.GetRolePo
 
 // GetRolePolicy indicates an expected call of GetRolePolicy
 func (mr *MockIAMAPIMockRecorder) GetRolePolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRolePolicy", reflect.TypeOf((*MockIAMAPI)(nil).GetRolePolicy), arg0)
 }
 
 // GetRolePolicyWithContext mocks base method
 func (m *MockIAMAPI) GetRolePolicyWithContext(arg0 aws.Context, arg1 *iam.GetRolePolicyInput, arg2 ...request.Option) (*iam.GetRolePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3112,12 +3531,14 @@ func (m *MockIAMAPI) GetRolePolicyWithContext(arg0 aws.Context, arg1 *iam.GetRol
 
 // GetRolePolicyWithContext indicates an expected call of GetRolePolicyWithContext
 func (mr *MockIAMAPIMockRecorder) GetRolePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRolePolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetRolePolicyWithContext), varargs...)
 }
 
 // GetRolePolicyRequest mocks base method
 func (m *MockIAMAPI) GetRolePolicyRequest(arg0 *iam.GetRolePolicyInput) (*request.Request, *iam.GetRolePolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetRolePolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetRolePolicyOutput)
@@ -3126,11 +3547,13 @@ func (m *MockIAMAPI) GetRolePolicyRequest(arg0 *iam.GetRolePolicyInput) (*reques
 
 // GetRolePolicyRequest indicates an expected call of GetRolePolicyRequest
 func (mr *MockIAMAPIMockRecorder) GetRolePolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRolePolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetRolePolicyRequest), arg0)
 }
 
 // GetSAMLProvider mocks base method
 func (m *MockIAMAPI) GetSAMLProvider(arg0 *iam.GetSAMLProviderInput) (*iam.GetSAMLProviderOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetSAMLProvider", arg0)
 	ret0, _ := ret[0].(*iam.GetSAMLProviderOutput)
 	ret1, _ := ret[1].(error)
@@ -3139,11 +3562,13 @@ func (m *MockIAMAPI) GetSAMLProvider(arg0 *iam.GetSAMLProviderInput) (*iam.GetSA
 
 // GetSAMLProvider indicates an expected call of GetSAMLProvider
 func (mr *MockIAMAPIMockRecorder) GetSAMLProvider(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSAMLProvider", reflect.TypeOf((*MockIAMAPI)(nil).GetSAMLProvider), arg0)
 }
 
 // GetSAMLProviderWithContext mocks base method
 func (m *MockIAMAPI) GetSAMLProviderWithContext(arg0 aws.Context, arg1 *iam.GetSAMLProviderInput, arg2 ...request.Option) (*iam.GetSAMLProviderOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3156,12 +3581,14 @@ func (m *MockIAMAPI) GetSAMLProviderWithContext(arg0 aws.Context, arg1 *iam.GetS
 
 // GetSAMLProviderWithContext indicates an expected call of GetSAMLProviderWithContext
 func (mr *MockIAMAPIMockRecorder) GetSAMLProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSAMLProviderWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetSAMLProviderWithContext), varargs...)
 }
 
 // GetSAMLProviderRequest mocks base method
 func (m *MockIAMAPI) GetSAMLProviderRequest(arg0 *iam.GetSAMLProviderInput) (*request.Request, *iam.GetSAMLProviderOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetSAMLProviderRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetSAMLProviderOutput)
@@ -3170,11 +3597,13 @@ func (m *MockIAMAPI) GetSAMLProviderRequest(arg0 *iam.GetSAMLProviderInput) (*re
 
 // GetSAMLProviderRequest indicates an expected call of GetSAMLProviderRequest
 func (mr *MockIAMAPIMockRecorder) GetSAMLProviderRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSAMLProviderRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetSAMLProviderRequest), arg0)
 }
 
 // GetSSHPublicKey mocks base method
 func (m *MockIAMAPI) GetSSHPublicKey(arg0 *iam.GetSSHPublicKeyInput) (*iam.GetSSHPublicKeyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetSSHPublicKey", arg0)
 	ret0, _ := ret[0].(*iam.GetSSHPublicKeyOutput)
 	ret1, _ := ret[1].(error)
@@ -3183,11 +3612,13 @@ func (m *MockIAMAPI) GetSSHPublicKey(arg0 *iam.GetSSHPublicKeyInput) (*iam.GetSS
 
 // GetSSHPublicKey indicates an expected call of GetSSHPublicKey
 func (mr *MockIAMAPIMockRecorder) GetSSHPublicKey(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSSHPublicKey", reflect.TypeOf((*MockIAMAPI)(nil).GetSSHPublicKey), arg0)
 }
 
 // GetSSHPublicKeyWithContext mocks base method
 func (m *MockIAMAPI) GetSSHPublicKeyWithContext(arg0 aws.Context, arg1 *iam.GetSSHPublicKeyInput, arg2 ...request.Option) (*iam.GetSSHPublicKeyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3200,12 +3631,14 @@ func (m *MockIAMAPI) GetSSHPublicKeyWithContext(arg0 aws.Context, arg1 *iam.GetS
 
 // GetSSHPublicKeyWithContext indicates an expected call of GetSSHPublicKeyWithContext
 func (mr *MockIAMAPIMockRecorder) GetSSHPublicKeyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSSHPublicKeyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetSSHPublicKeyWithContext), varargs...)
 }
 
 // GetSSHPublicKeyRequest mocks base method
 func (m *MockIAMAPI) GetSSHPublicKeyRequest(arg0 *iam.GetSSHPublicKeyInput) (*request.Request, *iam.GetSSHPublicKeyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetSSHPublicKeyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetSSHPublicKeyOutput)
@@ -3214,11 +3647,13 @@ func (m *MockIAMAPI) GetSSHPublicKeyRequest(arg0 *iam.GetSSHPublicKeyInput) (*re
 
 // GetSSHPublicKeyRequest indicates an expected call of GetSSHPublicKeyRequest
 func (mr *MockIAMAPIMockRecorder) GetSSHPublicKeyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSSHPublicKeyRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetSSHPublicKeyRequest), arg0)
 }
 
 // GetServerCertificate mocks base method
 func (m *MockIAMAPI) GetServerCertificate(arg0 *iam.GetServerCertificateInput) (*iam.GetServerCertificateOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetServerCertificate", arg0)
 	ret0, _ := ret[0].(*iam.GetServerCertificateOutput)
 	ret1, _ := ret[1].(error)
@@ -3227,11 +3662,13 @@ func (m *MockIAMAPI) GetServerCertificate(arg0 *iam.GetServerCertificateInput) (
 
 // GetServerCertificate indicates an expected call of GetServerCertificate
 func (mr *MockIAMAPIMockRecorder) GetServerCertificate(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServerCertificate", reflect.TypeOf((*MockIAMAPI)(nil).GetServerCertificate), arg0)
 }
 
 // GetServerCertificateWithContext mocks base method
 func (m *MockIAMAPI) GetServerCertificateWithContext(arg0 aws.Context, arg1 *iam.GetServerCertificateInput, arg2 ...request.Option) (*iam.GetServerCertificateOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3244,12 +3681,14 @@ func (m *MockIAMAPI) GetServerCertificateWithContext(arg0 aws.Context, arg1 *iam
 
 // GetServerCertificateWithContext indicates an expected call of GetServerCertificateWithContext
 func (mr *MockIAMAPIMockRecorder) GetServerCertificateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServerCertificateWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetServerCertificateWithContext), varargs...)
 }
 
 // GetServerCertificateRequest mocks base method
 func (m *MockIAMAPI) GetServerCertificateRequest(arg0 *iam.GetServerCertificateInput) (*request.Request, *iam.GetServerCertificateOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetServerCertificateRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetServerCertificateOutput)
@@ -3258,11 +3697,13 @@ func (m *MockIAMAPI) GetServerCertificateRequest(arg0 *iam.GetServerCertificateI
 
 // GetServerCertificateRequest indicates an expected call of GetServerCertificateRequest
 func (mr *MockIAMAPIMockRecorder) GetServerCertificateRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServerCertificateRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetServerCertificateRequest), arg0)
 }
 
 // GetServiceLastAccessedDetails mocks base method
 func (m *MockIAMAPI) GetServiceLastAccessedDetails(arg0 *iam.GetServiceLastAccessedDetailsInput) (*iam.GetServiceLastAccessedDetailsOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetServiceLastAccessedDetails", arg0)
 	ret0, _ := ret[0].(*iam.GetServiceLastAccessedDetailsOutput)
 	ret1, _ := ret[1].(error)
@@ -3271,11 +3712,13 @@ func (m *MockIAMAPI) GetServiceLastAccessedDetails(arg0 *iam.GetServiceLastAcces
 
 // GetServiceLastAccessedDetails indicates an expected call of GetServiceLastAccessedDetails
 func (mr *MockIAMAPIMockRecorder) GetServiceLastAccessedDetails(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServiceLastAccessedDetails", reflect.TypeOf((*MockIAMAPI)(nil).GetServiceLastAccessedDetails), arg0)
 }
 
 // GetServiceLastAccessedDetailsWithContext mocks base method
 func (m *MockIAMAPI) GetServiceLastAccessedDetailsWithContext(arg0 aws.Context, arg1 *iam.GetServiceLastAccessedDetailsInput, arg2 ...request.Option) (*iam.GetServiceLastAccessedDetailsOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3288,12 +3731,14 @@ func (m *MockIAMAPI) GetServiceLastAccessedDetailsWithContext(arg0 aws.Context, 
 
 // GetServiceLastAccessedDetailsWithContext indicates an expected call of GetServiceLastAccessedDetailsWithContext
 func (mr *MockIAMAPIMockRecorder) GetServiceLastAccessedDetailsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServiceLastAccessedDetailsWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetServiceLastAccessedDetailsWithContext), varargs...)
 }
 
 // GetServiceLastAccessedDetailsRequest mocks base method
 func (m *MockIAMAPI) GetServiceLastAccessedDetailsRequest(arg0 *iam.GetServiceLastAccessedDetailsInput) (*request.Request, *iam.GetServiceLastAccessedDetailsOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetServiceLastAccessedDetailsRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetServiceLastAccessedDetailsOutput)
@@ -3302,11 +3747,13 @@ func (m *MockIAMAPI) GetServiceLastAccessedDetailsRequest(arg0 *iam.GetServiceLa
 
 // GetServiceLastAccessedDetailsRequest indicates an expected call of GetServiceLastAccessedDetailsRequest
 func (mr *MockIAMAPIMockRecorder) GetServiceLastAccessedDetailsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServiceLastAccessedDetailsRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetServiceLastAccessedDetailsRequest), arg0)
 }
 
 // GetServiceLastAccessedDetailsWithEntities mocks base method
 func (m *MockIAMAPI) GetServiceLastAccessedDetailsWithEntities(arg0 *iam.GetServiceLastAccessedDetailsWithEntitiesInput) (*iam.GetServiceLastAccessedDetailsWithEntitiesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetServiceLastAccessedDetailsWithEntities", arg0)
 	ret0, _ := ret[0].(*iam.GetServiceLastAccessedDetailsWithEntitiesOutput)
 	ret1, _ := ret[1].(error)
@@ -3315,11 +3762,13 @@ func (m *MockIAMAPI) GetServiceLastAccessedDetailsWithEntities(arg0 *iam.GetServ
 
 // GetServiceLastAccessedDetailsWithEntities indicates an expected call of GetServiceLastAccessedDetailsWithEntities
 func (mr *MockIAMAPIMockRecorder) GetServiceLastAccessedDetailsWithEntities(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServiceLastAccessedDetailsWithEntities", reflect.TypeOf((*MockIAMAPI)(nil).GetServiceLastAccessedDetailsWithEntities), arg0)
 }
 
 // GetServiceLastAccessedDetailsWithEntitiesWithContext mocks base method
 func (m *MockIAMAPI) GetServiceLastAccessedDetailsWithEntitiesWithContext(arg0 aws.Context, arg1 *iam.GetServiceLastAccessedDetailsWithEntitiesInput, arg2 ...request.Option) (*iam.GetServiceLastAccessedDetailsWithEntitiesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3332,12 +3781,14 @@ func (m *MockIAMAPI) GetServiceLastAccessedDetailsWithEntitiesWithContext(arg0 a
 
 // GetServiceLastAccessedDetailsWithEntitiesWithContext indicates an expected call of GetServiceLastAccessedDetailsWithEntitiesWithContext
 func (mr *MockIAMAPIMockRecorder) GetServiceLastAccessedDetailsWithEntitiesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServiceLastAccessedDetailsWithEntitiesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetServiceLastAccessedDetailsWithEntitiesWithContext), varargs...)
 }
 
 // GetServiceLastAccessedDetailsWithEntitiesRequest mocks base method
 func (m *MockIAMAPI) GetServiceLastAccessedDetailsWithEntitiesRequest(arg0 *iam.GetServiceLastAccessedDetailsWithEntitiesInput) (*request.Request, *iam.GetServiceLastAccessedDetailsWithEntitiesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetServiceLastAccessedDetailsWithEntitiesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetServiceLastAccessedDetailsWithEntitiesOutput)
@@ -3346,11 +3797,13 @@ func (m *MockIAMAPI) GetServiceLastAccessedDetailsWithEntitiesRequest(arg0 *iam.
 
 // GetServiceLastAccessedDetailsWithEntitiesRequest indicates an expected call of GetServiceLastAccessedDetailsWithEntitiesRequest
 func (mr *MockIAMAPIMockRecorder) GetServiceLastAccessedDetailsWithEntitiesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServiceLastAccessedDetailsWithEntitiesRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetServiceLastAccessedDetailsWithEntitiesRequest), arg0)
 }
 
 // GetServiceLinkedRoleDeletionStatus mocks base method
 func (m *MockIAMAPI) GetServiceLinkedRoleDeletionStatus(arg0 *iam.GetServiceLinkedRoleDeletionStatusInput) (*iam.GetServiceLinkedRoleDeletionStatusOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetServiceLinkedRoleDeletionStatus", arg0)
 	ret0, _ := ret[0].(*iam.GetServiceLinkedRoleDeletionStatusOutput)
 	ret1, _ := ret[1].(error)
@@ -3359,11 +3812,13 @@ func (m *MockIAMAPI) GetServiceLinkedRoleDeletionStatus(arg0 *iam.GetServiceLink
 
 // GetServiceLinkedRoleDeletionStatus indicates an expected call of GetServiceLinkedRoleDeletionStatus
 func (mr *MockIAMAPIMockRecorder) GetServiceLinkedRoleDeletionStatus(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServiceLinkedRoleDeletionStatus", reflect.TypeOf((*MockIAMAPI)(nil).GetServiceLinkedRoleDeletionStatus), arg0)
 }
 
 // GetServiceLinkedRoleDeletionStatusWithContext mocks base method
 func (m *MockIAMAPI) GetServiceLinkedRoleDeletionStatusWithContext(arg0 aws.Context, arg1 *iam.GetServiceLinkedRoleDeletionStatusInput, arg2 ...request.Option) (*iam.GetServiceLinkedRoleDeletionStatusOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3376,12 +3831,14 @@ func (m *MockIAMAPI) GetServiceLinkedRoleDeletionStatusWithContext(arg0 aws.Cont
 
 // GetServiceLinkedRoleDeletionStatusWithContext indicates an expected call of GetServiceLinkedRoleDeletionStatusWithContext
 func (mr *MockIAMAPIMockRecorder) GetServiceLinkedRoleDeletionStatusWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServiceLinkedRoleDeletionStatusWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetServiceLinkedRoleDeletionStatusWithContext), varargs...)
 }
 
 // GetServiceLinkedRoleDeletionStatusRequest mocks base method
 func (m *MockIAMAPI) GetServiceLinkedRoleDeletionStatusRequest(arg0 *iam.GetServiceLinkedRoleDeletionStatusInput) (*request.Request, *iam.GetServiceLinkedRoleDeletionStatusOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetServiceLinkedRoleDeletionStatusRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetServiceLinkedRoleDeletionStatusOutput)
@@ -3390,11 +3847,13 @@ func (m *MockIAMAPI) GetServiceLinkedRoleDeletionStatusRequest(arg0 *iam.GetServ
 
 // GetServiceLinkedRoleDeletionStatusRequest indicates an expected call of GetServiceLinkedRoleDeletionStatusRequest
 func (mr *MockIAMAPIMockRecorder) GetServiceLinkedRoleDeletionStatusRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServiceLinkedRoleDeletionStatusRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetServiceLinkedRoleDeletionStatusRequest), arg0)
 }
 
 // GetUser mocks base method
 func (m *MockIAMAPI) GetUser(arg0 *iam.GetUserInput) (*iam.GetUserOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUser", arg0)
 	ret0, _ := ret[0].(*iam.GetUserOutput)
 	ret1, _ := ret[1].(error)
@@ -3403,11 +3862,13 @@ func (m *MockIAMAPI) GetUser(arg0 *iam.GetUserInput) (*iam.GetUserOutput, error)
 
 // GetUser indicates an expected call of GetUser
 func (mr *MockIAMAPIMockRecorder) GetUser(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUser", reflect.TypeOf((*MockIAMAPI)(nil).GetUser), arg0)
 }
 
 // GetUserWithContext mocks base method
 func (m *MockIAMAPI) GetUserWithContext(arg0 aws.Context, arg1 *iam.GetUserInput, arg2 ...request.Option) (*iam.GetUserOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3420,12 +3881,14 @@ func (m *MockIAMAPI) GetUserWithContext(arg0 aws.Context, arg1 *iam.GetUserInput
 
 // GetUserWithContext indicates an expected call of GetUserWithContext
 func (mr *MockIAMAPIMockRecorder) GetUserWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetUserWithContext), varargs...)
 }
 
 // GetUserRequest mocks base method
 func (m *MockIAMAPI) GetUserRequest(arg0 *iam.GetUserInput) (*request.Request, *iam.GetUserOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetUserOutput)
@@ -3434,11 +3897,13 @@ func (m *MockIAMAPI) GetUserRequest(arg0 *iam.GetUserInput) (*request.Request, *
 
 // GetUserRequest indicates an expected call of GetUserRequest
 func (mr *MockIAMAPIMockRecorder) GetUserRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetUserRequest), arg0)
 }
 
 // GetUserPolicy mocks base method
 func (m *MockIAMAPI) GetUserPolicy(arg0 *iam.GetUserPolicyInput) (*iam.GetUserPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserPolicy", arg0)
 	ret0, _ := ret[0].(*iam.GetUserPolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -3447,11 +3912,13 @@ func (m *MockIAMAPI) GetUserPolicy(arg0 *iam.GetUserPolicyInput) (*iam.GetUserPo
 
 // GetUserPolicy indicates an expected call of GetUserPolicy
 func (mr *MockIAMAPIMockRecorder) GetUserPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserPolicy", reflect.TypeOf((*MockIAMAPI)(nil).GetUserPolicy), arg0)
 }
 
 // GetUserPolicyWithContext mocks base method
 func (m *MockIAMAPI) GetUserPolicyWithContext(arg0 aws.Context, arg1 *iam.GetUserPolicyInput, arg2 ...request.Option) (*iam.GetUserPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3464,12 +3931,14 @@ func (m *MockIAMAPI) GetUserPolicyWithContext(arg0 aws.Context, arg1 *iam.GetUse
 
 // GetUserPolicyWithContext indicates an expected call of GetUserPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) GetUserPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).GetUserPolicyWithContext), varargs...)
 }
 
 // GetUserPolicyRequest mocks base method
 func (m *MockIAMAPI) GetUserPolicyRequest(arg0 *iam.GetUserPolicyInput) (*request.Request, *iam.GetUserPolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.GetUserPolicyOutput)
@@ -3478,11 +3947,13 @@ func (m *MockIAMAPI) GetUserPolicyRequest(arg0 *iam.GetUserPolicyInput) (*reques
 
 // GetUserPolicyRequest indicates an expected call of GetUserPolicyRequest
 func (mr *MockIAMAPIMockRecorder) GetUserPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).GetUserPolicyRequest), arg0)
 }
 
 // ListAccessKeys mocks base method
 func (m *MockIAMAPI) ListAccessKeys(arg0 *iam.ListAccessKeysInput) (*iam.ListAccessKeysOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAccessKeys", arg0)
 	ret0, _ := ret[0].(*iam.ListAccessKeysOutput)
 	ret1, _ := ret[1].(error)
@@ -3491,11 +3962,13 @@ func (m *MockIAMAPI) ListAccessKeys(arg0 *iam.ListAccessKeysInput) (*iam.ListAcc
 
 // ListAccessKeys indicates an expected call of ListAccessKeys
 func (mr *MockIAMAPIMockRecorder) ListAccessKeys(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccessKeys", reflect.TypeOf((*MockIAMAPI)(nil).ListAccessKeys), arg0)
 }
 
 // ListAccessKeysWithContext mocks base method
 func (m *MockIAMAPI) ListAccessKeysWithContext(arg0 aws.Context, arg1 *iam.ListAccessKeysInput, arg2 ...request.Option) (*iam.ListAccessKeysOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3508,12 +3981,14 @@ func (m *MockIAMAPI) ListAccessKeysWithContext(arg0 aws.Context, arg1 *iam.ListA
 
 // ListAccessKeysWithContext indicates an expected call of ListAccessKeysWithContext
 func (mr *MockIAMAPIMockRecorder) ListAccessKeysWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccessKeysWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListAccessKeysWithContext), varargs...)
 }
 
 // ListAccessKeysRequest mocks base method
 func (m *MockIAMAPI) ListAccessKeysRequest(arg0 *iam.ListAccessKeysInput) (*request.Request, *iam.ListAccessKeysOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAccessKeysRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListAccessKeysOutput)
@@ -3522,11 +3997,13 @@ func (m *MockIAMAPI) ListAccessKeysRequest(arg0 *iam.ListAccessKeysInput) (*requ
 
 // ListAccessKeysRequest indicates an expected call of ListAccessKeysRequest
 func (mr *MockIAMAPIMockRecorder) ListAccessKeysRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccessKeysRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListAccessKeysRequest), arg0)
 }
 
 // ListAccessKeysPages mocks base method
 func (m *MockIAMAPI) ListAccessKeysPages(arg0 *iam.ListAccessKeysInput, arg1 func(*iam.ListAccessKeysOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAccessKeysPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -3534,11 +4011,13 @@ func (m *MockIAMAPI) ListAccessKeysPages(arg0 *iam.ListAccessKeysInput, arg1 fun
 
 // ListAccessKeysPages indicates an expected call of ListAccessKeysPages
 func (mr *MockIAMAPIMockRecorder) ListAccessKeysPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccessKeysPages", reflect.TypeOf((*MockIAMAPI)(nil).ListAccessKeysPages), arg0, arg1)
 }
 
 // ListAccessKeysPagesWithContext mocks base method
 func (m *MockIAMAPI) ListAccessKeysPagesWithContext(arg0 aws.Context, arg1 *iam.ListAccessKeysInput, arg2 func(*iam.ListAccessKeysOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -3550,12 +4029,14 @@ func (m *MockIAMAPI) ListAccessKeysPagesWithContext(arg0 aws.Context, arg1 *iam.
 
 // ListAccessKeysPagesWithContext indicates an expected call of ListAccessKeysPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListAccessKeysPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccessKeysPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListAccessKeysPagesWithContext), varargs...)
 }
 
 // ListAccountAliases mocks base method
 func (m *MockIAMAPI) ListAccountAliases(arg0 *iam.ListAccountAliasesInput) (*iam.ListAccountAliasesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAccountAliases", arg0)
 	ret0, _ := ret[0].(*iam.ListAccountAliasesOutput)
 	ret1, _ := ret[1].(error)
@@ -3564,11 +4045,13 @@ func (m *MockIAMAPI) ListAccountAliases(arg0 *iam.ListAccountAliasesInput) (*iam
 
 // ListAccountAliases indicates an expected call of ListAccountAliases
 func (mr *MockIAMAPIMockRecorder) ListAccountAliases(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountAliases", reflect.TypeOf((*MockIAMAPI)(nil).ListAccountAliases), arg0)
 }
 
 // ListAccountAliasesWithContext mocks base method
 func (m *MockIAMAPI) ListAccountAliasesWithContext(arg0 aws.Context, arg1 *iam.ListAccountAliasesInput, arg2 ...request.Option) (*iam.ListAccountAliasesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3581,12 +4064,14 @@ func (m *MockIAMAPI) ListAccountAliasesWithContext(arg0 aws.Context, arg1 *iam.L
 
 // ListAccountAliasesWithContext indicates an expected call of ListAccountAliasesWithContext
 func (mr *MockIAMAPIMockRecorder) ListAccountAliasesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountAliasesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListAccountAliasesWithContext), varargs...)
 }
 
 // ListAccountAliasesRequest mocks base method
 func (m *MockIAMAPI) ListAccountAliasesRequest(arg0 *iam.ListAccountAliasesInput) (*request.Request, *iam.ListAccountAliasesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAccountAliasesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListAccountAliasesOutput)
@@ -3595,11 +4080,13 @@ func (m *MockIAMAPI) ListAccountAliasesRequest(arg0 *iam.ListAccountAliasesInput
 
 // ListAccountAliasesRequest indicates an expected call of ListAccountAliasesRequest
 func (mr *MockIAMAPIMockRecorder) ListAccountAliasesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountAliasesRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListAccountAliasesRequest), arg0)
 }
 
 // ListAccountAliasesPages mocks base method
 func (m *MockIAMAPI) ListAccountAliasesPages(arg0 *iam.ListAccountAliasesInput, arg1 func(*iam.ListAccountAliasesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAccountAliasesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -3607,11 +4094,13 @@ func (m *MockIAMAPI) ListAccountAliasesPages(arg0 *iam.ListAccountAliasesInput, 
 
 // ListAccountAliasesPages indicates an expected call of ListAccountAliasesPages
 func (mr *MockIAMAPIMockRecorder) ListAccountAliasesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountAliasesPages", reflect.TypeOf((*MockIAMAPI)(nil).ListAccountAliasesPages), arg0, arg1)
 }
 
 // ListAccountAliasesPagesWithContext mocks base method
 func (m *MockIAMAPI) ListAccountAliasesPagesWithContext(arg0 aws.Context, arg1 *iam.ListAccountAliasesInput, arg2 func(*iam.ListAccountAliasesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -3623,12 +4112,14 @@ func (m *MockIAMAPI) ListAccountAliasesPagesWithContext(arg0 aws.Context, arg1 *
 
 // ListAccountAliasesPagesWithContext indicates an expected call of ListAccountAliasesPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListAccountAliasesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountAliasesPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListAccountAliasesPagesWithContext), varargs...)
 }
 
 // ListAttachedGroupPolicies mocks base method
 func (m *MockIAMAPI) ListAttachedGroupPolicies(arg0 *iam.ListAttachedGroupPoliciesInput) (*iam.ListAttachedGroupPoliciesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAttachedGroupPolicies", arg0)
 	ret0, _ := ret[0].(*iam.ListAttachedGroupPoliciesOutput)
 	ret1, _ := ret[1].(error)
@@ -3637,11 +4128,13 @@ func (m *MockIAMAPI) ListAttachedGroupPolicies(arg0 *iam.ListAttachedGroupPolici
 
 // ListAttachedGroupPolicies indicates an expected call of ListAttachedGroupPolicies
 func (mr *MockIAMAPIMockRecorder) ListAttachedGroupPolicies(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttachedGroupPolicies", reflect.TypeOf((*MockIAMAPI)(nil).ListAttachedGroupPolicies), arg0)
 }
 
 // ListAttachedGroupPoliciesWithContext mocks base method
 func (m *MockIAMAPI) ListAttachedGroupPoliciesWithContext(arg0 aws.Context, arg1 *iam.ListAttachedGroupPoliciesInput, arg2 ...request.Option) (*iam.ListAttachedGroupPoliciesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3654,12 +4147,14 @@ func (m *MockIAMAPI) ListAttachedGroupPoliciesWithContext(arg0 aws.Context, arg1
 
 // ListAttachedGroupPoliciesWithContext indicates an expected call of ListAttachedGroupPoliciesWithContext
 func (mr *MockIAMAPIMockRecorder) ListAttachedGroupPoliciesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttachedGroupPoliciesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListAttachedGroupPoliciesWithContext), varargs...)
 }
 
 // ListAttachedGroupPoliciesRequest mocks base method
 func (m *MockIAMAPI) ListAttachedGroupPoliciesRequest(arg0 *iam.ListAttachedGroupPoliciesInput) (*request.Request, *iam.ListAttachedGroupPoliciesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAttachedGroupPoliciesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListAttachedGroupPoliciesOutput)
@@ -3668,11 +4163,13 @@ func (m *MockIAMAPI) ListAttachedGroupPoliciesRequest(arg0 *iam.ListAttachedGrou
 
 // ListAttachedGroupPoliciesRequest indicates an expected call of ListAttachedGroupPoliciesRequest
 func (mr *MockIAMAPIMockRecorder) ListAttachedGroupPoliciesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttachedGroupPoliciesRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListAttachedGroupPoliciesRequest), arg0)
 }
 
 // ListAttachedGroupPoliciesPages mocks base method
 func (m *MockIAMAPI) ListAttachedGroupPoliciesPages(arg0 *iam.ListAttachedGroupPoliciesInput, arg1 func(*iam.ListAttachedGroupPoliciesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAttachedGroupPoliciesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -3680,11 +4177,13 @@ func (m *MockIAMAPI) ListAttachedGroupPoliciesPages(arg0 *iam.ListAttachedGroupP
 
 // ListAttachedGroupPoliciesPages indicates an expected call of ListAttachedGroupPoliciesPages
 func (mr *MockIAMAPIMockRecorder) ListAttachedGroupPoliciesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttachedGroupPoliciesPages", reflect.TypeOf((*MockIAMAPI)(nil).ListAttachedGroupPoliciesPages), arg0, arg1)
 }
 
 // ListAttachedGroupPoliciesPagesWithContext mocks base method
 func (m *MockIAMAPI) ListAttachedGroupPoliciesPagesWithContext(arg0 aws.Context, arg1 *iam.ListAttachedGroupPoliciesInput, arg2 func(*iam.ListAttachedGroupPoliciesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -3696,12 +4195,14 @@ func (m *MockIAMAPI) ListAttachedGroupPoliciesPagesWithContext(arg0 aws.Context,
 
 // ListAttachedGroupPoliciesPagesWithContext indicates an expected call of ListAttachedGroupPoliciesPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListAttachedGroupPoliciesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttachedGroupPoliciesPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListAttachedGroupPoliciesPagesWithContext), varargs...)
 }
 
 // ListAttachedRolePolicies mocks base method
 func (m *MockIAMAPI) ListAttachedRolePolicies(arg0 *iam.ListAttachedRolePoliciesInput) (*iam.ListAttachedRolePoliciesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAttachedRolePolicies", arg0)
 	ret0, _ := ret[0].(*iam.ListAttachedRolePoliciesOutput)
 	ret1, _ := ret[1].(error)
@@ -3710,11 +4211,13 @@ func (m *MockIAMAPI) ListAttachedRolePolicies(arg0 *iam.ListAttachedRolePolicies
 
 // ListAttachedRolePolicies indicates an expected call of ListAttachedRolePolicies
 func (mr *MockIAMAPIMockRecorder) ListAttachedRolePolicies(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttachedRolePolicies", reflect.TypeOf((*MockIAMAPI)(nil).ListAttachedRolePolicies), arg0)
 }
 
 // ListAttachedRolePoliciesWithContext mocks base method
 func (m *MockIAMAPI) ListAttachedRolePoliciesWithContext(arg0 aws.Context, arg1 *iam.ListAttachedRolePoliciesInput, arg2 ...request.Option) (*iam.ListAttachedRolePoliciesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3727,12 +4230,14 @@ func (m *MockIAMAPI) ListAttachedRolePoliciesWithContext(arg0 aws.Context, arg1 
 
 // ListAttachedRolePoliciesWithContext indicates an expected call of ListAttachedRolePoliciesWithContext
 func (mr *MockIAMAPIMockRecorder) ListAttachedRolePoliciesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttachedRolePoliciesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListAttachedRolePoliciesWithContext), varargs...)
 }
 
 // ListAttachedRolePoliciesRequest mocks base method
 func (m *MockIAMAPI) ListAttachedRolePoliciesRequest(arg0 *iam.ListAttachedRolePoliciesInput) (*request.Request, *iam.ListAttachedRolePoliciesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAttachedRolePoliciesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListAttachedRolePoliciesOutput)
@@ -3741,11 +4246,13 @@ func (m *MockIAMAPI) ListAttachedRolePoliciesRequest(arg0 *iam.ListAttachedRoleP
 
 // ListAttachedRolePoliciesRequest indicates an expected call of ListAttachedRolePoliciesRequest
 func (mr *MockIAMAPIMockRecorder) ListAttachedRolePoliciesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttachedRolePoliciesRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListAttachedRolePoliciesRequest), arg0)
 }
 
 // ListAttachedRolePoliciesPages mocks base method
 func (m *MockIAMAPI) ListAttachedRolePoliciesPages(arg0 *iam.ListAttachedRolePoliciesInput, arg1 func(*iam.ListAttachedRolePoliciesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAttachedRolePoliciesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -3753,11 +4260,13 @@ func (m *MockIAMAPI) ListAttachedRolePoliciesPages(arg0 *iam.ListAttachedRolePol
 
 // ListAttachedRolePoliciesPages indicates an expected call of ListAttachedRolePoliciesPages
 func (mr *MockIAMAPIMockRecorder) ListAttachedRolePoliciesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttachedRolePoliciesPages", reflect.TypeOf((*MockIAMAPI)(nil).ListAttachedRolePoliciesPages), arg0, arg1)
 }
 
 // ListAttachedRolePoliciesPagesWithContext mocks base method
 func (m *MockIAMAPI) ListAttachedRolePoliciesPagesWithContext(arg0 aws.Context, arg1 *iam.ListAttachedRolePoliciesInput, arg2 func(*iam.ListAttachedRolePoliciesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -3769,12 +4278,14 @@ func (m *MockIAMAPI) ListAttachedRolePoliciesPagesWithContext(arg0 aws.Context, 
 
 // ListAttachedRolePoliciesPagesWithContext indicates an expected call of ListAttachedRolePoliciesPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListAttachedRolePoliciesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttachedRolePoliciesPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListAttachedRolePoliciesPagesWithContext), varargs...)
 }
 
 // ListAttachedUserPolicies mocks base method
 func (m *MockIAMAPI) ListAttachedUserPolicies(arg0 *iam.ListAttachedUserPoliciesInput) (*iam.ListAttachedUserPoliciesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAttachedUserPolicies", arg0)
 	ret0, _ := ret[0].(*iam.ListAttachedUserPoliciesOutput)
 	ret1, _ := ret[1].(error)
@@ -3783,11 +4294,13 @@ func (m *MockIAMAPI) ListAttachedUserPolicies(arg0 *iam.ListAttachedUserPolicies
 
 // ListAttachedUserPolicies indicates an expected call of ListAttachedUserPolicies
 func (mr *MockIAMAPIMockRecorder) ListAttachedUserPolicies(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttachedUserPolicies", reflect.TypeOf((*MockIAMAPI)(nil).ListAttachedUserPolicies), arg0)
 }
 
 // ListAttachedUserPoliciesWithContext mocks base method
 func (m *MockIAMAPI) ListAttachedUserPoliciesWithContext(arg0 aws.Context, arg1 *iam.ListAttachedUserPoliciesInput, arg2 ...request.Option) (*iam.ListAttachedUserPoliciesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3800,12 +4313,14 @@ func (m *MockIAMAPI) ListAttachedUserPoliciesWithContext(arg0 aws.Context, arg1 
 
 // ListAttachedUserPoliciesWithContext indicates an expected call of ListAttachedUserPoliciesWithContext
 func (mr *MockIAMAPIMockRecorder) ListAttachedUserPoliciesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttachedUserPoliciesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListAttachedUserPoliciesWithContext), varargs...)
 }
 
 // ListAttachedUserPoliciesRequest mocks base method
 func (m *MockIAMAPI) ListAttachedUserPoliciesRequest(arg0 *iam.ListAttachedUserPoliciesInput) (*request.Request, *iam.ListAttachedUserPoliciesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAttachedUserPoliciesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListAttachedUserPoliciesOutput)
@@ -3814,11 +4329,13 @@ func (m *MockIAMAPI) ListAttachedUserPoliciesRequest(arg0 *iam.ListAttachedUserP
 
 // ListAttachedUserPoliciesRequest indicates an expected call of ListAttachedUserPoliciesRequest
 func (mr *MockIAMAPIMockRecorder) ListAttachedUserPoliciesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttachedUserPoliciesRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListAttachedUserPoliciesRequest), arg0)
 }
 
 // ListAttachedUserPoliciesPages mocks base method
 func (m *MockIAMAPI) ListAttachedUserPoliciesPages(arg0 *iam.ListAttachedUserPoliciesInput, arg1 func(*iam.ListAttachedUserPoliciesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAttachedUserPoliciesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -3826,11 +4343,13 @@ func (m *MockIAMAPI) ListAttachedUserPoliciesPages(arg0 *iam.ListAttachedUserPol
 
 // ListAttachedUserPoliciesPages indicates an expected call of ListAttachedUserPoliciesPages
 func (mr *MockIAMAPIMockRecorder) ListAttachedUserPoliciesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttachedUserPoliciesPages", reflect.TypeOf((*MockIAMAPI)(nil).ListAttachedUserPoliciesPages), arg0, arg1)
 }
 
 // ListAttachedUserPoliciesPagesWithContext mocks base method
 func (m *MockIAMAPI) ListAttachedUserPoliciesPagesWithContext(arg0 aws.Context, arg1 *iam.ListAttachedUserPoliciesInput, arg2 func(*iam.ListAttachedUserPoliciesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -3842,12 +4361,14 @@ func (m *MockIAMAPI) ListAttachedUserPoliciesPagesWithContext(arg0 aws.Context, 
 
 // ListAttachedUserPoliciesPagesWithContext indicates an expected call of ListAttachedUserPoliciesPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListAttachedUserPoliciesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttachedUserPoliciesPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListAttachedUserPoliciesPagesWithContext), varargs...)
 }
 
 // ListEntitiesForPolicy mocks base method
 func (m *MockIAMAPI) ListEntitiesForPolicy(arg0 *iam.ListEntitiesForPolicyInput) (*iam.ListEntitiesForPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListEntitiesForPolicy", arg0)
 	ret0, _ := ret[0].(*iam.ListEntitiesForPolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -3856,11 +4377,13 @@ func (m *MockIAMAPI) ListEntitiesForPolicy(arg0 *iam.ListEntitiesForPolicyInput)
 
 // ListEntitiesForPolicy indicates an expected call of ListEntitiesForPolicy
 func (mr *MockIAMAPIMockRecorder) ListEntitiesForPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEntitiesForPolicy", reflect.TypeOf((*MockIAMAPI)(nil).ListEntitiesForPolicy), arg0)
 }
 
 // ListEntitiesForPolicyWithContext mocks base method
 func (m *MockIAMAPI) ListEntitiesForPolicyWithContext(arg0 aws.Context, arg1 *iam.ListEntitiesForPolicyInput, arg2 ...request.Option) (*iam.ListEntitiesForPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3873,12 +4396,14 @@ func (m *MockIAMAPI) ListEntitiesForPolicyWithContext(arg0 aws.Context, arg1 *ia
 
 // ListEntitiesForPolicyWithContext indicates an expected call of ListEntitiesForPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) ListEntitiesForPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEntitiesForPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListEntitiesForPolicyWithContext), varargs...)
 }
 
 // ListEntitiesForPolicyRequest mocks base method
 func (m *MockIAMAPI) ListEntitiesForPolicyRequest(arg0 *iam.ListEntitiesForPolicyInput) (*request.Request, *iam.ListEntitiesForPolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListEntitiesForPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListEntitiesForPolicyOutput)
@@ -3887,11 +4412,13 @@ func (m *MockIAMAPI) ListEntitiesForPolicyRequest(arg0 *iam.ListEntitiesForPolic
 
 // ListEntitiesForPolicyRequest indicates an expected call of ListEntitiesForPolicyRequest
 func (mr *MockIAMAPIMockRecorder) ListEntitiesForPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEntitiesForPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListEntitiesForPolicyRequest), arg0)
 }
 
 // ListEntitiesForPolicyPages mocks base method
 func (m *MockIAMAPI) ListEntitiesForPolicyPages(arg0 *iam.ListEntitiesForPolicyInput, arg1 func(*iam.ListEntitiesForPolicyOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListEntitiesForPolicyPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -3899,11 +4426,13 @@ func (m *MockIAMAPI) ListEntitiesForPolicyPages(arg0 *iam.ListEntitiesForPolicyI
 
 // ListEntitiesForPolicyPages indicates an expected call of ListEntitiesForPolicyPages
 func (mr *MockIAMAPIMockRecorder) ListEntitiesForPolicyPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEntitiesForPolicyPages", reflect.TypeOf((*MockIAMAPI)(nil).ListEntitiesForPolicyPages), arg0, arg1)
 }
 
 // ListEntitiesForPolicyPagesWithContext mocks base method
 func (m *MockIAMAPI) ListEntitiesForPolicyPagesWithContext(arg0 aws.Context, arg1 *iam.ListEntitiesForPolicyInput, arg2 func(*iam.ListEntitiesForPolicyOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -3915,12 +4444,14 @@ func (m *MockIAMAPI) ListEntitiesForPolicyPagesWithContext(arg0 aws.Context, arg
 
 // ListEntitiesForPolicyPagesWithContext indicates an expected call of ListEntitiesForPolicyPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListEntitiesForPolicyPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEntitiesForPolicyPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListEntitiesForPolicyPagesWithContext), varargs...)
 }
 
 // ListGroupPolicies mocks base method
 func (m *MockIAMAPI) ListGroupPolicies(arg0 *iam.ListGroupPoliciesInput) (*iam.ListGroupPoliciesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListGroupPolicies", arg0)
 	ret0, _ := ret[0].(*iam.ListGroupPoliciesOutput)
 	ret1, _ := ret[1].(error)
@@ -3929,11 +4460,13 @@ func (m *MockIAMAPI) ListGroupPolicies(arg0 *iam.ListGroupPoliciesInput) (*iam.L
 
 // ListGroupPolicies indicates an expected call of ListGroupPolicies
 func (mr *MockIAMAPIMockRecorder) ListGroupPolicies(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGroupPolicies", reflect.TypeOf((*MockIAMAPI)(nil).ListGroupPolicies), arg0)
 }
 
 // ListGroupPoliciesWithContext mocks base method
 func (m *MockIAMAPI) ListGroupPoliciesWithContext(arg0 aws.Context, arg1 *iam.ListGroupPoliciesInput, arg2 ...request.Option) (*iam.ListGroupPoliciesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -3946,12 +4479,14 @@ func (m *MockIAMAPI) ListGroupPoliciesWithContext(arg0 aws.Context, arg1 *iam.Li
 
 // ListGroupPoliciesWithContext indicates an expected call of ListGroupPoliciesWithContext
 func (mr *MockIAMAPIMockRecorder) ListGroupPoliciesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGroupPoliciesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListGroupPoliciesWithContext), varargs...)
 }
 
 // ListGroupPoliciesRequest mocks base method
 func (m *MockIAMAPI) ListGroupPoliciesRequest(arg0 *iam.ListGroupPoliciesInput) (*request.Request, *iam.ListGroupPoliciesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListGroupPoliciesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListGroupPoliciesOutput)
@@ -3960,11 +4495,13 @@ func (m *MockIAMAPI) ListGroupPoliciesRequest(arg0 *iam.ListGroupPoliciesInput) 
 
 // ListGroupPoliciesRequest indicates an expected call of ListGroupPoliciesRequest
 func (mr *MockIAMAPIMockRecorder) ListGroupPoliciesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGroupPoliciesRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListGroupPoliciesRequest), arg0)
 }
 
 // ListGroupPoliciesPages mocks base method
 func (m *MockIAMAPI) ListGroupPoliciesPages(arg0 *iam.ListGroupPoliciesInput, arg1 func(*iam.ListGroupPoliciesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListGroupPoliciesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -3972,11 +4509,13 @@ func (m *MockIAMAPI) ListGroupPoliciesPages(arg0 *iam.ListGroupPoliciesInput, ar
 
 // ListGroupPoliciesPages indicates an expected call of ListGroupPoliciesPages
 func (mr *MockIAMAPIMockRecorder) ListGroupPoliciesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGroupPoliciesPages", reflect.TypeOf((*MockIAMAPI)(nil).ListGroupPoliciesPages), arg0, arg1)
 }
 
 // ListGroupPoliciesPagesWithContext mocks base method
 func (m *MockIAMAPI) ListGroupPoliciesPagesWithContext(arg0 aws.Context, arg1 *iam.ListGroupPoliciesInput, arg2 func(*iam.ListGroupPoliciesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -3988,12 +4527,14 @@ func (m *MockIAMAPI) ListGroupPoliciesPagesWithContext(arg0 aws.Context, arg1 *i
 
 // ListGroupPoliciesPagesWithContext indicates an expected call of ListGroupPoliciesPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListGroupPoliciesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGroupPoliciesPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListGroupPoliciesPagesWithContext), varargs...)
 }
 
 // ListGroups mocks base method
 func (m *MockIAMAPI) ListGroups(arg0 *iam.ListGroupsInput) (*iam.ListGroupsOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListGroups", arg0)
 	ret0, _ := ret[0].(*iam.ListGroupsOutput)
 	ret1, _ := ret[1].(error)
@@ -4002,11 +4543,13 @@ func (m *MockIAMAPI) ListGroups(arg0 *iam.ListGroupsInput) (*iam.ListGroupsOutpu
 
 // ListGroups indicates an expected call of ListGroups
 func (mr *MockIAMAPIMockRecorder) ListGroups(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGroups", reflect.TypeOf((*MockIAMAPI)(nil).ListGroups), arg0)
 }
 
 // ListGroupsWithContext mocks base method
 func (m *MockIAMAPI) ListGroupsWithContext(arg0 aws.Context, arg1 *iam.ListGroupsInput, arg2 ...request.Option) (*iam.ListGroupsOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4019,12 +4562,14 @@ func (m *MockIAMAPI) ListGroupsWithContext(arg0 aws.Context, arg1 *iam.ListGroup
 
 // ListGroupsWithContext indicates an expected call of ListGroupsWithContext
 func (mr *MockIAMAPIMockRecorder) ListGroupsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGroupsWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListGroupsWithContext), varargs...)
 }
 
 // ListGroupsRequest mocks base method
 func (m *MockIAMAPI) ListGroupsRequest(arg0 *iam.ListGroupsInput) (*request.Request, *iam.ListGroupsOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListGroupsRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListGroupsOutput)
@@ -4033,11 +4578,13 @@ func (m *MockIAMAPI) ListGroupsRequest(arg0 *iam.ListGroupsInput) (*request.Requ
 
 // ListGroupsRequest indicates an expected call of ListGroupsRequest
 func (mr *MockIAMAPIMockRecorder) ListGroupsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGroupsRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListGroupsRequest), arg0)
 }
 
 // ListGroupsPages mocks base method
 func (m *MockIAMAPI) ListGroupsPages(arg0 *iam.ListGroupsInput, arg1 func(*iam.ListGroupsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListGroupsPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -4045,11 +4592,13 @@ func (m *MockIAMAPI) ListGroupsPages(arg0 *iam.ListGroupsInput, arg1 func(*iam.L
 
 // ListGroupsPages indicates an expected call of ListGroupsPages
 func (mr *MockIAMAPIMockRecorder) ListGroupsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGroupsPages", reflect.TypeOf((*MockIAMAPI)(nil).ListGroupsPages), arg0, arg1)
 }
 
 // ListGroupsPagesWithContext mocks base method
 func (m *MockIAMAPI) ListGroupsPagesWithContext(arg0 aws.Context, arg1 *iam.ListGroupsInput, arg2 func(*iam.ListGroupsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -4061,12 +4610,14 @@ func (m *MockIAMAPI) ListGroupsPagesWithContext(arg0 aws.Context, arg1 *iam.List
 
 // ListGroupsPagesWithContext indicates an expected call of ListGroupsPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListGroupsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGroupsPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListGroupsPagesWithContext), varargs...)
 }
 
 // ListGroupsForUser mocks base method
 func (m *MockIAMAPI) ListGroupsForUser(arg0 *iam.ListGroupsForUserInput) (*iam.ListGroupsForUserOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListGroupsForUser", arg0)
 	ret0, _ := ret[0].(*iam.ListGroupsForUserOutput)
 	ret1, _ := ret[1].(error)
@@ -4075,11 +4626,13 @@ func (m *MockIAMAPI) ListGroupsForUser(arg0 *iam.ListGroupsForUserInput) (*iam.L
 
 // ListGroupsForUser indicates an expected call of ListGroupsForUser
 func (mr *MockIAMAPIMockRecorder) ListGroupsForUser(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGroupsForUser", reflect.TypeOf((*MockIAMAPI)(nil).ListGroupsForUser), arg0)
 }
 
 // ListGroupsForUserWithContext mocks base method
 func (m *MockIAMAPI) ListGroupsForUserWithContext(arg0 aws.Context, arg1 *iam.ListGroupsForUserInput, arg2 ...request.Option) (*iam.ListGroupsForUserOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4092,12 +4645,14 @@ func (m *MockIAMAPI) ListGroupsForUserWithContext(arg0 aws.Context, arg1 *iam.Li
 
 // ListGroupsForUserWithContext indicates an expected call of ListGroupsForUserWithContext
 func (mr *MockIAMAPIMockRecorder) ListGroupsForUserWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGroupsForUserWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListGroupsForUserWithContext), varargs...)
 }
 
 // ListGroupsForUserRequest mocks base method
 func (m *MockIAMAPI) ListGroupsForUserRequest(arg0 *iam.ListGroupsForUserInput) (*request.Request, *iam.ListGroupsForUserOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListGroupsForUserRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListGroupsForUserOutput)
@@ -4106,11 +4661,13 @@ func (m *MockIAMAPI) ListGroupsForUserRequest(arg0 *iam.ListGroupsForUserInput) 
 
 // ListGroupsForUserRequest indicates an expected call of ListGroupsForUserRequest
 func (mr *MockIAMAPIMockRecorder) ListGroupsForUserRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGroupsForUserRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListGroupsForUserRequest), arg0)
 }
 
 // ListGroupsForUserPages mocks base method
 func (m *MockIAMAPI) ListGroupsForUserPages(arg0 *iam.ListGroupsForUserInput, arg1 func(*iam.ListGroupsForUserOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListGroupsForUserPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -4118,11 +4675,13 @@ func (m *MockIAMAPI) ListGroupsForUserPages(arg0 *iam.ListGroupsForUserInput, ar
 
 // ListGroupsForUserPages indicates an expected call of ListGroupsForUserPages
 func (mr *MockIAMAPIMockRecorder) ListGroupsForUserPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGroupsForUserPages", reflect.TypeOf((*MockIAMAPI)(nil).ListGroupsForUserPages), arg0, arg1)
 }
 
 // ListGroupsForUserPagesWithContext mocks base method
 func (m *MockIAMAPI) ListGroupsForUserPagesWithContext(arg0 aws.Context, arg1 *iam.ListGroupsForUserInput, arg2 func(*iam.ListGroupsForUserOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -4134,12 +4693,14 @@ func (m *MockIAMAPI) ListGroupsForUserPagesWithContext(arg0 aws.Context, arg1 *i
 
 // ListGroupsForUserPagesWithContext indicates an expected call of ListGroupsForUserPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListGroupsForUserPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGroupsForUserPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListGroupsForUserPagesWithContext), varargs...)
 }
 
 // ListInstanceProfiles mocks base method
 func (m *MockIAMAPI) ListInstanceProfiles(arg0 *iam.ListInstanceProfilesInput) (*iam.ListInstanceProfilesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListInstanceProfiles", arg0)
 	ret0, _ := ret[0].(*iam.ListInstanceProfilesOutput)
 	ret1, _ := ret[1].(error)
@@ -4148,11 +4709,13 @@ func (m *MockIAMAPI) ListInstanceProfiles(arg0 *iam.ListInstanceProfilesInput) (
 
 // ListInstanceProfiles indicates an expected call of ListInstanceProfiles
 func (mr *MockIAMAPIMockRecorder) ListInstanceProfiles(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInstanceProfiles", reflect.TypeOf((*MockIAMAPI)(nil).ListInstanceProfiles), arg0)
 }
 
 // ListInstanceProfilesWithContext mocks base method
 func (m *MockIAMAPI) ListInstanceProfilesWithContext(arg0 aws.Context, arg1 *iam.ListInstanceProfilesInput, arg2 ...request.Option) (*iam.ListInstanceProfilesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4165,12 +4728,14 @@ func (m *MockIAMAPI) ListInstanceProfilesWithContext(arg0 aws.Context, arg1 *iam
 
 // ListInstanceProfilesWithContext indicates an expected call of ListInstanceProfilesWithContext
 func (mr *MockIAMAPIMockRecorder) ListInstanceProfilesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInstanceProfilesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListInstanceProfilesWithContext), varargs...)
 }
 
 // ListInstanceProfilesRequest mocks base method
 func (m *MockIAMAPI) ListInstanceProfilesRequest(arg0 *iam.ListInstanceProfilesInput) (*request.Request, *iam.ListInstanceProfilesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListInstanceProfilesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListInstanceProfilesOutput)
@@ -4179,11 +4744,13 @@ func (m *MockIAMAPI) ListInstanceProfilesRequest(arg0 *iam.ListInstanceProfilesI
 
 // ListInstanceProfilesRequest indicates an expected call of ListInstanceProfilesRequest
 func (mr *MockIAMAPIMockRecorder) ListInstanceProfilesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInstanceProfilesRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListInstanceProfilesRequest), arg0)
 }
 
 // ListInstanceProfilesPages mocks base method
 func (m *MockIAMAPI) ListInstanceProfilesPages(arg0 *iam.ListInstanceProfilesInput, arg1 func(*iam.ListInstanceProfilesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListInstanceProfilesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -4191,11 +4758,13 @@ func (m *MockIAMAPI) ListInstanceProfilesPages(arg0 *iam.ListInstanceProfilesInp
 
 // ListInstanceProfilesPages indicates an expected call of ListInstanceProfilesPages
 func (mr *MockIAMAPIMockRecorder) ListInstanceProfilesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInstanceProfilesPages", reflect.TypeOf((*MockIAMAPI)(nil).ListInstanceProfilesPages), arg0, arg1)
 }
 
 // ListInstanceProfilesPagesWithContext mocks base method
 func (m *MockIAMAPI) ListInstanceProfilesPagesWithContext(arg0 aws.Context, arg1 *iam.ListInstanceProfilesInput, arg2 func(*iam.ListInstanceProfilesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -4207,12 +4776,14 @@ func (m *MockIAMAPI) ListInstanceProfilesPagesWithContext(arg0 aws.Context, arg1
 
 // ListInstanceProfilesPagesWithContext indicates an expected call of ListInstanceProfilesPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListInstanceProfilesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInstanceProfilesPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListInstanceProfilesPagesWithContext), varargs...)
 }
 
 // ListInstanceProfilesForRole mocks base method
 func (m *MockIAMAPI) ListInstanceProfilesForRole(arg0 *iam.ListInstanceProfilesForRoleInput) (*iam.ListInstanceProfilesForRoleOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListInstanceProfilesForRole", arg0)
 	ret0, _ := ret[0].(*iam.ListInstanceProfilesForRoleOutput)
 	ret1, _ := ret[1].(error)
@@ -4221,11 +4792,13 @@ func (m *MockIAMAPI) ListInstanceProfilesForRole(arg0 *iam.ListInstanceProfilesF
 
 // ListInstanceProfilesForRole indicates an expected call of ListInstanceProfilesForRole
 func (mr *MockIAMAPIMockRecorder) ListInstanceProfilesForRole(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInstanceProfilesForRole", reflect.TypeOf((*MockIAMAPI)(nil).ListInstanceProfilesForRole), arg0)
 }
 
 // ListInstanceProfilesForRoleWithContext mocks base method
 func (m *MockIAMAPI) ListInstanceProfilesForRoleWithContext(arg0 aws.Context, arg1 *iam.ListInstanceProfilesForRoleInput, arg2 ...request.Option) (*iam.ListInstanceProfilesForRoleOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4238,12 +4811,14 @@ func (m *MockIAMAPI) ListInstanceProfilesForRoleWithContext(arg0 aws.Context, ar
 
 // ListInstanceProfilesForRoleWithContext indicates an expected call of ListInstanceProfilesForRoleWithContext
 func (mr *MockIAMAPIMockRecorder) ListInstanceProfilesForRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInstanceProfilesForRoleWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListInstanceProfilesForRoleWithContext), varargs...)
 }
 
 // ListInstanceProfilesForRoleRequest mocks base method
 func (m *MockIAMAPI) ListInstanceProfilesForRoleRequest(arg0 *iam.ListInstanceProfilesForRoleInput) (*request.Request, *iam.ListInstanceProfilesForRoleOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListInstanceProfilesForRoleRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListInstanceProfilesForRoleOutput)
@@ -4252,11 +4827,13 @@ func (m *MockIAMAPI) ListInstanceProfilesForRoleRequest(arg0 *iam.ListInstancePr
 
 // ListInstanceProfilesForRoleRequest indicates an expected call of ListInstanceProfilesForRoleRequest
 func (mr *MockIAMAPIMockRecorder) ListInstanceProfilesForRoleRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInstanceProfilesForRoleRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListInstanceProfilesForRoleRequest), arg0)
 }
 
 // ListInstanceProfilesForRolePages mocks base method
 func (m *MockIAMAPI) ListInstanceProfilesForRolePages(arg0 *iam.ListInstanceProfilesForRoleInput, arg1 func(*iam.ListInstanceProfilesForRoleOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListInstanceProfilesForRolePages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -4264,11 +4841,13 @@ func (m *MockIAMAPI) ListInstanceProfilesForRolePages(arg0 *iam.ListInstanceProf
 
 // ListInstanceProfilesForRolePages indicates an expected call of ListInstanceProfilesForRolePages
 func (mr *MockIAMAPIMockRecorder) ListInstanceProfilesForRolePages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInstanceProfilesForRolePages", reflect.TypeOf((*MockIAMAPI)(nil).ListInstanceProfilesForRolePages), arg0, arg1)
 }
 
 // ListInstanceProfilesForRolePagesWithContext mocks base method
 func (m *MockIAMAPI) ListInstanceProfilesForRolePagesWithContext(arg0 aws.Context, arg1 *iam.ListInstanceProfilesForRoleInput, arg2 func(*iam.ListInstanceProfilesForRoleOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -4280,12 +4859,14 @@ func (m *MockIAMAPI) ListInstanceProfilesForRolePagesWithContext(arg0 aws.Contex
 
 // ListInstanceProfilesForRolePagesWithContext indicates an expected call of ListInstanceProfilesForRolePagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListInstanceProfilesForRolePagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInstanceProfilesForRolePagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListInstanceProfilesForRolePagesWithContext), varargs...)
 }
 
 // ListMFADevices mocks base method
 func (m *MockIAMAPI) ListMFADevices(arg0 *iam.ListMFADevicesInput) (*iam.ListMFADevicesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListMFADevices", arg0)
 	ret0, _ := ret[0].(*iam.ListMFADevicesOutput)
 	ret1, _ := ret[1].(error)
@@ -4294,11 +4875,13 @@ func (m *MockIAMAPI) ListMFADevices(arg0 *iam.ListMFADevicesInput) (*iam.ListMFA
 
 // ListMFADevices indicates an expected call of ListMFADevices
 func (mr *MockIAMAPIMockRecorder) ListMFADevices(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMFADevices", reflect.TypeOf((*MockIAMAPI)(nil).ListMFADevices), arg0)
 }
 
 // ListMFADevicesWithContext mocks base method
 func (m *MockIAMAPI) ListMFADevicesWithContext(arg0 aws.Context, arg1 *iam.ListMFADevicesInput, arg2 ...request.Option) (*iam.ListMFADevicesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4311,12 +4894,14 @@ func (m *MockIAMAPI) ListMFADevicesWithContext(arg0 aws.Context, arg1 *iam.ListM
 
 // ListMFADevicesWithContext indicates an expected call of ListMFADevicesWithContext
 func (mr *MockIAMAPIMockRecorder) ListMFADevicesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMFADevicesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListMFADevicesWithContext), varargs...)
 }
 
 // ListMFADevicesRequest mocks base method
 func (m *MockIAMAPI) ListMFADevicesRequest(arg0 *iam.ListMFADevicesInput) (*request.Request, *iam.ListMFADevicesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListMFADevicesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListMFADevicesOutput)
@@ -4325,11 +4910,13 @@ func (m *MockIAMAPI) ListMFADevicesRequest(arg0 *iam.ListMFADevicesInput) (*requ
 
 // ListMFADevicesRequest indicates an expected call of ListMFADevicesRequest
 func (mr *MockIAMAPIMockRecorder) ListMFADevicesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMFADevicesRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListMFADevicesRequest), arg0)
 }
 
 // ListMFADevicesPages mocks base method
 func (m *MockIAMAPI) ListMFADevicesPages(arg0 *iam.ListMFADevicesInput, arg1 func(*iam.ListMFADevicesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListMFADevicesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -4337,11 +4924,13 @@ func (m *MockIAMAPI) ListMFADevicesPages(arg0 *iam.ListMFADevicesInput, arg1 fun
 
 // ListMFADevicesPages indicates an expected call of ListMFADevicesPages
 func (mr *MockIAMAPIMockRecorder) ListMFADevicesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMFADevicesPages", reflect.TypeOf((*MockIAMAPI)(nil).ListMFADevicesPages), arg0, arg1)
 }
 
 // ListMFADevicesPagesWithContext mocks base method
 func (m *MockIAMAPI) ListMFADevicesPagesWithContext(arg0 aws.Context, arg1 *iam.ListMFADevicesInput, arg2 func(*iam.ListMFADevicesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -4353,12 +4942,14 @@ func (m *MockIAMAPI) ListMFADevicesPagesWithContext(arg0 aws.Context, arg1 *iam.
 
 // ListMFADevicesPagesWithContext indicates an expected call of ListMFADevicesPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListMFADevicesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMFADevicesPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListMFADevicesPagesWithContext), varargs...)
 }
 
 // ListOpenIDConnectProviders mocks base method
 func (m *MockIAMAPI) ListOpenIDConnectProviders(arg0 *iam.ListOpenIDConnectProvidersInput) (*iam.ListOpenIDConnectProvidersOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListOpenIDConnectProviders", arg0)
 	ret0, _ := ret[0].(*iam.ListOpenIDConnectProvidersOutput)
 	ret1, _ := ret[1].(error)
@@ -4367,11 +4958,13 @@ func (m *MockIAMAPI) ListOpenIDConnectProviders(arg0 *iam.ListOpenIDConnectProvi
 
 // ListOpenIDConnectProviders indicates an expected call of ListOpenIDConnectProviders
 func (mr *MockIAMAPIMockRecorder) ListOpenIDConnectProviders(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListOpenIDConnectProviders", reflect.TypeOf((*MockIAMAPI)(nil).ListOpenIDConnectProviders), arg0)
 }
 
 // ListOpenIDConnectProvidersWithContext mocks base method
 func (m *MockIAMAPI) ListOpenIDConnectProvidersWithContext(arg0 aws.Context, arg1 *iam.ListOpenIDConnectProvidersInput, arg2 ...request.Option) (*iam.ListOpenIDConnectProvidersOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4384,12 +4977,14 @@ func (m *MockIAMAPI) ListOpenIDConnectProvidersWithContext(arg0 aws.Context, arg
 
 // ListOpenIDConnectProvidersWithContext indicates an expected call of ListOpenIDConnectProvidersWithContext
 func (mr *MockIAMAPIMockRecorder) ListOpenIDConnectProvidersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListOpenIDConnectProvidersWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListOpenIDConnectProvidersWithContext), varargs...)
 }
 
 // ListOpenIDConnectProvidersRequest mocks base method
 func (m *MockIAMAPI) ListOpenIDConnectProvidersRequest(arg0 *iam.ListOpenIDConnectProvidersInput) (*request.Request, *iam.ListOpenIDConnectProvidersOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListOpenIDConnectProvidersRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListOpenIDConnectProvidersOutput)
@@ -4398,11 +4993,13 @@ func (m *MockIAMAPI) ListOpenIDConnectProvidersRequest(arg0 *iam.ListOpenIDConne
 
 // ListOpenIDConnectProvidersRequest indicates an expected call of ListOpenIDConnectProvidersRequest
 func (mr *MockIAMAPIMockRecorder) ListOpenIDConnectProvidersRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListOpenIDConnectProvidersRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListOpenIDConnectProvidersRequest), arg0)
 }
 
 // ListPolicies mocks base method
 func (m *MockIAMAPI) ListPolicies(arg0 *iam.ListPoliciesInput) (*iam.ListPoliciesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListPolicies", arg0)
 	ret0, _ := ret[0].(*iam.ListPoliciesOutput)
 	ret1, _ := ret[1].(error)
@@ -4411,11 +5008,13 @@ func (m *MockIAMAPI) ListPolicies(arg0 *iam.ListPoliciesInput) (*iam.ListPolicie
 
 // ListPolicies indicates an expected call of ListPolicies
 func (mr *MockIAMAPIMockRecorder) ListPolicies(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPolicies", reflect.TypeOf((*MockIAMAPI)(nil).ListPolicies), arg0)
 }
 
 // ListPoliciesWithContext mocks base method
 func (m *MockIAMAPI) ListPoliciesWithContext(arg0 aws.Context, arg1 *iam.ListPoliciesInput, arg2 ...request.Option) (*iam.ListPoliciesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4428,12 +5027,14 @@ func (m *MockIAMAPI) ListPoliciesWithContext(arg0 aws.Context, arg1 *iam.ListPol
 
 // ListPoliciesWithContext indicates an expected call of ListPoliciesWithContext
 func (mr *MockIAMAPIMockRecorder) ListPoliciesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPoliciesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListPoliciesWithContext), varargs...)
 }
 
 // ListPoliciesRequest mocks base method
 func (m *MockIAMAPI) ListPoliciesRequest(arg0 *iam.ListPoliciesInput) (*request.Request, *iam.ListPoliciesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListPoliciesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListPoliciesOutput)
@@ -4442,11 +5043,13 @@ func (m *MockIAMAPI) ListPoliciesRequest(arg0 *iam.ListPoliciesInput) (*request.
 
 // ListPoliciesRequest indicates an expected call of ListPoliciesRequest
 func (mr *MockIAMAPIMockRecorder) ListPoliciesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPoliciesRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListPoliciesRequest), arg0)
 }
 
 // ListPoliciesPages mocks base method
 func (m *MockIAMAPI) ListPoliciesPages(arg0 *iam.ListPoliciesInput, arg1 func(*iam.ListPoliciesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListPoliciesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -4454,11 +5057,13 @@ func (m *MockIAMAPI) ListPoliciesPages(arg0 *iam.ListPoliciesInput, arg1 func(*i
 
 // ListPoliciesPages indicates an expected call of ListPoliciesPages
 func (mr *MockIAMAPIMockRecorder) ListPoliciesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPoliciesPages", reflect.TypeOf((*MockIAMAPI)(nil).ListPoliciesPages), arg0, arg1)
 }
 
 // ListPoliciesPagesWithContext mocks base method
 func (m *MockIAMAPI) ListPoliciesPagesWithContext(arg0 aws.Context, arg1 *iam.ListPoliciesInput, arg2 func(*iam.ListPoliciesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -4470,12 +5075,14 @@ func (m *MockIAMAPI) ListPoliciesPagesWithContext(arg0 aws.Context, arg1 *iam.Li
 
 // ListPoliciesPagesWithContext indicates an expected call of ListPoliciesPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListPoliciesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPoliciesPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListPoliciesPagesWithContext), varargs...)
 }
 
 // ListPoliciesGrantingServiceAccess mocks base method
 func (m *MockIAMAPI) ListPoliciesGrantingServiceAccess(arg0 *iam.ListPoliciesGrantingServiceAccessInput) (*iam.ListPoliciesGrantingServiceAccessOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListPoliciesGrantingServiceAccess", arg0)
 	ret0, _ := ret[0].(*iam.ListPoliciesGrantingServiceAccessOutput)
 	ret1, _ := ret[1].(error)
@@ -4484,11 +5091,13 @@ func (m *MockIAMAPI) ListPoliciesGrantingServiceAccess(arg0 *iam.ListPoliciesGra
 
 // ListPoliciesGrantingServiceAccess indicates an expected call of ListPoliciesGrantingServiceAccess
 func (mr *MockIAMAPIMockRecorder) ListPoliciesGrantingServiceAccess(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPoliciesGrantingServiceAccess", reflect.TypeOf((*MockIAMAPI)(nil).ListPoliciesGrantingServiceAccess), arg0)
 }
 
 // ListPoliciesGrantingServiceAccessWithContext mocks base method
 func (m *MockIAMAPI) ListPoliciesGrantingServiceAccessWithContext(arg0 aws.Context, arg1 *iam.ListPoliciesGrantingServiceAccessInput, arg2 ...request.Option) (*iam.ListPoliciesGrantingServiceAccessOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4501,12 +5110,14 @@ func (m *MockIAMAPI) ListPoliciesGrantingServiceAccessWithContext(arg0 aws.Conte
 
 // ListPoliciesGrantingServiceAccessWithContext indicates an expected call of ListPoliciesGrantingServiceAccessWithContext
 func (mr *MockIAMAPIMockRecorder) ListPoliciesGrantingServiceAccessWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPoliciesGrantingServiceAccessWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListPoliciesGrantingServiceAccessWithContext), varargs...)
 }
 
 // ListPoliciesGrantingServiceAccessRequest mocks base method
 func (m *MockIAMAPI) ListPoliciesGrantingServiceAccessRequest(arg0 *iam.ListPoliciesGrantingServiceAccessInput) (*request.Request, *iam.ListPoliciesGrantingServiceAccessOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListPoliciesGrantingServiceAccessRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListPoliciesGrantingServiceAccessOutput)
@@ -4515,11 +5126,13 @@ func (m *MockIAMAPI) ListPoliciesGrantingServiceAccessRequest(arg0 *iam.ListPoli
 
 // ListPoliciesGrantingServiceAccessRequest indicates an expected call of ListPoliciesGrantingServiceAccessRequest
 func (mr *MockIAMAPIMockRecorder) ListPoliciesGrantingServiceAccessRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPoliciesGrantingServiceAccessRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListPoliciesGrantingServiceAccessRequest), arg0)
 }
 
 // ListPolicyVersions mocks base method
 func (m *MockIAMAPI) ListPolicyVersions(arg0 *iam.ListPolicyVersionsInput) (*iam.ListPolicyVersionsOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListPolicyVersions", arg0)
 	ret0, _ := ret[0].(*iam.ListPolicyVersionsOutput)
 	ret1, _ := ret[1].(error)
@@ -4528,11 +5141,13 @@ func (m *MockIAMAPI) ListPolicyVersions(arg0 *iam.ListPolicyVersionsInput) (*iam
 
 // ListPolicyVersions indicates an expected call of ListPolicyVersions
 func (mr *MockIAMAPIMockRecorder) ListPolicyVersions(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPolicyVersions", reflect.TypeOf((*MockIAMAPI)(nil).ListPolicyVersions), arg0)
 }
 
 // ListPolicyVersionsWithContext mocks base method
 func (m *MockIAMAPI) ListPolicyVersionsWithContext(arg0 aws.Context, arg1 *iam.ListPolicyVersionsInput, arg2 ...request.Option) (*iam.ListPolicyVersionsOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4545,12 +5160,14 @@ func (m *MockIAMAPI) ListPolicyVersionsWithContext(arg0 aws.Context, arg1 *iam.L
 
 // ListPolicyVersionsWithContext indicates an expected call of ListPolicyVersionsWithContext
 func (mr *MockIAMAPIMockRecorder) ListPolicyVersionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPolicyVersionsWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListPolicyVersionsWithContext), varargs...)
 }
 
 // ListPolicyVersionsRequest mocks base method
 func (m *MockIAMAPI) ListPolicyVersionsRequest(arg0 *iam.ListPolicyVersionsInput) (*request.Request, *iam.ListPolicyVersionsOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListPolicyVersionsRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListPolicyVersionsOutput)
@@ -4559,11 +5176,13 @@ func (m *MockIAMAPI) ListPolicyVersionsRequest(arg0 *iam.ListPolicyVersionsInput
 
 // ListPolicyVersionsRequest indicates an expected call of ListPolicyVersionsRequest
 func (mr *MockIAMAPIMockRecorder) ListPolicyVersionsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPolicyVersionsRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListPolicyVersionsRequest), arg0)
 }
 
 // ListPolicyVersionsPages mocks base method
 func (m *MockIAMAPI) ListPolicyVersionsPages(arg0 *iam.ListPolicyVersionsInput, arg1 func(*iam.ListPolicyVersionsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListPolicyVersionsPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -4571,11 +5190,13 @@ func (m *MockIAMAPI) ListPolicyVersionsPages(arg0 *iam.ListPolicyVersionsInput, 
 
 // ListPolicyVersionsPages indicates an expected call of ListPolicyVersionsPages
 func (mr *MockIAMAPIMockRecorder) ListPolicyVersionsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPolicyVersionsPages", reflect.TypeOf((*MockIAMAPI)(nil).ListPolicyVersionsPages), arg0, arg1)
 }
 
 // ListPolicyVersionsPagesWithContext mocks base method
 func (m *MockIAMAPI) ListPolicyVersionsPagesWithContext(arg0 aws.Context, arg1 *iam.ListPolicyVersionsInput, arg2 func(*iam.ListPolicyVersionsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -4587,12 +5208,14 @@ func (m *MockIAMAPI) ListPolicyVersionsPagesWithContext(arg0 aws.Context, arg1 *
 
 // ListPolicyVersionsPagesWithContext indicates an expected call of ListPolicyVersionsPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListPolicyVersionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPolicyVersionsPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListPolicyVersionsPagesWithContext), varargs...)
 }
 
 // ListRolePolicies mocks base method
 func (m *MockIAMAPI) ListRolePolicies(arg0 *iam.ListRolePoliciesInput) (*iam.ListRolePoliciesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListRolePolicies", arg0)
 	ret0, _ := ret[0].(*iam.ListRolePoliciesOutput)
 	ret1, _ := ret[1].(error)
@@ -4601,11 +5224,13 @@ func (m *MockIAMAPI) ListRolePolicies(arg0 *iam.ListRolePoliciesInput) (*iam.Lis
 
 // ListRolePolicies indicates an expected call of ListRolePolicies
 func (mr *MockIAMAPIMockRecorder) ListRolePolicies(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRolePolicies", reflect.TypeOf((*MockIAMAPI)(nil).ListRolePolicies), arg0)
 }
 
 // ListRolePoliciesWithContext mocks base method
 func (m *MockIAMAPI) ListRolePoliciesWithContext(arg0 aws.Context, arg1 *iam.ListRolePoliciesInput, arg2 ...request.Option) (*iam.ListRolePoliciesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4618,12 +5243,14 @@ func (m *MockIAMAPI) ListRolePoliciesWithContext(arg0 aws.Context, arg1 *iam.Lis
 
 // ListRolePoliciesWithContext indicates an expected call of ListRolePoliciesWithContext
 func (mr *MockIAMAPIMockRecorder) ListRolePoliciesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRolePoliciesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListRolePoliciesWithContext), varargs...)
 }
 
 // ListRolePoliciesRequest mocks base method
 func (m *MockIAMAPI) ListRolePoliciesRequest(arg0 *iam.ListRolePoliciesInput) (*request.Request, *iam.ListRolePoliciesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListRolePoliciesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListRolePoliciesOutput)
@@ -4632,11 +5259,13 @@ func (m *MockIAMAPI) ListRolePoliciesRequest(arg0 *iam.ListRolePoliciesInput) (*
 
 // ListRolePoliciesRequest indicates an expected call of ListRolePoliciesRequest
 func (mr *MockIAMAPIMockRecorder) ListRolePoliciesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRolePoliciesRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListRolePoliciesRequest), arg0)
 }
 
 // ListRolePoliciesPages mocks base method
 func (m *MockIAMAPI) ListRolePoliciesPages(arg0 *iam.ListRolePoliciesInput, arg1 func(*iam.ListRolePoliciesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListRolePoliciesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -4644,11 +5273,13 @@ func (m *MockIAMAPI) ListRolePoliciesPages(arg0 *iam.ListRolePoliciesInput, arg1
 
 // ListRolePoliciesPages indicates an expected call of ListRolePoliciesPages
 func (mr *MockIAMAPIMockRecorder) ListRolePoliciesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRolePoliciesPages", reflect.TypeOf((*MockIAMAPI)(nil).ListRolePoliciesPages), arg0, arg1)
 }
 
 // ListRolePoliciesPagesWithContext mocks base method
 func (m *MockIAMAPI) ListRolePoliciesPagesWithContext(arg0 aws.Context, arg1 *iam.ListRolePoliciesInput, arg2 func(*iam.ListRolePoliciesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -4660,12 +5291,14 @@ func (m *MockIAMAPI) ListRolePoliciesPagesWithContext(arg0 aws.Context, arg1 *ia
 
 // ListRolePoliciesPagesWithContext indicates an expected call of ListRolePoliciesPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListRolePoliciesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRolePoliciesPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListRolePoliciesPagesWithContext), varargs...)
 }
 
 // ListRoleTags mocks base method
 func (m *MockIAMAPI) ListRoleTags(arg0 *iam.ListRoleTagsInput) (*iam.ListRoleTagsOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListRoleTags", arg0)
 	ret0, _ := ret[0].(*iam.ListRoleTagsOutput)
 	ret1, _ := ret[1].(error)
@@ -4674,11 +5307,13 @@ func (m *MockIAMAPI) ListRoleTags(arg0 *iam.ListRoleTagsInput) (*iam.ListRoleTag
 
 // ListRoleTags indicates an expected call of ListRoleTags
 func (mr *MockIAMAPIMockRecorder) ListRoleTags(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRoleTags", reflect.TypeOf((*MockIAMAPI)(nil).ListRoleTags), arg0)
 }
 
 // ListRoleTagsWithContext mocks base method
 func (m *MockIAMAPI) ListRoleTagsWithContext(arg0 aws.Context, arg1 *iam.ListRoleTagsInput, arg2 ...request.Option) (*iam.ListRoleTagsOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4691,12 +5326,14 @@ func (m *MockIAMAPI) ListRoleTagsWithContext(arg0 aws.Context, arg1 *iam.ListRol
 
 // ListRoleTagsWithContext indicates an expected call of ListRoleTagsWithContext
 func (mr *MockIAMAPIMockRecorder) ListRoleTagsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRoleTagsWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListRoleTagsWithContext), varargs...)
 }
 
 // ListRoleTagsRequest mocks base method
 func (m *MockIAMAPI) ListRoleTagsRequest(arg0 *iam.ListRoleTagsInput) (*request.Request, *iam.ListRoleTagsOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListRoleTagsRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListRoleTagsOutput)
@@ -4705,11 +5342,13 @@ func (m *MockIAMAPI) ListRoleTagsRequest(arg0 *iam.ListRoleTagsInput) (*request.
 
 // ListRoleTagsRequest indicates an expected call of ListRoleTagsRequest
 func (mr *MockIAMAPIMockRecorder) ListRoleTagsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRoleTagsRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListRoleTagsRequest), arg0)
 }
 
 // ListRoles mocks base method
 func (m *MockIAMAPI) ListRoles(arg0 *iam.ListRolesInput) (*iam.ListRolesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListRoles", arg0)
 	ret0, _ := ret[0].(*iam.ListRolesOutput)
 	ret1, _ := ret[1].(error)
@@ -4718,11 +5357,13 @@ func (m *MockIAMAPI) ListRoles(arg0 *iam.ListRolesInput) (*iam.ListRolesOutput, 
 
 // ListRoles indicates an expected call of ListRoles
 func (mr *MockIAMAPIMockRecorder) ListRoles(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRoles", reflect.TypeOf((*MockIAMAPI)(nil).ListRoles), arg0)
 }
 
 // ListRolesWithContext mocks base method
 func (m *MockIAMAPI) ListRolesWithContext(arg0 aws.Context, arg1 *iam.ListRolesInput, arg2 ...request.Option) (*iam.ListRolesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4735,12 +5376,14 @@ func (m *MockIAMAPI) ListRolesWithContext(arg0 aws.Context, arg1 *iam.ListRolesI
 
 // ListRolesWithContext indicates an expected call of ListRolesWithContext
 func (mr *MockIAMAPIMockRecorder) ListRolesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRolesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListRolesWithContext), varargs...)
 }
 
 // ListRolesRequest mocks base method
 func (m *MockIAMAPI) ListRolesRequest(arg0 *iam.ListRolesInput) (*request.Request, *iam.ListRolesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListRolesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListRolesOutput)
@@ -4749,11 +5392,13 @@ func (m *MockIAMAPI) ListRolesRequest(arg0 *iam.ListRolesInput) (*request.Reques
 
 // ListRolesRequest indicates an expected call of ListRolesRequest
 func (mr *MockIAMAPIMockRecorder) ListRolesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRolesRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListRolesRequest), arg0)
 }
 
 // ListRolesPages mocks base method
 func (m *MockIAMAPI) ListRolesPages(arg0 *iam.ListRolesInput, arg1 func(*iam.ListRolesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListRolesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -4761,11 +5406,13 @@ func (m *MockIAMAPI) ListRolesPages(arg0 *iam.ListRolesInput, arg1 func(*iam.Lis
 
 // ListRolesPages indicates an expected call of ListRolesPages
 func (mr *MockIAMAPIMockRecorder) ListRolesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRolesPages", reflect.TypeOf((*MockIAMAPI)(nil).ListRolesPages), arg0, arg1)
 }
 
 // ListRolesPagesWithContext mocks base method
 func (m *MockIAMAPI) ListRolesPagesWithContext(arg0 aws.Context, arg1 *iam.ListRolesInput, arg2 func(*iam.ListRolesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -4777,12 +5424,14 @@ func (m *MockIAMAPI) ListRolesPagesWithContext(arg0 aws.Context, arg1 *iam.ListR
 
 // ListRolesPagesWithContext indicates an expected call of ListRolesPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListRolesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRolesPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListRolesPagesWithContext), varargs...)
 }
 
 // ListSAMLProviders mocks base method
 func (m *MockIAMAPI) ListSAMLProviders(arg0 *iam.ListSAMLProvidersInput) (*iam.ListSAMLProvidersOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListSAMLProviders", arg0)
 	ret0, _ := ret[0].(*iam.ListSAMLProvidersOutput)
 	ret1, _ := ret[1].(error)
@@ -4791,11 +5440,13 @@ func (m *MockIAMAPI) ListSAMLProviders(arg0 *iam.ListSAMLProvidersInput) (*iam.L
 
 // ListSAMLProviders indicates an expected call of ListSAMLProviders
 func (mr *MockIAMAPIMockRecorder) ListSAMLProviders(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSAMLProviders", reflect.TypeOf((*MockIAMAPI)(nil).ListSAMLProviders), arg0)
 }
 
 // ListSAMLProvidersWithContext mocks base method
 func (m *MockIAMAPI) ListSAMLProvidersWithContext(arg0 aws.Context, arg1 *iam.ListSAMLProvidersInput, arg2 ...request.Option) (*iam.ListSAMLProvidersOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4808,12 +5459,14 @@ func (m *MockIAMAPI) ListSAMLProvidersWithContext(arg0 aws.Context, arg1 *iam.Li
 
 // ListSAMLProvidersWithContext indicates an expected call of ListSAMLProvidersWithContext
 func (mr *MockIAMAPIMockRecorder) ListSAMLProvidersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSAMLProvidersWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListSAMLProvidersWithContext), varargs...)
 }
 
 // ListSAMLProvidersRequest mocks base method
 func (m *MockIAMAPI) ListSAMLProvidersRequest(arg0 *iam.ListSAMLProvidersInput) (*request.Request, *iam.ListSAMLProvidersOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListSAMLProvidersRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListSAMLProvidersOutput)
@@ -4822,11 +5475,13 @@ func (m *MockIAMAPI) ListSAMLProvidersRequest(arg0 *iam.ListSAMLProvidersInput) 
 
 // ListSAMLProvidersRequest indicates an expected call of ListSAMLProvidersRequest
 func (mr *MockIAMAPIMockRecorder) ListSAMLProvidersRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSAMLProvidersRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListSAMLProvidersRequest), arg0)
 }
 
 // ListSSHPublicKeys mocks base method
 func (m *MockIAMAPI) ListSSHPublicKeys(arg0 *iam.ListSSHPublicKeysInput) (*iam.ListSSHPublicKeysOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListSSHPublicKeys", arg0)
 	ret0, _ := ret[0].(*iam.ListSSHPublicKeysOutput)
 	ret1, _ := ret[1].(error)
@@ -4835,11 +5490,13 @@ func (m *MockIAMAPI) ListSSHPublicKeys(arg0 *iam.ListSSHPublicKeysInput) (*iam.L
 
 // ListSSHPublicKeys indicates an expected call of ListSSHPublicKeys
 func (mr *MockIAMAPIMockRecorder) ListSSHPublicKeys(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSSHPublicKeys", reflect.TypeOf((*MockIAMAPI)(nil).ListSSHPublicKeys), arg0)
 }
 
 // ListSSHPublicKeysWithContext mocks base method
 func (m *MockIAMAPI) ListSSHPublicKeysWithContext(arg0 aws.Context, arg1 *iam.ListSSHPublicKeysInput, arg2 ...request.Option) (*iam.ListSSHPublicKeysOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4852,12 +5509,14 @@ func (m *MockIAMAPI) ListSSHPublicKeysWithContext(arg0 aws.Context, arg1 *iam.Li
 
 // ListSSHPublicKeysWithContext indicates an expected call of ListSSHPublicKeysWithContext
 func (mr *MockIAMAPIMockRecorder) ListSSHPublicKeysWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSSHPublicKeysWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListSSHPublicKeysWithContext), varargs...)
 }
 
 // ListSSHPublicKeysRequest mocks base method
 func (m *MockIAMAPI) ListSSHPublicKeysRequest(arg0 *iam.ListSSHPublicKeysInput) (*request.Request, *iam.ListSSHPublicKeysOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListSSHPublicKeysRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListSSHPublicKeysOutput)
@@ -4866,11 +5525,13 @@ func (m *MockIAMAPI) ListSSHPublicKeysRequest(arg0 *iam.ListSSHPublicKeysInput) 
 
 // ListSSHPublicKeysRequest indicates an expected call of ListSSHPublicKeysRequest
 func (mr *MockIAMAPIMockRecorder) ListSSHPublicKeysRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSSHPublicKeysRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListSSHPublicKeysRequest), arg0)
 }
 
 // ListSSHPublicKeysPages mocks base method
 func (m *MockIAMAPI) ListSSHPublicKeysPages(arg0 *iam.ListSSHPublicKeysInput, arg1 func(*iam.ListSSHPublicKeysOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListSSHPublicKeysPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -4878,11 +5539,13 @@ func (m *MockIAMAPI) ListSSHPublicKeysPages(arg0 *iam.ListSSHPublicKeysInput, ar
 
 // ListSSHPublicKeysPages indicates an expected call of ListSSHPublicKeysPages
 func (mr *MockIAMAPIMockRecorder) ListSSHPublicKeysPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSSHPublicKeysPages", reflect.TypeOf((*MockIAMAPI)(nil).ListSSHPublicKeysPages), arg0, arg1)
 }
 
 // ListSSHPublicKeysPagesWithContext mocks base method
 func (m *MockIAMAPI) ListSSHPublicKeysPagesWithContext(arg0 aws.Context, arg1 *iam.ListSSHPublicKeysInput, arg2 func(*iam.ListSSHPublicKeysOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -4894,12 +5557,14 @@ func (m *MockIAMAPI) ListSSHPublicKeysPagesWithContext(arg0 aws.Context, arg1 *i
 
 // ListSSHPublicKeysPagesWithContext indicates an expected call of ListSSHPublicKeysPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListSSHPublicKeysPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSSHPublicKeysPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListSSHPublicKeysPagesWithContext), varargs...)
 }
 
 // ListServerCertificates mocks base method
 func (m *MockIAMAPI) ListServerCertificates(arg0 *iam.ListServerCertificatesInput) (*iam.ListServerCertificatesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListServerCertificates", arg0)
 	ret0, _ := ret[0].(*iam.ListServerCertificatesOutput)
 	ret1, _ := ret[1].(error)
@@ -4908,11 +5573,13 @@ func (m *MockIAMAPI) ListServerCertificates(arg0 *iam.ListServerCertificatesInpu
 
 // ListServerCertificates indicates an expected call of ListServerCertificates
 func (mr *MockIAMAPIMockRecorder) ListServerCertificates(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServerCertificates", reflect.TypeOf((*MockIAMAPI)(nil).ListServerCertificates), arg0)
 }
 
 // ListServerCertificatesWithContext mocks base method
 func (m *MockIAMAPI) ListServerCertificatesWithContext(arg0 aws.Context, arg1 *iam.ListServerCertificatesInput, arg2 ...request.Option) (*iam.ListServerCertificatesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4925,12 +5592,14 @@ func (m *MockIAMAPI) ListServerCertificatesWithContext(arg0 aws.Context, arg1 *i
 
 // ListServerCertificatesWithContext indicates an expected call of ListServerCertificatesWithContext
 func (mr *MockIAMAPIMockRecorder) ListServerCertificatesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServerCertificatesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListServerCertificatesWithContext), varargs...)
 }
 
 // ListServerCertificatesRequest mocks base method
 func (m *MockIAMAPI) ListServerCertificatesRequest(arg0 *iam.ListServerCertificatesInput) (*request.Request, *iam.ListServerCertificatesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListServerCertificatesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListServerCertificatesOutput)
@@ -4939,11 +5608,13 @@ func (m *MockIAMAPI) ListServerCertificatesRequest(arg0 *iam.ListServerCertifica
 
 // ListServerCertificatesRequest indicates an expected call of ListServerCertificatesRequest
 func (mr *MockIAMAPIMockRecorder) ListServerCertificatesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServerCertificatesRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListServerCertificatesRequest), arg0)
 }
 
 // ListServerCertificatesPages mocks base method
 func (m *MockIAMAPI) ListServerCertificatesPages(arg0 *iam.ListServerCertificatesInput, arg1 func(*iam.ListServerCertificatesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListServerCertificatesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -4951,11 +5622,13 @@ func (m *MockIAMAPI) ListServerCertificatesPages(arg0 *iam.ListServerCertificate
 
 // ListServerCertificatesPages indicates an expected call of ListServerCertificatesPages
 func (mr *MockIAMAPIMockRecorder) ListServerCertificatesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServerCertificatesPages", reflect.TypeOf((*MockIAMAPI)(nil).ListServerCertificatesPages), arg0, arg1)
 }
 
 // ListServerCertificatesPagesWithContext mocks base method
 func (m *MockIAMAPI) ListServerCertificatesPagesWithContext(arg0 aws.Context, arg1 *iam.ListServerCertificatesInput, arg2 func(*iam.ListServerCertificatesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -4967,12 +5640,14 @@ func (m *MockIAMAPI) ListServerCertificatesPagesWithContext(arg0 aws.Context, ar
 
 // ListServerCertificatesPagesWithContext indicates an expected call of ListServerCertificatesPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListServerCertificatesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServerCertificatesPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListServerCertificatesPagesWithContext), varargs...)
 }
 
 // ListServiceSpecificCredentials mocks base method
 func (m *MockIAMAPI) ListServiceSpecificCredentials(arg0 *iam.ListServiceSpecificCredentialsInput) (*iam.ListServiceSpecificCredentialsOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListServiceSpecificCredentials", arg0)
 	ret0, _ := ret[0].(*iam.ListServiceSpecificCredentialsOutput)
 	ret1, _ := ret[1].(error)
@@ -4981,11 +5656,13 @@ func (m *MockIAMAPI) ListServiceSpecificCredentials(arg0 *iam.ListServiceSpecifi
 
 // ListServiceSpecificCredentials indicates an expected call of ListServiceSpecificCredentials
 func (mr *MockIAMAPIMockRecorder) ListServiceSpecificCredentials(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServiceSpecificCredentials", reflect.TypeOf((*MockIAMAPI)(nil).ListServiceSpecificCredentials), arg0)
 }
 
 // ListServiceSpecificCredentialsWithContext mocks base method
 func (m *MockIAMAPI) ListServiceSpecificCredentialsWithContext(arg0 aws.Context, arg1 *iam.ListServiceSpecificCredentialsInput, arg2 ...request.Option) (*iam.ListServiceSpecificCredentialsOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -4998,12 +5675,14 @@ func (m *MockIAMAPI) ListServiceSpecificCredentialsWithContext(arg0 aws.Context,
 
 // ListServiceSpecificCredentialsWithContext indicates an expected call of ListServiceSpecificCredentialsWithContext
 func (mr *MockIAMAPIMockRecorder) ListServiceSpecificCredentialsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServiceSpecificCredentialsWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListServiceSpecificCredentialsWithContext), varargs...)
 }
 
 // ListServiceSpecificCredentialsRequest mocks base method
 func (m *MockIAMAPI) ListServiceSpecificCredentialsRequest(arg0 *iam.ListServiceSpecificCredentialsInput) (*request.Request, *iam.ListServiceSpecificCredentialsOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListServiceSpecificCredentialsRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListServiceSpecificCredentialsOutput)
@@ -5012,11 +5691,13 @@ func (m *MockIAMAPI) ListServiceSpecificCredentialsRequest(arg0 *iam.ListService
 
 // ListServiceSpecificCredentialsRequest indicates an expected call of ListServiceSpecificCredentialsRequest
 func (mr *MockIAMAPIMockRecorder) ListServiceSpecificCredentialsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServiceSpecificCredentialsRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListServiceSpecificCredentialsRequest), arg0)
 }
 
 // ListSigningCertificates mocks base method
 func (m *MockIAMAPI) ListSigningCertificates(arg0 *iam.ListSigningCertificatesInput) (*iam.ListSigningCertificatesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListSigningCertificates", arg0)
 	ret0, _ := ret[0].(*iam.ListSigningCertificatesOutput)
 	ret1, _ := ret[1].(error)
@@ -5025,11 +5706,13 @@ func (m *MockIAMAPI) ListSigningCertificates(arg0 *iam.ListSigningCertificatesIn
 
 // ListSigningCertificates indicates an expected call of ListSigningCertificates
 func (mr *MockIAMAPIMockRecorder) ListSigningCertificates(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSigningCertificates", reflect.TypeOf((*MockIAMAPI)(nil).ListSigningCertificates), arg0)
 }
 
 // ListSigningCertificatesWithContext mocks base method
 func (m *MockIAMAPI) ListSigningCertificatesWithContext(arg0 aws.Context, arg1 *iam.ListSigningCertificatesInput, arg2 ...request.Option) (*iam.ListSigningCertificatesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5042,12 +5725,14 @@ func (m *MockIAMAPI) ListSigningCertificatesWithContext(arg0 aws.Context, arg1 *
 
 // ListSigningCertificatesWithContext indicates an expected call of ListSigningCertificatesWithContext
 func (mr *MockIAMAPIMockRecorder) ListSigningCertificatesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSigningCertificatesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListSigningCertificatesWithContext), varargs...)
 }
 
 // ListSigningCertificatesRequest mocks base method
 func (m *MockIAMAPI) ListSigningCertificatesRequest(arg0 *iam.ListSigningCertificatesInput) (*request.Request, *iam.ListSigningCertificatesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListSigningCertificatesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListSigningCertificatesOutput)
@@ -5056,11 +5741,13 @@ func (m *MockIAMAPI) ListSigningCertificatesRequest(arg0 *iam.ListSigningCertifi
 
 // ListSigningCertificatesRequest indicates an expected call of ListSigningCertificatesRequest
 func (mr *MockIAMAPIMockRecorder) ListSigningCertificatesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSigningCertificatesRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListSigningCertificatesRequest), arg0)
 }
 
 // ListSigningCertificatesPages mocks base method
 func (m *MockIAMAPI) ListSigningCertificatesPages(arg0 *iam.ListSigningCertificatesInput, arg1 func(*iam.ListSigningCertificatesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListSigningCertificatesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -5068,11 +5755,13 @@ func (m *MockIAMAPI) ListSigningCertificatesPages(arg0 *iam.ListSigningCertifica
 
 // ListSigningCertificatesPages indicates an expected call of ListSigningCertificatesPages
 func (mr *MockIAMAPIMockRecorder) ListSigningCertificatesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSigningCertificatesPages", reflect.TypeOf((*MockIAMAPI)(nil).ListSigningCertificatesPages), arg0, arg1)
 }
 
 // ListSigningCertificatesPagesWithContext mocks base method
 func (m *MockIAMAPI) ListSigningCertificatesPagesWithContext(arg0 aws.Context, arg1 *iam.ListSigningCertificatesInput, arg2 func(*iam.ListSigningCertificatesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -5084,12 +5773,14 @@ func (m *MockIAMAPI) ListSigningCertificatesPagesWithContext(arg0 aws.Context, a
 
 // ListSigningCertificatesPagesWithContext indicates an expected call of ListSigningCertificatesPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListSigningCertificatesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSigningCertificatesPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListSigningCertificatesPagesWithContext), varargs...)
 }
 
 // ListUserPolicies mocks base method
 func (m *MockIAMAPI) ListUserPolicies(arg0 *iam.ListUserPoliciesInput) (*iam.ListUserPoliciesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListUserPolicies", arg0)
 	ret0, _ := ret[0].(*iam.ListUserPoliciesOutput)
 	ret1, _ := ret[1].(error)
@@ -5098,11 +5789,13 @@ func (m *MockIAMAPI) ListUserPolicies(arg0 *iam.ListUserPoliciesInput) (*iam.Lis
 
 // ListUserPolicies indicates an expected call of ListUserPolicies
 func (mr *MockIAMAPIMockRecorder) ListUserPolicies(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUserPolicies", reflect.TypeOf((*MockIAMAPI)(nil).ListUserPolicies), arg0)
 }
 
 // ListUserPoliciesWithContext mocks base method
 func (m *MockIAMAPI) ListUserPoliciesWithContext(arg0 aws.Context, arg1 *iam.ListUserPoliciesInput, arg2 ...request.Option) (*iam.ListUserPoliciesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5115,12 +5808,14 @@ func (m *MockIAMAPI) ListUserPoliciesWithContext(arg0 aws.Context, arg1 *iam.Lis
 
 // ListUserPoliciesWithContext indicates an expected call of ListUserPoliciesWithContext
 func (mr *MockIAMAPIMockRecorder) ListUserPoliciesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUserPoliciesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListUserPoliciesWithContext), varargs...)
 }
 
 // ListUserPoliciesRequest mocks base method
 func (m *MockIAMAPI) ListUserPoliciesRequest(arg0 *iam.ListUserPoliciesInput) (*request.Request, *iam.ListUserPoliciesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListUserPoliciesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListUserPoliciesOutput)
@@ -5129,11 +5824,13 @@ func (m *MockIAMAPI) ListUserPoliciesRequest(arg0 *iam.ListUserPoliciesInput) (*
 
 // ListUserPoliciesRequest indicates an expected call of ListUserPoliciesRequest
 func (mr *MockIAMAPIMockRecorder) ListUserPoliciesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUserPoliciesRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListUserPoliciesRequest), arg0)
 }
 
 // ListUserPoliciesPages mocks base method
 func (m *MockIAMAPI) ListUserPoliciesPages(arg0 *iam.ListUserPoliciesInput, arg1 func(*iam.ListUserPoliciesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListUserPoliciesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -5141,11 +5838,13 @@ func (m *MockIAMAPI) ListUserPoliciesPages(arg0 *iam.ListUserPoliciesInput, arg1
 
 // ListUserPoliciesPages indicates an expected call of ListUserPoliciesPages
 func (mr *MockIAMAPIMockRecorder) ListUserPoliciesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUserPoliciesPages", reflect.TypeOf((*MockIAMAPI)(nil).ListUserPoliciesPages), arg0, arg1)
 }
 
 // ListUserPoliciesPagesWithContext mocks base method
 func (m *MockIAMAPI) ListUserPoliciesPagesWithContext(arg0 aws.Context, arg1 *iam.ListUserPoliciesInput, arg2 func(*iam.ListUserPoliciesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -5157,12 +5856,14 @@ func (m *MockIAMAPI) ListUserPoliciesPagesWithContext(arg0 aws.Context, arg1 *ia
 
 // ListUserPoliciesPagesWithContext indicates an expected call of ListUserPoliciesPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListUserPoliciesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUserPoliciesPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListUserPoliciesPagesWithContext), varargs...)
 }
 
 // ListUserTags mocks base method
 func (m *MockIAMAPI) ListUserTags(arg0 *iam.ListUserTagsInput) (*iam.ListUserTagsOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListUserTags", arg0)
 	ret0, _ := ret[0].(*iam.ListUserTagsOutput)
 	ret1, _ := ret[1].(error)
@@ -5171,11 +5872,13 @@ func (m *MockIAMAPI) ListUserTags(arg0 *iam.ListUserTagsInput) (*iam.ListUserTag
 
 // ListUserTags indicates an expected call of ListUserTags
 func (mr *MockIAMAPIMockRecorder) ListUserTags(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUserTags", reflect.TypeOf((*MockIAMAPI)(nil).ListUserTags), arg0)
 }
 
 // ListUserTagsWithContext mocks base method
 func (m *MockIAMAPI) ListUserTagsWithContext(arg0 aws.Context, arg1 *iam.ListUserTagsInput, arg2 ...request.Option) (*iam.ListUserTagsOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5188,12 +5891,14 @@ func (m *MockIAMAPI) ListUserTagsWithContext(arg0 aws.Context, arg1 *iam.ListUse
 
 // ListUserTagsWithContext indicates an expected call of ListUserTagsWithContext
 func (mr *MockIAMAPIMockRecorder) ListUserTagsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUserTagsWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListUserTagsWithContext), varargs...)
 }
 
 // ListUserTagsRequest mocks base method
 func (m *MockIAMAPI) ListUserTagsRequest(arg0 *iam.ListUserTagsInput) (*request.Request, *iam.ListUserTagsOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListUserTagsRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListUserTagsOutput)
@@ -5202,11 +5907,13 @@ func (m *MockIAMAPI) ListUserTagsRequest(arg0 *iam.ListUserTagsInput) (*request.
 
 // ListUserTagsRequest indicates an expected call of ListUserTagsRequest
 func (mr *MockIAMAPIMockRecorder) ListUserTagsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUserTagsRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListUserTagsRequest), arg0)
 }
 
 // ListUsers mocks base method
 func (m *MockIAMAPI) ListUsers(arg0 *iam.ListUsersInput) (*iam.ListUsersOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListUsers", arg0)
 	ret0, _ := ret[0].(*iam.ListUsersOutput)
 	ret1, _ := ret[1].(error)
@@ -5215,11 +5922,13 @@ func (m *MockIAMAPI) ListUsers(arg0 *iam.ListUsersInput) (*iam.ListUsersOutput, 
 
 // ListUsers indicates an expected call of ListUsers
 func (mr *MockIAMAPIMockRecorder) ListUsers(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUsers", reflect.TypeOf((*MockIAMAPI)(nil).ListUsers), arg0)
 }
 
 // ListUsersWithContext mocks base method
 func (m *MockIAMAPI) ListUsersWithContext(arg0 aws.Context, arg1 *iam.ListUsersInput, arg2 ...request.Option) (*iam.ListUsersOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5232,12 +5941,14 @@ func (m *MockIAMAPI) ListUsersWithContext(arg0 aws.Context, arg1 *iam.ListUsersI
 
 // ListUsersWithContext indicates an expected call of ListUsersWithContext
 func (mr *MockIAMAPIMockRecorder) ListUsersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUsersWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListUsersWithContext), varargs...)
 }
 
 // ListUsersRequest mocks base method
 func (m *MockIAMAPI) ListUsersRequest(arg0 *iam.ListUsersInput) (*request.Request, *iam.ListUsersOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListUsersRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListUsersOutput)
@@ -5246,11 +5957,13 @@ func (m *MockIAMAPI) ListUsersRequest(arg0 *iam.ListUsersInput) (*request.Reques
 
 // ListUsersRequest indicates an expected call of ListUsersRequest
 func (mr *MockIAMAPIMockRecorder) ListUsersRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUsersRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListUsersRequest), arg0)
 }
 
 // ListUsersPages mocks base method
 func (m *MockIAMAPI) ListUsersPages(arg0 *iam.ListUsersInput, arg1 func(*iam.ListUsersOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListUsersPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -5258,11 +5971,13 @@ func (m *MockIAMAPI) ListUsersPages(arg0 *iam.ListUsersInput, arg1 func(*iam.Lis
 
 // ListUsersPages indicates an expected call of ListUsersPages
 func (mr *MockIAMAPIMockRecorder) ListUsersPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUsersPages", reflect.TypeOf((*MockIAMAPI)(nil).ListUsersPages), arg0, arg1)
 }
 
 // ListUsersPagesWithContext mocks base method
 func (m *MockIAMAPI) ListUsersPagesWithContext(arg0 aws.Context, arg1 *iam.ListUsersInput, arg2 func(*iam.ListUsersOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -5274,12 +5989,14 @@ func (m *MockIAMAPI) ListUsersPagesWithContext(arg0 aws.Context, arg1 *iam.ListU
 
 // ListUsersPagesWithContext indicates an expected call of ListUsersPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListUsersPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUsersPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListUsersPagesWithContext), varargs...)
 }
 
 // ListVirtualMFADevices mocks base method
 func (m *MockIAMAPI) ListVirtualMFADevices(arg0 *iam.ListVirtualMFADevicesInput) (*iam.ListVirtualMFADevicesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListVirtualMFADevices", arg0)
 	ret0, _ := ret[0].(*iam.ListVirtualMFADevicesOutput)
 	ret1, _ := ret[1].(error)
@@ -5288,11 +6005,13 @@ func (m *MockIAMAPI) ListVirtualMFADevices(arg0 *iam.ListVirtualMFADevicesInput)
 
 // ListVirtualMFADevices indicates an expected call of ListVirtualMFADevices
 func (mr *MockIAMAPIMockRecorder) ListVirtualMFADevices(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListVirtualMFADevices", reflect.TypeOf((*MockIAMAPI)(nil).ListVirtualMFADevices), arg0)
 }
 
 // ListVirtualMFADevicesWithContext mocks base method
 func (m *MockIAMAPI) ListVirtualMFADevicesWithContext(arg0 aws.Context, arg1 *iam.ListVirtualMFADevicesInput, arg2 ...request.Option) (*iam.ListVirtualMFADevicesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5305,12 +6024,14 @@ func (m *MockIAMAPI) ListVirtualMFADevicesWithContext(arg0 aws.Context, arg1 *ia
 
 // ListVirtualMFADevicesWithContext indicates an expected call of ListVirtualMFADevicesWithContext
 func (mr *MockIAMAPIMockRecorder) ListVirtualMFADevicesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListVirtualMFADevicesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListVirtualMFADevicesWithContext), varargs...)
 }
 
 // ListVirtualMFADevicesRequest mocks base method
 func (m *MockIAMAPI) ListVirtualMFADevicesRequest(arg0 *iam.ListVirtualMFADevicesInput) (*request.Request, *iam.ListVirtualMFADevicesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListVirtualMFADevicesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ListVirtualMFADevicesOutput)
@@ -5319,11 +6040,13 @@ func (m *MockIAMAPI) ListVirtualMFADevicesRequest(arg0 *iam.ListVirtualMFADevice
 
 // ListVirtualMFADevicesRequest indicates an expected call of ListVirtualMFADevicesRequest
 func (mr *MockIAMAPIMockRecorder) ListVirtualMFADevicesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListVirtualMFADevicesRequest", reflect.TypeOf((*MockIAMAPI)(nil).ListVirtualMFADevicesRequest), arg0)
 }
 
 // ListVirtualMFADevicesPages mocks base method
 func (m *MockIAMAPI) ListVirtualMFADevicesPages(arg0 *iam.ListVirtualMFADevicesInput, arg1 func(*iam.ListVirtualMFADevicesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListVirtualMFADevicesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -5331,11 +6054,13 @@ func (m *MockIAMAPI) ListVirtualMFADevicesPages(arg0 *iam.ListVirtualMFADevicesI
 
 // ListVirtualMFADevicesPages indicates an expected call of ListVirtualMFADevicesPages
 func (mr *MockIAMAPIMockRecorder) ListVirtualMFADevicesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListVirtualMFADevicesPages", reflect.TypeOf((*MockIAMAPI)(nil).ListVirtualMFADevicesPages), arg0, arg1)
 }
 
 // ListVirtualMFADevicesPagesWithContext mocks base method
 func (m *MockIAMAPI) ListVirtualMFADevicesPagesWithContext(arg0 aws.Context, arg1 *iam.ListVirtualMFADevicesInput, arg2 func(*iam.ListVirtualMFADevicesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -5347,12 +6072,14 @@ func (m *MockIAMAPI) ListVirtualMFADevicesPagesWithContext(arg0 aws.Context, arg
 
 // ListVirtualMFADevicesPagesWithContext indicates an expected call of ListVirtualMFADevicesPagesWithContext
 func (mr *MockIAMAPIMockRecorder) ListVirtualMFADevicesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListVirtualMFADevicesPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ListVirtualMFADevicesPagesWithContext), varargs...)
 }
 
 // PutGroupPolicy mocks base method
 func (m *MockIAMAPI) PutGroupPolicy(arg0 *iam.PutGroupPolicyInput) (*iam.PutGroupPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutGroupPolicy", arg0)
 	ret0, _ := ret[0].(*iam.PutGroupPolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -5361,11 +6088,13 @@ func (m *MockIAMAPI) PutGroupPolicy(arg0 *iam.PutGroupPolicyInput) (*iam.PutGrou
 
 // PutGroupPolicy indicates an expected call of PutGroupPolicy
 func (mr *MockIAMAPIMockRecorder) PutGroupPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutGroupPolicy", reflect.TypeOf((*MockIAMAPI)(nil).PutGroupPolicy), arg0)
 }
 
 // PutGroupPolicyWithContext mocks base method
 func (m *MockIAMAPI) PutGroupPolicyWithContext(arg0 aws.Context, arg1 *iam.PutGroupPolicyInput, arg2 ...request.Option) (*iam.PutGroupPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5378,12 +6107,14 @@ func (m *MockIAMAPI) PutGroupPolicyWithContext(arg0 aws.Context, arg1 *iam.PutGr
 
 // PutGroupPolicyWithContext indicates an expected call of PutGroupPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) PutGroupPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutGroupPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).PutGroupPolicyWithContext), varargs...)
 }
 
 // PutGroupPolicyRequest mocks base method
 func (m *MockIAMAPI) PutGroupPolicyRequest(arg0 *iam.PutGroupPolicyInput) (*request.Request, *iam.PutGroupPolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutGroupPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.PutGroupPolicyOutput)
@@ -5392,11 +6123,13 @@ func (m *MockIAMAPI) PutGroupPolicyRequest(arg0 *iam.PutGroupPolicyInput) (*requ
 
 // PutGroupPolicyRequest indicates an expected call of PutGroupPolicyRequest
 func (mr *MockIAMAPIMockRecorder) PutGroupPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutGroupPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).PutGroupPolicyRequest), arg0)
 }
 
 // PutRolePermissionsBoundary mocks base method
 func (m *MockIAMAPI) PutRolePermissionsBoundary(arg0 *iam.PutRolePermissionsBoundaryInput) (*iam.PutRolePermissionsBoundaryOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutRolePermissionsBoundary", arg0)
 	ret0, _ := ret[0].(*iam.PutRolePermissionsBoundaryOutput)
 	ret1, _ := ret[1].(error)
@@ -5405,11 +6138,13 @@ func (m *MockIAMAPI) PutRolePermissionsBoundary(arg0 *iam.PutRolePermissionsBoun
 
 // PutRolePermissionsBoundary indicates an expected call of PutRolePermissionsBoundary
 func (mr *MockIAMAPIMockRecorder) PutRolePermissionsBoundary(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutRolePermissionsBoundary", reflect.TypeOf((*MockIAMAPI)(nil).PutRolePermissionsBoundary), arg0)
 }
 
 // PutRolePermissionsBoundaryWithContext mocks base method
 func (m *MockIAMAPI) PutRolePermissionsBoundaryWithContext(arg0 aws.Context, arg1 *iam.PutRolePermissionsBoundaryInput, arg2 ...request.Option) (*iam.PutRolePermissionsBoundaryOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5422,12 +6157,14 @@ func (m *MockIAMAPI) PutRolePermissionsBoundaryWithContext(arg0 aws.Context, arg
 
 // PutRolePermissionsBoundaryWithContext indicates an expected call of PutRolePermissionsBoundaryWithContext
 func (mr *MockIAMAPIMockRecorder) PutRolePermissionsBoundaryWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutRolePermissionsBoundaryWithContext", reflect.TypeOf((*MockIAMAPI)(nil).PutRolePermissionsBoundaryWithContext), varargs...)
 }
 
 // PutRolePermissionsBoundaryRequest mocks base method
 func (m *MockIAMAPI) PutRolePermissionsBoundaryRequest(arg0 *iam.PutRolePermissionsBoundaryInput) (*request.Request, *iam.PutRolePermissionsBoundaryOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutRolePermissionsBoundaryRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.PutRolePermissionsBoundaryOutput)
@@ -5436,11 +6173,13 @@ func (m *MockIAMAPI) PutRolePermissionsBoundaryRequest(arg0 *iam.PutRolePermissi
 
 // PutRolePermissionsBoundaryRequest indicates an expected call of PutRolePermissionsBoundaryRequest
 func (mr *MockIAMAPIMockRecorder) PutRolePermissionsBoundaryRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutRolePermissionsBoundaryRequest", reflect.TypeOf((*MockIAMAPI)(nil).PutRolePermissionsBoundaryRequest), arg0)
 }
 
 // PutRolePolicy mocks base method
 func (m *MockIAMAPI) PutRolePolicy(arg0 *iam.PutRolePolicyInput) (*iam.PutRolePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutRolePolicy", arg0)
 	ret0, _ := ret[0].(*iam.PutRolePolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -5449,11 +6188,13 @@ func (m *MockIAMAPI) PutRolePolicy(arg0 *iam.PutRolePolicyInput) (*iam.PutRolePo
 
 // PutRolePolicy indicates an expected call of PutRolePolicy
 func (mr *MockIAMAPIMockRecorder) PutRolePolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutRolePolicy", reflect.TypeOf((*MockIAMAPI)(nil).PutRolePolicy), arg0)
 }
 
 // PutRolePolicyWithContext mocks base method
 func (m *MockIAMAPI) PutRolePolicyWithContext(arg0 aws.Context, arg1 *iam.PutRolePolicyInput, arg2 ...request.Option) (*iam.PutRolePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5466,12 +6207,14 @@ func (m *MockIAMAPI) PutRolePolicyWithContext(arg0 aws.Context, arg1 *iam.PutRol
 
 // PutRolePolicyWithContext indicates an expected call of PutRolePolicyWithContext
 func (mr *MockIAMAPIMockRecorder) PutRolePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutRolePolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).PutRolePolicyWithContext), varargs...)
 }
 
 // PutRolePolicyRequest mocks base method
 func (m *MockIAMAPI) PutRolePolicyRequest(arg0 *iam.PutRolePolicyInput) (*request.Request, *iam.PutRolePolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutRolePolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.PutRolePolicyOutput)
@@ -5480,11 +6223,13 @@ func (m *MockIAMAPI) PutRolePolicyRequest(arg0 *iam.PutRolePolicyInput) (*reques
 
 // PutRolePolicyRequest indicates an expected call of PutRolePolicyRequest
 func (mr *MockIAMAPIMockRecorder) PutRolePolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutRolePolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).PutRolePolicyRequest), arg0)
 }
 
 // PutUserPermissionsBoundary mocks base method
 func (m *MockIAMAPI) PutUserPermissionsBoundary(arg0 *iam.PutUserPermissionsBoundaryInput) (*iam.PutUserPermissionsBoundaryOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutUserPermissionsBoundary", arg0)
 	ret0, _ := ret[0].(*iam.PutUserPermissionsBoundaryOutput)
 	ret1, _ := ret[1].(error)
@@ -5493,11 +6238,13 @@ func (m *MockIAMAPI) PutUserPermissionsBoundary(arg0 *iam.PutUserPermissionsBoun
 
 // PutUserPermissionsBoundary indicates an expected call of PutUserPermissionsBoundary
 func (mr *MockIAMAPIMockRecorder) PutUserPermissionsBoundary(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutUserPermissionsBoundary", reflect.TypeOf((*MockIAMAPI)(nil).PutUserPermissionsBoundary), arg0)
 }
 
 // PutUserPermissionsBoundaryWithContext mocks base method
 func (m *MockIAMAPI) PutUserPermissionsBoundaryWithContext(arg0 aws.Context, arg1 *iam.PutUserPermissionsBoundaryInput, arg2 ...request.Option) (*iam.PutUserPermissionsBoundaryOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5510,12 +6257,14 @@ func (m *MockIAMAPI) PutUserPermissionsBoundaryWithContext(arg0 aws.Context, arg
 
 // PutUserPermissionsBoundaryWithContext indicates an expected call of PutUserPermissionsBoundaryWithContext
 func (mr *MockIAMAPIMockRecorder) PutUserPermissionsBoundaryWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutUserPermissionsBoundaryWithContext", reflect.TypeOf((*MockIAMAPI)(nil).PutUserPermissionsBoundaryWithContext), varargs...)
 }
 
 // PutUserPermissionsBoundaryRequest mocks base method
 func (m *MockIAMAPI) PutUserPermissionsBoundaryRequest(arg0 *iam.PutUserPermissionsBoundaryInput) (*request.Request, *iam.PutUserPermissionsBoundaryOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutUserPermissionsBoundaryRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.PutUserPermissionsBoundaryOutput)
@@ -5524,11 +6273,13 @@ func (m *MockIAMAPI) PutUserPermissionsBoundaryRequest(arg0 *iam.PutUserPermissi
 
 // PutUserPermissionsBoundaryRequest indicates an expected call of PutUserPermissionsBoundaryRequest
 func (mr *MockIAMAPIMockRecorder) PutUserPermissionsBoundaryRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutUserPermissionsBoundaryRequest", reflect.TypeOf((*MockIAMAPI)(nil).PutUserPermissionsBoundaryRequest), arg0)
 }
 
 // PutUserPolicy mocks base method
 func (m *MockIAMAPI) PutUserPolicy(arg0 *iam.PutUserPolicyInput) (*iam.PutUserPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutUserPolicy", arg0)
 	ret0, _ := ret[0].(*iam.PutUserPolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -5537,11 +6288,13 @@ func (m *MockIAMAPI) PutUserPolicy(arg0 *iam.PutUserPolicyInput) (*iam.PutUserPo
 
 // PutUserPolicy indicates an expected call of PutUserPolicy
 func (mr *MockIAMAPIMockRecorder) PutUserPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutUserPolicy", reflect.TypeOf((*MockIAMAPI)(nil).PutUserPolicy), arg0)
 }
 
 // PutUserPolicyWithContext mocks base method
 func (m *MockIAMAPI) PutUserPolicyWithContext(arg0 aws.Context, arg1 *iam.PutUserPolicyInput, arg2 ...request.Option) (*iam.PutUserPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5554,12 +6307,14 @@ func (m *MockIAMAPI) PutUserPolicyWithContext(arg0 aws.Context, arg1 *iam.PutUse
 
 // PutUserPolicyWithContext indicates an expected call of PutUserPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) PutUserPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutUserPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).PutUserPolicyWithContext), varargs...)
 }
 
 // PutUserPolicyRequest mocks base method
 func (m *MockIAMAPI) PutUserPolicyRequest(arg0 *iam.PutUserPolicyInput) (*request.Request, *iam.PutUserPolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutUserPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.PutUserPolicyOutput)
@@ -5568,11 +6323,13 @@ func (m *MockIAMAPI) PutUserPolicyRequest(arg0 *iam.PutUserPolicyInput) (*reques
 
 // PutUserPolicyRequest indicates an expected call of PutUserPolicyRequest
 func (mr *MockIAMAPIMockRecorder) PutUserPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutUserPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).PutUserPolicyRequest), arg0)
 }
 
 // RemoveClientIDFromOpenIDConnectProvider mocks base method
 func (m *MockIAMAPI) RemoveClientIDFromOpenIDConnectProvider(arg0 *iam.RemoveClientIDFromOpenIDConnectProviderInput) (*iam.RemoveClientIDFromOpenIDConnectProviderOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RemoveClientIDFromOpenIDConnectProvider", arg0)
 	ret0, _ := ret[0].(*iam.RemoveClientIDFromOpenIDConnectProviderOutput)
 	ret1, _ := ret[1].(error)
@@ -5581,11 +6338,13 @@ func (m *MockIAMAPI) RemoveClientIDFromOpenIDConnectProvider(arg0 *iam.RemoveCli
 
 // RemoveClientIDFromOpenIDConnectProvider indicates an expected call of RemoveClientIDFromOpenIDConnectProvider
 func (mr *MockIAMAPIMockRecorder) RemoveClientIDFromOpenIDConnectProvider(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveClientIDFromOpenIDConnectProvider", reflect.TypeOf((*MockIAMAPI)(nil).RemoveClientIDFromOpenIDConnectProvider), arg0)
 }
 
 // RemoveClientIDFromOpenIDConnectProviderWithContext mocks base method
 func (m *MockIAMAPI) RemoveClientIDFromOpenIDConnectProviderWithContext(arg0 aws.Context, arg1 *iam.RemoveClientIDFromOpenIDConnectProviderInput, arg2 ...request.Option) (*iam.RemoveClientIDFromOpenIDConnectProviderOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5598,12 +6357,14 @@ func (m *MockIAMAPI) RemoveClientIDFromOpenIDConnectProviderWithContext(arg0 aws
 
 // RemoveClientIDFromOpenIDConnectProviderWithContext indicates an expected call of RemoveClientIDFromOpenIDConnectProviderWithContext
 func (mr *MockIAMAPIMockRecorder) RemoveClientIDFromOpenIDConnectProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveClientIDFromOpenIDConnectProviderWithContext", reflect.TypeOf((*MockIAMAPI)(nil).RemoveClientIDFromOpenIDConnectProviderWithContext), varargs...)
 }
 
 // RemoveClientIDFromOpenIDConnectProviderRequest mocks base method
 func (m *MockIAMAPI) RemoveClientIDFromOpenIDConnectProviderRequest(arg0 *iam.RemoveClientIDFromOpenIDConnectProviderInput) (*request.Request, *iam.RemoveClientIDFromOpenIDConnectProviderOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RemoveClientIDFromOpenIDConnectProviderRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.RemoveClientIDFromOpenIDConnectProviderOutput)
@@ -5612,11 +6373,13 @@ func (m *MockIAMAPI) RemoveClientIDFromOpenIDConnectProviderRequest(arg0 *iam.Re
 
 // RemoveClientIDFromOpenIDConnectProviderRequest indicates an expected call of RemoveClientIDFromOpenIDConnectProviderRequest
 func (mr *MockIAMAPIMockRecorder) RemoveClientIDFromOpenIDConnectProviderRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveClientIDFromOpenIDConnectProviderRequest", reflect.TypeOf((*MockIAMAPI)(nil).RemoveClientIDFromOpenIDConnectProviderRequest), arg0)
 }
 
 // RemoveRoleFromInstanceProfile mocks base method
 func (m *MockIAMAPI) RemoveRoleFromInstanceProfile(arg0 *iam.RemoveRoleFromInstanceProfileInput) (*iam.RemoveRoleFromInstanceProfileOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RemoveRoleFromInstanceProfile", arg0)
 	ret0, _ := ret[0].(*iam.RemoveRoleFromInstanceProfileOutput)
 	ret1, _ := ret[1].(error)
@@ -5625,11 +6388,13 @@ func (m *MockIAMAPI) RemoveRoleFromInstanceProfile(arg0 *iam.RemoveRoleFromInsta
 
 // RemoveRoleFromInstanceProfile indicates an expected call of RemoveRoleFromInstanceProfile
 func (mr *MockIAMAPIMockRecorder) RemoveRoleFromInstanceProfile(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveRoleFromInstanceProfile", reflect.TypeOf((*MockIAMAPI)(nil).RemoveRoleFromInstanceProfile), arg0)
 }
 
 // RemoveRoleFromInstanceProfileWithContext mocks base method
 func (m *MockIAMAPI) RemoveRoleFromInstanceProfileWithContext(arg0 aws.Context, arg1 *iam.RemoveRoleFromInstanceProfileInput, arg2 ...request.Option) (*iam.RemoveRoleFromInstanceProfileOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5642,12 +6407,14 @@ func (m *MockIAMAPI) RemoveRoleFromInstanceProfileWithContext(arg0 aws.Context, 
 
 // RemoveRoleFromInstanceProfileWithContext indicates an expected call of RemoveRoleFromInstanceProfileWithContext
 func (mr *MockIAMAPIMockRecorder) RemoveRoleFromInstanceProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveRoleFromInstanceProfileWithContext", reflect.TypeOf((*MockIAMAPI)(nil).RemoveRoleFromInstanceProfileWithContext), varargs...)
 }
 
 // RemoveRoleFromInstanceProfileRequest mocks base method
 func (m *MockIAMAPI) RemoveRoleFromInstanceProfileRequest(arg0 *iam.RemoveRoleFromInstanceProfileInput) (*request.Request, *iam.RemoveRoleFromInstanceProfileOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RemoveRoleFromInstanceProfileRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.RemoveRoleFromInstanceProfileOutput)
@@ -5656,11 +6423,13 @@ func (m *MockIAMAPI) RemoveRoleFromInstanceProfileRequest(arg0 *iam.RemoveRoleFr
 
 // RemoveRoleFromInstanceProfileRequest indicates an expected call of RemoveRoleFromInstanceProfileRequest
 func (mr *MockIAMAPIMockRecorder) RemoveRoleFromInstanceProfileRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveRoleFromInstanceProfileRequest", reflect.TypeOf((*MockIAMAPI)(nil).RemoveRoleFromInstanceProfileRequest), arg0)
 }
 
 // RemoveUserFromGroup mocks base method
 func (m *MockIAMAPI) RemoveUserFromGroup(arg0 *iam.RemoveUserFromGroupInput) (*iam.RemoveUserFromGroupOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RemoveUserFromGroup", arg0)
 	ret0, _ := ret[0].(*iam.RemoveUserFromGroupOutput)
 	ret1, _ := ret[1].(error)
@@ -5669,11 +6438,13 @@ func (m *MockIAMAPI) RemoveUserFromGroup(arg0 *iam.RemoveUserFromGroupInput) (*i
 
 // RemoveUserFromGroup indicates an expected call of RemoveUserFromGroup
 func (mr *MockIAMAPIMockRecorder) RemoveUserFromGroup(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveUserFromGroup", reflect.TypeOf((*MockIAMAPI)(nil).RemoveUserFromGroup), arg0)
 }
 
 // RemoveUserFromGroupWithContext mocks base method
 func (m *MockIAMAPI) RemoveUserFromGroupWithContext(arg0 aws.Context, arg1 *iam.RemoveUserFromGroupInput, arg2 ...request.Option) (*iam.RemoveUserFromGroupOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5686,12 +6457,14 @@ func (m *MockIAMAPI) RemoveUserFromGroupWithContext(arg0 aws.Context, arg1 *iam.
 
 // RemoveUserFromGroupWithContext indicates an expected call of RemoveUserFromGroupWithContext
 func (mr *MockIAMAPIMockRecorder) RemoveUserFromGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveUserFromGroupWithContext", reflect.TypeOf((*MockIAMAPI)(nil).RemoveUserFromGroupWithContext), varargs...)
 }
 
 // RemoveUserFromGroupRequest mocks base method
 func (m *MockIAMAPI) RemoveUserFromGroupRequest(arg0 *iam.RemoveUserFromGroupInput) (*request.Request, *iam.RemoveUserFromGroupOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RemoveUserFromGroupRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.RemoveUserFromGroupOutput)
@@ -5700,11 +6473,13 @@ func (m *MockIAMAPI) RemoveUserFromGroupRequest(arg0 *iam.RemoveUserFromGroupInp
 
 // RemoveUserFromGroupRequest indicates an expected call of RemoveUserFromGroupRequest
 func (mr *MockIAMAPIMockRecorder) RemoveUserFromGroupRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveUserFromGroupRequest", reflect.TypeOf((*MockIAMAPI)(nil).RemoveUserFromGroupRequest), arg0)
 }
 
 // ResetServiceSpecificCredential mocks base method
 func (m *MockIAMAPI) ResetServiceSpecificCredential(arg0 *iam.ResetServiceSpecificCredentialInput) (*iam.ResetServiceSpecificCredentialOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ResetServiceSpecificCredential", arg0)
 	ret0, _ := ret[0].(*iam.ResetServiceSpecificCredentialOutput)
 	ret1, _ := ret[1].(error)
@@ -5713,11 +6488,13 @@ func (m *MockIAMAPI) ResetServiceSpecificCredential(arg0 *iam.ResetServiceSpecif
 
 // ResetServiceSpecificCredential indicates an expected call of ResetServiceSpecificCredential
 func (mr *MockIAMAPIMockRecorder) ResetServiceSpecificCredential(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResetServiceSpecificCredential", reflect.TypeOf((*MockIAMAPI)(nil).ResetServiceSpecificCredential), arg0)
 }
 
 // ResetServiceSpecificCredentialWithContext mocks base method
 func (m *MockIAMAPI) ResetServiceSpecificCredentialWithContext(arg0 aws.Context, arg1 *iam.ResetServiceSpecificCredentialInput, arg2 ...request.Option) (*iam.ResetServiceSpecificCredentialOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5730,12 +6507,14 @@ func (m *MockIAMAPI) ResetServiceSpecificCredentialWithContext(arg0 aws.Context,
 
 // ResetServiceSpecificCredentialWithContext indicates an expected call of ResetServiceSpecificCredentialWithContext
 func (mr *MockIAMAPIMockRecorder) ResetServiceSpecificCredentialWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResetServiceSpecificCredentialWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ResetServiceSpecificCredentialWithContext), varargs...)
 }
 
 // ResetServiceSpecificCredentialRequest mocks base method
 func (m *MockIAMAPI) ResetServiceSpecificCredentialRequest(arg0 *iam.ResetServiceSpecificCredentialInput) (*request.Request, *iam.ResetServiceSpecificCredentialOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ResetServiceSpecificCredentialRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ResetServiceSpecificCredentialOutput)
@@ -5744,11 +6523,13 @@ func (m *MockIAMAPI) ResetServiceSpecificCredentialRequest(arg0 *iam.ResetServic
 
 // ResetServiceSpecificCredentialRequest indicates an expected call of ResetServiceSpecificCredentialRequest
 func (mr *MockIAMAPIMockRecorder) ResetServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResetServiceSpecificCredentialRequest", reflect.TypeOf((*MockIAMAPI)(nil).ResetServiceSpecificCredentialRequest), arg0)
 }
 
 // ResyncMFADevice mocks base method
 func (m *MockIAMAPI) ResyncMFADevice(arg0 *iam.ResyncMFADeviceInput) (*iam.ResyncMFADeviceOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ResyncMFADevice", arg0)
 	ret0, _ := ret[0].(*iam.ResyncMFADeviceOutput)
 	ret1, _ := ret[1].(error)
@@ -5757,11 +6538,13 @@ func (m *MockIAMAPI) ResyncMFADevice(arg0 *iam.ResyncMFADeviceInput) (*iam.Resyn
 
 // ResyncMFADevice indicates an expected call of ResyncMFADevice
 func (mr *MockIAMAPIMockRecorder) ResyncMFADevice(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResyncMFADevice", reflect.TypeOf((*MockIAMAPI)(nil).ResyncMFADevice), arg0)
 }
 
 // ResyncMFADeviceWithContext mocks base method
 func (m *MockIAMAPI) ResyncMFADeviceWithContext(arg0 aws.Context, arg1 *iam.ResyncMFADeviceInput, arg2 ...request.Option) (*iam.ResyncMFADeviceOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5774,12 +6557,14 @@ func (m *MockIAMAPI) ResyncMFADeviceWithContext(arg0 aws.Context, arg1 *iam.Resy
 
 // ResyncMFADeviceWithContext indicates an expected call of ResyncMFADeviceWithContext
 func (mr *MockIAMAPIMockRecorder) ResyncMFADeviceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResyncMFADeviceWithContext", reflect.TypeOf((*MockIAMAPI)(nil).ResyncMFADeviceWithContext), varargs...)
 }
 
 // ResyncMFADeviceRequest mocks base method
 func (m *MockIAMAPI) ResyncMFADeviceRequest(arg0 *iam.ResyncMFADeviceInput) (*request.Request, *iam.ResyncMFADeviceOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ResyncMFADeviceRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.ResyncMFADeviceOutput)
@@ -5788,11 +6573,13 @@ func (m *MockIAMAPI) ResyncMFADeviceRequest(arg0 *iam.ResyncMFADeviceInput) (*re
 
 // ResyncMFADeviceRequest indicates an expected call of ResyncMFADeviceRequest
 func (mr *MockIAMAPIMockRecorder) ResyncMFADeviceRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResyncMFADeviceRequest", reflect.TypeOf((*MockIAMAPI)(nil).ResyncMFADeviceRequest), arg0)
 }
 
 // SetDefaultPolicyVersion mocks base method
 func (m *MockIAMAPI) SetDefaultPolicyVersion(arg0 *iam.SetDefaultPolicyVersionInput) (*iam.SetDefaultPolicyVersionOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetDefaultPolicyVersion", arg0)
 	ret0, _ := ret[0].(*iam.SetDefaultPolicyVersionOutput)
 	ret1, _ := ret[1].(error)
@@ -5801,11 +6588,13 @@ func (m *MockIAMAPI) SetDefaultPolicyVersion(arg0 *iam.SetDefaultPolicyVersionIn
 
 // SetDefaultPolicyVersion indicates an expected call of SetDefaultPolicyVersion
 func (mr *MockIAMAPIMockRecorder) SetDefaultPolicyVersion(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetDefaultPolicyVersion", reflect.TypeOf((*MockIAMAPI)(nil).SetDefaultPolicyVersion), arg0)
 }
 
 // SetDefaultPolicyVersionWithContext mocks base method
 func (m *MockIAMAPI) SetDefaultPolicyVersionWithContext(arg0 aws.Context, arg1 *iam.SetDefaultPolicyVersionInput, arg2 ...request.Option) (*iam.SetDefaultPolicyVersionOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5818,12 +6607,14 @@ func (m *MockIAMAPI) SetDefaultPolicyVersionWithContext(arg0 aws.Context, arg1 *
 
 // SetDefaultPolicyVersionWithContext indicates an expected call of SetDefaultPolicyVersionWithContext
 func (mr *MockIAMAPIMockRecorder) SetDefaultPolicyVersionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetDefaultPolicyVersionWithContext", reflect.TypeOf((*MockIAMAPI)(nil).SetDefaultPolicyVersionWithContext), varargs...)
 }
 
 // SetDefaultPolicyVersionRequest mocks base method
 func (m *MockIAMAPI) SetDefaultPolicyVersionRequest(arg0 *iam.SetDefaultPolicyVersionInput) (*request.Request, *iam.SetDefaultPolicyVersionOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetDefaultPolicyVersionRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.SetDefaultPolicyVersionOutput)
@@ -5832,11 +6623,13 @@ func (m *MockIAMAPI) SetDefaultPolicyVersionRequest(arg0 *iam.SetDefaultPolicyVe
 
 // SetDefaultPolicyVersionRequest indicates an expected call of SetDefaultPolicyVersionRequest
 func (mr *MockIAMAPIMockRecorder) SetDefaultPolicyVersionRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetDefaultPolicyVersionRequest", reflect.TypeOf((*MockIAMAPI)(nil).SetDefaultPolicyVersionRequest), arg0)
 }
 
 // SetSecurityTokenServicePreferences mocks base method
 func (m *MockIAMAPI) SetSecurityTokenServicePreferences(arg0 *iam.SetSecurityTokenServicePreferencesInput) (*iam.SetSecurityTokenServicePreferencesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetSecurityTokenServicePreferences", arg0)
 	ret0, _ := ret[0].(*iam.SetSecurityTokenServicePreferencesOutput)
 	ret1, _ := ret[1].(error)
@@ -5845,11 +6638,13 @@ func (m *MockIAMAPI) SetSecurityTokenServicePreferences(arg0 *iam.SetSecurityTok
 
 // SetSecurityTokenServicePreferences indicates an expected call of SetSecurityTokenServicePreferences
 func (mr *MockIAMAPIMockRecorder) SetSecurityTokenServicePreferences(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetSecurityTokenServicePreferences", reflect.TypeOf((*MockIAMAPI)(nil).SetSecurityTokenServicePreferences), arg0)
 }
 
 // SetSecurityTokenServicePreferencesWithContext mocks base method
 func (m *MockIAMAPI) SetSecurityTokenServicePreferencesWithContext(arg0 aws.Context, arg1 *iam.SetSecurityTokenServicePreferencesInput, arg2 ...request.Option) (*iam.SetSecurityTokenServicePreferencesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5862,12 +6657,14 @@ func (m *MockIAMAPI) SetSecurityTokenServicePreferencesWithContext(arg0 aws.Cont
 
 // SetSecurityTokenServicePreferencesWithContext indicates an expected call of SetSecurityTokenServicePreferencesWithContext
 func (mr *MockIAMAPIMockRecorder) SetSecurityTokenServicePreferencesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetSecurityTokenServicePreferencesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).SetSecurityTokenServicePreferencesWithContext), varargs...)
 }
 
 // SetSecurityTokenServicePreferencesRequest mocks base method
 func (m *MockIAMAPI) SetSecurityTokenServicePreferencesRequest(arg0 *iam.SetSecurityTokenServicePreferencesInput) (*request.Request, *iam.SetSecurityTokenServicePreferencesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetSecurityTokenServicePreferencesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.SetSecurityTokenServicePreferencesOutput)
@@ -5876,11 +6673,13 @@ func (m *MockIAMAPI) SetSecurityTokenServicePreferencesRequest(arg0 *iam.SetSecu
 
 // SetSecurityTokenServicePreferencesRequest indicates an expected call of SetSecurityTokenServicePreferencesRequest
 func (mr *MockIAMAPIMockRecorder) SetSecurityTokenServicePreferencesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetSecurityTokenServicePreferencesRequest", reflect.TypeOf((*MockIAMAPI)(nil).SetSecurityTokenServicePreferencesRequest), arg0)
 }
 
 // SimulateCustomPolicy mocks base method
 func (m *MockIAMAPI) SimulateCustomPolicy(arg0 *iam.SimulateCustomPolicyInput) (*iam.SimulatePolicyResponse, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SimulateCustomPolicy", arg0)
 	ret0, _ := ret[0].(*iam.SimulatePolicyResponse)
 	ret1, _ := ret[1].(error)
@@ -5889,11 +6688,13 @@ func (m *MockIAMAPI) SimulateCustomPolicy(arg0 *iam.SimulateCustomPolicyInput) (
 
 // SimulateCustomPolicy indicates an expected call of SimulateCustomPolicy
 func (mr *MockIAMAPIMockRecorder) SimulateCustomPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SimulateCustomPolicy", reflect.TypeOf((*MockIAMAPI)(nil).SimulateCustomPolicy), arg0)
 }
 
 // SimulateCustomPolicyWithContext mocks base method
 func (m *MockIAMAPI) SimulateCustomPolicyWithContext(arg0 aws.Context, arg1 *iam.SimulateCustomPolicyInput, arg2 ...request.Option) (*iam.SimulatePolicyResponse, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5906,12 +6707,14 @@ func (m *MockIAMAPI) SimulateCustomPolicyWithContext(arg0 aws.Context, arg1 *iam
 
 // SimulateCustomPolicyWithContext indicates an expected call of SimulateCustomPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) SimulateCustomPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SimulateCustomPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).SimulateCustomPolicyWithContext), varargs...)
 }
 
 // SimulateCustomPolicyRequest mocks base method
 func (m *MockIAMAPI) SimulateCustomPolicyRequest(arg0 *iam.SimulateCustomPolicyInput) (*request.Request, *iam.SimulatePolicyResponse) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SimulateCustomPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.SimulatePolicyResponse)
@@ -5920,11 +6723,13 @@ func (m *MockIAMAPI) SimulateCustomPolicyRequest(arg0 *iam.SimulateCustomPolicyI
 
 // SimulateCustomPolicyRequest indicates an expected call of SimulateCustomPolicyRequest
 func (mr *MockIAMAPIMockRecorder) SimulateCustomPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SimulateCustomPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).SimulateCustomPolicyRequest), arg0)
 }
 
 // SimulateCustomPolicyPages mocks base method
 func (m *MockIAMAPI) SimulateCustomPolicyPages(arg0 *iam.SimulateCustomPolicyInput, arg1 func(*iam.SimulatePolicyResponse, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SimulateCustomPolicyPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -5932,11 +6737,13 @@ func (m *MockIAMAPI) SimulateCustomPolicyPages(arg0 *iam.SimulateCustomPolicyInp
 
 // SimulateCustomPolicyPages indicates an expected call of SimulateCustomPolicyPages
 func (mr *MockIAMAPIMockRecorder) SimulateCustomPolicyPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SimulateCustomPolicyPages", reflect.TypeOf((*MockIAMAPI)(nil).SimulateCustomPolicyPages), arg0, arg1)
 }
 
 // SimulateCustomPolicyPagesWithContext mocks base method
 func (m *MockIAMAPI) SimulateCustomPolicyPagesWithContext(arg0 aws.Context, arg1 *iam.SimulateCustomPolicyInput, arg2 func(*iam.SimulatePolicyResponse, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -5948,12 +6755,14 @@ func (m *MockIAMAPI) SimulateCustomPolicyPagesWithContext(arg0 aws.Context, arg1
 
 // SimulateCustomPolicyPagesWithContext indicates an expected call of SimulateCustomPolicyPagesWithContext
 func (mr *MockIAMAPIMockRecorder) SimulateCustomPolicyPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SimulateCustomPolicyPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).SimulateCustomPolicyPagesWithContext), varargs...)
 }
 
 // SimulatePrincipalPolicy mocks base method
 func (m *MockIAMAPI) SimulatePrincipalPolicy(arg0 *iam.SimulatePrincipalPolicyInput) (*iam.SimulatePolicyResponse, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SimulatePrincipalPolicy", arg0)
 	ret0, _ := ret[0].(*iam.SimulatePolicyResponse)
 	ret1, _ := ret[1].(error)
@@ -5962,11 +6771,13 @@ func (m *MockIAMAPI) SimulatePrincipalPolicy(arg0 *iam.SimulatePrincipalPolicyIn
 
 // SimulatePrincipalPolicy indicates an expected call of SimulatePrincipalPolicy
 func (mr *MockIAMAPIMockRecorder) SimulatePrincipalPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SimulatePrincipalPolicy", reflect.TypeOf((*MockIAMAPI)(nil).SimulatePrincipalPolicy), arg0)
 }
 
 // SimulatePrincipalPolicyWithContext mocks base method
 func (m *MockIAMAPI) SimulatePrincipalPolicyWithContext(arg0 aws.Context, arg1 *iam.SimulatePrincipalPolicyInput, arg2 ...request.Option) (*iam.SimulatePolicyResponse, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -5979,12 +6790,14 @@ func (m *MockIAMAPI) SimulatePrincipalPolicyWithContext(arg0 aws.Context, arg1 *
 
 // SimulatePrincipalPolicyWithContext indicates an expected call of SimulatePrincipalPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) SimulatePrincipalPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SimulatePrincipalPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).SimulatePrincipalPolicyWithContext), varargs...)
 }
 
 // SimulatePrincipalPolicyRequest mocks base method
 func (m *MockIAMAPI) SimulatePrincipalPolicyRequest(arg0 *iam.SimulatePrincipalPolicyInput) (*request.Request, *iam.SimulatePolicyResponse) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SimulatePrincipalPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.SimulatePolicyResponse)
@@ -5993,11 +6806,13 @@ func (m *MockIAMAPI) SimulatePrincipalPolicyRequest(arg0 *iam.SimulatePrincipalP
 
 // SimulatePrincipalPolicyRequest indicates an expected call of SimulatePrincipalPolicyRequest
 func (mr *MockIAMAPIMockRecorder) SimulatePrincipalPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SimulatePrincipalPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).SimulatePrincipalPolicyRequest), arg0)
 }
 
 // SimulatePrincipalPolicyPages mocks base method
 func (m *MockIAMAPI) SimulatePrincipalPolicyPages(arg0 *iam.SimulatePrincipalPolicyInput, arg1 func(*iam.SimulatePolicyResponse, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SimulatePrincipalPolicyPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -6005,11 +6820,13 @@ func (m *MockIAMAPI) SimulatePrincipalPolicyPages(arg0 *iam.SimulatePrincipalPol
 
 // SimulatePrincipalPolicyPages indicates an expected call of SimulatePrincipalPolicyPages
 func (mr *MockIAMAPIMockRecorder) SimulatePrincipalPolicyPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SimulatePrincipalPolicyPages", reflect.TypeOf((*MockIAMAPI)(nil).SimulatePrincipalPolicyPages), arg0, arg1)
 }
 
 // SimulatePrincipalPolicyPagesWithContext mocks base method
 func (m *MockIAMAPI) SimulatePrincipalPolicyPagesWithContext(arg0 aws.Context, arg1 *iam.SimulatePrincipalPolicyInput, arg2 func(*iam.SimulatePolicyResponse, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -6021,12 +6838,14 @@ func (m *MockIAMAPI) SimulatePrincipalPolicyPagesWithContext(arg0 aws.Context, a
 
 // SimulatePrincipalPolicyPagesWithContext indicates an expected call of SimulatePrincipalPolicyPagesWithContext
 func (mr *MockIAMAPIMockRecorder) SimulatePrincipalPolicyPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SimulatePrincipalPolicyPagesWithContext", reflect.TypeOf((*MockIAMAPI)(nil).SimulatePrincipalPolicyPagesWithContext), varargs...)
 }
 
 // TagRole mocks base method
 func (m *MockIAMAPI) TagRole(arg0 *iam.TagRoleInput) (*iam.TagRoleOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "TagRole", arg0)
 	ret0, _ := ret[0].(*iam.TagRoleOutput)
 	ret1, _ := ret[1].(error)
@@ -6035,11 +6854,13 @@ func (m *MockIAMAPI) TagRole(arg0 *iam.TagRoleInput) (*iam.TagRoleOutput, error)
 
 // TagRole indicates an expected call of TagRole
 func (mr *MockIAMAPIMockRecorder) TagRole(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TagRole", reflect.TypeOf((*MockIAMAPI)(nil).TagRole), arg0)
 }
 
 // TagRoleWithContext mocks base method
 func (m *MockIAMAPI) TagRoleWithContext(arg0 aws.Context, arg1 *iam.TagRoleInput, arg2 ...request.Option) (*iam.TagRoleOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6052,12 +6873,14 @@ func (m *MockIAMAPI) TagRoleWithContext(arg0 aws.Context, arg1 *iam.TagRoleInput
 
 // TagRoleWithContext indicates an expected call of TagRoleWithContext
 func (mr *MockIAMAPIMockRecorder) TagRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TagRoleWithContext", reflect.TypeOf((*MockIAMAPI)(nil).TagRoleWithContext), varargs...)
 }
 
 // TagRoleRequest mocks base method
 func (m *MockIAMAPI) TagRoleRequest(arg0 *iam.TagRoleInput) (*request.Request, *iam.TagRoleOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "TagRoleRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.TagRoleOutput)
@@ -6066,11 +6889,13 @@ func (m *MockIAMAPI) TagRoleRequest(arg0 *iam.TagRoleInput) (*request.Request, *
 
 // TagRoleRequest indicates an expected call of TagRoleRequest
 func (mr *MockIAMAPIMockRecorder) TagRoleRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TagRoleRequest", reflect.TypeOf((*MockIAMAPI)(nil).TagRoleRequest), arg0)
 }
 
 // TagUser mocks base method
 func (m *MockIAMAPI) TagUser(arg0 *iam.TagUserInput) (*iam.TagUserOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "TagUser", arg0)
 	ret0, _ := ret[0].(*iam.TagUserOutput)
 	ret1, _ := ret[1].(error)
@@ -6079,11 +6904,13 @@ func (m *MockIAMAPI) TagUser(arg0 *iam.TagUserInput) (*iam.TagUserOutput, error)
 
 // TagUser indicates an expected call of TagUser
 func (mr *MockIAMAPIMockRecorder) TagUser(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TagUser", reflect.TypeOf((*MockIAMAPI)(nil).TagUser), arg0)
 }
 
 // TagUserWithContext mocks base method
 func (m *MockIAMAPI) TagUserWithContext(arg0 aws.Context, arg1 *iam.TagUserInput, arg2 ...request.Option) (*iam.TagUserOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6096,12 +6923,14 @@ func (m *MockIAMAPI) TagUserWithContext(arg0 aws.Context, arg1 *iam.TagUserInput
 
 // TagUserWithContext indicates an expected call of TagUserWithContext
 func (mr *MockIAMAPIMockRecorder) TagUserWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TagUserWithContext", reflect.TypeOf((*MockIAMAPI)(nil).TagUserWithContext), varargs...)
 }
 
 // TagUserRequest mocks base method
 func (m *MockIAMAPI) TagUserRequest(arg0 *iam.TagUserInput) (*request.Request, *iam.TagUserOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "TagUserRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.TagUserOutput)
@@ -6110,11 +6939,13 @@ func (m *MockIAMAPI) TagUserRequest(arg0 *iam.TagUserInput) (*request.Request, *
 
 // TagUserRequest indicates an expected call of TagUserRequest
 func (mr *MockIAMAPIMockRecorder) TagUserRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TagUserRequest", reflect.TypeOf((*MockIAMAPI)(nil).TagUserRequest), arg0)
 }
 
 // UntagRole mocks base method
 func (m *MockIAMAPI) UntagRole(arg0 *iam.UntagRoleInput) (*iam.UntagRoleOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UntagRole", arg0)
 	ret0, _ := ret[0].(*iam.UntagRoleOutput)
 	ret1, _ := ret[1].(error)
@@ -6123,11 +6954,13 @@ func (m *MockIAMAPI) UntagRole(arg0 *iam.UntagRoleInput) (*iam.UntagRoleOutput, 
 
 // UntagRole indicates an expected call of UntagRole
 func (mr *MockIAMAPIMockRecorder) UntagRole(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UntagRole", reflect.TypeOf((*MockIAMAPI)(nil).UntagRole), arg0)
 }
 
 // UntagRoleWithContext mocks base method
 func (m *MockIAMAPI) UntagRoleWithContext(arg0 aws.Context, arg1 *iam.UntagRoleInput, arg2 ...request.Option) (*iam.UntagRoleOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6140,12 +6973,14 @@ func (m *MockIAMAPI) UntagRoleWithContext(arg0 aws.Context, arg1 *iam.UntagRoleI
 
 // UntagRoleWithContext indicates an expected call of UntagRoleWithContext
 func (mr *MockIAMAPIMockRecorder) UntagRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UntagRoleWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UntagRoleWithContext), varargs...)
 }
 
 // UntagRoleRequest mocks base method
 func (m *MockIAMAPI) UntagRoleRequest(arg0 *iam.UntagRoleInput) (*request.Request, *iam.UntagRoleOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UntagRoleRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UntagRoleOutput)
@@ -6154,11 +6989,13 @@ func (m *MockIAMAPI) UntagRoleRequest(arg0 *iam.UntagRoleInput) (*request.Reques
 
 // UntagRoleRequest indicates an expected call of UntagRoleRequest
 func (mr *MockIAMAPIMockRecorder) UntagRoleRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UntagRoleRequest", reflect.TypeOf((*MockIAMAPI)(nil).UntagRoleRequest), arg0)
 }
 
 // UntagUser mocks base method
 func (m *MockIAMAPI) UntagUser(arg0 *iam.UntagUserInput) (*iam.UntagUserOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UntagUser", arg0)
 	ret0, _ := ret[0].(*iam.UntagUserOutput)
 	ret1, _ := ret[1].(error)
@@ -6167,11 +7004,13 @@ func (m *MockIAMAPI) UntagUser(arg0 *iam.UntagUserInput) (*iam.UntagUserOutput, 
 
 // UntagUser indicates an expected call of UntagUser
 func (mr *MockIAMAPIMockRecorder) UntagUser(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UntagUser", reflect.TypeOf((*MockIAMAPI)(nil).UntagUser), arg0)
 }
 
 // UntagUserWithContext mocks base method
 func (m *MockIAMAPI) UntagUserWithContext(arg0 aws.Context, arg1 *iam.UntagUserInput, arg2 ...request.Option) (*iam.UntagUserOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6184,12 +7023,14 @@ func (m *MockIAMAPI) UntagUserWithContext(arg0 aws.Context, arg1 *iam.UntagUserI
 
 // UntagUserWithContext indicates an expected call of UntagUserWithContext
 func (mr *MockIAMAPIMockRecorder) UntagUserWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UntagUserWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UntagUserWithContext), varargs...)
 }
 
 // UntagUserRequest mocks base method
 func (m *MockIAMAPI) UntagUserRequest(arg0 *iam.UntagUserInput) (*request.Request, *iam.UntagUserOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UntagUserRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UntagUserOutput)
@@ -6198,11 +7039,13 @@ func (m *MockIAMAPI) UntagUserRequest(arg0 *iam.UntagUserInput) (*request.Reques
 
 // UntagUserRequest indicates an expected call of UntagUserRequest
 func (mr *MockIAMAPIMockRecorder) UntagUserRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UntagUserRequest", reflect.TypeOf((*MockIAMAPI)(nil).UntagUserRequest), arg0)
 }
 
 // UpdateAccessKey mocks base method
 func (m *MockIAMAPI) UpdateAccessKey(arg0 *iam.UpdateAccessKeyInput) (*iam.UpdateAccessKeyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateAccessKey", arg0)
 	ret0, _ := ret[0].(*iam.UpdateAccessKeyOutput)
 	ret1, _ := ret[1].(error)
@@ -6211,11 +7054,13 @@ func (m *MockIAMAPI) UpdateAccessKey(arg0 *iam.UpdateAccessKeyInput) (*iam.Updat
 
 // UpdateAccessKey indicates an expected call of UpdateAccessKey
 func (mr *MockIAMAPIMockRecorder) UpdateAccessKey(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAccessKey", reflect.TypeOf((*MockIAMAPI)(nil).UpdateAccessKey), arg0)
 }
 
 // UpdateAccessKeyWithContext mocks base method
 func (m *MockIAMAPI) UpdateAccessKeyWithContext(arg0 aws.Context, arg1 *iam.UpdateAccessKeyInput, arg2 ...request.Option) (*iam.UpdateAccessKeyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6228,12 +7073,14 @@ func (m *MockIAMAPI) UpdateAccessKeyWithContext(arg0 aws.Context, arg1 *iam.Upda
 
 // UpdateAccessKeyWithContext indicates an expected call of UpdateAccessKeyWithContext
 func (mr *MockIAMAPIMockRecorder) UpdateAccessKeyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAccessKeyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UpdateAccessKeyWithContext), varargs...)
 }
 
 // UpdateAccessKeyRequest mocks base method
 func (m *MockIAMAPI) UpdateAccessKeyRequest(arg0 *iam.UpdateAccessKeyInput) (*request.Request, *iam.UpdateAccessKeyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateAccessKeyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UpdateAccessKeyOutput)
@@ -6242,11 +7089,13 @@ func (m *MockIAMAPI) UpdateAccessKeyRequest(arg0 *iam.UpdateAccessKeyInput) (*re
 
 // UpdateAccessKeyRequest indicates an expected call of UpdateAccessKeyRequest
 func (mr *MockIAMAPIMockRecorder) UpdateAccessKeyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAccessKeyRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateAccessKeyRequest), arg0)
 }
 
 // UpdateAccountPasswordPolicy mocks base method
 func (m *MockIAMAPI) UpdateAccountPasswordPolicy(arg0 *iam.UpdateAccountPasswordPolicyInput) (*iam.UpdateAccountPasswordPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateAccountPasswordPolicy", arg0)
 	ret0, _ := ret[0].(*iam.UpdateAccountPasswordPolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -6255,11 +7104,13 @@ func (m *MockIAMAPI) UpdateAccountPasswordPolicy(arg0 *iam.UpdateAccountPassword
 
 // UpdateAccountPasswordPolicy indicates an expected call of UpdateAccountPasswordPolicy
 func (mr *MockIAMAPIMockRecorder) UpdateAccountPasswordPolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAccountPasswordPolicy", reflect.TypeOf((*MockIAMAPI)(nil).UpdateAccountPasswordPolicy), arg0)
 }
 
 // UpdateAccountPasswordPolicyWithContext mocks base method
 func (m *MockIAMAPI) UpdateAccountPasswordPolicyWithContext(arg0 aws.Context, arg1 *iam.UpdateAccountPasswordPolicyInput, arg2 ...request.Option) (*iam.UpdateAccountPasswordPolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6272,12 +7123,14 @@ func (m *MockIAMAPI) UpdateAccountPasswordPolicyWithContext(arg0 aws.Context, ar
 
 // UpdateAccountPasswordPolicyWithContext indicates an expected call of UpdateAccountPasswordPolicyWithContext
 func (mr *MockIAMAPIMockRecorder) UpdateAccountPasswordPolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAccountPasswordPolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UpdateAccountPasswordPolicyWithContext), varargs...)
 }
 
 // UpdateAccountPasswordPolicyRequest mocks base method
 func (m *MockIAMAPI) UpdateAccountPasswordPolicyRequest(arg0 *iam.UpdateAccountPasswordPolicyInput) (*request.Request, *iam.UpdateAccountPasswordPolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateAccountPasswordPolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UpdateAccountPasswordPolicyOutput)
@@ -6286,11 +7139,13 @@ func (m *MockIAMAPI) UpdateAccountPasswordPolicyRequest(arg0 *iam.UpdateAccountP
 
 // UpdateAccountPasswordPolicyRequest indicates an expected call of UpdateAccountPasswordPolicyRequest
 func (mr *MockIAMAPIMockRecorder) UpdateAccountPasswordPolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAccountPasswordPolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateAccountPasswordPolicyRequest), arg0)
 }
 
 // UpdateAssumeRolePolicy mocks base method
 func (m *MockIAMAPI) UpdateAssumeRolePolicy(arg0 *iam.UpdateAssumeRolePolicyInput) (*iam.UpdateAssumeRolePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateAssumeRolePolicy", arg0)
 	ret0, _ := ret[0].(*iam.UpdateAssumeRolePolicyOutput)
 	ret1, _ := ret[1].(error)
@@ -6299,11 +7154,13 @@ func (m *MockIAMAPI) UpdateAssumeRolePolicy(arg0 *iam.UpdateAssumeRolePolicyInpu
 
 // UpdateAssumeRolePolicy indicates an expected call of UpdateAssumeRolePolicy
 func (mr *MockIAMAPIMockRecorder) UpdateAssumeRolePolicy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAssumeRolePolicy", reflect.TypeOf((*MockIAMAPI)(nil).UpdateAssumeRolePolicy), arg0)
 }
 
 // UpdateAssumeRolePolicyWithContext mocks base method
 func (m *MockIAMAPI) UpdateAssumeRolePolicyWithContext(arg0 aws.Context, arg1 *iam.UpdateAssumeRolePolicyInput, arg2 ...request.Option) (*iam.UpdateAssumeRolePolicyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6316,12 +7173,14 @@ func (m *MockIAMAPI) UpdateAssumeRolePolicyWithContext(arg0 aws.Context, arg1 *i
 
 // UpdateAssumeRolePolicyWithContext indicates an expected call of UpdateAssumeRolePolicyWithContext
 func (mr *MockIAMAPIMockRecorder) UpdateAssumeRolePolicyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAssumeRolePolicyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UpdateAssumeRolePolicyWithContext), varargs...)
 }
 
 // UpdateAssumeRolePolicyRequest mocks base method
 func (m *MockIAMAPI) UpdateAssumeRolePolicyRequest(arg0 *iam.UpdateAssumeRolePolicyInput) (*request.Request, *iam.UpdateAssumeRolePolicyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateAssumeRolePolicyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UpdateAssumeRolePolicyOutput)
@@ -6330,11 +7189,13 @@ func (m *MockIAMAPI) UpdateAssumeRolePolicyRequest(arg0 *iam.UpdateAssumeRolePol
 
 // UpdateAssumeRolePolicyRequest indicates an expected call of UpdateAssumeRolePolicyRequest
 func (mr *MockIAMAPIMockRecorder) UpdateAssumeRolePolicyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAssumeRolePolicyRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateAssumeRolePolicyRequest), arg0)
 }
 
 // UpdateGroup mocks base method
 func (m *MockIAMAPI) UpdateGroup(arg0 *iam.UpdateGroupInput) (*iam.UpdateGroupOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateGroup", arg0)
 	ret0, _ := ret[0].(*iam.UpdateGroupOutput)
 	ret1, _ := ret[1].(error)
@@ -6343,11 +7204,13 @@ func (m *MockIAMAPI) UpdateGroup(arg0 *iam.UpdateGroupInput) (*iam.UpdateGroupOu
 
 // UpdateGroup indicates an expected call of UpdateGroup
 func (mr *MockIAMAPIMockRecorder) UpdateGroup(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateGroup", reflect.TypeOf((*MockIAMAPI)(nil).UpdateGroup), arg0)
 }
 
 // UpdateGroupWithContext mocks base method
 func (m *MockIAMAPI) UpdateGroupWithContext(arg0 aws.Context, arg1 *iam.UpdateGroupInput, arg2 ...request.Option) (*iam.UpdateGroupOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6360,12 +7223,14 @@ func (m *MockIAMAPI) UpdateGroupWithContext(arg0 aws.Context, arg1 *iam.UpdateGr
 
 // UpdateGroupWithContext indicates an expected call of UpdateGroupWithContext
 func (mr *MockIAMAPIMockRecorder) UpdateGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateGroupWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UpdateGroupWithContext), varargs...)
 }
 
 // UpdateGroupRequest mocks base method
 func (m *MockIAMAPI) UpdateGroupRequest(arg0 *iam.UpdateGroupInput) (*request.Request, *iam.UpdateGroupOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateGroupRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UpdateGroupOutput)
@@ -6374,11 +7239,13 @@ func (m *MockIAMAPI) UpdateGroupRequest(arg0 *iam.UpdateGroupInput) (*request.Re
 
 // UpdateGroupRequest indicates an expected call of UpdateGroupRequest
 func (mr *MockIAMAPIMockRecorder) UpdateGroupRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateGroupRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateGroupRequest), arg0)
 }
 
 // UpdateLoginProfile mocks base method
 func (m *MockIAMAPI) UpdateLoginProfile(arg0 *iam.UpdateLoginProfileInput) (*iam.UpdateLoginProfileOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateLoginProfile", arg0)
 	ret0, _ := ret[0].(*iam.UpdateLoginProfileOutput)
 	ret1, _ := ret[1].(error)
@@ -6387,11 +7254,13 @@ func (m *MockIAMAPI) UpdateLoginProfile(arg0 *iam.UpdateLoginProfileInput) (*iam
 
 // UpdateLoginProfile indicates an expected call of UpdateLoginProfile
 func (mr *MockIAMAPIMockRecorder) UpdateLoginProfile(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLoginProfile", reflect.TypeOf((*MockIAMAPI)(nil).UpdateLoginProfile), arg0)
 }
 
 // UpdateLoginProfileWithContext mocks base method
 func (m *MockIAMAPI) UpdateLoginProfileWithContext(arg0 aws.Context, arg1 *iam.UpdateLoginProfileInput, arg2 ...request.Option) (*iam.UpdateLoginProfileOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6404,12 +7273,14 @@ func (m *MockIAMAPI) UpdateLoginProfileWithContext(arg0 aws.Context, arg1 *iam.U
 
 // UpdateLoginProfileWithContext indicates an expected call of UpdateLoginProfileWithContext
 func (mr *MockIAMAPIMockRecorder) UpdateLoginProfileWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLoginProfileWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UpdateLoginProfileWithContext), varargs...)
 }
 
 // UpdateLoginProfileRequest mocks base method
 func (m *MockIAMAPI) UpdateLoginProfileRequest(arg0 *iam.UpdateLoginProfileInput) (*request.Request, *iam.UpdateLoginProfileOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateLoginProfileRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UpdateLoginProfileOutput)
@@ -6418,11 +7289,13 @@ func (m *MockIAMAPI) UpdateLoginProfileRequest(arg0 *iam.UpdateLoginProfileInput
 
 // UpdateLoginProfileRequest indicates an expected call of UpdateLoginProfileRequest
 func (mr *MockIAMAPIMockRecorder) UpdateLoginProfileRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLoginProfileRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateLoginProfileRequest), arg0)
 }
 
 // UpdateOpenIDConnectProviderThumbprint mocks base method
 func (m *MockIAMAPI) UpdateOpenIDConnectProviderThumbprint(arg0 *iam.UpdateOpenIDConnectProviderThumbprintInput) (*iam.UpdateOpenIDConnectProviderThumbprintOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateOpenIDConnectProviderThumbprint", arg0)
 	ret0, _ := ret[0].(*iam.UpdateOpenIDConnectProviderThumbprintOutput)
 	ret1, _ := ret[1].(error)
@@ -6431,11 +7304,13 @@ func (m *MockIAMAPI) UpdateOpenIDConnectProviderThumbprint(arg0 *iam.UpdateOpenI
 
 // UpdateOpenIDConnectProviderThumbprint indicates an expected call of UpdateOpenIDConnectProviderThumbprint
 func (mr *MockIAMAPIMockRecorder) UpdateOpenIDConnectProviderThumbprint(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOpenIDConnectProviderThumbprint", reflect.TypeOf((*MockIAMAPI)(nil).UpdateOpenIDConnectProviderThumbprint), arg0)
 }
 
 // UpdateOpenIDConnectProviderThumbprintWithContext mocks base method
 func (m *MockIAMAPI) UpdateOpenIDConnectProviderThumbprintWithContext(arg0 aws.Context, arg1 *iam.UpdateOpenIDConnectProviderThumbprintInput, arg2 ...request.Option) (*iam.UpdateOpenIDConnectProviderThumbprintOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6448,12 +7323,14 @@ func (m *MockIAMAPI) UpdateOpenIDConnectProviderThumbprintWithContext(arg0 aws.C
 
 // UpdateOpenIDConnectProviderThumbprintWithContext indicates an expected call of UpdateOpenIDConnectProviderThumbprintWithContext
 func (mr *MockIAMAPIMockRecorder) UpdateOpenIDConnectProviderThumbprintWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOpenIDConnectProviderThumbprintWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UpdateOpenIDConnectProviderThumbprintWithContext), varargs...)
 }
 
 // UpdateOpenIDConnectProviderThumbprintRequest mocks base method
 func (m *MockIAMAPI) UpdateOpenIDConnectProviderThumbprintRequest(arg0 *iam.UpdateOpenIDConnectProviderThumbprintInput) (*request.Request, *iam.UpdateOpenIDConnectProviderThumbprintOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateOpenIDConnectProviderThumbprintRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UpdateOpenIDConnectProviderThumbprintOutput)
@@ -6462,11 +7339,13 @@ func (m *MockIAMAPI) UpdateOpenIDConnectProviderThumbprintRequest(arg0 *iam.Upda
 
 // UpdateOpenIDConnectProviderThumbprintRequest indicates an expected call of UpdateOpenIDConnectProviderThumbprintRequest
 func (mr *MockIAMAPIMockRecorder) UpdateOpenIDConnectProviderThumbprintRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOpenIDConnectProviderThumbprintRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateOpenIDConnectProviderThumbprintRequest), arg0)
 }
 
 // UpdateRole mocks base method
 func (m *MockIAMAPI) UpdateRole(arg0 *iam.UpdateRoleInput) (*iam.UpdateRoleOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateRole", arg0)
 	ret0, _ := ret[0].(*iam.UpdateRoleOutput)
 	ret1, _ := ret[1].(error)
@@ -6475,11 +7354,13 @@ func (m *MockIAMAPI) UpdateRole(arg0 *iam.UpdateRoleInput) (*iam.UpdateRoleOutpu
 
 // UpdateRole indicates an expected call of UpdateRole
 func (mr *MockIAMAPIMockRecorder) UpdateRole(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRole", reflect.TypeOf((*MockIAMAPI)(nil).UpdateRole), arg0)
 }
 
 // UpdateRoleWithContext mocks base method
 func (m *MockIAMAPI) UpdateRoleWithContext(arg0 aws.Context, arg1 *iam.UpdateRoleInput, arg2 ...request.Option) (*iam.UpdateRoleOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6492,12 +7373,14 @@ func (m *MockIAMAPI) UpdateRoleWithContext(arg0 aws.Context, arg1 *iam.UpdateRol
 
 // UpdateRoleWithContext indicates an expected call of UpdateRoleWithContext
 func (mr *MockIAMAPIMockRecorder) UpdateRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRoleWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UpdateRoleWithContext), varargs...)
 }
 
 // UpdateRoleRequest mocks base method
 func (m *MockIAMAPI) UpdateRoleRequest(arg0 *iam.UpdateRoleInput) (*request.Request, *iam.UpdateRoleOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateRoleRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UpdateRoleOutput)
@@ -6506,11 +7389,13 @@ func (m *MockIAMAPI) UpdateRoleRequest(arg0 *iam.UpdateRoleInput) (*request.Requ
 
 // UpdateRoleRequest indicates an expected call of UpdateRoleRequest
 func (mr *MockIAMAPIMockRecorder) UpdateRoleRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRoleRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateRoleRequest), arg0)
 }
 
 // UpdateRoleDescription mocks base method
 func (m *MockIAMAPI) UpdateRoleDescription(arg0 *iam.UpdateRoleDescriptionInput) (*iam.UpdateRoleDescriptionOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateRoleDescription", arg0)
 	ret0, _ := ret[0].(*iam.UpdateRoleDescriptionOutput)
 	ret1, _ := ret[1].(error)
@@ -6519,11 +7404,13 @@ func (m *MockIAMAPI) UpdateRoleDescription(arg0 *iam.UpdateRoleDescriptionInput)
 
 // UpdateRoleDescription indicates an expected call of UpdateRoleDescription
 func (mr *MockIAMAPIMockRecorder) UpdateRoleDescription(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRoleDescription", reflect.TypeOf((*MockIAMAPI)(nil).UpdateRoleDescription), arg0)
 }
 
 // UpdateRoleDescriptionWithContext mocks base method
 func (m *MockIAMAPI) UpdateRoleDescriptionWithContext(arg0 aws.Context, arg1 *iam.UpdateRoleDescriptionInput, arg2 ...request.Option) (*iam.UpdateRoleDescriptionOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6536,12 +7423,14 @@ func (m *MockIAMAPI) UpdateRoleDescriptionWithContext(arg0 aws.Context, arg1 *ia
 
 // UpdateRoleDescriptionWithContext indicates an expected call of UpdateRoleDescriptionWithContext
 func (mr *MockIAMAPIMockRecorder) UpdateRoleDescriptionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRoleDescriptionWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UpdateRoleDescriptionWithContext), varargs...)
 }
 
 // UpdateRoleDescriptionRequest mocks base method
 func (m *MockIAMAPI) UpdateRoleDescriptionRequest(arg0 *iam.UpdateRoleDescriptionInput) (*request.Request, *iam.UpdateRoleDescriptionOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateRoleDescriptionRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UpdateRoleDescriptionOutput)
@@ -6550,11 +7439,13 @@ func (m *MockIAMAPI) UpdateRoleDescriptionRequest(arg0 *iam.UpdateRoleDescriptio
 
 // UpdateRoleDescriptionRequest indicates an expected call of UpdateRoleDescriptionRequest
 func (mr *MockIAMAPIMockRecorder) UpdateRoleDescriptionRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRoleDescriptionRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateRoleDescriptionRequest), arg0)
 }
 
 // UpdateSAMLProvider mocks base method
 func (m *MockIAMAPI) UpdateSAMLProvider(arg0 *iam.UpdateSAMLProviderInput) (*iam.UpdateSAMLProviderOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateSAMLProvider", arg0)
 	ret0, _ := ret[0].(*iam.UpdateSAMLProviderOutput)
 	ret1, _ := ret[1].(error)
@@ -6563,11 +7454,13 @@ func (m *MockIAMAPI) UpdateSAMLProvider(arg0 *iam.UpdateSAMLProviderInput) (*iam
 
 // UpdateSAMLProvider indicates an expected call of UpdateSAMLProvider
 func (mr *MockIAMAPIMockRecorder) UpdateSAMLProvider(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSAMLProvider", reflect.TypeOf((*MockIAMAPI)(nil).UpdateSAMLProvider), arg0)
 }
 
 // UpdateSAMLProviderWithContext mocks base method
 func (m *MockIAMAPI) UpdateSAMLProviderWithContext(arg0 aws.Context, arg1 *iam.UpdateSAMLProviderInput, arg2 ...request.Option) (*iam.UpdateSAMLProviderOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6580,12 +7473,14 @@ func (m *MockIAMAPI) UpdateSAMLProviderWithContext(arg0 aws.Context, arg1 *iam.U
 
 // UpdateSAMLProviderWithContext indicates an expected call of UpdateSAMLProviderWithContext
 func (mr *MockIAMAPIMockRecorder) UpdateSAMLProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSAMLProviderWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UpdateSAMLProviderWithContext), varargs...)
 }
 
 // UpdateSAMLProviderRequest mocks base method
 func (m *MockIAMAPI) UpdateSAMLProviderRequest(arg0 *iam.UpdateSAMLProviderInput) (*request.Request, *iam.UpdateSAMLProviderOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateSAMLProviderRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UpdateSAMLProviderOutput)
@@ -6594,11 +7489,13 @@ func (m *MockIAMAPI) UpdateSAMLProviderRequest(arg0 *iam.UpdateSAMLProviderInput
 
 // UpdateSAMLProviderRequest indicates an expected call of UpdateSAMLProviderRequest
 func (mr *MockIAMAPIMockRecorder) UpdateSAMLProviderRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSAMLProviderRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateSAMLProviderRequest), arg0)
 }
 
 // UpdateSSHPublicKey mocks base method
 func (m *MockIAMAPI) UpdateSSHPublicKey(arg0 *iam.UpdateSSHPublicKeyInput) (*iam.UpdateSSHPublicKeyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateSSHPublicKey", arg0)
 	ret0, _ := ret[0].(*iam.UpdateSSHPublicKeyOutput)
 	ret1, _ := ret[1].(error)
@@ -6607,11 +7504,13 @@ func (m *MockIAMAPI) UpdateSSHPublicKey(arg0 *iam.UpdateSSHPublicKeyInput) (*iam
 
 // UpdateSSHPublicKey indicates an expected call of UpdateSSHPublicKey
 func (mr *MockIAMAPIMockRecorder) UpdateSSHPublicKey(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSSHPublicKey", reflect.TypeOf((*MockIAMAPI)(nil).UpdateSSHPublicKey), arg0)
 }
 
 // UpdateSSHPublicKeyWithContext mocks base method
 func (m *MockIAMAPI) UpdateSSHPublicKeyWithContext(arg0 aws.Context, arg1 *iam.UpdateSSHPublicKeyInput, arg2 ...request.Option) (*iam.UpdateSSHPublicKeyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6624,12 +7523,14 @@ func (m *MockIAMAPI) UpdateSSHPublicKeyWithContext(arg0 aws.Context, arg1 *iam.U
 
 // UpdateSSHPublicKeyWithContext indicates an expected call of UpdateSSHPublicKeyWithContext
 func (mr *MockIAMAPIMockRecorder) UpdateSSHPublicKeyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSSHPublicKeyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UpdateSSHPublicKeyWithContext), varargs...)
 }
 
 // UpdateSSHPublicKeyRequest mocks base method
 func (m *MockIAMAPI) UpdateSSHPublicKeyRequest(arg0 *iam.UpdateSSHPublicKeyInput) (*request.Request, *iam.UpdateSSHPublicKeyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateSSHPublicKeyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UpdateSSHPublicKeyOutput)
@@ -6638,11 +7539,13 @@ func (m *MockIAMAPI) UpdateSSHPublicKeyRequest(arg0 *iam.UpdateSSHPublicKeyInput
 
 // UpdateSSHPublicKeyRequest indicates an expected call of UpdateSSHPublicKeyRequest
 func (mr *MockIAMAPIMockRecorder) UpdateSSHPublicKeyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSSHPublicKeyRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateSSHPublicKeyRequest), arg0)
 }
 
 // UpdateServerCertificate mocks base method
 func (m *MockIAMAPI) UpdateServerCertificate(arg0 *iam.UpdateServerCertificateInput) (*iam.UpdateServerCertificateOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateServerCertificate", arg0)
 	ret0, _ := ret[0].(*iam.UpdateServerCertificateOutput)
 	ret1, _ := ret[1].(error)
@@ -6651,11 +7554,13 @@ func (m *MockIAMAPI) UpdateServerCertificate(arg0 *iam.UpdateServerCertificateIn
 
 // UpdateServerCertificate indicates an expected call of UpdateServerCertificate
 func (mr *MockIAMAPIMockRecorder) UpdateServerCertificate(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateServerCertificate", reflect.TypeOf((*MockIAMAPI)(nil).UpdateServerCertificate), arg0)
 }
 
 // UpdateServerCertificateWithContext mocks base method
 func (m *MockIAMAPI) UpdateServerCertificateWithContext(arg0 aws.Context, arg1 *iam.UpdateServerCertificateInput, arg2 ...request.Option) (*iam.UpdateServerCertificateOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6668,12 +7573,14 @@ func (m *MockIAMAPI) UpdateServerCertificateWithContext(arg0 aws.Context, arg1 *
 
 // UpdateServerCertificateWithContext indicates an expected call of UpdateServerCertificateWithContext
 func (mr *MockIAMAPIMockRecorder) UpdateServerCertificateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateServerCertificateWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UpdateServerCertificateWithContext), varargs...)
 }
 
 // UpdateServerCertificateRequest mocks base method
 func (m *MockIAMAPI) UpdateServerCertificateRequest(arg0 *iam.UpdateServerCertificateInput) (*request.Request, *iam.UpdateServerCertificateOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateServerCertificateRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UpdateServerCertificateOutput)
@@ -6682,11 +7589,13 @@ func (m *MockIAMAPI) UpdateServerCertificateRequest(arg0 *iam.UpdateServerCertif
 
 // UpdateServerCertificateRequest indicates an expected call of UpdateServerCertificateRequest
 func (mr *MockIAMAPIMockRecorder) UpdateServerCertificateRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateServerCertificateRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateServerCertificateRequest), arg0)
 }
 
 // UpdateServiceSpecificCredential mocks base method
 func (m *MockIAMAPI) UpdateServiceSpecificCredential(arg0 *iam.UpdateServiceSpecificCredentialInput) (*iam.UpdateServiceSpecificCredentialOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateServiceSpecificCredential", arg0)
 	ret0, _ := ret[0].(*iam.UpdateServiceSpecificCredentialOutput)
 	ret1, _ := ret[1].(error)
@@ -6695,11 +7604,13 @@ func (m *MockIAMAPI) UpdateServiceSpecificCredential(arg0 *iam.UpdateServiceSpec
 
 // UpdateServiceSpecificCredential indicates an expected call of UpdateServiceSpecificCredential
 func (mr *MockIAMAPIMockRecorder) UpdateServiceSpecificCredential(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateServiceSpecificCredential", reflect.TypeOf((*MockIAMAPI)(nil).UpdateServiceSpecificCredential), arg0)
 }
 
 // UpdateServiceSpecificCredentialWithContext mocks base method
 func (m *MockIAMAPI) UpdateServiceSpecificCredentialWithContext(arg0 aws.Context, arg1 *iam.UpdateServiceSpecificCredentialInput, arg2 ...request.Option) (*iam.UpdateServiceSpecificCredentialOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6712,12 +7623,14 @@ func (m *MockIAMAPI) UpdateServiceSpecificCredentialWithContext(arg0 aws.Context
 
 // UpdateServiceSpecificCredentialWithContext indicates an expected call of UpdateServiceSpecificCredentialWithContext
 func (mr *MockIAMAPIMockRecorder) UpdateServiceSpecificCredentialWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateServiceSpecificCredentialWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UpdateServiceSpecificCredentialWithContext), varargs...)
 }
 
 // UpdateServiceSpecificCredentialRequest mocks base method
 func (m *MockIAMAPI) UpdateServiceSpecificCredentialRequest(arg0 *iam.UpdateServiceSpecificCredentialInput) (*request.Request, *iam.UpdateServiceSpecificCredentialOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateServiceSpecificCredentialRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UpdateServiceSpecificCredentialOutput)
@@ -6726,11 +7639,13 @@ func (m *MockIAMAPI) UpdateServiceSpecificCredentialRequest(arg0 *iam.UpdateServ
 
 // UpdateServiceSpecificCredentialRequest indicates an expected call of UpdateServiceSpecificCredentialRequest
 func (mr *MockIAMAPIMockRecorder) UpdateServiceSpecificCredentialRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateServiceSpecificCredentialRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateServiceSpecificCredentialRequest), arg0)
 }
 
 // UpdateSigningCertificate mocks base method
 func (m *MockIAMAPI) UpdateSigningCertificate(arg0 *iam.UpdateSigningCertificateInput) (*iam.UpdateSigningCertificateOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateSigningCertificate", arg0)
 	ret0, _ := ret[0].(*iam.UpdateSigningCertificateOutput)
 	ret1, _ := ret[1].(error)
@@ -6739,11 +7654,13 @@ func (m *MockIAMAPI) UpdateSigningCertificate(arg0 *iam.UpdateSigningCertificate
 
 // UpdateSigningCertificate indicates an expected call of UpdateSigningCertificate
 func (mr *MockIAMAPIMockRecorder) UpdateSigningCertificate(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSigningCertificate", reflect.TypeOf((*MockIAMAPI)(nil).UpdateSigningCertificate), arg0)
 }
 
 // UpdateSigningCertificateWithContext mocks base method
 func (m *MockIAMAPI) UpdateSigningCertificateWithContext(arg0 aws.Context, arg1 *iam.UpdateSigningCertificateInput, arg2 ...request.Option) (*iam.UpdateSigningCertificateOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6756,12 +7673,14 @@ func (m *MockIAMAPI) UpdateSigningCertificateWithContext(arg0 aws.Context, arg1 
 
 // UpdateSigningCertificateWithContext indicates an expected call of UpdateSigningCertificateWithContext
 func (mr *MockIAMAPIMockRecorder) UpdateSigningCertificateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSigningCertificateWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UpdateSigningCertificateWithContext), varargs...)
 }
 
 // UpdateSigningCertificateRequest mocks base method
 func (m *MockIAMAPI) UpdateSigningCertificateRequest(arg0 *iam.UpdateSigningCertificateInput) (*request.Request, *iam.UpdateSigningCertificateOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateSigningCertificateRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UpdateSigningCertificateOutput)
@@ -6770,11 +7689,13 @@ func (m *MockIAMAPI) UpdateSigningCertificateRequest(arg0 *iam.UpdateSigningCert
 
 // UpdateSigningCertificateRequest indicates an expected call of UpdateSigningCertificateRequest
 func (mr *MockIAMAPIMockRecorder) UpdateSigningCertificateRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateSigningCertificateRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateSigningCertificateRequest), arg0)
 }
 
 // UpdateUser mocks base method
 func (m *MockIAMAPI) UpdateUser(arg0 *iam.UpdateUserInput) (*iam.UpdateUserOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateUser", arg0)
 	ret0, _ := ret[0].(*iam.UpdateUserOutput)
 	ret1, _ := ret[1].(error)
@@ -6783,11 +7704,13 @@ func (m *MockIAMAPI) UpdateUser(arg0 *iam.UpdateUserInput) (*iam.UpdateUserOutpu
 
 // UpdateUser indicates an expected call of UpdateUser
 func (mr *MockIAMAPIMockRecorder) UpdateUser(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockIAMAPI)(nil).UpdateUser), arg0)
 }
 
 // UpdateUserWithContext mocks base method
 func (m *MockIAMAPI) UpdateUserWithContext(arg0 aws.Context, arg1 *iam.UpdateUserInput, arg2 ...request.Option) (*iam.UpdateUserOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6800,12 +7723,14 @@ func (m *MockIAMAPI) UpdateUserWithContext(arg0 aws.Context, arg1 *iam.UpdateUse
 
 // UpdateUserWithContext indicates an expected call of UpdateUserWithContext
 func (mr *MockIAMAPIMockRecorder) UpdateUserWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UpdateUserWithContext), varargs...)
 }
 
 // UpdateUserRequest mocks base method
 func (m *MockIAMAPI) UpdateUserRequest(arg0 *iam.UpdateUserInput) (*request.Request, *iam.UpdateUserOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateUserRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UpdateUserOutput)
@@ -6814,11 +7739,13 @@ func (m *MockIAMAPI) UpdateUserRequest(arg0 *iam.UpdateUserInput) (*request.Requ
 
 // UpdateUserRequest indicates an expected call of UpdateUserRequest
 func (mr *MockIAMAPIMockRecorder) UpdateUserRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserRequest", reflect.TypeOf((*MockIAMAPI)(nil).UpdateUserRequest), arg0)
 }
 
 // UploadSSHPublicKey mocks base method
 func (m *MockIAMAPI) UploadSSHPublicKey(arg0 *iam.UploadSSHPublicKeyInput) (*iam.UploadSSHPublicKeyOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UploadSSHPublicKey", arg0)
 	ret0, _ := ret[0].(*iam.UploadSSHPublicKeyOutput)
 	ret1, _ := ret[1].(error)
@@ -6827,11 +7754,13 @@ func (m *MockIAMAPI) UploadSSHPublicKey(arg0 *iam.UploadSSHPublicKeyInput) (*iam
 
 // UploadSSHPublicKey indicates an expected call of UploadSSHPublicKey
 func (mr *MockIAMAPIMockRecorder) UploadSSHPublicKey(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadSSHPublicKey", reflect.TypeOf((*MockIAMAPI)(nil).UploadSSHPublicKey), arg0)
 }
 
 // UploadSSHPublicKeyWithContext mocks base method
 func (m *MockIAMAPI) UploadSSHPublicKeyWithContext(arg0 aws.Context, arg1 *iam.UploadSSHPublicKeyInput, arg2 ...request.Option) (*iam.UploadSSHPublicKeyOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6844,12 +7773,14 @@ func (m *MockIAMAPI) UploadSSHPublicKeyWithContext(arg0 aws.Context, arg1 *iam.U
 
 // UploadSSHPublicKeyWithContext indicates an expected call of UploadSSHPublicKeyWithContext
 func (mr *MockIAMAPIMockRecorder) UploadSSHPublicKeyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadSSHPublicKeyWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UploadSSHPublicKeyWithContext), varargs...)
 }
 
 // UploadSSHPublicKeyRequest mocks base method
 func (m *MockIAMAPI) UploadSSHPublicKeyRequest(arg0 *iam.UploadSSHPublicKeyInput) (*request.Request, *iam.UploadSSHPublicKeyOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UploadSSHPublicKeyRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UploadSSHPublicKeyOutput)
@@ -6858,11 +7789,13 @@ func (m *MockIAMAPI) UploadSSHPublicKeyRequest(arg0 *iam.UploadSSHPublicKeyInput
 
 // UploadSSHPublicKeyRequest indicates an expected call of UploadSSHPublicKeyRequest
 func (mr *MockIAMAPIMockRecorder) UploadSSHPublicKeyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadSSHPublicKeyRequest", reflect.TypeOf((*MockIAMAPI)(nil).UploadSSHPublicKeyRequest), arg0)
 }
 
 // UploadServerCertificate mocks base method
 func (m *MockIAMAPI) UploadServerCertificate(arg0 *iam.UploadServerCertificateInput) (*iam.UploadServerCertificateOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UploadServerCertificate", arg0)
 	ret0, _ := ret[0].(*iam.UploadServerCertificateOutput)
 	ret1, _ := ret[1].(error)
@@ -6871,11 +7804,13 @@ func (m *MockIAMAPI) UploadServerCertificate(arg0 *iam.UploadServerCertificateIn
 
 // UploadServerCertificate indicates an expected call of UploadServerCertificate
 func (mr *MockIAMAPIMockRecorder) UploadServerCertificate(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadServerCertificate", reflect.TypeOf((*MockIAMAPI)(nil).UploadServerCertificate), arg0)
 }
 
 // UploadServerCertificateWithContext mocks base method
 func (m *MockIAMAPI) UploadServerCertificateWithContext(arg0 aws.Context, arg1 *iam.UploadServerCertificateInput, arg2 ...request.Option) (*iam.UploadServerCertificateOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6888,12 +7823,14 @@ func (m *MockIAMAPI) UploadServerCertificateWithContext(arg0 aws.Context, arg1 *
 
 // UploadServerCertificateWithContext indicates an expected call of UploadServerCertificateWithContext
 func (mr *MockIAMAPIMockRecorder) UploadServerCertificateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadServerCertificateWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UploadServerCertificateWithContext), varargs...)
 }
 
 // UploadServerCertificateRequest mocks base method
 func (m *MockIAMAPI) UploadServerCertificateRequest(arg0 *iam.UploadServerCertificateInput) (*request.Request, *iam.UploadServerCertificateOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UploadServerCertificateRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UploadServerCertificateOutput)
@@ -6902,11 +7839,13 @@ func (m *MockIAMAPI) UploadServerCertificateRequest(arg0 *iam.UploadServerCertif
 
 // UploadServerCertificateRequest indicates an expected call of UploadServerCertificateRequest
 func (mr *MockIAMAPIMockRecorder) UploadServerCertificateRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadServerCertificateRequest", reflect.TypeOf((*MockIAMAPI)(nil).UploadServerCertificateRequest), arg0)
 }
 
 // UploadSigningCertificate mocks base method
 func (m *MockIAMAPI) UploadSigningCertificate(arg0 *iam.UploadSigningCertificateInput) (*iam.UploadSigningCertificateOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UploadSigningCertificate", arg0)
 	ret0, _ := ret[0].(*iam.UploadSigningCertificateOutput)
 	ret1, _ := ret[1].(error)
@@ -6915,11 +7854,13 @@ func (m *MockIAMAPI) UploadSigningCertificate(arg0 *iam.UploadSigningCertificate
 
 // UploadSigningCertificate indicates an expected call of UploadSigningCertificate
 func (mr *MockIAMAPIMockRecorder) UploadSigningCertificate(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadSigningCertificate", reflect.TypeOf((*MockIAMAPI)(nil).UploadSigningCertificate), arg0)
 }
 
 // UploadSigningCertificateWithContext mocks base method
 func (m *MockIAMAPI) UploadSigningCertificateWithContext(arg0 aws.Context, arg1 *iam.UploadSigningCertificateInput, arg2 ...request.Option) (*iam.UploadSigningCertificateOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6932,12 +7873,14 @@ func (m *MockIAMAPI) UploadSigningCertificateWithContext(arg0 aws.Context, arg1 
 
 // UploadSigningCertificateWithContext indicates an expected call of UploadSigningCertificateWithContext
 func (mr *MockIAMAPIMockRecorder) UploadSigningCertificateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadSigningCertificateWithContext", reflect.TypeOf((*MockIAMAPI)(nil).UploadSigningCertificateWithContext), varargs...)
 }
 
 // UploadSigningCertificateRequest mocks base method
 func (m *MockIAMAPI) UploadSigningCertificateRequest(arg0 *iam.UploadSigningCertificateInput) (*request.Request, *iam.UploadSigningCertificateOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UploadSigningCertificateRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*iam.UploadSigningCertificateOutput)
@@ -6946,11 +7889,13 @@ func (m *MockIAMAPI) UploadSigningCertificateRequest(arg0 *iam.UploadSigningCert
 
 // UploadSigningCertificateRequest indicates an expected call of UploadSigningCertificateRequest
 func (mr *MockIAMAPIMockRecorder) UploadSigningCertificateRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadSigningCertificateRequest", reflect.TypeOf((*MockIAMAPI)(nil).UploadSigningCertificateRequest), arg0)
 }
 
 // WaitUntilInstanceProfileExists mocks base method
 func (m *MockIAMAPI) WaitUntilInstanceProfileExists(arg0 *iam.GetInstanceProfileInput) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WaitUntilInstanceProfileExists", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -6958,11 +7903,13 @@ func (m *MockIAMAPI) WaitUntilInstanceProfileExists(arg0 *iam.GetInstanceProfile
 
 // WaitUntilInstanceProfileExists indicates an expected call of WaitUntilInstanceProfileExists
 func (mr *MockIAMAPIMockRecorder) WaitUntilInstanceProfileExists(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilInstanceProfileExists", reflect.TypeOf((*MockIAMAPI)(nil).WaitUntilInstanceProfileExists), arg0)
 }
 
 // WaitUntilInstanceProfileExistsWithContext mocks base method
 func (m *MockIAMAPI) WaitUntilInstanceProfileExistsWithContext(arg0 aws.Context, arg1 *iam.GetInstanceProfileInput, arg2 ...request.WaiterOption) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -6974,12 +7921,14 @@ func (m *MockIAMAPI) WaitUntilInstanceProfileExistsWithContext(arg0 aws.Context,
 
 // WaitUntilInstanceProfileExistsWithContext indicates an expected call of WaitUntilInstanceProfileExistsWithContext
 func (mr *MockIAMAPIMockRecorder) WaitUntilInstanceProfileExistsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilInstanceProfileExistsWithContext", reflect.TypeOf((*MockIAMAPI)(nil).WaitUntilInstanceProfileExistsWithContext), varargs...)
 }
 
 // WaitUntilPolicyExists mocks base method
 func (m *MockIAMAPI) WaitUntilPolicyExists(arg0 *iam.GetPolicyInput) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WaitUntilPolicyExists", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -6987,11 +7936,13 @@ func (m *MockIAMAPI) WaitUntilPolicyExists(arg0 *iam.GetPolicyInput) error {
 
 // WaitUntilPolicyExists indicates an expected call of WaitUntilPolicyExists
 func (mr *MockIAMAPIMockRecorder) WaitUntilPolicyExists(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilPolicyExists", reflect.TypeOf((*MockIAMAPI)(nil).WaitUntilPolicyExists), arg0)
 }
 
 // WaitUntilPolicyExistsWithContext mocks base method
 func (m *MockIAMAPI) WaitUntilPolicyExistsWithContext(arg0 aws.Context, arg1 *iam.GetPolicyInput, arg2 ...request.WaiterOption) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -7003,12 +7954,14 @@ func (m *MockIAMAPI) WaitUntilPolicyExistsWithContext(arg0 aws.Context, arg1 *ia
 
 // WaitUntilPolicyExistsWithContext indicates an expected call of WaitUntilPolicyExistsWithContext
 func (mr *MockIAMAPIMockRecorder) WaitUntilPolicyExistsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilPolicyExistsWithContext", reflect.TypeOf((*MockIAMAPI)(nil).WaitUntilPolicyExistsWithContext), varargs...)
 }
 
 // WaitUntilRoleExists mocks base method
 func (m *MockIAMAPI) WaitUntilRoleExists(arg0 *iam.GetRoleInput) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WaitUntilRoleExists", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -7016,11 +7969,13 @@ func (m *MockIAMAPI) WaitUntilRoleExists(arg0 *iam.GetRoleInput) error {
 
 // WaitUntilRoleExists indicates an expected call of WaitUntilRoleExists
 func (mr *MockIAMAPIMockRecorder) WaitUntilRoleExists(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilRoleExists", reflect.TypeOf((*MockIAMAPI)(nil).WaitUntilRoleExists), arg0)
 }
 
 // WaitUntilRoleExistsWithContext mocks base method
 func (m *MockIAMAPI) WaitUntilRoleExistsWithContext(arg0 aws.Context, arg1 *iam.GetRoleInput, arg2 ...request.WaiterOption) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -7032,12 +7987,14 @@ func (m *MockIAMAPI) WaitUntilRoleExistsWithContext(arg0 aws.Context, arg1 *iam.
 
 // WaitUntilRoleExistsWithContext indicates an expected call of WaitUntilRoleExistsWithContext
 func (mr *MockIAMAPIMockRecorder) WaitUntilRoleExistsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilRoleExistsWithContext", reflect.TypeOf((*MockIAMAPI)(nil).WaitUntilRoleExistsWithContext), varargs...)
 }
 
 // WaitUntilUserExists mocks base method
 func (m *MockIAMAPI) WaitUntilUserExists(arg0 *iam.GetUserInput) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WaitUntilUserExists", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -7045,11 +8002,13 @@ func (m *MockIAMAPI) WaitUntilUserExists(arg0 *iam.GetUserInput) error {
 
 // WaitUntilUserExists indicates an expected call of WaitUntilUserExists
 func (mr *MockIAMAPIMockRecorder) WaitUntilUserExists(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilUserExists", reflect.TypeOf((*MockIAMAPI)(nil).WaitUntilUserExists), arg0)
 }
 
 // WaitUntilUserExistsWithContext mocks base method
 func (m *MockIAMAPI) WaitUntilUserExistsWithContext(arg0 aws.Context, arg1 *iam.GetUserInput, arg2 ...request.WaiterOption) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -7061,6 +8020,7 @@ func (m *MockIAMAPI) WaitUntilUserExistsWithContext(arg0 aws.Context, arg1 *iam.
 
 // WaitUntilUserExistsWithContext indicates an expected call of WaitUntilUserExistsWithContext
 func (mr *MockIAMAPIMockRecorder) WaitUntilUserExistsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilUserExistsWithContext", reflect.TypeOf((*MockIAMAPI)(nil).WaitUntilUserExistsWithContext), varargs...)
 }
