@@ -24,6 +24,7 @@ func NewAwsSsmMaintenanceWindowTargetInvalidResourceTypeRule() *AwsSsmMaintenanc
 		attributeName: "resource_type",
 		enum: []string{
 			"INSTANCE",
+			"RESOURCE_GROUP",
 		},
 	}
 }

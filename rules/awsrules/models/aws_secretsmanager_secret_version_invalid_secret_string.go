@@ -22,7 +22,7 @@ func NewAwsSecretsmanagerSecretVersionInvalidSecretStringRule() *AwsSecretsmanag
 	return &AwsSecretsmanagerSecretVersionInvalidSecretStringRule{
 		resourceType:  "aws_secretsmanager_secret_version",
 		attributeName: "secret_string",
-		max:           7168,
+		max:           10240,
 	}
 }
 
@@ -58,7 +58,7 @@ func (r *AwsSecretsmanagerSecretVersionInvalidSecretStringRule) Check(runner *tf
 			if len(val) > r.max {
 				runner.EmitIssue(
 					r,
-					"secret_string must be 7168 characters or less",
+					"secret_string must be 10240 characters or less",
 					attribute.Expr.Range(),
 				)
 			}
