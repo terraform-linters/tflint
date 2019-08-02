@@ -1,3 +1,21 @@
+## 0.9.3 (2019-08-02)
+
+### Enhancements
+
+- [#375](https://github.com/wata727/tflint/pull/375): Update dependencies to Terraform 0.12.6 ([@lawliet89](https://github.com/lawliet89))
+  - Resource `for-each` syntax doesn't report an error, but TFLint still ignore `each.*` expressions.
+  - See https://github.com/hashicorp/terraform/releases/tag/v0.12.6
+- [#377](https://github.com/wata727/tflint/pull/377): Bump terraform-provider-aws from v2.20.0 to v2.22.0
+  - `aws_secretsmanager_secret_invalid_policy` rule now allows up to 20480.
+  - `aws_secretsmanager_secret_version_invalid_secret_string` rule now allows up to 10240.
+  - `aws_ssm_maintenance_window_target_invalid_resource_type` rule now allows `RESOURCE_GROUP` as a valid type.
+
+### Chores
+
+- [#368](https://github.com/wata727/tflint/pull/368): Update brew instructions ([@arbourd](https://github.com/arbourd))
+  - TFLint's formula is now hosted by `homebrew/core` 🎉
+- [#373](https://github.com/wata727/tflint/pull/373): Bump github.com/hashicorp/terraform from 0.12.5 to 0.12.6 in /tools
+
 ## 0.9.2 (2019-07-20)
 
 ### Enhancements
