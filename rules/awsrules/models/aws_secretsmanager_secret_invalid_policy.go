@@ -23,7 +23,7 @@ func NewAwsSecretsmanagerSecretInvalidPolicyRule() *AwsSecretsmanagerSecretInval
 	return &AwsSecretsmanagerSecretInvalidPolicyRule{
 		resourceType:  "aws_secretsmanager_secret",
 		attributeName: "policy",
-		max:           4096,
+		max:           20480,
 		min:           1,
 	}
 }
@@ -60,7 +60,7 @@ func (r *AwsSecretsmanagerSecretInvalidPolicyRule) Check(runner *tflint.Runner) 
 			if len(val) > r.max {
 				runner.EmitIssue(
 					r,
-					"policy must be 4096 characters or less",
+					"policy must be 20480 characters or less",
 					attribute.Expr.Range(),
 				)
 			}
