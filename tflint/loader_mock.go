@@ -36,6 +36,7 @@ func (m *MockAbstractLoader) EXPECT() *MockAbstractLoaderMockRecorder {
 
 // LoadConfig mocks base method
 func (m *MockAbstractLoader) LoadConfig(arg0 string) (*configs.Config, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "LoadConfig", arg0)
 	ret0, _ := ret[0].(*configs.Config)
 	ret1, _ := ret[1].(error)
@@ -44,11 +45,13 @@ func (m *MockAbstractLoader) LoadConfig(arg0 string) (*configs.Config, error) {
 
 // LoadConfig indicates an expected call of LoadConfig
 func (mr *MockAbstractLoaderMockRecorder) LoadConfig(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadConfig", reflect.TypeOf((*MockAbstractLoader)(nil).LoadConfig), arg0)
 }
 
 // LoadAnnotations mocks base method
 func (m *MockAbstractLoader) LoadAnnotations(arg0 string) (map[string]Annotations, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "LoadAnnotations", arg0)
 	ret0, _ := ret[0].(map[string]Annotations)
 	ret1, _ := ret[1].(error)
@@ -57,11 +60,13 @@ func (m *MockAbstractLoader) LoadAnnotations(arg0 string) (map[string]Annotation
 
 // LoadAnnotations indicates an expected call of LoadAnnotations
 func (mr *MockAbstractLoaderMockRecorder) LoadAnnotations(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadAnnotations", reflect.TypeOf((*MockAbstractLoader)(nil).LoadAnnotations), arg0)
 }
 
 // LoadValuesFiles mocks base method
 func (m *MockAbstractLoader) LoadValuesFiles(arg0 ...string) ([]terraform.InputValues, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{}
 	for _, a := range arg0 {
 		varargs = append(varargs, a)
@@ -74,5 +79,6 @@ func (m *MockAbstractLoader) LoadValuesFiles(arg0 ...string) ([]terraform.InputV
 
 // LoadValuesFiles indicates an expected call of LoadValuesFiles
 func (mr *MockAbstractLoaderMockRecorder) LoadValuesFiles(arg0 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadValuesFiles", reflect.TypeOf((*MockAbstractLoader)(nil).LoadValuesFiles), arg0...)
 }

@@ -37,6 +37,7 @@ func (m *MockECSAPI) EXPECT() *MockECSAPIMockRecorder {
 
 // CreateCluster mocks base method
 func (m *MockECSAPI) CreateCluster(arg0 *ecs.CreateClusterInput) (*ecs.CreateClusterOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCluster", arg0)
 	ret0, _ := ret[0].(*ecs.CreateClusterOutput)
 	ret1, _ := ret[1].(error)
@@ -45,11 +46,13 @@ func (m *MockECSAPI) CreateCluster(arg0 *ecs.CreateClusterInput) (*ecs.CreateClu
 
 // CreateCluster indicates an expected call of CreateCluster
 func (mr *MockECSAPIMockRecorder) CreateCluster(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCluster", reflect.TypeOf((*MockECSAPI)(nil).CreateCluster), arg0)
 }
 
 // CreateClusterWithContext mocks base method
 func (m *MockECSAPI) CreateClusterWithContext(arg0 aws.Context, arg1 *ecs.CreateClusterInput, arg2 ...request.Option) (*ecs.CreateClusterOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -62,12 +65,14 @@ func (m *MockECSAPI) CreateClusterWithContext(arg0 aws.Context, arg1 *ecs.Create
 
 // CreateClusterWithContext indicates an expected call of CreateClusterWithContext
 func (mr *MockECSAPIMockRecorder) CreateClusterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateClusterWithContext", reflect.TypeOf((*MockECSAPI)(nil).CreateClusterWithContext), varargs...)
 }
 
 // CreateClusterRequest mocks base method
 func (m *MockECSAPI) CreateClusterRequest(arg0 *ecs.CreateClusterInput) (*request.Request, *ecs.CreateClusterOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateClusterRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.CreateClusterOutput)
@@ -76,11 +81,13 @@ func (m *MockECSAPI) CreateClusterRequest(arg0 *ecs.CreateClusterInput) (*reques
 
 // CreateClusterRequest indicates an expected call of CreateClusterRequest
 func (mr *MockECSAPIMockRecorder) CreateClusterRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateClusterRequest", reflect.TypeOf((*MockECSAPI)(nil).CreateClusterRequest), arg0)
 }
 
 // CreateService mocks base method
 func (m *MockECSAPI) CreateService(arg0 *ecs.CreateServiceInput) (*ecs.CreateServiceOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateService", arg0)
 	ret0, _ := ret[0].(*ecs.CreateServiceOutput)
 	ret1, _ := ret[1].(error)
@@ -89,11 +96,13 @@ func (m *MockECSAPI) CreateService(arg0 *ecs.CreateServiceInput) (*ecs.CreateSer
 
 // CreateService indicates an expected call of CreateService
 func (mr *MockECSAPIMockRecorder) CreateService(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateService", reflect.TypeOf((*MockECSAPI)(nil).CreateService), arg0)
 }
 
 // CreateServiceWithContext mocks base method
 func (m *MockECSAPI) CreateServiceWithContext(arg0 aws.Context, arg1 *ecs.CreateServiceInput, arg2 ...request.Option) (*ecs.CreateServiceOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -106,12 +115,14 @@ func (m *MockECSAPI) CreateServiceWithContext(arg0 aws.Context, arg1 *ecs.Create
 
 // CreateServiceWithContext indicates an expected call of CreateServiceWithContext
 func (mr *MockECSAPIMockRecorder) CreateServiceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateServiceWithContext", reflect.TypeOf((*MockECSAPI)(nil).CreateServiceWithContext), varargs...)
 }
 
 // CreateServiceRequest mocks base method
 func (m *MockECSAPI) CreateServiceRequest(arg0 *ecs.CreateServiceInput) (*request.Request, *ecs.CreateServiceOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateServiceRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.CreateServiceOutput)
@@ -120,11 +131,13 @@ func (m *MockECSAPI) CreateServiceRequest(arg0 *ecs.CreateServiceInput) (*reques
 
 // CreateServiceRequest indicates an expected call of CreateServiceRequest
 func (mr *MockECSAPIMockRecorder) CreateServiceRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateServiceRequest", reflect.TypeOf((*MockECSAPI)(nil).CreateServiceRequest), arg0)
 }
 
 // CreateTaskSet mocks base method
 func (m *MockECSAPI) CreateTaskSet(arg0 *ecs.CreateTaskSetInput) (*ecs.CreateTaskSetOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateTaskSet", arg0)
 	ret0, _ := ret[0].(*ecs.CreateTaskSetOutput)
 	ret1, _ := ret[1].(error)
@@ -133,11 +146,13 @@ func (m *MockECSAPI) CreateTaskSet(arg0 *ecs.CreateTaskSetInput) (*ecs.CreateTas
 
 // CreateTaskSet indicates an expected call of CreateTaskSet
 func (mr *MockECSAPIMockRecorder) CreateTaskSet(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTaskSet", reflect.TypeOf((*MockECSAPI)(nil).CreateTaskSet), arg0)
 }
 
 // CreateTaskSetWithContext mocks base method
 func (m *MockECSAPI) CreateTaskSetWithContext(arg0 aws.Context, arg1 *ecs.CreateTaskSetInput, arg2 ...request.Option) (*ecs.CreateTaskSetOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -150,12 +165,14 @@ func (m *MockECSAPI) CreateTaskSetWithContext(arg0 aws.Context, arg1 *ecs.Create
 
 // CreateTaskSetWithContext indicates an expected call of CreateTaskSetWithContext
 func (mr *MockECSAPIMockRecorder) CreateTaskSetWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTaskSetWithContext", reflect.TypeOf((*MockECSAPI)(nil).CreateTaskSetWithContext), varargs...)
 }
 
 // CreateTaskSetRequest mocks base method
 func (m *MockECSAPI) CreateTaskSetRequest(arg0 *ecs.CreateTaskSetInput) (*request.Request, *ecs.CreateTaskSetOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateTaskSetRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.CreateTaskSetOutput)
@@ -164,11 +181,13 @@ func (m *MockECSAPI) CreateTaskSetRequest(arg0 *ecs.CreateTaskSetInput) (*reques
 
 // CreateTaskSetRequest indicates an expected call of CreateTaskSetRequest
 func (mr *MockECSAPIMockRecorder) CreateTaskSetRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTaskSetRequest", reflect.TypeOf((*MockECSAPI)(nil).CreateTaskSetRequest), arg0)
 }
 
 // DeleteAccountSetting mocks base method
 func (m *MockECSAPI) DeleteAccountSetting(arg0 *ecs.DeleteAccountSettingInput) (*ecs.DeleteAccountSettingOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAccountSetting", arg0)
 	ret0, _ := ret[0].(*ecs.DeleteAccountSettingOutput)
 	ret1, _ := ret[1].(error)
@@ -177,11 +196,13 @@ func (m *MockECSAPI) DeleteAccountSetting(arg0 *ecs.DeleteAccountSettingInput) (
 
 // DeleteAccountSetting indicates an expected call of DeleteAccountSetting
 func (mr *MockECSAPIMockRecorder) DeleteAccountSetting(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccountSetting", reflect.TypeOf((*MockECSAPI)(nil).DeleteAccountSetting), arg0)
 }
 
 // DeleteAccountSettingWithContext mocks base method
 func (m *MockECSAPI) DeleteAccountSettingWithContext(arg0 aws.Context, arg1 *ecs.DeleteAccountSettingInput, arg2 ...request.Option) (*ecs.DeleteAccountSettingOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -194,12 +215,14 @@ func (m *MockECSAPI) DeleteAccountSettingWithContext(arg0 aws.Context, arg1 *ecs
 
 // DeleteAccountSettingWithContext indicates an expected call of DeleteAccountSettingWithContext
 func (mr *MockECSAPIMockRecorder) DeleteAccountSettingWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccountSettingWithContext", reflect.TypeOf((*MockECSAPI)(nil).DeleteAccountSettingWithContext), varargs...)
 }
 
 // DeleteAccountSettingRequest mocks base method
 func (m *MockECSAPI) DeleteAccountSettingRequest(arg0 *ecs.DeleteAccountSettingInput) (*request.Request, *ecs.DeleteAccountSettingOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAccountSettingRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.DeleteAccountSettingOutput)
@@ -208,11 +231,13 @@ func (m *MockECSAPI) DeleteAccountSettingRequest(arg0 *ecs.DeleteAccountSettingI
 
 // DeleteAccountSettingRequest indicates an expected call of DeleteAccountSettingRequest
 func (mr *MockECSAPIMockRecorder) DeleteAccountSettingRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccountSettingRequest", reflect.TypeOf((*MockECSAPI)(nil).DeleteAccountSettingRequest), arg0)
 }
 
 // DeleteAttributes mocks base method
 func (m *MockECSAPI) DeleteAttributes(arg0 *ecs.DeleteAttributesInput) (*ecs.DeleteAttributesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAttributes", arg0)
 	ret0, _ := ret[0].(*ecs.DeleteAttributesOutput)
 	ret1, _ := ret[1].(error)
@@ -221,11 +246,13 @@ func (m *MockECSAPI) DeleteAttributes(arg0 *ecs.DeleteAttributesInput) (*ecs.Del
 
 // DeleteAttributes indicates an expected call of DeleteAttributes
 func (mr *MockECSAPIMockRecorder) DeleteAttributes(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAttributes", reflect.TypeOf((*MockECSAPI)(nil).DeleteAttributes), arg0)
 }
 
 // DeleteAttributesWithContext mocks base method
 func (m *MockECSAPI) DeleteAttributesWithContext(arg0 aws.Context, arg1 *ecs.DeleteAttributesInput, arg2 ...request.Option) (*ecs.DeleteAttributesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -238,12 +265,14 @@ func (m *MockECSAPI) DeleteAttributesWithContext(arg0 aws.Context, arg1 *ecs.Del
 
 // DeleteAttributesWithContext indicates an expected call of DeleteAttributesWithContext
 func (mr *MockECSAPIMockRecorder) DeleteAttributesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAttributesWithContext", reflect.TypeOf((*MockECSAPI)(nil).DeleteAttributesWithContext), varargs...)
 }
 
 // DeleteAttributesRequest mocks base method
 func (m *MockECSAPI) DeleteAttributesRequest(arg0 *ecs.DeleteAttributesInput) (*request.Request, *ecs.DeleteAttributesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAttributesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.DeleteAttributesOutput)
@@ -252,11 +281,13 @@ func (m *MockECSAPI) DeleteAttributesRequest(arg0 *ecs.DeleteAttributesInput) (*
 
 // DeleteAttributesRequest indicates an expected call of DeleteAttributesRequest
 func (mr *MockECSAPIMockRecorder) DeleteAttributesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAttributesRequest", reflect.TypeOf((*MockECSAPI)(nil).DeleteAttributesRequest), arg0)
 }
 
 // DeleteCluster mocks base method
 func (m *MockECSAPI) DeleteCluster(arg0 *ecs.DeleteClusterInput) (*ecs.DeleteClusterOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteCluster", arg0)
 	ret0, _ := ret[0].(*ecs.DeleteClusterOutput)
 	ret1, _ := ret[1].(error)
@@ -265,11 +296,13 @@ func (m *MockECSAPI) DeleteCluster(arg0 *ecs.DeleteClusterInput) (*ecs.DeleteClu
 
 // DeleteCluster indicates an expected call of DeleteCluster
 func (mr *MockECSAPIMockRecorder) DeleteCluster(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCluster", reflect.TypeOf((*MockECSAPI)(nil).DeleteCluster), arg0)
 }
 
 // DeleteClusterWithContext mocks base method
 func (m *MockECSAPI) DeleteClusterWithContext(arg0 aws.Context, arg1 *ecs.DeleteClusterInput, arg2 ...request.Option) (*ecs.DeleteClusterOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -282,12 +315,14 @@ func (m *MockECSAPI) DeleteClusterWithContext(arg0 aws.Context, arg1 *ecs.Delete
 
 // DeleteClusterWithContext indicates an expected call of DeleteClusterWithContext
 func (mr *MockECSAPIMockRecorder) DeleteClusterWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteClusterWithContext", reflect.TypeOf((*MockECSAPI)(nil).DeleteClusterWithContext), varargs...)
 }
 
 // DeleteClusterRequest mocks base method
 func (m *MockECSAPI) DeleteClusterRequest(arg0 *ecs.DeleteClusterInput) (*request.Request, *ecs.DeleteClusterOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteClusterRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.DeleteClusterOutput)
@@ -296,11 +331,13 @@ func (m *MockECSAPI) DeleteClusterRequest(arg0 *ecs.DeleteClusterInput) (*reques
 
 // DeleteClusterRequest indicates an expected call of DeleteClusterRequest
 func (mr *MockECSAPIMockRecorder) DeleteClusterRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteClusterRequest", reflect.TypeOf((*MockECSAPI)(nil).DeleteClusterRequest), arg0)
 }
 
 // DeleteService mocks base method
 func (m *MockECSAPI) DeleteService(arg0 *ecs.DeleteServiceInput) (*ecs.DeleteServiceOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteService", arg0)
 	ret0, _ := ret[0].(*ecs.DeleteServiceOutput)
 	ret1, _ := ret[1].(error)
@@ -309,11 +346,13 @@ func (m *MockECSAPI) DeleteService(arg0 *ecs.DeleteServiceInput) (*ecs.DeleteSer
 
 // DeleteService indicates an expected call of DeleteService
 func (mr *MockECSAPIMockRecorder) DeleteService(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteService", reflect.TypeOf((*MockECSAPI)(nil).DeleteService), arg0)
 }
 
 // DeleteServiceWithContext mocks base method
 func (m *MockECSAPI) DeleteServiceWithContext(arg0 aws.Context, arg1 *ecs.DeleteServiceInput, arg2 ...request.Option) (*ecs.DeleteServiceOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -326,12 +365,14 @@ func (m *MockECSAPI) DeleteServiceWithContext(arg0 aws.Context, arg1 *ecs.Delete
 
 // DeleteServiceWithContext indicates an expected call of DeleteServiceWithContext
 func (mr *MockECSAPIMockRecorder) DeleteServiceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteServiceWithContext", reflect.TypeOf((*MockECSAPI)(nil).DeleteServiceWithContext), varargs...)
 }
 
 // DeleteServiceRequest mocks base method
 func (m *MockECSAPI) DeleteServiceRequest(arg0 *ecs.DeleteServiceInput) (*request.Request, *ecs.DeleteServiceOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteServiceRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.DeleteServiceOutput)
@@ -340,11 +381,13 @@ func (m *MockECSAPI) DeleteServiceRequest(arg0 *ecs.DeleteServiceInput) (*reques
 
 // DeleteServiceRequest indicates an expected call of DeleteServiceRequest
 func (mr *MockECSAPIMockRecorder) DeleteServiceRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteServiceRequest", reflect.TypeOf((*MockECSAPI)(nil).DeleteServiceRequest), arg0)
 }
 
 // DeleteTaskSet mocks base method
 func (m *MockECSAPI) DeleteTaskSet(arg0 *ecs.DeleteTaskSetInput) (*ecs.DeleteTaskSetOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteTaskSet", arg0)
 	ret0, _ := ret[0].(*ecs.DeleteTaskSetOutput)
 	ret1, _ := ret[1].(error)
@@ -353,11 +396,13 @@ func (m *MockECSAPI) DeleteTaskSet(arg0 *ecs.DeleteTaskSetInput) (*ecs.DeleteTas
 
 // DeleteTaskSet indicates an expected call of DeleteTaskSet
 func (mr *MockECSAPIMockRecorder) DeleteTaskSet(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTaskSet", reflect.TypeOf((*MockECSAPI)(nil).DeleteTaskSet), arg0)
 }
 
 // DeleteTaskSetWithContext mocks base method
 func (m *MockECSAPI) DeleteTaskSetWithContext(arg0 aws.Context, arg1 *ecs.DeleteTaskSetInput, arg2 ...request.Option) (*ecs.DeleteTaskSetOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -370,12 +415,14 @@ func (m *MockECSAPI) DeleteTaskSetWithContext(arg0 aws.Context, arg1 *ecs.Delete
 
 // DeleteTaskSetWithContext indicates an expected call of DeleteTaskSetWithContext
 func (mr *MockECSAPIMockRecorder) DeleteTaskSetWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTaskSetWithContext", reflect.TypeOf((*MockECSAPI)(nil).DeleteTaskSetWithContext), varargs...)
 }
 
 // DeleteTaskSetRequest mocks base method
 func (m *MockECSAPI) DeleteTaskSetRequest(arg0 *ecs.DeleteTaskSetInput) (*request.Request, *ecs.DeleteTaskSetOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteTaskSetRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.DeleteTaskSetOutput)
@@ -384,11 +431,13 @@ func (m *MockECSAPI) DeleteTaskSetRequest(arg0 *ecs.DeleteTaskSetInput) (*reques
 
 // DeleteTaskSetRequest indicates an expected call of DeleteTaskSetRequest
 func (mr *MockECSAPIMockRecorder) DeleteTaskSetRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTaskSetRequest", reflect.TypeOf((*MockECSAPI)(nil).DeleteTaskSetRequest), arg0)
 }
 
 // DeregisterContainerInstance mocks base method
 func (m *MockECSAPI) DeregisterContainerInstance(arg0 *ecs.DeregisterContainerInstanceInput) (*ecs.DeregisterContainerInstanceOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeregisterContainerInstance", arg0)
 	ret0, _ := ret[0].(*ecs.DeregisterContainerInstanceOutput)
 	ret1, _ := ret[1].(error)
@@ -397,11 +446,13 @@ func (m *MockECSAPI) DeregisterContainerInstance(arg0 *ecs.DeregisterContainerIn
 
 // DeregisterContainerInstance indicates an expected call of DeregisterContainerInstance
 func (mr *MockECSAPIMockRecorder) DeregisterContainerInstance(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeregisterContainerInstance", reflect.TypeOf((*MockECSAPI)(nil).DeregisterContainerInstance), arg0)
 }
 
 // DeregisterContainerInstanceWithContext mocks base method
 func (m *MockECSAPI) DeregisterContainerInstanceWithContext(arg0 aws.Context, arg1 *ecs.DeregisterContainerInstanceInput, arg2 ...request.Option) (*ecs.DeregisterContainerInstanceOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -414,12 +465,14 @@ func (m *MockECSAPI) DeregisterContainerInstanceWithContext(arg0 aws.Context, ar
 
 // DeregisterContainerInstanceWithContext indicates an expected call of DeregisterContainerInstanceWithContext
 func (mr *MockECSAPIMockRecorder) DeregisterContainerInstanceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeregisterContainerInstanceWithContext", reflect.TypeOf((*MockECSAPI)(nil).DeregisterContainerInstanceWithContext), varargs...)
 }
 
 // DeregisterContainerInstanceRequest mocks base method
 func (m *MockECSAPI) DeregisterContainerInstanceRequest(arg0 *ecs.DeregisterContainerInstanceInput) (*request.Request, *ecs.DeregisterContainerInstanceOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeregisterContainerInstanceRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.DeregisterContainerInstanceOutput)
@@ -428,11 +481,13 @@ func (m *MockECSAPI) DeregisterContainerInstanceRequest(arg0 *ecs.DeregisterCont
 
 // DeregisterContainerInstanceRequest indicates an expected call of DeregisterContainerInstanceRequest
 func (mr *MockECSAPIMockRecorder) DeregisterContainerInstanceRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeregisterContainerInstanceRequest", reflect.TypeOf((*MockECSAPI)(nil).DeregisterContainerInstanceRequest), arg0)
 }
 
 // DeregisterTaskDefinition mocks base method
 func (m *MockECSAPI) DeregisterTaskDefinition(arg0 *ecs.DeregisterTaskDefinitionInput) (*ecs.DeregisterTaskDefinitionOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeregisterTaskDefinition", arg0)
 	ret0, _ := ret[0].(*ecs.DeregisterTaskDefinitionOutput)
 	ret1, _ := ret[1].(error)
@@ -441,11 +496,13 @@ func (m *MockECSAPI) DeregisterTaskDefinition(arg0 *ecs.DeregisterTaskDefinition
 
 // DeregisterTaskDefinition indicates an expected call of DeregisterTaskDefinition
 func (mr *MockECSAPIMockRecorder) DeregisterTaskDefinition(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeregisterTaskDefinition", reflect.TypeOf((*MockECSAPI)(nil).DeregisterTaskDefinition), arg0)
 }
 
 // DeregisterTaskDefinitionWithContext mocks base method
 func (m *MockECSAPI) DeregisterTaskDefinitionWithContext(arg0 aws.Context, arg1 *ecs.DeregisterTaskDefinitionInput, arg2 ...request.Option) (*ecs.DeregisterTaskDefinitionOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -458,12 +515,14 @@ func (m *MockECSAPI) DeregisterTaskDefinitionWithContext(arg0 aws.Context, arg1 
 
 // DeregisterTaskDefinitionWithContext indicates an expected call of DeregisterTaskDefinitionWithContext
 func (mr *MockECSAPIMockRecorder) DeregisterTaskDefinitionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeregisterTaskDefinitionWithContext", reflect.TypeOf((*MockECSAPI)(nil).DeregisterTaskDefinitionWithContext), varargs...)
 }
 
 // DeregisterTaskDefinitionRequest mocks base method
 func (m *MockECSAPI) DeregisterTaskDefinitionRequest(arg0 *ecs.DeregisterTaskDefinitionInput) (*request.Request, *ecs.DeregisterTaskDefinitionOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeregisterTaskDefinitionRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.DeregisterTaskDefinitionOutput)
@@ -472,11 +531,13 @@ func (m *MockECSAPI) DeregisterTaskDefinitionRequest(arg0 *ecs.DeregisterTaskDef
 
 // DeregisterTaskDefinitionRequest indicates an expected call of DeregisterTaskDefinitionRequest
 func (mr *MockECSAPIMockRecorder) DeregisterTaskDefinitionRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeregisterTaskDefinitionRequest", reflect.TypeOf((*MockECSAPI)(nil).DeregisterTaskDefinitionRequest), arg0)
 }
 
 // DescribeClusters mocks base method
 func (m *MockECSAPI) DescribeClusters(arg0 *ecs.DescribeClustersInput) (*ecs.DescribeClustersOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeClusters", arg0)
 	ret0, _ := ret[0].(*ecs.DescribeClustersOutput)
 	ret1, _ := ret[1].(error)
@@ -485,11 +546,13 @@ func (m *MockECSAPI) DescribeClusters(arg0 *ecs.DescribeClustersInput) (*ecs.Des
 
 // DescribeClusters indicates an expected call of DescribeClusters
 func (mr *MockECSAPIMockRecorder) DescribeClusters(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClusters", reflect.TypeOf((*MockECSAPI)(nil).DescribeClusters), arg0)
 }
 
 // DescribeClustersWithContext mocks base method
 func (m *MockECSAPI) DescribeClustersWithContext(arg0 aws.Context, arg1 *ecs.DescribeClustersInput, arg2 ...request.Option) (*ecs.DescribeClustersOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -502,12 +565,14 @@ func (m *MockECSAPI) DescribeClustersWithContext(arg0 aws.Context, arg1 *ecs.Des
 
 // DescribeClustersWithContext indicates an expected call of DescribeClustersWithContext
 func (mr *MockECSAPIMockRecorder) DescribeClustersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClustersWithContext", reflect.TypeOf((*MockECSAPI)(nil).DescribeClustersWithContext), varargs...)
 }
 
 // DescribeClustersRequest mocks base method
 func (m *MockECSAPI) DescribeClustersRequest(arg0 *ecs.DescribeClustersInput) (*request.Request, *ecs.DescribeClustersOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeClustersRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.DescribeClustersOutput)
@@ -516,11 +581,13 @@ func (m *MockECSAPI) DescribeClustersRequest(arg0 *ecs.DescribeClustersInput) (*
 
 // DescribeClustersRequest indicates an expected call of DescribeClustersRequest
 func (mr *MockECSAPIMockRecorder) DescribeClustersRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeClustersRequest", reflect.TypeOf((*MockECSAPI)(nil).DescribeClustersRequest), arg0)
 }
 
 // DescribeContainerInstances mocks base method
 func (m *MockECSAPI) DescribeContainerInstances(arg0 *ecs.DescribeContainerInstancesInput) (*ecs.DescribeContainerInstancesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeContainerInstances", arg0)
 	ret0, _ := ret[0].(*ecs.DescribeContainerInstancesOutput)
 	ret1, _ := ret[1].(error)
@@ -529,11 +596,13 @@ func (m *MockECSAPI) DescribeContainerInstances(arg0 *ecs.DescribeContainerInsta
 
 // DescribeContainerInstances indicates an expected call of DescribeContainerInstances
 func (mr *MockECSAPIMockRecorder) DescribeContainerInstances(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeContainerInstances", reflect.TypeOf((*MockECSAPI)(nil).DescribeContainerInstances), arg0)
 }
 
 // DescribeContainerInstancesWithContext mocks base method
 func (m *MockECSAPI) DescribeContainerInstancesWithContext(arg0 aws.Context, arg1 *ecs.DescribeContainerInstancesInput, arg2 ...request.Option) (*ecs.DescribeContainerInstancesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -546,12 +615,14 @@ func (m *MockECSAPI) DescribeContainerInstancesWithContext(arg0 aws.Context, arg
 
 // DescribeContainerInstancesWithContext indicates an expected call of DescribeContainerInstancesWithContext
 func (mr *MockECSAPIMockRecorder) DescribeContainerInstancesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeContainerInstancesWithContext", reflect.TypeOf((*MockECSAPI)(nil).DescribeContainerInstancesWithContext), varargs...)
 }
 
 // DescribeContainerInstancesRequest mocks base method
 func (m *MockECSAPI) DescribeContainerInstancesRequest(arg0 *ecs.DescribeContainerInstancesInput) (*request.Request, *ecs.DescribeContainerInstancesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeContainerInstancesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.DescribeContainerInstancesOutput)
@@ -560,11 +631,13 @@ func (m *MockECSAPI) DescribeContainerInstancesRequest(arg0 *ecs.DescribeContain
 
 // DescribeContainerInstancesRequest indicates an expected call of DescribeContainerInstancesRequest
 func (mr *MockECSAPIMockRecorder) DescribeContainerInstancesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeContainerInstancesRequest", reflect.TypeOf((*MockECSAPI)(nil).DescribeContainerInstancesRequest), arg0)
 }
 
 // DescribeServices mocks base method
 func (m *MockECSAPI) DescribeServices(arg0 *ecs.DescribeServicesInput) (*ecs.DescribeServicesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeServices", arg0)
 	ret0, _ := ret[0].(*ecs.DescribeServicesOutput)
 	ret1, _ := ret[1].(error)
@@ -573,11 +646,13 @@ func (m *MockECSAPI) DescribeServices(arg0 *ecs.DescribeServicesInput) (*ecs.Des
 
 // DescribeServices indicates an expected call of DescribeServices
 func (mr *MockECSAPIMockRecorder) DescribeServices(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeServices", reflect.TypeOf((*MockECSAPI)(nil).DescribeServices), arg0)
 }
 
 // DescribeServicesWithContext mocks base method
 func (m *MockECSAPI) DescribeServicesWithContext(arg0 aws.Context, arg1 *ecs.DescribeServicesInput, arg2 ...request.Option) (*ecs.DescribeServicesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -590,12 +665,14 @@ func (m *MockECSAPI) DescribeServicesWithContext(arg0 aws.Context, arg1 *ecs.Des
 
 // DescribeServicesWithContext indicates an expected call of DescribeServicesWithContext
 func (mr *MockECSAPIMockRecorder) DescribeServicesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeServicesWithContext", reflect.TypeOf((*MockECSAPI)(nil).DescribeServicesWithContext), varargs...)
 }
 
 // DescribeServicesRequest mocks base method
 func (m *MockECSAPI) DescribeServicesRequest(arg0 *ecs.DescribeServicesInput) (*request.Request, *ecs.DescribeServicesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeServicesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.DescribeServicesOutput)
@@ -604,11 +681,13 @@ func (m *MockECSAPI) DescribeServicesRequest(arg0 *ecs.DescribeServicesInput) (*
 
 // DescribeServicesRequest indicates an expected call of DescribeServicesRequest
 func (mr *MockECSAPIMockRecorder) DescribeServicesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeServicesRequest", reflect.TypeOf((*MockECSAPI)(nil).DescribeServicesRequest), arg0)
 }
 
 // DescribeTaskDefinition mocks base method
 func (m *MockECSAPI) DescribeTaskDefinition(arg0 *ecs.DescribeTaskDefinitionInput) (*ecs.DescribeTaskDefinitionOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeTaskDefinition", arg0)
 	ret0, _ := ret[0].(*ecs.DescribeTaskDefinitionOutput)
 	ret1, _ := ret[1].(error)
@@ -617,11 +696,13 @@ func (m *MockECSAPI) DescribeTaskDefinition(arg0 *ecs.DescribeTaskDefinitionInpu
 
 // DescribeTaskDefinition indicates an expected call of DescribeTaskDefinition
 func (mr *MockECSAPIMockRecorder) DescribeTaskDefinition(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTaskDefinition", reflect.TypeOf((*MockECSAPI)(nil).DescribeTaskDefinition), arg0)
 }
 
 // DescribeTaskDefinitionWithContext mocks base method
 func (m *MockECSAPI) DescribeTaskDefinitionWithContext(arg0 aws.Context, arg1 *ecs.DescribeTaskDefinitionInput, arg2 ...request.Option) (*ecs.DescribeTaskDefinitionOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -634,12 +715,14 @@ func (m *MockECSAPI) DescribeTaskDefinitionWithContext(arg0 aws.Context, arg1 *e
 
 // DescribeTaskDefinitionWithContext indicates an expected call of DescribeTaskDefinitionWithContext
 func (mr *MockECSAPIMockRecorder) DescribeTaskDefinitionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTaskDefinitionWithContext", reflect.TypeOf((*MockECSAPI)(nil).DescribeTaskDefinitionWithContext), varargs...)
 }
 
 // DescribeTaskDefinitionRequest mocks base method
 func (m *MockECSAPI) DescribeTaskDefinitionRequest(arg0 *ecs.DescribeTaskDefinitionInput) (*request.Request, *ecs.DescribeTaskDefinitionOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeTaskDefinitionRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.DescribeTaskDefinitionOutput)
@@ -648,11 +731,13 @@ func (m *MockECSAPI) DescribeTaskDefinitionRequest(arg0 *ecs.DescribeTaskDefinit
 
 // DescribeTaskDefinitionRequest indicates an expected call of DescribeTaskDefinitionRequest
 func (mr *MockECSAPIMockRecorder) DescribeTaskDefinitionRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTaskDefinitionRequest", reflect.TypeOf((*MockECSAPI)(nil).DescribeTaskDefinitionRequest), arg0)
 }
 
 // DescribeTaskSets mocks base method
 func (m *MockECSAPI) DescribeTaskSets(arg0 *ecs.DescribeTaskSetsInput) (*ecs.DescribeTaskSetsOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeTaskSets", arg0)
 	ret0, _ := ret[0].(*ecs.DescribeTaskSetsOutput)
 	ret1, _ := ret[1].(error)
@@ -661,11 +746,13 @@ func (m *MockECSAPI) DescribeTaskSets(arg0 *ecs.DescribeTaskSetsInput) (*ecs.Des
 
 // DescribeTaskSets indicates an expected call of DescribeTaskSets
 func (mr *MockECSAPIMockRecorder) DescribeTaskSets(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTaskSets", reflect.TypeOf((*MockECSAPI)(nil).DescribeTaskSets), arg0)
 }
 
 // DescribeTaskSetsWithContext mocks base method
 func (m *MockECSAPI) DescribeTaskSetsWithContext(arg0 aws.Context, arg1 *ecs.DescribeTaskSetsInput, arg2 ...request.Option) (*ecs.DescribeTaskSetsOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -678,12 +765,14 @@ func (m *MockECSAPI) DescribeTaskSetsWithContext(arg0 aws.Context, arg1 *ecs.Des
 
 // DescribeTaskSetsWithContext indicates an expected call of DescribeTaskSetsWithContext
 func (mr *MockECSAPIMockRecorder) DescribeTaskSetsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTaskSetsWithContext", reflect.TypeOf((*MockECSAPI)(nil).DescribeTaskSetsWithContext), varargs...)
 }
 
 // DescribeTaskSetsRequest mocks base method
 func (m *MockECSAPI) DescribeTaskSetsRequest(arg0 *ecs.DescribeTaskSetsInput) (*request.Request, *ecs.DescribeTaskSetsOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeTaskSetsRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.DescribeTaskSetsOutput)
@@ -692,11 +781,13 @@ func (m *MockECSAPI) DescribeTaskSetsRequest(arg0 *ecs.DescribeTaskSetsInput) (*
 
 // DescribeTaskSetsRequest indicates an expected call of DescribeTaskSetsRequest
 func (mr *MockECSAPIMockRecorder) DescribeTaskSetsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTaskSetsRequest", reflect.TypeOf((*MockECSAPI)(nil).DescribeTaskSetsRequest), arg0)
 }
 
 // DescribeTasks mocks base method
 func (m *MockECSAPI) DescribeTasks(arg0 *ecs.DescribeTasksInput) (*ecs.DescribeTasksOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeTasks", arg0)
 	ret0, _ := ret[0].(*ecs.DescribeTasksOutput)
 	ret1, _ := ret[1].(error)
@@ -705,11 +796,13 @@ func (m *MockECSAPI) DescribeTasks(arg0 *ecs.DescribeTasksInput) (*ecs.DescribeT
 
 // DescribeTasks indicates an expected call of DescribeTasks
 func (mr *MockECSAPIMockRecorder) DescribeTasks(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTasks", reflect.TypeOf((*MockECSAPI)(nil).DescribeTasks), arg0)
 }
 
 // DescribeTasksWithContext mocks base method
 func (m *MockECSAPI) DescribeTasksWithContext(arg0 aws.Context, arg1 *ecs.DescribeTasksInput, arg2 ...request.Option) (*ecs.DescribeTasksOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -722,12 +815,14 @@ func (m *MockECSAPI) DescribeTasksWithContext(arg0 aws.Context, arg1 *ecs.Descri
 
 // DescribeTasksWithContext indicates an expected call of DescribeTasksWithContext
 func (mr *MockECSAPIMockRecorder) DescribeTasksWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTasksWithContext", reflect.TypeOf((*MockECSAPI)(nil).DescribeTasksWithContext), varargs...)
 }
 
 // DescribeTasksRequest mocks base method
 func (m *MockECSAPI) DescribeTasksRequest(arg0 *ecs.DescribeTasksInput) (*request.Request, *ecs.DescribeTasksOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeTasksRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.DescribeTasksOutput)
@@ -736,11 +831,13 @@ func (m *MockECSAPI) DescribeTasksRequest(arg0 *ecs.DescribeTasksInput) (*reques
 
 // DescribeTasksRequest indicates an expected call of DescribeTasksRequest
 func (mr *MockECSAPIMockRecorder) DescribeTasksRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTasksRequest", reflect.TypeOf((*MockECSAPI)(nil).DescribeTasksRequest), arg0)
 }
 
 // DiscoverPollEndpoint mocks base method
 func (m *MockECSAPI) DiscoverPollEndpoint(arg0 *ecs.DiscoverPollEndpointInput) (*ecs.DiscoverPollEndpointOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DiscoverPollEndpoint", arg0)
 	ret0, _ := ret[0].(*ecs.DiscoverPollEndpointOutput)
 	ret1, _ := ret[1].(error)
@@ -749,11 +846,13 @@ func (m *MockECSAPI) DiscoverPollEndpoint(arg0 *ecs.DiscoverPollEndpointInput) (
 
 // DiscoverPollEndpoint indicates an expected call of DiscoverPollEndpoint
 func (mr *MockECSAPIMockRecorder) DiscoverPollEndpoint(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DiscoverPollEndpoint", reflect.TypeOf((*MockECSAPI)(nil).DiscoverPollEndpoint), arg0)
 }
 
 // DiscoverPollEndpointWithContext mocks base method
 func (m *MockECSAPI) DiscoverPollEndpointWithContext(arg0 aws.Context, arg1 *ecs.DiscoverPollEndpointInput, arg2 ...request.Option) (*ecs.DiscoverPollEndpointOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -766,12 +865,14 @@ func (m *MockECSAPI) DiscoverPollEndpointWithContext(arg0 aws.Context, arg1 *ecs
 
 // DiscoverPollEndpointWithContext indicates an expected call of DiscoverPollEndpointWithContext
 func (mr *MockECSAPIMockRecorder) DiscoverPollEndpointWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DiscoverPollEndpointWithContext", reflect.TypeOf((*MockECSAPI)(nil).DiscoverPollEndpointWithContext), varargs...)
 }
 
 // DiscoverPollEndpointRequest mocks base method
 func (m *MockECSAPI) DiscoverPollEndpointRequest(arg0 *ecs.DiscoverPollEndpointInput) (*request.Request, *ecs.DiscoverPollEndpointOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DiscoverPollEndpointRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.DiscoverPollEndpointOutput)
@@ -780,11 +881,13 @@ func (m *MockECSAPI) DiscoverPollEndpointRequest(arg0 *ecs.DiscoverPollEndpointI
 
 // DiscoverPollEndpointRequest indicates an expected call of DiscoverPollEndpointRequest
 func (mr *MockECSAPIMockRecorder) DiscoverPollEndpointRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DiscoverPollEndpointRequest", reflect.TypeOf((*MockECSAPI)(nil).DiscoverPollEndpointRequest), arg0)
 }
 
 // ListAccountSettings mocks base method
 func (m *MockECSAPI) ListAccountSettings(arg0 *ecs.ListAccountSettingsInput) (*ecs.ListAccountSettingsOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAccountSettings", arg0)
 	ret0, _ := ret[0].(*ecs.ListAccountSettingsOutput)
 	ret1, _ := ret[1].(error)
@@ -793,11 +896,13 @@ func (m *MockECSAPI) ListAccountSettings(arg0 *ecs.ListAccountSettingsInput) (*e
 
 // ListAccountSettings indicates an expected call of ListAccountSettings
 func (mr *MockECSAPIMockRecorder) ListAccountSettings(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountSettings", reflect.TypeOf((*MockECSAPI)(nil).ListAccountSettings), arg0)
 }
 
 // ListAccountSettingsWithContext mocks base method
 func (m *MockECSAPI) ListAccountSettingsWithContext(arg0 aws.Context, arg1 *ecs.ListAccountSettingsInput, arg2 ...request.Option) (*ecs.ListAccountSettingsOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -810,12 +915,14 @@ func (m *MockECSAPI) ListAccountSettingsWithContext(arg0 aws.Context, arg1 *ecs.
 
 // ListAccountSettingsWithContext indicates an expected call of ListAccountSettingsWithContext
 func (mr *MockECSAPIMockRecorder) ListAccountSettingsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountSettingsWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListAccountSettingsWithContext), varargs...)
 }
 
 // ListAccountSettingsRequest mocks base method
 func (m *MockECSAPI) ListAccountSettingsRequest(arg0 *ecs.ListAccountSettingsInput) (*request.Request, *ecs.ListAccountSettingsOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAccountSettingsRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.ListAccountSettingsOutput)
@@ -824,11 +931,13 @@ func (m *MockECSAPI) ListAccountSettingsRequest(arg0 *ecs.ListAccountSettingsInp
 
 // ListAccountSettingsRequest indicates an expected call of ListAccountSettingsRequest
 func (mr *MockECSAPIMockRecorder) ListAccountSettingsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountSettingsRequest", reflect.TypeOf((*MockECSAPI)(nil).ListAccountSettingsRequest), arg0)
 }
 
 // ListAttributes mocks base method
 func (m *MockECSAPI) ListAttributes(arg0 *ecs.ListAttributesInput) (*ecs.ListAttributesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAttributes", arg0)
 	ret0, _ := ret[0].(*ecs.ListAttributesOutput)
 	ret1, _ := ret[1].(error)
@@ -837,11 +946,13 @@ func (m *MockECSAPI) ListAttributes(arg0 *ecs.ListAttributesInput) (*ecs.ListAtt
 
 // ListAttributes indicates an expected call of ListAttributes
 func (mr *MockECSAPIMockRecorder) ListAttributes(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttributes", reflect.TypeOf((*MockECSAPI)(nil).ListAttributes), arg0)
 }
 
 // ListAttributesWithContext mocks base method
 func (m *MockECSAPI) ListAttributesWithContext(arg0 aws.Context, arg1 *ecs.ListAttributesInput, arg2 ...request.Option) (*ecs.ListAttributesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -854,12 +965,14 @@ func (m *MockECSAPI) ListAttributesWithContext(arg0 aws.Context, arg1 *ecs.ListA
 
 // ListAttributesWithContext indicates an expected call of ListAttributesWithContext
 func (mr *MockECSAPIMockRecorder) ListAttributesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttributesWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListAttributesWithContext), varargs...)
 }
 
 // ListAttributesRequest mocks base method
 func (m *MockECSAPI) ListAttributesRequest(arg0 *ecs.ListAttributesInput) (*request.Request, *ecs.ListAttributesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListAttributesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.ListAttributesOutput)
@@ -868,11 +981,13 @@ func (m *MockECSAPI) ListAttributesRequest(arg0 *ecs.ListAttributesInput) (*requ
 
 // ListAttributesRequest indicates an expected call of ListAttributesRequest
 func (mr *MockECSAPIMockRecorder) ListAttributesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAttributesRequest", reflect.TypeOf((*MockECSAPI)(nil).ListAttributesRequest), arg0)
 }
 
 // ListClusters mocks base method
 func (m *MockECSAPI) ListClusters(arg0 *ecs.ListClustersInput) (*ecs.ListClustersOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListClusters", arg0)
 	ret0, _ := ret[0].(*ecs.ListClustersOutput)
 	ret1, _ := ret[1].(error)
@@ -881,11 +996,13 @@ func (m *MockECSAPI) ListClusters(arg0 *ecs.ListClustersInput) (*ecs.ListCluster
 
 // ListClusters indicates an expected call of ListClusters
 func (mr *MockECSAPIMockRecorder) ListClusters(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListClusters", reflect.TypeOf((*MockECSAPI)(nil).ListClusters), arg0)
 }
 
 // ListClustersWithContext mocks base method
 func (m *MockECSAPI) ListClustersWithContext(arg0 aws.Context, arg1 *ecs.ListClustersInput, arg2 ...request.Option) (*ecs.ListClustersOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -898,12 +1015,14 @@ func (m *MockECSAPI) ListClustersWithContext(arg0 aws.Context, arg1 *ecs.ListClu
 
 // ListClustersWithContext indicates an expected call of ListClustersWithContext
 func (mr *MockECSAPIMockRecorder) ListClustersWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListClustersWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListClustersWithContext), varargs...)
 }
 
 // ListClustersRequest mocks base method
 func (m *MockECSAPI) ListClustersRequest(arg0 *ecs.ListClustersInput) (*request.Request, *ecs.ListClustersOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListClustersRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.ListClustersOutput)
@@ -912,11 +1031,13 @@ func (m *MockECSAPI) ListClustersRequest(arg0 *ecs.ListClustersInput) (*request.
 
 // ListClustersRequest indicates an expected call of ListClustersRequest
 func (mr *MockECSAPIMockRecorder) ListClustersRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListClustersRequest", reflect.TypeOf((*MockECSAPI)(nil).ListClustersRequest), arg0)
 }
 
 // ListClustersPages mocks base method
 func (m *MockECSAPI) ListClustersPages(arg0 *ecs.ListClustersInput, arg1 func(*ecs.ListClustersOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListClustersPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -924,11 +1045,13 @@ func (m *MockECSAPI) ListClustersPages(arg0 *ecs.ListClustersInput, arg1 func(*e
 
 // ListClustersPages indicates an expected call of ListClustersPages
 func (mr *MockECSAPIMockRecorder) ListClustersPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListClustersPages", reflect.TypeOf((*MockECSAPI)(nil).ListClustersPages), arg0, arg1)
 }
 
 // ListClustersPagesWithContext mocks base method
 func (m *MockECSAPI) ListClustersPagesWithContext(arg0 aws.Context, arg1 *ecs.ListClustersInput, arg2 func(*ecs.ListClustersOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -940,12 +1063,14 @@ func (m *MockECSAPI) ListClustersPagesWithContext(arg0 aws.Context, arg1 *ecs.Li
 
 // ListClustersPagesWithContext indicates an expected call of ListClustersPagesWithContext
 func (mr *MockECSAPIMockRecorder) ListClustersPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListClustersPagesWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListClustersPagesWithContext), varargs...)
 }
 
 // ListContainerInstances mocks base method
 func (m *MockECSAPI) ListContainerInstances(arg0 *ecs.ListContainerInstancesInput) (*ecs.ListContainerInstancesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListContainerInstances", arg0)
 	ret0, _ := ret[0].(*ecs.ListContainerInstancesOutput)
 	ret1, _ := ret[1].(error)
@@ -954,11 +1079,13 @@ func (m *MockECSAPI) ListContainerInstances(arg0 *ecs.ListContainerInstancesInpu
 
 // ListContainerInstances indicates an expected call of ListContainerInstances
 func (mr *MockECSAPIMockRecorder) ListContainerInstances(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListContainerInstances", reflect.TypeOf((*MockECSAPI)(nil).ListContainerInstances), arg0)
 }
 
 // ListContainerInstancesWithContext mocks base method
 func (m *MockECSAPI) ListContainerInstancesWithContext(arg0 aws.Context, arg1 *ecs.ListContainerInstancesInput, arg2 ...request.Option) (*ecs.ListContainerInstancesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -971,12 +1098,14 @@ func (m *MockECSAPI) ListContainerInstancesWithContext(arg0 aws.Context, arg1 *e
 
 // ListContainerInstancesWithContext indicates an expected call of ListContainerInstancesWithContext
 func (mr *MockECSAPIMockRecorder) ListContainerInstancesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListContainerInstancesWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListContainerInstancesWithContext), varargs...)
 }
 
 // ListContainerInstancesRequest mocks base method
 func (m *MockECSAPI) ListContainerInstancesRequest(arg0 *ecs.ListContainerInstancesInput) (*request.Request, *ecs.ListContainerInstancesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListContainerInstancesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.ListContainerInstancesOutput)
@@ -985,11 +1114,13 @@ func (m *MockECSAPI) ListContainerInstancesRequest(arg0 *ecs.ListContainerInstan
 
 // ListContainerInstancesRequest indicates an expected call of ListContainerInstancesRequest
 func (mr *MockECSAPIMockRecorder) ListContainerInstancesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListContainerInstancesRequest", reflect.TypeOf((*MockECSAPI)(nil).ListContainerInstancesRequest), arg0)
 }
 
 // ListContainerInstancesPages mocks base method
 func (m *MockECSAPI) ListContainerInstancesPages(arg0 *ecs.ListContainerInstancesInput, arg1 func(*ecs.ListContainerInstancesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListContainerInstancesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -997,11 +1128,13 @@ func (m *MockECSAPI) ListContainerInstancesPages(arg0 *ecs.ListContainerInstance
 
 // ListContainerInstancesPages indicates an expected call of ListContainerInstancesPages
 func (mr *MockECSAPIMockRecorder) ListContainerInstancesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListContainerInstancesPages", reflect.TypeOf((*MockECSAPI)(nil).ListContainerInstancesPages), arg0, arg1)
 }
 
 // ListContainerInstancesPagesWithContext mocks base method
 func (m *MockECSAPI) ListContainerInstancesPagesWithContext(arg0 aws.Context, arg1 *ecs.ListContainerInstancesInput, arg2 func(*ecs.ListContainerInstancesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -1013,12 +1146,14 @@ func (m *MockECSAPI) ListContainerInstancesPagesWithContext(arg0 aws.Context, ar
 
 // ListContainerInstancesPagesWithContext indicates an expected call of ListContainerInstancesPagesWithContext
 func (mr *MockECSAPIMockRecorder) ListContainerInstancesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListContainerInstancesPagesWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListContainerInstancesPagesWithContext), varargs...)
 }
 
 // ListServices mocks base method
 func (m *MockECSAPI) ListServices(arg0 *ecs.ListServicesInput) (*ecs.ListServicesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListServices", arg0)
 	ret0, _ := ret[0].(*ecs.ListServicesOutput)
 	ret1, _ := ret[1].(error)
@@ -1027,11 +1162,13 @@ func (m *MockECSAPI) ListServices(arg0 *ecs.ListServicesInput) (*ecs.ListService
 
 // ListServices indicates an expected call of ListServices
 func (mr *MockECSAPIMockRecorder) ListServices(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServices", reflect.TypeOf((*MockECSAPI)(nil).ListServices), arg0)
 }
 
 // ListServicesWithContext mocks base method
 func (m *MockECSAPI) ListServicesWithContext(arg0 aws.Context, arg1 *ecs.ListServicesInput, arg2 ...request.Option) (*ecs.ListServicesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1044,12 +1181,14 @@ func (m *MockECSAPI) ListServicesWithContext(arg0 aws.Context, arg1 *ecs.ListSer
 
 // ListServicesWithContext indicates an expected call of ListServicesWithContext
 func (mr *MockECSAPIMockRecorder) ListServicesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServicesWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListServicesWithContext), varargs...)
 }
 
 // ListServicesRequest mocks base method
 func (m *MockECSAPI) ListServicesRequest(arg0 *ecs.ListServicesInput) (*request.Request, *ecs.ListServicesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListServicesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.ListServicesOutput)
@@ -1058,11 +1197,13 @@ func (m *MockECSAPI) ListServicesRequest(arg0 *ecs.ListServicesInput) (*request.
 
 // ListServicesRequest indicates an expected call of ListServicesRequest
 func (mr *MockECSAPIMockRecorder) ListServicesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServicesRequest", reflect.TypeOf((*MockECSAPI)(nil).ListServicesRequest), arg0)
 }
 
 // ListServicesPages mocks base method
 func (m *MockECSAPI) ListServicesPages(arg0 *ecs.ListServicesInput, arg1 func(*ecs.ListServicesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListServicesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -1070,11 +1211,13 @@ func (m *MockECSAPI) ListServicesPages(arg0 *ecs.ListServicesInput, arg1 func(*e
 
 // ListServicesPages indicates an expected call of ListServicesPages
 func (mr *MockECSAPIMockRecorder) ListServicesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServicesPages", reflect.TypeOf((*MockECSAPI)(nil).ListServicesPages), arg0, arg1)
 }
 
 // ListServicesPagesWithContext mocks base method
 func (m *MockECSAPI) ListServicesPagesWithContext(arg0 aws.Context, arg1 *ecs.ListServicesInput, arg2 func(*ecs.ListServicesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -1086,12 +1229,14 @@ func (m *MockECSAPI) ListServicesPagesWithContext(arg0 aws.Context, arg1 *ecs.Li
 
 // ListServicesPagesWithContext indicates an expected call of ListServicesPagesWithContext
 func (mr *MockECSAPIMockRecorder) ListServicesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServicesPagesWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListServicesPagesWithContext), varargs...)
 }
 
 // ListTagsForResource mocks base method
 func (m *MockECSAPI) ListTagsForResource(arg0 *ecs.ListTagsForResourceInput) (*ecs.ListTagsForResourceOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListTagsForResource", arg0)
 	ret0, _ := ret[0].(*ecs.ListTagsForResourceOutput)
 	ret1, _ := ret[1].(error)
@@ -1100,11 +1245,13 @@ func (m *MockECSAPI) ListTagsForResource(arg0 *ecs.ListTagsForResourceInput) (*e
 
 // ListTagsForResource indicates an expected call of ListTagsForResource
 func (mr *MockECSAPIMockRecorder) ListTagsForResource(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTagsForResource", reflect.TypeOf((*MockECSAPI)(nil).ListTagsForResource), arg0)
 }
 
 // ListTagsForResourceWithContext mocks base method
 func (m *MockECSAPI) ListTagsForResourceWithContext(arg0 aws.Context, arg1 *ecs.ListTagsForResourceInput, arg2 ...request.Option) (*ecs.ListTagsForResourceOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1117,12 +1264,14 @@ func (m *MockECSAPI) ListTagsForResourceWithContext(arg0 aws.Context, arg1 *ecs.
 
 // ListTagsForResourceWithContext indicates an expected call of ListTagsForResourceWithContext
 func (mr *MockECSAPIMockRecorder) ListTagsForResourceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTagsForResourceWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListTagsForResourceWithContext), varargs...)
 }
 
 // ListTagsForResourceRequest mocks base method
 func (m *MockECSAPI) ListTagsForResourceRequest(arg0 *ecs.ListTagsForResourceInput) (*request.Request, *ecs.ListTagsForResourceOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListTagsForResourceRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.ListTagsForResourceOutput)
@@ -1131,11 +1280,13 @@ func (m *MockECSAPI) ListTagsForResourceRequest(arg0 *ecs.ListTagsForResourceInp
 
 // ListTagsForResourceRequest indicates an expected call of ListTagsForResourceRequest
 func (mr *MockECSAPIMockRecorder) ListTagsForResourceRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTagsForResourceRequest", reflect.TypeOf((*MockECSAPI)(nil).ListTagsForResourceRequest), arg0)
 }
 
 // ListTaskDefinitionFamilies mocks base method
 func (m *MockECSAPI) ListTaskDefinitionFamilies(arg0 *ecs.ListTaskDefinitionFamiliesInput) (*ecs.ListTaskDefinitionFamiliesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListTaskDefinitionFamilies", arg0)
 	ret0, _ := ret[0].(*ecs.ListTaskDefinitionFamiliesOutput)
 	ret1, _ := ret[1].(error)
@@ -1144,11 +1295,13 @@ func (m *MockECSAPI) ListTaskDefinitionFamilies(arg0 *ecs.ListTaskDefinitionFami
 
 // ListTaskDefinitionFamilies indicates an expected call of ListTaskDefinitionFamilies
 func (mr *MockECSAPIMockRecorder) ListTaskDefinitionFamilies(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTaskDefinitionFamilies", reflect.TypeOf((*MockECSAPI)(nil).ListTaskDefinitionFamilies), arg0)
 }
 
 // ListTaskDefinitionFamiliesWithContext mocks base method
 func (m *MockECSAPI) ListTaskDefinitionFamiliesWithContext(arg0 aws.Context, arg1 *ecs.ListTaskDefinitionFamiliesInput, arg2 ...request.Option) (*ecs.ListTaskDefinitionFamiliesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1161,12 +1314,14 @@ func (m *MockECSAPI) ListTaskDefinitionFamiliesWithContext(arg0 aws.Context, arg
 
 // ListTaskDefinitionFamiliesWithContext indicates an expected call of ListTaskDefinitionFamiliesWithContext
 func (mr *MockECSAPIMockRecorder) ListTaskDefinitionFamiliesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTaskDefinitionFamiliesWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListTaskDefinitionFamiliesWithContext), varargs...)
 }
 
 // ListTaskDefinitionFamiliesRequest mocks base method
 func (m *MockECSAPI) ListTaskDefinitionFamiliesRequest(arg0 *ecs.ListTaskDefinitionFamiliesInput) (*request.Request, *ecs.ListTaskDefinitionFamiliesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListTaskDefinitionFamiliesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.ListTaskDefinitionFamiliesOutput)
@@ -1175,11 +1330,13 @@ func (m *MockECSAPI) ListTaskDefinitionFamiliesRequest(arg0 *ecs.ListTaskDefinit
 
 // ListTaskDefinitionFamiliesRequest indicates an expected call of ListTaskDefinitionFamiliesRequest
 func (mr *MockECSAPIMockRecorder) ListTaskDefinitionFamiliesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTaskDefinitionFamiliesRequest", reflect.TypeOf((*MockECSAPI)(nil).ListTaskDefinitionFamiliesRequest), arg0)
 }
 
 // ListTaskDefinitionFamiliesPages mocks base method
 func (m *MockECSAPI) ListTaskDefinitionFamiliesPages(arg0 *ecs.ListTaskDefinitionFamiliesInput, arg1 func(*ecs.ListTaskDefinitionFamiliesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListTaskDefinitionFamiliesPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -1187,11 +1344,13 @@ func (m *MockECSAPI) ListTaskDefinitionFamiliesPages(arg0 *ecs.ListTaskDefinitio
 
 // ListTaskDefinitionFamiliesPages indicates an expected call of ListTaskDefinitionFamiliesPages
 func (mr *MockECSAPIMockRecorder) ListTaskDefinitionFamiliesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTaskDefinitionFamiliesPages", reflect.TypeOf((*MockECSAPI)(nil).ListTaskDefinitionFamiliesPages), arg0, arg1)
 }
 
 // ListTaskDefinitionFamiliesPagesWithContext mocks base method
 func (m *MockECSAPI) ListTaskDefinitionFamiliesPagesWithContext(arg0 aws.Context, arg1 *ecs.ListTaskDefinitionFamiliesInput, arg2 func(*ecs.ListTaskDefinitionFamiliesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -1203,12 +1362,14 @@ func (m *MockECSAPI) ListTaskDefinitionFamiliesPagesWithContext(arg0 aws.Context
 
 // ListTaskDefinitionFamiliesPagesWithContext indicates an expected call of ListTaskDefinitionFamiliesPagesWithContext
 func (mr *MockECSAPIMockRecorder) ListTaskDefinitionFamiliesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTaskDefinitionFamiliesPagesWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListTaskDefinitionFamiliesPagesWithContext), varargs...)
 }
 
 // ListTaskDefinitions mocks base method
 func (m *MockECSAPI) ListTaskDefinitions(arg0 *ecs.ListTaskDefinitionsInput) (*ecs.ListTaskDefinitionsOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListTaskDefinitions", arg0)
 	ret0, _ := ret[0].(*ecs.ListTaskDefinitionsOutput)
 	ret1, _ := ret[1].(error)
@@ -1217,11 +1378,13 @@ func (m *MockECSAPI) ListTaskDefinitions(arg0 *ecs.ListTaskDefinitionsInput) (*e
 
 // ListTaskDefinitions indicates an expected call of ListTaskDefinitions
 func (mr *MockECSAPIMockRecorder) ListTaskDefinitions(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTaskDefinitions", reflect.TypeOf((*MockECSAPI)(nil).ListTaskDefinitions), arg0)
 }
 
 // ListTaskDefinitionsWithContext mocks base method
 func (m *MockECSAPI) ListTaskDefinitionsWithContext(arg0 aws.Context, arg1 *ecs.ListTaskDefinitionsInput, arg2 ...request.Option) (*ecs.ListTaskDefinitionsOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1234,12 +1397,14 @@ func (m *MockECSAPI) ListTaskDefinitionsWithContext(arg0 aws.Context, arg1 *ecs.
 
 // ListTaskDefinitionsWithContext indicates an expected call of ListTaskDefinitionsWithContext
 func (mr *MockECSAPIMockRecorder) ListTaskDefinitionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTaskDefinitionsWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListTaskDefinitionsWithContext), varargs...)
 }
 
 // ListTaskDefinitionsRequest mocks base method
 func (m *MockECSAPI) ListTaskDefinitionsRequest(arg0 *ecs.ListTaskDefinitionsInput) (*request.Request, *ecs.ListTaskDefinitionsOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListTaskDefinitionsRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.ListTaskDefinitionsOutput)
@@ -1248,11 +1413,13 @@ func (m *MockECSAPI) ListTaskDefinitionsRequest(arg0 *ecs.ListTaskDefinitionsInp
 
 // ListTaskDefinitionsRequest indicates an expected call of ListTaskDefinitionsRequest
 func (mr *MockECSAPIMockRecorder) ListTaskDefinitionsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTaskDefinitionsRequest", reflect.TypeOf((*MockECSAPI)(nil).ListTaskDefinitionsRequest), arg0)
 }
 
 // ListTaskDefinitionsPages mocks base method
 func (m *MockECSAPI) ListTaskDefinitionsPages(arg0 *ecs.ListTaskDefinitionsInput, arg1 func(*ecs.ListTaskDefinitionsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListTaskDefinitionsPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -1260,11 +1427,13 @@ func (m *MockECSAPI) ListTaskDefinitionsPages(arg0 *ecs.ListTaskDefinitionsInput
 
 // ListTaskDefinitionsPages indicates an expected call of ListTaskDefinitionsPages
 func (mr *MockECSAPIMockRecorder) ListTaskDefinitionsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTaskDefinitionsPages", reflect.TypeOf((*MockECSAPI)(nil).ListTaskDefinitionsPages), arg0, arg1)
 }
 
 // ListTaskDefinitionsPagesWithContext mocks base method
 func (m *MockECSAPI) ListTaskDefinitionsPagesWithContext(arg0 aws.Context, arg1 *ecs.ListTaskDefinitionsInput, arg2 func(*ecs.ListTaskDefinitionsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -1276,12 +1445,14 @@ func (m *MockECSAPI) ListTaskDefinitionsPagesWithContext(arg0 aws.Context, arg1 
 
 // ListTaskDefinitionsPagesWithContext indicates an expected call of ListTaskDefinitionsPagesWithContext
 func (mr *MockECSAPIMockRecorder) ListTaskDefinitionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTaskDefinitionsPagesWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListTaskDefinitionsPagesWithContext), varargs...)
 }
 
 // ListTasks mocks base method
 func (m *MockECSAPI) ListTasks(arg0 *ecs.ListTasksInput) (*ecs.ListTasksOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListTasks", arg0)
 	ret0, _ := ret[0].(*ecs.ListTasksOutput)
 	ret1, _ := ret[1].(error)
@@ -1290,11 +1461,13 @@ func (m *MockECSAPI) ListTasks(arg0 *ecs.ListTasksInput) (*ecs.ListTasksOutput, 
 
 // ListTasks indicates an expected call of ListTasks
 func (mr *MockECSAPIMockRecorder) ListTasks(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTasks", reflect.TypeOf((*MockECSAPI)(nil).ListTasks), arg0)
 }
 
 // ListTasksWithContext mocks base method
 func (m *MockECSAPI) ListTasksWithContext(arg0 aws.Context, arg1 *ecs.ListTasksInput, arg2 ...request.Option) (*ecs.ListTasksOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1307,12 +1480,14 @@ func (m *MockECSAPI) ListTasksWithContext(arg0 aws.Context, arg1 *ecs.ListTasksI
 
 // ListTasksWithContext indicates an expected call of ListTasksWithContext
 func (mr *MockECSAPIMockRecorder) ListTasksWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTasksWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListTasksWithContext), varargs...)
 }
 
 // ListTasksRequest mocks base method
 func (m *MockECSAPI) ListTasksRequest(arg0 *ecs.ListTasksInput) (*request.Request, *ecs.ListTasksOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListTasksRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.ListTasksOutput)
@@ -1321,11 +1496,13 @@ func (m *MockECSAPI) ListTasksRequest(arg0 *ecs.ListTasksInput) (*request.Reques
 
 // ListTasksRequest indicates an expected call of ListTasksRequest
 func (mr *MockECSAPIMockRecorder) ListTasksRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTasksRequest", reflect.TypeOf((*MockECSAPI)(nil).ListTasksRequest), arg0)
 }
 
 // ListTasksPages mocks base method
 func (m *MockECSAPI) ListTasksPages(arg0 *ecs.ListTasksInput, arg1 func(*ecs.ListTasksOutput, bool) bool) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListTasksPages", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -1333,11 +1510,13 @@ func (m *MockECSAPI) ListTasksPages(arg0 *ecs.ListTasksInput, arg1 func(*ecs.Lis
 
 // ListTasksPages indicates an expected call of ListTasksPages
 func (mr *MockECSAPIMockRecorder) ListTasksPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTasksPages", reflect.TypeOf((*MockECSAPI)(nil).ListTasksPages), arg0, arg1)
 }
 
 // ListTasksPagesWithContext mocks base method
 func (m *MockECSAPI) ListTasksPagesWithContext(arg0 aws.Context, arg1 *ecs.ListTasksInput, arg2 func(*ecs.ListTasksOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
 	for _, a := range arg3 {
 		varargs = append(varargs, a)
@@ -1349,12 +1528,14 @@ func (m *MockECSAPI) ListTasksPagesWithContext(arg0 aws.Context, arg1 *ecs.ListT
 
 // ListTasksPagesWithContext indicates an expected call of ListTasksPagesWithContext
 func (mr *MockECSAPIMockRecorder) ListTasksPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTasksPagesWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListTasksPagesWithContext), varargs...)
 }
 
 // PutAccountSetting mocks base method
 func (m *MockECSAPI) PutAccountSetting(arg0 *ecs.PutAccountSettingInput) (*ecs.PutAccountSettingOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutAccountSetting", arg0)
 	ret0, _ := ret[0].(*ecs.PutAccountSettingOutput)
 	ret1, _ := ret[1].(error)
@@ -1363,11 +1544,13 @@ func (m *MockECSAPI) PutAccountSetting(arg0 *ecs.PutAccountSettingInput) (*ecs.P
 
 // PutAccountSetting indicates an expected call of PutAccountSetting
 func (mr *MockECSAPIMockRecorder) PutAccountSetting(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutAccountSetting", reflect.TypeOf((*MockECSAPI)(nil).PutAccountSetting), arg0)
 }
 
 // PutAccountSettingWithContext mocks base method
 func (m *MockECSAPI) PutAccountSettingWithContext(arg0 aws.Context, arg1 *ecs.PutAccountSettingInput, arg2 ...request.Option) (*ecs.PutAccountSettingOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1380,12 +1563,14 @@ func (m *MockECSAPI) PutAccountSettingWithContext(arg0 aws.Context, arg1 *ecs.Pu
 
 // PutAccountSettingWithContext indicates an expected call of PutAccountSettingWithContext
 func (mr *MockECSAPIMockRecorder) PutAccountSettingWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutAccountSettingWithContext", reflect.TypeOf((*MockECSAPI)(nil).PutAccountSettingWithContext), varargs...)
 }
 
 // PutAccountSettingRequest mocks base method
 func (m *MockECSAPI) PutAccountSettingRequest(arg0 *ecs.PutAccountSettingInput) (*request.Request, *ecs.PutAccountSettingOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutAccountSettingRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.PutAccountSettingOutput)
@@ -1394,11 +1579,13 @@ func (m *MockECSAPI) PutAccountSettingRequest(arg0 *ecs.PutAccountSettingInput) 
 
 // PutAccountSettingRequest indicates an expected call of PutAccountSettingRequest
 func (mr *MockECSAPIMockRecorder) PutAccountSettingRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutAccountSettingRequest", reflect.TypeOf((*MockECSAPI)(nil).PutAccountSettingRequest), arg0)
 }
 
 // PutAccountSettingDefault mocks base method
 func (m *MockECSAPI) PutAccountSettingDefault(arg0 *ecs.PutAccountSettingDefaultInput) (*ecs.PutAccountSettingDefaultOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutAccountSettingDefault", arg0)
 	ret0, _ := ret[0].(*ecs.PutAccountSettingDefaultOutput)
 	ret1, _ := ret[1].(error)
@@ -1407,11 +1594,13 @@ func (m *MockECSAPI) PutAccountSettingDefault(arg0 *ecs.PutAccountSettingDefault
 
 // PutAccountSettingDefault indicates an expected call of PutAccountSettingDefault
 func (mr *MockECSAPIMockRecorder) PutAccountSettingDefault(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutAccountSettingDefault", reflect.TypeOf((*MockECSAPI)(nil).PutAccountSettingDefault), arg0)
 }
 
 // PutAccountSettingDefaultWithContext mocks base method
 func (m *MockECSAPI) PutAccountSettingDefaultWithContext(arg0 aws.Context, arg1 *ecs.PutAccountSettingDefaultInput, arg2 ...request.Option) (*ecs.PutAccountSettingDefaultOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1424,12 +1613,14 @@ func (m *MockECSAPI) PutAccountSettingDefaultWithContext(arg0 aws.Context, arg1 
 
 // PutAccountSettingDefaultWithContext indicates an expected call of PutAccountSettingDefaultWithContext
 func (mr *MockECSAPIMockRecorder) PutAccountSettingDefaultWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutAccountSettingDefaultWithContext", reflect.TypeOf((*MockECSAPI)(nil).PutAccountSettingDefaultWithContext), varargs...)
 }
 
 // PutAccountSettingDefaultRequest mocks base method
 func (m *MockECSAPI) PutAccountSettingDefaultRequest(arg0 *ecs.PutAccountSettingDefaultInput) (*request.Request, *ecs.PutAccountSettingDefaultOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutAccountSettingDefaultRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.PutAccountSettingDefaultOutput)
@@ -1438,11 +1629,13 @@ func (m *MockECSAPI) PutAccountSettingDefaultRequest(arg0 *ecs.PutAccountSetting
 
 // PutAccountSettingDefaultRequest indicates an expected call of PutAccountSettingDefaultRequest
 func (mr *MockECSAPIMockRecorder) PutAccountSettingDefaultRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutAccountSettingDefaultRequest", reflect.TypeOf((*MockECSAPI)(nil).PutAccountSettingDefaultRequest), arg0)
 }
 
 // PutAttributes mocks base method
 func (m *MockECSAPI) PutAttributes(arg0 *ecs.PutAttributesInput) (*ecs.PutAttributesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutAttributes", arg0)
 	ret0, _ := ret[0].(*ecs.PutAttributesOutput)
 	ret1, _ := ret[1].(error)
@@ -1451,11 +1644,13 @@ func (m *MockECSAPI) PutAttributes(arg0 *ecs.PutAttributesInput) (*ecs.PutAttrib
 
 // PutAttributes indicates an expected call of PutAttributes
 func (mr *MockECSAPIMockRecorder) PutAttributes(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutAttributes", reflect.TypeOf((*MockECSAPI)(nil).PutAttributes), arg0)
 }
 
 // PutAttributesWithContext mocks base method
 func (m *MockECSAPI) PutAttributesWithContext(arg0 aws.Context, arg1 *ecs.PutAttributesInput, arg2 ...request.Option) (*ecs.PutAttributesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1468,12 +1663,14 @@ func (m *MockECSAPI) PutAttributesWithContext(arg0 aws.Context, arg1 *ecs.PutAtt
 
 // PutAttributesWithContext indicates an expected call of PutAttributesWithContext
 func (mr *MockECSAPIMockRecorder) PutAttributesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutAttributesWithContext", reflect.TypeOf((*MockECSAPI)(nil).PutAttributesWithContext), varargs...)
 }
 
 // PutAttributesRequest mocks base method
 func (m *MockECSAPI) PutAttributesRequest(arg0 *ecs.PutAttributesInput) (*request.Request, *ecs.PutAttributesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutAttributesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.PutAttributesOutput)
@@ -1482,11 +1679,13 @@ func (m *MockECSAPI) PutAttributesRequest(arg0 *ecs.PutAttributesInput) (*reques
 
 // PutAttributesRequest indicates an expected call of PutAttributesRequest
 func (mr *MockECSAPIMockRecorder) PutAttributesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutAttributesRequest", reflect.TypeOf((*MockECSAPI)(nil).PutAttributesRequest), arg0)
 }
 
 // RegisterContainerInstance mocks base method
 func (m *MockECSAPI) RegisterContainerInstance(arg0 *ecs.RegisterContainerInstanceInput) (*ecs.RegisterContainerInstanceOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RegisterContainerInstance", arg0)
 	ret0, _ := ret[0].(*ecs.RegisterContainerInstanceOutput)
 	ret1, _ := ret[1].(error)
@@ -1495,11 +1694,13 @@ func (m *MockECSAPI) RegisterContainerInstance(arg0 *ecs.RegisterContainerInstan
 
 // RegisterContainerInstance indicates an expected call of RegisterContainerInstance
 func (mr *MockECSAPIMockRecorder) RegisterContainerInstance(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterContainerInstance", reflect.TypeOf((*MockECSAPI)(nil).RegisterContainerInstance), arg0)
 }
 
 // RegisterContainerInstanceWithContext mocks base method
 func (m *MockECSAPI) RegisterContainerInstanceWithContext(arg0 aws.Context, arg1 *ecs.RegisterContainerInstanceInput, arg2 ...request.Option) (*ecs.RegisterContainerInstanceOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1512,12 +1713,14 @@ func (m *MockECSAPI) RegisterContainerInstanceWithContext(arg0 aws.Context, arg1
 
 // RegisterContainerInstanceWithContext indicates an expected call of RegisterContainerInstanceWithContext
 func (mr *MockECSAPIMockRecorder) RegisterContainerInstanceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterContainerInstanceWithContext", reflect.TypeOf((*MockECSAPI)(nil).RegisterContainerInstanceWithContext), varargs...)
 }
 
 // RegisterContainerInstanceRequest mocks base method
 func (m *MockECSAPI) RegisterContainerInstanceRequest(arg0 *ecs.RegisterContainerInstanceInput) (*request.Request, *ecs.RegisterContainerInstanceOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RegisterContainerInstanceRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.RegisterContainerInstanceOutput)
@@ -1526,11 +1729,13 @@ func (m *MockECSAPI) RegisterContainerInstanceRequest(arg0 *ecs.RegisterContaine
 
 // RegisterContainerInstanceRequest indicates an expected call of RegisterContainerInstanceRequest
 func (mr *MockECSAPIMockRecorder) RegisterContainerInstanceRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterContainerInstanceRequest", reflect.TypeOf((*MockECSAPI)(nil).RegisterContainerInstanceRequest), arg0)
 }
 
 // RegisterTaskDefinition mocks base method
 func (m *MockECSAPI) RegisterTaskDefinition(arg0 *ecs.RegisterTaskDefinitionInput) (*ecs.RegisterTaskDefinitionOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RegisterTaskDefinition", arg0)
 	ret0, _ := ret[0].(*ecs.RegisterTaskDefinitionOutput)
 	ret1, _ := ret[1].(error)
@@ -1539,11 +1744,13 @@ func (m *MockECSAPI) RegisterTaskDefinition(arg0 *ecs.RegisterTaskDefinitionInpu
 
 // RegisterTaskDefinition indicates an expected call of RegisterTaskDefinition
 func (mr *MockECSAPIMockRecorder) RegisterTaskDefinition(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterTaskDefinition", reflect.TypeOf((*MockECSAPI)(nil).RegisterTaskDefinition), arg0)
 }
 
 // RegisterTaskDefinitionWithContext mocks base method
 func (m *MockECSAPI) RegisterTaskDefinitionWithContext(arg0 aws.Context, arg1 *ecs.RegisterTaskDefinitionInput, arg2 ...request.Option) (*ecs.RegisterTaskDefinitionOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1556,12 +1763,14 @@ func (m *MockECSAPI) RegisterTaskDefinitionWithContext(arg0 aws.Context, arg1 *e
 
 // RegisterTaskDefinitionWithContext indicates an expected call of RegisterTaskDefinitionWithContext
 func (mr *MockECSAPIMockRecorder) RegisterTaskDefinitionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterTaskDefinitionWithContext", reflect.TypeOf((*MockECSAPI)(nil).RegisterTaskDefinitionWithContext), varargs...)
 }
 
 // RegisterTaskDefinitionRequest mocks base method
 func (m *MockECSAPI) RegisterTaskDefinitionRequest(arg0 *ecs.RegisterTaskDefinitionInput) (*request.Request, *ecs.RegisterTaskDefinitionOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RegisterTaskDefinitionRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.RegisterTaskDefinitionOutput)
@@ -1570,11 +1779,13 @@ func (m *MockECSAPI) RegisterTaskDefinitionRequest(arg0 *ecs.RegisterTaskDefinit
 
 // RegisterTaskDefinitionRequest indicates an expected call of RegisterTaskDefinitionRequest
 func (mr *MockECSAPIMockRecorder) RegisterTaskDefinitionRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterTaskDefinitionRequest", reflect.TypeOf((*MockECSAPI)(nil).RegisterTaskDefinitionRequest), arg0)
 }
 
 // RunTask mocks base method
 func (m *MockECSAPI) RunTask(arg0 *ecs.RunTaskInput) (*ecs.RunTaskOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RunTask", arg0)
 	ret0, _ := ret[0].(*ecs.RunTaskOutput)
 	ret1, _ := ret[1].(error)
@@ -1583,11 +1794,13 @@ func (m *MockECSAPI) RunTask(arg0 *ecs.RunTaskInput) (*ecs.RunTaskOutput, error)
 
 // RunTask indicates an expected call of RunTask
 func (mr *MockECSAPIMockRecorder) RunTask(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RunTask", reflect.TypeOf((*MockECSAPI)(nil).RunTask), arg0)
 }
 
 // RunTaskWithContext mocks base method
 func (m *MockECSAPI) RunTaskWithContext(arg0 aws.Context, arg1 *ecs.RunTaskInput, arg2 ...request.Option) (*ecs.RunTaskOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1600,12 +1813,14 @@ func (m *MockECSAPI) RunTaskWithContext(arg0 aws.Context, arg1 *ecs.RunTaskInput
 
 // RunTaskWithContext indicates an expected call of RunTaskWithContext
 func (mr *MockECSAPIMockRecorder) RunTaskWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RunTaskWithContext", reflect.TypeOf((*MockECSAPI)(nil).RunTaskWithContext), varargs...)
 }
 
 // RunTaskRequest mocks base method
 func (m *MockECSAPI) RunTaskRequest(arg0 *ecs.RunTaskInput) (*request.Request, *ecs.RunTaskOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RunTaskRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.RunTaskOutput)
@@ -1614,11 +1829,13 @@ func (m *MockECSAPI) RunTaskRequest(arg0 *ecs.RunTaskInput) (*request.Request, *
 
 // RunTaskRequest indicates an expected call of RunTaskRequest
 func (mr *MockECSAPIMockRecorder) RunTaskRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RunTaskRequest", reflect.TypeOf((*MockECSAPI)(nil).RunTaskRequest), arg0)
 }
 
 // StartTask mocks base method
 func (m *MockECSAPI) StartTask(arg0 *ecs.StartTaskInput) (*ecs.StartTaskOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "StartTask", arg0)
 	ret0, _ := ret[0].(*ecs.StartTaskOutput)
 	ret1, _ := ret[1].(error)
@@ -1627,11 +1844,13 @@ func (m *MockECSAPI) StartTask(arg0 *ecs.StartTaskInput) (*ecs.StartTaskOutput, 
 
 // StartTask indicates an expected call of StartTask
 func (mr *MockECSAPIMockRecorder) StartTask(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartTask", reflect.TypeOf((*MockECSAPI)(nil).StartTask), arg0)
 }
 
 // StartTaskWithContext mocks base method
 func (m *MockECSAPI) StartTaskWithContext(arg0 aws.Context, arg1 *ecs.StartTaskInput, arg2 ...request.Option) (*ecs.StartTaskOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1644,12 +1863,14 @@ func (m *MockECSAPI) StartTaskWithContext(arg0 aws.Context, arg1 *ecs.StartTaskI
 
 // StartTaskWithContext indicates an expected call of StartTaskWithContext
 func (mr *MockECSAPIMockRecorder) StartTaskWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartTaskWithContext", reflect.TypeOf((*MockECSAPI)(nil).StartTaskWithContext), varargs...)
 }
 
 // StartTaskRequest mocks base method
 func (m *MockECSAPI) StartTaskRequest(arg0 *ecs.StartTaskInput) (*request.Request, *ecs.StartTaskOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "StartTaskRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.StartTaskOutput)
@@ -1658,11 +1879,13 @@ func (m *MockECSAPI) StartTaskRequest(arg0 *ecs.StartTaskInput) (*request.Reques
 
 // StartTaskRequest indicates an expected call of StartTaskRequest
 func (mr *MockECSAPIMockRecorder) StartTaskRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartTaskRequest", reflect.TypeOf((*MockECSAPI)(nil).StartTaskRequest), arg0)
 }
 
 // StopTask mocks base method
 func (m *MockECSAPI) StopTask(arg0 *ecs.StopTaskInput) (*ecs.StopTaskOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "StopTask", arg0)
 	ret0, _ := ret[0].(*ecs.StopTaskOutput)
 	ret1, _ := ret[1].(error)
@@ -1671,11 +1894,13 @@ func (m *MockECSAPI) StopTask(arg0 *ecs.StopTaskInput) (*ecs.StopTaskOutput, err
 
 // StopTask indicates an expected call of StopTask
 func (mr *MockECSAPIMockRecorder) StopTask(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StopTask", reflect.TypeOf((*MockECSAPI)(nil).StopTask), arg0)
 }
 
 // StopTaskWithContext mocks base method
 func (m *MockECSAPI) StopTaskWithContext(arg0 aws.Context, arg1 *ecs.StopTaskInput, arg2 ...request.Option) (*ecs.StopTaskOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1688,12 +1913,14 @@ func (m *MockECSAPI) StopTaskWithContext(arg0 aws.Context, arg1 *ecs.StopTaskInp
 
 // StopTaskWithContext indicates an expected call of StopTaskWithContext
 func (mr *MockECSAPIMockRecorder) StopTaskWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StopTaskWithContext", reflect.TypeOf((*MockECSAPI)(nil).StopTaskWithContext), varargs...)
 }
 
 // StopTaskRequest mocks base method
 func (m *MockECSAPI) StopTaskRequest(arg0 *ecs.StopTaskInput) (*request.Request, *ecs.StopTaskOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "StopTaskRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.StopTaskOutput)
@@ -1702,11 +1929,13 @@ func (m *MockECSAPI) StopTaskRequest(arg0 *ecs.StopTaskInput) (*request.Request,
 
 // StopTaskRequest indicates an expected call of StopTaskRequest
 func (mr *MockECSAPIMockRecorder) StopTaskRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StopTaskRequest", reflect.TypeOf((*MockECSAPI)(nil).StopTaskRequest), arg0)
 }
 
 // SubmitAttachmentStateChanges mocks base method
 func (m *MockECSAPI) SubmitAttachmentStateChanges(arg0 *ecs.SubmitAttachmentStateChangesInput) (*ecs.SubmitAttachmentStateChangesOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SubmitAttachmentStateChanges", arg0)
 	ret0, _ := ret[0].(*ecs.SubmitAttachmentStateChangesOutput)
 	ret1, _ := ret[1].(error)
@@ -1715,11 +1944,13 @@ func (m *MockECSAPI) SubmitAttachmentStateChanges(arg0 *ecs.SubmitAttachmentStat
 
 // SubmitAttachmentStateChanges indicates an expected call of SubmitAttachmentStateChanges
 func (mr *MockECSAPIMockRecorder) SubmitAttachmentStateChanges(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubmitAttachmentStateChanges", reflect.TypeOf((*MockECSAPI)(nil).SubmitAttachmentStateChanges), arg0)
 }
 
 // SubmitAttachmentStateChangesWithContext mocks base method
 func (m *MockECSAPI) SubmitAttachmentStateChangesWithContext(arg0 aws.Context, arg1 *ecs.SubmitAttachmentStateChangesInput, arg2 ...request.Option) (*ecs.SubmitAttachmentStateChangesOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1732,12 +1963,14 @@ func (m *MockECSAPI) SubmitAttachmentStateChangesWithContext(arg0 aws.Context, a
 
 // SubmitAttachmentStateChangesWithContext indicates an expected call of SubmitAttachmentStateChangesWithContext
 func (mr *MockECSAPIMockRecorder) SubmitAttachmentStateChangesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubmitAttachmentStateChangesWithContext", reflect.TypeOf((*MockECSAPI)(nil).SubmitAttachmentStateChangesWithContext), varargs...)
 }
 
 // SubmitAttachmentStateChangesRequest mocks base method
 func (m *MockECSAPI) SubmitAttachmentStateChangesRequest(arg0 *ecs.SubmitAttachmentStateChangesInput) (*request.Request, *ecs.SubmitAttachmentStateChangesOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SubmitAttachmentStateChangesRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.SubmitAttachmentStateChangesOutput)
@@ -1746,11 +1979,13 @@ func (m *MockECSAPI) SubmitAttachmentStateChangesRequest(arg0 *ecs.SubmitAttachm
 
 // SubmitAttachmentStateChangesRequest indicates an expected call of SubmitAttachmentStateChangesRequest
 func (mr *MockECSAPIMockRecorder) SubmitAttachmentStateChangesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubmitAttachmentStateChangesRequest", reflect.TypeOf((*MockECSAPI)(nil).SubmitAttachmentStateChangesRequest), arg0)
 }
 
 // SubmitContainerStateChange mocks base method
 func (m *MockECSAPI) SubmitContainerStateChange(arg0 *ecs.SubmitContainerStateChangeInput) (*ecs.SubmitContainerStateChangeOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SubmitContainerStateChange", arg0)
 	ret0, _ := ret[0].(*ecs.SubmitContainerStateChangeOutput)
 	ret1, _ := ret[1].(error)
@@ -1759,11 +1994,13 @@ func (m *MockECSAPI) SubmitContainerStateChange(arg0 *ecs.SubmitContainerStateCh
 
 // SubmitContainerStateChange indicates an expected call of SubmitContainerStateChange
 func (mr *MockECSAPIMockRecorder) SubmitContainerStateChange(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubmitContainerStateChange", reflect.TypeOf((*MockECSAPI)(nil).SubmitContainerStateChange), arg0)
 }
 
 // SubmitContainerStateChangeWithContext mocks base method
 func (m *MockECSAPI) SubmitContainerStateChangeWithContext(arg0 aws.Context, arg1 *ecs.SubmitContainerStateChangeInput, arg2 ...request.Option) (*ecs.SubmitContainerStateChangeOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1776,12 +2013,14 @@ func (m *MockECSAPI) SubmitContainerStateChangeWithContext(arg0 aws.Context, arg
 
 // SubmitContainerStateChangeWithContext indicates an expected call of SubmitContainerStateChangeWithContext
 func (mr *MockECSAPIMockRecorder) SubmitContainerStateChangeWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubmitContainerStateChangeWithContext", reflect.TypeOf((*MockECSAPI)(nil).SubmitContainerStateChangeWithContext), varargs...)
 }
 
 // SubmitContainerStateChangeRequest mocks base method
 func (m *MockECSAPI) SubmitContainerStateChangeRequest(arg0 *ecs.SubmitContainerStateChangeInput) (*request.Request, *ecs.SubmitContainerStateChangeOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SubmitContainerStateChangeRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.SubmitContainerStateChangeOutput)
@@ -1790,11 +2029,13 @@ func (m *MockECSAPI) SubmitContainerStateChangeRequest(arg0 *ecs.SubmitContainer
 
 // SubmitContainerStateChangeRequest indicates an expected call of SubmitContainerStateChangeRequest
 func (mr *MockECSAPIMockRecorder) SubmitContainerStateChangeRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubmitContainerStateChangeRequest", reflect.TypeOf((*MockECSAPI)(nil).SubmitContainerStateChangeRequest), arg0)
 }
 
 // SubmitTaskStateChange mocks base method
 func (m *MockECSAPI) SubmitTaskStateChange(arg0 *ecs.SubmitTaskStateChangeInput) (*ecs.SubmitTaskStateChangeOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SubmitTaskStateChange", arg0)
 	ret0, _ := ret[0].(*ecs.SubmitTaskStateChangeOutput)
 	ret1, _ := ret[1].(error)
@@ -1803,11 +2044,13 @@ func (m *MockECSAPI) SubmitTaskStateChange(arg0 *ecs.SubmitTaskStateChangeInput)
 
 // SubmitTaskStateChange indicates an expected call of SubmitTaskStateChange
 func (mr *MockECSAPIMockRecorder) SubmitTaskStateChange(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubmitTaskStateChange", reflect.TypeOf((*MockECSAPI)(nil).SubmitTaskStateChange), arg0)
 }
 
 // SubmitTaskStateChangeWithContext mocks base method
 func (m *MockECSAPI) SubmitTaskStateChangeWithContext(arg0 aws.Context, arg1 *ecs.SubmitTaskStateChangeInput, arg2 ...request.Option) (*ecs.SubmitTaskStateChangeOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1820,12 +2063,14 @@ func (m *MockECSAPI) SubmitTaskStateChangeWithContext(arg0 aws.Context, arg1 *ec
 
 // SubmitTaskStateChangeWithContext indicates an expected call of SubmitTaskStateChangeWithContext
 func (mr *MockECSAPIMockRecorder) SubmitTaskStateChangeWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubmitTaskStateChangeWithContext", reflect.TypeOf((*MockECSAPI)(nil).SubmitTaskStateChangeWithContext), varargs...)
 }
 
 // SubmitTaskStateChangeRequest mocks base method
 func (m *MockECSAPI) SubmitTaskStateChangeRequest(arg0 *ecs.SubmitTaskStateChangeInput) (*request.Request, *ecs.SubmitTaskStateChangeOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SubmitTaskStateChangeRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.SubmitTaskStateChangeOutput)
@@ -1834,11 +2079,13 @@ func (m *MockECSAPI) SubmitTaskStateChangeRequest(arg0 *ecs.SubmitTaskStateChang
 
 // SubmitTaskStateChangeRequest indicates an expected call of SubmitTaskStateChangeRequest
 func (mr *MockECSAPIMockRecorder) SubmitTaskStateChangeRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubmitTaskStateChangeRequest", reflect.TypeOf((*MockECSAPI)(nil).SubmitTaskStateChangeRequest), arg0)
 }
 
 // TagResource mocks base method
 func (m *MockECSAPI) TagResource(arg0 *ecs.TagResourceInput) (*ecs.TagResourceOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "TagResource", arg0)
 	ret0, _ := ret[0].(*ecs.TagResourceOutput)
 	ret1, _ := ret[1].(error)
@@ -1847,11 +2094,13 @@ func (m *MockECSAPI) TagResource(arg0 *ecs.TagResourceInput) (*ecs.TagResourceOu
 
 // TagResource indicates an expected call of TagResource
 func (mr *MockECSAPIMockRecorder) TagResource(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TagResource", reflect.TypeOf((*MockECSAPI)(nil).TagResource), arg0)
 }
 
 // TagResourceWithContext mocks base method
 func (m *MockECSAPI) TagResourceWithContext(arg0 aws.Context, arg1 *ecs.TagResourceInput, arg2 ...request.Option) (*ecs.TagResourceOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1864,12 +2113,14 @@ func (m *MockECSAPI) TagResourceWithContext(arg0 aws.Context, arg1 *ecs.TagResou
 
 // TagResourceWithContext indicates an expected call of TagResourceWithContext
 func (mr *MockECSAPIMockRecorder) TagResourceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TagResourceWithContext", reflect.TypeOf((*MockECSAPI)(nil).TagResourceWithContext), varargs...)
 }
 
 // TagResourceRequest mocks base method
 func (m *MockECSAPI) TagResourceRequest(arg0 *ecs.TagResourceInput) (*request.Request, *ecs.TagResourceOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "TagResourceRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.TagResourceOutput)
@@ -1878,11 +2129,13 @@ func (m *MockECSAPI) TagResourceRequest(arg0 *ecs.TagResourceInput) (*request.Re
 
 // TagResourceRequest indicates an expected call of TagResourceRequest
 func (mr *MockECSAPIMockRecorder) TagResourceRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TagResourceRequest", reflect.TypeOf((*MockECSAPI)(nil).TagResourceRequest), arg0)
 }
 
 // UntagResource mocks base method
 func (m *MockECSAPI) UntagResource(arg0 *ecs.UntagResourceInput) (*ecs.UntagResourceOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UntagResource", arg0)
 	ret0, _ := ret[0].(*ecs.UntagResourceOutput)
 	ret1, _ := ret[1].(error)
@@ -1891,11 +2144,13 @@ func (m *MockECSAPI) UntagResource(arg0 *ecs.UntagResourceInput) (*ecs.UntagReso
 
 // UntagResource indicates an expected call of UntagResource
 func (mr *MockECSAPIMockRecorder) UntagResource(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UntagResource", reflect.TypeOf((*MockECSAPI)(nil).UntagResource), arg0)
 }
 
 // UntagResourceWithContext mocks base method
 func (m *MockECSAPI) UntagResourceWithContext(arg0 aws.Context, arg1 *ecs.UntagResourceInput, arg2 ...request.Option) (*ecs.UntagResourceOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1908,12 +2163,14 @@ func (m *MockECSAPI) UntagResourceWithContext(arg0 aws.Context, arg1 *ecs.UntagR
 
 // UntagResourceWithContext indicates an expected call of UntagResourceWithContext
 func (mr *MockECSAPIMockRecorder) UntagResourceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UntagResourceWithContext", reflect.TypeOf((*MockECSAPI)(nil).UntagResourceWithContext), varargs...)
 }
 
 // UntagResourceRequest mocks base method
 func (m *MockECSAPI) UntagResourceRequest(arg0 *ecs.UntagResourceInput) (*request.Request, *ecs.UntagResourceOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UntagResourceRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.UntagResourceOutput)
@@ -1922,11 +2179,13 @@ func (m *MockECSAPI) UntagResourceRequest(arg0 *ecs.UntagResourceInput) (*reques
 
 // UntagResourceRequest indicates an expected call of UntagResourceRequest
 func (mr *MockECSAPIMockRecorder) UntagResourceRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UntagResourceRequest", reflect.TypeOf((*MockECSAPI)(nil).UntagResourceRequest), arg0)
 }
 
 // UpdateContainerAgent mocks base method
 func (m *MockECSAPI) UpdateContainerAgent(arg0 *ecs.UpdateContainerAgentInput) (*ecs.UpdateContainerAgentOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateContainerAgent", arg0)
 	ret0, _ := ret[0].(*ecs.UpdateContainerAgentOutput)
 	ret1, _ := ret[1].(error)
@@ -1935,11 +2194,13 @@ func (m *MockECSAPI) UpdateContainerAgent(arg0 *ecs.UpdateContainerAgentInput) (
 
 // UpdateContainerAgent indicates an expected call of UpdateContainerAgent
 func (mr *MockECSAPIMockRecorder) UpdateContainerAgent(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateContainerAgent", reflect.TypeOf((*MockECSAPI)(nil).UpdateContainerAgent), arg0)
 }
 
 // UpdateContainerAgentWithContext mocks base method
 func (m *MockECSAPI) UpdateContainerAgentWithContext(arg0 aws.Context, arg1 *ecs.UpdateContainerAgentInput, arg2 ...request.Option) (*ecs.UpdateContainerAgentOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1952,12 +2213,14 @@ func (m *MockECSAPI) UpdateContainerAgentWithContext(arg0 aws.Context, arg1 *ecs
 
 // UpdateContainerAgentWithContext indicates an expected call of UpdateContainerAgentWithContext
 func (mr *MockECSAPIMockRecorder) UpdateContainerAgentWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateContainerAgentWithContext", reflect.TypeOf((*MockECSAPI)(nil).UpdateContainerAgentWithContext), varargs...)
 }
 
 // UpdateContainerAgentRequest mocks base method
 func (m *MockECSAPI) UpdateContainerAgentRequest(arg0 *ecs.UpdateContainerAgentInput) (*request.Request, *ecs.UpdateContainerAgentOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateContainerAgentRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.UpdateContainerAgentOutput)
@@ -1966,11 +2229,13 @@ func (m *MockECSAPI) UpdateContainerAgentRequest(arg0 *ecs.UpdateContainerAgentI
 
 // UpdateContainerAgentRequest indicates an expected call of UpdateContainerAgentRequest
 func (mr *MockECSAPIMockRecorder) UpdateContainerAgentRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateContainerAgentRequest", reflect.TypeOf((*MockECSAPI)(nil).UpdateContainerAgentRequest), arg0)
 }
 
 // UpdateContainerInstancesState mocks base method
 func (m *MockECSAPI) UpdateContainerInstancesState(arg0 *ecs.UpdateContainerInstancesStateInput) (*ecs.UpdateContainerInstancesStateOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateContainerInstancesState", arg0)
 	ret0, _ := ret[0].(*ecs.UpdateContainerInstancesStateOutput)
 	ret1, _ := ret[1].(error)
@@ -1979,11 +2244,13 @@ func (m *MockECSAPI) UpdateContainerInstancesState(arg0 *ecs.UpdateContainerInst
 
 // UpdateContainerInstancesState indicates an expected call of UpdateContainerInstancesState
 func (mr *MockECSAPIMockRecorder) UpdateContainerInstancesState(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateContainerInstancesState", reflect.TypeOf((*MockECSAPI)(nil).UpdateContainerInstancesState), arg0)
 }
 
 // UpdateContainerInstancesStateWithContext mocks base method
 func (m *MockECSAPI) UpdateContainerInstancesStateWithContext(arg0 aws.Context, arg1 *ecs.UpdateContainerInstancesStateInput, arg2 ...request.Option) (*ecs.UpdateContainerInstancesStateOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -1996,12 +2263,14 @@ func (m *MockECSAPI) UpdateContainerInstancesStateWithContext(arg0 aws.Context, 
 
 // UpdateContainerInstancesStateWithContext indicates an expected call of UpdateContainerInstancesStateWithContext
 func (mr *MockECSAPIMockRecorder) UpdateContainerInstancesStateWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateContainerInstancesStateWithContext", reflect.TypeOf((*MockECSAPI)(nil).UpdateContainerInstancesStateWithContext), varargs...)
 }
 
 // UpdateContainerInstancesStateRequest mocks base method
 func (m *MockECSAPI) UpdateContainerInstancesStateRequest(arg0 *ecs.UpdateContainerInstancesStateInput) (*request.Request, *ecs.UpdateContainerInstancesStateOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateContainerInstancesStateRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.UpdateContainerInstancesStateOutput)
@@ -2010,11 +2279,13 @@ func (m *MockECSAPI) UpdateContainerInstancesStateRequest(arg0 *ecs.UpdateContai
 
 // UpdateContainerInstancesStateRequest indicates an expected call of UpdateContainerInstancesStateRequest
 func (mr *MockECSAPIMockRecorder) UpdateContainerInstancesStateRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateContainerInstancesStateRequest", reflect.TypeOf((*MockECSAPI)(nil).UpdateContainerInstancesStateRequest), arg0)
 }
 
 // UpdateService mocks base method
 func (m *MockECSAPI) UpdateService(arg0 *ecs.UpdateServiceInput) (*ecs.UpdateServiceOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateService", arg0)
 	ret0, _ := ret[0].(*ecs.UpdateServiceOutput)
 	ret1, _ := ret[1].(error)
@@ -2023,11 +2294,13 @@ func (m *MockECSAPI) UpdateService(arg0 *ecs.UpdateServiceInput) (*ecs.UpdateSer
 
 // UpdateService indicates an expected call of UpdateService
 func (mr *MockECSAPIMockRecorder) UpdateService(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateService", reflect.TypeOf((*MockECSAPI)(nil).UpdateService), arg0)
 }
 
 // UpdateServiceWithContext mocks base method
 func (m *MockECSAPI) UpdateServiceWithContext(arg0 aws.Context, arg1 *ecs.UpdateServiceInput, arg2 ...request.Option) (*ecs.UpdateServiceOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2040,12 +2313,14 @@ func (m *MockECSAPI) UpdateServiceWithContext(arg0 aws.Context, arg1 *ecs.Update
 
 // UpdateServiceWithContext indicates an expected call of UpdateServiceWithContext
 func (mr *MockECSAPIMockRecorder) UpdateServiceWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateServiceWithContext", reflect.TypeOf((*MockECSAPI)(nil).UpdateServiceWithContext), varargs...)
 }
 
 // UpdateServiceRequest mocks base method
 func (m *MockECSAPI) UpdateServiceRequest(arg0 *ecs.UpdateServiceInput) (*request.Request, *ecs.UpdateServiceOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateServiceRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.UpdateServiceOutput)
@@ -2054,11 +2329,13 @@ func (m *MockECSAPI) UpdateServiceRequest(arg0 *ecs.UpdateServiceInput) (*reques
 
 // UpdateServiceRequest indicates an expected call of UpdateServiceRequest
 func (mr *MockECSAPIMockRecorder) UpdateServiceRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateServiceRequest", reflect.TypeOf((*MockECSAPI)(nil).UpdateServiceRequest), arg0)
 }
 
 // UpdateServicePrimaryTaskSet mocks base method
 func (m *MockECSAPI) UpdateServicePrimaryTaskSet(arg0 *ecs.UpdateServicePrimaryTaskSetInput) (*ecs.UpdateServicePrimaryTaskSetOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateServicePrimaryTaskSet", arg0)
 	ret0, _ := ret[0].(*ecs.UpdateServicePrimaryTaskSetOutput)
 	ret1, _ := ret[1].(error)
@@ -2067,11 +2344,13 @@ func (m *MockECSAPI) UpdateServicePrimaryTaskSet(arg0 *ecs.UpdateServicePrimaryT
 
 // UpdateServicePrimaryTaskSet indicates an expected call of UpdateServicePrimaryTaskSet
 func (mr *MockECSAPIMockRecorder) UpdateServicePrimaryTaskSet(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateServicePrimaryTaskSet", reflect.TypeOf((*MockECSAPI)(nil).UpdateServicePrimaryTaskSet), arg0)
 }
 
 // UpdateServicePrimaryTaskSetWithContext mocks base method
 func (m *MockECSAPI) UpdateServicePrimaryTaskSetWithContext(arg0 aws.Context, arg1 *ecs.UpdateServicePrimaryTaskSetInput, arg2 ...request.Option) (*ecs.UpdateServicePrimaryTaskSetOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2084,12 +2363,14 @@ func (m *MockECSAPI) UpdateServicePrimaryTaskSetWithContext(arg0 aws.Context, ar
 
 // UpdateServicePrimaryTaskSetWithContext indicates an expected call of UpdateServicePrimaryTaskSetWithContext
 func (mr *MockECSAPIMockRecorder) UpdateServicePrimaryTaskSetWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateServicePrimaryTaskSetWithContext", reflect.TypeOf((*MockECSAPI)(nil).UpdateServicePrimaryTaskSetWithContext), varargs...)
 }
 
 // UpdateServicePrimaryTaskSetRequest mocks base method
 func (m *MockECSAPI) UpdateServicePrimaryTaskSetRequest(arg0 *ecs.UpdateServicePrimaryTaskSetInput) (*request.Request, *ecs.UpdateServicePrimaryTaskSetOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateServicePrimaryTaskSetRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.UpdateServicePrimaryTaskSetOutput)
@@ -2098,11 +2379,13 @@ func (m *MockECSAPI) UpdateServicePrimaryTaskSetRequest(arg0 *ecs.UpdateServiceP
 
 // UpdateServicePrimaryTaskSetRequest indicates an expected call of UpdateServicePrimaryTaskSetRequest
 func (mr *MockECSAPIMockRecorder) UpdateServicePrimaryTaskSetRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateServicePrimaryTaskSetRequest", reflect.TypeOf((*MockECSAPI)(nil).UpdateServicePrimaryTaskSetRequest), arg0)
 }
 
 // UpdateTaskSet mocks base method
 func (m *MockECSAPI) UpdateTaskSet(arg0 *ecs.UpdateTaskSetInput) (*ecs.UpdateTaskSetOutput, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateTaskSet", arg0)
 	ret0, _ := ret[0].(*ecs.UpdateTaskSetOutput)
 	ret1, _ := ret[1].(error)
@@ -2111,11 +2394,13 @@ func (m *MockECSAPI) UpdateTaskSet(arg0 *ecs.UpdateTaskSetInput) (*ecs.UpdateTas
 
 // UpdateTaskSet indicates an expected call of UpdateTaskSet
 func (mr *MockECSAPIMockRecorder) UpdateTaskSet(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTaskSet", reflect.TypeOf((*MockECSAPI)(nil).UpdateTaskSet), arg0)
 }
 
 // UpdateTaskSetWithContext mocks base method
 func (m *MockECSAPI) UpdateTaskSetWithContext(arg0 aws.Context, arg1 *ecs.UpdateTaskSetInput, arg2 ...request.Option) (*ecs.UpdateTaskSetOutput, error) {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2128,12 +2413,14 @@ func (m *MockECSAPI) UpdateTaskSetWithContext(arg0 aws.Context, arg1 *ecs.Update
 
 // UpdateTaskSetWithContext indicates an expected call of UpdateTaskSetWithContext
 func (mr *MockECSAPIMockRecorder) UpdateTaskSetWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTaskSetWithContext", reflect.TypeOf((*MockECSAPI)(nil).UpdateTaskSetWithContext), varargs...)
 }
 
 // UpdateTaskSetRequest mocks base method
 func (m *MockECSAPI) UpdateTaskSetRequest(arg0 *ecs.UpdateTaskSetInput) (*request.Request, *ecs.UpdateTaskSetOutput) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateTaskSetRequest", arg0)
 	ret0, _ := ret[0].(*request.Request)
 	ret1, _ := ret[1].(*ecs.UpdateTaskSetOutput)
@@ -2142,11 +2429,13 @@ func (m *MockECSAPI) UpdateTaskSetRequest(arg0 *ecs.UpdateTaskSetInput) (*reques
 
 // UpdateTaskSetRequest indicates an expected call of UpdateTaskSetRequest
 func (mr *MockECSAPIMockRecorder) UpdateTaskSetRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTaskSetRequest", reflect.TypeOf((*MockECSAPI)(nil).UpdateTaskSetRequest), arg0)
 }
 
 // WaitUntilServicesInactive mocks base method
 func (m *MockECSAPI) WaitUntilServicesInactive(arg0 *ecs.DescribeServicesInput) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WaitUntilServicesInactive", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -2154,11 +2443,13 @@ func (m *MockECSAPI) WaitUntilServicesInactive(arg0 *ecs.DescribeServicesInput) 
 
 // WaitUntilServicesInactive indicates an expected call of WaitUntilServicesInactive
 func (mr *MockECSAPIMockRecorder) WaitUntilServicesInactive(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilServicesInactive", reflect.TypeOf((*MockECSAPI)(nil).WaitUntilServicesInactive), arg0)
 }
 
 // WaitUntilServicesInactiveWithContext mocks base method
 func (m *MockECSAPI) WaitUntilServicesInactiveWithContext(arg0 aws.Context, arg1 *ecs.DescribeServicesInput, arg2 ...request.WaiterOption) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2170,12 +2461,14 @@ func (m *MockECSAPI) WaitUntilServicesInactiveWithContext(arg0 aws.Context, arg1
 
 // WaitUntilServicesInactiveWithContext indicates an expected call of WaitUntilServicesInactiveWithContext
 func (mr *MockECSAPIMockRecorder) WaitUntilServicesInactiveWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilServicesInactiveWithContext", reflect.TypeOf((*MockECSAPI)(nil).WaitUntilServicesInactiveWithContext), varargs...)
 }
 
 // WaitUntilServicesStable mocks base method
 func (m *MockECSAPI) WaitUntilServicesStable(arg0 *ecs.DescribeServicesInput) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WaitUntilServicesStable", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -2183,11 +2476,13 @@ func (m *MockECSAPI) WaitUntilServicesStable(arg0 *ecs.DescribeServicesInput) er
 
 // WaitUntilServicesStable indicates an expected call of WaitUntilServicesStable
 func (mr *MockECSAPIMockRecorder) WaitUntilServicesStable(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilServicesStable", reflect.TypeOf((*MockECSAPI)(nil).WaitUntilServicesStable), arg0)
 }
 
 // WaitUntilServicesStableWithContext mocks base method
 func (m *MockECSAPI) WaitUntilServicesStableWithContext(arg0 aws.Context, arg1 *ecs.DescribeServicesInput, arg2 ...request.WaiterOption) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2199,12 +2494,14 @@ func (m *MockECSAPI) WaitUntilServicesStableWithContext(arg0 aws.Context, arg1 *
 
 // WaitUntilServicesStableWithContext indicates an expected call of WaitUntilServicesStableWithContext
 func (mr *MockECSAPIMockRecorder) WaitUntilServicesStableWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilServicesStableWithContext", reflect.TypeOf((*MockECSAPI)(nil).WaitUntilServicesStableWithContext), varargs...)
 }
 
 // WaitUntilTasksRunning mocks base method
 func (m *MockECSAPI) WaitUntilTasksRunning(arg0 *ecs.DescribeTasksInput) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WaitUntilTasksRunning", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -2212,11 +2509,13 @@ func (m *MockECSAPI) WaitUntilTasksRunning(arg0 *ecs.DescribeTasksInput) error {
 
 // WaitUntilTasksRunning indicates an expected call of WaitUntilTasksRunning
 func (mr *MockECSAPIMockRecorder) WaitUntilTasksRunning(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilTasksRunning", reflect.TypeOf((*MockECSAPI)(nil).WaitUntilTasksRunning), arg0)
 }
 
 // WaitUntilTasksRunningWithContext mocks base method
 func (m *MockECSAPI) WaitUntilTasksRunningWithContext(arg0 aws.Context, arg1 *ecs.DescribeTasksInput, arg2 ...request.WaiterOption) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2228,12 +2527,14 @@ func (m *MockECSAPI) WaitUntilTasksRunningWithContext(arg0 aws.Context, arg1 *ec
 
 // WaitUntilTasksRunningWithContext indicates an expected call of WaitUntilTasksRunningWithContext
 func (mr *MockECSAPIMockRecorder) WaitUntilTasksRunningWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilTasksRunningWithContext", reflect.TypeOf((*MockECSAPI)(nil).WaitUntilTasksRunningWithContext), varargs...)
 }
 
 // WaitUntilTasksStopped mocks base method
 func (m *MockECSAPI) WaitUntilTasksStopped(arg0 *ecs.DescribeTasksInput) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WaitUntilTasksStopped", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -2241,11 +2542,13 @@ func (m *MockECSAPI) WaitUntilTasksStopped(arg0 *ecs.DescribeTasksInput) error {
 
 // WaitUntilTasksStopped indicates an expected call of WaitUntilTasksStopped
 func (mr *MockECSAPIMockRecorder) WaitUntilTasksStopped(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilTasksStopped", reflect.TypeOf((*MockECSAPI)(nil).WaitUntilTasksStopped), arg0)
 }
 
 // WaitUntilTasksStoppedWithContext mocks base method
 func (m *MockECSAPI) WaitUntilTasksStoppedWithContext(arg0 aws.Context, arg1 *ecs.DescribeTasksInput, arg2 ...request.WaiterOption) error {
+	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {
 		varargs = append(varargs, a)
@@ -2257,6 +2560,7 @@ func (m *MockECSAPI) WaitUntilTasksStoppedWithContext(arg0 aws.Context, arg1 *ec
 
 // WaitUntilTasksStoppedWithContext indicates an expected call of WaitUntilTasksStoppedWithContext
 func (mr *MockECSAPIMockRecorder) WaitUntilTasksStoppedWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilTasksStoppedWithContext", reflect.TypeOf((*MockECSAPI)(nil).WaitUntilTasksStoppedWithContext), varargs...)
 }
