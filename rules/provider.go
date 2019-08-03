@@ -22,7 +22,6 @@ var manualRules = []Rule{
 	awsrules.NewAwsDBInstanceDefaultParameterGroupRule(),
 	awsrules.NewAwsDBInstanceInvalidTypeRule(),
 	awsrules.NewAwsDBInstancePreviousTypeRule(),
-	awsrules.NewAwsDBInstanceReadablePasswordRule(),
 	awsrules.NewAwsElastiCacheClusterDefaultParameterGroupRule(),
 	awsrules.NewAwsElastiCacheClusterInvalidTypeRule(),
 	awsrules.NewAwsElastiCacheClusterPreviousTypeRule(),
