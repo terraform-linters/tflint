@@ -52,7 +52,6 @@ These rules warn of possible errors that can occur at `terraform apply`. Rules m
 These rules suggest to better ways.
 
 - [aws_instance_previous_type](aws_instance_previous_type.md)
-- [aws_instance_default_standard_volume](aws_instance_default_standard_volume.md)
 - [aws_db_instance_previous_type](aws_db_instance_previous_type.md)
 - [aws_db_instance_default_parameter_group](aws_db_instance_default_parameter_group.md)
 - [aws_db_instance_readable_password](aws_db_instance_readable_password.md)
