@@ -11,6 +11,7 @@ import (
 // Options is an option specified by arguments.
 type Options struct {
 	Version      bool     `short:"v" long:"version" description:"Print TFLint version"`
+	Langserver   bool     `long:"langserver" description:"Start language server"`
 	Format       string   `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" default:"default"`
 	Config       string   `short:"c" long:"config" description:"Config file name" value-name:"FILE" default:".tflint.hcl"`
 	IgnoreModule string   `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE1,SOURCE2..."`

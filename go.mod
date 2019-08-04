@@ -15,5 +15,7 @@ require (
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/mattn/go-colorable v0.1.2
 	github.com/mitchellh/go-homedir v1.1.0
+	github.com/sourcegraph/go-lsp v0.0.0-20181119182933-0c7d621186c1
+	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
 	github.com/zclconf/go-cty v1.0.1-0.20190708163926-19588f92a98f
 )

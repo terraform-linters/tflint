@@ -1,17 +1,21 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/fatih/color"
 	flags "github.com/jessevdk/go-flags"
+	"github.com/sourcegraph/jsonrpc2"
 
 	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/langserver"
 	"github.com/wata727/tflint/printer"
 	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/rules"
@@ -89,6 +93,10 @@ func (cli *CLI) Run(args []string) int {
 	}
 	cfg = cfg.Merge(opts.toConfig())
 
+	if opts.Langserver {
+		return cli.startServer(cfg)
+	}
+
 	// Load Terraform's configurations
 	if !cli.testMode {
 		cli.loader, err = tflint.NewLoader(cfg)
@@ -154,6 +162,27 @@ func (cli *CLI) Run(args []string) int {
 	if len(issues) > 0 && !cfg.Force {
 		return ExitCodeIssuesFound
 	}
+
+	return ExitCodeOK
+}
+
+func (cli *CLI) startServer(cfg *tflint.Config) int {
+	log.Println("Starting language server...")
+
+	handler, err := langserver.NewHandler(cfg)
+	if err != nil {
+		cli.printError(fmt.Errorf("Failed to start server: %s", err))
+		return ExitCodeError
+	}
+
+	var connOpt []jsonrpc2.ConnOpt
+	<-jsonrpc2.NewConn(
+		context.Background(),
+		jsonrpc2.NewBufferedStream(langserver.NewConn(os.Stdin, os.Stdout), jsonrpc2.VSCodeObjectCodec{}),
+		handler,
+		connOpt...,
+	).DisconnectNotify()
+	log.Println("Shutting down...")
 
 	return ExitCodeOK
 }
