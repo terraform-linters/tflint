@@ -25,25 +25,32 @@ func (h *handler) textDocumentDidChange(ctx context.Context, conn *jsonrpc2.Conn
 	}
 
 	changedPath := uriToPath(params.TextDocument.URI)
-	if err := os.Chdir(filepath.Dir(changedPath)); err != nil {
+	changedDir := filepath.Dir(changedPath)
+	// FIXME: Do not change dir
+	if err := os.Chdir(changedDir); err != nil {
 		return nil, err
 	}
 
-	loader, err := tflint.NewLoader(h.config)
-	if err != nil {
-		return nil, err
+	if h.workspace == nil || h.workspace.SourceDir != changedDir {
+		ws, err := tflint.LoadWorkspace(h.config, changedDir)
+		if err != nil {
+			return nil, err
+		}
+		h.workspace = ws
+	} else {
+		// FIXME: Handle file deletion
+		h.workspace.Update([]byte(params.ContentChanges[0].Text), changedPath)
 	}
 
-	// FIXME: Inspect the passed configuration file
-	configs, err := loader.LoadConfig(".")
+	configs, err := h.workspace.BuildConfig()
 	if err != nil {
 		return nil, err
 	}
-	annotations, err := loader.LoadAnnotations(".")
+	annotations, err := h.workspace.BuildAnnotations()
 	if err != nil {
 		return nil, err
 	}
-	variables, err := loader.LoadValuesFiles(h.config.Varfile...)
+	variables, err := h.workspace.BuildValuesFiles()
 	if err != nil {
 		return nil, err
 	}
@@ -73,17 +80,15 @@ func (h *handler) textDocumentDidChange(ctx context.Context, conn *jsonrpc2.Conn
 	})
 
 	diags := []lsp.Diagnostic{}
-	for _, issue := range runner.LookupIssues() {
-		if issue.File == filepath.Base(changedPath) {
-			diags = append(diags, lsp.Diagnostic{
-				Message:  issue.Message,
-				Severity: lsp.Error,
-				Range: lsp.Range{
-					Start: lsp.Position{Line: issue.Line - 1, Character: 0},
-					End:   lsp.Position{Line: issue.Line - 1, Character: 100},
-				},
-			})
-		}
+	for _, issue := range runner.LookupIssues(changedPath) {
+		diags = append(diags, lsp.Diagnostic{
+			Message:  issue.Message,
+			Severity: lsp.Error,
+			Range: lsp.Range{
+				Start: lsp.Position{Line: issue.Line - 1, Character: 0},
+				End:   lsp.Position{Line: issue.Line - 1, Character: 100},
+			},
+		})
 	}
 
 	log.Println(fmt.Sprintf("Notify `textDocument/publishDiagnostics` with `%#v`", diags))

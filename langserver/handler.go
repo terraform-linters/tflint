@@ -21,8 +21,9 @@ func NewHandler(config *tflint.Config) (jsonrpc2.Handler, error) {
 }
 
 type handler struct {
-	config *tflint.Config
-	rules  []rules.Rule
+	config    *tflint.Config
+	workspace *tflint.Workspace
+	rules     []rules.Rule
 }
 
 func (h *handler) handle(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (result interface{}, err error) {
