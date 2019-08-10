@@ -9,7 +9,8 @@ resource "aws_eip" "dash-name" {
 }
 
 resource "aws_eip" "no_dash_name" {
-}```
+}
+```
 
 ```
 $ tflint
