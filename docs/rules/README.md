@@ -69,6 +69,7 @@ These rules suggest to better ways.
 
 |Rule|Enabled by default|
 | --- | --- |
+|[terraform_dash_in_resource_name](terraform_dash_in_resource_name.md)||
 |[terraform_documented_outputs](terraform_documented_outputs.md)||
 |[terraform_documented_variables](terraform_documented_variables.md)||
 |[terraform_module_pinned_source](terraform_module_pinned_source.md)|✔|
