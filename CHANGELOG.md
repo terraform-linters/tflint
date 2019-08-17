@@ -1,3 +1,33 @@
+## 0.10.0 (2019-08-17)
+
+### Breaking Changes
+
+- [#361](https://github.com/wata727/tflint/pull/361): Get an AWS session in the same way as Terraform
+  - It will take a region and access keys in the `provider` block written in configuration files into account.
+  - Added support for ECS/CodeBuild task roles and EC2 roles.
+  - There are breaking changes to credential priorities. It affects under the following cases:
+    - If you have a region or access keys in the `provider` block, it prefers them over environment variables and shared credentials.
+    - If there are environment variables and shared credentials, it prefers the environment variables. Previously, it prefers shared credentials.
+
+### Changes
+
+- [#378](https://github.com/wata727/tflint/pull/378): Remove aws_instance_default_standard_volume rule
+- [#379](https://github.com/wata727/tflint/pull/379): Remove aws_db_instance_readable_password rule
+
+### Enhancements
+
+- [#384](https://github.com/wata727/tflint/pull/384): Add terraform_dash_in_resource_name rule ([@kulinacs](https://github.com/kulinacs))
+  - This rule is disabled by default.
+- [#388](https://github.com/wata727/tflint/pull/388): Bump terraform-provider-aws from v2.20.0 to v2.24.0
+  - Added `me-south-1` as a valid region in `aws_route53_health_check_invalid_cloudwatch_alarm_region` rule and `aws_route53_zone_association_invalid_vpc_region` rule.
+  - Added `capacityOptimized` as a valid strategy in `aws_spot_fleet_request_invalid_allocation_strategy` rule.
+
+### Chores
+
+- [#387](https://github.com/wata727/tflint/pull/387): Bump github.com/google/go-cmp from 0.3.0 to 0.3.1
+- [#389](https://github.com/wata727/tflint/pull/389): Add Terraform compatibility badge
+- [#390](https://github.com/wata727/tflint/pull/390): Remove legacy module walkers
+
 ## 0.9.3 (2019-08-02)
 
 ### Enhancements
