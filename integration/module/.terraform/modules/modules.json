@@ -1,1 +1,1 @@
-{"Modules":[{"Source":"./module","Key":"1.instances;./module","Version":"","Dir":".terraform/modules/50cc94607bbbeefd1fdfb162d13f9811","Root":""}]}
+{"Modules":[{"Key":"1.instances;./module","Source":"./module","Dir":".terraform/modules/50cc94607bbbeefd1fdfb162d13f9811"},{"Key":"","Source":"","Dir":"."},{"Key":"instances","Source":"./module","Dir":"module"}]}
