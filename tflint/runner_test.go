@@ -1056,7 +1056,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 			Type:        cty.DynamicPseudoType,
 			ParsingMode: configs.VariableParseLiteral,
 			DeclRange: hcl.Range{
-				Filename: filepath.Join(".terraform", "modules", "07be448a6067a2bba065bff4beea229d", "module.tf"),
+				Filename: filepath.Join("module", "module.tf"),
 				Start:    hcl.Pos{Line: 1, Column: 1},
 				End:      hcl.Pos{Line: 1, Column: 20},
 			},
@@ -1067,7 +1067,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 			Type:        cty.DynamicPseudoType,
 			ParsingMode: configs.VariableParseLiteral,
 			DeclRange: hcl.Range{
-				Filename: filepath.Join(".terraform", "modules", "07be448a6067a2bba065bff4beea229d", "module.tf"),
+				Filename: filepath.Join("module", "module.tf"),
 				Start:    hcl.Pos{Line: 4, Column: 1},
 				End:      hcl.Pos{Line: 4, Column: 22},
 			},
@@ -1078,7 +1078,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 			Type:        cty.DynamicPseudoType,
 			ParsingMode: configs.VariableParseLiteral,
 			DeclRange: hcl.Range{
-				Filename: filepath.Join(".terraform", "modules", "07be448a6067a2bba065bff4beea229d", "module.tf"),
+				Filename: filepath.Join("module", "module.tf"),
 				Start:    hcl.Pos{Line: 5, Column: 1},
 				End:      hcl.Pos{Line: 5, Column: 19},
 			},
@@ -1104,7 +1104,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 			Type:        cty.DynamicPseudoType,
 			ParsingMode: configs.VariableParseLiteral,
 			DeclRange: hcl.Range{
-				Filename: filepath.Join(".terraform", "modules", "a8d8930bc3c2ae53bf6e3bbcb3083d7b", "resource.tf"),
+				Filename: filepath.Join("module", "module1", "resource.tf"),
 				Start:    hcl.Pos{Line: 1, Column: 1},
 				End:      hcl.Pos{Line: 1, Column: 20},
 			},
@@ -1115,7 +1115,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 			Type:        cty.DynamicPseudoType,
 			ParsingMode: configs.VariableParseLiteral,
 			DeclRange: hcl.Range{
-				Filename: filepath.Join(".terraform", "modules", "a8d8930bc3c2ae53bf6e3bbcb3083d7b", "resource.tf"),
+				Filename: filepath.Join("module", "module1", "resource.tf"),
 				Start:    hcl.Pos{Line: 4, Column: 1},
 				End:      hcl.Pos{Line: 4, Column: 22},
 			},
@@ -1126,7 +1126,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 			Type:        cty.DynamicPseudoType,
 			ParsingMode: configs.VariableParseLiteral,
 			DeclRange: hcl.Range{
-				Filename: filepath.Join(".terraform", "modules", "a8d8930bc3c2ae53bf6e3bbcb3083d7b", "resource.tf"),
+				Filename: filepath.Join("module", "module1", "resource.tf"),
 				Start:    hcl.Pos{Line: 5, Column: 1},
 				End:      hcl.Pos{Line: 5, Column: 19},
 			},
