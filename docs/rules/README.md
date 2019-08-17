@@ -54,7 +54,6 @@ These rules suggest to better ways.
 - [aws_instance_previous_type](aws_instance_previous_type.md)
 - [aws_db_instance_previous_type](aws_db_instance_previous_type.md)
 - [aws_db_instance_default_parameter_group](aws_db_instance_default_parameter_group.md)
-- [aws_db_instance_readable_password](aws_db_instance_readable_password.md)
 - [aws_elasticache_cluster_previous_type](aws_elasticache_cluster_previous_type.md)
 - [aws_elasticache_cluster_default_parameter_group](aws_elasticache_cluster_default_parameter_group.md)
 
