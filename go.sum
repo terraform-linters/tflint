@@ -142,6 +142,8 @@ github.com/grpc-ecosystem/grpc-gateway v1.5.0/go.mod h1:RSKVYQBd5MCa4OVpNdGskqpg
 github.com/grpc-ecosystem/grpc-gateway v1.5.1/go.mod h1:RSKVYQBd5MCa4OVpNdGskqpgL2+G+NZTnrVHpWWfpdw=
 github.com/hashicorp/aws-sdk-go-base v0.2.0 h1:5bjZnWCvQg9Im5CHZr9t90IaFC4uvVlMl2fTh23IoCk=
 github.com/hashicorp/aws-sdk-go-base v0.2.0/go.mod h1:ZIWACGGi0N7a4DZbf15yuE1JQORmWLtBcVM6F5SXNFU=
+github.com/hashicorp/aws-sdk-go-base v0.3.0 h1:CPWKWCuOwpIFNsy8FUI9IT2QI7mGwgVPc4hrXW9I4L4=
+github.com/hashicorp/aws-sdk-go-base v0.3.0/go.mod h1:ZIWACGGi0N7a4DZbf15yuE1JQORmWLtBcVM6F5SXNFU=
 github.com/hashicorp/consul v0.0.0-20171026175957-610f3c86a089 h1:1eDpXAxTh0iPv+1kc9/gfSI2pxRERDsTk/lNGolwHn8=
 github.com/hashicorp/consul v0.0.0-20171026175957-610f3c86a089/go.mod h1:mFrjN1mfidgJfYP1xrJCF+AfRhr6Eaqhb2+sfyn/OOI=
 github.com/hashicorp/errwrap v0.0.0-20180715044906-d6c0cd880357/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brvKWEqk/Jc4=

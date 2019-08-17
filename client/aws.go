@@ -1,11 +1,10 @@
 package client
 
 import (
+	"errors"
 	"log"
+	"strings"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/ec2/ec2iface"
 	"github.com/aws/aws-sdk-go/service/ecs"
@@ -20,6 +19,10 @@ import (
 	"github.com/aws/aws-sdk-go/service/iam/iamiface"
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/aws/aws-sdk-go/service/rds/rdsiface"
+	awsbase "github.com/hashicorp/aws-sdk-go-base"
+	"github.com/hashicorp/hcl2/gohcl"
+	"github.com/hashicorp/hcl2/hcl"
+	"github.com/hashicorp/terraform/configs"
 	homedir "github.com/mitchellh/go-homedir"
 )
 
@@ -52,13 +55,28 @@ type AwsCredentials struct {
 	Region    string
 }
 
+type awsProvider struct {
+	AccessKey     string `hcl:"access_key,optional"`
+	SecretKey     string `hcl:"secret_key,optional"`
+	Profile       string `hcl:"profile,optional"`
+	CredsFilename string `hcl:"shared_credentials_file,optional"`
+	Region        string `hcl:"region,optional"`
+
+	Remain hcl.Body `hcl:",remain"`
+}
+
 // NewAwsClient returns new AwsClient with configured session
-func NewAwsClient(creds AwsCredentials) (*AwsClient, error) {
+func NewAwsClient(provider *configs.Provider, creds AwsCredentials) (*AwsClient, error) {
 	log.Print("[INFO] Initialize AWS Client")
 
-	s, err := newAwsSession(creds)
+	config, err := getBaseConfig(provider, creds)
 	if err != nil {
 		return nil, err
+	}
+
+	s, err := awsbase.GetSession(config)
+	if err != nil {
+		return nil, formatBaseConfigError(err)
 	}
 
 	return &AwsClient{
@@ -72,44 +90,65 @@ func NewAwsClient(creds AwsCredentials) (*AwsClient, error) {
 	}, nil
 }
 
-// newAwsSession returns a session necessary for initialization of the AWS SDK
-func newAwsSession(creds AwsCredentials) (*session.Session, error) {
-	s := session.New()
+func getBaseConfig(provider *configs.Provider, creds AwsCredentials) (*awsbase.Config, error) {
+	base := &awsbase.Config{}
 
-	if creds.Region != "" {
-		log.Printf("[INFO] Set AWS region: %s", creds.Region)
-		s = session.New(&aws.Config{
-			Region: aws.String(creds.Region),
-		})
-	}
-	if creds.Profile != "" && creds.Region != "" {
-		var credsFile string
-		var err error
-		if creds.CredsFile != "" {
-			credsFile, err = homedir.Expand(creds.CredsFile)
-			if err != nil {
-				return nil, err
-			}
-		} else {
-			credsFile, err = homedir.Expand("~/.aws/credentials")
-			if err != nil {
-				// Maybe this is bug
-				panic(err)
-			}
+	if provider != nil {
+		pc, err := decodeProviderConfig(provider)
+		if err != nil {
+			return base, err
 		}
-		log.Printf("[INFO] Set AWS shared credentials: %s", credsFile)
-		s = session.New(&aws.Config{
-			Credentials: credentials.NewSharedCredentials(credsFile, creds.Profile),
-			Region:      aws.String(creds.Region),
-		})
-	}
-	if creds.AccessKey != "" && creds.SecretKey != "" && creds.Region != "" {
-		log.Printf("[INFO] Set AWS static credentials")
-		s = session.New(&aws.Config{
-			Credentials: credentials.NewStaticCredentials(creds.AccessKey, creds.SecretKey, ""),
-			Region:      aws.String(creds.Region),
-		})
+
+		base = &awsbase.Config{
+			AccessKey: pc.AccessKey,
+			Profile:   pc.Profile,
+			Region:    pc.Region,
+			SecretKey: pc.SecretKey,
+		}
+
+		path, err := homedir.Expand(pc.CredsFilename)
+		if err != nil {
+			return base, err
+		}
+		base.CredsFilename = path
 	}
 
-	return s, nil
+	if creds.AccessKey != "" {
+		base.AccessKey = creds.AccessKey
+	}
+	if creds.CredsFile != "" {
+		path, err := homedir.Expand(creds.CredsFile)
+		if err != nil {
+			return base, err
+		}
+		base.CredsFilename = path
+	}
+	if creds.Profile != "" {
+		base.Profile = creds.Profile
+	}
+	if creds.Region != "" {
+		base.Region = creds.Region
+	}
+	if creds.SecretKey != "" {
+		base.SecretKey = creds.SecretKey
+	}
+
+	return base, nil
+}
+
+func decodeProviderConfig(provider *configs.Provider) (awsProvider, error) {
+	var config awsProvider
+	diags := gohcl.DecodeBody(provider.Config, nil, &config)
+	if diags.HasErrors() {
+		return config, diags
+	}
+	return config, nil
+}
+
+// @see https://github.com/hashicorp/aws-sdk-go-base/blob/v0.3.0/session.go#L87
+func formatBaseConfigError(err error) error {
+	if strings.Contains(err.Error(), "No valid credential sources found for AWS Provider") {
+		return errors.New("No valid credential sources found")
+	}
+	return err
 }
