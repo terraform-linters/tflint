@@ -25,6 +25,7 @@ func NewAwsSpotFleetRequestInvalidAllocationStrategyRule() *AwsSpotFleetRequestI
 		enum: []string{
 			"lowestPrice",
 			"diversified",
+			"capacityOptimized",
 		},
 	}
 }
