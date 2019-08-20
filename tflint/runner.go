@@ -50,20 +50,10 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, vari
 	}
 	log.Printf("[INFO] Initialize new runner for %s", path)
 
-	awsClient := &client.AwsClient{}
-	var err error
-	if c.DeepCheck {
-		// FIXME: Alias providers are not considered
-		awsClient, err = client.NewAwsClient(cfg.Module.ProviderConfigs["aws"], c.AwsCredentials)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return &Runner{
+	runner := &Runner{
 		TFConfig:  cfg,
 		Issues:    []*issue.Issue{},
-		AwsClient: awsClient,
+		AwsClient: &client.AwsClient{},
 
 		ctx: terraform.BuiltinEvalContext{
 			Evaluator: &terraform.Evaluator{
@@ -77,7 +67,31 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, vari
 		},
 		annotations: ants,
 		config:      c,
-	}, nil
+	}
+
+	// Initialize client for the root runner
+	if c.DeepCheck && cfg.Path.IsRoot() {
+		// FIXME: Alias providers are not considered
+		providerConfig, err := NewProviderConfig(
+			cfg.Module.ProviderConfigs["aws"],
+			runner,
+			client.AwsProviderBlockSchema,
+		)
+		if err != nil {
+			return nil, err
+		}
+		creds, err := client.ConvertToCredentials(providerConfig)
+		if err != nil {
+			return nil, err
+		}
+
+		runner.AwsClient, err = client.NewAwsClient(c.AwsCredentials.Merge(creds))
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return runner, nil
 }
 
 // NewModuleRunners returns new TFLint runners for child modules

@@ -20,9 +20,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/aws/aws-sdk-go/service/rds/rdsiface"
 	awsbase "github.com/hashicorp/aws-sdk-go-base"
-	"github.com/hashicorp/hcl2/gohcl"
 	"github.com/hashicorp/hcl2/hcl"
-	"github.com/hashicorp/terraform/configs"
 	homedir "github.com/mitchellh/go-homedir"
 )
 
@@ -55,21 +53,26 @@ type AwsCredentials struct {
 	Region    string
 }
 
-type awsProvider struct {
-	AccessKey     string `hcl:"access_key,optional"`
-	SecretKey     string `hcl:"secret_key,optional"`
-	Profile       string `hcl:"profile,optional"`
-	CredsFilename string `hcl:"shared_credentials_file,optional"`
-	Region        string `hcl:"region,optional"`
+// AwsProviderBlockSchema is a schema of `aws` provider block
+var AwsProviderBlockSchema = &hcl.BodySchema{
+	Attributes: []hcl.AttributeSchema{
+		{Name: "access_key"},
+		{Name: "secret_key"},
+		{Name: "profile"},
+		{Name: "shared_credentials_file"},
+		{Name: "region"},
+	},
+}
 
-	Remain hcl.Body `hcl:",remain"`
+type providerResource interface {
+	Get(key string) (string, bool, error)
 }
 
 // NewAwsClient returns new AwsClient with configured session
-func NewAwsClient(provider *configs.Provider, creds AwsCredentials) (*AwsClient, error) {
+func NewAwsClient(creds AwsCredentials) (*AwsClient, error) {
 	log.Print("[INFO] Initialize AWS Client")
 
-	config, err := getBaseConfig(provider, creds)
+	config, err := getBaseConfig(creds)
 	if err != nil {
 		return nil, err
 	}
@@ -90,59 +93,86 @@ func NewAwsClient(provider *configs.Provider, creds AwsCredentials) (*AwsClient,
 	}, nil
 }
 
-func getBaseConfig(provider *configs.Provider, creds AwsCredentials) (*awsbase.Config, error) {
-	base := &awsbase.Config{}
+// ConvertToCredentials converts to credentials from the given provider config
+func ConvertToCredentials(providerConfig providerResource) (AwsCredentials, error) {
+	ret := AwsCredentials{}
 
-	if provider != nil {
-		pc, err := decodeProviderConfig(provider)
-		if err != nil {
-			return base, err
-		}
-
-		base = &awsbase.Config{
-			AccessKey: pc.AccessKey,
-			Profile:   pc.Profile,
-			Region:    pc.Region,
-			SecretKey: pc.SecretKey,
-		}
-
-		path, err := homedir.Expand(pc.CredsFilename)
-		if err != nil {
-			return base, err
-		}
-		base.CredsFilename = path
+	accessKey, exists, err := providerConfig.Get("access_key")
+	if err != nil {
+		return ret, err
+	}
+	if exists {
+		ret.AccessKey = accessKey
 	}
 
-	if creds.AccessKey != "" {
-		base.AccessKey = creds.AccessKey
+	secretKey, exists, err := providerConfig.Get("secret_key")
+	if err != nil {
+		return ret, err
 	}
-	if creds.CredsFile != "" {
-		path, err := homedir.Expand(creds.CredsFile)
-		if err != nil {
-			return base, err
-		}
-		base.CredsFilename = path
-	}
-	if creds.Profile != "" {
-		base.Profile = creds.Profile
-	}
-	if creds.Region != "" {
-		base.Region = creds.Region
-	}
-	if creds.SecretKey != "" {
-		base.SecretKey = creds.SecretKey
+	if exists {
+		ret.SecretKey = secretKey
 	}
 
-	return base, nil
+	profile, exists, err := providerConfig.Get("profile")
+	if err != nil {
+		return ret, err
+	}
+	if exists {
+		ret.Profile = profile
+	}
+
+	credsFile, exists, err := providerConfig.Get("shared_credentials_file")
+	if err != nil {
+		return ret, err
+	}
+	if exists {
+		ret.CredsFile = credsFile
+	}
+
+	region, exists, err := providerConfig.Get("region")
+	if err != nil {
+		return ret, err
+	}
+	if exists {
+		ret.Region = region
+	}
+
+	return ret, nil
 }
 
-func decodeProviderConfig(provider *configs.Provider) (awsProvider, error) {
-	var config awsProvider
-	diags := gohcl.DecodeBody(provider.Config, nil, &config)
-	if diags.HasErrors() {
-		return config, diags
+// Merge returns a merged credentials
+func (c AwsCredentials) Merge(other AwsCredentials) AwsCredentials {
+	if other.AccessKey != "" {
+		c.AccessKey = other.AccessKey
 	}
-	return config, nil
+	if other.SecretKey != "" {
+		c.SecretKey = other.SecretKey
+	}
+	if other.Profile != "" {
+		c.Profile = other.Profile
+	}
+	if other.CredsFile != "" {
+		c.CredsFile = other.CredsFile
+	}
+	if other.Region != "" {
+		c.Region = other.Region
+	}
+	return c
+}
+
+func getBaseConfig(creds AwsCredentials) (*awsbase.Config, error) {
+	expandedCredsFile, err := homedir.Expand(creds.CredsFile)
+	if err != nil {
+		return nil, err
+	}
+
+	return &awsbase.Config{
+		AccessKey:     creds.AccessKey,
+		SecretKey:     creds.SecretKey,
+		Profile:       creds.Profile,
+		CredsFilename: expandedCredsFile,
+		Region:        creds.Region,
+	}, nil
 }
 
 // @see https://github.com/hashicorp/aws-sdk-go-base/blob/v0.3.0/session.go#L87
