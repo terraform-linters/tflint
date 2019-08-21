@@ -119,22 +119,7 @@ func (c *Config) Merge(other *Config) *Config {
 		ret.Force = true
 	}
 
-	if other.AwsCredentials.AccessKey != "" {
-		ret.AwsCredentials.AccessKey = other.AwsCredentials.AccessKey
-	}
-	if other.AwsCredentials.SecretKey != "" {
-		ret.AwsCredentials.SecretKey = other.AwsCredentials.SecretKey
-	}
-	if other.AwsCredentials.Profile != "" {
-		ret.AwsCredentials.Profile = other.AwsCredentials.Profile
-	}
-	if other.AwsCredentials.CredsFile != "" {
-		ret.AwsCredentials.CredsFile = other.AwsCredentials.CredsFile
-	}
-	if other.AwsCredentials.Region != "" {
-		ret.AwsCredentials.Region = other.AwsCredentials.Region
-	}
-
+	ret.AwsCredentials = ret.AwsCredentials.Merge(other.AwsCredentials)
 	ret.IgnoreModule = mergeBoolMap(ret.IgnoreModule, other.IgnoreModule)
 	ret.IgnoreRule = mergeBoolMap(ret.IgnoreRule, other.IgnoreRule)
 	ret.Varfile = append(ret.Varfile, other.Varfile...)
