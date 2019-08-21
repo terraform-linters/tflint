@@ -1,3 +1,10 @@
+## 0.10.1 (2019-08-21)
+
+### BugFixes
+
+- [#393](https://github.com/wata727/tflint/pull/393): Eval provider attributes
+  - There is a bug that returned an error when using a variable in the `provider` block attributes.
+
 ## 0.10.0 (2019-08-17)
 
 ### Breaking Changes
