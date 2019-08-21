@@ -22,10 +22,4 @@ clean:
 code: prepare
 	go generate ./...
 
-image:
-	docker build -t wata727/tflint:${VERSION} .
-	docker tag wata727/tflint:${VERSION} wata727/tflint:latest
-	docker push wata727/tflint:${VERSION}
-	docker push wata727/tflint:latest
-
-.PHONY: default prepare test build install release clean code image
+.PHONY: default prepare test build install release clean code
