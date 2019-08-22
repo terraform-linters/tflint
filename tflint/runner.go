@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"path/filepath"
 	"strings"
 	"sync"
 
@@ -31,6 +30,8 @@ type Runner struct {
 	ctx         terraform.BuiltinEvalContext
 	annotations map[string]Annotations
 	config      *Config
+	currentExpr hcl.Expression
+	modVars     map[string]*moduleVariable
 }
 
 // Rule is interface for building the issue
@@ -125,7 +126,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 				Level: ErrorLevel,
 				Message: fmt.Sprintf(
 					"Attribute of module not allowed was found in %s:%d",
-					parent.getFileName(moduleCall.DeclRange.Filename),
+					moduleCall.DeclRange.Filename,
 					moduleCall.DeclRange.Start.Line,
 				),
 				Cause: causeErr,
@@ -134,6 +135,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 			return runners, err
 		}
 
+		modVars := map[string]*moduleVariable{}
 		for varName, rawVar := range cfg.Module.Variables {
 			if attribute, exists := attributes[varName]; exists {
 				if isEvaluable(attribute.Expr) {
@@ -144,7 +146,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 							Level: ErrorLevel,
 							Message: fmt.Sprintf(
 								"Failed to eval an expression in %s:%d",
-								parent.getFileName(attribute.Expr.Range().Filename),
+								attribute.Expr.Range().Filename,
 								attribute.Expr.Range().Start.Line,
 							),
 							Cause: diags.Err(),
@@ -159,14 +161,32 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 					log.Printf("[DEBUG] `%s` has been marked as unknown", varName)
 					rawVar.Default = cty.UnknownVal(cty.DynamicPseudoType)
 				}
+
+				if parent.TFConfig.Path.IsRoot() {
+					modVars[varName] = &moduleVariable{
+						Root:      true,
+						DeclRange: attribute.Expr.Range(),
+					}
+				} else {
+					parentVars := []*moduleVariable{}
+					for _, ref := range listVarRefs(attribute.Expr) {
+						if parentVar, exists := parent.modVars[ref.Name]; exists {
+							parentVars = append(parentVars, parentVar)
+						}
+					}
+					modVars[varName] = &moduleVariable{
+						Parents:   parentVars,
+						DeclRange: attribute.Expr.Range(),
+					}
+				}
 			}
 		}
 
-		// Annotation does not work with children modules
-		runner, err := NewRunner(parent.config, map[string]Annotations{}, cfg)
+		runner, err := NewRunner(parent.config, parent.annotations, cfg)
 		if err != nil {
 			return runners, err
 		}
+		runner.modVars = modVars
 		// Inherit parent's AwsClient
 		runner.AwsClient = parent.AwsClient
 		runners = append(runners, runner)
@@ -190,7 +210,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Level: WarningLevel,
 			Message: fmt.Sprintf(
 				"Unevaluable expression found in %s:%d",
-				r.getFileName(expr.Range().Filename),
+				expr.Range().Filename,
 				expr.Range().Start.Line,
 			),
 		}
@@ -205,7 +225,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Level: ErrorLevel,
 			Message: fmt.Sprintf(
 				"Failed to eval an expression in %s:%d",
-				r.getFileName(expr.Range().Filename),
+				expr.Range().Filename,
 				expr.Range().Start.Line,
 			),
 			Cause: diags.Err(),
@@ -221,7 +241,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 				Level: WarningLevel,
 				Message: fmt.Sprintf(
 					"Unknown value found in %s:%d; Please use environment variables or tfvars to set the value",
-					r.getFileName(expr.Range().Filename),
+					expr.Range().Filename,
 					expr.Range().Start.Line,
 				),
 			}
@@ -235,7 +255,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 				Level: WarningLevel,
 				Message: fmt.Sprintf(
 					"Null value found in %s:%d",
-					r.getFileName(expr.Range().Filename),
+					expr.Range().Filename,
 					expr.Range().Start.Line,
 				),
 			}
@@ -271,7 +291,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Level: ErrorLevel,
 			Message: fmt.Sprintf(
 				"Invalid type expression in %s:%d",
-				r.getFileName(expr.Range().Filename),
+				expr.Range().Filename,
 				expr.Range().Start.Line,
 			),
 			Cause: err,
@@ -287,7 +307,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Level: ErrorLevel,
 			Message: fmt.Sprintf(
 				"Invalid type expression in %s:%d",
-				r.getFileName(expr.Range().Filename),
+				expr.Range().Filename,
 				expr.Range().Start.Line,
 			),
 			Cause: err,
@@ -339,7 +359,9 @@ func (r *Runner) WalkResourceAttributes(resource, attributeName string, walker f
 
 		if attribute, ok := body.Attributes[attributeName]; ok {
 			log.Printf("[DEBUG] Walk `%s` attribute", resource.Type+"."+resource.Name+"."+attributeName)
+			r.currentExpr = attribute.Expr
 			err := walker(attribute)
+			r.currentExpr = nil
 			if err != nil {
 				return err
 			}
@@ -483,16 +505,31 @@ func (r *Runner) EachStringSliceExprs(expr hcl.Expression, proc func(val string,
 
 // EmitIssue builds an issue and accumulates it
 func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range) {
-	issue := &issue.Issue{
-		Detector: rule.Name(),
-		Type:     rule.Type(),
-		Message:  message,
-		Line:     location.Start.Line,
-		File:     r.getFileName(location.Filename),
-		Link:     rule.Link(),
+	if r.TFConfig.Path.IsRoot() {
+		r.emitIssue(&issue.Issue{
+			Detector: rule.Name(),
+			Type:     rule.Type(),
+			Message:  message,
+			Line:     location.Start.Line,
+			File:     location.Filename,
+			Link:     rule.Link(),
+		})
+	} else {
+		for _, modVar := range r.listModuleVars(r.currentExpr) {
+			r.emitIssue(&issue.Issue{
+				Detector: rule.Name(),
+				Type:     rule.Type(),
+				Message:  message,
+				Line:     modVar.DeclRange.Start.Line,
+				File:     modVar.DeclRange.Filename,
+				Link:     rule.Link(),
+			})
+		}
 	}
+}
 
-	if annotations, ok := r.annotations[location.Filename]; ok {
+func (r *Runner) emitIssue(issue *issue.Issue) {
+	if annotations, ok := r.annotations[issue.File]; ok {
 		for _, annotation := range annotations {
 			if annotation.IsAffected(issue) {
 				log.Printf("[INFO] %s:%d (%s) is ignored by %s", issue.File, issue.Line, issue.Detector, annotation.String())
@@ -500,18 +537,17 @@ func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range) {
 			}
 		}
 	}
-
 	r.Issues = append(r.Issues, issue)
 }
 
-// getFileName returns user-friendly file name.
-// It returns a raw path when processing root module.
-// Otherwise, it add the module name as prefix to base file name.
-func (r *Runner) getFileName(raw string) string {
-	if r.TFConfig.Path.IsRoot() {
-		return raw
+func (r *Runner) listModuleVars(expr hcl.Expression) []*moduleVariable {
+	ret := []*moduleVariable{}
+	for _, ref := range listVarRefs(expr) {
+		if modVar, exists := r.modVars[ref.Name]; exists {
+			ret = append(ret, modVar.roots()...)
+		}
 	}
-	return filepath.Join(r.TFConfig.Path.String(), filepath.Base(raw))
+	return ret
 }
 
 // prepareVariableValues prepares Terraform variables from configs, input variables and environment variables.
@@ -548,4 +584,21 @@ func isEvaluable(expr hcl.Expression) bool {
 		}
 	}
 	return true
+}
+
+func listVarRefs(expr hcl.Expression) []addrs.InputVariable {
+	refs, diags := lang.ReferencesInExpr(expr)
+	if diags.HasErrors() {
+		// Maybe this is bug
+		panic(diags.Err())
+	}
+
+	ret := []addrs.InputVariable{}
+	for _, ref := range refs {
+		if varRef, ok := ref.Subject.(addrs.InputVariable); ok {
+			ret = append(ret, varRef)
+		}
+	}
+
+	return ret
 }

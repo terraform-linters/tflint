@@ -1141,6 +1141,105 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 	}
 }
 
+func Test_NewModuleRunners_modVars(t *testing.T) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "nested_module_vars"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	loader, err := NewLoader(moduleConfig())
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+	cfg, err := loader.LoadConfig(".")
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+
+	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	runners, err := NewModuleRunners(runner)
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+
+	if len(runners) != 2 {
+		t.Fatal("This function must return 2 runners because the config has 2 modules")
+	}
+
+	child := runners[0]
+	if child.TFConfig.Path.String() != "module1" {
+		t.Fatalf("Expected child config path name is `module1`, but get `%s`", child.TFConfig.Path.String())
+	}
+
+	expected := map[string]*moduleVariable{
+		"foo": {
+			Root: true,
+			DeclRange: hcl.Range{
+				Filename: "main.tf",
+				Start:    hcl.Pos{Line: 4, Column: 9},
+				End:      hcl.Pos{Line: 4, Column: 14},
+			},
+		},
+		"bar": {
+			Root: true,
+			DeclRange: hcl.Range{
+				Filename: "main.tf",
+				Start:    hcl.Pos{Line: 5, Column: 9},
+				End:      hcl.Pos{Line: 5, Column: 14},
+			},
+		},
+	}
+	opts := []cmp.Option{cmpopts.IgnoreFields(hcl.Pos{}, "Byte")}
+	if !cmp.Equal(expected, child.modVars, opts...) {
+		t.Fatalf("`%s` module variables are unmatched: Diff=%s", child.TFConfig.Path.String(), cmp.Diff(expected, child.modVars, opts...))
+	}
+
+	grandchild := runners[1]
+	if grandchild.TFConfig.Path.String() != "module1.module2" {
+		t.Fatalf("Expected child config path name is `module1.module2`, but get `%s`", grandchild.TFConfig.Path.String())
+	}
+
+	expected = map[string]*moduleVariable{
+		"red": {
+			Root:    false,
+			Parents: []*moduleVariable{expected["foo"], expected["bar"]},
+			DeclRange: hcl.Range{
+				Filename: filepath.Join("module", "main.tf"),
+				Start:    hcl.Pos{Line: 8, Column: 11},
+				End:      hcl.Pos{Line: 8, Column: 34},
+			},
+		},
+		"blue": {
+			Root:    false,
+			Parents: []*moduleVariable{},
+			DeclRange: hcl.Range{
+				Filename: filepath.Join("module", "main.tf"),
+				Start:    hcl.Pos{Line: 9, Column: 11},
+				End:      hcl.Pos{Line: 9, Column: 17},
+			},
+		},
+		"green": {
+			Root:    false,
+			Parents: []*moduleVariable{expected["foo"]},
+			DeclRange: hcl.Range{
+				Filename: filepath.Join("module", "main.tf"),
+				Start:    hcl.Pos{Line: 10, Column: 11},
+				End:      hcl.Pos{Line: 10, Column: 49},
+			},
+		},
+	}
+	opts = []cmp.Option{cmpopts.IgnoreFields(hcl.Pos{}, "Byte")}
+	if !cmp.Equal(expected, grandchild.modVars, opts...) {
+		t.Fatalf("`%s` module variables are unmatched: Diff=%s", grandchild.TFConfig.Path.String(), cmp.Diff(expected, grandchild.modVars, opts...))
+	}
+}
+
 func Test_NewModuleRunners_ignoreModules(t *testing.T) {
 	currentDir, err := os.Getwd()
 	if err != nil {

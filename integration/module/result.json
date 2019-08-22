@@ -3,8 +3,16 @@
     "detector": "aws_instance_invalid_type",
     "type": "ERROR",
     "message": "instance_type is not a valid value",
+    "line": 11,
+    "file": "module.tf",
+    "link": ""
+  },
+  {
+    "detector": "aws_instance_invalid_type",
+    "type": "ERROR",
+    "message": "instance_type is not a valid value",
     "line": 12,
-    "file": "instances/template.tf",
+    "file": "module.tf",
     "link": ""
   }
 ]

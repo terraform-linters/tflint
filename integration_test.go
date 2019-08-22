@@ -47,7 +47,7 @@ func TestIntegration(t *testing.T) {
 		},
 		{
 			Name:    "module",
-			Command: "./tflint --format json --module",
+			Command: "./tflint --format json --module --ignore-module ./ignore_module",
 			Dir:     "module",
 		},
 		{
