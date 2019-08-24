@@ -1,3 +1,24 @@
+## 0.10.2 (2019-08-24)
+
+### Enhancements
+
+- [#404](https://github.com/wata727/tflint/pull/404): Bump terraform-provider-aws from v2.24.0 to v2.25.0
+  - No changes for rules.
+- [#405](https://github.com/wata727/tflint/pull/405): Bump terraform from v0.12.6 to v0.12.7
+  - New functions `regex` and `regexall` are available.
+  - See https://github.com/hashicorp/terraform/releases/tag/v0.12.7
+
+### BugFixes
+
+- [#400](https://github.com/wata727/tflint/pull/400): rule: Fix values for excess_capacity_termination_policy. ([@alzabo](https://github.com/alzabo))
+
+### Chores
+
+- [#394](https://github.com/wata727/tflint/pull/394): Remove image task from Makefile
+- [#397](https://github.com/wata727/tflint/pull/397): Bump github.com/hashicorp/terraform from 0.12.6 to 0.12.7 in /tools
+- [#399](https://github.com/wata727/tflint/pull/399): Release via GitHub Actions
+- [#401](https://github.com/wata727/tflint/pull/401): Manually maintain updated SDK-based validation rules
+
 ## 0.10.1 (2019-08-21)
 
 ### BugFixes
