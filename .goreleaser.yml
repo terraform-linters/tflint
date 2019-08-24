@@ -17,16 +17,20 @@ builds:
       - 386
       - amd64
       - arm
-archive:
-  name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
-  format: zip
-  files:
-    - none*
+archives:
+  - id: zip
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    format: zip
+    files:
+      - none*
+changelog:
+  skip: true
 checksum:
   name_template: 'checksums.txt'
-sign:
-  artifacts: checksum
 release:
-  disable: true
+  github:
+    owner: wata727
+    name: tflint
+  draft: true
 snapshot:
   name_template: "{{ .Tag }}-dev"
