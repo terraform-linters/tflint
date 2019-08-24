@@ -10,9 +10,9 @@ require (
 	github.com/hashicorp/aws-sdk-go-base v0.3.0
 	github.com/hashicorp/go-version v1.2.0
 	github.com/hashicorp/hcl v0.0.0-20180404174102-ef8a98b0bbce // indirect
-	github.com/hashicorp/hcl2 v0.0.0-20190725010614-0c3fe388e450
+	github.com/hashicorp/hcl2 v0.0.0-20190821123243-0c888d1241f6
 	github.com/hashicorp/logutils v1.0.0
-	github.com/hashicorp/terraform v0.12.6
+	github.com/hashicorp/terraform v0.12.7
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/mattn/go-colorable v0.1.2
 	github.com/mitchellh/go-homedir v1.1.0
