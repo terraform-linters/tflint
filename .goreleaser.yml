@@ -2,9 +2,6 @@
 # Make sure to check the documentation at http://goreleaser.com
 env:
   - GO111MODULE=on
-before:
-  hooks:
-    - make code
 builds:
   - goos:
       - linux
