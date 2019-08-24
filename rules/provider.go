@@ -29,6 +29,7 @@ var manualRules = []Rule{
 	awsrules.NewAwsRouteNotSpecifiedTargetRule(),
 	awsrules.NewAwsRouteSpecifiedMultipleTargetsRule(),
 	awsrules.NewAwsS3BucketInvalidACLRule(),
+	awsrules.NewAwsSpotFleetRequestInvalidExcessCapacityTerminationPolicyRule(),
 	terraformrules.NewTerraformDashInResourceNameRule(),
 	terraformrules.NewTerraformDocumentedOutputsRule(),
 	terraformrules.NewTerraformDocumentedVariablesRule(),
