@@ -5,7 +5,7 @@
     "message": "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, or vpc_peering_connection_id.",
     "line": 1,
     "file": "template.tf",
-    "link": "https://github.com/wata727/tflint/blob/v0.10.2/docs/rules/aws_route_not_specified_target.md"
+    "link": "https://github.com/wata727/tflint/blob/v0.10.3/docs/rules/aws_route_not_specified_target.md"
   },
   {
     "detector": "aws_route_specified_multiple_targets",
@@ -13,7 +13,7 @@
     "message": "More than one routing target specified. It must be one.",
     "line": 6,
     "file": "template.tf",
-    "link": "https://github.com/wata727/tflint/blob/v0.10.2/docs/rules/aws_route_specified_multiple_targets.md"
+    "link": "https://github.com/wata727/tflint/blob/v0.10.3/docs/rules/aws_route_specified_multiple_targets.md"
   },
   {
     "detector": "aws_cloudwatch_metric_alarm_invalid_unit",
@@ -29,6 +29,6 @@
     "message": "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, or vpc_peering_connection_id.",
     "line": 27,
     "file": "template.tf",
-    "link": "https://github.com/wata727/tflint/blob/v0.10.2/docs/rules/aws_route_not_specified_target.md"
+    "link": "https://github.com/wata727/tflint/blob/v0.10.3/docs/rules/aws_route_not_specified_target.md"
   }
 ]

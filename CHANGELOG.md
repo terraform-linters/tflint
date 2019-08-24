@@ -1,3 +1,9 @@
+## 0.10.3 (2019-08-24)
+
+### Chores
+
+- [#406](https://github.com/wata727/tflint/pull/406): Remove GoReleaser before hooks
+
 ## 0.10.2 (2019-08-24)
 
 ### Enhancements
