@@ -571,7 +571,6 @@ var modelRules = []Rule{
 	awsmodelrules.NewAwsShieldProtectionInvalidNameRule(),
 	awsmodelrules.NewAwsShieldProtectionInvalidResourceArnRule(),
 	awsmodelrules.NewAwsSpotFleetRequestInvalidAllocationStrategyRule(),
-	awsmodelrules.NewAwsSpotFleetRequestInvalidExcessCapacityTerminationPolicyRule(),
 	awsmodelrules.NewAwsSpotFleetRequestInvalidFleetTypeRule(),
 	awsmodelrules.NewAwsSpotFleetRequestInvalidInstanceInterruptionBehaviourRule(),
 	awsmodelrules.NewAwsSpotInstanceRequestInvalidInstanceInterruptionBehaviourRule(),
