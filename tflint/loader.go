@@ -26,6 +26,7 @@ type AbstractLoader interface {
 	LoadConfig(string) (*configs.Config, error)
 	LoadAnnotations(string) (map[string]Annotations, error)
 	LoadValuesFiles(...string) ([]terraform.InputValues, error)
+	Sources() map[string][]byte
 }
 
 // Loader is a wrapper of Terraform's configload.Loader
@@ -175,6 +176,11 @@ func (l *Loader) LoadValuesFiles(files ...string) ([]terraform.InputValues, erro
 	}
 
 	return values, nil
+}
+
+// Sources returns the source code cache for the underlying parser of this loader
+func (l *Loader) Sources() map[string][]byte {
+	return l.loader.Sources()
 }
 
 // autoLoadValuesFiles returns all files which match *.auto.tfvars present in the current directory

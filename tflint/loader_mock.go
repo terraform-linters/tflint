@@ -82,3 +82,17 @@ func (mr *MockAbstractLoaderMockRecorder) LoadValuesFiles(arg0 ...interface{}) *
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadValuesFiles", reflect.TypeOf((*MockAbstractLoader)(nil).LoadValuesFiles), arg0...)
 }
+
+// Sources mocks base method
+func (m *MockAbstractLoader) Sources() map[string][]byte {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Sources")
+	ret0, _ := ret[0].(map[string][]byte)
+	return ret0
+}
+
+// Sources indicates an expected call of Sources
+func (mr *MockAbstractLoaderMockRecorder) Sources() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Sources", reflect.TypeOf((*MockAbstractLoader)(nil).Sources))
+}
