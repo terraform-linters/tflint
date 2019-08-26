@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsCognitoResourceServerInvalidIdentifierRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsCognitoResourceServerInvalidIdentifierRule(t *testing.T) {
 resource "aws_cognito_resource_server" "foo" {
 	identifier = "	"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_cognito_resource_server_invalid_identifier",
-					Type:     "ERROR",
-					Message:  `identifier does not match valid pattern ^[\x21\x23-\x5B\x5D-\x7E]+$`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsCognitoResourceServerInvalidIdentifierRule(),
+					Message: `identifier does not match valid pattern ^[\x21\x23-\x5B\x5D-\x7E]+$`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_cognito_resource_server" "foo" {
 resource "aws_cognito_resource_server" "foo" {
 	identifier = "https://example.com"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_cognito_resource_server" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsCognitoResourceServerInvalidIdentifierRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

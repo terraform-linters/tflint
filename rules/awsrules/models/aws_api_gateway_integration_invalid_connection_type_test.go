@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsAPIGatewayIntegrationInvalidConnectionTypeRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsAPIGatewayIntegrationInvalidConnectionTypeRule(t *testing.T) {
 resource "aws_api_gateway_integration" "foo" {
 	connection_type = "INTRANET"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_api_gateway_integration_invalid_connection_type",
-					Type:     "ERROR",
-					Message:  `connection_type is not a valid value`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsAPIGatewayIntegrationInvalidConnectionTypeRule(),
+					Message: `connection_type is not a valid value`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_api_gateway_integration" "foo" {
 resource "aws_api_gateway_integration" "foo" {
 	connection_type = "INTERNET"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_api_gateway_integration" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsAPIGatewayIntegrationInvalidConnectionTypeRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsAcmCertificateInvalidCertificateChainRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -55,13 +55,10 @@ hLL+1AMBOhv57k6YDTzYf5adR38023TOrf6NuD9G5s0KeaFM8c7SrBt8BHA6MW9C
 -----END PRIVATE KEY-----
 TEXT
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_acm_certificate_invalid_certificate_chain",
-					Type:     "ERROR",
-					Message:  `certificate_chain does not match valid pattern ^(-{5}BEGIN CERTIFICATE-{5}\x{000D}?\x{000A}([A-Za-z0-9/+]{64}\x{000D}?\x{000A})*[A-Za-z0-9/+]{1,64}={0,2}\x{000D}?\x{000A}-{5}END CERTIFICATE-{5}\x{000D}?\x{000A})*-{5}BEGIN CERTIFICATE-{5}\x{000D}?\x{000A}([A-Za-z0-9/+]{64}\x{000D}?\x{000A})*[A-Za-z0-9/+]{1,64}={0,2}\x{000D}?\x{000A}-{5}END CERTIFICATE-{5}(\x{000D}?\x{000A})?$`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsAcmCertificateInvalidCertificateChainRule(),
+					Message: `certificate_chain does not match valid pattern ^(-{5}BEGIN CERTIFICATE-{5}\x{000D}?\x{000A}([A-Za-z0-9/+]{64}\x{000D}?\x{000A})*[A-Za-z0-9/+]{1,64}={0,2}\x{000D}?\x{000A}-{5}END CERTIFICATE-{5}\x{000D}?\x{000A})*-{5}BEGIN CERTIFICATE-{5}\x{000D}?\x{000A}([A-Za-z0-9/+]{64}\x{000D}?\x{000A})*[A-Za-z0-9/+]{1,64}={0,2}\x{000D}?\x{000A}-{5}END CERTIFICATE-{5}(\x{000D}?\x{000A})?$`,
 				},
 			},
 		},
@@ -98,7 +95,7 @@ pItiSs0DDCCFapxWACouIVY+xPYG8EMUWXz0gK8SAwNHXLRxBtjNWhCGOiSN+ihp
 -----END CERTIFICATE-----
 TEXT
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -149,8 +146,12 @@ TEXT
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsAcmCertificateInvalidCertificateChainRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

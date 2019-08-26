@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsDirectoryServiceConditionalForwarderInvalidDirectoryIDRule(t *testi
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsDirectoryServiceConditionalForwarderInvalidDirectoryIDRule(t *testi
 resource "aws_directory_service_conditional_forwarder" "foo" {
 	directory_id = "1234567890"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_directory_service_conditional_forwarder_invalid_directory_id",
-					Type:     "ERROR",
-					Message:  `directory_id does not match valid pattern ^d-[0-9a-f]{10}$`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsDirectoryServiceConditionalForwarderInvalidDirectoryIDRule(),
+					Message: `directory_id does not match valid pattern ^d-[0-9a-f]{10}$`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_directory_service_conditional_forwarder" "foo" {
 resource "aws_directory_service_conditional_forwarder" "foo" {
 	directory_id = "d-1234567890"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_directory_service_conditional_forwarder" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsDirectoryServiceConditionalForwarderInvalidDirectoryIDRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

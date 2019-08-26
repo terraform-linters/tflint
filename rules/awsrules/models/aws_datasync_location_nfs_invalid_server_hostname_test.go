@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsDatasyncLocationNfsInvalidServerHostnameRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsDatasyncLocationNfsInvalidServerHostnameRule(t *testing.T) {
 resource "aws_datasync_location_nfs" "foo" {
 	server_hostname = "nfs^example^com"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_datasync_location_nfs_invalid_server_hostname",
-					Type:     "ERROR",
-					Message:  `server_hostname does not match valid pattern ^(([a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9\-]*[A-Za-z0-9])$`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsDatasyncLocationNfsInvalidServerHostnameRule(),
+					Message: `server_hostname does not match valid pattern ^(([a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9\-]*[A-Za-z0-9])$`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_datasync_location_nfs" "foo" {
 resource "aws_datasync_location_nfs" "foo" {
 	server_hostname = "nfs.example.com"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_datasync_location_nfs" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsDatasyncLocationNfsInvalidServerHostnameRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

@@ -6,11 +6,11 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -18,7 +18,7 @@ func Test_AwsDBInstanceDefaultParameterGroup(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "default.mysql5.6 is default parameter group",
@@ -26,14 +26,15 @@ func Test_AwsDBInstanceDefaultParameterGroup(t *testing.T) {
 resource "aws_db_instance" "db" {
     parameter_group_name = "default.mysql5.6"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_db_instance_default_parameter_group",
-					Type:     "NOTICE",
-					Message:  "\"default.mysql5.6\" is default parameter group. You cannot edit it.",
-					Line:     3,
-					File:     "resource.tf",
-					Link:     project.ReferenceLink("aws_db_instance_default_parameter_group"),
+					Rule:    NewAwsDBInstanceDefaultParameterGroupRule(),
+					Message: "\"default.mysql5.6\" is default parameter group. You cannot edit it.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 3, Column: 28},
+						End:      hcl.Pos{Line: 3, Column: 46},
+					},
 				},
 			},
 		},
@@ -43,7 +44,7 @@ resource "aws_db_instance" "db" {
 resource "aws_db_instance" "db" {
     parameter_group_name = "application5.6"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +95,12 @@ resource "aws_db_instance" "db" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsDBInstanceDefaultParameterGroupRule{}),
+			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

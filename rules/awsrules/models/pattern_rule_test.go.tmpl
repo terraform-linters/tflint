@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_{{ .RuleNameCC }}Rule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,18 +27,15 @@ func Test_{{ .RuleNameCC }}Rule(t *testing.T) {
 resource "{{ .ResourceType }}" "foo" {
 	{{ .AttributeName }} = {{ .TestNG }}
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "{{ .RuleName }}",
-					Type:     "ERROR",
+					Rule:    New{{ .RuleNameCC }}Rule(),
 {{- if ne .Pattern "" }}
-					Message:  `{{ .AttributeName }} does not match valid pattern {{ .Pattern }}`,
+					Message: `{{ .AttributeName }} does not match valid pattern {{ .Pattern }}`,
 {{- end }}
 {{- if ne (len .Enum) 0 }}
-					Message:  `{{ .AttributeName }} is not a valid value`,
+					Message: `{{ .AttributeName }} is not a valid value`,
 {{- end }}
-					Line:     3,
-					File:     "resource.tf",
 				},
 			},
 		},
@@ -48,7 +45,7 @@ resource "{{ .ResourceType }}" "foo" {
 resource "{{ .ResourceType }}" "foo" {
 	{{ .AttributeName }} = {{ .TestOK }}
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -99,8 +96,12 @@ resource "{{ .ResourceType }}" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported({{ .RuleNameCC }}Rule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

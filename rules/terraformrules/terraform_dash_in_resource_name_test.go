@@ -6,11 +6,11 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -18,21 +18,22 @@ func Test_TerraformDashInResourceNameRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "dash in resource name",
 			Content: `
 resource "aws_eip" "dash-name" {
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_dash_in_resource_name",
-					Type:     issue.NOTICE,
-					Message:  "`dash-name` resource name has a dash",
-					Line:     2,
-					File:     "resources.tf",
-					Link:     project.ReferenceLink("terraform_dash_in_resource_name"),
+					Rule:    NewTerraformDashInResourceNameRule(),
+					Message: "`dash-name` resource name has a dash",
+					Range: hcl.Range{
+						Filename: "resources.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 31},
+					},
 				},
 			},
 		},
@@ -41,7 +42,7 @@ resource "aws_eip" "dash-name" {
 			Content: `
 resource "aws_eip" "no_dash_name" {
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -92,8 +93,9 @@ resource "aws_eip" "no_dash_name" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{cmpopts.IgnoreFields(hcl.Pos{}, "Byte")}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

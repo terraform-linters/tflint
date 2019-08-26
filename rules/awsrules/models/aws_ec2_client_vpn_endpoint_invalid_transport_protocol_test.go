@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsEc2ClientVpnEndpointInvalidTransportProtocolRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsEc2ClientVpnEndpointInvalidTransportProtocolRule(t *testing.T) {
 resource "aws_ec2_client_vpn_endpoint" "foo" {
 	transport_protocol = "http"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_ec2_client_vpn_endpoint_invalid_transport_protocol",
-					Type:     "ERROR",
-					Message:  `transport_protocol is not a valid value`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsEc2ClientVpnEndpointInvalidTransportProtocolRule(),
+					Message: `transport_protocol is not a valid value`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_ec2_client_vpn_endpoint" "foo" {
 resource "aws_ec2_client_vpn_endpoint" "foo" {
 	transport_protocol = "udp"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_ec2_client_vpn_endpoint" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsEc2ClientVpnEndpointInvalidTransportProtocolRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

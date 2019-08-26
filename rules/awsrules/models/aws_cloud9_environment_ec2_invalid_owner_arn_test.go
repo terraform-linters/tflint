@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsCloud9EnvironmentEc2InvalidOwnerArnRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsCloud9EnvironmentEc2InvalidOwnerArnRule(t *testing.T) {
 resource "aws_cloud9_environment_ec2" "foo" {
 	owner_arn = "arn:aws:elasticbeanstalk:us-east-1:123456789012:environment/My App/MyEnvironment"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_cloud9_environment_ec2_invalid_owner_arn",
-					Type:     "ERROR",
-					Message:  `owner_arn does not match valid pattern ^arn:aws:(iam|sts)::\d+:(root|user|federated-user|assumed-role)\/?\S*$`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsCloud9EnvironmentEc2InvalidOwnerArnRule(),
+					Message: `owner_arn does not match valid pattern ^arn:aws:(iam|sts)::\d+:(root|user|federated-user|assumed-role)\/?\S*$`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_cloud9_environment_ec2" "foo" {
 resource "aws_cloud9_environment_ec2" "foo" {
 	owner_arn = "arn:aws:iam::123456789012:user/David"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_cloud9_environment_ec2" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsCloud9EnvironmentEc2InvalidOwnerArnRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

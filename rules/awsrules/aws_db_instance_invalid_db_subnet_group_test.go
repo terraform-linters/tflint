@@ -9,11 +9,12 @@ import (
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/client"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -22,7 +23,7 @@ func Test_AwsDBInstanceInvalidDBSubnetGroup(t *testing.T) {
 		Name     string
 		Content  string
 		Response []*rds.DBSubnetGroup
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "db_subnet_group_name is invalid",
@@ -38,13 +39,15 @@ resource "aws_db_instance" "mysql" {
 					DBSubnetGroupName: aws.String("app-server2"),
 				},
 			},
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_db_instance_invalid_db_subnet_group",
-					Type:     "ERROR",
-					Message:  "\"app-server\" is invalid DB subnet group name.",
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsDBInstanceInvalidDBSubnetGroupRule(),
+					Message: "\"app-server\" is invalid DB subnet group name.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 3, Column: 28},
+						End:      hcl.Pos{Line: 3, Column: 40},
+					},
 				},
 			},
 		},
@@ -65,7 +68,7 @@ resource "aws_db_instance" "mysql" {
 					DBSubnetGroupName: aws.String("app-server"),
 				},
 			},
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -125,8 +128,12 @@ resource "aws_db_instance" "mysql" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsDBInstanceInvalidDBSubnetGroupRule{}),
+			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

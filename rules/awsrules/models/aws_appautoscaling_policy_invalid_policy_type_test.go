@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsAppautoscalingPolicyInvalidPolicyTypeRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsAppautoscalingPolicyInvalidPolicyTypeRule(t *testing.T) {
 resource "aws_appautoscaling_policy" "foo" {
 	policy_type = "StopScaling"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_appautoscaling_policy_invalid_policy_type",
-					Type:     "ERROR",
-					Message:  `policy_type is not a valid value`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsAppautoscalingPolicyInvalidPolicyTypeRule(),
+					Message: `policy_type is not a valid value`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_appautoscaling_policy" "foo" {
 resource "aws_appautoscaling_policy" "foo" {
 	policy_type = "StepScaling"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_appautoscaling_policy" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsAppautoscalingPolicyInvalidPolicyTypeRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

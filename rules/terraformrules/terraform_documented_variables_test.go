@@ -6,11 +6,11 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -18,7 +18,7 @@ func Test_TerraformDocumentedVariablesRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "no description",
@@ -26,14 +26,15 @@ func Test_TerraformDocumentedVariablesRule(t *testing.T) {
 variable "no_description" {
   default = "default"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_documented_variables",
-					Type:     issue.NOTICE,
-					Message:  "`no_description` variable has no description",
-					Line:     2,
-					File:     "variables.tf",
-					Link:     project.ReferenceLink("terraform_documented_variables"),
+					Rule:    NewTerraformDocumentedVariablesRule(),
+					Message: "`no_description` variable has no description",
+					Range: hcl.Range{
+						Filename: "variables.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 26},
+					},
 				},
 			},
 		},
@@ -43,14 +44,15 @@ variable "no_description" {
 variable "empty_description" {
   description = ""
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_documented_variables",
-					Type:     issue.NOTICE,
-					Message:  "`empty_description` variable has no description",
-					Line:     2,
-					File:     "variables.tf",
-					Link:     project.ReferenceLink("terraform_documented_variables"),
+					Rule:    NewTerraformDocumentedVariablesRule(),
+					Message: "`empty_description` variable has no description",
+					Range: hcl.Range{
+						Filename: "variables.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 29},
+					},
 				},
 			},
 		},
@@ -60,7 +62,7 @@ variable "empty_description" {
 variable "with_description" {
   description = "This is description"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -111,8 +113,9 @@ variable "with_description" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{cmpopts.IgnoreFields(hcl.Pos{}, "Byte")}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

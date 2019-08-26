@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsAPIGatewayRestAPIInvalidAPIKeySourceRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsAPIGatewayRestAPIInvalidAPIKeySourceRule(t *testing.T) {
 resource "aws_api_gateway_rest_api" "foo" {
 	api_key_source = "BODY"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_api_gateway_rest_api_invalid_api_key_source",
-					Type:     "ERROR",
-					Message:  `api_key_source is not a valid value`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsAPIGatewayRestAPIInvalidAPIKeySourceRule(),
+					Message: `api_key_source is not a valid value`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_api_gateway_rest_api" "foo" {
 resource "aws_api_gateway_rest_api" "foo" {
 	api_key_source = "AUTHORIZER"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_api_gateway_rest_api" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsAPIGatewayRestAPIInvalidAPIKeySourceRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

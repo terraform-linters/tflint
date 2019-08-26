@@ -11,11 +11,12 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/client"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -81,17 +82,24 @@ resource "aws_launch_configuration" "invalid" {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	expected := issue.Issues{
+	expected := tflint.Issues{
 		{
-			Detector: "aws_launch_configuration_invalid_image_id",
-			Type:     issue.ERROR,
-			Message:  "\"ami-1234abcd\" is invalid image ID.",
-			Line:     3,
-			File:     "instances.tf",
+			Rule:    NewAwsLaunchConfigurationInvalidImageIDRule(),
+			Message: "\"ami-1234abcd\" is invalid image ID.",
+			Range: hcl.Range{
+				Filename: "instances.tf",
+				Start:    hcl.Pos{Line: 3, Column: 13},
+				End:      hcl.Pos{Line: 3, Column: 27},
+			},
 		},
 	}
-	if !cmp.Equal(expected, runner.Issues) {
-		t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(expected, runner.Issues))
+
+	opts := []cmp.Option{
+		cmpopts.IgnoreUnexported(AwsLaunchConfigurationInvalidImageIDRule{}),
+		cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+	}
+	if !cmp.Equal(expected, runner.Issues, opts...) {
+		t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(expected, runner.Issues, opts...))
 	}
 }
 
@@ -161,7 +169,7 @@ resource "aws_launch_configuration" "valid" {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	expected := issue.Issues{}
+	expected := tflint.Issues{}
 	if !cmp.Equal(expected, runner.Issues) {
 		t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(expected, runner.Issues))
 	}
@@ -287,7 +295,7 @@ func Test_AwsLaunchConfigurationInvalidImageID_AMIError(t *testing.T) {
 		Content  string
 		Request  *ec2.DescribeImagesInput
 		Response error
-		Issues   issue.Issues
+		Issues   tflint.Issues
 		Error    bool
 	}{
 		{
@@ -304,13 +312,15 @@ resource "aws_launch_configuration" "not_found" {
 				"The image id '[ami-9ad76sd1]' does not exist",
 				nil,
 			),
-			Issues: issue.Issues{
+			Issues: tflint.Issues{
 				{
-					Detector: "aws_launch_configuration_invalid_image_id",
-					Type:     issue.ERROR,
-					Message:  "\"ami-9ad76sd1\" is invalid image ID.",
-					Line:     3,
-					File:     "instances.tf",
+					Rule:    NewAwsLaunchConfigurationInvalidImageIDRule(),
+					Message: "\"ami-9ad76sd1\" is invalid image ID.",
+					Range: hcl.Range{
+						Filename: "instances.tf",
+						Start:    hcl.Pos{Line: 3, Column: 13},
+						End:      hcl.Pos{Line: 3, Column: 27},
+					},
 				},
 			},
 			Error: false,
@@ -329,13 +339,15 @@ resource "aws_launch_configuration" "malformed" {
 				"Invalid id: \"image-9ad76sd1\" (expecting \"ami-...\")",
 				nil,
 			),
-			Issues: issue.Issues{
+			Issues: tflint.Issues{
 				{
-					Detector: "aws_launch_configuration_invalid_image_id",
-					Type:     issue.ERROR,
-					Message:  "\"image-9ad76sd1\" is invalid image ID.",
-					Line:     3,
-					File:     "instances.tf",
+					Rule:    NewAwsLaunchConfigurationInvalidImageIDRule(),
+					Message: "\"image-9ad76sd1\" is invalid image ID.",
+					Range: hcl.Range{
+						Filename: "instances.tf",
+						Start:    hcl.Pos{Line: 3, Column: 13},
+						End:      hcl.Pos{Line: 3, Column: 29},
+					},
 				},
 			},
 			Error: false,
@@ -354,13 +366,15 @@ resource "aws_launch_configuration" "unavailable" {
 				"The image ID: 'ami-1234567' is no longer available",
 				nil,
 			),
-			Issues: issue.Issues{
+			Issues: tflint.Issues{
 				{
-					Detector: "aws_launch_configuration_invalid_image_id",
-					Type:     issue.ERROR,
-					Message:  "\"ami-1234567\" is invalid image ID.",
-					Line:     3,
-					File:     "instances.tf",
+					Rule:    NewAwsLaunchConfigurationInvalidImageIDRule(),
+					Message: "\"ami-1234567\" is invalid image ID.",
+					Range: hcl.Range{
+						Filename: "instances.tf",
+						Start:    hcl.Pos{Line: 3, Column: 13},
+						End:      hcl.Pos{Line: 3, Column: 26},
+					},
 				},
 			},
 			Error: false,
@@ -424,8 +438,13 @@ resource "aws_launch_configuration" "unavailable" {
 		if err == nil && tc.Error {
 			t.Fatalf("Failed `%s` test: expected to return an error, but nothing occurred", tc.Name)
 		}
-		if !cmp.Equal(tc.Issues, runner.Issues) {
-			t.Fatalf("Failed `%s` test: expected issues are not matched:\n %s\n", tc.Name, cmp.Diff(tc.Issues, runner.Issues))
+
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsLaunchConfigurationInvalidImageIDRule{}),
+			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+		}
+		if !cmp.Equal(tc.Issues, runner.Issues, opts...) {
+			t.Fatalf("Failed `%s` test: expected issues are not matched:\n %s\n", tc.Name, cmp.Diff(tc.Issues, runner.Issues, opts...))
 		}
 	}
 }

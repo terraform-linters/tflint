@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsDmsReplicationTaskInvalidMigrationTypeRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsDmsReplicationTaskInvalidMigrationTypeRule(t *testing.T) {
 resource "aws_dms_replication_task" "foo" {
 	migration_type = "partial-load"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_dms_replication_task_invalid_migration_type",
-					Type:     "ERROR",
-					Message:  `migration_type is not a valid value`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsDmsReplicationTaskInvalidMigrationTypeRule(),
+					Message: `migration_type is not a valid value`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_dms_replication_task" "foo" {
 resource "aws_dms_replication_task" "foo" {
 	migration_type = "full-load"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_dms_replication_task" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsDmsReplicationTaskInvalidMigrationTypeRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsCloudhsmV2ClusterInvalidSourceBackupIdentifierRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsCloudhsmV2ClusterInvalidSourceBackupIdentifierRule(t *testing.T) {
 resource "aws_cloudhsm_v2_cluster" "foo" {
 	source_backup_identifier = "rtq2dwi2gq6"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_cloudhsm_v2_cluster_invalid_source_backup_identifier",
-					Type:     "ERROR",
-					Message:  `source_backup_identifier does not match valid pattern ^backup-[2-7a-zA-Z]{11,16}$`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsCloudhsmV2ClusterInvalidSourceBackupIdentifierRule(),
+					Message: `source_backup_identifier does not match valid pattern ^backup-[2-7a-zA-Z]{11,16}$`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_cloudhsm_v2_cluster" "foo" {
 resource "aws_cloudhsm_v2_cluster" "foo" {
 	source_backup_identifier = "backup-rtq2dwi2gq6"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_cloudhsm_v2_cluster" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsCloudhsmV2ClusterInvalidSourceBackupIdentifierRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

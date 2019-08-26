@@ -9,11 +9,12 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/client"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -22,7 +23,7 @@ func Test_AwsELBInvalidSubnet(t *testing.T) {
 		Name     string
 		Content  string
 		Response []*ec2.Subnet
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "Subnet ID is invalid",
@@ -41,20 +42,24 @@ resource "aws_elb" "balancer" {
 					SubnetId: aws.String("subnet-abcdefgh"),
 				},
 			},
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_elb_invalid_subnet",
-					Type:     "ERROR",
-					Message:  "\"subnet-1234abcd\" is invalid subnet ID.",
-					Line:     4,
-					File:     "resource.tf",
+					Rule:    NewAwsELBInvalidSubnetRule(),
+					Message: "\"subnet-1234abcd\" is invalid subnet ID.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 4, Column: 9},
+						End:      hcl.Pos{Line: 4, Column: 26},
+					},
 				},
 				{
-					Detector: "aws_elb_invalid_subnet",
-					Type:     "ERROR",
-					Message:  "\"subnet-abcd1234\" is invalid subnet ID.",
-					Line:     5,
-					File:     "resource.tf",
+					Rule:    NewAwsELBInvalidSubnetRule(),
+					Message: "\"subnet-abcd1234\" is invalid subnet ID.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 5, Column: 9},
+						End:      hcl.Pos{Line: 5, Column: 26},
+					},
 				},
 			},
 		},
@@ -75,7 +80,7 @@ resource "aws_elb" "balancer" {
 					SubnetId: aws.String("subnet-abcd1234"),
 				},
 			},
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 		{
 			Name: "use list variable",
@@ -95,20 +100,24 @@ resource "aws_elb" "balancer" {
 					SubnetId: aws.String("subnet-abcdefgh"),
 				},
 			},
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_elb_invalid_subnet",
-					Type:     "ERROR",
-					Message:  "\"subnet-1234abcd\" is invalid subnet ID.",
-					Line:     7,
-					File:     "resource.tf",
+					Rule:    NewAwsELBInvalidSubnetRule(),
+					Message: "\"subnet-1234abcd\" is invalid subnet ID.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 7, Column: 15},
+						End:      hcl.Pos{Line: 7, Column: 31},
+					},
 				},
 				{
-					Detector: "aws_elb_invalid_subnet",
-					Type:     "ERROR",
-					Message:  "\"subnet-abcd1234\" is invalid subnet ID.",
-					Line:     7,
-					File:     "resource.tf",
+					Rule:    NewAwsELBInvalidSubnetRule(),
+					Message: "\"subnet-abcd1234\" is invalid subnet ID.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 7, Column: 15},
+						End:      hcl.Pos{Line: 7, Column: 31},
+					},
 				},
 			},
 		},
@@ -170,8 +179,12 @@ resource "aws_elb" "balancer" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsELBInvalidSubnetRule{}),
+			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }
