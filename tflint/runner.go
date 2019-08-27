@@ -513,11 +513,11 @@ func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range) {
 		})
 	} else {
 		for _, modVar := range r.listModuleVars(r.currentExpr) {
-			// TODO: Set caller tree
 			r.emitIssue(&Issue{
 				Rule:    rule,
 				Message: message,
 				Range:   modVar.DeclRange,
+				Callers: append(modVar.callers(), location),
 			})
 		}
 	}

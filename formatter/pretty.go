@@ -47,7 +47,7 @@ func (f *Formatter) printIssueWithSource(issue *tflint.Issue, sources map[string
 		"%s: %s (%s)\n\n",
 		colorSeverity(issue.Rule.Type()), colorBold(issue.Message), issue.Rule.Name(),
 	)
-	fmt.Fprintf(f.Stdout, "   on %s line %d:\n", issue.Range.Filename, issue.Range.Start.Line)
+	fmt.Fprintf(f.Stdout, "  on %s line %d:\n", issue.Range.Filename, issue.Range.Start.Line)
 
 	src := sources[issue.Range.Filename]
 
@@ -81,7 +81,16 @@ func (f *Formatter) printIssueWithSource(issue *tflint.Issue, sources map[string
 		}
 	}
 
-	// TODO: Print rule link
+	if len(issue.Callers) > 0 {
+		fmt.Fprint(f.Stdout, "\nCallers:\n")
+		for _, caller := range issue.Callers {
+			fmt.Fprintf(f.Stdout, "   %s\n", caller)
+		}
+	}
+
+	if issue.Rule.Link() != "" {
+		fmt.Fprintf(f.Stdout, "\nReference: %s\n", issue.Rule.Link())
+	}
 
 	fmt.Fprint(f.Stdout, "\n\n")
 }
