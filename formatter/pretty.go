@@ -43,7 +43,7 @@ func (f *Formatter) printIssueWithSource(issue *tflint.Issue, sources map[string
 	src := sources[issue.Range.Filename]
 
 	if src == nil {
-		fmt.Fprintf(f.Stdout, "   (source code not available)")
+		fmt.Fprintf(f.Stdout, "   (source code not available)\n")
 	} else {
 		sc := hcl.NewRangeScanner(src, issue.Range.Filename, bufio.ScanLines)
 
