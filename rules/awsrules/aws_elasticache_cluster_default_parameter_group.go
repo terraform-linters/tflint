@@ -6,7 +6,6 @@ import (
 	"regexp"
 
 	"github.com/hashicorp/hcl2/hcl"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
@@ -35,9 +34,9 @@ func (r *AwsElastiCacheClusterDefaultParameterGroupRule) Enabled() bool {
 	return true
 }
 
-// Type returns the rule severity
-func (r *AwsElastiCacheClusterDefaultParameterGroupRule) Type() string {
-	return issue.NOTICE
+// Severity returns the rule severity
+func (r *AwsElastiCacheClusterDefaultParameterGroupRule) Severity() string {
+	return tflint.NOTICE
 }
 
 // Link returns the rule reference link

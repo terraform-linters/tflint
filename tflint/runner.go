@@ -36,7 +36,7 @@ type Runner struct {
 // Rule is interface for building the issue
 type Rule interface {
 	Name() string
-	Type() string
+	Severity() string
 	Link() string
 }
 
@@ -505,7 +505,6 @@ func (r *Runner) EachStringSliceExprs(expr hcl.Expression, proc func(val string,
 // EmitIssue builds an issue and accumulates it
 func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range) {
 	if r.TFConfig.Path.IsRoot() {
-		// TODO chnage type to tflint.Issue
 		r.emitIssue(&Issue{
 			Rule:    rule,
 			Message: message,

@@ -31,7 +31,7 @@
           }
         },
         {
-          "filename": "module/template.tf",
+          "filename": "module\\template.tf",
           "start": {
             "line": 15,
             "column": 12
@@ -42,7 +42,7 @@
           }
         },
         {
-          "filename": "module/module/instance.tf",
+          "filename": "module\\module\\instance.tf",
           "start": {
             "line": 9,
             "column": 19
@@ -85,7 +85,7 @@
           }
         },
         {
-          "filename": "module/template.tf",
+          "filename": "module\\template.tf",
           "start": {
             "line": 16,
             "column": 19
@@ -96,7 +96,7 @@
           }
         },
         {
-          "filename": "module/module/instance.tf",
+          "filename": "module\\module\\instance.tf",
           "start": {
             "line": 9,
             "column": 19

@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform/configs"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
@@ -34,9 +33,9 @@ func (r *TerraformModulePinnedSourceRule) Enabled() bool {
 	return true
 }
 
-// Type returns the rule severity
-func (r *TerraformModulePinnedSourceRule) Type() string {
-	return issue.WARNING
+// Severity returns the rule severity
+func (r *TerraformModulePinnedSourceRule) Severity() string {
+	return tflint.WARNING
 }
 
 // Link returns the rule reference link

@@ -17,6 +17,15 @@ type Issue struct {
 // Issues is an alias for the map of Issue
 type Issues []*Issue
 
+const (
+	// ERROR is possible errors
+	ERROR = "Error"
+	// WARNING doesn't cause problem immediately, but not good
+	WARNING = "Warning"
+	// NOTICE is not important, it's mentioned
+	NOTICE = "Notice"
+)
+
 // Sort returns the sorted receiver
 func (issues Issues) Sort() Issues {
 	sort.Slice(issues, func(i, j int) bool {

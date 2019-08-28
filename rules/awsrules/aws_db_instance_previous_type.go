@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/hashicorp/hcl2/hcl"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
@@ -46,9 +45,9 @@ func (r *AwsDBInstancePreviousTypeRule) Enabled() bool {
 	return true
 }
 
-// Type returns the rule severity
-func (r *AwsDBInstancePreviousTypeRule) Type() string {
-	return issue.WARNING
+// Severity returns the rule severity
+func (r *AwsDBInstancePreviousTypeRule) Severity() string {
+	return tflint.WARNING
 }
 
 // Link returns the rule reference link

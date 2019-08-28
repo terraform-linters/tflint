@@ -49,7 +49,7 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 		ret.Issues[idx] = jsonIssue{
 			Rule: jsonRule{
 				Name:     issue.Rule.Name(),
-				Severity: issue.Rule.Type(),
+				Severity: toSeverity(issue.Rule.Severity()),
 				Link:     issue.Rule.Link(),
 			},
 			Message: issue.Message,

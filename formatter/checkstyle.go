@@ -4,7 +4,6 @@ import (
 	"encoding/xml"
 	"fmt"
 
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -34,7 +33,7 @@ func (f *Formatter) checkstylePrint(issues tflint.Issues, tferr *tflint.Error, s
 			Rule:     issue.Rule.Name(),
 			Line:     issue.Range.Start.Line,
 			Column:   issue.Range.Start.Column,
-			Severity: toSeverity(issue.Rule.Type()),
+			Severity: toSeverity(issue.Rule.Severity()),
 			Message:  issue.Message,
 			Link:     issue.Rule.Link(),
 		}
@@ -63,18 +62,5 @@ func (f *Formatter) checkstylePrint(issues tflint.Issues, tferr *tflint.Error, s
 
 	if tferr != nil {
 		f.printErrors(tferr, sources)
-	}
-}
-
-func toSeverity(lintType string) string {
-	switch lintType {
-	case issue.ERROR:
-		return "error"
-	case issue.WARNING:
-		return "warning"
-	case issue.NOTICE:
-		return "info"
-	default:
-		panic(fmt.Errorf("Unexpected lint type: %s", lintType))
 	}
 }

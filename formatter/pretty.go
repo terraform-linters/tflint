@@ -9,7 +9,6 @@ import (
 	"github.com/fatih/color"
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/hcl2/hclparse"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -37,7 +36,7 @@ func (f *Formatter) printIssueWithSource(issue *tflint.Issue, sources map[string
 	fmt.Fprintf(
 		f.Stdout,
 		"%s: %s (%s)\n\n",
-		colorSeverity(issue.Rule.Type()), colorBold(issue.Message), issue.Rule.Name(),
+		colorSeverity(issue.Rule.Severity()), colorBold(issue.Message), issue.Rule.Name(),
 	)
 	fmt.Fprintf(f.Stdout, "  on %s line %d:\n", issue.Range.Filename, issue.Range.Start.Line)
 
@@ -123,11 +122,11 @@ func parseSources(sources map[string][]byte) map[string]*hcl.File {
 
 func colorSeverity(severity string) string {
 	switch severity {
-	case issue.ERROR:
+	case tflint.ERROR:
 		return colorError(severity)
-	case issue.WARNING:
+	case tflint.WARNING:
 		return colorWarning(severity)
-	case issue.NOTICE:
+	case tflint.NOTICE:
 		return colorNotice(severity)
 	default:
 		panic("Unreachable")

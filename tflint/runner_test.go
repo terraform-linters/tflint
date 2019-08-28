@@ -14,7 +14,6 @@ import (
 	"github.com/hashicorp/hcl2/hcl/hclsyntax"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -1985,8 +1984,8 @@ type testRule struct{}
 func (r *testRule) Name() string {
 	return "test_rule"
 }
-func (r *testRule) Type() string {
-	return issue.ERROR
+func (r *testRule) Severity() string {
+	return ERROR
 }
 func (r *testRule) Link() string {
 	return ""

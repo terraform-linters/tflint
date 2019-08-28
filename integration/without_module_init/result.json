@@ -3,7 +3,7 @@
     {
       "rule": {
         "name": "aws_instance_invalid_type",
-        "severity": "ERROR",
+        "severity": "error",
         "link": ""
       },
       "message": "instance_type is not a valid value",

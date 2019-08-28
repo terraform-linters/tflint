@@ -3,7 +3,7 @@
     {
       "rule": {
         "name": "aws_route_not_specified_target",
-        "severity": "ERROR",
+        "severity": "error",
         "link": "https://github.com/wata727/tflint/blob/v0.10.3/docs/rules/aws_route_not_specified_target.md"
       },
       "message": "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, or vpc_peering_connection_id.",
@@ -23,7 +23,7 @@
     {
       "rule": {
         "name": "aws_route_specified_multiple_targets",
-        "severity": "ERROR",
+        "severity": "error",
         "link": "https://github.com/wata727/tflint/blob/v0.10.3/docs/rules/aws_route_specified_multiple_targets.md"
       },
       "message": "More than one routing target specified. It must be one.",
@@ -43,7 +43,7 @@
     {
       "rule": {
         "name": "aws_cloudwatch_metric_alarm_invalid_unit",
-        "severity": "ERROR",
+        "severity": "error",
         "link": ""
       },
       "message": "unit is not a valid value",
@@ -63,7 +63,7 @@
     {
       "rule": {
         "name": "aws_route_not_specified_target",
-        "severity": "ERROR",
+        "severity": "error",
         "link": "https://github.com/wata727/tflint/blob/v0.10.3/docs/rules/aws_route_not_specified_target.md"
       },
       "message": "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, or vpc_peering_connection_id.",

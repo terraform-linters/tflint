@@ -14,7 +14,6 @@ import (
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/rules"
 	"github.com/wata727/tflint/tflint"
@@ -161,11 +160,11 @@ func (r *errorRule) Enabled() bool {
 	return true
 }
 
-func (r *testRule) Type() string {
-	return issue.ERROR
+func (r *testRule) Severity() string {
+	return tflint.ERROR
 }
-func (r *errorRule) Type() string {
-	return issue.ERROR
+func (r *errorRule) Severity() string {
+	return tflint.ERROR
 }
 
 func (r *testRule) Link() string {
