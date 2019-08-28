@@ -13,12 +13,17 @@ resource "aws_route" "foo" {
 }
 ```
 
-```
+```console
 $ tflint
-template.tf
-        ERROR:1 More than one routing target specified. It must be one. (aws_route_specified_multiple_targets)
+1 issue(s) found:
 
-Result: 1 issues  (1 errors , 0 warnings , 0 notices)
+Error: More than one routing target specified. It must be one. (aws_route_specified_multiple_targets)
+
+  on template.tf line 1:
+   1: resource "aws_route" "foo" {
+
+Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/aws_route_specified_multiple_targets.md
+
 ```
 
 ## Why

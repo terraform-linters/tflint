@@ -20,11 +20,24 @@ variable "description" {
 }
 ```
 
-```
+```console
 $ tflint
-variables.tf
-        NOTICE:1 `no_description` variable has no description (terraform_documented_variables)
-        NOTICE:5 `empty_description` variable has no description (terraform_documented_variables)
+2 issue(s) found:
+
+Notice: `no_description` variable has no description (terraform_documented_variables)
+
+  on template.tf line 1:
+   1: variable "no_description" {
+
+Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/terraform_documented_variables.md
+
+Notice: `empty_description` variable has no description (terraform_documented_variables)
+
+  on template.tf line 5:
+   5: variable "empty_description" {
+
+Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/terraform_documented_variables.md
+
 ```
 
 ## Why

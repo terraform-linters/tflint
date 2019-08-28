@@ -83,7 +83,7 @@ func (f *Formatter) printIssueWithSource(issue *tflint.Issue, sources map[string
 		fmt.Fprintf(f.Stdout, "\nReference: %s\n", issue.Rule.Link())
 	}
 
-	fmt.Fprint(f.Stdout, "\n\n")
+	fmt.Fprint(f.Stdout, "\n")
 }
 
 func (f *Formatter) printErrors(err *tflint.Error, sources map[string][]byte) {

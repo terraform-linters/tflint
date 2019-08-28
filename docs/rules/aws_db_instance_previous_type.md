@@ -18,12 +18,17 @@ resource "aws_db_instance" "default" {
 }
 ```
 
-```
+```console
 $ tflint
-template.tf
-        WARNING:5 "db.t1.micro" is previous generation instance type. (aws_db_instance_previous_type)
+1 issue(s) found:
 
-Result: 1 issues  (0 errors , 1 warnings , 0 notices)
+Warning: "db.t1.micro" is previous generation instance type. (aws_db_instance_previous_type)
+
+  on template.tf line 5:
+   5:   instance_class       = "db.t1.micro" // previous generation instance type!
+
+Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/aws_db_instance_previous_type.md
+
 ```
 
 ## Why

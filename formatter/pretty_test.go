@@ -68,7 +68,6 @@ Callers:
 
 Reference: https://github.com
 
-
 `,
 		},
 		{
@@ -92,7 +91,6 @@ Error: test (test_rule)
    (source code not available)
 
 Reference: https://github.com
-
 
 `,
 		},

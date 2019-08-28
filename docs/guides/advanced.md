@@ -4,13 +4,20 @@
 
 When deep checking is enabled, TFLint invokes the provider's API to do a more detailed inspection. For example, find a non-existent IAM profile name etc. You can enable it with the `--deep` option.
 
-```
+```console
 $ tflint --deep
-template.tf
-        ERROR:3 instance_type is not a valid value (aws_instance_invalid_type)
-        ERROR:4 "invalid_profile" is invalid IAM profile name. (aws_instance_invalid_iam_profile)
+2 issue(s) found:
 
-Result: 2 issues  (2 errors , 0 warnings , 0 notices)
+Error: instance_type is not a valid value (aws_instance_invalid_type)
+
+  on template.tf line 3:
+   3:   instance_type        = "t1.2xlarge"
+
+Error: "invalid_profile" is invalid IAM profile name. (aws_instance_invalid_iam_profile)
+
+  on template.tf line 4:
+   4:   iam_instance_profile = "invalid_profile"
+
 ```
 
 In order to enable deep checking, [credentials](credentials.md) are needed.
@@ -28,12 +35,19 @@ module "aws_instance" {
 }
 ```
 
-```
+```console
 $ tflint --module
-aws_instance/main.tf
-        ERROR:6 instance_type is not a valid value (aws_instance_invalid_type)
+1 issue(s) found:
 
-Result: 1 issues  (1 errors , 0 warnings , 0 notices)
+Error: instance_type is not a valid value (aws_instance_invalid_type)
+
+  on template.tf line 5:
+   5:   instance_type = "t1.2xlarge"
+
+Callers:
+   template.tf:5,19-31
+   module/instance.tf:5,19-36
+
 ```
 
 Module inspection is disabled by default. Inspection is enabled by running with the `--module` option. Note that you need to run `terraform init` first because of TFLint loads modules in the same way as Terraform. 
