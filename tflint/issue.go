@@ -44,7 +44,7 @@ func (issues Issues) Sort() Issues {
 	return issues
 }
 
-// MarshalJSON is a method reserved for conversion to JSON
+// MarshalJSON is required to satisfy json.Marshaler interface
 func (i *Issue) MarshalJSON() ([]byte, error) {
 	// Keep JSON structure for the backward compatibility
 	issue := &issue.Issue{

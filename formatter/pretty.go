@@ -29,15 +29,7 @@ func (f *Formatter) prettyPrint(issues tflint.Issues, err *tflint.Error, sources
 	}
 
 	if err != nil {
-		if diags, ok := err.Cause.(hcl.Diagnostics); ok {
-			fmt.Fprintf(f.Stderr, "%s. %d error(s) occurred:\n\n", err.Message, len(diags.Errs()))
-
-			writer := hcl.NewDiagnosticTextWriter(f.Stderr, parseSources(sources), 0, true)
-			writer.WriteDiagnostics(diags)
-		} else {
-			fmt.Fprintf(f.Stderr, "%s. An error occurred:\n\n", err.Message)
-			fmt.Fprintf(f.Stderr, "%s: %s\n\n", colorError("Error"), err.Cause.Error())
-		}
+		f.printErrors(err, sources)
 	}
 }
 
@@ -93,6 +85,18 @@ func (f *Formatter) printIssueWithSource(issue *tflint.Issue, sources map[string
 	}
 
 	fmt.Fprint(f.Stdout, "\n\n")
+}
+
+func (f *Formatter) printErrors(err *tflint.Error, sources map[string][]byte) {
+	if diags, ok := err.Cause.(hcl.Diagnostics); ok {
+		fmt.Fprintf(f.Stderr, "%s. %d error(s) occurred:\n\n", err.Message, len(diags.Errs()))
+
+		writer := hcl.NewDiagnosticTextWriter(f.Stderr, parseSources(sources), 0, true)
+		writer.WriteDiagnostics(diags)
+	} else {
+		fmt.Fprintf(f.Stderr, "%s. An error occurred:\n\n", err.Message)
+		fmt.Fprintf(f.Stderr, "%s: %s\n\n", colorError("Error"), err.Cause.Error())
+	}
 }
 
 func parseSources(sources map[string][]byte) map[string]*hcl.File {

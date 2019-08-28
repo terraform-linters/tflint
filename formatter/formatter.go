@@ -20,7 +20,7 @@ func (f *Formatter) Print(issues tflint.Issues, err *tflint.Error, sources map[s
 	case "json":
 		f.jsonPrint(issues, err)
 	case "checkstyle":
-		panic("undefined")
+		f.checkstylePrint(issues, err, sources)
 	default:
 		f.prettyPrint(issues, err, sources)
 	}
