@@ -9,13 +9,12 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"sort"
 	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/wata727/tflint/cmd"
-	"github.com/wata727/tflint/issue"
+	"github.com/wata727/tflint/formatter"
 )
 
 func TestMain(m *testing.M) {
@@ -94,20 +93,18 @@ func TestIntegration(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		var expectedIssues []*issue.Issue
-		if err := json.Unmarshal(b, &expectedIssues); err != nil {
+		var expected *formatter.JSONOutput
+		if err := json.Unmarshal(b, &expected); err != nil {
 			t.Fatal(err)
 		}
-		sort.Sort(issue.ByFileLine{Issues: issue.Issues(expectedIssues)})
 
-		var resultIssues []*issue.Issue
-		if err := json.Unmarshal(outStream.Bytes(), &resultIssues); err != nil {
+		var got *formatter.JSONOutput
+		if err := json.Unmarshal(outStream.Bytes(), &got); err != nil {
 			t.Fatal(err)
 		}
-		sort.Sort(issue.ByFileLine{Issues: issue.Issues(resultIssues)})
 
-		if !cmp.Equal(resultIssues, expectedIssues) {
-			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(expectedIssues, resultIssues))
+		if !cmp.Equal(got, expected) {
+			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(expected, got))
 		}
 
 		if tc.Env != nil {

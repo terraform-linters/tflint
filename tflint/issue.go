@@ -1,11 +1,9 @@
 package tflint
 
 import (
-	"encoding/json"
 	"sort"
 
 	"github.com/hashicorp/hcl2/hcl"
-	"github.com/wata727/tflint/issue"
 )
 
 // Issue represents a problem in configurations
@@ -42,18 +40,4 @@ func (issues Issues) Sort() Issues {
 		return issues[i].Rule.Name() < issues[j].Rule.Name()
 	})
 	return issues
-}
-
-// MarshalJSON is required to satisfy json.Marshaler interface
-func (i *Issue) MarshalJSON() ([]byte, error) {
-	// Keep JSON structure for the backward compatibility
-	issue := &issue.Issue{
-		Detector: i.Rule.Name(),
-		Type:     i.Rule.Type(),
-		Message:  i.Message,
-		Line:     i.Range.Start.Line,
-		File:     i.Range.Filename,
-		Link:     i.Rule.Link(),
-	}
-	return json.Marshal(issue)
 }
