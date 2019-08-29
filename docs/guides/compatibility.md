@@ -13,7 +13,15 @@ Like Terraform, it supports the `--var`,` --var-file` options, automatic loading
 
 ## Named Values
 
-[Named values](https://www.terraform.io/docs/configuration/expressions.html#references-to-named-values) are supported only for [input variables](https://www.terraform.io/docs/configuration/variables.html) and [workspaces](https://www.terraform.io/docs/state/workspaces.html). Expressions that contain anything else are excluded from the  inspection.
+[Named values](https://www.terraform.io/docs/configuration/expressions.html#references-to-named-values) are supported partially. The following named values are available:
+
+- `var.<NAME>`
+- `path.module`
+- `path.root`
+- `path.cwd`
+- `terraform.workspace`
+
+Expressions that reference named values not included above are excluded from the inspection.
 
 ## Built-in Functions
 

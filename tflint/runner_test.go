@@ -19,6 +19,12 @@ import (
 )
 
 func Test_EvaluateExpr_string(t *testing.T) {
+	dir, err := ioutil.TempDir("", "string")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+
 	cases := []struct {
 		Name     string
 		Content  string
@@ -144,13 +150,23 @@ resource "null_resource" "test" {
 }`,
 			Expected: "Hello World",
 		},
+		{
+			Name: "path.root",
+			Content: `
+resource "null_resource" "test" {
+  key = path.root
+}`,
+			Expected: filepath.ToSlash(dir),
+		},
+		{
+			Name: "path.module",
+			Content: `
+resource "null_resource" "test" {
+  key = path.module
+}`,
+			Expected: filepath.ToSlash(dir),
+		},
 	}
-
-	dir, err := ioutil.TempDir("", "string")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
 
 	for _, tc := range cases {
 		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
@@ -181,6 +197,53 @@ resource "null_resource" "test" {
 		if tc.Expected != ret {
 			t.Fatalf("Failed `%s` test: expected value is `%s`, but get `%s`", tc.Name, tc.Expected, ret)
 		}
+	}
+}
+
+func Test_EvaluateExpr_pathCwd(t *testing.T) {
+	dir, err := ioutil.TempDir("", "string")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+
+	content := `
+resource "null_resource" "test" {
+  key = path.cwd
+}`
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := filepath.ToSlash(cwd)
+
+	err = ioutil.WriteFile(dir+"/resource.tf", []byte(content), os.ModePerm)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cfg, err := loadConfigHelper(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	attribute, err := extractAttributeHelper("key", cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+
+	var ret string
+	err = runner.EvaluateExpr(attribute.Expr, &ret)
+	if err != nil {
+		t.Fatalf("Unexpected error: `%s`", err)
+	}
+
+	if expected != ret {
+		t.Fatalf("expected value is `%s`, but get `%s`", expected, ret)
 	}
 }
 
@@ -832,6 +895,14 @@ resource "null_resource" "test" {
 	}
 }`,
 			Expected: false,
+		},
+		{
+			Name: "path attributes",
+			Content: `
+resource "null_resource" "test" {
+	key = path.cwd
+}`,
+			Expected: true,
 		},
 	}
 

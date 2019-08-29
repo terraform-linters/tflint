@@ -543,6 +543,8 @@ func isEvaluable(expr hcl.Expression) bool {
 			// noop
 		case addrs.TerraformAttr:
 			// noop
+		case addrs.PathAttr:
+			// noop
 		default:
 			return false
 		}
