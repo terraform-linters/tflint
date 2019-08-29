@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsCloudhsmV2HsmInvalidIPAddressRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsCloudhsmV2HsmInvalidIPAddressRule(t *testing.T) {
 resource "aws_cloudhsm_v2_hsm" "foo" {
 	ip_address = "2001:4860:4860::8888"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_cloudhsm_v2_hsm_invalid_ip_address",
-					Type:     "ERROR",
-					Message:  `ip_address does not match valid pattern ^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsCloudhsmV2HsmInvalidIPAddressRule(),
+					Message: `ip_address does not match valid pattern ^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_cloudhsm_v2_hsm" "foo" {
 resource "aws_cloudhsm_v2_hsm" "foo" {
 	ip_address = "8.8.8.8"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_cloudhsm_v2_hsm" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsCloudhsmV2HsmInvalidIPAddressRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

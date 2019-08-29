@@ -9,23 +9,40 @@ module "unpinned" {
   source = "git://hashicorp.com/consul.git"
 }
 
-module "default git" {
+module "default_git" {
   source = "git://hashicorp.com/consul.git?ref=master"
 }
 
-module "default mercurial" {
+module "default_mercurial" {
   source = "hg::http://hashicorp.com/consul.hg?rev=default"
 }
 ```
 
-```
+```console
 $ tflint
-template.tf
-        WARNING:2 Module source "git://hashicorp.com/consul.git" is not pinned (terraform_module_pinned_source)
-        WARNING:6 Module source "git://hashicorp.com/consul.git?ref=master" uses default ref "master" (terraform_module_pinned_source)
-        WARNING:10 Module source "hg::http://hashicorp.com/consul.hg?rev=default" uses default rev "default" (terraform_module_pinned_source)
+3 issue(s) found:
 
-Result: 3 issues  (0 errors , 3 warnings , 0 notices)
+Warning: Module source "git://hashicorp.com/consul.git" is not pinned (terraform_module_pinned_source)
+
+  on template.tf line 2:
+   2:   source = "git://hashicorp.com/consul.git"
+
+Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/terraform_module_pinned_source.md
+
+Warning: Module source "git://hashicorp.com/consul.git?ref=master" uses default ref "master" (terraform_module_pinned_source)
+
+  on template.tf line 6:
+   6:   source = "git://hashicorp.com/consul.git?ref=master"
+
+Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/terraform_module_pinned_source.md
+
+Warning: Module source "hg::http://hashicorp.com/consul.hg?rev=default" uses default rev "default" (terraform_module_pinned_source)
+
+  on template.tf line 10:
+  10:   source = "hg::http://hashicorp.com/consul.hg?rev=default"
+
+Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/terraform_module_pinned_source.md
+
 ```
 
 ## Why

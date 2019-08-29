@@ -14,7 +14,6 @@ import (
 	"github.com/hashicorp/hcl2/hcl/hclsyntax"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -1504,31 +1503,34 @@ func Test_LookupIssues(t *testing.T) {
 		t.Fatalf("Unexpected error: %s", err)
 	}
 
-	runner.Issues = issue.Issues{
+	runner.Issues = Issues{
 		{
-			Detector: "test rule",
-			Type:     issue.ERROR,
-			Message:  "This is test rule",
-			Line:     1,
-			File:     "template.tf",
+			Rule:    &testRule{},
+			Message: "This is test rule",
+			Range: hcl.Range{
+				Filename: "template.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
 		},
 		{
-			Detector: "test rule",
-			Type:     issue.ERROR,
-			Message:  "This is test rule",
-			Line:     1,
-			File:     "resource.tf",
+			Rule:    &testRule{},
+			Message: "This is test rule",
+			Range: hcl.Range{
+				Filename: "resource.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
 		},
 	}
 
 	ret := runner.LookupIssues("template.tf")
-	expected := issue.Issues{
+	expected := Issues{
 		{
-			Detector: "test rule",
-			Type:     issue.ERROR,
-			Message:  "This is test rule",
-			Line:     1,
-			File:     "template.tf",
+			Rule:    &testRule{},
+			Message: "This is test rule",
+			Range: hcl.Range{
+				Filename: "template.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
 		},
 	}
 
@@ -1982,8 +1984,8 @@ type testRule struct{}
 func (r *testRule) Name() string {
 	return "test_rule"
 }
-func (r *testRule) Type() string {
-	return issue.ERROR
+func (r *testRule) Severity() string {
+	return ERROR
 }
 func (r *testRule) Link() string {
 	return ""
@@ -1996,7 +1998,7 @@ func Test_EmitIssue(t *testing.T) {
 		Message     string
 		Location    hcl.Range
 		Annotations map[string]Annotations
-		Expected    issue.Issues
+		Expected    Issues
 	}{
 		{
 			Name:    "basic",
@@ -2007,13 +2009,14 @@ func Test_EmitIssue(t *testing.T) {
 				Start:    hcl.Pos{Line: 1},
 			},
 			Annotations: map[string]Annotations{},
-			Expected: issue.Issues{
+			Expected: Issues{
 				{
-					Detector: "test_rule",
-					Type:     issue.ERROR,
-					Message:  "This is test message",
-					Line:     1,
-					File:     "test.tf",
+					Rule:    &testRule{},
+					Message: "This is test message",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1},
+					},
 				},
 			},
 		},
@@ -2039,7 +2042,7 @@ func Test_EmitIssue(t *testing.T) {
 					},
 				},
 			},
-			Expected: issue.Issues{},
+			Expected: Issues{},
 		},
 	}
 

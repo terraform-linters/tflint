@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsCognitoIdentityPoolRolesAttachmentInvalidIdentityPoolIDRule(t *test
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsCognitoIdentityPoolRolesAttachmentInvalidIdentityPoolIDRule(t *test
 resource "aws_cognito_identity_pool_roles_attachment" "foo" {
 	identity_pool_id = "0123456789"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_cognito_identity_pool_roles_attachment_invalid_identity_pool_id",
-					Type:     "ERROR",
-					Message:  `identity_pool_id does not match valid pattern ^[\w-]+:[0-9a-f-]+$`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsCognitoIdentityPoolRolesAttachmentInvalidIdentityPoolIDRule(),
+					Message: `identity_pool_id does not match valid pattern ^[\w-]+:[0-9a-f-]+$`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_cognito_identity_pool_roles_attachment" "foo" {
 resource "aws_cognito_identity_pool_roles_attachment" "foo" {
 	identity_pool_id = "us-east-1:0123456789"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_cognito_identity_pool_roles_attachment" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsCognitoIdentityPoolRolesAttachmentInvalidIdentityPoolIDRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

@@ -11,11 +11,12 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/client"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -81,17 +82,23 @@ resource "aws_instance" "invalid" {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	expected := issue.Issues{
+	expected := tflint.Issues{
 		{
-			Detector: "aws_instance_invalid_ami",
-			Type:     issue.ERROR,
-			Message:  "\"ami-1234abcd\" is invalid AMI ID.",
-			Line:     3,
-			File:     "instances.tf",
+			Rule:    NewAwsInstanceInvalidAMIRule(),
+			Message: "\"ami-1234abcd\" is invalid AMI ID.",
+			Range: hcl.Range{
+				Filename: "instances.tf",
+				Start:    hcl.Pos{Line: 3, Column: 8},
+				End:      hcl.Pos{Line: 3, Column: 22},
+			},
 		},
 	}
-	if !cmp.Equal(expected, runner.Issues) {
-		t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(expected, runner.Issues))
+	opts := []cmp.Option{
+		cmpopts.IgnoreUnexported(AwsInstanceInvalidAMIRule{}),
+		cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+	}
+	if !cmp.Equal(expected, runner.Issues, opts...) {
+		t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(expected, runner.Issues, opts...))
 	}
 }
 
@@ -161,7 +168,7 @@ resource "aws_instance" "valid" {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	expected := issue.Issues{}
+	expected := tflint.Issues{}
 	if !cmp.Equal(expected, runner.Issues) {
 		t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(expected, runner.Issues))
 	}
@@ -287,7 +294,7 @@ func Test_AwsInstanceInvalidAMI_AMIError(t *testing.T) {
 		Content  string
 		Request  *ec2.DescribeImagesInput
 		Response error
-		Issues   issue.Issues
+		Issues   tflint.Issues
 		Error    bool
 	}{
 		{
@@ -304,13 +311,15 @@ resource "aws_instance" "not_found" {
 				"The image id '[ami-9ad76sd1]' does not exist",
 				nil,
 			),
-			Issues: issue.Issues{
+			Issues: tflint.Issues{
 				{
-					Detector: "aws_instance_invalid_ami",
-					Type:     issue.ERROR,
-					Message:  "\"ami-9ad76sd1\" is invalid AMI ID.",
-					Line:     3,
-					File:     "instances.tf",
+					Rule:    NewAwsInstanceInvalidAMIRule(),
+					Message: "\"ami-9ad76sd1\" is invalid AMI ID.",
+					Range: hcl.Range{
+						Filename: "instances.tf",
+						Start:    hcl.Pos{Line: 3, Column: 8},
+						End:      hcl.Pos{Line: 3, Column: 22},
+					},
 				},
 			},
 			Error: false,
@@ -329,13 +338,15 @@ resource "aws_instance" "malformed" {
 				"Invalid id: \"image-9ad76sd1\" (expecting \"ami-...\")",
 				nil,
 			),
-			Issues: issue.Issues{
+			Issues: tflint.Issues{
 				{
-					Detector: "aws_instance_invalid_ami",
-					Type:     issue.ERROR,
-					Message:  "\"image-9ad76sd1\" is invalid AMI ID.",
-					Line:     3,
-					File:     "instances.tf",
+					Rule:    NewAwsInstanceInvalidAMIRule(),
+					Message: "\"image-9ad76sd1\" is invalid AMI ID.",
+					Range: hcl.Range{
+						Filename: "instances.tf",
+						Start:    hcl.Pos{Line: 3, Column: 8},
+						End:      hcl.Pos{Line: 3, Column: 24},
+					},
 				},
 			},
 			Error: false,
@@ -354,13 +365,15 @@ resource "aws_instance" "unavailable" {
 				"The image ID: 'ami-1234567' is no longer available",
 				nil,
 			),
-			Issues: issue.Issues{
+			Issues: tflint.Issues{
 				{
-					Detector: "aws_instance_invalid_ami",
-					Type:     issue.ERROR,
-					Message:  "\"ami-1234567\" is invalid AMI ID.",
-					Line:     3,
-					File:     "instances.tf",
+					Rule:    NewAwsInstanceInvalidAMIRule(),
+					Message: "\"ami-1234567\" is invalid AMI ID.",
+					Range: hcl.Range{
+						Filename: "instances.tf",
+						Start:    hcl.Pos{Line: 3, Column: 8},
+						End:      hcl.Pos{Line: 3, Column: 21},
+					},
 				},
 			},
 			Error: false,
@@ -424,8 +437,13 @@ resource "aws_instance" "unavailable" {
 		if err == nil && tc.Error {
 			t.Fatalf("Failed `%s` test: expected to return an error, but nothing occurred", tc.Name)
 		}
-		if !cmp.Equal(tc.Issues, runner.Issues) {
-			t.Fatalf("Failed `%s` test: expected issues are not matched:\n %s\n", tc.Name, cmp.Diff(tc.Issues, runner.Issues))
+
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsInstanceInvalidAMIRule{}),
+			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+		}
+		if !cmp.Equal(tc.Issues, runner.Issues, opts...) {
+			t.Fatalf("Failed `%s` test: expected issues are not matched:\n %s\n", tc.Name, cmp.Diff(tc.Issues, runner.Issues, opts...))
 		}
 	}
 }

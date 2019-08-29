@@ -6,11 +6,11 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -18,7 +18,7 @@ func Test_AwsRouteSpecifiedMultipleTargets(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "multiple route targets are specified",
@@ -28,14 +28,15 @@ resource "aws_route" "foo" {
     gateway_id = "igw-1234abcd"
     egress_only_gateway_id = "eigw-1234abcd"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_route_specified_multiple_targets",
-					Type:     "ERROR",
-					Message:  "More than one routing target specified. It must be one.",
-					Line:     2,
-					File:     "resource.tf",
-					Link:     project.ReferenceLink("aws_route_specified_multiple_targets"),
+					Rule:    NewAwsRouteSpecifiedMultipleTargetsRule(),
+					Message: "More than one routing target specified. It must be one.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 27},
+					},
 				},
 			},
 		},
@@ -46,7 +47,7 @@ resource "aws_route" "foo" {
     route_table_id = "rtb-1234abcd"
     gateway_id = "igw-1234abcd"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 		{
 			Name: "multiple targes found, but the second one is null",
@@ -61,7 +62,7 @@ resource "aws_route" "foo" {
     gateway_id = "igw-1234abcd"
     egress_only_gateway_id = var.egress_only_gateway_id
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -112,8 +113,12 @@ resource "aws_route" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsRouteSpecifiedMultipleTargetsRule{}),
+			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

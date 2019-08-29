@@ -6,10 +6,11 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -17,7 +18,7 @@ func Test_AwsElastiCacheClusterInvalidType(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "t2.micro is invalid",
@@ -25,14 +26,15 @@ func Test_AwsElastiCacheClusterInvalidType(t *testing.T) {
 resource "aws_elasticache_cluster" "redis" {
     node_type = "t2.micro"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_elasticache_cluster_invalid_type",
-					Type:     "ERROR",
-					Message:  "\"t2.micro\" is invalid node type.",
-					Line:     3,
-					File:     "resource.tf",
-					Link:     "https://github.com/wata727/tflint/blob/master/docs/aws_elasticache_cluster_invalid_type.md",
+					Rule:    NewAwsElastiCacheClusterInvalidTypeRule(),
+					Message: "\"t2.micro\" is invalid node type.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 3, Column: 17},
+						End:      hcl.Pos{Line: 3, Column: 27},
+					},
 				},
 			},
 		},
@@ -42,7 +44,7 @@ resource "aws_elasticache_cluster" "redis" {
 resource "aws_elasticache_cluster" "redis" {
     node_type = "cache.t2.micro"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -93,8 +95,12 @@ resource "aws_elasticache_cluster" "redis" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsElastiCacheClusterInvalidTypeRule{}),
+			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

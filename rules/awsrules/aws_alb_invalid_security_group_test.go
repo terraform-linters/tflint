@@ -10,11 +10,12 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/client"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -23,7 +24,7 @@ func Test_AwsALBInvalidSecurityGroup(t *testing.T) {
 		Name     string
 		Content  string
 		Response []*ec2.SecurityGroup
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "security group is invalid",
@@ -42,20 +43,24 @@ resource "aws_alb" "balancer" {
 					GroupId: aws.String("sg-abcdefgh"),
 				},
 			},
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_alb_invalid_security_group",
-					Type:     "ERROR",
-					Message:  "\"sg-1234abcd\" is invalid security group.",
-					Line:     4,
-					File:     "resource.tf",
+					Rule:    NewAwsALBInvalidSecurityGroupRule(),
+					Message: "\"sg-1234abcd\" is invalid security group.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 4, Column: 9},
+						End:      hcl.Pos{Line: 4, Column: 22},
+					},
 				},
 				{
-					Detector: "aws_alb_invalid_security_group",
-					Type:     "ERROR",
-					Message:  "\"sg-abcd1234\" is invalid security group.",
-					Line:     5,
-					File:     "resource.tf",
+					Rule:    NewAwsALBInvalidSecurityGroupRule(),
+					Message: "\"sg-abcd1234\" is invalid security group.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 5, Column: 9},
+						End:      hcl.Pos{Line: 5, Column: 22},
+					},
 				},
 			},
 		},
@@ -76,7 +81,7 @@ resource "aws_alb" "balancer" {
 					GroupId: aws.String("sg-abcd1234"),
 				},
 			},
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 		{
 			Name: "use list variables",
@@ -96,20 +101,24 @@ resource "aws_alb" "balancer" {
 					GroupId: aws.String("sg-abcdefgh"),
 				},
 			},
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_alb_invalid_security_group",
-					Type:     "ERROR",
-					Message:  "\"sg-1234abcd\" is invalid security group.",
-					Line:     7,
-					File:     "resource.tf",
+					Rule:    NewAwsALBInvalidSecurityGroupRule(),
+					Message: "\"sg-1234abcd\" is invalid security group.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 7, Column: 23},
+						End:      hcl.Pos{Line: 7, Column: 47},
+					},
 				},
 				{
-					Detector: "aws_alb_invalid_security_group",
-					Type:     "ERROR",
-					Message:  "\"sg-abcd1234\" is invalid security group.",
-					Line:     7,
-					File:     "resource.tf",
+					Rule:    NewAwsALBInvalidSecurityGroupRule(),
+					Message: "\"sg-abcd1234\" is invalid security group.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 7, Column: 23},
+						End:      hcl.Pos{Line: 7, Column: 47},
+					},
 				},
 			},
 		},
@@ -171,8 +180,12 @@ resource "aws_alb" "balancer" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsALBInvalidSecurityGroupRule{}),
+			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

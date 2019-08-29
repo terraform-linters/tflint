@@ -8,10 +8,11 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/mock"
 	"github.com/wata727/tflint/tflint"
 )
@@ -21,7 +22,7 @@ func Test_{{ .RuleNameCC }}(t *testing.T) {
 		Name     string
 		Content  string
 		Response service.Response
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "basic",
@@ -30,13 +31,15 @@ resource "null_resource" "null" {
 }
 `,
 			Response: service.Reponse{},
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "{{ .RuleName }}",
-					Type:     issue.TODO,
+					Rule:     New{{ .RuleNameCC }}Rule(),
 					Message:  "TODO",
-					Line:     0,
-					File:     "resource.tf",
+					Range:    hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 0, Column: 0},
+						End:      hcl.Pos{Line: 0, Column: 0},
+					},
 				},
 			},
 		},
@@ -90,8 +93,12 @@ resource "null_resource" "null" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported({{ .RuleNameCC }}Rule{}),
+			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

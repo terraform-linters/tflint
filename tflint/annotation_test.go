@@ -11,7 +11,6 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/hcl2/hcl/hclsyntax"
-	"github.com/wata727/tflint/issue"
 )
 
 func Test_NewAnnotations(t *testing.T) {
@@ -77,12 +76,13 @@ func Test_NewAnnotations(t *testing.T) {
 }
 
 func Test_IsAffected(t *testing.T) {
-	issue := &issue.Issue{
-		Detector: "test_rule",
-		Type:     issue.ERROR,
-		Message:  "Test rule",
-		Line:     2,
-		File:     "test.tf",
+	issue := &Issue{
+		Rule:    &testRule{},
+		Message: "Test rule",
+		Range: hcl.Range{
+			Filename: "test.tf",
+			Start:    hcl.Pos{Line: 2},
+		},
 	}
 
 	cases := []struct {

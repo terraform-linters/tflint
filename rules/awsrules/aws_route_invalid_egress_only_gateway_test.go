@@ -9,11 +9,12 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/client"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -22,7 +23,7 @@ func Test_AwsRouteInvalidEgressOnlyGateway(t *testing.T) {
 		Name     string
 		Content  string
 		Response []*ec2.EgressOnlyInternetGateway
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "egress only gateway id is invalid",
@@ -38,13 +39,15 @@ resource "aws_route" "foo" {
 					EgressOnlyInternetGatewayId: aws.String("eigw-abcd1234"),
 				},
 			},
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_route_invalid_egress_only_gateway",
-					Type:     "ERROR",
-					Message:  "\"igw-1234abcd\" is invalid egress only internet gateway ID.",
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsRouteInvalidEgressOnlyGatewayRule(),
+					Message: "\"igw-1234abcd\" is invalid egress only internet gateway ID.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 3, Column: 30},
+						End:      hcl.Pos{Line: 3, Column: 44},
+					},
 				},
 			},
 		},
@@ -62,7 +65,7 @@ resource "aws_route" "foo" {
 					EgressOnlyInternetGatewayId: aws.String("eigw-abcd1234"),
 				},
 			},
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -122,8 +125,12 @@ resource "aws_route" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsRouteInvalidEgressOnlyGatewayRule{}),
+			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

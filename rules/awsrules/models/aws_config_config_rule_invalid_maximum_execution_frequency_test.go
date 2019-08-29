@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsConfigConfigRuleInvalidMaximumExecutionFrequencyRule(t *testing.T) 
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsConfigConfigRuleInvalidMaximumExecutionFrequencyRule(t *testing.T) 
 resource "aws_config_config_rule" "foo" {
 	maximum_execution_frequency = "Hour"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_config_config_rule_invalid_maximum_execution_frequency",
-					Type:     "ERROR",
-					Message:  `maximum_execution_frequency is not a valid value`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsConfigConfigRuleInvalidMaximumExecutionFrequencyRule(),
+					Message: `maximum_execution_frequency is not a valid value`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_config_config_rule" "foo" {
 resource "aws_config_config_rule" "foo" {
 	maximum_execution_frequency = "One_Hour"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_config_config_rule" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsConfigConfigRuleInvalidMaximumExecutionFrequencyRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
@@ -27,9 +26,9 @@ func (r *TerraformDocumentedVariablesRule) Enabled() bool {
 	return false
 }
 
-// Type returns the rule severity
-func (r *TerraformDocumentedVariablesRule) Type() string {
-	return issue.NOTICE
+// Severity returns the rule severity
+func (r *TerraformDocumentedVariablesRule) Severity() string {
+	return tflint.NOTICE
 }
 
 // Link returns the rule reference link

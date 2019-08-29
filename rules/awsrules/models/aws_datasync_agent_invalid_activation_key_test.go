@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsDatasyncAgentInvalidActivationKeyRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsDatasyncAgentInvalidActivationKeyRule(t *testing.T) {
 resource "aws_datasync_agent" "foo" {
 	activation_key = "F0EFT7FPPRGG7MC3I9R327DOH"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_datasync_agent_invalid_activation_key",
-					Type:     "ERROR",
-					Message:  `activation_key does not match valid pattern ^[A-Z0-9]{5}(-[A-Z0-9]{5}){4}$`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsDatasyncAgentInvalidActivationKeyRule(),
+					Message: `activation_key does not match valid pattern ^[A-Z0-9]{5}(-[A-Z0-9]{5}){4}$`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_datasync_agent" "foo" {
 resource "aws_datasync_agent" "foo" {
 	activation_key = "F0EFT-7FPPR-GG7MC-3I9R3-27DOH"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_datasync_agent" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsDatasyncAgentInvalidActivationKeyRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

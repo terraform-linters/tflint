@@ -13,7 +13,6 @@ import (
 	"github.com/hashicorp/terraform/lang"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/client"
-	"github.com/wata727/tflint/issue"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
 	"github.com/zclconf/go-cty/cty/gocty"
@@ -24,7 +23,7 @@ import (
 // After checking, it accumulates results as issues.
 type Runner struct {
 	TFConfig  *configs.Config
-	Issues    issue.Issues
+	Issues    Issues
 	AwsClient *client.AwsClient
 
 	ctx         terraform.BuiltinEvalContext
@@ -37,7 +36,7 @@ type Runner struct {
 // Rule is interface for building the issue
 type Rule interface {
 	Name() string
-	Type() string
+	Severity() string
 	Link() string
 }
 
@@ -53,7 +52,7 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, vari
 
 	runner := &Runner{
 		TFConfig:  cfg,
-		Issues:    []*issue.Issue{},
+		Issues:    Issues{},
 		AwsClient: &client.AwsClient{},
 
 		ctx: terraform.BuiltinEvalContext{
@@ -327,15 +326,15 @@ func (r *Runner) TFConfigPath() string {
 }
 
 // LookupIssues returns issues according to the received files
-func (r *Runner) LookupIssues(files ...string) issue.Issues {
+func (r *Runner) LookupIssues(files ...string) Issues {
 	if len(files) == 0 {
 		return r.Issues
 	}
 
-	issues := []*issue.Issue{}
+	issues := Issues{}
 	for _, issue := range r.Issues {
 		for _, file := range files {
-			if file == issue.File {
+			if file == issue.Range.Filename {
 				issues = append(issues, issue)
 			}
 		}
@@ -506,33 +505,28 @@ func (r *Runner) EachStringSliceExprs(expr hcl.Expression, proc func(val string,
 // EmitIssue builds an issue and accumulates it
 func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range) {
 	if r.TFConfig.Path.IsRoot() {
-		r.emitIssue(&issue.Issue{
-			Detector: rule.Name(),
-			Type:     rule.Type(),
-			Message:  message,
-			Line:     location.Start.Line,
-			File:     location.Filename,
-			Link:     rule.Link(),
+		r.emitIssue(&Issue{
+			Rule:    rule,
+			Message: message,
+			Range:   location,
 		})
 	} else {
 		for _, modVar := range r.listModuleVars(r.currentExpr) {
-			r.emitIssue(&issue.Issue{
-				Detector: rule.Name(),
-				Type:     rule.Type(),
-				Message:  message,
-				Line:     modVar.DeclRange.Start.Line,
-				File:     modVar.DeclRange.Filename,
-				Link:     rule.Link(),
+			r.emitIssue(&Issue{
+				Rule:    rule,
+				Message: message,
+				Range:   modVar.DeclRange,
+				Callers: append(modVar.callers(), location),
 			})
 		}
 	}
 }
 
-func (r *Runner) emitIssue(issue *issue.Issue) {
-	if annotations, ok := r.annotations[issue.File]; ok {
+func (r *Runner) emitIssue(issue *Issue) {
+	if annotations, ok := r.annotations[issue.Range.Filename]; ok {
 		for _, annotation := range annotations {
 			if annotation.IsAffected(issue) {
-				log.Printf("[INFO] %s:%d (%s) is ignored by %s", issue.File, issue.Line, issue.Detector, annotation.String())
+				log.Printf("[INFO] %s (%s) is ignored by %s", issue.Range.String(), issue.Rule.Name(), annotation.String())
 				return
 			}
 		}

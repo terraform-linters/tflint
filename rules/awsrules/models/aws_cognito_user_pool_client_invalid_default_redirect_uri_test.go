@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsCognitoUserPoolClientInvalidDefaultRedirectURIRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsCognitoUserPoolClientInvalidDefaultRedirectURIRule(t *testing.T) {
 resource "aws_cognito_user_pool_client" "foo" {
 	default_redirect_uri = "https://example com"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_cognito_user_pool_client_invalid_default_redirect_uri",
-					Type:     "ERROR",
-					Message:  `default_redirect_uri does not match valid pattern ^[\p{L}\p{M}\p{S}\p{N}\p{P}]+$`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsCognitoUserPoolClientInvalidDefaultRedirectURIRule(),
+					Message: `default_redirect_uri does not match valid pattern ^[\p{L}\p{M}\p{S}\p{N}\p{P}]+$`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_cognito_user_pool_client" "foo" {
 resource "aws_cognito_user_pool_client" "foo" {
 	default_redirect_uri = "https://example.com/callback"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_cognito_user_pool_client" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsCognitoUserPoolClientInvalidDefaultRedirectURIRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

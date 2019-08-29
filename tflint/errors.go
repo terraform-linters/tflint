@@ -19,6 +19,8 @@ const (
 	UnexpectedAttributeError
 	// ExternalAPIError is an error when calling the external API (e.g. AWS SDK)
 	ExternalAPIError
+	// ContextError is pseudo error code for propagating runtime context.
+	ContextError
 
 	// FatalLevel is a recorverable error, it cause panic
 	FatalLevel int = 0
@@ -48,4 +50,14 @@ func (e *Error) Error() string {
 	}
 
 	return e.Message
+}
+
+// NewContextError makes a new context error
+func NewContextError(msg string, cause error) *Error {
+	return &Error{
+		Code:    ContextError,
+		Level:   ErrorLevel,
+		Message: msg,
+		Cause:   cause,
+	}
 }

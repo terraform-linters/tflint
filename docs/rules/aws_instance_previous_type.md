@@ -16,12 +16,17 @@ resource "aws_instance" "web" {
 }
 ```
 
-```
+```console
 $ tflint
-template.tf
-        WARNING:3 "t1.micro" is previous generation instance type. (aws_instance_previous_type)
+1 issue(s) found:
 
-Result: 1 issues  (0 errors , 1 warnings , 0 notices)
+Warning: "t1.micro" is previous generation instance type. (aws_instance_previous_type)
+
+  on template.tf line 3:
+   3:   instance_type        = "t1.micro" # previous instance type!
+
+Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/aws_instance_previous_type.md
+
 ```
 
 ## Why

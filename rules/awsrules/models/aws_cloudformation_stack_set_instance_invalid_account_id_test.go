@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsCloudformationStackSetInstanceInvalidAccountIDRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsCloudformationStackSetInstanceInvalidAccountIDRule(t *testing.T) {
 resource "aws_cloudformation_stack_set_instance" "foo" {
 	account_id = "1234567890123"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_cloudformation_stack_set_instance_invalid_account_id",
-					Type:     "ERROR",
-					Message:  `account_id does not match valid pattern ^[0-9]{12}$`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsCloudformationStackSetInstanceInvalidAccountIDRule(),
+					Message: `account_id does not match valid pattern ^[0-9]{12}$`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_cloudformation_stack_set_instance" "foo" {
 resource "aws_cloudformation_stack_set_instance" "foo" {
 	account_id = "123456789012"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_cloudformation_stack_set_instance" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsCloudformationStackSetInstanceInvalidAccountIDRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

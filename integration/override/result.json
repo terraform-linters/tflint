@@ -1,10 +1,25 @@
-[
-  {
-    "detector": "aws_instance_invalid_type",
-    "type": "ERROR",
-    "message": "instance_type is not a valid value",
-    "line": 3,
-    "file": "template_override.tf",
-    "link": ""
-  }
-]
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_instance_invalid_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance_type is not a valid value",
+      "range": {
+        "filename": "template_override.tf",
+        "start": {
+          "line": 3,
+          "column": 26
+        },
+        "end": {
+          "line": 3,
+          "column": 38
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}

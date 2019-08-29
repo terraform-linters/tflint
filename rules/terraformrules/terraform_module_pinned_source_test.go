@@ -6,13 +6,12 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	version "github.com/hashicorp/go-version"
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -20,7 +19,7 @@ func Test_TerraformModulePinnedSource(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "git module is not pinned",
@@ -28,14 +27,15 @@ func Test_TerraformModulePinnedSource(t *testing.T) {
 module "unpinned" {
   source = "git://hashicorp.com/consul.git"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_module_pinned_source",
-					Type:     issue.WARNING,
-					Message:  "Module source \"git://hashicorp.com/consul.git\" is not pinned",
-					Line:     3,
-					File:     "module.tf",
-					Link:     project.ReferenceLink("terraform_module_pinned_source"),
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"git://hashicorp.com/consul.git\" is not pinned",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 44},
+					},
 				},
 			},
 		},
@@ -45,14 +45,15 @@ module "unpinned" {
 module "default_git" {
   source = "git://hashicorp.com/consul.git?ref=master"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_module_pinned_source",
-					Type:     issue.WARNING,
-					Message:  "Module source \"git://hashicorp.com/consul.git?ref=master\" uses default ref \"master\"",
-					Line:     3,
-					File:     "module.tf",
-					Link:     project.ReferenceLink("terraform_module_pinned_source"),
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"git://hashicorp.com/consul.git?ref=master\" uses default ref \"master\"",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 55},
+					},
 				},
 			},
 		},
@@ -62,7 +63,7 @@ module "default_git" {
 module "pinned_git" {
   source = "git://hashicorp.com/consul.git?ref=pinned"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 		{
 			Name: "github module is not pinned",
@@ -70,14 +71,15 @@ module "pinned_git" {
 module "unpinned" {
   source = "github.com/hashicorp/consul"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_module_pinned_source",
-					Type:     issue.WARNING,
-					Message:  "Module source \"github.com/hashicorp/consul\" is not pinned",
-					Line:     3,
-					File:     "module.tf",
-					Link:     project.ReferenceLink("terraform_module_pinned_source"),
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"github.com/hashicorp/consul\" is not pinned",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 41},
+					},
 				},
 			},
 		},
@@ -87,14 +89,15 @@ module "unpinned" {
 module "default_git" {
   source = "github.com/hashicorp/consul.git?ref=master"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_module_pinned_source",
-					Type:     issue.WARNING,
-					Message:  "Module source \"github.com/hashicorp/consul.git?ref=master\" uses default ref \"master\"",
-					Line:     3,
-					File:     "module.tf",
-					Link:     project.ReferenceLink("terraform_module_pinned_source"),
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"github.com/hashicorp/consul.git?ref=master\" uses default ref \"master\"",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 56},
+					},
 				},
 			},
 		},
@@ -104,7 +107,7 @@ module "default_git" {
 module "pinned_git" {
   source = "github.com/hashicorp/consul.git?ref=pinned"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 		{
 			Name: "bitbucket module is not pinned",
@@ -112,14 +115,15 @@ module "pinned_git" {
 module "unpinned" {
   source = "bitbucket.org/hashicorp/consul"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_module_pinned_source",
-					Type:     issue.WARNING,
-					Message:  "Module source \"bitbucket.org/hashicorp/consul\" is not pinned",
-					Line:     3,
-					File:     "module.tf",
-					Link:     project.ReferenceLink("terraform_module_pinned_source"),
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"bitbucket.org/hashicorp/consul\" is not pinned",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 44},
+					},
 				},
 			},
 		},
@@ -129,14 +133,15 @@ module "unpinned" {
 module "default_git" {
   source = "bitbucket.org/hashicorp/consul.git?ref=master"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_module_pinned_source",
-					Type:     issue.WARNING,
-					Message:  "Module source \"bitbucket.org/hashicorp/consul.git?ref=master\" uses default ref \"master\"",
-					Line:     3,
-					File:     "module.tf",
-					Link:     project.ReferenceLink("terraform_module_pinned_source"),
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"bitbucket.org/hashicorp/consul.git?ref=master\" uses default ref \"master\"",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 59},
+					},
 				},
 			},
 		},
@@ -146,7 +151,7 @@ module "default_git" {
 module "pinned_git" {
   source = "bitbucket.org/hashicorp/consul.git?ref=pinned"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 		{
 			Name: "generic git (git::https) module reference is not pinned",
@@ -155,14 +160,15 @@ module "unpinned_generic_git_https" {
   source = "git::https://hashicorp.com/consul.git"
 }
 `,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_module_pinned_source",
-					Type:     issue.WARNING,
-					Message:  "Module source \"git::https://hashicorp.com/consul.git\" is not pinned",
-					Line:     3,
-					File:     "module.tf",
-					Link:     project.ReferenceLink("terraform_module_pinned_source"),
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"git::https://hashicorp.com/consul.git\" is not pinned",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 51},
+					},
 				},
 			},
 		},
@@ -173,14 +179,15 @@ module "unpinned_generic_git_ssh" {
   source = "git::ssh://git@github.com/owner/repo.git"
 }
 `,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_module_pinned_source",
-					Type:     issue.WARNING,
-					Message:  "Module source \"git::ssh://git@github.com/owner/repo.git\" is not pinned",
-					Line:     3,
-					File:     "module.tf",
-					Link:     project.ReferenceLink("terraform_module_pinned_source"),
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"git::ssh://git@github.com/owner/repo.git\" is not pinned",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 54},
+					},
 				},
 			},
 		},
@@ -191,14 +198,15 @@ module "default_generic_git_https" {
   source = "git::https://hashicorp.com/consul.git?ref=master"
 }
 `,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_module_pinned_source",
-					Type:     issue.WARNING,
-					Message:  "Module source \"git::https://hashicorp.com/consul.git?ref=master\" uses default ref \"master\"",
-					Line:     3,
-					File:     "module.tf",
-					Link:     project.ReferenceLink("terraform_module_pinned_source"),
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"git::https://hashicorp.com/consul.git?ref=master\" uses default ref \"master\"",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 62},
+					},
 				},
 			},
 		},
@@ -209,14 +217,15 @@ module "default_generic_git_ssh" {
   source = "git::ssh://git@github.com/owner/repo.git?ref=master"
 }
 `,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_module_pinned_source",
-					Type:     issue.WARNING,
-					Message:  "Module source \"git::ssh://git@github.com/owner/repo.git?ref=master\" uses default ref \"master\"",
-					Line:     3,
-					File:     "module.tf",
-					Link:     project.ReferenceLink("terraform_module_pinned_source"),
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"git::ssh://git@github.com/owner/repo.git?ref=master\" uses default ref \"master\"",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 65},
+					},
 				},
 			},
 		},
@@ -227,7 +236,7 @@ module "pinned_generic_git_https" {
   source = "git::https://hashicorp.com/consul.git?ref=pinned"
 }
 `,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 		{
 			Name: "generic git (git::ssh) module reference is pinned",
@@ -236,7 +245,7 @@ module "pinned_generic_git_ssh" {
   source = "git::ssh://git@github.com/owner/repo.git?ref=pinned"
 }
 `,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 		{
 			Name: "mercurial module is not pinned",
@@ -244,14 +253,15 @@ module "pinned_generic_git_ssh" {
 module "default_mercurial" {
   source = "hg::http://hashicorp.com/consul.hg"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_module_pinned_source",
-					Type:     issue.WARNING,
-					Message:  "Module source \"hg::http://hashicorp.com/consul.hg\" is not pinned",
-					Line:     3,
-					File:     "module.tf",
-					Link:     project.ReferenceLink("terraform_module_pinned_source"),
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"hg::http://hashicorp.com/consul.hg\" is not pinned",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 48},
+					},
 				},
 			},
 		},
@@ -261,14 +271,15 @@ module "default_mercurial" {
 module "default_mercurial" {
   source = "hg::http://hashicorp.com/consul.hg?rev=default"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_module_pinned_source",
-					Type:     issue.WARNING,
-					Message:  "Module source \"hg::http://hashicorp.com/consul.hg?rev=default\" uses default rev \"default\"",
-					Line:     3,
-					File:     "module.tf",
-					Link:     project.ReferenceLink("terraform_module_pinned_source"),
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"hg::http://hashicorp.com/consul.hg?rev=default\" uses default rev \"default\"",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 60},
+					},
 				},
 			},
 		},
@@ -278,7 +289,7 @@ module "default_mercurial" {
 module "pinned_mercurial" {
   source = "hg::http://hashicorp.com/consul.hg?rev=pinned"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -331,8 +342,12 @@ module "pinned_mercurial" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(TerraformModulePinnedSourceRule{}),
+			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

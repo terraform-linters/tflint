@@ -27,12 +27,15 @@ Since `t1.2xlarge` is a nonexistent instance type, an error will occur when you 
 
 TFLint finds such errors in advance:
 
-```
+```console
 $ tflint
-template.tf
-        ERROR:3 instance_type is not a valid value (aws_instance_invalid_type)
+1 issue(s) found:
 
-Result: 2 issues  (1 errors , 0 warnings , 1 notices)
+Error: instance_type is not a valid value (aws_instance_invalid_type)
+
+  on template.tf line 3:
+   3:   instance_type = "t1.2xlarge" # invalid type!
+
 ```
 
 ## Installation

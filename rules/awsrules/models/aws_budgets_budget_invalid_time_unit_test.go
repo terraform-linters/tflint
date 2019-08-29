@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsBudgetsBudgetInvalidTimeUnitRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsBudgetsBudgetInvalidTimeUnitRule(t *testing.T) {
 resource "aws_budgets_budget" "foo" {
 	time_unit = "HOURLY"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_budgets_budget_invalid_time_unit",
-					Type:     "ERROR",
-					Message:  `time_unit is not a valid value`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsBudgetsBudgetInvalidTimeUnitRule(),
+					Message: `time_unit is not a valid value`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_budgets_budget" "foo" {
 resource "aws_budgets_budget" "foo" {
 	time_unit = "MONTHLY"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_budgets_budget" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsBudgetsBudgetInvalidTimeUnitRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

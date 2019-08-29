@@ -6,11 +6,11 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -18,7 +18,7 @@ func Test_TerraformDocumentedOutputsRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "no description",
@@ -26,14 +26,15 @@ func Test_TerraformDocumentedOutputsRule(t *testing.T) {
 output "endpoint" {
   value = aws_alb.main.dns_name
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_documented_outputs",
-					Type:     issue.NOTICE,
-					Message:  "`endpoint` output has no description",
-					Line:     2,
-					File:     "outputs.tf",
-					Link:     project.ReferenceLink("terraform_documented_outputs"),
+					Rule:    NewTerraformDocumentedOutputsRule(),
+					Message: "`endpoint` output has no description",
+					Range: hcl.Range{
+						Filename: "outputs.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 18},
+					},
 				},
 			},
 		},
@@ -44,14 +45,15 @@ output "endpoint" {
   value = aws_alb.main.dns_name
   description = ""
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "terraform_documented_outputs",
-					Type:     issue.NOTICE,
-					Message:  "`endpoint` output has no description",
-					Line:     2,
-					File:     "outputs.tf",
-					Link:     project.ReferenceLink("terraform_documented_outputs"),
+					Rule:    NewTerraformDocumentedOutputsRule(),
+					Message: "`endpoint` output has no description",
+					Range: hcl.Range{
+						Filename: "outputs.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 18},
+					},
 				},
 			},
 		},
@@ -62,7 +64,7 @@ output "endpoint" {
   value = aws_alb.main.dns_name
   description = "DNS Endpoint"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -113,8 +115,9 @@ output "endpoint" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{cmpopts.IgnoreFields(hcl.Pos{}, "Byte")}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

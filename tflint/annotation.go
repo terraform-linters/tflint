@@ -5,7 +5,6 @@ import (
 	"regexp"
 
 	"github.com/hashicorp/hcl2/hcl/hclsyntax"
-	"github.com/wata727/tflint/issue"
 )
 
 var annotationPattern = regexp.MustCompile(`tflint-ignore: (\S+)`)
@@ -42,15 +41,15 @@ func NewAnnotations(tokens hclsyntax.Tokens) Annotations {
 }
 
 // IsAffected checks if the passed issue is affected with the annotation
-func (a *Annotation) IsAffected(issue *issue.Issue) bool {
-	if a.Token.Range.Filename != issue.File {
+func (a *Annotation) IsAffected(issue *Issue) bool {
+	if a.Token.Range.Filename != issue.Range.Filename {
 		return false
 	}
-	if a.Content == issue.Detector || a.Content == "all" {
-		if a.Token.Range.Start.Line == issue.Line {
+	if a.Content == issue.Rule.Name() || a.Content == "all" {
+		if a.Token.Range.Start.Line == issue.Range.Start.Line {
 			return true
 		}
-		if a.Token.Range.Start.Line == issue.Line-1 {
+		if a.Token.Range.Start.Line == issue.Range.Start.Line-1 {
 			return true
 		}
 	}

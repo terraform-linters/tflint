@@ -6,11 +6,11 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -18,7 +18,7 @@ func Test_AwsInstancePreviousType(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "t1.micro is previous type",
@@ -26,14 +26,15 @@ func Test_AwsInstancePreviousType(t *testing.T) {
 resource "aws_instance" "web" {
     instance_type = "t1.micro"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_instance_previous_type",
-					Type:     "WARNING",
-					Message:  "\"t1.micro\" is previous generation instance type.",
-					Line:     3,
-					File:     "resource.tf",
-					Link:     project.ReferenceLink("aws_instance_previous_type"),
+					Rule:    NewAwsInstancePreviousTypeRule(),
+					Message: "\"t1.micro\" is previous generation instance type.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 3, Column: 21},
+						End:      hcl.Pos{Line: 3, Column: 31},
+					},
 				},
 			},
 		},
@@ -43,7 +44,7 @@ resource "aws_instance" "web" {
 resource "aws_instance" "web" {
     instance_type = "t2.micro"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +95,12 @@ resource "aws_instance" "web" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsInstancePreviousTypeRule{}),
+			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

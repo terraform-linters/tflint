@@ -6,7 +6,6 @@ import (
 	"log"
 
 	"github.com/hashicorp/hcl2/hcl"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -48,9 +47,9 @@ func (r *AwsAppautoscalingScheduledActionInvalidScalableDimensionRule) Enabled()
 	return true
 }
 
-// Type returns the rule severity
-func (r *AwsAppautoscalingScheduledActionInvalidScalableDimensionRule) Type() string {
-	return issue.ERROR
+// Severity returns the rule severity
+func (r *AwsAppautoscalingScheduledActionInvalidScalableDimensionRule) Severity() string {
+	return tflint.ERROR
 }
 
 // Link returns the rule reference link

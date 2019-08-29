@@ -6,11 +6,11 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -18,7 +18,7 @@ func Test_AwsElastiCacheClusterDefaultParameterGroup(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "default.redis3.2 is default parameter group",
@@ -26,14 +26,15 @@ func Test_AwsElastiCacheClusterDefaultParameterGroup(t *testing.T) {
 resource "aws_elasticache_cluster" "cache" {
     parameter_group_name = "default.redis3.2"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_elasticache_cluster_default_parameter_group",
-					Type:     "NOTICE",
-					Message:  "\"default.redis3.2\" is default parameter group. You cannot edit it.",
-					Line:     3,
-					File:     "resource.tf",
-					Link:     project.ReferenceLink("aws_elasticache_cluster_default_parameter_group"),
+					Rule:    NewAwsElastiCacheClusterDefaultParameterGroupRule(),
+					Message: "\"default.redis3.2\" is default parameter group. You cannot edit it.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 3, Column: 28},
+						End:      hcl.Pos{Line: 3, Column: 46},
+					},
 				},
 			},
 		},
@@ -43,7 +44,7 @@ resource "aws_elasticache_cluster" "cache" {
 resource "aws_elasticache_cluster" "cache" {
     parameter_group_name = "application3.2"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +95,12 @@ resource "aws_elasticache_cluster" "cache" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsElastiCacheClusterDefaultParameterGroupRule{}),
+			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

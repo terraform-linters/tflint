@@ -1,11 +1,25 @@
-[
+{
+  "issues": [
     {
-      "detector": "aws_instance_invalid_type",
-      "type": "ERROR",
+      "rule": {
+        "name": "aws_instance_invalid_type",
+        "severity": "error",
+        "link": ""
+      },
       "message": "instance_type is not a valid value",
-      "line": 2,
-      "file": "template.tf",
-      "link": ""
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 2,
+          "column": 19
+        },
+        "end": {
+          "line": 2,
+          "column": 31
+        }
+      },
+      "callers": []
     }
-  ]
-  
+  ],
+  "errors": []
+}

@@ -8,11 +8,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/fatih/color"
 	flags "github.com/jessevdk/go-flags"
 
-	"github.com/wata727/tflint/issue"
-	"github.com/wata727/tflint/printer"
+	"github.com/wata727/tflint/formatter"
 	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/rules"
 	"github.com/wata727/tflint/tflint"
@@ -61,17 +59,24 @@ func (cli *CLI) Run(args []string) int {
 	}
 	// Parse commandline flag
 	args, err := parser.ParseArgs(args)
+	// Set up output formatter
+	formatter := &formatter.Formatter{
+		Stdout: cli.outStream,
+		Stderr: cli.errStream,
+		Format: opts.Format,
+		Quiet:  opts.Quiet,
+	}
 	if err != nil {
 		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {
 			fmt.Fprintln(cli.outStream, err)
 			return ExitCodeOK
 		}
-		cli.printError(err)
+		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to parse CLI options", err), map[string][]byte{})
 		return ExitCodeError
 	}
 	dir, filterFiles, err := processArgs(args[1:])
 	if err != nil {
-		cli.printError(err)
+		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to parse CLI arguments", err), map[string][]byte{})
 		return ExitCodeError
 	}
 
@@ -84,7 +89,7 @@ func (cli *CLI) Run(args []string) int {
 	// Setup config
 	cfg, err := tflint.LoadConfig(opts.Config)
 	if err != nil {
-		cli.printError(fmt.Errorf("Failed to load TFLint config: %s", err))
+		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to load TFLint config", err), map[string][]byte{})
 		return ExitCodeError
 	}
 	cfg = cfg.Merge(opts.toConfig())
@@ -93,29 +98,29 @@ func (cli *CLI) Run(args []string) int {
 	if !cli.testMode {
 		cli.loader, err = tflint.NewLoader(cfg)
 		if err != nil {
-			cli.printError(fmt.Errorf("Failed to prepare loading: %s", err))
+			formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to prepare loading", err), map[string][]byte{})
 			return ExitCodeError
 		}
 	}
 
 	configs, err := cli.loader.LoadConfig(dir)
 	if err != nil {
-		cli.printError(fmt.Errorf("Failed to load configurations: %s", err))
+		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to load configurations", err), cli.loader.Sources())
 		return ExitCodeError
 	}
 	annotations, err := cli.loader.LoadAnnotations(dir)
 	if err != nil {
-		cli.printError(fmt.Errorf("Failed to load configuration tokens: %s", err))
+		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to load configuration tokens", err), cli.loader.Sources())
 		return ExitCodeError
 	}
 	variables, err := cli.loader.LoadValuesFiles(cfg.Varfile...)
 	if err != nil {
-		cli.printError(fmt.Errorf("Failed to load values files: %s", err))
+		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to load values files", err), cli.loader.Sources())
 		return ExitCodeError
 	}
 	cliVars, err := tflint.ParseTFVariables(cfg.Variables, configs.Module.Variables)
 	if err != nil {
-		cli.printError(fmt.Errorf("Failed to parse variables: %s", err))
+		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to parse variables", err), cli.loader.Sources())
 		return ExitCodeError
 	}
 	variables = append(variables, cliVars)
@@ -123,12 +128,12 @@ func (cli *CLI) Run(args []string) int {
 	// Check configurations via Runner
 	runner, err := tflint.NewRunner(cfg, annotations, configs, variables...)
 	if err != nil {
-		cli.printError(fmt.Errorf("Failed to initialize a runner: %s", err))
+		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to initialize a runner", err), cli.loader.Sources())
 		return ExitCodeError
 	}
 	runners, err := tflint.NewModuleRunners(runner)
 	if err != nil {
-		cli.printError(fmt.Errorf("Failed to prepare rule checking: %s", err))
+		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to prepare rule checking", err), cli.loader.Sources())
 		return ExitCodeError
 	}
 	runners = append(runners, runner)
@@ -137,29 +142,25 @@ func (cli *CLI) Run(args []string) int {
 		for _, runner := range runners {
 			err := rule.Check(runner)
 			if err != nil {
-				cli.printError(fmt.Errorf("Failed to check `%s` rule: %s", rule.Name(), err))
+				formatter.Print(tflint.Issues{}, tflint.NewContextError(fmt.Sprintf("Failed to check `%s` rule", rule.Name()), err), cli.loader.Sources())
 				return ExitCodeError
 			}
 		}
 	}
 
-	issues := []*issue.Issue{}
+	issues := tflint.Issues{}
 	for _, runner := range runners {
 		issues = append(issues, runner.LookupIssues(filterFiles...)...)
 	}
 
 	// Print issues
-	printer.NewPrinter(cli.outStream, cli.errStream).Print(issues, opts.Format, opts.Quiet)
+	formatter.Print(issues, nil, cli.loader.Sources())
 
 	if len(issues) > 0 && !cfg.Force {
 		return ExitCodeIssuesFound
 	}
 
 	return ExitCodeOK
-}
-
-func (cli *CLI) printError(err error) {
-	fmt.Fprintln(cli.errStream, color.New(color.FgRed).Sprintf("Error: ")+err.Error())
 }
 
 func processArgs(args []string) (string, []string, error) {

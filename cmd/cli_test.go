@@ -9,11 +9,11 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/fatih/color"
 	"github.com/golang/mock/gomock"
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/rules"
 	"github.com/wata727/tflint/tflint"
@@ -44,7 +44,7 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Name:    "no options",
 			Command: "./tflint",
 			Status:  ExitCodeOK,
-			Stdout:  "Awesome! Your code is following the best practices :)",
+			Stdout:  "",
 		},
 		{
 			Name:    "specify format",
@@ -56,13 +56,13 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Name:    "`--force` option",
 			Command: "./tflint --force",
 			Status:  ExitCodeOK,
-			Stdout:  "Awesome! Your code is following the best practices :)",
+			Stdout:  "",
 		},
 		{
 			Name:    "`--quiet` option",
 			Command: "./tflint --quiet",
 			Status:  ExitCodeOK,
-			Stdout:  "",
+			Stdout:  "", // TODO: Remove this option
 		},
 		{
 			Name:    "loading errors are occurred",
@@ -118,6 +118,7 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 		loader.EXPECT().LoadConfig(".").Return(configs.NewEmptyConfig(), tc.LoadErr).AnyTimes()
 		loader.EXPECT().LoadAnnotations(".").Return(map[string]tflint.Annotations{}, tc.LoadErr).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, tc.LoadErr).AnyTimes()
+		loader.EXPECT().Sources().Return(map[string][]byte{}).AnyTimes()
 		cli.loader = loader
 
 		status := cli.Run(strings.Split(tc.Command, " "))
@@ -128,8 +129,14 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 		if !strings.Contains(outStream.String(), tc.Stdout) {
 			t.Fatalf("Failed `%s`: Expected to contain `%s` in stdout, but get `%s`", tc.Name, tc.Stdout, outStream.String())
 		}
+		if tc.Stdout == "" && outStream.String() != "" {
+			t.Fatalf("Failed `%s`: Expected empty in stdout, but get `%s`", tc.Name, outStream.String())
+		}
 		if !strings.Contains(errStream.String(), tc.Stderr) {
 			t.Fatalf("Failed `%s`: Expected to contain `%s` in stderr, but get `%s`", tc.Name, tc.Stderr, errStream.String())
+		}
+		if tc.Stderr == "" && errStream.String() != "" {
+			t.Fatalf("Failed `%s`: Expected empty in stderr, but get `%s`", tc.Name, errStream.String())
 		}
 	}
 }
@@ -153,11 +160,11 @@ func (r *errorRule) Enabled() bool {
 	return true
 }
 
-func (r *testRule) Type() string {
-	return issue.ERROR
+func (r *testRule) Severity() string {
+	return tflint.ERROR
 }
-func (r *errorRule) Type() string {
-	return issue.ERROR
+func (r *errorRule) Severity() string {
+	return tflint.ERROR
 }
 
 func (r *testRule) Link() string {
@@ -201,21 +208,21 @@ func TestCLIRun__issuesFound(t *testing.T) {
 			Command: "./tflint",
 			Rule:    &testRule{},
 			Status:  ExitCodeIssuesFound,
-			Stdout:  "This is test error (test_rule)",
+			Stdout:  fmt.Sprintf("%s (test_rule)", color.New(color.Bold).Sprint("This is test error")),
 		},
 		{
 			Name:    "`--force` option",
 			Command: "./tflint --force",
 			Rule:    &testRule{},
 			Status:  ExitCodeOK,
-			Stdout:  "This is test error (test_rule)",
+			Stdout:  fmt.Sprintf("%s (test_rule)", color.New(color.Bold).Sprint("This is test error")),
 		},
 		{
 			Name:    "`--quiet` option",
 			Command: "./tflint --quiet",
 			Rule:    &testRule{},
 			Status:  ExitCodeIssuesFound,
-			Stdout:  "This is test error (test_rule)",
+			Stdout:  fmt.Sprintf("%s (test_rule)", color.New(color.Bold).Sprint("This is test error")),
 		},
 		{
 			Name:    "checking errors are occurred",
@@ -248,6 +255,7 @@ func TestCLIRun__issuesFound(t *testing.T) {
 		loader.EXPECT().LoadConfig(".").Return(configs.NewEmptyConfig(), nil).AnyTimes()
 		loader.EXPECT().LoadAnnotations(".").Return(map[string]tflint.Annotations{}, nil).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, nil).AnyTimes()
+		loader.EXPECT().Sources().Return(map[string][]byte{}).AnyTimes()
 		cli.loader = loader
 
 		status := cli.Run(strings.Split(tc.Command, " "))
@@ -258,8 +266,14 @@ func TestCLIRun__issuesFound(t *testing.T) {
 		if !strings.Contains(outStream.String(), tc.Stdout) {
 			t.Fatalf("Failed `%s`: Expected to contain `%s` in stdout, but get `%s`", tc.Name, tc.Stdout, outStream.String())
 		}
+		if tc.Stdout == "" && outStream.String() != "" {
+			t.Fatalf("Failed `%s`: Expected empty in stdout, but get `%s`", tc.Name, outStream.String())
+		}
 		if !strings.Contains(errStream.String(), tc.Stderr) {
 			t.Fatalf("Failed `%s`: Expected to contain `%s` in stderr, but get `%s`", tc.Name, tc.Stderr, errStream.String())
+		}
+		if tc.Stderr == "" && errStream.String() != "" {
+			t.Fatalf("Failed `%s`: Expected empty in stderr, but get `%s`", tc.Name, errStream.String())
 		}
 	}
 }
@@ -278,14 +292,14 @@ func TestCLIRun__withArguments(t *testing.T) {
 			Command: "./tflint",
 			Dir:     ".",
 			Status:  ExitCodeIssuesFound,
-			Stdout:  "This is test error (test_rule)",
+			Stdout:  fmt.Sprintf("%s (test_rule)", color.New(color.Bold).Sprint("This is test error")),
 		},
 		{
 			Name:    "files arguments",
 			Command: "./tflint template.tf",
 			Dir:     ".",
 			Status:  ExitCodeOK,
-			Stdout:  "Awesome! Your code is following the best practices :)",
+			Stdout:  "",
 		},
 		{
 			Name:    "file not found",
@@ -306,21 +320,21 @@ func TestCLIRun__withArguments(t *testing.T) {
 			Command: "./tflint template.tf test.tf",
 			Dir:     ".",
 			Status:  ExitCodeIssuesFound,
-			Stdout:  "This is test error (test_rule)",
+			Stdout:  fmt.Sprintf("%s (test_rule)", color.New(color.Bold).Sprint("This is test error")),
 		},
 		{
 			Name:    "directory argument",
 			Command: "./tflint example",
 			Dir:     "example",
 			Status:  ExitCodeIssuesFound,
-			Stdout:  "This is test error (test_rule)",
+			Stdout:  fmt.Sprintf("%s (test_rule)", color.New(color.Bold).Sprint("This is test error")),
 		},
 		{
 			Name:    "file under the directory",
 			Command: fmt.Sprintf("./tflint %s", filepath.Join("example", "test.tf")),
 			Dir:     "example",
 			Status:  ExitCodeIssuesFound,
-			Stdout:  "This is test error (test_rule)",
+			Stdout:  fmt.Sprintf("%s (test_rule)", color.New(color.Bold).Sprint("This is test error")),
 		},
 		{
 			Name:    "multiple directories",
@@ -378,6 +392,7 @@ func TestCLIRun__withArguments(t *testing.T) {
 		loader.EXPECT().LoadConfig(tc.Dir).Return(configs.NewEmptyConfig(), nil).AnyTimes()
 		loader.EXPECT().LoadAnnotations(tc.Dir).Return(map[string]tflint.Annotations{}, nil).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, nil).AnyTimes()
+		loader.EXPECT().Sources().Return(map[string][]byte{}).AnyTimes()
 		cli.loader = loader
 
 		status := cli.Run(strings.Split(tc.Command, " "))
@@ -388,8 +403,14 @@ func TestCLIRun__withArguments(t *testing.T) {
 		if !strings.Contains(outStream.String(), tc.Stdout) {
 			t.Fatalf("Failed `%s`: Expected to contain `%s` in stdout, but get `%s`", tc.Name, tc.Stdout, outStream.String())
 		}
+		if tc.Stdout == "" && outStream.String() != "" {
+			t.Fatalf("Failed `%s`: Expected empty in stdout, but get `%s`", tc.Name, outStream.String())
+		}
 		if !strings.Contains(errStream.String(), tc.Stderr) {
 			t.Fatalf("Failed `%s`: Expected to contain `%s` in stderr, but get `%s`", tc.Name, tc.Stderr, errStream.String())
+		}
+		if tc.Stderr == "" && errStream.String() != "" {
+			t.Fatalf("Failed `%s`: Expected empty in stderr, but get `%s`", tc.Name, errStream.String())
 		}
 	}
 }

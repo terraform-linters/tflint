@@ -7,7 +7,6 @@ import (
 	"regexp"
 
 	"github.com/hashicorp/hcl2/hcl"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -37,9 +36,9 @@ func (r *AwsSecurityhubStandardsSubscriptionInvalidStandardsArnRule) Enabled() b
 	return true
 }
 
-// Type returns the rule severity
-func (r *AwsSecurityhubStandardsSubscriptionInvalidStandardsArnRule) Type() string {
-	return issue.ERROR
+// Severity returns the rule severity
+func (r *AwsSecurityhubStandardsSubscriptionInvalidStandardsArnRule) Severity() string {
+	return tflint.ERROR
 }
 
 // Link returns the rule reference link

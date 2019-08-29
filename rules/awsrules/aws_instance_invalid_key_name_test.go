@@ -9,11 +9,12 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/client"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -22,7 +23,7 @@ func Test_AwsInstanceInvalidKeyName(t *testing.T) {
 		Name     string
 		Content  string
 		Response []*ec2.KeyPairInfo
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "Key name is invalid",
@@ -38,13 +39,15 @@ resource "aws_instance" "web" {
 					KeyName: aws.String("fugafuga"),
 				},
 			},
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_instance_invalid_key_name",
-					Type:     "ERROR",
-					Message:  "\"foo\" is invalid key name.",
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsInstanceInvalidKeyNameRule(),
+					Message: "\"foo\" is invalid key name.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 3, Column: 16},
+						End:      hcl.Pos{Line: 3, Column: 21},
+					},
 				},
 			},
 		},
@@ -62,7 +65,7 @@ resource "aws_instance" "web" {
 					KeyName: aws.String("bar"),
 				},
 			},
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -122,8 +125,12 @@ resource "aws_instance" "web" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsInstanceInvalidKeyNameRule{}),
+			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }

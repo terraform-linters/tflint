@@ -5,7 +5,6 @@ import (
 	"log"
 	"strings"
 
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
@@ -28,9 +27,9 @@ func (r *TerraformDashInResourceNameRule) Enabled() bool {
 	return false
 }
 
-// Type returns the rule severity
-func (r *TerraformDashInResourceNameRule) Type() string {
-	return issue.NOTICE
+// Severity returns the rule severity
+func (r *TerraformDashInResourceNameRule) Severity() string {
+	return tflint.NOTICE
 }
 
 // Link returns the rule reference link

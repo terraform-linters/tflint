@@ -8,10 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/issue"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -19,7 +19,7 @@ func Test_AwsDatasyncLocationS3InvalidS3BucketArnRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected issue.Issues
+		Expected tflint.Issues
 	}{
 		{
 			Name: "It includes invalid characters",
@@ -27,13 +27,10 @@ func Test_AwsDatasyncLocationS3InvalidS3BucketArnRule(t *testing.T) {
 resource "aws_datasync_location_s3" "foo" {
 	s3_bucket_arn = "arn:aws:eks:us-east-1:123456789012:cluster/my-cluster"
 }`,
-			Expected: []*issue.Issue{
+			Expected: tflint.Issues{
 				{
-					Detector: "aws_datasync_location_s3_invalid_s3_bucket_arn",
-					Type:     "ERROR",
-					Message:  `s3_bucket_arn does not match valid pattern ^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):s3:::([^/]*)$`,
-					Line:     3,
-					File:     "resource.tf",
+					Rule:    NewAwsDatasyncLocationS3InvalidS3BucketArnRule(),
+					Message: `s3_bucket_arn does not match valid pattern ^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):s3:::([^/]*)$`,
 				},
 			},
 		},
@@ -43,7 +40,7 @@ resource "aws_datasync_location_s3" "foo" {
 resource "aws_datasync_location_s3" "foo" {
 	s3_bucket_arn = "arn:aws:s3:::my_corporate_bucket"
 }`,
-			Expected: []*issue.Issue{},
+			Expected: tflint.Issues{},
 		},
 	}
 
@@ -94,8 +91,12 @@ resource "aws_datasync_location_s3" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if !cmp.Equal(tc.Expected, runner.Issues) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues))
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(AwsDatasyncLocationS3InvalidS3BucketArnRule{}),
+			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
+		}
+		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
 		}
 	}
 }
