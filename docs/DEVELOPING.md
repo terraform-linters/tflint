@@ -39,7 +39,8 @@ It inspects `configs.Config` via `tflint.Runner`. All rules implement the `Check
 
 You need Go 1.12 or later to build.
 
-```
+```console
+$ make tools
 $ make build
 ```
 

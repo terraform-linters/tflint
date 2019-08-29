@@ -13,13 +13,13 @@ build: test
 install: test
 	go install
 
-release: test
-	goreleaser --rm-dist
-
 clean:
 	rm -rf dist/
 
 code: prepare
 	go generate ./...
 
-.PHONY: default prepare test build install release clean code
+tools:
+	go install github.com/golang/mock/mockgen
+
+.PHONY: prepare test build install clean code tools
