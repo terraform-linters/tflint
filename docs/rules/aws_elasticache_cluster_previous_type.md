@@ -19,7 +19,7 @@ resource "aws_elasticache_cluster" "redis" {
 }
 ```
 
-```console
+```
 $ tflint
 1 issue(s) found:
 
@@ -29,7 +29,7 @@ Warning: "cache.t1.micro" is previous generation node type. (aws_elasticache_clu
    6:   node_type            = "cache.t1.micro" // previous node type!
 
 Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/aws_elasticache_cluster_previous_type.md
-
+ 
 ```
 
 ## Why

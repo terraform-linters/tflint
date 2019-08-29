@@ -22,7 +22,7 @@ resource "aws_db_instance" "mysql" {
 }
 ```
 
-```console
+```
 $ tflint
 1 issue(s) found:
 
@@ -32,7 +32,7 @@ Notice: "default.mysql5.7" is default parameter group. You cannot edit it. (aws_
   13:   parameter_group_name   = "default.mysql5.7" // default DB parameter group!
 
 Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/aws_db_instance_default_parameter_group.md
-
+ 
 ```
 
 ## Why

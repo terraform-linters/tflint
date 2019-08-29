@@ -18,7 +18,7 @@ module "default_mercurial" {
 }
 ```
 
-```console
+```
 $ tflint
 3 issue(s) found:
 
@@ -42,7 +42,7 @@ Warning: Module source "hg::http://hashicorp.com/consul.hg?rev=default" uses def
   10:   source = "hg::http://hashicorp.com/consul.hg?rev=default"
 
 Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/terraform_module_pinned_source.md
-
+ 
 ```
 
 ## Why

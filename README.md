@@ -13,13 +13,9 @@ TFLint is a [Terraform](https://www.terraform.io/) linter focused on possible er
 Terraform is a great tool for Infrastructure as Code. However, many of these tools don't validate provider-specific issues. For example, see the following configuration file:
 
 ```hcl
-resource "aws_instance" "web" {
-  ami           = "ami-b73b63a0"
+resource "aws_instance" "foo" {
+  ami           = "ami-0ff8a91507f77f867"
   instance_type = "t1.2xlarge" # invalid type!
-
-  tags {
-    Name = "HelloWorld"
-  }
 }
 ```
 
@@ -27,22 +23,13 @@ Since `t1.2xlarge` is a nonexistent instance type, an error will occur when you 
 
 TFLint finds such errors in advance:
 
-```console
-$ tflint
-1 issue(s) found:
-
-Error: instance_type is not a valid value (aws_instance_invalid_type)
-
-  on template.tf line 3:
-   3:   instance_type = "t1.2xlarge" # invalid type!
-
-```
+![demo](docs/assets/demo.gif)
 
 ## Installation
 
 You can download the binary built for your architecture from [the latest release](https://github.com/wata727/tflint/releases/latest). The following is an example of installation on macOS:
 
-```
+```console
 $ wget https://github.com/wata727/tflint/releases/download/v0.10.3/tflint_darwin_amd64.zip
 $ unzip tflint_darwin_amd64.zip
 Archive:  tflint_darwin_amd64.zip
@@ -59,7 +46,7 @@ For Linux based OS, you can use the [`install_linux.sh`](https://raw.githubuserc
 
 macOS users can also use [Homebrew](https://brew.sh) to install TFLint:
 
-```
+```console
 $ brew install tflint
 ```
 
@@ -67,7 +54,7 @@ $ brew install tflint
 
 You can also use [TFLint via Docker](https://hub.docker.com/r/wata727/tflint/).
 
-```
+```console
 $ docker run --rm -v $(pwd):/data -t wata727/tflint
 ```
 
@@ -128,7 +115,7 @@ TFLint returns the following exit statuses on exit:
 
 If you don't get the expected behavior, you can see the detailed logs when running with `TFLINT_LOG` environment variable.
 
-```
+```console
 $ TFLINT_LOG=debug tflint
 ```
 

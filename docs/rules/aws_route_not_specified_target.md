@@ -11,7 +11,7 @@ resource "aws_route" "foo" {
 }
 ```
 
-```console
+```
 $ tflint
 1 issue(s) found:
 
@@ -21,7 +21,7 @@ Error: The routing target is not specified, each aws_route must contain either e
    1: resource "aws_route" "foo" {
 
 Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/aws_route_not_specified_target.md
-
+ 
 ```
 
 ## Why
