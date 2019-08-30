@@ -59,12 +59,6 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Stdout:  "",
 		},
 		{
-			Name:    "`--quiet` option",
-			Command: "./tflint --quiet",
-			Status:  ExitCodeOK,
-			Stdout:  "", // TODO: Remove this option
-		},
-		{
 			Name:    "loading errors are occurred",
 			Command: "./tflint",
 			LoadErr: errors.New("Load error occurred"),
@@ -88,6 +82,12 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Command: "./tflint --error-with-issues",
 			Status:  ExitCodeError,
 			Stderr:  "`error-with-issues` option was removed in v0.9.0. The behavior is now default",
+		},
+		{
+			Name:    "removed `--quiet` option",
+			Command: "./tflint --quiet",
+			Status:  ExitCodeError,
+			Stderr:  "`quiet` option was removed in v0.11.0. The behavior is now default",
 		},
 		{
 			Name:    "invalid options",
@@ -215,13 +215,6 @@ func TestCLIRun__issuesFound(t *testing.T) {
 			Command: "./tflint --force",
 			Rule:    &testRule{},
 			Status:  ExitCodeOK,
-			Stdout:  fmt.Sprintf("%s (test_rule)", color.New(color.Bold).Sprint("This is test error")),
-		},
-		{
-			Name:    "`--quiet` option",
-			Command: "./tflint --quiet",
-			Rule:    &testRule{},
-			Status:  ExitCodeIssuesFound,
 			Stdout:  fmt.Sprintf("%s (test_rule)", color.New(color.Bold).Sprint("This is test error")),
 		},
 		{

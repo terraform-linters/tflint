@@ -55,6 +55,9 @@ func (cli *CLI) Run(args []string) int {
 		if option == "error-with-issues" {
 			return []string{}, errors.New("`error-with-issues` option was removed in v0.9.0. The behavior is now default")
 		}
+		if option == "quiet" || option == "q" {
+			return []string{}, errors.New("`quiet` option was removed in v0.11.0. The behavior is now default")
+		}
 		return []string{}, fmt.Errorf("`%s` is unknown option. Please run `tflint --help`", option)
 	}
 	// Parse commandline flag
@@ -64,7 +67,6 @@ func (cli *CLI) Run(args []string) int {
 		Stdout: cli.outStream,
 		Stderr: cli.errStream,
 		Format: opts.Format,
-		Quiet:  opts.Quiet,
 	}
 	if err != nil {
 		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {
