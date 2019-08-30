@@ -20,7 +20,7 @@ output "description" {
 }
 ```
 
-```console
+```
 $ tflint
 2 issue(s) found:
 
@@ -37,7 +37,7 @@ Notice: `empty_description` output has no description (terraform_documented_outp
    5: output "empty_description" {
 
 Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/terraform_documented_outputs.md
-
+ 
 ```
 
 ## Why
