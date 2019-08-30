@@ -108,8 +108,8 @@ See [User guide](docs/guides) for each option.
 TFLint returns the following exit statuses on exit:
 
 - 0: No issues found
-- 1: Errors occurred
-- 2: No errors occurred, but issues found
+- 2: Errors occurred
+- 3: No errors occurred, but issues found
 
 ## Debugging
 
