@@ -25,6 +25,7 @@ type Options struct {
 	AwsCredsFile string   `long:"aws-creds-file" description:"AWS shared credentials file path used in deep checking" value-name:"FILE"`
 	AwsRegion    string   `long:"aws-region" description:"AWS region used in deep check mode" value-name:"REGION"`
 	Force        bool     `long:"force" description:"Return zero exit status even if issues found"`
+	NoColor      bool     `long:"no-color" description:"Disable colorized output"`
 }
 
 func (opts *Options) toConfig() *tflint.Config {

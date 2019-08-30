@@ -90,7 +90,7 @@ func (f *Formatter) printErrors(err *tflint.Error, sources map[string][]byte) {
 	if diags, ok := err.Cause.(hcl.Diagnostics); ok {
 		fmt.Fprintf(f.Stderr, "%s. %d error(s) occurred:\n\n", err.Message, len(diags.Errs()))
 
-		writer := hcl.NewDiagnosticTextWriter(f.Stderr, parseSources(sources), 0, true)
+		writer := hcl.NewDiagnosticTextWriter(f.Stderr, parseSources(sources), 0, !f.NoColor)
 		writer.WriteDiagnostics(diags)
 	} else {
 		fmt.Fprintf(f.Stderr, "%s. An error occurred:\n\n", err.Message)

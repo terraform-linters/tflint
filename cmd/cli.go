@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/fatih/color"
 	flags "github.com/jessevdk/go-flags"
 	"github.com/spf13/afero"
 
@@ -69,6 +70,11 @@ func (cli *CLI) Run(args []string) int {
 		Stderr: cli.errStream,
 		Format: opts.Format,
 	}
+	if opts.NoColor {
+		color.NoColor = true
+		formatter.NoColor = true
+	}
+
 	if err != nil {
 		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {
 			fmt.Fprintln(cli.outStream, err)

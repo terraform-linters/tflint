@@ -9,9 +9,10 @@ import (
 
 // Formatter outputs appropriate results to stdout and stderr depending on the format
 type Formatter struct {
-	Stdout io.Writer
-	Stderr io.Writer
-	Format string
+	Stdout  io.Writer
+	Stderr  io.Writer
+	Format  string
+	NoColor bool
 }
 
 // Print outputs the given issues and errors according to configured format

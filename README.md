@@ -95,6 +95,7 @@ Application Options:
       --aws-creds-file=FILE                 AWS shared credentials file path used in deep checking
       --aws-region=REGION                   AWS region used in deep check mode
       --force                               Return zero exit status even if issues found
+      --no-color                            Disable colorized output
 
 Help Options:
   -h, --help                                Show this help message

@@ -218,6 +218,13 @@ func TestCLIRun__issuesFound(t *testing.T) {
 			Stdout:  fmt.Sprintf("%s (test_rule)", color.New(color.Bold).Sprint("This is test error")),
 		},
 		{
+			Name:    "`--no-color` option",
+			Command: "./tflint --no-color",
+			Rule:    &testRule{},
+			Status:  ExitCodeIssuesFound,
+			Stdout:  "This is test error (test_rule)",
+		},
+		{
 			Name:    "checking errors are occurred",
 			Command: "./tflint",
 			Rule:    &errorRule{},
