@@ -16,9 +16,10 @@ type Rule interface {
 }
 
 // DefaultRules is rules by default
-var DefaultRules = append(manualRules, modelRules...)
+var DefaultRules = append(manualDefaultRules, modelRules...)
+var deepCheckRules = append(manualDeepCheckRules, apiRules...)
 
-var manualRules = []Rule{
+var manualDefaultRules = []Rule{
 	awsrules.NewAwsDBInstanceDefaultParameterGroupRule(),
 	awsrules.NewAwsDBInstanceInvalidTypeRule(),
 	awsrules.NewAwsDBInstancePreviousTypeRule(),
@@ -36,33 +37,9 @@ var manualRules = []Rule{
 	terraformrules.NewTerraformModulePinnedSourceRule(),
 }
 
-var deepCheckRules = []Rule{
-	awsrules.NewAwsALBInvalidSecurityGroupRule(),
-	awsrules.NewAwsALBInvalidSubnetRule(),
-	awsrules.NewAwsDBInstanceInvalidDBSubnetGroupRule(),
-	awsrules.NewAwsDBInstanceInvalidOptionGroupRule(),
-	awsrules.NewAwsDBInstanceInvalidParameterGroupRule(),
-	awsrules.NewAwsDBInstanceInvalidVPCSecurityGroupRule(),
-	awsrules.NewAwsElastiCacheClusterInvalidParameterGroupRule(),
-	awsrules.NewAwsElastiCacheClusterInvalidSecurityGroupRule(),
-	awsrules.NewAwsElastiCacheClusterInvalidSubnetGroupRule(),
-	awsrules.NewAwsELBInvalidInstanceRule(),
-	awsrules.NewAwsELBInvalidSecurityGroupRule(),
-	awsrules.NewAwsELBInvalidSubnetRule(),
+var manualDeepCheckRules = []Rule{
 	awsrules.NewAwsInstanceInvalidAMIRule(),
-	awsrules.NewAwsInstanceInvalidIAMProfileRule(),
-	awsrules.NewAwsInstanceInvalidKeyNameRule(),
-	awsrules.NewAwsInstanceInvalidSubnetRule(),
-	awsrules.NewAwsInstanceInvalidVPCSecurityGroupRule(),
 	awsrules.NewAwsLaunchConfigurationInvalidImageIDRule(),
-	awsrules.NewAwsLaunchConfigurationInvalidIAMProfileRule(),
-	awsrules.NewAwsRouteInvalidEgressOnlyGatewayRule(),
-	awsrules.NewAwsRouteInvalidGatewayRule(),
-	awsrules.NewAwsRouteInvalidInstanceRule(),
-	awsrules.NewAwsRouteInvalidNatGatewayRule(),
-	awsrules.NewAwsRouteInvalidNetworkInterfaceRule(),
-	awsrules.NewAwsRouteInvalidRouteTableRule(),
-	awsrules.NewAwsRouteInvalidVPCPeeringConnectionRule(),
 }
 
 // NewRules returns rules according to configuration
