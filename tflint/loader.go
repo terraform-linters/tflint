@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -15,8 +14,8 @@ import (
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/hcl2/hcl/hclsyntax"
 	"github.com/hashicorp/terraform/configs"
-	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/spf13/afero"
 )
 
 //go:generate mockgen -source loader.go -destination loader_mock.go -package tflint
@@ -31,7 +30,8 @@ type AbstractLoader interface {
 
 // Loader is a wrapper of Terraform's configload.Loader
 type Loader struct {
-	loader               *configload.Loader
+	parser               *configs.Parser
+	fs                   afero.Afero
 	currentDir           string
 	config               *Config
 	moduleSourceVersions map[string][]*version.Version
@@ -52,19 +52,12 @@ type moduleManifestFile struct {
 }
 
 // NewLoader returns a loader with module manifests
-func NewLoader(cfg *Config) (*Loader, error) {
+func NewLoader(fs afero.Afero, cfg *Config) (*Loader, error) {
 	log.Print("[INFO] Initialize new loader")
 
-	loader, err := configload.NewLoader(&configload.Config{
-		ModulesDir: getTFModuleDir(),
-	})
-	if err != nil {
-		log.Printf("[ERROR] %s", err)
-		return nil, err
-	}
-
 	l := &Loader{
-		loader:               loader,
+		parser:               configs.NewParser(fs),
+		fs:                   fs,
 		config:               cfg,
 		moduleSourceVersions: map[string][]*version.Version{},
 		moduleManifest:       map[string]*moduleManifest{},
@@ -86,7 +79,7 @@ func NewLoader(cfg *Config) (*Loader, error) {
 func (l *Loader) LoadConfig(dir string) (*configs.Config, error) {
 	l.currentDir = dir
 	log.Printf("[INFO] Load configurations under %s", dir)
-	rootMod, diags := l.loader.Parser().LoadConfigDir(dir)
+	rootMod, diags := l.parser.LoadConfigDir(dir)
 	if diags.HasErrors() {
 		log.Printf("[ERROR] %s", diags)
 		return nil, diags
@@ -113,7 +106,7 @@ func (l *Loader) LoadConfig(dir string) (*configs.Config, error) {
 
 // LoadAnnotations load TFLint annotation comments as HCL tokens.
 func (l *Loader) LoadAnnotations(dir string) (map[string]Annotations, error) {
-	primary, override, diags := l.loader.Parser().ConfigDirFiles(dir)
+	primary, override, diags := l.parser.ConfigDirFiles(dir)
 	if diags != nil {
 		log.Printf("[ERROR] %s", diags)
 		return nil, diags
@@ -123,7 +116,7 @@ func (l *Loader) LoadAnnotations(dir string) (map[string]Annotations, error) {
 	ret := map[string]Annotations{}
 
 	for _, configFile := range configFiles {
-		src, err := ioutil.ReadFile(configFile)
+		src, err := l.fs.ReadFile(configFile)
 		if err != nil {
 			return nil, err
 		}
@@ -151,7 +144,7 @@ func (l *Loader) LoadValuesFiles(files ...string) ([]terraform.InputValues, erro
 		}
 	}
 
-	autoLoadFiles, err := autoLoadValuesFiles()
+	autoLoadFiles, err := l.autoLoadValuesFiles()
 	if err != nil {
 		log.Printf("[ERROR] %s", err)
 		return nil, err
@@ -180,14 +173,14 @@ func (l *Loader) LoadValuesFiles(files ...string) ([]terraform.InputValues, erro
 
 // Sources returns the source code cache for the underlying parser of this loader
 func (l *Loader) Sources() map[string][]byte {
-	return l.loader.Sources()
+	return l.parser.Sources()
 }
 
 // autoLoadValuesFiles returns all files which match *.auto.tfvars present in the current directory
 // The list is sorted alphabetically. This is equivalent to priority
 // Please note that terraform.tfvars is not included in this list
-func autoLoadValuesFiles() ([]string, error) {
-	files, err := ioutil.ReadDir(".")
+func (l *Loader) autoLoadValuesFiles() ([]string, error) {
+	files, err := l.fs.ReadDir(".")
 	if err != nil {
 		return nil, err
 	}
@@ -209,7 +202,7 @@ func autoLoadValuesFiles() ([]string, error) {
 
 func (l *Loader) loadValuesFile(file string, sourceType terraform.ValueSourceType) (terraform.InputValues, error) {
 	log.Printf("[INFO] Load `%s`", file)
-	vals, diags := l.loader.Parser().LoadValuesFile(file)
+	vals, diags := l.parser.LoadValuesFile(file)
 	if diags.HasErrors() {
 		log.Printf("[ERROR] %s", diags)
 		if diags[0].Subject == nil {
@@ -250,7 +243,7 @@ func (l *Loader) moduleWalker() configs.ModuleWalker {
 		}
 		log.Printf("[DEBUG] Trying to load the module: key=%s, version=%s, dir=%s", key, record.VersionStr, dir)
 
-		mod, diags := l.loader.Parser().LoadConfigDir(dir)
+		mod, diags := l.parser.LoadConfigDir(dir)
 		return mod, record.Version, diags
 	})
 }
@@ -262,7 +255,7 @@ func (l *Loader) ignoreModuleWalker() configs.ModuleWalker {
 }
 
 func (l *Loader) initializeModuleManifest() error {
-	file, err := ioutil.ReadFile(getTFModuleManifestPath())
+	file, err := l.fs.ReadFile(getTFModuleManifestPath())
 	if err != nil {
 		return err
 	}

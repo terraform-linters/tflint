@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/spf13/afero"
 	"github.com/wata727/tflint/client"
 )
 
@@ -21,7 +22,7 @@ func Test_Get(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader(EmptyConfig())
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -114,7 +115,7 @@ func Test_Get_withEmptyProvider(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader(EmptyConfig())
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}

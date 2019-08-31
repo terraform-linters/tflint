@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/hcl2/hcl/hclsyntax"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/spf13/afero"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -27,7 +28,7 @@ func Test_LoadConfig_v0_12_0(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader(moduleConfig())
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -105,7 +106,7 @@ func Test_LoadConfig_moduleNotFound(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader(moduleConfig())
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -132,7 +133,7 @@ func Test_LoadConfig_disableModules(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader(EmptyConfig())
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -158,7 +159,7 @@ func Test_LoadConfig_invalidConfiguration(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader(EmptyConfig())
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -184,7 +185,7 @@ func Test_LoadAnnotations(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	loader, err := NewLoader(EmptyConfig())
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -242,7 +243,7 @@ func Test_LoadValuesFiles(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	loader, err := NewLoader(EmptyConfig())
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -300,7 +301,7 @@ func Test_LoadValuesFiles_invalidValuesFile(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	loader, err := NewLoader(EmptyConfig())
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}

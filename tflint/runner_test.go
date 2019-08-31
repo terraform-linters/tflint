@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/hcl2/hcl/hclsyntax"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/spf13/afero"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -1063,7 +1064,7 @@ func Test_NewModuleRunners_noModules(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader(moduleConfig())
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -1095,7 +1096,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader(moduleConfig())
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -1223,7 +1224,7 @@ func Test_NewModuleRunners_modVars(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader(moduleConfig())
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -1322,7 +1323,7 @@ func Test_NewModuleRunners_ignoreModules(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader(moduleConfig())
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -1357,7 +1358,7 @@ func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader(moduleConfig())
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
@@ -1407,7 +1408,7 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	loader, err := NewLoader(moduleConfig())
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, moduleConfig())
 	if err != nil {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}

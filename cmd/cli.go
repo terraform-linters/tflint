@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	flags "github.com/jessevdk/go-flags"
+	"github.com/spf13/afero"
 
 	"github.com/wata727/tflint/formatter"
 	"github.com/wata727/tflint/project"
@@ -96,7 +97,7 @@ func (cli *CLI) Run(args []string) int {
 
 	// Load Terraform's configurations
 	if !cli.testMode {
-		cli.loader, err = tflint.NewLoader(cfg)
+		cli.loader, err = tflint.NewLoader(afero.Afero{Fs: afero.NewOsFs()}, cfg)
 		if err != nil {
 			formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to prepare loading", err), map[string][]byte{})
 			return ExitCodeError
