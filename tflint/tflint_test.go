@@ -1,17 +1,15 @@
 package tflint
 
 import (
-	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"runtime"
 	"testing"
 
-	"github.com/hashicorp/hcl2/hcl"
-	"github.com/hashicorp/terraform/configs"
-	"github.com/hashicorp/terraform/configs/configload"
+	"github.com/hashicorp/terraform/terraform"
+	"github.com/spf13/afero"
 )
 
 func TestMain(m *testing.M) {
@@ -19,44 +17,132 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func loadConfigHelper(dir string) (*configs.Config, error) {
-	loader, err := configload.NewLoader(&configload.Config{})
-	if err != nil {
-		return nil, err
+func assertAppError(t *testing.T, expected Error, got error) {
+	if appErr, ok := got.(*Error); ok {
+		if appErr == nil {
+			t.Fatalf("expected err is `%s`, but nothing occurred", expected.Error())
+		}
+		if appErr.Code != expected.Code {
+			t.Fatalf("expected error code is `%d`, but get `%d`", expected.Code, appErr.Code)
+		}
+		if appErr.Level != expected.Level {
+			t.Fatalf("expected error level is `%d`, but get `%d`", expected.Level, appErr.Level)
+		}
+		if appErr.Error() != expected.Error() {
+			t.Fatalf("expected error is `%s`, but get `%s`", expected.Error(), appErr.Error())
+		}
+	} else {
+		t.Fatalf("unexpected error occurred: %s", got)
 	}
-
-	mod, diags := loader.Parser().LoadConfigDir(dir)
-	if diags.HasErrors() {
-		return nil, diags
-	}
-	cfg, diags := configs.BuildConfig(mod, configs.DisabledModuleWalker)
-	if diags.HasErrors() {
-		return nil, diags
-	}
-
-	return cfg, nil
 }
 
-func extractAttributeHelper(key string, cfg *configs.Config) (*hcl.Attribute, error) {
-	resource := cfg.Module.ManagedResources["null_resource.test"]
-	if resource == nil {
-		return nil, errors.New("Expected resource is not found")
+func testRunnerWithInputVariables(t *testing.T, files map[string]string, variables ...terraform.InputValues) *Runner {
+	config := EmptyConfig()
+	fs := afero.Afero{Fs: afero.NewMemMapFs()}
+	for name, src := range files {
+		err := fs.WriteFile(name, []byte(src), os.ModePerm)
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
-	body, _, diags := resource.Config.PartialContent(&hcl.BodySchema{
-		Attributes: []hcl.AttributeSchema{
-			{
-				Name: key,
-			},
-		},
-	})
-	if diags.HasErrors() {
-		return nil, diags
+
+	loader, err := NewLoader(fs, config)
+	if err != nil {
+		t.Fatal(err)
 	}
-	attribute := body.Attributes[key]
-	if attribute == nil {
-		return nil, fmt.Errorf("Expected attribute is not found: %s", key)
+
+	cfg, err := loader.LoadConfig(".")
+	if err != nil {
+		t.Fatal(err)
 	}
-	return attribute, nil
+
+	runner, err := NewRunner(config, map[string]Annotations{}, cfg, variables...)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return runner
+}
+
+func withEnvVars(t *testing.T, envVars map[string]string, test func()) {
+	for key, value := range envVars {
+		err := os.Setenv(key, value)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	defer func() {
+		for key := range envVars {
+			err := os.Unsetenv(key)
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+	}()
+
+	test()
+}
+
+func withinFixtureDir(t *testing.T, dir string, test func()) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(currentDir)
+
+	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", dir))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	test()
+}
+
+func testRunnerWithOsFs(t *testing.T, config *Config) *Runner {
+	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, config)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cfg, err := loader.LoadConfig(".")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	runner, err := NewRunner(config, map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return runner
+}
+
+func testRunnerWithAnnotations(t *testing.T, files map[string]string, annotations map[string]Annotations) *Runner {
+	config := EmptyConfig()
+	fs := afero.Afero{Fs: afero.NewMemMapFs()}
+	for name, src := range files {
+		err := fs.WriteFile(name, []byte(src), os.ModePerm)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	loader, err := NewLoader(fs, config)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cfg, err := loader.LoadConfig(".")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	runner, err := NewRunner(config, annotations, cfg, map[string]*terraform.InputValue{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return runner
 }
 
 func moduleConfig() *Config {
