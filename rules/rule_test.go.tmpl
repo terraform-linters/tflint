@@ -2,18 +2,11 @@ package awsrules
 
 import (
 	"errors"
-	"io/ioutil"
-	"os"
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/hcl2/hcl"
-	"github.com/hashicorp/terraform/configs"
-	"github.com/hashicorp/terraform/configs/configload"
-	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/mock"
+	"github.com/wata727/tflint/client"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -45,137 +38,58 @@ resource "null_resource" "null" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "{{ .RuleNameCC }}")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
-	err = os.Chdir(dir)
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	for _, tc := range cases {
-		loader, err := configload.NewLoader(&configload.Config{})
-		if err != nil {
-			t.Fatal(err)
-		}
+		runner := tflint.TestRunner(t, map[string]string{"resource.tf": tc.Content})
 
-		err = ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		mod, diags := loader.Parser().LoadConfigDir(".")
-		if diags.HasErrors() {
-			t.Fatal(diags)
-		}
-		cfg, tfdiags := configs.BuildConfig(mod, configs.DisabledModuleWalker)
-		if tfdiags.HasErrors() {
-			t.Fatal(tfdiags)
-		}
-
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatal(err)
-		}
-		rule := New{{ .RuleNameCC }}Rule()
-
-		mock := mock.NewMockAPI(ctrl)
+		mock := client.NewMockAPI(ctrl)
 		mock.EXPECT().CallAPI().Return(tc.Response, nil)
 		runner.AwsClient.Service = mock
 
-		if err = rule.Check(runner); err != nil {
+		rule := New{{ .RuleNameCC }}Rule()
+		if err := rule.Check(runner); err != nil {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		opts := []cmp.Option{
-			cmpopts.IgnoreUnexported({{ .RuleNameCC }}Rule{}),
-			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
-		}
-		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
-		}
+		tflint.AssertIssues(t, tc.Expected, runner.Issues)
 	}
 }
 
 func Test_{{ .RuleNameCC }}_error(t *testing.T) {
 	cases := []struct {
-		Name       string
-		Content    string
-		Response   error
-		ErrorCode  int
-		ErrorLevel int
-		ErrorText  string
+		Name     string
+		Content  string
+		Response error
+		Error    tflint.Error
 	}{
 		{
 			Name: "API error",
 			Content: `
 resource "null_resource" "null" {
 }`,
-			Response:   errors.New("Some error"),
-			ErrorCode:  tflint.ExternalAPIError,
-			ErrorLevel: tflint.ErrorLevel,
-			ErrorText:  "Some error",
+			Response: errors.New("Some error"),
+			Error: tflint.Error{
+				Code:    tflint.ExternalAPIError,
+				Level:   tflint.ErrorLevel,
+				Message: "Some error",
+			},
 		},
 	}
-
-	dir, err := ioutil.TempDir("", "{{ .RuleNameCC }}_error")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	for _, tc := range cases {
-		loader, err := configload.NewLoader(&configload.Config{})
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		err = ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		mod, diags := loader.Parser().LoadConfigDir(dir)
-		if diags.HasErrors() {
-			t.Fatal(diags)
-		}
-		cfg, tfdiags := configs.BuildConfig(mod, configs.DisabledModuleWalker)
-		if tfdiags.HasErrors() {
-			t.Fatal(tfdiags)
-		}
-
-		runner := tflint.NewRunner(tflint.EmptyConfig(), cfg, map[string]*terraform.InputValue{})
-		rule := New{{ .RuleNameCC }}Rule()
+		runner := tflint.TestRunner(t, map[string]string{"resource.tf": tc.Content})
 
 		mock := mock.NewMockAPI(ctrl)
 		mock.EXPECT().CallAPI().Return(nil, tc.Response)
 		runner.AwsClient.Service = mock
 
-		err = rule.Check(runner)
-		if appErr, ok := err.(*tflint.Error); ok {
-			if appErr == nil {
-				t.Fatalf("Failed `%s` test: expected err is `%s`, but nothing occurred", tc.Name, tc.ErrorText)
-			}
-			if appErr.Code != tc.ErrorCode {
-				t.Fatalf("Failed `%s` test: expected error code is `%d`, but get `%d`", tc.Name, tc.ErrorCode, appErr.Code)
-			}
-			if appErr.Level != tc.ErrorLevel {
-				t.Fatalf("Failed `%s` test: expected error level is `%d`, but get `%d`", tc.Name, tc.ErrorLevel, appErr.Level)
-			}
-			if appErr.Error() != tc.ErrorText {
-				t.Fatalf("Failed `%s` test: expected error is `%s`, but get `%s`", tc.Name, tc.ErrorText, appErr.Error())
-			}
-		} else {
-			t.Fatalf("Failed `%s` test: unexpected error occurred: %s", tc.Name, err)
-		}
+		rule := New{{ .RuleNameCC }}Rule()
+		err := rule.Check(runner)
+		tflint.AssertAppError(t, tc.Error, err)
 	}
 }

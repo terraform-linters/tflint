@@ -1,17 +1,9 @@
 package terraformrules
 
 import (
-	"io/ioutil"
-	"os"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
-	version "github.com/hashicorp/go-version"
 	"github.com/hashicorp/hcl2/hcl"
-	"github.com/hashicorp/terraform/configs"
-	"github.com/hashicorp/terraform/configs/configload"
-	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -293,61 +285,15 @@ module "pinned_mercurial" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "TerraformModulePinnedSource")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
-	currentDir, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.Chdir(currentDir)
-
-	err = os.Chdir(dir)
-	if err != nil {
-		t.Fatal(err)
-	}
+	rule := NewTerraformModulePinnedSourceRule()
 
 	for _, tc := range cases {
-		loader, err := configload.NewLoader(&configload.Config{})
-		if err != nil {
-			t.Fatal(err)
-		}
+		runner := tflint.TestRunner(t, map[string]string{"module.tf": tc.Content})
 
-		err = ioutil.WriteFile(dir+"/module.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		mod, diags := loader.Parser().LoadConfigDir(".")
-		if diags.HasErrors() {
-			t.Fatal(diags)
-		}
-		cfg, tfdiags := configs.BuildConfig(mod, configs.ModuleWalkerFunc(func(req *configs.ModuleRequest) (*configs.Module, *version.Version, hcl.Diagnostics) {
-			return nil, nil, nil
-		}))
-		if tfdiags.HasErrors() {
-			t.Fatal(tfdiags)
-		}
-
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatal(err)
-		}
-		rule := NewTerraformModulePinnedSourceRule()
-
-		if err = rule.Check(runner); err != nil {
+		if err := rule.Check(runner); err != nil {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		opts := []cmp.Option{
-			cmpopts.IgnoreUnexported(TerraformModulePinnedSourceRule{}),
-			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
-		}
-		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
-		}
+		tflint.AssertIssues(t, tc.Expected, runner.Issues)
 	}
 }

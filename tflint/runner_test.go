@@ -512,7 +512,7 @@ resource "null_resource" "test" {
 			var ret string
 			err := runner.EvaluateExpr(attribute.Expr, &ret)
 
-			assertAppError(t, tc.Error, err)
+			AssertAppError(t, tc.Error, err)
 			return nil
 		})
 
@@ -600,7 +600,7 @@ resource "null_resource" "test" {
 			var ret map[string]string
 			err := runner.EvaluateExpr(attribute.Expr, &ret)
 
-			assertAppError(t, tc.Error, err)
+			AssertAppError(t, tc.Error, err)
 			return nil
 		})
 
@@ -1071,7 +1071,7 @@ func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
 			Level:   ErrorLevel,
 			Message: "Failed to eval an expression in module.tf:4; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
 		}
-		assertAppError(t, expected, err)
+		AssertAppError(t, expected, err)
 	})
 }
 
@@ -1086,7 +1086,7 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 			Level:   ErrorLevel,
 			Message: "Attribute of module not allowed was found in module.tf:1; module.tf:4,3-10: Unexpected \"invalid\" block; Blocks are not allowed here.",
 		}
-		assertAppError(t, expected, err)
+		AssertAppError(t, expected, err)
 	})
 }
 

@@ -17,25 +17,6 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func assertAppError(t *testing.T, expected Error, got error) {
-	if appErr, ok := got.(*Error); ok {
-		if appErr == nil {
-			t.Fatalf("expected err is `%s`, but nothing occurred", expected.Error())
-		}
-		if appErr.Code != expected.Code {
-			t.Fatalf("expected error code is `%d`, but get `%d`", expected.Code, appErr.Code)
-		}
-		if appErr.Level != expected.Level {
-			t.Fatalf("expected error level is `%d`, but get `%d`", expected.Level, appErr.Level)
-		}
-		if appErr.Error() != expected.Error() {
-			t.Fatalf("expected error is `%s`, but get `%s`", expected.Error(), appErr.Error())
-		}
-	} else {
-		t.Fatalf("unexpected error occurred: %s", got)
-	}
-}
-
 func testRunnerWithInputVariables(t *testing.T, files map[string]string, variables ...terraform.InputValues) *Runner {
 	config := EmptyConfig()
 	fs := afero.Afero{Fs: afero.NewMemMapFs()}
