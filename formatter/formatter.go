@@ -12,7 +12,6 @@ type Formatter struct {
 	Stdout io.Writer
 	Stderr io.Writer
 	Format string
-	Quiet  bool
 }
 
 // Print outputs the given issues and errors according to configured format
