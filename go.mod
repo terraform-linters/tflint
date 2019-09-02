@@ -19,3 +19,6 @@ require (
 	github.com/spf13/afero v1.2.1
 	github.com/zclconf/go-cty v1.0.1-0.20190708163926-19588f92a98f
 )
+
+// Override since git.apache.org is down
+replace git.apache.org/thrift.git => github.com/apache/thrift v0.0.0-20180902110319-2566ecd5d999
