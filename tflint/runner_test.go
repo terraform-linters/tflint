@@ -3,7 +3,6 @@ package tflint
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -18,12 +17,6 @@ import (
 )
 
 func Test_EvaluateExpr_string(t *testing.T) {
-	dir, err := ioutil.TempDir("", "string")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	cases := []struct {
 		Name     string
 		Content  string
@@ -155,7 +148,7 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = path.root
 }`,
-			Expected: filepath.ToSlash(dir),
+			Expected: ".",
 		},
 		{
 			Name: "path.module",
@@ -163,86 +156,58 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = path.module
 }`,
-			Expected: filepath.ToSlash(dir),
+			Expected: ".",
 		},
 	}
 
 	for _, tc := range cases {
-		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		cfg, err := loadConfigHelper(dir)
-		if err != nil {
-			t.Fatal(err)
-		}
-		attribute, err := extractAttributeHelper("key", cfg)
-		if err != nil {
-			t.Fatal(err)
-		}
+		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
+			var ret string
+			if err := runner.EvaluateExpr(attribute.Expr, &ret); err != nil {
+				return err
+			}
 
-		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
-		}
+			if tc.Expected != ret {
+				t.Fatalf("Failed `%s` test: expected value is `%s`, but get `%s`", tc.Name, tc.Expected, ret)
+			}
+			return nil
+		})
 
-		var ret string
-		err = runner.EvaluateExpr(attribute.Expr, &ret)
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
-
-		if tc.Expected != ret {
-			t.Fatalf("Failed `%s` test: expected value is `%s`, but get `%s`", tc.Name, tc.Expected, ret)
 		}
 	}
 }
 
 func Test_EvaluateExpr_pathCwd(t *testing.T) {
-	dir, err := ioutil.TempDir("", "string")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
-	content := `
-resource "null_resource" "test" {
-  key = path.cwd
-}`
 	cwd, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
 	}
 	expected := filepath.ToSlash(cwd)
 
-	err = ioutil.WriteFile(dir+"/resource.tf", []byte(content), os.ModePerm)
-	if err != nil {
-		t.Fatal(err)
-	}
+	content := `
+resource "null_resource" "test" {
+  key = path.cwd
+}`
+	runner := TestRunner(t, map[string]string{"main.tf": content})
 
-	cfg, err := loadConfigHelper(dir)
-	if err != nil {
-		t.Fatal(err)
-	}
-	attribute, err := extractAttributeHelper("key", cfg)
-	if err != nil {
-		t.Fatal(err)
-	}
+	err = runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
+		var ret string
+		if err := runner.EvaluateExpr(attribute.Expr, &ret); err != nil {
+			return err
+		}
 
-	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-	if err != nil {
-		t.Fatalf("Unexpected error: %s", err)
-	}
+		if expected != ret {
+			t.Fatalf("expected value is `%s`, but get `%s`", expected, ret)
+		}
+		return nil
+	})
 
-	var ret string
-	err = runner.EvaluateExpr(attribute.Expr, &ret)
 	if err != nil {
-		t.Fatalf("Unexpected error: `%s`", err)
-	}
-
-	if expected != ret {
-		t.Fatalf("expected value is `%s`, but get `%s`", expected, ret)
+		t.Fatalf("Failed: `%s` occurred", err)
 	}
 }
 
@@ -278,40 +243,23 @@ resource "null_resource" "test" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "integer")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	for _, tc := range cases {
-		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		cfg, err := loadConfigHelper(dir)
-		if err != nil {
-			t.Fatal(err)
-		}
-		attribute, err := extractAttributeHelper("key", cfg)
-		if err != nil {
-			t.Fatal(err)
-		}
+		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
+			var ret int
+			if err := runner.EvaluateExpr(attribute.Expr, &ret); err != nil {
+				return err
+			}
 
-		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
-		}
+			if tc.Expected != ret {
+				t.Fatalf("Failed `%s` test: expected value is `%d`, but get `%d`", tc.Name, tc.Expected, ret)
+			}
+			return nil
+		})
 
-		var ret int
-		err = runner.EvaluateExpr(attribute.Expr, &ret)
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
-
-		if tc.Expected != ret {
-			t.Fatalf("Failed `%s` test: expected value is %d, but get %d", tc.Name, tc.Expected, ret)
 		}
 	}
 }
@@ -332,40 +280,23 @@ resource "null_resource" "test" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "stringList")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	for _, tc := range cases {
-		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		cfg, err := loadConfigHelper(dir)
-		if err != nil {
-			t.Fatal(err)
-		}
-		attribute, err := extractAttributeHelper("key", cfg)
-		if err != nil {
-			t.Fatal(err)
-		}
+		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
+			var ret []string
+			if err := runner.EvaluateExpr(attribute.Expr, &ret); err != nil {
+				return err
+			}
 
-		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
-		}
+			if !cmp.Equal(tc.Expected, ret) {
+				t.Fatalf("Failed `%s` test: diff: %s", tc.Name, cmp.Diff(tc.Expected, ret))
+			}
+			return nil
+		})
 
-		ret := []string{}
-		err = runner.EvaluateExpr(attribute.Expr, &ret)
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
-
-		if !cmp.Equal(tc.Expected, ret) {
-			t.Fatalf("Failed `%s` test: diff: %s", tc.Name, cmp.Diff(tc.Expected, ret))
 		}
 	}
 }
@@ -386,40 +317,23 @@ resource "null_resource" "test" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "numberList")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	for _, tc := range cases {
-		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		cfg, err := loadConfigHelper(dir)
-		if err != nil {
-			t.Fatal(err)
-		}
-		attribute, err := extractAttributeHelper("key", cfg)
-		if err != nil {
-			t.Fatal(err)
-		}
+		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
+			var ret []int
+			if err := runner.EvaluateExpr(attribute.Expr, &ret); err != nil {
+				return err
+			}
 
-		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
-		}
+			if !cmp.Equal(tc.Expected, ret) {
+				t.Fatalf("Failed `%s` test: diff: %s", tc.Name, cmp.Diff(tc.Expected, ret))
+			}
+			return nil
+		})
 
-		ret := []int{}
-		err = runner.EvaluateExpr(attribute.Expr, &ret)
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
-
-		if !cmp.Equal(tc.Expected, ret) {
-			t.Fatalf("Failed `%s` test: diff: %s", tc.Name, cmp.Diff(tc.Expected, ret))
 		}
 	}
 }
@@ -443,40 +357,23 @@ resource "null_resource" "test" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "map")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	for _, tc := range cases {
-		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		cfg, err := loadConfigHelper(dir)
-		if err != nil {
-			t.Fatal(err)
-		}
-		attribute, err := extractAttributeHelper("key", cfg)
-		if err != nil {
-			t.Fatal(err)
-		}
+		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
+			var ret map[string]string
+			if err := runner.EvaluateExpr(attribute.Expr, &ret); err != nil {
+				return err
+			}
 
-		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
-		}
+			if !cmp.Equal(tc.Expected, ret) {
+				t.Fatalf("Failed `%s` test: diff: %s", tc.Name, cmp.Diff(tc.Expected, ret))
+			}
+			return nil
+		})
 
-		ret := map[string]string{}
-		err = runner.EvaluateExpr(attribute.Expr, &ret)
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
-
-		if !cmp.Equal(tc.Expected, ret) {
-			t.Fatalf("Failed `%s` test: diff: %s", tc.Name, cmp.Diff(tc.Expected, ret))
 		}
 	}
 }
@@ -500,51 +397,32 @@ resource "null_resource" "test" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "map")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	for _, tc := range cases {
-		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		cfg, err := loadConfigHelper(dir)
-		if err != nil {
-			t.Fatal(err)
-		}
-		attribute, err := extractAttributeHelper("key", cfg)
-		if err != nil {
-			t.Fatal(err)
-		}
+		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
+			var ret map[string]int
+			if err := runner.EvaluateExpr(attribute.Expr, &ret); err != nil {
+				return err
+			}
 
-		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
-		}
+			if !cmp.Equal(tc.Expected, ret) {
+				t.Fatalf("Failed `%s` test: diff: %s", tc.Name, cmp.Diff(tc.Expected, ret))
+			}
+			return nil
+		})
 
-		ret := map[string]int{}
-		err = runner.EvaluateExpr(attribute.Expr, &ret)
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
-
-		if !cmp.Equal(tc.Expected, ret) {
-			t.Fatalf("Failed `%s` test: diff: %s", tc.Name, cmp.Diff(tc.Expected, ret))
 		}
 	}
 }
 
 func Test_EvaluateExpr_interpolationError(t *testing.T) {
 	cases := []struct {
-		Name       string
-		Content    string
-		ErrorCode  int
-		ErrorLevel int
-		ErrorText  string
+		Name    string
+		Content string
+		Error   Error
 	}{
 		{
 			Name: "undefined variable",
@@ -552,9 +430,11 @@ func Test_EvaluateExpr_interpolationError(t *testing.T) {
 resource "null_resource" "test" {
   key = "${var.undefined_var}"
 }`,
-			ErrorCode:  EvaluationError,
-			ErrorLevel: ErrorLevel,
-			ErrorText:  "Failed to eval an expression in %s:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
+			Error: Error{
+				Code:    EvaluationError,
+				Level:   ErrorLevel,
+				Message: "Failed to eval an expression in main.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
+			},
 		},
 		{
 			Name: "no default value",
@@ -564,9 +444,11 @@ variable "no_value_var" {}
 resource "null_resource" "test" {
   key = "${var.no_value_var}"
 }`,
-			ErrorCode:  UnknownValueError,
-			ErrorLevel: WarningLevel,
-			ErrorText:  "Unknown value found in %s:5; Please use environment variables or tfvars to set the value",
+			Error: Error{
+				Code:    UnknownValueError,
+				Level:   WarningLevel,
+				Message: "Unknown value found in main.tf:5; Please use environment variables or tfvars to set the value",
+			},
 		},
 		{
 			Name: "null value",
@@ -579,9 +461,11 @@ variable "null_var" {
 resource "null_resource" "test" {
   key = var.null_var
 }`,
-			ErrorCode:  NullValueError,
-			ErrorLevel: WarningLevel,
-			ErrorText:  "Null value found in %s:8",
+			Error: Error{
+				Code:    NullValueError,
+				Level:   WarningLevel,
+				Message: "Null value found in main.tf:8",
+			},
 		},
 		{
 			Name: "terraform env",
@@ -589,9 +473,11 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = "${terraform.env}"
 }`,
-			ErrorCode:  EvaluationError,
-			ErrorLevel: ErrorLevel,
-			ErrorText:  "Failed to eval an expression in %s:3; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
+			Error: Error{
+				Code:    EvaluationError,
+				Level:   ErrorLevel,
+				Message: "Failed to eval an expression in main.tf:3; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
+			},
 		},
 		{
 			Name: "type mismatch",
@@ -599,9 +485,11 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = ["one", "two", "three"]
 }`,
-			ErrorCode:  TypeConversionError,
-			ErrorLevel: ErrorLevel,
-			ErrorText:  "Invalid type expression in %s:3; string required",
+			Error: Error{
+				Code:    TypeConversionError,
+				Level:   ErrorLevel,
+				Message: "Invalid type expression in main.tf:3; string required",
+			},
 		},
 		{
 			Name: "unevalauble",
@@ -609,68 +497,36 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = "${module.text}"
 }`,
-			ErrorCode:  UnevaluableError,
-			ErrorLevel: WarningLevel,
-			ErrorText:  "Unevaluable expression found in %s:3",
+			Error: Error{
+				Code:    UnevaluableError,
+				Level:   WarningLevel,
+				Message: "Unevaluable expression found in main.tf:3",
+			},
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "interpolationError")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	for _, tc := range cases {
-		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		cfg, err := loadConfigHelper(dir)
-		if err != nil {
-			t.Fatal(err)
-		}
-		attribute, err := extractAttributeHelper("key", cfg)
-		if err != nil {
-			t.Fatal(err)
-		}
+		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
+			var ret string
+			err := runner.EvaluateExpr(attribute.Expr, &ret)
 
-		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+			AssertAppError(t, tc.Error, err)
+			return nil
+		})
+
 		if err != nil {
-			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
-		}
-
-		expectedText := fmt.Sprintf(tc.ErrorText, filepath.Join(dir, "resource.tf"))
-
-		var ret string
-		err = runner.EvaluateExpr(attribute.Expr, &ret)
-		if appErr, ok := err.(*Error); ok {
-			if appErr == nil {
-				t.Fatalf("Failed `%s` test: expected err is `%s`, but nothing occurred", tc.Name, expectedText)
-			}
-			if appErr.Code != tc.ErrorCode {
-				t.Fatalf("Failed `%s` test: expected error code is `%d`, but get `%d`", tc.Name, tc.ErrorCode, appErr.Code)
-			}
-			if appErr.Level != tc.ErrorLevel {
-				t.Fatalf("Failed `%s` test: expected error level is `%d`, but get `%d`", tc.Name, tc.ErrorLevel, appErr.Level)
-			}
-			if appErr.Error() != expectedText {
-				t.Fatalf("Failed `%s` test: expected error is `%s`, but get `%s`", tc.Name, expectedText, appErr.Error())
-			}
-		} else {
-			t.Fatalf("Failed `%s` test: unexpected error occurred: %s", tc.Name, err)
+			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
 	}
 }
 
 func Test_EvaluateExpr_mapWithInterpolationError(t *testing.T) {
 	cases := []struct {
-		Name       string
-		Content    string
-		ErrorCode  int
-		ErrorLevel int
-		ErrorText  string
+		Name    string
+		Content string
+		Error   Error
 	}{
 		{
 			Name: "undefined variable",
@@ -680,9 +536,11 @@ resource "null_resource" "test" {
 		value = var.undefined_var
 	}
 }`,
-			ErrorCode:  EvaluationError,
-			ErrorLevel: ErrorLevel,
-			ErrorText:  "Failed to eval an expression in %s:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
+			Error: Error{
+				Code:    EvaluationError,
+				Level:   ErrorLevel,
+				Message: "Failed to eval an expression in main.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
+			},
 		},
 		{
 			Name: "no default value",
@@ -694,9 +552,11 @@ resource "null_resource" "test" {
 		value = var.no_value_var
 	}
 }`,
-			ErrorCode:  UnknownValueError,
-			ErrorLevel: WarningLevel,
-			ErrorText:  "Unknown value found in %s:5; Please use environment variables or tfvars to set the value",
+			Error: Error{
+				Code:    UnknownValueError,
+				Level:   WarningLevel,
+				Message: "Unknown value found in main.tf:5; Please use environment variables or tfvars to set the value",
+			},
 		},
 		{
 			Name: "null value",
@@ -711,9 +571,11 @@ resource "null_resource" "test" {
 		value = var.null_var
 	}
 }`,
-			ErrorCode:  NullValueError,
-			ErrorLevel: WarningLevel,
-			ErrorText:  "Null value found in %s:8",
+			Error: Error{
+				Code:    NullValueError,
+				Level:   WarningLevel,
+				Message: "Null value found in main.tf:8",
+			},
 		},
 		{
 			Name: "unevalauble",
@@ -723,57 +585,27 @@ resource "null_resource" "test" {
 		value = module.text
 	}
 }`,
-			ErrorCode:  UnevaluableError,
-			ErrorLevel: WarningLevel,
-			ErrorText:  "Unevaluable expression found in %s:3",
+			Error: Error{
+				Code:    UnevaluableError,
+				Level:   WarningLevel,
+				Message: "Unevaluable expression found in main.tf:3",
+			},
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "mapWithInterpolationError")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	for _, tc := range cases {
-		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		cfg, err := loadConfigHelper(dir)
-		if err != nil {
-			t.Fatal(err)
-		}
-		attribute, err := extractAttributeHelper("key", cfg)
-		if err != nil {
-			t.Fatal(err)
-		}
+		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
+			var ret map[string]string
+			err := runner.EvaluateExpr(attribute.Expr, &ret)
 
-		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+			AssertAppError(t, tc.Error, err)
+			return nil
+		})
+
 		if err != nil {
-			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
-		}
-
-		expectedText := fmt.Sprintf(tc.ErrorText, filepath.Join(dir, "resource.tf"))
-
-		var ret map[string]string
-		err = runner.EvaluateExpr(attribute.Expr, &ret)
-		if appErr, ok := err.(*Error); ok {
-			if appErr == nil {
-				t.Fatalf("Failed `%s` test: expected err is `%s`, but nothing occurred", tc.Name, expectedText)
-			}
-			if appErr.Code != tc.ErrorCode {
-				t.Fatalf("Failed `%s` test: expected error code is `%d`, but get `%d`", tc.Name, tc.ErrorCode, appErr.Code)
-			}
-			if appErr.Level != tc.ErrorLevel {
-				t.Fatalf("Failed `%s` test: expected error level is `%d`, but get `%d`", tc.Name, tc.ErrorLevel, appErr.Level)
-			}
-			if appErr.Error() != expectedText {
-				t.Fatalf("Failed `%s` test: expected error is `%s`, but get `%s`", tc.Name, expectedText, appErr.Error())
-			}
-		} else {
-			t.Fatalf("Failed `%s` test: unexpected error occurred: %s", tc.Name, err)
+			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
 	}
 }
@@ -843,7 +675,6 @@ resource "null_resource" "test" {
 		{
 			Name: "list",
 			Content: `
-
 resource "null_resource" "test" {
   key = ["one", "two", "three"]
 }`,
@@ -905,30 +736,19 @@ resource "null_resource" "test" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "isEvaluable")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	for _, tc := range cases {
-		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		cfg, err := loadConfigHelper(dir)
-		if err != nil {
-			t.Fatal(err)
-		}
-		attribute, err := extractAttributeHelper("key", cfg)
-		if err != nil {
-			t.Fatal(err)
-		}
+		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
+			ret := isEvaluable(attribute.Expr)
+			if ret != tc.Expected {
+				t.Fatalf("Failed `%s` test: expected value is %t, but get %t", tc.Name, tc.Expected, ret)
+			}
+			return nil
+		})
 
-		ret := isEvaluable(attribute.Expr)
-		if ret != tc.Expected {
-			t.Fatalf("Failed `%s` test: expected value is %t, but get %t", tc.Name, tc.Expected, ret)
+		if err != nil {
+			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
 	}
 }
@@ -999,460 +819,279 @@ resource "null_resource" "test" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "overrideVariables")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	for _, tc := range cases {
-		for key, value := range tc.EnvVar {
-			err := os.Setenv(key, value)
+		withEnvVars(t, tc.EnvVar, func() {
+			runner := testRunnerWithInputVariables(t, map[string]string{"main.tf": tc.Content}, tc.InputValues...)
+
+			err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
+				var ret string
+				err := runner.EvaluateExpr(attribute.Expr, &ret)
+				if err != nil {
+					return err
+				}
+
+				if tc.Expected != ret {
+					t.Fatalf("Failed `%s` test: expected value is %s, but get %s", tc.Name, tc.Expected, ret)
+				}
+				return nil
+			})
+
 			if err != nil {
-				t.Fatal(err)
+				t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 			}
-		}
-
-		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		cfg, err := loadConfigHelper(dir)
-		if err != nil {
-			t.Fatal(err)
-		}
-		attribute, err := extractAttributeHelper("key", cfg)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, tc.InputValues...)
-		if err != nil {
-			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
-		}
-
-		var ret string
-		err = runner.EvaluateExpr(attribute.Expr, &ret)
-		if err != nil {
-			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
-
-		if tc.Expected != ret {
-			t.Fatalf("Failed `%s` test: expected value is %s, but get %s", tc.Name, tc.Expected, ret)
-		}
-
-		for key := range tc.EnvVar {
-			err := os.Unsetenv(key)
-			if err != nil {
-				t.Fatal(err)
-			}
-		}
+		})
 	}
 }
 
 func Test_NewModuleRunners_noModules(t *testing.T) {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.Chdir(currentDir)
+	withinFixtureDir(t, "no_modules", func() {
+		runner := testRunnerWithOsFs(t, moduleConfig())
 
-	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "no_modules"))
-	if err != nil {
-		t.Fatal(err)
-	}
+		runners, err := NewModuleRunners(runner)
+		if err != nil {
+			t.Fatalf("Unexpected error occurred: %s", err)
+		}
 
-	loader, err := NewLoader(moduleConfig())
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-	cfg, err := loader.LoadConfig(".")
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-
-	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-	runners, err := NewModuleRunners(runner)
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-
-	if len(runners) > 0 {
-		t.Fatal("`NewModuleRunners` must not return runners when there is no module")
-	}
+		if len(runners) > 0 {
+			t.Fatal("`NewModuleRunners` must not return runners when there is no module")
+		}
+	})
 }
 
 func Test_NewModuleRunners_nestedModules(t *testing.T) {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.Chdir(currentDir)
+	withinFixtureDir(t, "nested_modules", func() {
+		runner := testRunnerWithOsFs(t, moduleConfig())
 
-	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "nested_modules"))
-	if err != nil {
-		t.Fatal(err)
-	}
+		runners, err := NewModuleRunners(runner)
+		if err != nil {
+			t.Fatalf("Unexpected error occurred: %s", err)
+		}
 
-	loader, err := NewLoader(moduleConfig())
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-	cfg, err := loader.LoadConfig(".")
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
+		if len(runners) != 2 {
+			t.Fatal("This function must return 2 runners because the config has 2 modules")
+		}
 
-	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-	runners, err := NewModuleRunners(runner)
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-
-	if len(runners) != 2 {
-		t.Fatal("This function must return 2 runners because the config has 2 modules")
-	}
-
-	child := runners[0].TFConfig
-	if child.Path.String() != "root" {
-		t.Fatalf("Expected child config path name is `root`, but get `%s`", child.Path.String())
-	}
-
-	expected := map[string]*configs.Variable{
-		"override": {
-			Name:        "override",
-			Default:     cty.StringVal("foo"),
-			Type:        cty.DynamicPseudoType,
-			ParsingMode: configs.VariableParseLiteral,
-			DeclRange: hcl.Range{
-				Filename: filepath.Join("module", "module.tf"),
-				Start:    hcl.Pos{Line: 1, Column: 1},
-				End:      hcl.Pos{Line: 1, Column: 20},
+		expectedVars := map[string]map[string]*configs.Variable{
+			"root": {
+				"override": {
+					Name:        "override",
+					Default:     cty.StringVal("foo"),
+					Type:        cty.DynamicPseudoType,
+					ParsingMode: configs.VariableParseLiteral,
+					DeclRange: hcl.Range{
+						Filename: filepath.Join("module", "module.tf"),
+						Start:    hcl.Pos{Line: 1, Column: 1},
+						End:      hcl.Pos{Line: 1, Column: 20},
+					},
+				},
+				"no_default": {
+					Name:        "no_default",
+					Default:     cty.StringVal("bar"),
+					Type:        cty.DynamicPseudoType,
+					ParsingMode: configs.VariableParseLiteral,
+					DeclRange: hcl.Range{
+						Filename: filepath.Join("module", "module.tf"),
+						Start:    hcl.Pos{Line: 4, Column: 1},
+						End:      hcl.Pos{Line: 4, Column: 22},
+					},
+				},
+				"unknown": {
+					Name:        "unknown",
+					Default:     cty.UnknownVal(cty.DynamicPseudoType),
+					Type:        cty.DynamicPseudoType,
+					ParsingMode: configs.VariableParseLiteral,
+					DeclRange: hcl.Range{
+						Filename: filepath.Join("module", "module.tf"),
+						Start:    hcl.Pos{Line: 5, Column: 1},
+						End:      hcl.Pos{Line: 5, Column: 19},
+					},
+				},
 			},
-		},
-		"no_default": {
-			Name:        "no_default",
-			Default:     cty.StringVal("bar"),
-			Type:        cty.DynamicPseudoType,
-			ParsingMode: configs.VariableParseLiteral,
-			DeclRange: hcl.Range{
-				Filename: filepath.Join("module", "module.tf"),
-				Start:    hcl.Pos{Line: 4, Column: 1},
-				End:      hcl.Pos{Line: 4, Column: 22},
+			"root.test": {
+				"override": {
+					Name:        "override",
+					Default:     cty.StringVal("foo"),
+					Type:        cty.DynamicPseudoType,
+					ParsingMode: configs.VariableParseLiteral,
+					DeclRange: hcl.Range{
+						Filename: filepath.Join("module", "module1", "resource.tf"),
+						Start:    hcl.Pos{Line: 1, Column: 1},
+						End:      hcl.Pos{Line: 1, Column: 20},
+					},
+				},
+				"no_default": {
+					Name:        "no_default",
+					Default:     cty.StringVal("bar"),
+					Type:        cty.DynamicPseudoType,
+					ParsingMode: configs.VariableParseLiteral,
+					DeclRange: hcl.Range{
+						Filename: filepath.Join("module", "module1", "resource.tf"),
+						Start:    hcl.Pos{Line: 4, Column: 1},
+						End:      hcl.Pos{Line: 4, Column: 22},
+					},
+				},
+				"unknown": {
+					Name:        "unknown",
+					Default:     cty.UnknownVal(cty.DynamicPseudoType),
+					Type:        cty.DynamicPseudoType,
+					ParsingMode: configs.VariableParseLiteral,
+					DeclRange: hcl.Range{
+						Filename: filepath.Join("module", "module1", "resource.tf"),
+						Start:    hcl.Pos{Line: 5, Column: 1},
+						End:      hcl.Pos{Line: 5, Column: 19},
+					},
+				},
 			},
-		},
-		"unknown": {
-			Name:        "unknown",
-			Default:     cty.UnknownVal(cty.DynamicPseudoType),
-			Type:        cty.DynamicPseudoType,
-			ParsingMode: configs.VariableParseLiteral,
-			DeclRange: hcl.Range{
-				Filename: filepath.Join("module", "module.tf"),
-				Start:    hcl.Pos{Line: 5, Column: 1},
-				End:      hcl.Pos{Line: 5, Column: 19},
-			},
-		},
-	}
-	opts := []cmp.Option{
-		cmpopts.IgnoreUnexported(cty.Type{}, cty.Value{}),
-		cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
-	}
-	if !cmp.Equal(expected, child.Module.Variables, opts...) {
-		t.Fatalf("`%s` module variables are unmatched: Diff=%s", child.Path.String(), cmp.Diff(expected, child.Module.Variables, opts...))
-	}
+		}
 
-	grandchild := runners[1].TFConfig
-	if grandchild.Path.String() != "root.test" {
-		t.Fatalf("Expected child config path name is `root.test`, but get `%s`", grandchild.Path.String())
-	}
+		for _, runner := range runners {
+			expected, exists := expectedVars[runner.TFConfig.Path.String()]
+			if !exists {
+				t.Fatalf("`%s` is not found in module runners", runner.TFConfig.Path)
+			}
 
-	expected = map[string]*configs.Variable{
-		"override": {
-			Name:        "override",
-			Default:     cty.StringVal("foo"),
-			Type:        cty.DynamicPseudoType,
-			ParsingMode: configs.VariableParseLiteral,
-			DeclRange: hcl.Range{
-				Filename: filepath.Join("module", "module1", "resource.tf"),
-				Start:    hcl.Pos{Line: 1, Column: 1},
-				End:      hcl.Pos{Line: 1, Column: 20},
-			},
-		},
-		"no_default": {
-			Name:        "no_default",
-			Default:     cty.StringVal("bar"),
-			Type:        cty.DynamicPseudoType,
-			ParsingMode: configs.VariableParseLiteral,
-			DeclRange: hcl.Range{
-				Filename: filepath.Join("module", "module1", "resource.tf"),
-				Start:    hcl.Pos{Line: 4, Column: 1},
-				End:      hcl.Pos{Line: 4, Column: 22},
-			},
-		},
-		"unknown": {
-			Name:        "unknown",
-			Default:     cty.UnknownVal(cty.DynamicPseudoType),
-			Type:        cty.DynamicPseudoType,
-			ParsingMode: configs.VariableParseLiteral,
-			DeclRange: hcl.Range{
-				Filename: filepath.Join("module", "module1", "resource.tf"),
-				Start:    hcl.Pos{Line: 5, Column: 1},
-				End:      hcl.Pos{Line: 5, Column: 19},
-			},
-		},
-	}
-	opts = []cmp.Option{
-		cmpopts.IgnoreUnexported(cty.Type{}, cty.Value{}),
-		cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
-	}
-	if !cmp.Equal(expected, grandchild.Module.Variables, opts...) {
-		t.Fatalf("`%s` module variables are unmatched: Diff=%s", grandchild.Path.String(), cmp.Diff(expected, grandchild.Module.Variables, opts...))
-	}
+			opts := []cmp.Option{
+				cmpopts.IgnoreUnexported(cty.Type{}, cty.Value{}),
+				cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+			}
+			if !cmp.Equal(expected, runner.TFConfig.Module.Variables, opts...) {
+				t.Fatalf("`%s` module variables are unmatched: Diff=%s", runner.TFConfig.Path, cmp.Diff(expected, runner.TFConfig.Module.Variables, opts...))
+			}
+		}
+	})
 }
 
 func Test_NewModuleRunners_modVars(t *testing.T) {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.Chdir(currentDir)
+	withinFixtureDir(t, "nested_module_vars", func() {
+		runner := testRunnerWithOsFs(t, moduleConfig())
 
-	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "nested_module_vars"))
-	if err != nil {
-		t.Fatal(err)
-	}
+		runners, err := NewModuleRunners(runner)
+		if err != nil {
+			t.Fatalf("Unexpected error occurred: %s", err)
+		}
 
-	loader, err := NewLoader(moduleConfig())
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-	cfg, err := loader.LoadConfig(".")
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
+		if len(runners) != 2 {
+			t.Fatal("This function must return 2 runners because the config has 2 modules")
+		}
 
-	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-	runners, err := NewModuleRunners(runner)
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
+		child := runners[0]
+		if child.TFConfig.Path.String() != "module1" {
+			t.Fatalf("Expected child config path name is `module1`, but get `%s`", child.TFConfig.Path.String())
+		}
 
-	if len(runners) != 2 {
-		t.Fatal("This function must return 2 runners because the config has 2 modules")
-	}
-
-	child := runners[0]
-	if child.TFConfig.Path.String() != "module1" {
-		t.Fatalf("Expected child config path name is `module1`, but get `%s`", child.TFConfig.Path.String())
-	}
-
-	expected := map[string]*moduleVariable{
-		"foo": {
-			Root: true,
-			DeclRange: hcl.Range{
-				Filename: "main.tf",
-				Start:    hcl.Pos{Line: 4, Column: 9},
-				End:      hcl.Pos{Line: 4, Column: 14},
+		expected := map[string]*moduleVariable{
+			"foo": {
+				Root: true,
+				DeclRange: hcl.Range{
+					Filename: "main.tf",
+					Start:    hcl.Pos{Line: 4, Column: 9},
+					End:      hcl.Pos{Line: 4, Column: 14},
+				},
 			},
-		},
-		"bar": {
-			Root: true,
-			DeclRange: hcl.Range{
-				Filename: "main.tf",
-				Start:    hcl.Pos{Line: 5, Column: 9},
-				End:      hcl.Pos{Line: 5, Column: 14},
+			"bar": {
+				Root: true,
+				DeclRange: hcl.Range{
+					Filename: "main.tf",
+					Start:    hcl.Pos{Line: 5, Column: 9},
+					End:      hcl.Pos{Line: 5, Column: 14},
+				},
 			},
-		},
-	}
-	opts := []cmp.Option{cmpopts.IgnoreFields(hcl.Pos{}, "Byte")}
-	if !cmp.Equal(expected, child.modVars, opts...) {
-		t.Fatalf("`%s` module variables are unmatched: Diff=%s", child.TFConfig.Path.String(), cmp.Diff(expected, child.modVars, opts...))
-	}
+		}
+		opts := []cmp.Option{cmpopts.IgnoreFields(hcl.Pos{}, "Byte")}
+		if !cmp.Equal(expected, child.modVars, opts...) {
+			t.Fatalf("`%s` module variables are unmatched: Diff=%s", child.TFConfig.Path.String(), cmp.Diff(expected, child.modVars, opts...))
+		}
 
-	grandchild := runners[1]
-	if grandchild.TFConfig.Path.String() != "module1.module2" {
-		t.Fatalf("Expected child config path name is `module1.module2`, but get `%s`", grandchild.TFConfig.Path.String())
-	}
+		grandchild := runners[1]
+		if grandchild.TFConfig.Path.String() != "module1.module2" {
+			t.Fatalf("Expected child config path name is `module1.module2`, but get `%s`", grandchild.TFConfig.Path.String())
+		}
 
-	expected = map[string]*moduleVariable{
-		"red": {
-			Root:    false,
-			Parents: []*moduleVariable{expected["foo"], expected["bar"]},
-			DeclRange: hcl.Range{
-				Filename: filepath.Join("module", "main.tf"),
-				Start:    hcl.Pos{Line: 8, Column: 11},
-				End:      hcl.Pos{Line: 8, Column: 34},
+		expected = map[string]*moduleVariable{
+			"red": {
+				Root:    false,
+				Parents: []*moduleVariable{expected["foo"], expected["bar"]},
+				DeclRange: hcl.Range{
+					Filename: filepath.Join("module", "main.tf"),
+					Start:    hcl.Pos{Line: 8, Column: 11},
+					End:      hcl.Pos{Line: 8, Column: 34},
+				},
 			},
-		},
-		"blue": {
-			Root:    false,
-			Parents: []*moduleVariable{},
-			DeclRange: hcl.Range{
-				Filename: filepath.Join("module", "main.tf"),
-				Start:    hcl.Pos{Line: 9, Column: 11},
-				End:      hcl.Pos{Line: 9, Column: 17},
+			"blue": {
+				Root:    false,
+				Parents: []*moduleVariable{},
+				DeclRange: hcl.Range{
+					Filename: filepath.Join("module", "main.tf"),
+					Start:    hcl.Pos{Line: 9, Column: 11},
+					End:      hcl.Pos{Line: 9, Column: 17},
+				},
 			},
-		},
-		"green": {
-			Root:    false,
-			Parents: []*moduleVariable{expected["foo"]},
-			DeclRange: hcl.Range{
-				Filename: filepath.Join("module", "main.tf"),
-				Start:    hcl.Pos{Line: 10, Column: 11},
-				End:      hcl.Pos{Line: 10, Column: 49},
+			"green": {
+				Root:    false,
+				Parents: []*moduleVariable{expected["foo"]},
+				DeclRange: hcl.Range{
+					Filename: filepath.Join("module", "main.tf"),
+					Start:    hcl.Pos{Line: 10, Column: 11},
+					End:      hcl.Pos{Line: 10, Column: 49},
+				},
 			},
-		},
-	}
-	opts = []cmp.Option{cmpopts.IgnoreFields(hcl.Pos{}, "Byte")}
-	if !cmp.Equal(expected, grandchild.modVars, opts...) {
-		t.Fatalf("`%s` module variables are unmatched: Diff=%s", grandchild.TFConfig.Path.String(), cmp.Diff(expected, grandchild.modVars, opts...))
-	}
+		}
+		opts = []cmp.Option{cmpopts.IgnoreFields(hcl.Pos{}, "Byte")}
+		if !cmp.Equal(expected, grandchild.modVars, opts...) {
+			t.Fatalf("`%s` module variables are unmatched: Diff=%s", grandchild.TFConfig.Path.String(), cmp.Diff(expected, grandchild.modVars, opts...))
+		}
+	})
 }
 
 func Test_NewModuleRunners_ignoreModules(t *testing.T) {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.Chdir(currentDir)
+	withinFixtureDir(t, "nested_modules", func() {
+		config := moduleConfig()
+		config.IgnoreModule["./module"] = true
+		runner := testRunnerWithOsFs(t, config)
 
-	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "nested_modules"))
-	if err != nil {
-		t.Fatal(err)
-	}
+		runners, err := NewModuleRunners(runner)
+		if err != nil {
+			t.Fatalf("Unexpected error occurred: %s", err)
+		}
 
-	loader, err := NewLoader(moduleConfig())
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-	cfg, err := loader.LoadConfig(".")
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-
-	conf := EmptyConfig()
-	conf.IgnoreModule["./module"] = true
-
-	runner, err := NewRunner(conf, map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-	runners, err := NewModuleRunners(runner)
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-
-	if len(runners) != 0 {
-		t.Fatalf("This function must not return runners because `ignore_module` is set. Got `%d` runner(s)", len(runners))
-	}
+		if len(runners) != 0 {
+			t.Fatalf("This function must not return runners because `ignore_module` is set. Got `%d` runner(s)", len(runners))
+		}
+	})
 }
 
 func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.Chdir(currentDir)
+	withinFixtureDir(t, "invalid_module_attribute", func() {
+		runner := testRunnerWithOsFs(t, moduleConfig())
 
-	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "invalid_module_attribute"))
-	if err != nil {
-		t.Fatal(err)
-	}
+		_, err := NewModuleRunners(runner)
 
-	loader, err := NewLoader(moduleConfig())
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-	cfg, err := loader.LoadConfig(".")
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-
-	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-	if err != nil {
-		t.Fatalf("Unexpected error: %s", err)
-	}
-
-	_, err = NewModuleRunners(runner)
-
-	errText := "Failed to eval an expression in module.tf:4; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute."
-	errCode := EvaluationError
-	errLevel := ErrorLevel
-
-	if appErr, ok := err.(*Error); ok {
-		if appErr == nil {
-			t.Fatalf("Expected err is `%s`, but nothing occurred", errText)
+		expected := Error{
+			Code:    EvaluationError,
+			Level:   ErrorLevel,
+			Message: "Failed to eval an expression in module.tf:4; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
 		}
-		if appErr.Code != errCode {
-			t.Fatalf("Expected error code is `%d`, but get `%d`", errCode, appErr.Code)
-		}
-		if appErr.Level != errLevel {
-			t.Fatalf("Expected error level is `%d`, but get `%d`", errLevel, appErr.Level)
-		}
-		if appErr.Error() != errText {
-			t.Fatalf("Expected error is `%s`, but get `%s`", errText, appErr.Error())
-		}
-	} else {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
+		AssertAppError(t, expected, err)
+	})
 }
 
 func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.Chdir(currentDir)
+	withinFixtureDir(t, "not_allowed_module_attribute", func() {
+		runner := testRunnerWithOsFs(t, moduleConfig())
 
-	err = os.Chdir(filepath.Join(currentDir, "test-fixtures", "not_allowed_module_attribute"))
-	if err != nil {
-		t.Fatal(err)
-	}
+		_, err := NewModuleRunners(runner)
 
-	loader, err := NewLoader(moduleConfig())
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-	cfg, err := loader.LoadConfig(".")
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-
-	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-	if err != nil {
-		t.Fatalf("Unexpected error: %s", err)
-	}
-
-	_, err = NewModuleRunners(runner)
-
-	errText := "Attribute of module not allowed was found in module.tf:1; module.tf:4,3-10: Unexpected \"invalid\" block; Blocks are not allowed here."
-	errCode := UnexpectedAttributeError
-	errLevel := ErrorLevel
-
-	if appErr, ok := err.(*Error); ok {
-		if appErr == nil {
-			t.Fatalf("Expected err is `%s`, but nothing occurred", errText)
+		expected := Error{
+			Code:    UnexpectedAttributeError,
+			Level:   ErrorLevel,
+			Message: "Attribute of module not allowed was found in module.tf:1; module.tf:4,3-10: Unexpected \"invalid\" block; Blocks are not allowed here.",
 		}
-		if appErr.Code != errCode {
-			t.Fatalf("Expected error code is `%d`, but get `%d`", errCode, appErr.Code)
-		}
-		if appErr.Level != errLevel {
-			t.Fatalf("Expected error level is `%d`, but get `%d`", errLevel, appErr.Level)
-		}
-		if appErr.Error() != errText {
-			t.Fatalf("Expected error is `%s`, but get `%s`", errText, appErr.Error())
-		}
-	} else {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
+		AssertAppError(t, expected, err)
+	})
 }
 
 func Test_LookupResourcesByType(t *testing.T) {
-	dir, err := ioutil.TempDir("", "lookupResourcesByType")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
-	err = ioutil.WriteFile(dir+"/resource.tf", []byte(`
+	content := `
 resource "aws_instance" "web" {
   ami           = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
@@ -1471,22 +1110,9 @@ resource "aws_route" "r" {
   destination_cidr_block    = "10.0.1.0/22"
   vpc_peering_connection_id = "pcx-45ff3dc1"
   depends_on                = ["aws_route_table.testing"]
-}
-`), os.ModePerm)
-	if err != nil {
-		t.Fatal(err)
-	}
+}`
 
-	cfg, err := loadConfigHelper(dir)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-	if err != nil {
-		t.Fatalf("Unexpected error: %s", err)
-	}
-
+	runner := TestRunner(t, map[string]string{"resource.tf": content})
 	resources := runner.LookupResourcesByType("aws_instance")
 
 	if len(resources) != 1 {
@@ -1498,11 +1124,7 @@ resource "aws_route" "r" {
 }
 
 func Test_LookupIssues(t *testing.T) {
-	runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
-	if err != nil {
-		t.Fatalf("Unexpected error: %s", err)
-	}
-
+	runner := TestRunner(t, map[string]string{})
 	runner.Issues = Issues{
 		{
 			Rule:    &testRule{},
@@ -1578,28 +1200,10 @@ resource "aws_instance" "test" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "WalkResourceAttributes")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	for _, tc := range cases {
-		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		cfg, err := loadConfigHelper(dir)
-		if err != nil {
-			t.Fatal(err)
-		}
-		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
-		}
-
-		err = runner.WalkResourceAttributes("aws_instance", "instance_type", func(attribute *hcl.Attribute) error {
+		err := runner.WalkResourceAttributes("aws_instance", "instance_type", func(attribute *hcl.Attribute) error {
 			return fmt.Errorf("Walk %s", attribute.Name)
 		})
 		if err == nil {
@@ -1682,28 +1286,10 @@ resource "aws_instance" "test" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "WalkResourceBlocks")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	for _, tc := range cases {
-		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		cfg, err := loadConfigHelper(dir)
-		if err != nil {
-			t.Fatal(err)
-		}
-		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
-		}
-
-		err = runner.WalkResourceBlocks("aws_instance", "instance_type", func(block *hcl.Block) error {
+		err := runner.WalkResourceBlocks("aws_instance", "instance_type", func(block *hcl.Block) error {
 			return fmt.Errorf("Walk %s", block.Type)
 		})
 		if err == nil {
@@ -1751,19 +1337,10 @@ func Test_EnsureNoError(t *testing.T) {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "EnsureNoError")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	for _, tc := range cases {
-		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
-		}
+		runner := TestRunner(t, map[string]string{})
 
-		err = runner.EnsureNoError(tc.Error, func() error {
+		err := runner.EnsureNoError(tc.Error, func() error {
 			return errors.New("function called")
 		})
 		if err == nil {
@@ -1850,35 +1427,20 @@ resource "null_resource" "test" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "IsNullExpr")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	for _, tc := range cases {
-		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		cfg, err := loadConfigHelper(dir)
-		if err != nil {
-			t.Fatal(err)
-		}
-		attribute, err := extractAttributeHelper("key", cfg)
-		if err != nil {
-			t.Fatal(err)
-		}
+		err := runner.WalkResourceAttributes("null_resource", "test", func(attribute *hcl.Attribute) error {
+			ret := runner.IsNullExpr(attribute.Expr)
 
-		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
-		}
-		ret := runner.IsNullExpr(attribute.Expr)
+			if tc.Expected != ret {
+				t.Fatalf("Failed `%s` test: expected value is %t, but get %t", tc.Name, tc.Expected, ret)
+			}
+			return nil
+		})
 
-		if tc.Expected != ret {
-			t.Fatalf("Failed `%s` test: expected value is %t, but get %t", tc.Name, tc.Expected, ret)
+		if err != nil {
+			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
 	}
 }
@@ -1937,30 +1499,12 @@ resource "null_resource" "test" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "EachStringSliceExprs")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	for _, tc := range cases {
-		err := ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		cfg, err := loadConfigHelper(dir)
-		if err != nil {
-			t.Fatal(err)
-		}
-		runner, err := NewRunner(EmptyConfig(), map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
-		}
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
 		vals := []string{}
 		lines := []int{}
-		err = runner.WalkResourceAttributes("null_resource", "value", func(attribute *hcl.Attribute) error {
+		err := runner.WalkResourceAttributes("null_resource", "value", func(attribute *hcl.Attribute) error {
 			return runner.EachStringSliceExprs(attribute.Expr, func(val string, expr hcl.Expression) {
 				vals = append(vals, val)
 				lines = append(lines, expr.Range().Start.Line)
@@ -2046,17 +1590,8 @@ func Test_EmitIssue(t *testing.T) {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "EmitIssue")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
 	for _, tc := range cases {
-		runner, err := NewRunner(EmptyConfig(), tc.Annotations, configs.NewEmptyConfig(), map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatalf("Failed %s test: Unexpected error: %s", tc.Name, err)
-		}
+		runner := testRunnerWithAnnotations(t, map[string]string{}, tc.Annotations)
 
 		runner.EmitIssue(tc.Rule, tc.Message, tc.Location)
 

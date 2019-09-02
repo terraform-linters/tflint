@@ -11,12 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/golang/mock/gomock"
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/hcl2/hcl"
-	"github.com/hashicorp/terraform/configs"
-	"github.com/hashicorp/terraform/configs/configload"
-	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/client"
 	"github.com/wata727/tflint/tflint"
 )
@@ -131,51 +126,11 @@ resource "aws_alb" "balancer" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "AwsAlbInvalidSecurityGroup")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
-	currentDir, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.Chdir(currentDir)
-
-	err = os.Chdir(dir)
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	for _, tc := range cases {
-		loader, err := configload.NewLoader(&configload.Config{})
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		err = ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		mod, diags := loader.Parser().LoadConfigDir(".")
-		if diags.HasErrors() {
-			t.Fatal(diags)
-		}
-		cfg, tfdiags := configs.BuildConfig(mod, configs.DisabledModuleWalker)
-		if tfdiags.HasErrors() {
-			t.Fatal(tfdiags)
-		}
-
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatal(err)
-		}
-		rule := NewAwsALBInvalidSecurityGroupRule()
+		runner := tflint.TestRunner(t, map[string]string{"resource.tf": tc.Content})
 
 		mock := client.NewMockEC2API(ctrl)
 		mock.EXPECT().DescribeSecurityGroups(&ec2.DescribeSecurityGroupsInput{}).Return(&ec2.DescribeSecurityGroupsOutput{
@@ -183,17 +138,12 @@ resource "aws_alb" "balancer" {
 		}, nil)
 		runner.AwsClient.EC2 = mock
 
-		if err = rule.Check(runner); err != nil {
+		rule := NewAwsALBInvalidSecurityGroupRule()
+		if err := rule.Check(runner); err != nil {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		opts := []cmp.Option{
-			cmpopts.IgnoreUnexported(AwsALBInvalidSecurityGroupRule{}),
-			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
-		}
-		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
-		}
+		tflint.AssertIssues(t, tc.Expected, runner.Issues)
 	}
 }
 
@@ -251,51 +201,11 @@ resource "aws_db_instance" "mysql" {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "AwsDBInstanceInvalidDBSubnetGroup")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
-	currentDir, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.Chdir(currentDir)
-
-	err = os.Chdir(dir)
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	for _, tc := range cases {
-		loader, err := configload.NewLoader(&configload.Config{})
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		err = ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		mod, diags := loader.Parser().LoadConfigDir(".")
-		if diags.HasErrors() {
-			t.Fatal(diags)
-		}
-		cfg, tfdiags := configs.BuildConfig(mod, configs.DisabledModuleWalker)
-		if tfdiags.HasErrors() {
-			t.Fatal(tfdiags)
-		}
-
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatal(err)
-		}
-		rule := NewAwsDBInstanceInvalidDBSubnetGroupRule()
+		runner := tflint.TestRunner(t, map[string]string{"resource.tf": tc.Content})
 
 		mock := client.NewMockRDSAPI(ctrl)
 		mock.EXPECT().DescribeDBSubnetGroups(&rds.DescribeDBSubnetGroupsInput{}).Return(&rds.DescribeDBSubnetGroupsOutput{
@@ -303,28 +213,21 @@ resource "aws_db_instance" "mysql" {
 		}, nil)
 		runner.AwsClient.RDS = mock
 
-		if err = rule.Check(runner); err != nil {
+		rule := NewAwsDBInstanceInvalidDBSubnetGroupRule()
+		if err := rule.Check(runner); err != nil {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		opts := []cmp.Option{
-			cmpopts.IgnoreUnexported(AwsDBInstanceInvalidDBSubnetGroupRule{}),
-			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
-		}
-		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
-		}
+		tflint.AssertIssues(t, tc.Expected, runner.Issues)
 	}
 }
 
 func Test_API_error(t *testing.T) {
 	cases := []struct {
-		Name       string
-		Content    string
-		Response   error
-		ErrorCode  int
-		ErrorLevel int
-		ErrorText  string
+		Name     string
+		Content  string
+		Response error
+		Error    tflint.Error
 	}{
 		{
 			Name: "API error",
@@ -335,79 +238,28 @@ resource "aws_alb" "balancer" {
         "sg-abcd1234",
     ]
 }`,
-			Response:   errors.New("MissingRegion: could not find region configuration"),
-			ErrorCode:  tflint.ExternalAPIError,
-			ErrorLevel: tflint.ErrorLevel,
-			ErrorText:  "An error occurred while invoking DescribeSecurityGroups; MissingRegion: could not find region configuration",
+			Response: errors.New("MissingRegion: could not find region configuration"),
+			Error: tflint.Error{
+				Code:    tflint.ExternalAPIError,
+				Level:   tflint.ErrorLevel,
+				Message: "An error occurred while invoking DescribeSecurityGroups; MissingRegion: could not find region configuration",
+			},
 		},
-	}
-
-	dir, err := ioutil.TempDir("", "AwsAlbInvalidSecurityGroup_error")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
-	currentDir, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.Chdir(currentDir)
-
-	err = os.Chdir(dir)
-	if err != nil {
-		t.Fatal(err)
 	}
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
+	rule := NewAwsALBInvalidSecurityGroupRule()
+
 	for _, tc := range cases {
-		loader, err := configload.NewLoader(&configload.Config{})
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		err = ioutil.WriteFile(dir+"/resource.tf", []byte(tc.Content), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		mod, diags := loader.Parser().LoadConfigDir(".")
-		if diags.HasErrors() {
-			t.Fatal(diags)
-		}
-		cfg, tfdiags := configs.BuildConfig(mod, configs.DisabledModuleWalker)
-		if tfdiags.HasErrors() {
-			t.Fatal(tfdiags)
-		}
-
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
-		if err != nil {
-			t.Fatal(err)
-		}
-		rule := NewAwsALBInvalidSecurityGroupRule()
+		runner := tflint.TestRunner(t, map[string]string{"resource.tf": tc.Content})
 
 		mock := client.NewMockEC2API(ctrl)
 		mock.EXPECT().DescribeSecurityGroups(&ec2.DescribeSecurityGroupsInput{}).Return(nil, tc.Response)
 		runner.AwsClient.EC2 = mock
 
-		err = rule.Check(runner)
-		if appErr, ok := err.(*tflint.Error); ok {
-			if appErr == nil {
-				t.Fatalf("Failed `%s` test: expected err is `%s`, but nothing occurred", tc.Name, tc.ErrorText)
-			}
-			if appErr.Code != tc.ErrorCode {
-				t.Fatalf("Failed `%s` test: expected error code is `%d`, but get `%d`", tc.Name, tc.ErrorCode, appErr.Code)
-			}
-			if appErr.Level != tc.ErrorLevel {
-				t.Fatalf("Failed `%s` test: expected error level is `%d`, but get `%d`", tc.Name, tc.ErrorLevel, appErr.Level)
-			}
-			if appErr.Error() != tc.ErrorText {
-				t.Fatalf("Failed `%s` test: expected error is `%s`, but get `%s`", tc.Name, tc.ErrorText, appErr.Error())
-			}
-		} else {
-			t.Fatalf("Failed `%s` test: unexpected error occurred: %s", tc.Name, err)
-		}
+		err := rule.Check(runner)
+		tflint.AssertAppError(t, tc.Error, err)
 	}
 }
