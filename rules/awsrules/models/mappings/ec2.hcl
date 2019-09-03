@@ -63,6 +63,14 @@ mapping "aws_ebs_volume" {
   tags              = TagSpecificationList
 }
 
+mapping "aws_ebs_default_kms_key" {
+  key_arn = String
+}
+
+mapping "aws_ebs_encryption_by_default" {
+  enabled = Boolean
+}
+
 mapping "aws_ec2_capacity_reservation" {
   availability_zone       = String
   ebs_optimized           = Boolean

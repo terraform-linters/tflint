@@ -13,3 +13,14 @@ mapping "aws_globalaccelerator_listener" {
   protocol        = Protocol
   port_range      = PortRanges
 }
+
+mapping "aws_globalaccelerator_endpoint_group" {
+  listener_arn                  = GenericString
+  health_check_interval_seconds = HealthCheckIntervalSeconds
+  health_check_path             = GenericString
+  health_check_port             = HealthCheckPort
+  health_check_protocol         = HealthCheckProtocol
+  threshold_count               = ThresholdCount
+  traffic_dial_percentage       = TrafficDialPercentage
+  endpoint_configuration        = EndpointConfigurations
+}

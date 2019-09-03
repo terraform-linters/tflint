@@ -20,6 +20,11 @@ mapping "aws_directory_service_conditional_forwarder" {
   remote_domain_name = RemoteDomainName
 }
 
+mapping "aws_directory_service_log_subscription" {
+  directory_id   = DirectoryId
+  log_group_name = LogGroupName
+}
+
 test "aws_directory_service_directory" "name" {
   ok = "corp.notexample.com"
   ng = "@example.com"

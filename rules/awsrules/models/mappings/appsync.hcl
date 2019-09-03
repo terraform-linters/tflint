@@ -17,6 +17,16 @@ mapping "aws_appsync_resolver" {
   response_template = MappingTemplate
 }
 
+mapping "aws_appsync_function" {
+  api_id                    = String
+  data_source               = ResourceName
+  name                      = ResourceName
+  request_mapping_template  = MappingTemplate
+  response_mapping_template = MappingTemplate
+  description               = String
+  function_version          = String
+}
+
 test "aws_appsync_datasource" "name" {
   ok = "tf_appsync_example"
   ng = "01_tf_example"
