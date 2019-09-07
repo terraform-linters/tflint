@@ -133,6 +133,7 @@ func NewAwsInstanceInvalidTypeRule() *AwsInstanceInvalidTypeRule {
 			"i3en.6xlarge",
 			"i3en.12xlarge",
 			"i3en.24xlarge",
+			"i3en.metal",
 			"hi1.4xlarge",
 			"hs1.8xlarge",
 			"c1.medium",

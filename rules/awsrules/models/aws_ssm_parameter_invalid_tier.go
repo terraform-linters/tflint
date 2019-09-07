@@ -24,6 +24,7 @@ func NewAwsSsmParameterInvalidTierRule() *AwsSsmParameterInvalidTierRule {
 		enum: []string{
 			"Standard",
 			"Advanced",
+			"Intelligent-Tiering",
 		},
 	}
 }
