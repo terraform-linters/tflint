@@ -2183,6 +2183,56 @@ func (mr *MockECSAPIMockRecorder) UntagResourceRequest(arg0 interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UntagResourceRequest", reflect.TypeOf((*MockECSAPI)(nil).UntagResourceRequest), arg0)
 }
 
+// UpdateClusterSettings mocks base method
+func (m *MockECSAPI) UpdateClusterSettings(arg0 *ecs.UpdateClusterSettingsInput) (*ecs.UpdateClusterSettingsOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateClusterSettings", arg0)
+	ret0, _ := ret[0].(*ecs.UpdateClusterSettingsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateClusterSettings indicates an expected call of UpdateClusterSettings
+func (mr *MockECSAPIMockRecorder) UpdateClusterSettings(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateClusterSettings", reflect.TypeOf((*MockECSAPI)(nil).UpdateClusterSettings), arg0)
+}
+
+// UpdateClusterSettingsWithContext mocks base method
+func (m *MockECSAPI) UpdateClusterSettingsWithContext(arg0 aws.Context, arg1 *ecs.UpdateClusterSettingsInput, arg2 ...request.Option) (*ecs.UpdateClusterSettingsOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpdateClusterSettingsWithContext", varargs...)
+	ret0, _ := ret[0].(*ecs.UpdateClusterSettingsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateClusterSettingsWithContext indicates an expected call of UpdateClusterSettingsWithContext
+func (mr *MockECSAPIMockRecorder) UpdateClusterSettingsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateClusterSettingsWithContext", reflect.TypeOf((*MockECSAPI)(nil).UpdateClusterSettingsWithContext), varargs...)
+}
+
+// UpdateClusterSettingsRequest mocks base method
+func (m *MockECSAPI) UpdateClusterSettingsRequest(arg0 *ecs.UpdateClusterSettingsInput) (*request.Request, *ecs.UpdateClusterSettingsOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateClusterSettingsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ecs.UpdateClusterSettingsOutput)
+	return ret0, ret1
+}
+
+// UpdateClusterSettingsRequest indicates an expected call of UpdateClusterSettingsRequest
+func (mr *MockECSAPIMockRecorder) UpdateClusterSettingsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateClusterSettingsRequest", reflect.TypeOf((*MockECSAPI)(nil).UpdateClusterSettingsRequest), arg0)
+}
+
 // UpdateContainerAgent mocks base method
 func (m *MockECSAPI) UpdateContainerAgent(arg0 *ecs.UpdateContainerAgentInput) (*ecs.UpdateContainerAgentOutput, error) {
 	m.ctrl.T.Helper()
