@@ -4,3 +4,10 @@ mapping "aws_codebuild_project" {
   build_timeout = TimeOut
   description   = ProjectDescription
 }
+
+mapping "aws_codebuild_source_credential" {
+  auth_type   = AuthType
+  server_type = ServerType
+  token       = SensitiveNonEmptyString
+  user_name   = NonEmptyString
+}

@@ -116,6 +116,13 @@ mapping "aws_dx_public_virtual_interface" {
   tags                  = TagList
 }
 
+mapping "aws_dx_transit_virtual_interface" {
+  id                  = any
+  arn                 = any
+  aws_device          = AwsDevice
+  jumbo_frame_capable = JumboFrameCapable
+}
+
 test "aws_dx_bgp_peer" "address_family" {
   ok = "ipv4"
   ng = "ipv2"

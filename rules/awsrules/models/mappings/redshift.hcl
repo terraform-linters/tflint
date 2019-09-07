@@ -65,6 +65,20 @@ mapping "aws_redshift_snapshot_copy_grant" {
   tags                     = TagList
 }
 
+mapping "aws_redshift_snapshot_schedule" {
+  identifier        = String
+  identifier_prefix = String
+  description       = String
+  definitions       = ScheduleDefinitionList
+  force_destroy     = any
+  tags              = TagList
+}
+
+mapping "aws_redshift_snapshot_schedule_association" {
+  cluster_identifier  = String
+  schedule_identifier = String
+}
+
 mapping "aws_redshift_subnet_group" {
   name        = String
   description = String

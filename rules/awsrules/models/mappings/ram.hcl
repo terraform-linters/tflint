@@ -15,3 +15,7 @@ mapping "aws_ram_resource_share" {
   allow_external_principals = Boolean
   tags                      = TagList
 }
+
+mapping "aws_ram_resource_share_accepter" {
+  share_arn = String
+}

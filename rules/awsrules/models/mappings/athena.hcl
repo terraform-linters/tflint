@@ -10,3 +10,11 @@ mapping "aws_athena_named_query" {
   query       = QueryString
   description = DescriptionString
 }
+
+mapping "aws_athena_workgroup" {
+  name          = WorkGroupName
+  configuration = WorkGroupConfiguration
+  description   = WorkGroupDescriptionString
+  state         = WorkGroupState
+  tags          = TagList
+}
