@@ -21,7 +21,9 @@ import (
 	"github.com/aws/aws-sdk-go/service/rds/rdsiface"
 	awsbase "github.com/hashicorp/aws-sdk-go-base"
 	"github.com/hashicorp/hcl2/hcl"
+	"github.com/hashicorp/terraform/configs/configschema"
 	homedir "github.com/mitchellh/go-homedir"
+	"github.com/zclconf/go-cty/cty"
 )
 
 //go:generate mockgen -source ../vendor/github.com/aws/aws-sdk-go/service/ec2/ec2iface/interface.go -destination aws_ec2_mock.go -package client
@@ -46,11 +48,15 @@ type AwsClient struct {
 
 // AwsCredentials is credentials for AWS used in deep check mode
 type AwsCredentials struct {
-	AccessKey string
-	SecretKey string
-	Profile   string
-	CredsFile string
-	Region    string
+	AccessKey             string
+	SecretKey             string
+	Profile               string
+	CredsFile             string
+	AssumeRoleARN         string
+	AssumeRoleExternalID  string
+	AssumeRolePolicy      string
+	AssumeRoleSessionName string
+	Region                string
 }
 
 // AwsProviderBlockSchema is a schema of `aws` provider block
@@ -62,10 +68,14 @@ var AwsProviderBlockSchema = &hcl.BodySchema{
 		{Name: "shared_credentials_file"},
 		{Name: "region"},
 	},
+	Blocks: []hcl.BlockHeaderSchema{
+		{Type: "assume_role"},
+	},
 }
 
 type providerResource interface {
 	Get(key string) (string, bool, error)
+	GetBlock(key string, schema *configschema.Block) (map[string]string, bool, error)
 }
 
 // NewAwsClient returns new AwsClient with configured session
@@ -137,6 +147,24 @@ func ConvertToCredentials(providerConfig providerResource) (AwsCredentials, erro
 		ret.Region = region
 	}
 
+	assumeRole, exists, err := providerConfig.GetBlock("assume_role", &configschema.Block{
+		Attributes: map[string]*configschema.Attribute{
+			"role_arn":     {Type: cty.String, Required: true},
+			"session_name": {Type: cty.String},
+			"external_id":  {Type: cty.String},
+			"policy":       {Type: cty.String},
+		},
+	})
+	if err != nil {
+		return ret, err
+	}
+	if exists {
+		ret.AssumeRoleARN = assumeRole["role_arn"]
+		ret.AssumeRoleSessionName = assumeRole["session_name"]
+		ret.AssumeRoleExternalID = assumeRole["external_id"]
+		ret.AssumeRolePolicy = assumeRole["policy"]
+	}
+
 	return ret, nil
 }
 
@@ -157,6 +185,18 @@ func (c AwsCredentials) Merge(other AwsCredentials) AwsCredentials {
 	if other.Region != "" {
 		c.Region = other.Region
 	}
+	if other.AssumeRoleARN != "" {
+		c.AssumeRoleARN = other.AssumeRoleARN
+	}
+	if other.AssumeRoleSessionName != "" {
+		c.AssumeRoleSessionName = other.AssumeRoleSessionName
+	}
+	if other.AssumeRoleExternalID != "" {
+		c.AssumeRoleExternalID = other.AssumeRoleExternalID
+	}
+	if other.AssumeRolePolicy != "" {
+		c.AssumeRolePolicy = other.AssumeRolePolicy
+	}
 	return c
 }
 
@@ -167,11 +207,15 @@ func getBaseConfig(creds AwsCredentials) (*awsbase.Config, error) {
 	}
 
 	return &awsbase.Config{
-		AccessKey:     creds.AccessKey,
-		SecretKey:     creds.SecretKey,
-		Profile:       creds.Profile,
-		CredsFilename: expandedCredsFile,
-		Region:        creds.Region,
+		AccessKey:             creds.AccessKey,
+		AssumeRoleARN:         creds.AssumeRoleARN,
+		AssumeRoleExternalID:  creds.AssumeRoleExternalID,
+		AssumeRolePolicy:      creds.AssumeRolePolicy,
+		AssumeRoleSessionName: creds.AssumeRoleSessionName,
+		SecretKey:             creds.SecretKey,
+		Profile:               creds.Profile,
+		CredsFilename:         expandedCredsFile,
+		Region:                creds.Region,
 	}, nil
 }
 

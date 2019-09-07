@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/hcl2/hcl/hclsyntax"
 	"github.com/hashicorp/terraform/configs"
+	"github.com/hashicorp/terraform/configs/configschema"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/zclconf/go-cty/cty"
 )
@@ -610,7 +611,179 @@ resource "null_resource" "test" {
 	}
 }
 
-func Test_isEvaluable(t *testing.T) {
+func Test_EvaluateBlock(t *testing.T) {
+	cases := []struct {
+		Name     string
+		Content  string
+		Expected map[string]string
+	}{
+		{
+			Name: "map literal",
+			Content: `
+resource "null_resource" "test" {
+  key {
+    one = 1
+    two = "2"
+  }
+}`,
+			Expected: map[string]string{"one": "1", "two": "2"},
+		},
+		{
+			Name: "variable",
+			Content: `
+variable "one" {
+  default = 1
+}
+
+resource "null_resource" "test" {
+  key {
+    one = var.one
+    two = "2"
+  }
+}`,
+			Expected: map[string]string{"one": "1", "two": "2"},
+		},
+		{
+			Name: "null value",
+			Content: `
+variable "null_var" {
+  type    = string
+  default = null
+}
+
+resource "null_resource" "test" {
+  key {
+	one = "1"
+	two = var.null_var
+  }
+}`,
+			Expected: map[string]string{"one": "1", "two": ""},
+		},
+	}
+
+	for _, tc := range cases {
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
+
+		err := runner.WalkResourceBlocks("null_resource", "key", func(block *hcl.Block) error {
+			var ret map[string]string
+			schema := &configschema.Block{
+				Attributes: map[string]*configschema.Attribute{
+					"one": {Type: cty.String},
+					"two": {Type: cty.String},
+				},
+			}
+			if err := runner.EvaluateBlock(block, schema, &ret); err != nil {
+				return err
+			}
+
+			if !cmp.Equal(tc.Expected, ret) {
+				t.Fatalf("Failed `%s` test: diff: %s", tc.Name, cmp.Diff(tc.Expected, ret))
+			}
+			return nil
+		})
+
+		if err != nil {
+			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
+		}
+	}
+}
+
+func Test_EvaluateBlock_error(t *testing.T) {
+	cases := []struct {
+		Name    string
+		Content string
+		Error   Error
+	}{
+		{
+			Name: "undefined variable",
+			Content: `
+resource "null_resource" "test" {
+  key {
+	one = "1"
+	two = var.undefined_var
+  }
+}`,
+			Error: Error{
+				Code:    EvaluationError,
+				Level:   ErrorLevel,
+				Message: "Failed to eval a block in main.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
+			},
+		},
+		{
+			Name: "no default value",
+			Content: `
+variable "no_value_var" {}
+
+resource "null_resource" "test" {
+  key {
+    one = "1"
+    two = var.no_value_var
+  }
+}`,
+			Error: Error{
+				Code:    UnknownValueError,
+				Level:   WarningLevel,
+				Message: "Unknown value found in main.tf:5; Please use environment variables or tfvars to set the value",
+			},
+		},
+		{
+			Name: "type mismatch",
+			Content: `
+resource "null_resource" "test" {
+  key {
+    one = "1"
+    two = {
+      three = 3
+    }
+  }
+}`,
+			Error: Error{
+				Code:    EvaluationError,
+				Level:   ErrorLevel,
+				Message: "Failed to eval a block in main.tf:3; Incorrect attribute value type: Inappropriate value for attribute \"two\": string required.",
+			},
+		},
+		{
+			Name: "unevalauble",
+			Content: `
+resource "null_resource" "test" {
+  key {
+	one = "1"
+	two = module.text
+  }
+}`,
+			Error: Error{
+				Code:    UnevaluableError,
+				Level:   WarningLevel,
+				Message: "Unevaluable block found in main.tf:3",
+			},
+		},
+	}
+
+	for _, tc := range cases {
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
+
+		err := runner.WalkResourceBlocks("null_resource", "key", func(block *hcl.Block) error {
+			var ret map[string]string
+			schema := &configschema.Block{
+				Attributes: map[string]*configschema.Attribute{
+					"one": {Type: cty.String},
+					"two": {Type: cty.String},
+				},
+			}
+			err := runner.EvaluateBlock(block, schema, &ret)
+
+			AssertAppError(t, tc.Error, err)
+			return nil
+		})
+
+		if err != nil {
+			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
+		}
+	}
+}
+
+func Test_isEvaluableExpr(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
@@ -740,7 +913,7 @@ resource "null_resource" "test" {
 		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
 		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-			ret := isEvaluable(attribute.Expr)
+			ret := isEvaluableExpr(attribute.Expr)
 			if ret != tc.Expected {
 				t.Fatalf("Failed `%s` test: expected value is %t, but get %t", tc.Name, tc.Expected, ret)
 			}
