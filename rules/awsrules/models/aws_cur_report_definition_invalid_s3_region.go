@@ -32,6 +32,7 @@ func NewAwsCurReportDefinitionInvalidS3RegionRule() *AwsCurReportDefinitionInval
 			"ap-northeast-1",
 			"eu-north-1",
 			"ap-northeast-3",
+			"ap-east-1",
 		},
 	}
 }
