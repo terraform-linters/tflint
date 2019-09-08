@@ -1,3 +1,41 @@
+## 0.11.0 (2019-09-08)
+
+This release includes major changes to the output format. In particular, third-party tool developers should be aware of changes to the JSON output format. Please see the "Breaking Changes" section for details.
+
+### Breaking Changes
+
+- [#396](https://github.com/wata727/tflint/pull/396): Emit issues to the root module instead of each module
+  - Previously issues found inside a module were reported along with the line number for that module, but it now reports on root module arguments that caused issues with the module.
+- [#407](https://github.com/wata727/tflint/pull/407): formatter: Multiple errors and context-rich pretty print
+  - The output format of default and JSON has been changed. See the pull request for details.
+- [#413](https://github.com/wata727/tflint/pull/413): Remove `--quiet` option
+  - This behavior is the default for new output formats.
+
+### Enhancements
+
+- [#395](https://github.com/wata727/tflint/pull/395): config: Add support for `path.*` named values
+- [#415](https://github.com/wata727/tflint/pull/415): Add `--no-color` option
+- [#421](https://github.com/wata727/tflint/pull/421): Add mappings for new resources
+  - 44 rules have been added.
+- [#424](https://github.com/wata727/tflint/pull/424): TFLint is now compatible with Terraform v0.12.8
+  - See https://github.com/hashicorp/terraform/releases/tag/v0.12.8
+- [#426](https://github.com/wata727/tflint/pull/426): Bump terraform-provider-aws from v2.25.0 to v2.27.0
+  - `aws_cur_report_definition_invalid_s3_region` rule now allows `ap-east-1` as a valid value.
+  - `aws_instance_invalid_type`, `aws_launch_configuration_invalid_type` and `aws_launch_template_invalid_instance_type` rules now allow `i3en.metal` as a valid value.
+  - `aws_ssm_parameter_invalid_tier` rule now allows `Intelligent-Tiering` as a valid value.
+- [#423](https://github.com/wata727/tflint/pull/423): client: Add support for role assumption
+  - The `assume_role` block in the `provider` block is now taken into account.
+
+### Chores
+
+- [#410](https://github.com/wata727/tflint/pull/410): Automatically generate API-based rules 
+- [#411](https://github.com/wata727/tflint/pull/411): Add tools task to Makefile and clean up
+- [#412](https://github.com/wata727/tflint/pull/412): docs: Tweak documentations
+- [#414](https://github.com/wata727/tflint/pull/414): docs: Fix exit status
+- [#417](https://github.com/wata727/tflint/pull/417): Refactoring tests
+- [#419](https://github.com/wata727/tflint/pull/419): Bump github.com/spf13/afero from 1.2.1 to 1.2.2
+- [#428](https://github.com/wata727/tflint/pull/428): Correct ineffassign ([@gliptak](https://github.com/gliptak))
+
 ## 0.10.3 (2019-08-24)
 
 ### Chores
