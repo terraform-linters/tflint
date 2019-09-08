@@ -80,3 +80,7 @@ $ export AWS_SECRET_ACCESS_KEY=AWS_SECRET_KEY
 ## Role-based authentication
 
 TFLint fetches AWS credentials in the same way as Terraform. See [this documentation](https://www.terraform.io/docs/providers/aws/index.html#ecs-and-codebuild-task-roles) for role-based authentication. However, Assume role is not supported.
+
+## Assume role
+
+TFLint can assume a role in the same way as Terraform. See [this documentation](https://www.terraform.io/docs/providers/aws/index.html#assume-role).

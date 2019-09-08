@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/hashicorp/terraform/addrs"
 	"github.com/hashicorp/terraform/configs"
+	"github.com/hashicorp/terraform/configs/configschema"
 	"github.com/hashicorp/terraform/lang"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/client"
@@ -137,7 +138,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 		modVars := map[string]*moduleVariable{}
 		for varName, rawVar := range cfg.Module.Variables {
 			if attribute, exists := attributes[varName]; exists {
-				if isEvaluable(attribute.Expr) {
+				if isEvaluableExpr(attribute.Expr) {
 					val, diags := parent.ctx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType, nil)
 					if diags.HasErrors() {
 						err := &Error{
@@ -203,7 +204,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 // When it received slice as `ret`, it converts cty.Value to expected list type
 // because raw cty.Value has TupleType.
 func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
-	if !isEvaluable(expr) {
+	if !isEvaluableExpr(expr) {
 		err := &Error{
 			Code:  UnevaluableError,
 			Level: WarningLevel,
@@ -308,6 +309,114 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 				"Invalid type expression in %s:%d",
 				expr.Range().Filename,
 				expr.Range().Start.Line,
+			),
+			Cause: err,
+		}
+		log.Printf("[ERROR] %s", err)
+		return err
+	}
+	return nil
+}
+
+// EvaluateBlock is a wrapper of terraform.BultinEvalContext.EvaluateBlock and gocty.FromCtyValue
+func (r *Runner) EvaluateBlock(block *hcl.Block, schema *configschema.Block, ret interface{}) error {
+	if !isEvaluableBlock(block.Body, schema) {
+		err := &Error{
+			Code:  UnevaluableError,
+			Level: WarningLevel,
+			Message: fmt.Sprintf(
+				"Unevaluable block found in %s:%d",
+				block.DefRange.Filename,
+				block.DefRange.Start.Line,
+			),
+		}
+		log.Printf("[WARN] %s; TFLint ignores an unevaluable block.", err)
+		return err
+	}
+
+	val, _, diags := r.ctx.EvaluateBlock(block.Body, schema, nil, terraform.EvalDataForNoInstanceKey)
+	if diags.HasErrors() {
+		err := &Error{
+			Code:  EvaluationError,
+			Level: ErrorLevel,
+			Message: fmt.Sprintf(
+				"Failed to eval a block in %s:%d",
+				block.DefRange.Filename,
+				block.DefRange.Start.Line,
+			),
+			Cause: diags.Err(),
+		}
+		log.Printf("[ERROR] %s", err)
+		return err
+	}
+
+	err := cty.Walk(val, func(path cty.Path, v cty.Value) (bool, error) {
+		if !v.IsKnown() {
+			err := &Error{
+				Code:  UnknownValueError,
+				Level: WarningLevel,
+				Message: fmt.Sprintf(
+					"Unknown value found in %s:%d; Please use environment variables or tfvars to set the value",
+					block.DefRange.Filename,
+					block.DefRange.Start.Line,
+				),
+			}
+			log.Printf("[WARN] %s; TFLint ignores a block includes an unknown value.", err)
+			return false, err
+		}
+
+		return true, nil
+	})
+	if err != nil {
+		return err
+	}
+
+	val, err = cty.Transform(val, func(path cty.Path, v cty.Value) (cty.Value, error) {
+		if v.IsNull() {
+			log.Printf(
+				"[DEBUG] Null value found in %s:%d, but TFLint treats this value as an empty value",
+				block.DefRange.Filename,
+				block.DefRange.Start.Line,
+			)
+			return cty.StringVal(""), nil
+		}
+		return v, nil
+	})
+	if err != nil {
+		return err
+	}
+
+	switch ret.(type) {
+	case *map[string]string:
+		val, err = convert.Convert(val, cty.Map(cty.String))
+	case *map[string]int:
+		val, err = convert.Convert(val, cty.Map(cty.Number))
+	}
+
+	if err != nil {
+		err := &Error{
+			Code:  TypeConversionError,
+			Level: ErrorLevel,
+			Message: fmt.Sprintf(
+				"Invalid type block in %s:%d",
+				block.DefRange.Filename,
+				block.DefRange.Start.Line,
+			),
+			Cause: err,
+		}
+		log.Printf("[ERROR] %s", err)
+		return err
+	}
+
+	err = gocty.FromCtyValue(val, ret)
+	if err != nil {
+		err := &Error{
+			Code:  TypeMismatchError,
+			Level: ErrorLevel,
+			Message: fmt.Sprintf(
+				"Invalid type block in %s:%d",
+				block.DefRange.Filename,
+				block.DefRange.Start.Line,
 			),
 			Cause: err,
 		}
@@ -456,7 +565,7 @@ func (r *Runner) EnsureNoError(err error, proc func() error) error {
 
 // IsNullExpr check the passed expression is null
 func (r *Runner) IsNullExpr(expr hcl.Expression) bool {
-	if !isEvaluable(expr) {
+	if !isEvaluableExpr(expr) {
 		return false
 	}
 	val, diags := r.ctx.EvaluateExpr(expr, cty.DynamicPseudoType, nil)
@@ -561,25 +670,45 @@ func prepareVariableValues(configVars map[string]*configs.Variable, variables ..
 	return variableValues
 }
 
-func isEvaluable(expr hcl.Expression) bool {
+func isEvaluableExpr(expr hcl.Expression) bool {
 	refs, diags := lang.ReferencesInExpr(expr)
 	if diags.HasErrors() {
 		// Maybe this is bug
 		panic(diags.Err())
 	}
 	for _, ref := range refs {
-		switch ref.Subject.(type) {
-		case addrs.InputVariable:
-			// noop
-		case addrs.TerraformAttr:
-			// noop
-		case addrs.PathAttr:
-			// noop
-		default:
+		if !isEvaluableRef(ref) {
 			return false
 		}
 	}
 	return true
+}
+
+func isEvaluableBlock(body hcl.Body, schema *configschema.Block) bool {
+	refs, diags := lang.ReferencesInBlock(body, schema)
+	if diags.HasErrors() {
+		// Maybe this is bug
+		panic(diags.Err())
+	}
+	for _, ref := range refs {
+		if !isEvaluableRef(ref) {
+			return false
+		}
+	}
+	return true
+}
+
+func isEvaluableRef(ref *addrs.Reference) bool {
+	switch ref.Subject.(type) {
+	case addrs.InputVariable:
+		return true
+	case addrs.TerraformAttr:
+		return true
+	case addrs.PathAttr:
+		return true
+	default:
+		return false
+	}
 }
 
 func listVarRefs(expr hcl.Expression) []addrs.InputVariable {
