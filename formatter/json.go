@@ -70,7 +70,7 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 	}
 
 	if tferr != nil {
-		errs := []error{}
+		var errs []error
 		if diags, ok := tferr.Cause.(hcl.Diagnostics); ok {
 			errs = diags.Errs()
 		} else {
