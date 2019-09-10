@@ -1,11 +1,9 @@
 language: go
 
-sudo: false
-
 env:
   - GO111MODULE=on
 
-go: 1.12
+go: 1.13
 
 script:
   - make build

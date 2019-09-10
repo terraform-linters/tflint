@@ -1,6 +1,6 @@
 module github.com/wata727/tflint/tools
 
-go 1.12
+go 1.13
 
 require (
 	github.com/hashicorp/hcl2 v0.0.0-20190821123243-0c888d1241f6
