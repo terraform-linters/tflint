@@ -1,3 +1,10 @@
+## 0.11.1 (2019-09-11)
+
+### Chores
+
+- [#429](https://github.com/wata727/tflint/pull/429) [#433](https://github.com/wata727/tflint/pull/433): build: Upgrade to go 1.13 ([@chenrui333](https://github.com/chenrui333))
+- [#431](https://github.com/wata727/tflint/pull/431): build: Disable CGO in GoReleaser ([@craigfurman](https://github.com/craigfurman))
+
 ## 0.11.0 (2019-09-08)
 
 This release includes major changes to the output format. In particular, third-party tool developers should be aware of changes to the JSON output format. Please see the "Breaking Changes" section for details.

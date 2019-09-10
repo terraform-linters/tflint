@@ -30,7 +30,7 @@ TFLint finds such errors in advance:
 You can download the binary built for your architecture from [the latest release](https://github.com/wata727/tflint/releases/latest). The following is an example of installation on macOS:
 
 ```console
-$ wget https://github.com/wata727/tflint/releases/download/v0.11.0/tflint_darwin_amd64.zip
+$ wget https://github.com/wata727/tflint/releases/download/v0.11.1/tflint_darwin_amd64.zip
 $ unzip tflint_darwin_amd64.zip
 Archive:  tflint_darwin_amd64.zip
   inflating: tflint
