@@ -1,6 +1,6 @@
 # terraform_dash_in_resource_name
 
-Disallow dashes (-) in `resource` names without.
+Disallow dashes (-) in `resource` names.
 
 ## Example
 
