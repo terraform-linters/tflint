@@ -1,18 +1,22 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/fatih/color"
 	flags "github.com/jessevdk/go-flags"
+	"github.com/sourcegraph/jsonrpc2"
 	"github.com/spf13/afero"
 
 	"github.com/wata727/tflint/formatter"
+	"github.com/wata727/tflint/langserver"
 	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/rules"
 	"github.com/wata727/tflint/tflint"
@@ -95,6 +99,11 @@ func (cli *CLI) Run(args []string) int {
 		return ExitCodeOK
 	}
 
+	// Start language server
+	if opts.Langserver {
+		return cli.startServer(opts.Config, opts.toConfig())
+	}
+
 	// Setup config
 	cfg, err := tflint.LoadConfig(opts.Config)
 	if err != nil {
@@ -168,6 +177,27 @@ func (cli *CLI) Run(args []string) int {
 	if len(issues) > 0 && !cfg.Force {
 		return ExitCodeIssuesFound
 	}
+
+	return ExitCodeOK
+}
+
+func (cli *CLI) startServer(configPath string, cliConfig *tflint.Config) int {
+	log.Println("Starting language server...")
+
+	handler, err := langserver.NewHandler(configPath, cliConfig)
+	if err != nil {
+		log.Println(fmt.Sprintf("Failed to start language server: %s", err))
+		return ExitCodeError
+	}
+
+	var connOpt []jsonrpc2.ConnOpt
+	<-jsonrpc2.NewConn(
+		context.Background(),
+		jsonrpc2.NewBufferedStream(langserver.NewConn(os.Stdin, os.Stdout), jsonrpc2.VSCodeObjectCodec{}),
+		handler,
+		connOpt...,
+	).DisconnectNotify()
+	log.Println("Shutting down...")
 
 	return ExitCodeOK
 }

@@ -84,6 +84,7 @@ Usage:
 
 Application Options:
   -v, --version                             Print TFLint version
+      --langserver                          Start language server
   -f, --format=[default|json|checkstyle]    Output format (default: default)
   -c, --config=FILE                         Config file name (default: .tflint.hcl)
       --ignore-module=SOURCE1,SOURCE2...    Ignore module sources
