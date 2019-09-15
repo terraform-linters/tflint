@@ -9,7 +9,7 @@ import (
 	"github.com/wata727/tflint/tflint"
 )
 
-// TerraformDashInResourceNameRule checks whether outputs have descriptions
+// TerraformDashInResourceNameRule checks whether resources have any dashes in the name
 type TerraformDashInResourceNameRule struct{}
 
 // NewTerraformDashInResourceNameRule returns a new rule
