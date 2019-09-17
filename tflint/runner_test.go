@@ -788,6 +788,7 @@ func Test_isEvaluableExpr(t *testing.T) {
 		Name     string
 		Content  string
 		Expected bool
+		Error    error
 	}{
 		{
 			Name: "literal",
@@ -907,13 +908,31 @@ resource "null_resource" "test" {
 }`,
 			Expected: true,
 		},
+		{
+			Name: "invalid reference",
+			Content: `
+resource "null_resource" "test" {
+	key = invalid
+}`,
+			Expected: false,
+			Error:    errors.New("Invalid reference: A reference to a resource type must be followed by at least one attribute access, specifying the resource name."),
+		},
 	}
 
 	for _, tc := range cases {
 		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
 		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-			ret := isEvaluableExpr(attribute.Expr)
+			ret, err := isEvaluableExpr(attribute.Expr)
+			if err != nil && tc.Error == nil {
+				t.Fatalf("Failed `%s` test: unexpected error occurred: %s", tc.Name, err)
+			}
+			if err == nil && tc.Error != nil {
+				t.Fatalf("Failed `%s` test: expected error is %s, but no errors", tc.Name, tc.Error)
+			}
+			if err != nil && tc.Error != nil && err.Error() != tc.Error.Error() {
+				t.Fatalf("Failed `%s` test: expected error is %s, but got %s", tc.Name, tc.Error, err)
+			}
 			if ret != tc.Expected {
 				t.Fatalf("Failed `%s` test: expected value is %t, but get %t", tc.Name, tc.Expected, ret)
 			}
@@ -1531,6 +1550,7 @@ func Test_IsNullExpr(t *testing.T) {
 		Name     string
 		Content  string
 		Expected bool
+		Error    error
 	}{
 		{
 			Name: "non null literal",
@@ -1597,15 +1617,33 @@ resource "null_resource" "test" {
   key = "${null}-1"
 }`,
 			Expected: false,
+			Error:    errors.New("Invalid template interpolation value: The expression result is null. Cannot include a null value in a string template."),
+		},
+		{
+			Name: "invalid references",
+			Content: `
+resource "null_resource" "test" {
+  key = invalid
+}`,
+			Expected: false,
+			Error:    errors.New("Invalid reference: A reference to a resource type must be followed by at least one attribute access, specifying the resource name."),
 		},
 	}
 
 	for _, tc := range cases {
 		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		err := runner.WalkResourceAttributes("null_resource", "test", func(attribute *hcl.Attribute) error {
-			ret := runner.IsNullExpr(attribute.Expr)
-
+		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
+			ret, err := runner.IsNullExpr(attribute.Expr)
+			if err != nil && tc.Error == nil {
+				t.Fatalf("Failed `%s` test: unexpected error occurred: %s", tc.Name, err)
+			}
+			if err == nil && tc.Error != nil {
+				t.Fatalf("Failed `%s` test: expected error is %s, but no errors", tc.Name, tc.Error)
+			}
+			if err != nil && tc.Error != nil && err.Error() != tc.Error.Error() {
+				t.Fatalf("Failed `%s` test: expected error is %s, but got %s", tc.Name, tc.Error, err)
+			}
 			if tc.Expected != ret {
 				t.Fatalf("Failed `%s` test: expected value is %t, but get %t", tc.Name, tc.Expected, ret)
 			}

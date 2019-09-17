@@ -77,7 +77,12 @@ func (r *AwsRouteSpecifiedMultipleTargetsRule) Check(runner *tflint.Runner) erro
 
 		var nullAttributes int
 		for _, attribute := range body.Attributes {
-			if runner.IsNullExpr(attribute.Expr) {
+			isNull, err := runner.IsNullExpr(attribute.Expr)
+			if err != nil {
+				return err
+			}
+
+			if isNull {
 				nullAttributes = nullAttributes + 1
 			}
 		}
