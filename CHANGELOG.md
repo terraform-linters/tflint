@@ -1,3 +1,22 @@
+## 0.11.2 (2019-09-19)
+
+### Enhancements
+
+- [#445](https://github.com/wata727/tflint/pull/445): TFLint is now compatible with Terraform v0.12.9
+  - See https://github.com/hashicorp/terraform/releases/tag/v0.12.9
+- [#446](https://github.com/wata727/tflint/pull/446): Bump terraform-provider-aws from v2.27.0 to v2.28.1
+  - No changes for rules
+
+### BugFixes
+
+- [#442](https://github.com/wata727/tflint/pull/442): aws_s3_bucket_invalid_region_rule: Fix false positives
+- [#443](https://github.com/wata727/tflint/pull/443): config: Fix panic when the expression includes invalid references
+
+### Chores
+
+- [#435](https://github.com/wata727/tflint/pull/435): docs: Add Linix oneliner to download latest `tflint` ([@abitrolly](https://github.com/abitrolly))
+- [#437](https://github.com/wata727/tflint/pull/437): docs: Fix typo in dash rule ([@abitrolly](https://github.com/abitrolly))
+
 ## 0.11.1 (2019-09-11)
 
 ### Chores
