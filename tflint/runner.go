@@ -138,7 +138,12 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 		modVars := map[string]*moduleVariable{}
 		for varName, rawVar := range cfg.Module.Variables {
 			if attribute, exists := attributes[varName]; exists {
-				if isEvaluableExpr(attribute.Expr) {
+				evalauble, err := isEvaluableExpr(attribute.Expr)
+				if err != nil {
+					return runners, err
+				}
+
+				if evalauble {
 					val, diags := parent.ctx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType, nil)
 					if diags.HasErrors() {
 						err := &Error{
@@ -204,7 +209,23 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 // When it received slice as `ret`, it converts cty.Value to expected list type
 // because raw cty.Value has TupleType.
 func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
-	if !isEvaluableExpr(expr) {
+	evaluable, err := isEvaluableExpr(expr)
+	if err != nil {
+		err := &Error{
+			Code:  EvaluationError,
+			Level: ErrorLevel,
+			Message: fmt.Sprintf(
+				"Failed to parse an expression in %s:%d",
+				expr.Range().Filename,
+				expr.Range().Start.Line,
+			),
+			Cause: err,
+		}
+		log.Printf("[ERROR] %s", err)
+		return err
+	}
+
+	if !evaluable {
 		err := &Error{
 			Code:  UnevaluableError,
 			Level: WarningLevel,
@@ -234,7 +255,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 		return err
 	}
 
-	err := cty.Walk(val, func(path cty.Path, v cty.Value) (bool, error) {
+	err = cty.Walk(val, func(path cty.Path, v cty.Value) (bool, error) {
 		if !v.IsKnown() {
 			err := &Error{
 				Code:  UnknownValueError,
@@ -320,7 +341,23 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 
 // EvaluateBlock is a wrapper of terraform.BultinEvalContext.EvaluateBlock and gocty.FromCtyValue
 func (r *Runner) EvaluateBlock(block *hcl.Block, schema *configschema.Block, ret interface{}) error {
-	if !isEvaluableBlock(block.Body, schema) {
+	evaluable, err := isEvaluableBlock(block.Body, schema)
+	if err != nil {
+		err := &Error{
+			Code:  EvaluationError,
+			Level: ErrorLevel,
+			Message: fmt.Sprintf(
+				"Failed to parse a block in %s:%d",
+				block.DefRange.Filename,
+				block.DefRange.Start.Line,
+			),
+			Cause: err,
+		}
+		log.Printf("[ERROR] %s", err)
+		return err
+	}
+
+	if !evaluable {
 		err := &Error{
 			Code:  UnevaluableError,
 			Level: WarningLevel,
@@ -350,7 +387,7 @@ func (r *Runner) EvaluateBlock(block *hcl.Block, schema *configschema.Block, ret
 		return err
 	}
 
-	err := cty.Walk(val, func(path cty.Path, v cty.Value) (bool, error) {
+	err = cty.Walk(val, func(path cty.Path, v cty.Value) (bool, error) {
 		if !v.IsKnown() {
 			err := &Error{
 				Code:  UnknownValueError,
@@ -564,15 +601,20 @@ func (r *Runner) EnsureNoError(err error, proc func() error) error {
 }
 
 // IsNullExpr check the passed expression is null
-func (r *Runner) IsNullExpr(expr hcl.Expression) bool {
-	if !isEvaluableExpr(expr) {
-		return false
+func (r *Runner) IsNullExpr(expr hcl.Expression) (bool, error) {
+	evaluable, err := isEvaluableExpr(expr)
+	if err != nil {
+		return false, err
+	}
+
+	if !evaluable {
+		return false, nil
 	}
 	val, diags := r.ctx.EvaluateExpr(expr, cty.DynamicPseudoType, nil)
 	if diags.HasErrors() {
-		return false
+		return false, diags.Err()
 	}
-	return val.IsNull()
+	return val.IsNull(), nil
 }
 
 // LookupResourcesByType returns `configs.Resource` list according to the resource type
@@ -670,32 +712,30 @@ func prepareVariableValues(configVars map[string]*configs.Variable, variables ..
 	return variableValues
 }
 
-func isEvaluableExpr(expr hcl.Expression) bool {
+func isEvaluableExpr(expr hcl.Expression) (bool, error) {
 	refs, diags := lang.ReferencesInExpr(expr)
 	if diags.HasErrors() {
-		// Maybe this is bug
-		panic(diags.Err())
+		return false, diags.Err()
 	}
 	for _, ref := range refs {
 		if !isEvaluableRef(ref) {
-			return false
+			return false, nil
 		}
 	}
-	return true
+	return true, nil
 }
 
-func isEvaluableBlock(body hcl.Body, schema *configschema.Block) bool {
+func isEvaluableBlock(body hcl.Body, schema *configschema.Block) (bool, error) {
 	refs, diags := lang.ReferencesInBlock(body, schema)
 	if diags.HasErrors() {
-		// Maybe this is bug
-		panic(diags.Err())
+		return false, diags.Err()
 	}
 	for _, ref := range refs {
 		if !isEvaluableRef(ref) {
-			return false
+			return false, nil
 		}
 	}
-	return true
+	return true, nil
 }
 
 func isEvaluableRef(ref *addrs.Reference) bool {
