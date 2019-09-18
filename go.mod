@@ -12,7 +12,7 @@ require (
 	github.com/hashicorp/hcl v0.0.0-20180404174102-ef8a98b0bbce // indirect
 	github.com/hashicorp/hcl2 v0.0.0-20190821123243-0c888d1241f6
 	github.com/hashicorp/logutils v1.0.0
-	github.com/hashicorp/terraform v0.12.8
+	github.com/hashicorp/terraform v0.12.9
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/mattn/go-colorable v0.1.2
 	github.com/mitchellh/go-homedir v1.1.0
