@@ -562,7 +562,6 @@ var modelRules = []Rule{
 	awsmodelrules.NewAwsRoute53ZoneInvalidDelegationSetIDRule(),
 	awsmodelrules.NewAwsRoute53ZoneInvalidNameRule(),
 	awsmodelrules.NewAwsS3BucketInvalidAccelerationStatusRule(),
-	awsmodelrules.NewAwsS3BucketInvalidRegionRule(),
 	awsmodelrules.NewAwsS3BucketInvalidRequestPayerRule(),
 	awsmodelrules.NewAwsS3BucketInventoryInvalidIncludedObjectVersionsRule(),
 	awsmodelrules.NewAwsS3BucketObjectInvalidACLRule(),

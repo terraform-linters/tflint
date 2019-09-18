@@ -21,7 +21,7 @@ mapping "aws_s3_bucket" {
   logging                              = LoggingEnabled
   lifecycle_rule                       = LifecycleRules
   acceleration_status                  = BucketAccelerateStatus
-  region                               = BucketLocationConstraint
+  region                               = any // BucketLocationConstraint
   request_payer                        = Payer
   replication_configuration            = ReplicationConfiguration
   server_side_encryption_configuration = ServerSideEncryptionConfiguration
