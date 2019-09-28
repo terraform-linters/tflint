@@ -5,4 +5,5 @@
 - [Annotations](annotations.md)
 - [Credentials](credentials.md)
 - [Compatibility with Terraform](compatibility.md)
+- [Editor Integration](editor-integration.md)
 - [Advanced Inspection](advanced.md)
