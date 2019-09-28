@@ -158,6 +158,52 @@ func Test_toConfig(t *testing.T) {
 				Rules:          map[string]*tflint.RuleConfig{},
 			},
 		},
+		{
+			Name:    "--enable-rule",
+			Command: "./tflint --enable-rule aws_instance_invalid_type --enable-rule aws_instance_previous_type",
+			Expected: &tflint.Config{
+				Module:         false,
+				DeepCheck:      false,
+				Force:          false,
+				AwsCredentials: client.AwsCredentials{},
+				IgnoreModule:   map[string]bool{},
+				Varfile:        []string{},
+				Variables:      []string{},
+				Rules: map[string]*tflint.RuleConfig{
+					"aws_instance_invalid_type": {
+						Name:    "aws_instance_invalid_type",
+						Enabled: true,
+					},
+					"aws_instance_previous_type": {
+						Name:    "aws_instance_previous_type",
+						Enabled: true,
+					},
+				},
+			},
+		},
+				{
+			Name:    "--disable-rule",
+			Command: "./tflint --disable-rule aws_instance_invalid_type --disable-rule aws_instance_previous_type",
+			Expected: &tflint.Config{
+				Module:         false,
+				DeepCheck:      false,
+				Force:          false,
+				AwsCredentials: client.AwsCredentials{},
+				IgnoreModule:   map[string]bool{},
+				Varfile:        []string{},
+				Variables:      []string{},
+				Rules: map[string]*tflint.RuleConfig{
+					"aws_instance_invalid_type": {
+						Name:    "aws_instance_invalid_type",
+						Enabled: false,
+					},
+					"aws_instance_previous_type": {
+						Name:    "aws_instance_previous_type",
+						Enabled: false,
+					},
+				},
+			},
+		},
 	}
 
 	for _, tc := range cases {
