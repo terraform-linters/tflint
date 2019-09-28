@@ -104,7 +104,7 @@ func (r *AwsDBInstanceInvalidTypeRule) Severity() string {
 
 // Link returns the rule reference link
 func (r *AwsDBInstanceInvalidTypeRule) Link() string {
-	return "https://github.com/wata727/tflint/blob/master/docs/aws_db_instance_invalid_type.md"
+	return tflint.ReferenceLink(r.Name())
 }
 
 // Check checks whether "aws_db_instance" has invalid instance type.

@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform/configs"
-	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -40,7 +39,7 @@ func (r *TerraformModulePinnedSourceRule) Severity() string {
 
 // Link returns the rule reference link
 func (r *TerraformModulePinnedSourceRule) Link() string {
-	return project.ReferenceLink(r.Name())
+	return tflint.ReferenceLink(r.Name())
 }
 
 var reGithub = regexp.MustCompile("(^github.com/(.+)/(.+)$)|(^git@github.com:(.+)/(.+)$)")

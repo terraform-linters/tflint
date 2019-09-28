@@ -1,4 +1,4 @@
-package project
+package tflint
 
 import "fmt"
 
