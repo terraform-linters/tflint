@@ -17,15 +17,16 @@ var fallbackConfigFile = "~/.tflint.hcl"
 
 type rawConfig struct {
 	Config *struct {
-		Module           *bool              `hcl:"module"`
-		DeepCheck        *bool              `hcl:"deep_check"`
-		Force            *bool              `hcl:"force"`
-		AwsCredentials   *map[string]string `hcl:"aws_credentials"`
-		IgnoreModule     *map[string]bool   `hcl:"ignore_module"`
-		IgnoreRule       *map[string]bool   `hcl:"ignore_rule"`
-		Varfile          *[]string          `hcl:"varfile"`
-		Variables        *[]string          `hcl:"variables"`
-		TerraformVersion *string            `hcl:"terraform_version"`
+		Module         *bool              `hcl:"module"`
+		DeepCheck      *bool              `hcl:"deep_check"`
+		Force          *bool              `hcl:"force"`
+		AwsCredentials *map[string]string `hcl:"aws_credentials"`
+		IgnoreModule   *map[string]bool   `hcl:"ignore_module"`
+		Varfile        *[]string          `hcl:"varfile"`
+		Variables      *[]string          `hcl:"variables"`
+		// Removed options
+		TerraformVersion *string          `hcl:"terraform_version"`
+		IgnoreRule       *map[string]bool `hcl:"ignore_rule"`
 	} `hcl:"config,block"`
 	Rules []RuleConfig `hcl:"rule,block"`
 }
@@ -37,7 +38,6 @@ type Config struct {
 	Force          bool
 	AwsCredentials client.AwsCredentials
 	IgnoreModule   map[string]bool
-	IgnoreRule     map[string]bool
 	Varfile        []string
 	Variables      []string
 	Rules          map[string]*RuleConfig
@@ -58,7 +58,6 @@ func EmptyConfig() *Config {
 		Force:          false,
 		AwsCredentials: client.AwsCredentials{},
 		IgnoreModule:   map[string]bool{},
-		IgnoreRule:     map[string]bool{},
 		Varfile:        []string{},
 		Variables:      []string{},
 		Rules:          map[string]*RuleConfig{},
@@ -121,7 +120,6 @@ func (c *Config) Merge(other *Config) *Config {
 
 	ret.AwsCredentials = ret.AwsCredentials.Merge(other.AwsCredentials)
 	ret.IgnoreModule = mergeBoolMap(ret.IgnoreModule, other.IgnoreModule)
-	ret.IgnoreRule = mergeBoolMap(ret.IgnoreRule, other.IgnoreRule)
 	ret.Varfile = append(ret.Varfile, other.Varfile...)
 	ret.Variables = append(ret.Variables, other.Variables...)
 
@@ -134,11 +132,6 @@ func (c *Config) copy() *Config {
 	ignoreModule := make(map[string]bool)
 	for k, v := range c.IgnoreModule {
 		ignoreModule[k] = v
-	}
-
-	ignoreRule := make(map[string]bool)
-	for k, v := range c.IgnoreRule {
-		ignoreRule[k] = v
 	}
 
 	varfile := make([]string, len(c.Varfile))
@@ -159,7 +152,6 @@ func (c *Config) copy() *Config {
 		Force:          c.Force,
 		AwsCredentials: c.AwsCredentials,
 		IgnoreModule:   ignoreModule,
-		IgnoreRule:     ignoreRule,
 		Varfile:        varfile,
 		Variables:      variables,
 		Rules:          rules,
@@ -180,8 +172,14 @@ func loadConfigFromFile(file string) (*Config, error) {
 		return nil, diags
 	}
 
-	if raw.Config != nil && raw.Config.TerraformVersion != nil {
-		return nil, errors.New("`terraform_version` was removed in v0.9.0 because the option is no longer used")
+	if raw.Config != nil {
+		if raw.Config.TerraformVersion != nil {
+			return nil, errors.New("`terraform_version` was removed in v0.9.0 because the option is no longer used")
+		}
+
+		if raw.Config.IgnoreRule != nil {
+			return nil, errors.New("`ignore_rule` was removed in v0.12.0. Please define `rule` block with `enabled = false` instead")
+		}
 	}
 
 	cfg := raw.toConfig()
@@ -190,7 +188,6 @@ func loadConfigFromFile(file string) (*Config, error) {
 	log.Printf("[DEBUG]   DeepCheck: %t", cfg.DeepCheck)
 	log.Printf("[DEBUG]   Force: %t", cfg.Force)
 	log.Printf("[DEBUG]   IgnoreModule: %#v", cfg.IgnoreModule)
-	log.Printf("[DEBUG]   IgnoreRule: %#v", cfg.IgnoreRule)
 	log.Printf("[DEBUG]   Varfile: %#v", cfg.Varfile)
 	log.Printf("[DEBUG]   Variables: %#v", cfg.Variables)
 	log.Printf("[DEBUG]   Rules: %#v", cfg.Rules)
@@ -244,9 +241,6 @@ func (raw *rawConfig) toConfig() *Config {
 		}
 		if rc.IgnoreModule != nil {
 			ret.IgnoreModule = *rc.IgnoreModule
-		}
-		if rc.IgnoreRule != nil {
-			ret.IgnoreRule = *rc.IgnoreRule
 		}
 		if rc.Varfile != nil {
 			ret.Varfile = *rc.Varfile

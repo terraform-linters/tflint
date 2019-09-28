@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/wata727/tflint/rules/awsrules"
+	"github.com/wata727/tflint/rules/terraformrules"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -12,6 +13,7 @@ func Test_NewRules(t *testing.T) {
 	// Mock rules in test
 	DefaultRules = []Rule{
 		awsrules.NewAwsRouteNotSpecifiedTargetRule(),
+		terraformrules.NewTerraformDashInResourceNameRule(),
 	}
 	deepCheckRules = []Rule{
 		awsrules.NewAwsInstanceInvalidAMIRule(),
@@ -40,15 +42,6 @@ func Test_NewRules(t *testing.T) {
 			},
 		},
 		{
-			Name: "ignore_rule",
-			Config: &tflint.Config{
-				IgnoreRule: map[string]bool{
-					"aws_route_not_specified_target": true,
-				},
-			},
-			Expected: []Rule{},
-		},
-		{
 			Name: "enabled = false",
 			Config: &tflint.Config{
 				Rules: map[string]*tflint.RuleConfig{
@@ -60,19 +53,17 @@ func Test_NewRules(t *testing.T) {
 			Expected: []Rule{},
 		},
 		{
-			Name: "`enabled = true` and `ignore_rule`",
+			Name: "enabled = true",
 			Config: &tflint.Config{
-				IgnoreRule: map[string]bool{
-					"aws_route_not_specified_target": true,
-				},
 				Rules: map[string]*tflint.RuleConfig{
-					"aws_route_not_specified_target": {
+					"terraform_dash_in_resource_name": {
 						Enabled: true,
 					},
 				},
 			},
 			Expected: []Rule{
 				awsrules.NewAwsRouteNotSpecifiedTargetRule(),
+				terraformrules.NewTerraformDashInResourceNameRule(),
 			},
 		},
 	}

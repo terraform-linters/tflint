@@ -11,11 +11,6 @@ config {
     shared_credentials_file = "~/.aws/myapp"
   }
 
-  ignore_rule = {
-    aws_instance_invalid_type  = true
-    aws_instance_previous_type = true
-  }
-
   ignore_module = {
     "github.com/wata727/example-module" = true
   }

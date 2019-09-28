@@ -90,6 +90,12 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Stderr:  "`quiet` option was removed in v0.11.0. The behavior is now default",
 		},
 		{
+			Name:    "removed `--ignore-rule` option",
+			Command: "./tflint --ignore-rule aws_instance_invalid_type",
+			Status:  ExitCodeError,
+			Stderr:  "`ignore-rule` option was removed in v0.12.0",
+		},
+		{
 			Name:    "invalid options",
 			Command: "./tflint --unknown",
 			Status:  ExitCodeError,

@@ -15,7 +15,6 @@ type Options struct {
 	Format       string   `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" default:"default"`
 	Config       string   `short:"c" long:"config" description:"Config file name" value-name:"FILE" default:".tflint.hcl"`
 	IgnoreModule string   `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE1,SOURCE2..."`
-	IgnoreRule   string   `long:"ignore-rule" description:"Ignore rule names" value-name:"RULE1,RULE2..."`
 	Varfile      string   `long:"var-file" description:"Terraform variable file names" value-name:"FILE1,FILE2..."`
 	Variables    []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
 	Module       bool     `long:"module" description:"Inspect modules"`
@@ -37,13 +36,6 @@ func (opts *Options) toConfig() *tflint.Config {
 		}
 	}
 
-	ignoreRule := map[string]bool{}
-	if opts.IgnoreRule != "" {
-		for _, r := range strings.Split(opts.IgnoreRule, ",") {
-			ignoreRule[r] = true
-		}
-	}
-
 	varfile := []string{}
 	if opts.Varfile != "" {
 		varfile = strings.Split(opts.Varfile, ",")
@@ -57,7 +49,6 @@ func (opts *Options) toConfig() *tflint.Config {
 	log.Printf("[DEBUG]   DeepCheck: %t", opts.Deep)
 	log.Printf("[DEBUG]   Force: %t", opts.Force)
 	log.Printf("[DEBUG]   IgnoreModule: %#v", ignoreModule)
-	log.Printf("[DEBUG]   IgnoreRule: %#v", ignoreRule)
 	log.Printf("[DEBUG]   Varfile: %#v", varfile)
 	log.Printf("[DEBUG]   Variables: %#v", opts.Variables)
 
@@ -73,7 +64,6 @@ func (opts *Options) toConfig() *tflint.Config {
 			Region:    opts.AwsRegion,
 		},
 		IgnoreModule: ignoreModule,
-		IgnoreRule:   ignoreRule,
 		Varfile:      varfile,
 		Variables:    opts.Variables,
 		Rules:        map[string]*tflint.RuleConfig{},
