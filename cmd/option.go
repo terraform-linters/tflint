@@ -15,6 +15,8 @@ type Options struct {
 	Format       string   `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" default:"default"`
 	Config       string   `short:"c" long:"config" description:"Config file name" value-name:"FILE" default:".tflint.hcl"`
 	IgnoreModule string   `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE1,SOURCE2..."`
+	EnableRules  []string `long:"enable-rule" description:"Enable rules from the command line" value-name:"RULE_NAME"`
+	DisableRules []string `long:"disable-rule" description:"Disable rules from the command line" value-name:"RULE_NAME"`
 	Varfile      string   `long:"var-file" description:"Terraform variable file names" value-name:"FILE1,FILE2..."`
 	Variables    []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
 	Module       bool     `long:"module" description:"Inspect modules"`
@@ -49,8 +51,24 @@ func (opts *Options) toConfig() *tflint.Config {
 	log.Printf("[DEBUG]   DeepCheck: %t", opts.Deep)
 	log.Printf("[DEBUG]   Force: %t", opts.Force)
 	log.Printf("[DEBUG]   IgnoreModule: %#v", ignoreModule)
+	log.Printf("[DEBUG]   EnableRules: %#v", opts.EnableRules)
+	log.Printf("[DEBUG]   DisableRules: %#v", opts.DisableRules)
 	log.Printf("[DEBUG]   Varfile: %#v", varfile)
 	log.Printf("[DEBUG]   Variables: %#v", opts.Variables)
+
+	rules := map[string]*tflint.RuleConfig{}
+	for _, rule := range opts.EnableRules {
+		rules[rule] = &tflint.RuleConfig{
+			Name:    rule,
+			Enabled: true,
+		}
+	}
+	for _, rule := range opts.DisableRules {
+		rules[rule] = &tflint.RuleConfig{
+			Name:    rule,
+			Enabled: false,
+		}
+	}
 
 	return &tflint.Config{
 		Module:    opts.Module,
@@ -66,6 +84,6 @@ func (opts *Options) toConfig() *tflint.Config {
 		IgnoreModule: ignoreModule,
 		Varfile:      varfile,
 		Variables:    opts.Variables,
-		Rules:        map[string]*tflint.RuleConfig{},
+		Rules:        rules,
 	}
 }

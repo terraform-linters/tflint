@@ -65,7 +65,7 @@ func (cli *CLI) Run(args []string) int {
 			return []string{}, errors.New("`quiet` option was removed in v0.11.0. The behavior is now default")
 		}
 		if option == "ignore-rule" {
-			return []string{}, errors.New("`ignore-rule` option was removed in v0.12.0")
+			return []string{}, errors.New("`ignore-rule` option was removed in v0.12.0. Please use `--disable-rule` instead")
 		}
 		return []string{}, fmt.Errorf("`%s` is unknown option. Please run `tflint --help`", option)
 	}

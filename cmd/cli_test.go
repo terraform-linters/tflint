@@ -93,7 +93,7 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Name:    "removed `--ignore-rule` option",
 			Command: "./tflint --ignore-rule aws_instance_invalid_type",
 			Status:  ExitCodeError,
-			Stderr:  "`ignore-rule` option was removed in v0.12.0",
+			Stderr:  "`ignore-rule` option was removed in v0.12.0. Please use `--disable-rule` instead",
 		},
 		{
 			Name:    "invalid options",
