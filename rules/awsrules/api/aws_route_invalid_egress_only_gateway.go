@@ -50,7 +50,7 @@ func (r *AwsRouteInvalidEgressOnlyGatewayRule) Link() string {
 
 // Check checks whether the attributes are included in the list retrieved by DescribeEgressOnlyInternetGateways
 func (r *AwsRouteInvalidEgressOnlyGatewayRule) Check(runner *tflint.Runner) error {
-	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
 		if !r.dataPrepared {

@@ -48,7 +48,7 @@ var defaultElastiCacheParameterGroupRegexp = regexp.MustCompile("^default")
 
 // Check checks the parameter group name starts with `default`
 func (r *AwsElastiCacheClusterDefaultParameterGroupRule) Check(runner *tflint.Runner) error {
-	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
 		var parameterGroup string

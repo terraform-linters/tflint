@@ -51,7 +51,7 @@ func (r *AwsEc2FleetInvalidTypeRule) Link() string {
 
 // Check checks the pattern is valid
 func (r *AwsEc2FleetInvalidTypeRule) Check(runner *tflint.Runner) error {
-	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
 		var val string

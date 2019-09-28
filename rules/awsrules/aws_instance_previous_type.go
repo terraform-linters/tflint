@@ -63,7 +63,7 @@ func (r *AwsInstancePreviousTypeRule) Link() string {
 
 // Check checks whether the resource's `instance_type` is included in the list of previous generation instance type
 func (r *AwsInstancePreviousTypeRule) Check(runner *tflint.Runner) error {
-	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
 		var instanceType string

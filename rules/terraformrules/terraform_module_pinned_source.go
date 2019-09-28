@@ -50,7 +50,7 @@ var reGenericGit = regexp.MustCompile("(git://(.+)/(.+))|(git::https://(.+)/(.+)
 // Check checks if module source version is default or unpinned
 // Note that this rule is valid only for Git or Mercurial source
 func (r *TerraformModulePinnedSourceRule) Check(runner *tflint.Runner) error {
-	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	for _, module := range runner.TFConfig.Module.ModuleCalls {
 		log.Printf("[DEBUG] Walk `%s` attribute", module.Name+".source")

@@ -49,7 +49,7 @@ func (r *AwsInstanceInvalidAMIRule) Link() string {
 
 // Check checks whether "aws_instance" has invalid AMI ID
 func (r *AwsInstanceInvalidAMIRule) Check(runner *tflint.Runner) error {
-	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
 		var ami string

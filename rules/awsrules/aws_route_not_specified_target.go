@@ -43,7 +43,7 @@ func (r *AwsRouteNotSpecifiedTargetRule) Link() string {
 // Check checks whether `gateway_id`, `egress_only_gateway_id`, `nat_gateway_id`, `instance_id`
 // `vpc_peering_connection_id` or `network_interface_id` is defined in a resource
 func (r *AwsRouteNotSpecifiedTargetRule) Check(runner *tflint.Runner) error {
-	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	for _, resource := range runner.LookupResourcesByType(r.resourceType) {
 		body, _, diags := resource.Config.PartialContent(&hcl.BodySchema{

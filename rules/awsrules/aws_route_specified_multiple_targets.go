@@ -43,7 +43,7 @@ func (r *AwsRouteSpecifiedMultipleTargetsRule) Link() string {
 // Check checks whether a resource defines `gateway_id`, `egress_only_gateway_id`, `nat_gateway_id`
 // `instance_id`, `vpc_peering_connection_id` or `network_interface_id` at the same time
 func (r *AwsRouteSpecifiedMultipleTargetsRule) Check(runner *tflint.Runner) error {
-	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	for _, resource := range runner.LookupResourcesByType(r.resourceType) {
 		body, _, diags := resource.Config.PartialContent(&hcl.BodySchema{
