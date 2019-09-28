@@ -23,6 +23,7 @@ func NewAwsS3BucketInvalidACLRule() *AwsS3BucketInvalidACLRule {
 			"private",
 			"public-read",
 			"public-read-write",
+			"aws-exec-read",
 			"authenticated-read",
 			"log-delivery-write",
 		},
