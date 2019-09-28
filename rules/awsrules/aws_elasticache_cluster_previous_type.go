@@ -57,7 +57,7 @@ func (r *AwsElastiCacheClusterPreviousTypeRule) Link() string {
 
 // Check checks whether the resource's `node_type` is included in the list of previous generation node type
 func (r *AwsElastiCacheClusterPreviousTypeRule) Check(runner *tflint.Runner) error {
-	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
 		var nodeType string

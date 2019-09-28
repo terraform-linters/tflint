@@ -50,7 +50,7 @@ func (r *AwsRouteInvalidNetworkInterfaceRule) Link() string {
 
 // Check checks whether the attributes are included in the list retrieved by DescribeNetworkInterfaces
 func (r *AwsRouteInvalidNetworkInterfaceRule) Check(runner *tflint.Runner) error {
-	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
 		if !r.dataPrepared {

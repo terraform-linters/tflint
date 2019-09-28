@@ -91,7 +91,7 @@ func (r *AwsElastiCacheClusterInvalidTypeRule) Link() string {
 
 // Check checks whether "aws_elasticache_cluster" has invalid node type.
 func (r *AwsElastiCacheClusterInvalidTypeRule) Check(runner *tflint.Runner) error {
-	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
 		var nodeType string

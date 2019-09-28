@@ -38,7 +38,7 @@ func (r *TerraformDocumentedOutputsRule) Link() string {
 
 // Check checks whether outputs have descriptions
 func (r *TerraformDocumentedOutputsRule) Check(runner *tflint.Runner) error {
-	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	for _, output := range runner.TFConfig.Module.Outputs {
 		if output.Description == "" {

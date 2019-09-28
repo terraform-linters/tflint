@@ -39,7 +39,7 @@ func (r *TerraformDashInResourceNameRule) Link() string {
 
 // Check checks whether resources have any dashes in the name
 func (r *TerraformDashInResourceNameRule) Check(runner *tflint.Runner) error {
-	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	for _, resource := range runner.TFConfig.Module.ManagedResources {
 		if strings.Contains(resource.Name, "-") {

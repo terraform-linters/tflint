@@ -109,7 +109,7 @@ func (r *AwsDBInstanceInvalidTypeRule) Link() string {
 
 // Check checks whether "aws_db_instance" has invalid instance type.
 func (r *AwsDBInstanceInvalidTypeRule) Check(runner *tflint.Runner) error {
-	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
+	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
 		var instanceType string
