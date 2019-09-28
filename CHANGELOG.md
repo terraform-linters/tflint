@@ -1,3 +1,37 @@
+## 0.12.0 (2019-09-29)
+
+This release includes an experimental Language Server Procotol support. Using LSP makes it easy to integrate TFLint with your favorite editor. Currently, only diagnostics are provided.
+
+### Breaking Changes
+
+- [#454](https://github.com/wata727/tflint/pull/454): Remove deprecated `ignore-rule` option
+  - `--ignore-rule` CLI flag and config attribute are removed. Please use `--disable-rule`, or define a `rule` block with `enabled = false` in your TFLint config file.
+  - Note that `--disable-rule` behaves differently than `--ignore-rule`. Since `--ignore-rule` is deprecated, it was overridden by the value defined in rule blocks, but `--disable-rule` always takes precedence.
+
+### Enhancements
+
+- [#439](https://github.com/wata727/tflint/pull/439): Experimental language server support
+  - `tflint --langserver` launches a Language Server which speaks LSP v3.14.0.
+- [#455](https://github.com/wata727/tflint/pull/455): Add `--enable-rule` and `--disable-rule` options
+- [#456](https://github.com/wata727/tflint/pull/456): Allow specifying multiple `--ignore-module` and `--var-file` flags
+  - You can use these flags multiple times. The previous style is still valid for backward compatibility.
+- [#459](https://github.com/wata727/tflint/pull/459): rule: Add m5, r5, and z1d RDS instance families and m3 and r3 families will be previous generations
+- [#460](https://github.com/wata727/tflint/pull/460): rule: Add m3 and r3 ElastiCache node types as previous generations
+- [#461](https://github.com/wata727/tflint/pull/461): rule: Add m3, c3, g2, r3, and i2 EC2 instance families as previous generations
+- [#462](https://github.com/wata727/tflint/pull/462): rule: Add aws-exec-read bucket ACL as a valid value
+- [#463](https://github.com/wata727/tflint/pull/463): Bump terraform-provider-aws from v2.28.1 to v2.30.0
+  - Add g4dn instance family
+  - The limit of length for config rule name will be changed 128 characters from 64
+  - Add regexp validation for config rule name
+
+### Chores
+
+- [#449](https://github.com/wata727/tflint/pull/449): docs: Add annotations page
+- [#450](https://github.com/wata727/tflint/pull/450): Add issue templates
+- [#451](https://github.com/wata727/tflint/pull/451): docs: Assume role is supported
+- [#457](https://github.com/wata727/tflint/pull/457): Tweak log levels
+- [#458](https://github.com/wata727/tflint/pull/458): Remove project package
+
 ## 0.11.2 (2019-09-19)
 
 ### Enhancements
