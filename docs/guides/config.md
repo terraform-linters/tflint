@@ -87,18 +87,10 @@ Set a Terraform variable from a passed value. This flag can be set multiple time
 
 ## `rule` blocks
 
-CLI flag: `--ignore-rule`
-
 You can make settings for each rule in the `rule` block. Currently, it can set only `enabled` option. If you set `enabled = false`, TFLint doesn't inspect configuration files by this rule.
 
 ```hcl
 rule "aws_instance_previous_type" {
   enabled = false
 }
-```
-
-You can also disable rules with the `--ignore-rule` option.
-
-```
-$ tflint --ignore-rule=aws_instance_invalid_type,aws_instance_previous_type
 ```
