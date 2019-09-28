@@ -1238,7 +1238,7 @@ func Test_NewModuleRunners_modVars(t *testing.T) {
 func Test_NewModuleRunners_ignoreModules(t *testing.T) {
 	withinFixtureDir(t, "nested_modules", func() {
 		config := moduleConfig()
-		config.IgnoreModule["./module"] = true
+		config.IgnoreModules["./module"] = true
 		runner := testRunnerWithOsFs(t, config)
 
 		runners, err := NewModuleRunners(runner)

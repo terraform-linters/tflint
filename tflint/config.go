@@ -37,8 +37,8 @@ type Config struct {
 	DeepCheck      bool
 	Force          bool
 	AwsCredentials client.AwsCredentials
-	IgnoreModule   map[string]bool
-	Varfile        []string
+	IgnoreModules  map[string]bool
+	Varfiles       []string
 	Variables      []string
 	Rules          map[string]*RuleConfig
 }
@@ -57,8 +57,8 @@ func EmptyConfig() *Config {
 		DeepCheck:      false,
 		Force:          false,
 		AwsCredentials: client.AwsCredentials{},
-		IgnoreModule:   map[string]bool{},
-		Varfile:        []string{},
+		IgnoreModules:  map[string]bool{},
+		Varfiles:       []string{},
 		Variables:      []string{},
 		Rules:          map[string]*RuleConfig{},
 	}
@@ -119,8 +119,8 @@ func (c *Config) Merge(other *Config) *Config {
 	}
 
 	ret.AwsCredentials = ret.AwsCredentials.Merge(other.AwsCredentials)
-	ret.IgnoreModule = mergeBoolMap(ret.IgnoreModule, other.IgnoreModule)
-	ret.Varfile = append(ret.Varfile, other.Varfile...)
+	ret.IgnoreModules = mergeBoolMap(ret.IgnoreModules, other.IgnoreModules)
+	ret.Varfiles = append(ret.Varfiles, other.Varfiles...)
 	ret.Variables = append(ret.Variables, other.Variables...)
 
 	ret.Rules = mergeRuleMap(ret.Rules, other.Rules)
@@ -129,13 +129,13 @@ func (c *Config) Merge(other *Config) *Config {
 }
 
 func (c *Config) copy() *Config {
-	ignoreModule := make(map[string]bool)
-	for k, v := range c.IgnoreModule {
-		ignoreModule[k] = v
+	ignoreModules := make(map[string]bool)
+	for k, v := range c.IgnoreModules {
+		ignoreModules[k] = v
 	}
 
-	varfile := make([]string, len(c.Varfile))
-	copy(varfile, c.Varfile)
+	varfiles := make([]string, len(c.Varfiles))
+	copy(varfiles, c.Varfiles)
 
 	variables := make([]string, len(c.Variables))
 	copy(variables, c.Variables)
@@ -151,8 +151,8 @@ func (c *Config) copy() *Config {
 		DeepCheck:      c.DeepCheck,
 		Force:          c.Force,
 		AwsCredentials: c.AwsCredentials,
-		IgnoreModule:   ignoreModule,
-		Varfile:        varfile,
+		IgnoreModules:  ignoreModules,
+		Varfiles:        varfiles,
 		Variables:      variables,
 		Rules:          rules,
 	}
@@ -187,8 +187,8 @@ func loadConfigFromFile(file string) (*Config, error) {
 	log.Printf("[DEBUG]   Module: %t", cfg.Module)
 	log.Printf("[DEBUG]   DeepCheck: %t", cfg.DeepCheck)
 	log.Printf("[DEBUG]   Force: %t", cfg.Force)
-	log.Printf("[DEBUG]   IgnoreModule: %#v", cfg.IgnoreModule)
-	log.Printf("[DEBUG]   Varfile: %#v", cfg.Varfile)
+	log.Printf("[DEBUG]   IgnoreModules: %#v", cfg.IgnoreModules)
+	log.Printf("[DEBUG]   Varfiles: %#v", cfg.Varfiles)
 	log.Printf("[DEBUG]   Variables: %#v", cfg.Variables)
 	log.Printf("[DEBUG]   Rules: %#v", cfg.Rules)
 
@@ -240,10 +240,10 @@ func (raw *rawConfig) toConfig() *Config {
 			ret.AwsCredentials.Region = credentials["region"]
 		}
 		if rc.IgnoreModule != nil {
-			ret.IgnoreModule = *rc.IgnoreModule
+			ret.IgnoreModules = *rc.IgnoreModule
 		}
 		if rc.Varfile != nil {
-			ret.Varfile = *rc.Varfile
+			ret.Varfiles = *rc.Varfile
 		}
 		if rc.Variables != nil {
 			ret.Variables = *rc.Variables
