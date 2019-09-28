@@ -86,7 +86,7 @@ func (r *AwsElastiCacheClusterInvalidTypeRule) Severity() string {
 
 // Link returns the rule reference link
 func (r *AwsElastiCacheClusterInvalidTypeRule) Link() string {
-	return "https://github.com/wata727/tflint/blob/master/docs/aws_elasticache_cluster_invalid_type.md"
+	return tflint.ReferenceLink(r.Name())
 }
 
 // Check checks whether "aws_elasticache_cluster" has invalid node type.

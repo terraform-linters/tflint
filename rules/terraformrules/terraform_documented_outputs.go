@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -33,7 +32,7 @@ func (r *TerraformDocumentedOutputsRule) Severity() string {
 
 // Link returns the rule reference link
 func (r *TerraformDocumentedOutputsRule) Link() string {
-	return project.ReferenceLink(r.Name())
+	return tflint.ReferenceLink(r.Name())
 }
 
 // Check checks whether outputs have descriptions

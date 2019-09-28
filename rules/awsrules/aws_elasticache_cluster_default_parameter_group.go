@@ -6,7 +6,6 @@ import (
 	"regexp"
 
 	"github.com/hashicorp/hcl2/hcl"
-	"github.com/wata727/tflint/project"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -41,7 +40,7 @@ func (r *AwsElastiCacheClusterDefaultParameterGroupRule) Severity() string {
 
 // Link returns the rule reference link
 func (r *AwsElastiCacheClusterDefaultParameterGroupRule) Link() string {
-	return project.ReferenceLink(r.Name())
+	return tflint.ReferenceLink(r.Name())
 }
 
 var defaultElastiCacheParameterGroupRegexp = regexp.MustCompile("^default")
