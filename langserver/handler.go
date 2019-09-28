@@ -121,7 +121,7 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 	if err != nil {
 		return ret, fmt.Errorf("Failed to load configuration tokens: %s", err)
 	}
-	variables, err := loader.LoadValuesFiles(h.config.Varfile...)
+	variables, err := loader.LoadValuesFiles(h.config.Varfiles...)
 	if err != nil {
 		return ret, fmt.Errorf("Failed to load values files: %s", err)
 	}

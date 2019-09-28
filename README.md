@@ -87,10 +87,10 @@ Application Options:
       --langserver                          Start language server
   -f, --format=[default|json|checkstyle]    Output format (default: default)
   -c, --config=FILE                         Config file name (default: .tflint.hcl)
-      --ignore-module=SOURCE1,SOURCE2...    Ignore module sources
+      --ignore-module=SOURCE                Ignore module sources
       --enable-rule=RULE_NAME               Enable rules from the command line
       --disable-rule=RULE_NAME              Disable rules from the command line
-      --var-file=FILE1,FILE2...             Terraform variable file names
+      --var-file=FILE                       Terraform variable file name
       --var='foo=bar'                       Set a Terraform variable
       --module                              Inspect modules
       --deep                                Enable deep check mode

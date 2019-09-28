@@ -36,10 +36,10 @@ func Test_LoadConfig(t *testing.T) {
 					Profile:   "production",
 					CredsFile: "~/.aws/myapp",
 				},
-				IgnoreModule: map[string]bool{
+				IgnoreModules: map[string]bool{
 					"github.com/wata727/example-module": true,
 				},
-				Varfile:   []string{"example1.tfvars", "example2.tfvars"},
+				Varfiles:   []string{"example1.tfvars", "example2.tfvars"},
 				Variables: []string{"foo=bar", "bar=['foo']"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
@@ -71,8 +71,8 @@ func Test_LoadConfig(t *testing.T) {
 					SecretKey: "AWS_SECRET_KEY",
 					Region:    "us-east-1",
 				},
-				IgnoreModule: map[string]bool{},
-				Varfile:      []string{},
+				IgnoreModules: map[string]bool{},
+				Varfiles:      []string{},
 				Variables:    []string{},
 				Rules:        map[string]*RuleConfig{},
 			},
@@ -174,11 +174,11 @@ func Test_Merge(t *testing.T) {
 			SecretKey: "secret_key",
 			Region:    "us-east-1",
 		},
-		IgnoreModule: map[string]bool{
+		IgnoreModules: map[string]bool{
 			"github.com/wata727/example-1": true,
 			"github.com/wata727/example-2": false,
 		},
-		Varfile:   []string{"example1.tfvars", "example2.tfvars"},
+		Varfiles:   []string{"example1.tfvars", "example2.tfvars"},
 		Variables: []string{"foo=bar"},
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
@@ -228,11 +228,11 @@ func Test_Merge(t *testing.T) {
 					Profile:   "production",
 					Region:    "us-east-1",
 				},
-				IgnoreModule: map[string]bool{
+				IgnoreModules: map[string]bool{
 					"github.com/wata727/example-1": true,
 					"github.com/wata727/example-2": false,
 				},
-				Varfile:   []string{"example1.tfvars", "example2.tfvars"},
+				Varfiles:   []string{"example1.tfvars", "example2.tfvars"},
 				Variables: []string{"foo=bar"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
@@ -255,11 +255,11 @@ func Test_Merge(t *testing.T) {
 					Region:    "ap-northeast-1",
 					CredsFile: "~/.aws/myapp",
 				},
-				IgnoreModule: map[string]bool{
+				IgnoreModules: map[string]bool{
 					"github.com/wata727/example-2": true,
 					"github.com/wata727/example-3": false,
 				},
-				Varfile:   []string{"example3.tfvars"},
+				Varfiles:   []string{"example3.tfvars"},
 				Variables: []string{"bar=baz"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_ami": {
@@ -283,12 +283,12 @@ func Test_Merge(t *testing.T) {
 					Region:    "ap-northeast-1",
 					CredsFile: "~/.aws/myapp",
 				},
-				IgnoreModule: map[string]bool{
+				IgnoreModules: map[string]bool{
 					"github.com/wata727/example-1": true,
 					"github.com/wata727/example-2": true,
 					"github.com/wata727/example-3": false,
 				},
-				Varfile:   []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
+				Varfiles:   []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
 				Variables: []string{"foo=bar", "bar=baz"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
@@ -326,11 +326,11 @@ func Test_copy(t *testing.T) {
 			SecretKey: "secret_key",
 			Region:    "us-east-1",
 		},
-		IgnoreModule: map[string]bool{
+		IgnoreModules: map[string]bool{
 			"github.com/wata727/example-1": true,
 			"github.com/wata727/example-2": false,
 		},
-		Varfile:   []string{"example1.tfvars", "example2.tfvars"},
+		Varfiles:   []string{"example1.tfvars", "example2.tfvars"},
 		Variables: []string{},
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
@@ -376,15 +376,15 @@ func Test_copy(t *testing.T) {
 			},
 		},
 		{
-			Name: "IgnoreModule",
+			Name: "IgnoreModules",
 			SideEffect: func(c *Config) {
-				c.IgnoreModule["github.com/wata727/example-1"] = false
+				c.IgnoreModules["github.com/wata727/example-1"] = false
 			},
 		},
 		{
-			Name: "Varfile",
+			Name: "Varfiles",
 			SideEffect: func(c *Config) {
-				c.Varfile = append(c.Varfile, "new.tfvars")
+				c.Varfiles = append(c.Varfiles, "new.tfvars")
 			},
 		},
 		{

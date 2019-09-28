@@ -134,7 +134,7 @@ func (cli *CLI) Run(args []string) int {
 		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to load configuration tokens", err), cli.loader.Sources())
 		return ExitCodeError
 	}
-	variables, err := cli.loader.LoadValuesFiles(cfg.Varfile...)
+	variables, err := cli.loader.LoadValuesFiles(cfg.Varfiles...)
 	if err != nil {
 		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to load values files", err), cli.loader.Sources())
 		return ExitCodeError
