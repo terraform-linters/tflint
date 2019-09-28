@@ -4,6 +4,7 @@ package models
 
 import (
 	"log"
+	"regexp"
 
 	"github.com/hashicorp/hcl2/hcl"
 	"github.com/wata727/tflint/tflint"
@@ -15,6 +16,7 @@ type AwsConfigConfigRuleInvalidNameRule struct {
 	attributeName string
 	max           int
 	min           int
+	pattern       *regexp.Regexp
 }
 
 // NewAwsConfigConfigRuleInvalidNameRule returns new rule with default attributes
@@ -22,8 +24,9 @@ func NewAwsConfigConfigRuleInvalidNameRule() *AwsConfigConfigRuleInvalidNameRule
 	return &AwsConfigConfigRuleInvalidNameRule{
 		resourceType:  "aws_config_config_rule",
 		attributeName: "name",
-		max:           64,
+		max:           128,
 		min:           1,
+		pattern:       regexp.MustCompile(`^.*\S.*$`),
 	}
 }
 
@@ -59,7 +62,7 @@ func (r *AwsConfigConfigRuleInvalidNameRule) Check(runner *tflint.Runner) error 
 			if len(val) > r.max {
 				runner.EmitIssue(
 					r,
-					"name must be 64 characters or less",
+					"name must be 128 characters or less",
 					attribute.Expr.Range(),
 				)
 			}
@@ -67,6 +70,13 @@ func (r *AwsConfigConfigRuleInvalidNameRule) Check(runner *tflint.Runner) error 
 				runner.EmitIssue(
 					r,
 					"name must be 1 characters or higher",
+					attribute.Expr.Range(),
+				)
+			}
+			if !r.pattern.MatchString(val) {
+				runner.EmitIssue(
+					r,
+					`name does not match valid pattern ^.*\S.*$`,
 					attribute.Expr.Range(),
 				)
 			}
