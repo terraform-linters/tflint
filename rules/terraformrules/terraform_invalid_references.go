@@ -43,6 +43,11 @@ func (r *TerraformInvalidReferencesRule) Check(runner *tflint.Runner) error {
 		// iterate over resources
 		// find expandable strings
 		// match variable against strings content
+
+		// TODO: ManagedResources + DataResources
+		for _, resource := range runner.TFConfig.Module.ManagedResources {
+			fmt.Sprintf("`%s` resource", resource.Name)
+		}
 	}
 
 	return nil
