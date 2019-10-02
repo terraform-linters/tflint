@@ -46,7 +46,7 @@ func (r *TerraformInvalidReferencesRule) Check(runner *tflint.Runner) error {
 
 		// TODO: ManagedResources + DataResources
 		for _, resource := range runner.TFConfig.Module.ManagedResources {
-			fmt.Sprintf("`%s` resource", resource.Name)
+			fmt.Sprintf("variable `%s` vs `%s` resource", variable.Name, resource.Name)
 		}
 	}
 
