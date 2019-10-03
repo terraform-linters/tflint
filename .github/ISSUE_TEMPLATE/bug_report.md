@@ -25,6 +25,6 @@ It is a good practice to list the versions where the bug occurred.
 
 Example:
 
-TFLint v0.11.2
+TFLint v0.12.0
 Terraform v0.12.6
 -->
