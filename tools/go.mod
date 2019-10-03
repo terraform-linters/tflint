@@ -3,6 +3,7 @@ module github.com/wata727/tflint/tools
 go 1.13
 
 require (
+	github.com/hashicorp/hcl/v2 v2.0.0
 	github.com/hashicorp/hcl2 v0.0.0-20190821123243-0c888d1241f6
 	github.com/hashicorp/terraform v0.12.9
 	github.com/serenize/snaker v0.0.0-20171204205717-a683aaf2d516

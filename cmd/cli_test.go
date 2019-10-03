@@ -11,7 +11,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/golang/mock/gomock"
-	"github.com/hashicorp/hcl2/hcl"
+	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/wata727/tflint/rules"

@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"sort"
 
-	"github.com/hashicorp/hcl2/gohcl"
-	"github.com/hashicorp/hcl2/hcl"
-	"github.com/hashicorp/hcl2/hclparse"
+	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/gohcl"
+	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/terraform-providers/terraform-provider-aws/aws"
 )

@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/hashicorp/hcl2/hcl"
+	hcl "github.com/hashicorp/hcl/v2"
 )
 
 func Test_roots(t *testing.T) {

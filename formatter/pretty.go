@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/hashicorp/hcl2/hcl"
-	"github.com/hashicorp/hcl2/hclparse"
+	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/wata727/tflint/tflint"
 )
 

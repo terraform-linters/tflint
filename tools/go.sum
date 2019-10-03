@@ -327,6 +327,8 @@ github.com/hashicorp/hcl v0.0.0-20170504190234-a4b07c25de5f h1:UdxlrJz4JOnY8W+Db
 github.com/hashicorp/hcl v0.0.0-20170504190234-a4b07c25de5f/go.mod h1:oZtUIOe8dh44I2q6ScRibXws4Ajl+d+nod3AaR9vL5w=
 github.com/hashicorp/hcl v1.0.0 h1:0Anlzjpi4vEasTeNFn2mLJgTSwt0+6sfsiTG8qcWGx4=
 github.com/hashicorp/hcl v1.0.0/go.mod h1:E5yfLk+7swimpb2L/Alb/PJmXilQ/rhwaUYs4T20WEQ=
+github.com/hashicorp/hcl/v2 v2.0.0 h1:efQznTz+ydmQXq3BOnRa3AXzvCeTq1P4dKj/z5GLlY8=
+github.com/hashicorp/hcl/v2 v2.0.0/go.mod h1:oVVDG71tEinNGYCxinCYadcmKU9bglqW9pV3txagJ90=
 github.com/hashicorp/hcl2 v0.0.0-20181208003705-670926858200/go.mod h1:ShfpTh661oAaxo7VcNxg0zcZW6jvMa7Moy2oFx7e5dE=
 github.com/hashicorp/hcl2 v0.0.0-20190515223218-4b22149b7cef/go.mod h1:4oI94iqF3GB10QScn46WqbG0kgTUpha97SAzzg2+2ec=
 github.com/hashicorp/hcl2 v0.0.0-20190725010614-0c3fe388e450/go.mod h1:FSQTwDi9qesxGBsII2VqhIzKQ4r0bHvBkOczWfD7llg=
@@ -644,6 +646,8 @@ github.com/zclconf/go-cty v1.0.0 h1:EWtv3gKe2wPLIB9hQRQJa7k/059oIfAqcEkCNnaVckk=
 github.com/zclconf/go-cty v1.0.0/go.mod h1:xnAOWiHeOqg2nWS62VtQ7pbOu17FtxJNW8RLEih+O3s=
 github.com/zclconf/go-cty v1.0.1-0.20190708163926-19588f92a98f h1:sq2p8SN6ji66CFEQFIWLlD/gFmGtr5hBrOzv5nLlGfA=
 github.com/zclconf/go-cty v1.0.1-0.20190708163926-19588f92a98f/go.mod h1:xnAOWiHeOqg2nWS62VtQ7pbOu17FtxJNW8RLEih+O3s=
+github.com/zclconf/go-cty v1.1.0 h1:uJwc9HiBOCpoKIObTQaLR+tsEXx1HBHnOsOOpcdhZgw=
+github.com/zclconf/go-cty v1.1.0/go.mod h1:xnAOWiHeOqg2nWS62VtQ7pbOu17FtxJNW8RLEih+O3s=
 github.com/zclconf/go-cty-yaml v1.0.1 h1:up11wlgAaDvlAGENcFDnZgkn0qUJurso7k6EpURKNF8=
 github.com/zclconf/go-cty-yaml v1.0.1/go.mod h1:IP3Ylp0wQpYm50IHK8OZWKMu6sPJIUgKa8XhiVHura0=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
