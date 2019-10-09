@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/hcl2/hcl/hclsyntax"
+	"github.com/hashicorp/hcl/v2/hclsyntax"
 )
 
 var annotationPattern = regexp.MustCompile(`tflint-ignore: (\S+)`)

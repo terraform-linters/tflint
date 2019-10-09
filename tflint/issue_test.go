@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/hashicorp/hcl2/hcl"
+	hcl "github.com/hashicorp/hcl/v2"
 )
 
 func Test_Sort(t *testing.T) {

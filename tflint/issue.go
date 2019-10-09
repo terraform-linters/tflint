@@ -3,7 +3,7 @@ package tflint
 import (
 	"sort"
 
-	"github.com/hashicorp/hcl2/hcl"
+	hcl "github.com/hashicorp/hcl/v2"
 )
 
 // Issue represents a problem in configurations

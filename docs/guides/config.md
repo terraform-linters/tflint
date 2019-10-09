@@ -5,7 +5,7 @@ You can change the behavior not only in CLI flags but also in configuration file
 - Current directory (`./.tflint.hcl`)
 - Home directory (`~/.tflint.hcl`)
 
-The config file is written in [HCL](https://github.com/hashicorp/hcl2). An example is shown below:
+The config file is written in [HCL](https://github.com/hashicorp/hcl/tree/hcl2). An example is shown below:
 
 ```hcl
 config {

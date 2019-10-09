@@ -1,6 +1,6 @@
 package tflint
 
-import "github.com/hashicorp/hcl2/hcl"
+import hcl "github.com/hashicorp/hcl/v2"
 
 type moduleVariable struct {
 	Root      bool
