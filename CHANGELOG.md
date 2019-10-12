@@ -1,3 +1,20 @@
+## 0.12.1 (2019-10-12)
+
+### Enhancements
+
+- [#467](https://github.com/wata727/tflint/pull/467): Bump github.com/mattn/go-colorable from 0.1.2 to 0.1.4
+- [#476](https://github.com/wata727/tflint/pull/476): Bump github.com/hashicorp/aws-sdk-go-base from 0.3.0 to 0.4.0
+- [#482](https://github.com/wata727/tflint/pull/482): TFLint is now compatible with Terraform v0.12.10
+  - See https://github.com/hashicorp/terraform/releases/tag/v0.12.10
+  - Support new built-in functions: `parseint` and `cidrsubnets`
+- [#484](https://github.com/wata727/tflint/pull/484): Bump terraform-provider-aws from v2.30.0 to v2.32.0
+
+### Chores
+
+- [#471](https://github.com/wata727/tflint/pull/471): Bump TFLint version in issue template ([@abitrolly](https://github.com/abitrolly))
+- [#474](https://github.com/wata727/tflint/pull/474): Switch to HCL 2.0 in the HCL repository ([@explodingcamera](https://github.com/explodingcamera))
+- [#487](https://github.com/wata727/tflint/pull/487): Test tools in GitHub Actions
+
 ## 0.12.0 (2019-09-29)
 
 This release includes an experimental Language Server Procotol support. Using LSP makes it easy to integrate TFLint with your favorite editor. Currently, only diagnostics are provided.
