@@ -1,0 +1,29 @@
+name: generated-code
+
+on: pull_request
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+      with:
+        submodules: true
+    - name: Set up Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+    - name: make code
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        make tools code && git diff --exit-code
+    - name: go run ./rule-gen
+      working-directory: ./tools
+      run: echo test | go run ./rule-gen
+    - name: go run ./api-rule-gen
+      working-directory: ./tools
+      run: go run ./api-rule-gen && git diff --exit-code
+    - name: go run ./model-rule-gen
+      working-directory: ./tools
+      run: go run ./model-rule-gen && git diff --exit-code
