@@ -11,7 +11,7 @@ require (
 	github.com/hashicorp/go-version v1.2.0
 	github.com/hashicorp/hcl/v2 v2.0.0
 	github.com/hashicorp/logutils v1.0.0
-	github.com/hashicorp/terraform v0.12.10-0.20191002221021-39e609d5fd70
+	github.com/hashicorp/terraform v0.12.10
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/mattn/go-colorable v0.1.2
 	github.com/mitchellh/go-homedir v1.1.0
@@ -20,6 +20,3 @@ require (
 	github.com/spf13/afero v1.2.2
 	github.com/zclconf/go-cty v1.1.0
 )
-
-// Override since git.apache.org is down
-replace git.apache.org/thrift.git => github.com/apache/thrift v0.0.0-20180902110319-2566ecd5d999
