@@ -43,7 +43,7 @@ var manualDeepCheckRules = []Rule{
 	awsrules.NewAwsLaunchConfigurationInvalidImageIDRule(),
 }
 
-// AllRules returns map of rules indexed by name
+// AllRulesMap returns map of rules indexed by name
 func AllRulesMap() map[string]Rule {
 	ret := map[string]Rule{}
 	for _, rule := range append(DefaultRules, deepCheckRules...) {
@@ -60,11 +60,11 @@ func NewRules(c *tflint.Config) []Rule {
 	totalEnabled := 0
 	for _, rule := range rulesMap {
 		if rule.Enabled() {
-			totalEnabled += 1
+			totalEnabled++
 		}
 	}
 	log.Printf("[INFO]   %d (%d) rules total", len(rulesMap), totalEnabled)
-	for rulename, _ := range c.Rules {
+	for rulename := range c.Rules {
 		if _, ok := rulesMap[rulename]; !ok {
 			log.Printf("[ERROR] Invalid rule:  %s", rulename)
 		}
