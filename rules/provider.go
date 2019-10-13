@@ -15,8 +15,8 @@ type Rule interface {
 	Check(runner *tflint.Runner) error
 }
 
-// DefaultRules is rules by default
-var DefaultRules = append(manualDefaultRules, modelRules...)
+// defaultRules is rules by default
+var defaultRules = append(manualDefaultRules, modelRules...)
 var deepCheckRules = append(manualDeepCheckRules, apiRules...)
 
 var manualDefaultRules = []Rule{
@@ -43,18 +43,41 @@ var manualDeepCheckRules = []Rule{
 	awsrules.NewAwsLaunchConfigurationInvalidImageIDRule(),
 }
 
+// AllRules returns map of rules indexed by name
+func AllRulesMap() map[string]Rule {
+	ret := map[string]Rule{}
+	for _, rule := range append(defaultRules, deepCheckRules...) {
+		ret[rule.Name()] = rule
+	}
+	return ret
+}
+
 // NewRules returns rules according to configuration
 func NewRules(c *tflint.Config) []Rule {
 	log.Print("[INFO] Prepare rules")
+
+	rulesMap := AllRulesMap()
+	totalEnabled := 0
+	for _, rule := range rulesMap {
+		if rule.Enabled() {
+			totalEnabled += 1
+		}
+	}
+	log.Printf("[INFO]   %d (%d) rules total", len(rulesMap), totalEnabled)
+	for rulename, _ := range c.Rules {
+		if _, ok := rulesMap[rulename]; !ok {
+			log.Printf("[ERROR] Invalid rule:  %s", rulename)
+		}
+	}
 
 	ret := []Rule{}
 	allRules := []Rule{}
 
 	if c.DeepCheck {
 		log.Printf("[DEBUG] Deep check mode is enabled. Add deep check rules")
-		allRules = append(DefaultRules, deepCheckRules...)
+		allRules = append(defaultRules, deepCheckRules...)
 	} else {
-		allRules = DefaultRules
+		allRules = defaultRules
 	}
 
 	for _, rule := range allRules {
@@ -72,6 +95,6 @@ func NewRules(c *tflint.Config) []Rule {
 			ret = append(ret, rule)
 		}
 	}
-
+	log.Printf("[INFO]   %d rules enabled", len(ret))
 	return ret
 }
