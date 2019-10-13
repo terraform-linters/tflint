@@ -15,8 +15,8 @@ type Rule interface {
 	Check(runner *tflint.Runner) error
 }
 
-// defaultRules is rules by default
-var defaultRules = append(manualDefaultRules, modelRules...)
+// DefaultRules is rules by default
+var DefaultRules = append(manualDefaultRules, modelRules...)
 var deepCheckRules = append(manualDeepCheckRules, apiRules...)
 
 var manualDefaultRules = []Rule{
@@ -46,7 +46,7 @@ var manualDeepCheckRules = []Rule{
 // AllRules returns map of rules indexed by name
 func AllRulesMap() map[string]Rule {
 	ret := map[string]Rule{}
-	for _, rule := range append(defaultRules, deepCheckRules...) {
+	for _, rule := range append(DefaultRules, deepCheckRules...) {
 		ret[rule.Name()] = rule
 	}
 	return ret
@@ -75,9 +75,9 @@ func NewRules(c *tflint.Config) []Rule {
 
 	if c.DeepCheck {
 		log.Printf("[DEBUG] Deep check mode is enabled. Add deep check rules")
-		allRules = append(defaultRules, deepCheckRules...)
+		allRules = append(DefaultRules, deepCheckRules...)
 	} else {
-		allRules = defaultRules
+		allRules = DefaultRules
 	}
 
 	for _, rule := range allRules {
