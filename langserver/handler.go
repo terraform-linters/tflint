@@ -25,12 +25,16 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 	}
 	cfg = cfg.Merge(cliConfig)
 
+	lintRules, err := rules.NewRules(cfg)
+	if err != nil {
+		return nil, err
+	}
 	return jsonrpc2.HandlerWithError((&handler{
 		configPath: configPath,
 		cliConfig:  cliConfig,
 		config:     cfg,
 		fs:         afero.NewCopyOnWriteFs(afero.NewOsFs(), afero.NewMemMapFs()),
-		rules:      rules.NewRules(cfg),
+		rules:      lintRules,
 		diagsPaths: []string{},
 	}).handle), nil
 }

@@ -158,7 +158,12 @@ func (cli *CLI) Run(args []string) int {
 	}
 	runners = append(runners, runner)
 
-	for _, rule := range rules.NewRules(cfg) {
+	lintRules, err := rules.NewRules(cfg)
+	if err != nil {
+		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to prepare rules", err), cli.loader.Sources())
+		return ExitCodeError
+	}
+	for _, rule := range lintRules {
 		for _, runner := range runners {
 			err := rule.Check(runner)
 			if err != nil {

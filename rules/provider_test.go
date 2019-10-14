@@ -69,7 +69,7 @@ func Test_NewRules(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		ret := NewRules(tc.Config)
+		ret, _ := NewRules(tc.Config)
 		if !reflect.DeepEqual(tc.Expected, ret) {
 			t.Fatalf("Failed `%s` test: expected rules are `%#v`, but get `%#v`", tc.Name, tc.Expected, ret)
 		}

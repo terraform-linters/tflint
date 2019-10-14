@@ -1,6 +1,7 @@
 package rules
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/wata727/tflint/rules/awsrules"
@@ -53,8 +54,10 @@ func AllRulesMap() map[string]Rule {
 }
 
 // NewRules returns rules according to configuration
-func NewRules(c *tflint.Config) []Rule {
+func NewRules(c *tflint.Config) ([]Rule, error) {
 	log.Print("[INFO] Prepare rules")
+
+	ret := []Rule{}
 
 	rulesMap := AllRulesMap()
 	totalEnabled := 0
@@ -66,11 +69,10 @@ func NewRules(c *tflint.Config) []Rule {
 	log.Printf("[INFO]   %d (%d) rules total", len(rulesMap), totalEnabled)
 	for rulename := range c.Rules {
 		if _, ok := rulesMap[rulename]; !ok {
-			log.Printf("[ERROR] Invalid rule:  %s", rulename)
+			return ret, fmt.Errorf("Rule not found: %s", rulename)
 		}
 	}
 
-	ret := []Rule{}
 	allRules := []Rule{}
 
 	if c.DeepCheck {
@@ -96,5 +98,5 @@ func NewRules(c *tflint.Config) []Rule {
 		}
 	}
 	log.Printf("[INFO]   %d rules enabled", len(ret))
-	return ret
+	return ret, nil
 }
