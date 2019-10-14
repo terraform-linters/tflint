@@ -30,7 +30,7 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 		cliConfig:  cliConfig,
 		config:     cfg,
 		fs:         afero.NewCopyOnWriteFs(afero.NewOsFs(), afero.NewMemMapFs()),
-		provider:   rules.NewProvider(),
+		ruleset:    rules.NewRuleSet(),
 		diagsPaths: []string{},
 	}).handle), nil
 }
@@ -41,7 +41,7 @@ type handler struct {
 	config     *tflint.Config
 	fs         afero.Fs
 	rootDir    string
-	provider   rules.Provider
+	ruleset    rules.RuleSet
 	shutdown   bool
 	diagsPaths []string
 }
@@ -142,13 +142,12 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 	runners = append(runners, runner)
 
 	issues := tflint.Issues{}
-
 	for _, runner := range runners {
-		providerIssues, err := h.provider.Check(runner)
+		issueList, err := h.ruleset.Check(runner)
 		if err != nil {
 			return ret, err
 		}
-		issues = append(issues, providerIssues...)
+		issues = append(issues, issueList...)
 	}
 
 	// In order to publish that the issue has been fixed,

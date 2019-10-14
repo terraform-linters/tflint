@@ -92,7 +92,7 @@ func main() {
 	}
 
 	sort.Strings(generatedRules)
-	generateProviderFile(generatedRules)
+	generateRuleSetFile(generatedRules)
 }
 
 func checkAttributeType(resource, attribute string, model map[string]interface{}, provider *schema.Provider) {

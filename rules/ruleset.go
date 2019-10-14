@@ -9,10 +9,16 @@ import (
 	"github.com/wata727/tflint/tflint"
 )
 
-// Provider is a wrapper of rules
-// TODO: Rename to RuleSet
-type Provider interface {
+// RuleSet is a wrapper of rules
+type RuleSet interface {
 	Check(runner *tflint.Runner) (tflint.Issues, error)
+}
+
+type coreRuleSet struct{}
+
+// NewRuleSet returns a core ruleset
+func NewRuleSet() RuleSet {
+	return &coreRuleSet{}
 }
 
 // Rule is an implementation that receives a Runner and inspects for resources and modules.
@@ -22,13 +28,6 @@ type Rule interface {
 	Link() string
 	Enabled() bool
 	Check(runner *tflint.Runner) error
-}
-
-type coreProvider struct{}
-
-// NewProvider returns a core provider
-func NewProvider() Provider {
-	return &coreProvider{}
 }
 
 // DefaultRules is rules by default
@@ -60,7 +59,7 @@ var manualDeepCheckRules = []Rule{
 }
 
 // Check runs inspection by the provider's rules
-func (p *coreProvider) Check(runner *tflint.Runner) (tflint.Issues, error) {
+func (p *coreRuleSet) Check(runner *tflint.Runner) (tflint.Issues, error) {
 	log.Print("[INFO] Prepare rules")
 
 	allRules := []Rule{}

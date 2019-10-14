@@ -83,8 +83,8 @@ func main() {
 
 	sort.Strings(providerMeta.RuleNameCCList)
 	utils.GenerateFile(
-		"../rules/provider_api.go",
-		"../rules/provider_api.go.tmpl",
+		"../rules/ruleset_api.go",
+		"../rules/ruleset_api.go.tmpl",
 		providerMeta,
 	)
 }

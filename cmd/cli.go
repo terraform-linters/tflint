@@ -160,14 +160,14 @@ func (cli *CLI) Run(args []string) int {
 
 	issues := tflint.Issues{}
 
-	provider := rules.NewProvider()
+	ruleset := rules.NewRuleSet()
 	for _, runner := range runners {
-		providerIssues, err := provider.Check(runner)
+		ret, err := ruleset.Check(runner)
 		if err != nil {
 			formatter.Print(tflint.Issues{}, tflint.NewContextError("", err), cli.loader.Sources())
 			return ExitCodeError
 		}
-		issues = append(issues, providerIssues...)
+		issues = append(issues, ret...)
 	}
 
 	issues = issues.Filter(filterFiles)
