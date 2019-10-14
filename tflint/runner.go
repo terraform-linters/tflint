@@ -24,14 +24,14 @@ import (
 // After checking, it accumulates results as issues.
 type Runner struct {
 	TFConfig  *configs.Config
-	Issues    Issues
 	AwsClient *client.AwsClient
+	Config    *Config
 
 	ctx         terraform.BuiltinEvalContext
 	annotations map[string]Annotations
-	config      *Config
 	currentExpr hcl.Expression
 	modVars     map[string]*moduleVariable
+	issues      Issues
 }
 
 // Rule is interface for building the issue
@@ -39,6 +39,8 @@ type Rule interface {
 	Name() string
 	Severity() string
 	Link() string
+	Enabled() bool
+	Check(runner *Runner) error
 }
 
 // NewRunner returns new TFLint runner
@@ -53,8 +55,8 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, vari
 
 	runner := &Runner{
 		TFConfig:  cfg,
-		Issues:    Issues{},
 		AwsClient: &client.AwsClient{},
+		Config:    c,
 
 		ctx: terraform.BuiltinEvalContext{
 			Evaluator: &terraform.Evaluator{
@@ -67,7 +69,7 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, vari
 			},
 		},
 		annotations: ants,
-		config:      c,
+		issues:      Issues{},
 	}
 
 	// Initialize client for the root runner
@@ -107,7 +109,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 		if !ok {
 			panic(fmt.Errorf("Expected module call `%s` is not found in `%s`", name, parent.TFConfig.Path.String()))
 		}
-		if parent.TFConfig.Path.IsRoot() && parent.config.IgnoreModules[moduleCall.SourceAddr] {
+		if parent.TFConfig.Path.IsRoot() && parent.Config.IgnoreModules[moduleCall.SourceAddr] {
 			log.Printf("[INFO] Ignore `%s` module", moduleCall.Name)
 			continue
 		}
@@ -187,7 +189,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 			}
 		}
 
-		runner, err := NewRunner(parent.config, parent.annotations, cfg)
+		runner, err := NewRunner(parent.Config, parent.annotations, cfg)
 		if err != nil {
 			return runners, err
 		}
@@ -203,6 +205,32 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 	}
 
 	return runners, nil
+}
+
+// Check runs inspection by the passed rule.
+// Although it is a wrapper for rule.Check, it properly determines whether the rule is enabled.
+func (r *Runner) Check(rule Rule) error {
+	enabled := rule.Enabled()
+	if r := r.Config.Rules[rule.Name()]; r != nil {
+		if r.Enabled {
+			log.Printf("[DEBUG] `%s` is enabled", rule.Name())
+		} else {
+			log.Printf("[DEBUG] `%s` is disabled", rule.Name())
+		}
+		enabled = r.Enabled
+	}
+
+	if enabled {
+		return rule.Check(r)
+	}
+	return nil
+}
+
+// Issues return issues after clears runner's issues
+func (r *Runner) Issues() Issues {
+	ret := r.issues
+	r.issues = Issues{}
+	return ret
 }
 
 // EvaluateExpr is a wrapper of terraform.BultinEvalContext.EvaluateExpr and gocty.FromCtyValue
@@ -471,23 +499,6 @@ func (r *Runner) TFConfigPath() string {
 	return r.TFConfig.Path.String()
 }
 
-// LookupIssues returns issues according to the received files
-func (r *Runner) LookupIssues(files ...string) Issues {
-	if len(files) == 0 {
-		return r.Issues
-	}
-
-	issues := Issues{}
-	for _, issue := range r.Issues {
-		for _, file := range files {
-			if file == issue.Range.Filename {
-				issues = append(issues, issue)
-			}
-		}
-	}
-	return issues
-}
-
 // WalkResourceAttributes searches for resources and passes the appropriate attributes to the walker function
 func (r *Runner) WalkResourceAttributes(resource, attributeName string, walker func(*hcl.Attribute) error) error {
 	for _, resource := range r.LookupResourcesByType(resource) {
@@ -682,7 +693,7 @@ func (r *Runner) emitIssue(issue *Issue) {
 			}
 		}
 	}
-	r.Issues = append(r.Issues, issue)
+	r.issues = append(r.issues, issue)
 }
 
 func (r *Runner) listModuleVars(expr hcl.Expression) []*moduleVariable {

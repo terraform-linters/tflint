@@ -30,7 +30,7 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 		cliConfig:  cliConfig,
 		config:     cfg,
 		fs:         afero.NewCopyOnWriteFs(afero.NewOsFs(), afero.NewMemMapFs()),
-		rules:      rules.NewRules(cfg),
+		provider:   rules.NewProvider(),
 		diagsPaths: []string{},
 	}).handle), nil
 }
@@ -41,7 +41,7 @@ type handler struct {
 	config     *tflint.Config
 	fs         afero.Fs
 	rootDir    string
-	rules      []rules.Rule
+	provider   rules.Provider
 	shutdown   bool
 	diagsPaths []string
 }
@@ -141,13 +141,14 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 	}
 	runners = append(runners, runner)
 
-	for _, rule := range h.rules {
-		for _, runner := range runners {
-			err := rule.Check(runner)
-			if err != nil {
-				return ret, fmt.Errorf("Failed to check `%s` rule: %s", rule.Name(), err)
-			}
+	issues := tflint.Issues{}
+
+	for _, runner := range runners {
+		providerIssues, err := h.provider.Check(runner)
+		if err != nil {
+			return ret, err
 		}
+		issues = append(issues, providerIssues...)
 	}
 
 	// In order to publish that the issue has been fixed,
@@ -157,25 +158,23 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 	}
 	h.diagsPaths = []string{}
 
-	for _, runner := range runners {
-		for _, issue := range runner.LookupIssues() {
-			path := filepath.Join(h.rootDir, issue.Range.Filename)
-			h.diagsPaths = append(h.diagsPaths, path)
+	for _, issue := range issues {
+		path := filepath.Join(h.rootDir, issue.Range.Filename)
+		h.diagsPaths = append(h.diagsPaths, path)
 
-			diag := lsp.Diagnostic{
-				Message:  issue.Message,
-				Severity: toLSPSeverity(issue.Rule.Severity()),
-				Range: lsp.Range{
-					Start: lsp.Position{Line: issue.Range.Start.Line - 1, Character: issue.Range.Start.Column - 1},
-					End:   lsp.Position{Line: issue.Range.End.Line - 1, Character: issue.Range.End.Column - 1},
-				},
-			}
+		diag := lsp.Diagnostic{
+			Message:  issue.Message,
+			Severity: toLSPSeverity(issue.Rule.Severity()),
+			Range: lsp.Range{
+				Start: lsp.Position{Line: issue.Range.Start.Line - 1, Character: issue.Range.Start.Column - 1},
+				End:   lsp.Position{Line: issue.Range.End.Line - 1, Character: issue.Range.End.Column - 1},
+			},
+		}
 
-			if ret[path] == nil {
-				ret[path] = []lsp.Diagnostic{diag}
-			} else {
-				ret[path] = append(ret[path], diag)
-			}
+		if ret[path] == nil {
+			ret[path] = []lsp.Diagnostic{diag}
+		} else {
+			ret[path] = append(ret[path], diag)
 		}
 	}
 

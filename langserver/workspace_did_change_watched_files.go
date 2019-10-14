@@ -8,7 +8,6 @@ import (
 	lsp "github.com/sourcegraph/go-lsp"
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/spf13/afero"
-	"github.com/wata727/tflint/rules"
 	"github.com/wata727/tflint/tflint"
 )
 
@@ -22,7 +21,6 @@ func (h *handler) workspaceDidChangeWatchedFiles(ctx context.Context, conn *json
 		return nil, err
 	}
 	h.config = newConfig.Merge(h.cliConfig)
-	h.rules = rules.NewRules(h.config)
 
 	h.fs = afero.NewCopyOnWriteFs(afero.NewOsFs(), afero.NewMemMapFs())
 

@@ -158,20 +158,19 @@ func (cli *CLI) Run(args []string) int {
 	}
 	runners = append(runners, runner)
 
-	for _, rule := range rules.NewRules(cfg) {
-		for _, runner := range runners {
-			err := rule.Check(runner)
-			if err != nil {
-				formatter.Print(tflint.Issues{}, tflint.NewContextError(fmt.Sprintf("Failed to check `%s` rule", rule.Name()), err), cli.loader.Sources())
-				return ExitCodeError
-			}
+	issues := tflint.Issues{}
+
+	provider := rules.NewProvider()
+	for _, runner := range runners {
+		providerIssues, err := provider.Check(runner)
+		if err != nil {
+			formatter.Print(tflint.Issues{}, tflint.NewContextError("", err), cli.loader.Sources())
+			return ExitCodeError
 		}
+		issues = append(issues, providerIssues...)
 	}
 
-	issues := tflint.Issues{}
-	for _, runner := range runners {
-		issues = append(issues, runner.LookupIssues(filterFiles...)...)
-	}
+	issues = issues.Filter(filterFiles)
 
 	// Print issues
 	formatter.Print(issues, nil, cli.loader.Sources())

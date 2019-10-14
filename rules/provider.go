@@ -1,6 +1,7 @@
 package rules
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/wata727/tflint/rules/awsrules"
@@ -8,11 +9,26 @@ import (
 	"github.com/wata727/tflint/tflint"
 )
 
+// Provider is a wrapper of rules
+// TODO: Rename to RuleSet
+type Provider interface {
+	Check(runner *tflint.Runner) (tflint.Issues, error)
+}
+
 // Rule is an implementation that receives a Runner and inspects for resources and modules.
 type Rule interface {
 	Name() string
+	Severity() string
+	Link() string
 	Enabled() bool
 	Check(runner *tflint.Runner) error
+}
+
+type coreProvider struct{}
+
+// NewProvider returns a core provider
+func NewProvider() Provider {
+	return &coreProvider{}
 }
 
 // DefaultRules is rules by default
@@ -43,14 +59,13 @@ var manualDeepCheckRules = []Rule{
 	awsrules.NewAwsLaunchConfigurationInvalidImageIDRule(),
 }
 
-// NewRules returns rules according to configuration
-func NewRules(c *tflint.Config) []Rule {
+// Check runs inspection by the provider's rules
+func (p *coreProvider) Check(runner *tflint.Runner) (tflint.Issues, error) {
 	log.Print("[INFO] Prepare rules")
 
-	ret := []Rule{}
 	allRules := []Rule{}
 
-	if c.DeepCheck {
+	if runner.Config.DeepCheck {
 		log.Printf("[DEBUG] Deep check mode is enabled. Add deep check rules")
 		allRules = append(DefaultRules, deepCheckRules...)
 	} else {
@@ -58,20 +73,10 @@ func NewRules(c *tflint.Config) []Rule {
 	}
 
 	for _, rule := range allRules {
-		enabled := rule.Enabled()
-		if r := c.Rules[rule.Name()]; r != nil {
-			if r.Enabled {
-				log.Printf("[DEBUG] `%s` is enabled", rule.Name())
-			} else {
-				log.Printf("[DEBUG] `%s` is disabled", rule.Name())
-			}
-			enabled = r.Enabled
-		}
-
-		if enabled {
-			ret = append(ret, rule)
+		if err := runner.Check(rule); err != nil {
+			return tflint.Issues{}, fmt.Errorf("Failed to check `%s` rule: %s", rule.Name(), err)
 		}
 	}
 
-	return ret
+	return runner.Issues(), nil
 }

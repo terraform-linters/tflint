@@ -17,6 +17,72 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
+type enabledTestRule struct{}
+
+func (r *enabledTestRule) Name() string        { return "enabled_rule" }
+func (r *enabledTestRule) Severity() string    { return ERROR }
+func (r *enabledTestRule) Link() string        { return "" }
+func (r *enabledTestRule) Enabled() bool       { return true }
+func (r *enabledTestRule) Check(*Runner) error { return errors.New("enabled_rule") }
+
+type disabledTestRule struct{}
+
+func (r *disabledTestRule) Name() string        { return "disabled_rule" }
+func (r *disabledTestRule) Severity() string    { return ERROR }
+func (r *disabledTestRule) Link() string        { return "" }
+func (r *disabledTestRule) Enabled() bool       { return false }
+func (r *disabledTestRule) Check(*Runner) error { return errors.New("disabled_rule") }
+
+func Test_Check(t *testing.T) {
+	cases := []struct {
+		Name     string
+		Rule     Rule
+		Config   *Config
+		Expected error
+	}{
+		{
+			Name: "enabled = false",
+			Rule: &enabledTestRule{},
+			Config: &Config{
+				Rules: map[string]*RuleConfig{
+					"enabled_rule": {
+						Enabled: false,
+					},
+				},
+			},
+			Expected: nil,
+		},
+		{
+			Name: "enabled = true",
+			Rule: &disabledTestRule{},
+			Config: &Config{
+				Rules: map[string]*RuleConfig{
+					"disabled_rule": {
+						Enabled: true,
+					},
+				},
+			},
+			Expected: errors.New("disabled_rule"),
+		},
+	}
+
+	for _, tc := range cases {
+		runner := TestRunner(t, map[string]string{})
+		runner.Config = tc.Config
+		ret := runner.Check(tc.Rule)
+
+		if tc.Expected == nil && ret == nil {
+			continue // ok
+		}
+		if tc.Expected != nil && ret != nil {
+			if tc.Expected.Error() == ret.Error() {
+				continue // ok
+			}
+		}
+		t.Fatalf("Failed %s test: expected=%s, got=%s", tc.Name, tc.Expected, ret)
+	}
+}
+
 func Test_EvaluateExpr_string(t *testing.T) {
 	cases := []struct {
 		Name     string
@@ -1315,44 +1381,6 @@ resource "aws_route" "r" {
 	}
 }
 
-func Test_LookupIssues(t *testing.T) {
-	runner := TestRunner(t, map[string]string{})
-	runner.Issues = Issues{
-		{
-			Rule:    &testRule{},
-			Message: "This is test rule",
-			Range: hcl.Range{
-				Filename: "template.tf",
-				Start:    hcl.Pos{Line: 1},
-			},
-		},
-		{
-			Rule:    &testRule{},
-			Message: "This is test rule",
-			Range: hcl.Range{
-				Filename: "resource.tf",
-				Start:    hcl.Pos{Line: 1},
-			},
-		},
-	}
-
-	ret := runner.LookupIssues("template.tf")
-	expected := Issues{
-		{
-			Rule:    &testRule{},
-			Message: "This is test rule",
-			Range: hcl.Range{
-				Filename: "template.tf",
-				Start:    hcl.Pos{Line: 1},
-			},
-		},
-	}
-
-	if !cmp.Equal(expected, ret) {
-		t.Fatalf("Failed test: diff: %s", cmp.Diff(expected, ret))
-	}
-}
-
 func Test_WalkResourceAttributes(t *testing.T) {
 	cases := []struct {
 		Name      string
@@ -1745,6 +1773,12 @@ func (r *testRule) Severity() string {
 func (r *testRule) Link() string {
 	return ""
 }
+func (r *testRule) Enabled() bool {
+	return true
+}
+func (r *testRule) Check(runner *Runner) error {
+	return nil
+}
 
 func Test_EmitIssue(t *testing.T) {
 	cases := []struct {
@@ -1806,7 +1840,7 @@ func Test_EmitIssue(t *testing.T) {
 
 		runner.EmitIssue(tc.Rule, tc.Message, tc.Location)
 
-		if !cmp.Equal(runner.Issues, tc.Expected) {
+		if !cmp.Equal(runner.issues, tc.Expected) {
 			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(runner.Issues, tc.Expected))
 		}
 	}

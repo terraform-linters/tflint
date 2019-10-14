@@ -16,3 +16,6 @@ func (r *testRule) Severity() string {
 func (r *testRule) Link() string {
 	return "https://github.com"
 }
+func (r *testRule) Check(runner *tflint.Runner) error {
+	return nil
+}

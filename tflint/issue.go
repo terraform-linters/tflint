@@ -50,3 +50,20 @@ func (issues Issues) Sort() Issues {
 	})
 	return issues
 }
+
+// Filter filters issues according to the passed files
+func (issues Issues) Filter(files []string) Issues {
+	if len(files) == 0 {
+		return issues
+	}
+
+	ret := Issues{}
+	for _, issue := range issues {
+		for _, file := range files {
+			if file == issue.Range.Filename {
+				ret = append(ret, issue)
+			}
+		}
+	}
+	return ret
+}

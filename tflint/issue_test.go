@@ -127,3 +127,40 @@ func Test_Sort(t *testing.T) {
 		t.Fatalf("Failed: diff=%s", cmp.Diff(got, expected))
 	}
 }
+
+func Test_Filter(t *testing.T) {
+	issues := Issues{
+		{
+			Rule:    &testRule{},
+			Message: "This is test rule",
+			Range: hcl.Range{
+				Filename: "template.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
+		},
+		{
+			Rule:    &testRule{},
+			Message: "This is test rule",
+			Range: hcl.Range{
+				Filename: "resource.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
+		},
+	}
+
+	ret := issues.Filter([]string{"template.tf"})
+	expected := Issues{
+		{
+			Rule:    &testRule{},
+			Message: "This is test rule",
+			Range: hcl.Range{
+				Filename: "template.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
+		},
+	}
+
+	if !cmp.Equal(expected, ret) {
+		t.Fatalf("Failed test: diff: %s", cmp.Diff(expected, ret))
+	}
+}
