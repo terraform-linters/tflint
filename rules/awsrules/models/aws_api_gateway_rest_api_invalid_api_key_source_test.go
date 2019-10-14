@@ -46,6 +46,6 @@ resource "aws_api_gateway_rest_api" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		tflint.AssertIssuesWithoutRange(t, tc.Expected, runner.Issues)
+		tflint.AssertIssuesWithoutRange(t, tc.Expected, runner.Issues())
 	}
 }

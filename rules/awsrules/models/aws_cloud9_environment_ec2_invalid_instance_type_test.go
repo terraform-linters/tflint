@@ -46,6 +46,6 @@ resource "aws_cloud9_environment_ec2" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		tflint.AssertIssuesWithoutRange(t, tc.Expected, runner.Issues)
+		tflint.AssertIssuesWithoutRange(t, tc.Expected, runner.Issues())
 	}
 }

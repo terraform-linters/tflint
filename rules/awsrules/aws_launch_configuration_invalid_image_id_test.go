@@ -48,7 +48,7 @@ resource "aws_launch_configuration" "invalid" {
 		},
 	}
 
-	tflint.AssertIssues(t, expected, runner.Issues)
+	tflint.AssertIssues(t, expected, runner.Issues())
 }
 
 func Test_AwsLaunchConfigurationInvalidImageID_valid(t *testing.T) {
@@ -79,7 +79,7 @@ resource "aws_launch_configuration" "valid" {
 	}
 
 	expected := tflint.Issues{}
-	tflint.AssertIssues(t, expected, runner.Issues)
+	tflint.AssertIssues(t, expected, runner.Issues())
 }
 
 func Test_AwsLaunchConfigurationInvalidImageID_error(t *testing.T) {
@@ -257,6 +257,6 @@ resource "aws_launch_configuration" "unavailable" {
 			t.Fatalf("Failed `%s` test: expected to return an error, but nothing occurred", tc.Name)
 		}
 
-		tflint.AssertIssues(t, tc.Issues, runner.Issues)
+		tflint.AssertIssues(t, tc.Issues, runner.Issues())
 	}
 }

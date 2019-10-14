@@ -47,7 +47,7 @@ resource "aws_instance" "invalid" {
 			},
 		},
 	}
-	tflint.AssertIssues(t, expected, runner.Issues)
+	tflint.AssertIssues(t, expected, runner.Issues())
 }
 
 func Test_AwsInstanceInvalidAMI_valid(t *testing.T) {
@@ -78,7 +78,7 @@ resource "aws_instance" "valid" {
 	}
 
 	expected := tflint.Issues{}
-	tflint.AssertIssues(t, expected, runner.Issues)
+	tflint.AssertIssues(t, expected, runner.Issues())
 }
 
 func Test_AwsInstanceInvalidAMI_error(t *testing.T) {
@@ -256,6 +256,6 @@ resource "aws_instance" "unavailable" {
 			t.Fatalf("Failed `%s` test: expected to return an error, but nothing occurred", tc.Name)
 		}
 
-		tflint.AssertIssues(t, tc.Issues, runner.Issues)
+		tflint.AssertIssues(t, tc.Issues, runner.Issues())
 	}
 }

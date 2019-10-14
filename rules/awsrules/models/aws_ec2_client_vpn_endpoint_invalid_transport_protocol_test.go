@@ -46,6 +46,6 @@ resource "aws_ec2_client_vpn_endpoint" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		tflint.AssertIssuesWithoutRange(t, tc.Expected, runner.Issues)
+		tflint.AssertIssuesWithoutRange(t, tc.Expected, runner.Issues())
 	}
 }

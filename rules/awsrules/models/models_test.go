@@ -114,8 +114,9 @@ resource "aws_launch_template" "foo" {
 			cmpopts.IgnoreUnexported(AwsLaunchTemplateInvalidNameRule{}),
 			cmpopts.IgnoreFields(tflint.Issue{}, "Range"),
 		}
-		if !cmp.Equal(tc.Expected, runner.Issues, opts...) {
-			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, runner.Issues, opts...))
+		issues := runner.Issues()
+		if !cmp.Equal(tc.Expected, issues, opts...) {
+			t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(tc.Expected, issues, opts...))
 		}
 	}
 }

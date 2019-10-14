@@ -46,6 +46,6 @@ resource "aws_cognito_identity_pool_roles_attachment" "foo" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		tflint.AssertIssuesWithoutRange(t, tc.Expected, runner.Issues)
+		tflint.AssertIssuesWithoutRange(t, tc.Expected, runner.Issues())
 	}
 }

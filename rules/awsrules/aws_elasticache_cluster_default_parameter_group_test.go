@@ -50,6 +50,6 @@ resource "aws_elasticache_cluster" "cache" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		tflint.AssertIssues(t, tc.Expected, runner.Issues)
+		tflint.AssertIssues(t, tc.Expected, runner.Issues())
 	}
 }

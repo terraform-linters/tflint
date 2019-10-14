@@ -294,6 +294,6 @@ module "pinned_mercurial" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		tflint.AssertIssues(t, tc.Expected, runner.Issues)
+		tflint.AssertIssues(t, tc.Expected, runner.Issues())
 	}
 }

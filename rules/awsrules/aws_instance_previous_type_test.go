@@ -50,6 +50,6 @@ resource "aws_instance" "web" {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		tflint.AssertIssues(t, tc.Expected, runner.Issues)
+		tflint.AssertIssues(t, tc.Expected, runner.Issues())
 	}
 }
