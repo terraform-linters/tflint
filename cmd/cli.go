@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -17,6 +18,7 @@ import (
 
 	"github.com/wata727/tflint/formatter"
 	"github.com/wata727/tflint/langserver"
+	"github.com/wata727/tflint/plugin"
 	"github.com/wata727/tflint/rules"
 	"github.com/wata727/tflint/tflint"
 )
@@ -160,6 +162,21 @@ func (cli *CLI) Run(args []string) int {
 
 	issues := tflint.Issues{}
 
+	client := plugin.Client(&plugin.ClientOpts{
+		Cmd: exec.Command("/Users/watanabekazuma/workspace/golang/src/github.com/wata727/sandbox/plugin/plugin"),
+	})
+	defer client.Kill()
+
+	rpcClient, err := client.Client()
+	if err != nil {
+		panic(err)
+	}
+	raw, err := rpcClient.Dispense("ruleset")
+	if err != nil {
+		panic(err)
+	}
+	pluginRuleSet := raw.(rules.RuleSet)
+
 	ruleset := rules.NewRuleSet()
 	for _, runner := range runners {
 		ret, err := ruleset.Check(runner)
@@ -168,6 +185,13 @@ func (cli *CLI) Run(args []string) int {
 			return ExitCodeError
 		}
 		issues = append(issues, ret...)
+
+		ret2, err := pluginRuleSet.Check(runner)
+		if err != nil {
+			formatter.Print(tflint.Issues{}, tflint.NewContextError("", err), cli.loader.Sources())
+			return ExitCodeError
+		}
+		issues = append(issues, ret2...)
 	}
 
 	issues = issues.Filter(filterFiles)
