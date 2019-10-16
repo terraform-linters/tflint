@@ -1,6 +1,7 @@
 package rules
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
@@ -23,6 +24,7 @@ func Test_NewRules(t *testing.T) {
 		Name     string
 		Config   *tflint.Config
 		Expected []Rule
+		Error    error
 	}{
 		{
 			Name:   "default",
@@ -66,12 +68,27 @@ func Test_NewRules(t *testing.T) {
 				terraformrules.NewTerraformDashInResourceNameRule(),
 			},
 		},
+		{
+			Name: "invalid rule name",
+			Config: &tflint.Config{
+				Rules: map[string]*tflint.RuleConfig{
+					"invalid_rule": {
+						Enabled: false,
+					},
+				},
+			},
+			Expected: []Rule{},
+			Error:    errors.New("Rule not found: invalid_rule"),
+		},
 	}
 
 	for _, tc := range cases {
-		ret, _ := NewRules(tc.Config)
+		ret, err := NewRules(tc.Config)
 		if !reflect.DeepEqual(tc.Expected, ret) {
-			t.Fatalf("Failed `%s` test: expected rules are `%#v`, but get `%#v`", tc.Name, tc.Expected, ret)
+			t.Fatalf("Failed `%s` test: expected rules are `%#v`, but got `%#v`", tc.Name, tc.Expected, ret)
+		}
+		if err != tc.Error && err.Error() != tc.Error.Error() {
+			t.Fatalf("Failed `%s` test: expected error `%#v`, but got `%#v`", tc.Name, tc.Error, err)
 		}
 	}
 }
