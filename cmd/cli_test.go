@@ -106,6 +106,12 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Status:  ExitCodeError,
 			Stderr:  "Invalid value `awesome' for option",
 		},
+		{
+			Name:    "invalid rule name",
+			Command: "./tflint --enable-rule nosuchrule",
+			Status:  ExitCodeError,
+			Stderr:  "Rule not found: nosuchrule",
+		},
 	}
 
 	ctrl := gomock.NewController(t)
