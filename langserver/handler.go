@@ -25,6 +25,15 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 	}
 	cfg = cfg.Merge(cliConfig)
 
+	var ruleNames []string
+	for name := range cfg.Rules {
+		ruleNames = append(ruleNames, name)
+	}
+	err = rules.CheckRuleNames(ruleNames)
+	if err != nil {
+		return nil, err
+	}
+
 	return jsonrpc2.HandlerWithError((&handler{
 		configPath: configPath,
 		cliConfig:  cliConfig,
