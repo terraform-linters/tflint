@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/wata727/tflint/plugin"
 	"github.com/wata727/tflint/rules/awsrules"
 	"github.com/wata727/tflint/rules/terraformrules"
 	"github.com/wata727/tflint/tflint"
@@ -80,6 +81,14 @@ func NewRules(c *tflint.Config) []Rule {
 		allRules = append(DefaultRules, deepCheckRules...)
 	} else {
 		allRules = DefaultRules
+	}
+
+	pluginRules, err := plugin.NewRules()
+	if err != nil {
+		panic(err)
+	}
+	for _, pluginRule := range pluginRules {
+		allRules = append(allRules, pluginRule)
 	}
 
 	for _, rule := range allRules {

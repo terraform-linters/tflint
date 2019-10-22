@@ -4,7 +4,7 @@ prepare:
 	go mod vendor
 
 test: prepare
-	go test -timeout 30s $$(go list ./... | grep -v vendor | grep -v aws-sdk-go)
+	go test -timeout 5m $$(go list ./... | grep -v test-fixtures | grep -v vendor | grep -v aws-sdk-go)
 
 build: test
 	mkdir -p dist

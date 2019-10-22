@@ -1,3 +1,4 @@
 *.test
 /vendor
 /dist
+/plugin/test-fixtures/plugins/tflint-ruleset-example.so
