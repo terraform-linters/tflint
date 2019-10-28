@@ -21,10 +21,6 @@ resource "aws_instance" "foo" {
 
 Since `t1.2xlarge` is a nonexistent instance type, an error will occur when you run `terraform apply`. But `terraform plan` and `terraform validate` cannot find this possible error beforehand. That's because it's an AWS provider-specific issue and it's valid as a Terraform configuration.
 
-**P.S.**
-TFLint always checks only the current root module (no recursive check).
-For more info please see: https://github.com/wata727/tflint/issues/493 and https://github.com/wata727/tflint/issues/502
-
 TFLint finds such errors in advance:
 
 ![demo](docs/assets/demo.gif)
@@ -121,7 +117,7 @@ TFLint returns the following exit statuses on exit:
 - 3: No errors occurred, but issues found
 
 ## FAQ
-- Does TFLint check modules recursively?
+### Does TFLint check modules recursively?
 - No. FLint always checks only the current root module (no recursive check)
 
 ## Debugging
