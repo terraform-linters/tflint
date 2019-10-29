@@ -118,7 +118,7 @@ TFLint returns the following exit statuses on exit:
 
 ## FAQ
 ### Does TFLint check modules recursively?
-- No. FLint always checks only the current root module (no recursive check)
+- No. TFLint always checks only the current root module (no recursive check)
 
 ## Debugging
 
