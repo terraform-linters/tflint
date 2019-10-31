@@ -11,7 +11,7 @@ require (
 	github.com/hashicorp/go-version v1.2.0
 	github.com/hashicorp/hcl/v2 v2.0.0
 	github.com/hashicorp/logutils v1.0.0
-	github.com/hashicorp/terraform v0.12.10
+	github.com/hashicorp/terraform v0.12.13
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/mattn/go-colorable v0.1.4
 	github.com/mitchellh/go-homedir v1.1.0
