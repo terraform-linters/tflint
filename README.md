@@ -116,6 +116,10 @@ TFLint returns the following exit statuses on exit:
 - 2: Errors occurred
 - 3: No errors occurred, but issues found
 
+## FAQ
+### Does TFLint check modules recursively?
+- No. TFLint always checks only the current root module (no recursive check)
+
 ## Debugging
 
 If you don't get the expected behavior, you can see the detailed logs when running with `TFLINT_LOG` environment variable.
