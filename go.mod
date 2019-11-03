@@ -3,7 +3,7 @@ module github.com/wata727/tflint
 go 1.13
 
 require (
-	github.com/aws/aws-sdk-go v1.25.4
+	github.com/aws/aws-sdk-go v1.25.24
 	github.com/fatih/color v1.7.0
 	github.com/golang/mock v1.3.1
 	github.com/google/go-cmp v0.3.1
@@ -11,7 +11,7 @@ require (
 	github.com/hashicorp/go-version v1.2.0
 	github.com/hashicorp/hcl/v2 v2.0.0
 	github.com/hashicorp/logutils v1.0.0
-	github.com/hashicorp/terraform v0.12.10
+	github.com/hashicorp/terraform v0.12.13
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/mattn/go-colorable v0.1.4
 	github.com/mitchellh/go-homedir v1.1.0
