@@ -1,6 +1,7 @@
 package rules
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
@@ -8,6 +9,44 @@ import (
 	"github.com/wata727/tflint/rules/terraformrules"
 	"github.com/wata727/tflint/tflint"
 )
+
+func Test_CheckRuleNames(t *testing.T) {
+	// Mock rules in test
+	DefaultRules = []Rule{
+		awsrules.NewAwsRouteNotSpecifiedTargetRule(),
+		terraformrules.NewTerraformDashInResourceNameRule(),
+	}
+	deepCheckRules = []Rule{
+		awsrules.NewAwsInstanceInvalidAMIRule(),
+	}
+
+	cases := []struct {
+		Name     string
+		Rules    []string
+		Expected error
+	}{
+		{
+			Name:     "no error",
+			Rules:    []string{"aws_route_not_specified_target"},
+			Expected: nil,
+		},
+		{
+			Name: "invalid rule name",
+			Rules: []string{
+				"aws_route_not_specified_target",
+				"invalid_not_exist",
+			},
+			Expected: errors.New("Rule not found: invalid_not_exist"),
+		},
+	}
+
+	for _, tc := range cases {
+		err := CheckRuleNames(tc.Rules)
+		if !reflect.DeepEqual(tc.Expected, err) {
+			t.Fatalf("Failed `%s` test: expected `%#v`, but got `%#v`", tc.Name, tc.Expected, err)
+		}
+	}
+}
 
 func Test_NewRules(t *testing.T) {
 	// Mock rules in test
@@ -71,7 +110,7 @@ func Test_NewRules(t *testing.T) {
 	for _, tc := range cases {
 		ret := NewRules(tc.Config)
 		if !reflect.DeepEqual(tc.Expected, ret) {
-			t.Fatalf("Failed `%s` test: expected rules are `%#v`, but get `%#v`", tc.Name, tc.Expected, ret)
+			t.Fatalf("Failed `%s` test: expected rules are `%#v`, but got `%#v`", tc.Name, tc.Expected, ret)
 		}
 	}
 }

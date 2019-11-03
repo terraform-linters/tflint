@@ -1,6 +1,7 @@
 package rules
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/wata727/tflint/rules/awsrules"
@@ -43,6 +44,30 @@ var manualDeepCheckRules = []Rule{
 	awsrules.NewAwsLaunchConfigurationInvalidImageIDRule(),
 }
 
+// CheckRuleNames returns map of rules indexed by name
+func CheckRuleNames(ruleNames []string) error {
+	log.Print("[INFO] Checking rules")
+
+	rulesMap := map[string]Rule{}
+	for _, rule := range append(DefaultRules, deepCheckRules...) {
+		rulesMap[rule.Name()] = rule
+	}
+
+	totalEnabled := 0
+	for _, rule := range rulesMap {
+		if rule.Enabled() {
+			totalEnabled++
+		}
+	}
+	log.Printf("[INFO]   %d (%d) rules total", len(rulesMap), totalEnabled)
+	for _, rule := range ruleNames {
+		if _, ok := rulesMap[rule]; !ok {
+			return fmt.Errorf("Rule not found: %s", rule)
+		}
+	}
+	return nil
+}
+
 // NewRules returns rules according to configuration
 func NewRules(c *tflint.Config) []Rule {
 	log.Print("[INFO] Prepare rules")
@@ -72,6 +97,6 @@ func NewRules(c *tflint.Config) []Rule {
 			ret = append(ret, rule)
 		}
 	}
-
+	log.Printf("[INFO]   %d rules enabled", len(ret))
 	return ret
 }
