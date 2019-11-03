@@ -5335,6 +5335,56 @@ func (mr *MockEC2APIMockRecorder) DeletePlacementGroupRequest(arg0 interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePlacementGroupRequest", reflect.TypeOf((*MockEC2API)(nil).DeletePlacementGroupRequest), arg0)
 }
 
+// DeleteQueuedReservedInstances mocks base method
+func (m *MockEC2API) DeleteQueuedReservedInstances(arg0 *ec2.DeleteQueuedReservedInstancesInput) (*ec2.DeleteQueuedReservedInstancesOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteQueuedReservedInstances", arg0)
+	ret0, _ := ret[0].(*ec2.DeleteQueuedReservedInstancesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteQueuedReservedInstances indicates an expected call of DeleteQueuedReservedInstances
+func (mr *MockEC2APIMockRecorder) DeleteQueuedReservedInstances(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteQueuedReservedInstances", reflect.TypeOf((*MockEC2API)(nil).DeleteQueuedReservedInstances), arg0)
+}
+
+// DeleteQueuedReservedInstancesWithContext mocks base method
+func (m *MockEC2API) DeleteQueuedReservedInstancesWithContext(arg0 aws.Context, arg1 *ec2.DeleteQueuedReservedInstancesInput, arg2 ...request.Option) (*ec2.DeleteQueuedReservedInstancesOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteQueuedReservedInstancesWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DeleteQueuedReservedInstancesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteQueuedReservedInstancesWithContext indicates an expected call of DeleteQueuedReservedInstancesWithContext
+func (mr *MockEC2APIMockRecorder) DeleteQueuedReservedInstancesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteQueuedReservedInstancesWithContext", reflect.TypeOf((*MockEC2API)(nil).DeleteQueuedReservedInstancesWithContext), varargs...)
+}
+
+// DeleteQueuedReservedInstancesRequest mocks base method
+func (m *MockEC2API) DeleteQueuedReservedInstancesRequest(arg0 *ec2.DeleteQueuedReservedInstancesInput) (*request.Request, *ec2.DeleteQueuedReservedInstancesOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteQueuedReservedInstancesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DeleteQueuedReservedInstancesOutput)
+	return ret0, ret1
+}
+
+// DeleteQueuedReservedInstancesRequest indicates an expected call of DeleteQueuedReservedInstancesRequest
+func (mr *MockEC2APIMockRecorder) DeleteQueuedReservedInstancesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteQueuedReservedInstancesRequest", reflect.TypeOf((*MockEC2API)(nil).DeleteQueuedReservedInstancesRequest), arg0)
+}
+
 // DeleteRoute mocks base method
 func (m *MockEC2API) DeleteRoute(arg0 *ec2.DeleteRouteInput) (*ec2.DeleteRouteOutput, error) {
 	m.ctrl.T.Helper()

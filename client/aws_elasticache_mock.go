@@ -235,6 +235,56 @@ func (mr *MockElastiCacheAPIMockRecorder) BatchStopUpdateActionRequest(arg0 inte
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchStopUpdateActionRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).BatchStopUpdateActionRequest), arg0)
 }
 
+// CompleteMigration mocks base method
+func (m *MockElastiCacheAPI) CompleteMigration(arg0 *elasticache.CompleteMigrationInput) (*elasticache.CompleteMigrationOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CompleteMigration", arg0)
+	ret0, _ := ret[0].(*elasticache.CompleteMigrationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CompleteMigration indicates an expected call of CompleteMigration
+func (mr *MockElastiCacheAPIMockRecorder) CompleteMigration(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CompleteMigration", reflect.TypeOf((*MockElastiCacheAPI)(nil).CompleteMigration), arg0)
+}
+
+// CompleteMigrationWithContext mocks base method
+func (m *MockElastiCacheAPI) CompleteMigrationWithContext(arg0 aws.Context, arg1 *elasticache.CompleteMigrationInput, arg2 ...request.Option) (*elasticache.CompleteMigrationOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CompleteMigrationWithContext", varargs...)
+	ret0, _ := ret[0].(*elasticache.CompleteMigrationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CompleteMigrationWithContext indicates an expected call of CompleteMigrationWithContext
+func (mr *MockElastiCacheAPIMockRecorder) CompleteMigrationWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CompleteMigrationWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).CompleteMigrationWithContext), varargs...)
+}
+
+// CompleteMigrationRequest mocks base method
+func (m *MockElastiCacheAPI) CompleteMigrationRequest(arg0 *elasticache.CompleteMigrationInput) (*request.Request, *elasticache.CompleteMigrationOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CompleteMigrationRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.CompleteMigrationOutput)
+	return ret0, ret1
+}
+
+// CompleteMigrationRequest indicates an expected call of CompleteMigrationRequest
+func (mr *MockElastiCacheAPIMockRecorder) CompleteMigrationRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CompleteMigrationRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).CompleteMigrationRequest), arg0)
+}
+
 // CopySnapshot mocks base method
 func (m *MockElastiCacheAPI) CopySnapshot(arg0 *elasticache.CopySnapshotInput) (*elasticache.CopySnapshotOutput, error) {
 	m.ctrl.T.Helper()
@@ -2745,6 +2795,56 @@ func (m *MockElastiCacheAPI) RevokeCacheSecurityGroupIngressRequest(arg0 *elasti
 func (mr *MockElastiCacheAPIMockRecorder) RevokeCacheSecurityGroupIngressRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RevokeCacheSecurityGroupIngressRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).RevokeCacheSecurityGroupIngressRequest), arg0)
+}
+
+// StartMigration mocks base method
+func (m *MockElastiCacheAPI) StartMigration(arg0 *elasticache.StartMigrationInput) (*elasticache.StartMigrationOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "StartMigration", arg0)
+	ret0, _ := ret[0].(*elasticache.StartMigrationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StartMigration indicates an expected call of StartMigration
+func (mr *MockElastiCacheAPIMockRecorder) StartMigration(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartMigration", reflect.TypeOf((*MockElastiCacheAPI)(nil).StartMigration), arg0)
+}
+
+// StartMigrationWithContext mocks base method
+func (m *MockElastiCacheAPI) StartMigrationWithContext(arg0 aws.Context, arg1 *elasticache.StartMigrationInput, arg2 ...request.Option) (*elasticache.StartMigrationOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "StartMigrationWithContext", varargs...)
+	ret0, _ := ret[0].(*elasticache.StartMigrationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StartMigrationWithContext indicates an expected call of StartMigrationWithContext
+func (mr *MockElastiCacheAPIMockRecorder) StartMigrationWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartMigrationWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).StartMigrationWithContext), varargs...)
+}
+
+// StartMigrationRequest mocks base method
+func (m *MockElastiCacheAPI) StartMigrationRequest(arg0 *elasticache.StartMigrationInput) (*request.Request, *elasticache.StartMigrationOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "StartMigrationRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.StartMigrationOutput)
+	return ret0, ret1
+}
+
+// StartMigrationRequest indicates an expected call of StartMigrationRequest
+func (mr *MockElastiCacheAPIMockRecorder) StartMigrationRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartMigrationRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).StartMigrationRequest), arg0)
 }
 
 // TestFailover mocks base method

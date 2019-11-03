@@ -635,6 +635,56 @@ func (mr *MockRDSAPIMockRecorder) CopyOptionGroupRequest(arg0 interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyOptionGroupRequest", reflect.TypeOf((*MockRDSAPI)(nil).CopyOptionGroupRequest), arg0)
 }
 
+// CreateCustomAvailabilityZone mocks base method
+func (m *MockRDSAPI) CreateCustomAvailabilityZone(arg0 *rds.CreateCustomAvailabilityZoneInput) (*rds.CreateCustomAvailabilityZoneOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateCustomAvailabilityZone", arg0)
+	ret0, _ := ret[0].(*rds.CreateCustomAvailabilityZoneOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateCustomAvailabilityZone indicates an expected call of CreateCustomAvailabilityZone
+func (mr *MockRDSAPIMockRecorder) CreateCustomAvailabilityZone(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCustomAvailabilityZone", reflect.TypeOf((*MockRDSAPI)(nil).CreateCustomAvailabilityZone), arg0)
+}
+
+// CreateCustomAvailabilityZoneWithContext mocks base method
+func (m *MockRDSAPI) CreateCustomAvailabilityZoneWithContext(arg0 aws.Context, arg1 *rds.CreateCustomAvailabilityZoneInput, arg2 ...request.Option) (*rds.CreateCustomAvailabilityZoneOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateCustomAvailabilityZoneWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.CreateCustomAvailabilityZoneOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateCustomAvailabilityZoneWithContext indicates an expected call of CreateCustomAvailabilityZoneWithContext
+func (mr *MockRDSAPIMockRecorder) CreateCustomAvailabilityZoneWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCustomAvailabilityZoneWithContext", reflect.TypeOf((*MockRDSAPI)(nil).CreateCustomAvailabilityZoneWithContext), varargs...)
+}
+
+// CreateCustomAvailabilityZoneRequest mocks base method
+func (m *MockRDSAPI) CreateCustomAvailabilityZoneRequest(arg0 *rds.CreateCustomAvailabilityZoneInput) (*request.Request, *rds.CreateCustomAvailabilityZoneOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateCustomAvailabilityZoneRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CreateCustomAvailabilityZoneOutput)
+	return ret0, ret1
+}
+
+// CreateCustomAvailabilityZoneRequest indicates an expected call of CreateCustomAvailabilityZoneRequest
+func (mr *MockRDSAPIMockRecorder) CreateCustomAvailabilityZoneRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCustomAvailabilityZoneRequest", reflect.TypeOf((*MockRDSAPI)(nil).CreateCustomAvailabilityZoneRequest), arg0)
+}
+
 // CreateDBCluster mocks base method
 func (m *MockRDSAPI) CreateDBCluster(arg0 *rds.CreateDBClusterInput) (*rds.CreateDBClusterOutput, error) {
 	m.ctrl.T.Helper()
@@ -1285,6 +1335,56 @@ func (mr *MockRDSAPIMockRecorder) CreateOptionGroupRequest(arg0 interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOptionGroupRequest", reflect.TypeOf((*MockRDSAPI)(nil).CreateOptionGroupRequest), arg0)
 }
 
+// DeleteCustomAvailabilityZone mocks base method
+func (m *MockRDSAPI) DeleteCustomAvailabilityZone(arg0 *rds.DeleteCustomAvailabilityZoneInput) (*rds.DeleteCustomAvailabilityZoneOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteCustomAvailabilityZone", arg0)
+	ret0, _ := ret[0].(*rds.DeleteCustomAvailabilityZoneOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteCustomAvailabilityZone indicates an expected call of DeleteCustomAvailabilityZone
+func (mr *MockRDSAPIMockRecorder) DeleteCustomAvailabilityZone(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCustomAvailabilityZone", reflect.TypeOf((*MockRDSAPI)(nil).DeleteCustomAvailabilityZone), arg0)
+}
+
+// DeleteCustomAvailabilityZoneWithContext mocks base method
+func (m *MockRDSAPI) DeleteCustomAvailabilityZoneWithContext(arg0 aws.Context, arg1 *rds.DeleteCustomAvailabilityZoneInput, arg2 ...request.Option) (*rds.DeleteCustomAvailabilityZoneOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteCustomAvailabilityZoneWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.DeleteCustomAvailabilityZoneOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteCustomAvailabilityZoneWithContext indicates an expected call of DeleteCustomAvailabilityZoneWithContext
+func (mr *MockRDSAPIMockRecorder) DeleteCustomAvailabilityZoneWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCustomAvailabilityZoneWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DeleteCustomAvailabilityZoneWithContext), varargs...)
+}
+
+// DeleteCustomAvailabilityZoneRequest mocks base method
+func (m *MockRDSAPI) DeleteCustomAvailabilityZoneRequest(arg0 *rds.DeleteCustomAvailabilityZoneInput) (*request.Request, *rds.DeleteCustomAvailabilityZoneOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteCustomAvailabilityZoneRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DeleteCustomAvailabilityZoneOutput)
+	return ret0, ret1
+}
+
+// DeleteCustomAvailabilityZoneRequest indicates an expected call of DeleteCustomAvailabilityZoneRequest
+func (mr *MockRDSAPIMockRecorder) DeleteCustomAvailabilityZoneRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCustomAvailabilityZoneRequest", reflect.TypeOf((*MockRDSAPI)(nil).DeleteCustomAvailabilityZoneRequest), arg0)
+}
+
 // DeleteDBCluster mocks base method
 func (m *MockRDSAPI) DeleteDBCluster(arg0 *rds.DeleteDBClusterInput) (*rds.DeleteDBClusterOutput, error) {
 	m.ctrl.T.Helper()
@@ -1885,6 +1985,56 @@ func (mr *MockRDSAPIMockRecorder) DeleteGlobalClusterRequest(arg0 interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteGlobalClusterRequest", reflect.TypeOf((*MockRDSAPI)(nil).DeleteGlobalClusterRequest), arg0)
 }
 
+// DeleteInstallationMedia mocks base method
+func (m *MockRDSAPI) DeleteInstallationMedia(arg0 *rds.DeleteInstallationMediaInput) (*rds.DeleteInstallationMediaOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteInstallationMedia", arg0)
+	ret0, _ := ret[0].(*rds.DeleteInstallationMediaOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteInstallationMedia indicates an expected call of DeleteInstallationMedia
+func (mr *MockRDSAPIMockRecorder) DeleteInstallationMedia(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteInstallationMedia", reflect.TypeOf((*MockRDSAPI)(nil).DeleteInstallationMedia), arg0)
+}
+
+// DeleteInstallationMediaWithContext mocks base method
+func (m *MockRDSAPI) DeleteInstallationMediaWithContext(arg0 aws.Context, arg1 *rds.DeleteInstallationMediaInput, arg2 ...request.Option) (*rds.DeleteInstallationMediaOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteInstallationMediaWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.DeleteInstallationMediaOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteInstallationMediaWithContext indicates an expected call of DeleteInstallationMediaWithContext
+func (mr *MockRDSAPIMockRecorder) DeleteInstallationMediaWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteInstallationMediaWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DeleteInstallationMediaWithContext), varargs...)
+}
+
+// DeleteInstallationMediaRequest mocks base method
+func (m *MockRDSAPI) DeleteInstallationMediaRequest(arg0 *rds.DeleteInstallationMediaInput) (*request.Request, *rds.DeleteInstallationMediaOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteInstallationMediaRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DeleteInstallationMediaOutput)
+	return ret0, ret1
+}
+
+// DeleteInstallationMediaRequest indicates an expected call of DeleteInstallationMediaRequest
+func (mr *MockRDSAPIMockRecorder) DeleteInstallationMediaRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteInstallationMediaRequest", reflect.TypeOf((*MockRDSAPI)(nil).DeleteInstallationMediaRequest), arg0)
+}
+
 // DeleteOptionGroup mocks base method
 func (m *MockRDSAPI) DeleteOptionGroup(arg0 *rds.DeleteOptionGroupInput) (*rds.DeleteOptionGroupOutput, error) {
 	m.ctrl.T.Helper()
@@ -2033,6 +2183,89 @@ func (m *MockRDSAPI) DescribeCertificatesRequest(arg0 *rds.DescribeCertificatesI
 func (mr *MockRDSAPIMockRecorder) DescribeCertificatesRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCertificatesRequest", reflect.TypeOf((*MockRDSAPI)(nil).DescribeCertificatesRequest), arg0)
+}
+
+// DescribeCustomAvailabilityZones mocks base method
+func (m *MockRDSAPI) DescribeCustomAvailabilityZones(arg0 *rds.DescribeCustomAvailabilityZonesInput) (*rds.DescribeCustomAvailabilityZonesOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeCustomAvailabilityZones", arg0)
+	ret0, _ := ret[0].(*rds.DescribeCustomAvailabilityZonesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeCustomAvailabilityZones indicates an expected call of DescribeCustomAvailabilityZones
+func (mr *MockRDSAPIMockRecorder) DescribeCustomAvailabilityZones(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCustomAvailabilityZones", reflect.TypeOf((*MockRDSAPI)(nil).DescribeCustomAvailabilityZones), arg0)
+}
+
+// DescribeCustomAvailabilityZonesWithContext mocks base method
+func (m *MockRDSAPI) DescribeCustomAvailabilityZonesWithContext(arg0 aws.Context, arg1 *rds.DescribeCustomAvailabilityZonesInput, arg2 ...request.Option) (*rds.DescribeCustomAvailabilityZonesOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeCustomAvailabilityZonesWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.DescribeCustomAvailabilityZonesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeCustomAvailabilityZonesWithContext indicates an expected call of DescribeCustomAvailabilityZonesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeCustomAvailabilityZonesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCustomAvailabilityZonesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeCustomAvailabilityZonesWithContext), varargs...)
+}
+
+// DescribeCustomAvailabilityZonesRequest mocks base method
+func (m *MockRDSAPI) DescribeCustomAvailabilityZonesRequest(arg0 *rds.DescribeCustomAvailabilityZonesInput) (*request.Request, *rds.DescribeCustomAvailabilityZonesOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeCustomAvailabilityZonesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeCustomAvailabilityZonesOutput)
+	return ret0, ret1
+}
+
+// DescribeCustomAvailabilityZonesRequest indicates an expected call of DescribeCustomAvailabilityZonesRequest
+func (mr *MockRDSAPIMockRecorder) DescribeCustomAvailabilityZonesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCustomAvailabilityZonesRequest", reflect.TypeOf((*MockRDSAPI)(nil).DescribeCustomAvailabilityZonesRequest), arg0)
+}
+
+// DescribeCustomAvailabilityZonesPages mocks base method
+func (m *MockRDSAPI) DescribeCustomAvailabilityZonesPages(arg0 *rds.DescribeCustomAvailabilityZonesInput, arg1 func(*rds.DescribeCustomAvailabilityZonesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeCustomAvailabilityZonesPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeCustomAvailabilityZonesPages indicates an expected call of DescribeCustomAvailabilityZonesPages
+func (mr *MockRDSAPIMockRecorder) DescribeCustomAvailabilityZonesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCustomAvailabilityZonesPages", reflect.TypeOf((*MockRDSAPI)(nil).DescribeCustomAvailabilityZonesPages), arg0, arg1)
+}
+
+// DescribeCustomAvailabilityZonesPagesWithContext mocks base method
+func (m *MockRDSAPI) DescribeCustomAvailabilityZonesPagesWithContext(arg0 aws.Context, arg1 *rds.DescribeCustomAvailabilityZonesInput, arg2 func(*rds.DescribeCustomAvailabilityZonesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeCustomAvailabilityZonesPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeCustomAvailabilityZonesPagesWithContext indicates an expected call of DescribeCustomAvailabilityZonesPagesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeCustomAvailabilityZonesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCustomAvailabilityZonesPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeCustomAvailabilityZonesPagesWithContext), varargs...)
 }
 
 // DescribeDBClusterBacktracks mocks base method
@@ -3647,6 +3880,89 @@ func (mr *MockRDSAPIMockRecorder) DescribeGlobalClustersPagesWithContext(arg0, a
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeGlobalClustersPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeGlobalClustersPagesWithContext), varargs...)
 }
 
+// DescribeInstallationMedia mocks base method
+func (m *MockRDSAPI) DescribeInstallationMedia(arg0 *rds.DescribeInstallationMediaInput) (*rds.DescribeInstallationMediaOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeInstallationMedia", arg0)
+	ret0, _ := ret[0].(*rds.DescribeInstallationMediaOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeInstallationMedia indicates an expected call of DescribeInstallationMedia
+func (mr *MockRDSAPIMockRecorder) DescribeInstallationMedia(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstallationMedia", reflect.TypeOf((*MockRDSAPI)(nil).DescribeInstallationMedia), arg0)
+}
+
+// DescribeInstallationMediaWithContext mocks base method
+func (m *MockRDSAPI) DescribeInstallationMediaWithContext(arg0 aws.Context, arg1 *rds.DescribeInstallationMediaInput, arg2 ...request.Option) (*rds.DescribeInstallationMediaOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeInstallationMediaWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.DescribeInstallationMediaOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeInstallationMediaWithContext indicates an expected call of DescribeInstallationMediaWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeInstallationMediaWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstallationMediaWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeInstallationMediaWithContext), varargs...)
+}
+
+// DescribeInstallationMediaRequest mocks base method
+func (m *MockRDSAPI) DescribeInstallationMediaRequest(arg0 *rds.DescribeInstallationMediaInput) (*request.Request, *rds.DescribeInstallationMediaOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeInstallationMediaRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeInstallationMediaOutput)
+	return ret0, ret1
+}
+
+// DescribeInstallationMediaRequest indicates an expected call of DescribeInstallationMediaRequest
+func (mr *MockRDSAPIMockRecorder) DescribeInstallationMediaRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstallationMediaRequest", reflect.TypeOf((*MockRDSAPI)(nil).DescribeInstallationMediaRequest), arg0)
+}
+
+// DescribeInstallationMediaPages mocks base method
+func (m *MockRDSAPI) DescribeInstallationMediaPages(arg0 *rds.DescribeInstallationMediaInput, arg1 func(*rds.DescribeInstallationMediaOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeInstallationMediaPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeInstallationMediaPages indicates an expected call of DescribeInstallationMediaPages
+func (mr *MockRDSAPIMockRecorder) DescribeInstallationMediaPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstallationMediaPages", reflect.TypeOf((*MockRDSAPI)(nil).DescribeInstallationMediaPages), arg0, arg1)
+}
+
+// DescribeInstallationMediaPagesWithContext mocks base method
+func (m *MockRDSAPI) DescribeInstallationMediaPagesWithContext(arg0 aws.Context, arg1 *rds.DescribeInstallationMediaInput, arg2 func(*rds.DescribeInstallationMediaOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeInstallationMediaPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeInstallationMediaPagesWithContext indicates an expected call of DescribeInstallationMediaPagesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeInstallationMediaPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstallationMediaPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeInstallationMediaPagesWithContext), varargs...)
+}
+
 // DescribeOptionGroupOptions mocks base method
 func (m *MockRDSAPI) DescribeOptionGroupOptions(arg0 *rds.DescribeOptionGroupOptionsInput) (*rds.DescribeOptionGroupOptionsOutput, error) {
 	m.ctrl.T.Helper()
@@ -4343,6 +4659,56 @@ func (m *MockRDSAPI) FailoverDBClusterRequest(arg0 *rds.FailoverDBClusterInput) 
 func (mr *MockRDSAPIMockRecorder) FailoverDBClusterRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FailoverDBClusterRequest", reflect.TypeOf((*MockRDSAPI)(nil).FailoverDBClusterRequest), arg0)
+}
+
+// ImportInstallationMedia mocks base method
+func (m *MockRDSAPI) ImportInstallationMedia(arg0 *rds.ImportInstallationMediaInput) (*rds.ImportInstallationMediaOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ImportInstallationMedia", arg0)
+	ret0, _ := ret[0].(*rds.ImportInstallationMediaOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ImportInstallationMedia indicates an expected call of ImportInstallationMedia
+func (mr *MockRDSAPIMockRecorder) ImportInstallationMedia(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ImportInstallationMedia", reflect.TypeOf((*MockRDSAPI)(nil).ImportInstallationMedia), arg0)
+}
+
+// ImportInstallationMediaWithContext mocks base method
+func (m *MockRDSAPI) ImportInstallationMediaWithContext(arg0 aws.Context, arg1 *rds.ImportInstallationMediaInput, arg2 ...request.Option) (*rds.ImportInstallationMediaOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ImportInstallationMediaWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.ImportInstallationMediaOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ImportInstallationMediaWithContext indicates an expected call of ImportInstallationMediaWithContext
+func (mr *MockRDSAPIMockRecorder) ImportInstallationMediaWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ImportInstallationMediaWithContext", reflect.TypeOf((*MockRDSAPI)(nil).ImportInstallationMediaWithContext), varargs...)
+}
+
+// ImportInstallationMediaRequest mocks base method
+func (m *MockRDSAPI) ImportInstallationMediaRequest(arg0 *rds.ImportInstallationMediaInput) (*request.Request, *rds.ImportInstallationMediaOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ImportInstallationMediaRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.ImportInstallationMediaOutput)
+	return ret0, ret1
+}
+
+// ImportInstallationMediaRequest indicates an expected call of ImportInstallationMediaRequest
+func (mr *MockRDSAPIMockRecorder) ImportInstallationMediaRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ImportInstallationMediaRequest", reflect.TypeOf((*MockRDSAPI)(nil).ImportInstallationMediaRequest), arg0)
 }
 
 // ListTagsForResource mocks base method
