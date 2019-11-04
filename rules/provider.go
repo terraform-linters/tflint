@@ -70,7 +70,7 @@ func CheckRuleNames(ruleNames []string) error {
 }
 
 // NewRules returns rules according to configuration
-func NewRules(c *tflint.Config) []Rule {
+func NewRules(c *tflint.Config) ([]Rule, error) {
 	log.Print("[INFO] Prepare rules")
 
 	ret := []Rule{}
@@ -85,7 +85,7 @@ func NewRules(c *tflint.Config) []Rule {
 
 	pluginRules, err := plugin.NewRules(c)
 	if err != nil {
-		panic(err)
+		return ret, err
 	}
 	for _, pluginRule := range pluginRules {
 		allRules = append(allRules, pluginRule)
@@ -107,5 +107,5 @@ func NewRules(c *tflint.Config) []Rule {
 		}
 	}
 	log.Printf("[INFO]   %d rules enabled", len(ret))
-	return ret
+	return ret, nil
 }

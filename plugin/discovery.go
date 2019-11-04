@@ -14,10 +14,6 @@ import (
 	"github.com/wata727/tflint/tflint"
 )
 
-// PluginRoot is the root directory of the plugins
-// This variable is exposed for testing.
-var PluginRoot = "~/.tflint.d/plugins"
-
 // Find searches and returns plugins that meet the naming convention.
 // All plugins must be placed under `~/.tflint.d/plugins` and
 // these must be named `tflint-ruleset-*.so`.

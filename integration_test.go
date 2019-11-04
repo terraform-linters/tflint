@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -15,6 +16,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/wata727/tflint/cmd"
 	"github.com/wata727/tflint/formatter"
+	"github.com/wata727/tflint/plugin"
 )
 
 func TestMain(m *testing.M) {
@@ -27,6 +29,7 @@ func TestIntegration(t *testing.T) {
 		Name    string
 		Command string
 		Env     map[string]string
+		Build   bool
 		Dir     string
 	}{
 		{
@@ -62,6 +65,12 @@ func TestIntegration(t *testing.T) {
 			},
 			Dir: "arguments",
 		},
+		{
+			Name:    "plugin",
+			Command: "./tflint --format json",
+			Build:   true,
+			Dir:     "plugin",
+		},
 	}
 
 	dir, _ := os.Getwd()
@@ -75,6 +84,14 @@ func TestIntegration(t *testing.T) {
 			for k, v := range tc.Env {
 				os.Setenv(k, v)
 			}
+		}
+		if tc.Build && runtime.GOOS != "windows" {
+			if err := exec.Command("go", "build", "--buildmode", "plugin", "-o", "tflint-ruleset-my_custom_rule.so", "plugin.go").Run(); err != nil {
+				t.Fatal(err)
+			}
+			original := plugin.PluginRoot
+			plugin.PluginRoot = testDir
+			defer func() { plugin.PluginRoot = original }()
 		}
 
 		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)

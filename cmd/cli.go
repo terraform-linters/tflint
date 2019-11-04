@@ -168,7 +168,13 @@ func (cli *CLI) Run(args []string) int {
 		return ExitCodeError
 	}
 
-	for _, rule := range rules.NewRules(cfg) {
+	rules, err := rules.NewRules(cfg)
+	if err != nil {
+		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to set up rules", err), cli.loader.Sources())
+		return ExitCodeError
+	}
+
+	for _, rule := range rules {
 		for _, runner := range runners {
 			err := rule.Check(runner)
 			if err != nil {

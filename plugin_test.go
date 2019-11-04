@@ -38,7 +38,7 @@ func Test_PluginOpen(t *testing.T) {
 	}
 }
 
-func Test_PluginFind_errors(t *testing.T) {
+func Test_PluginOpen_errors(t *testing.T) {
 	cwd, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)

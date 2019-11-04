@@ -4,6 +4,10 @@ import (
 	"github.com/wata727/tflint/tflint"
 )
 
+// PluginRoot is the root directory of the plugins
+// This variable is exposed for testing.
+var PluginRoot = "~/.tflint.d/plugins"
+
 // Plugin is a mechanism for adding third-party rules.
 // Each plugin must be built with `--buildmode=plugin`.
 // @see https://golang.org/pkg/plugin/
