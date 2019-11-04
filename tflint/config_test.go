@@ -39,7 +39,7 @@ func Test_LoadConfig(t *testing.T) {
 				IgnoreModules: map[string]bool{
 					"github.com/wata727/example-module": true,
 				},
-				Varfiles:   []string{"example1.tfvars", "example2.tfvars"},
+				Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
 				Variables: []string{"foo=bar", "bar=['foo']"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
@@ -48,6 +48,16 @@ func Test_LoadConfig(t *testing.T) {
 					},
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
+						Enabled: false,
+					},
+				},
+				Plugins: map[string]*PluginConfig{
+					"foo": {
+						Name:    "foo",
+						Enabled: true,
+					},
+					"bar": {
+						Name:    "bar",
 						Enabled: false,
 					},
 				},
@@ -73,8 +83,9 @@ func Test_LoadConfig(t *testing.T) {
 				},
 				IgnoreModules: map[string]bool{},
 				Varfiles:      []string{},
-				Variables:    []string{},
-				Rules:        map[string]*RuleConfig{},
+				Variables:     []string{},
+				Rules:         map[string]*RuleConfig{},
+				Plugins:       map[string]*PluginConfig{},
 			},
 		},
 		{
@@ -178,7 +189,7 @@ func Test_Merge(t *testing.T) {
 			"github.com/wata727/example-1": true,
 			"github.com/wata727/example-2": false,
 		},
-		Varfiles:   []string{"example1.tfvars", "example2.tfvars"},
+		Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
 		Variables: []string{"foo=bar"},
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
@@ -190,6 +201,7 @@ func Test_Merge(t *testing.T) {
 				Enabled: true,
 			},
 		},
+		Plugins: map[string]*PluginConfig{},
 	}
 
 	cases := []struct {
@@ -232,7 +244,7 @@ func Test_Merge(t *testing.T) {
 					"github.com/wata727/example-1": true,
 					"github.com/wata727/example-2": false,
 				},
-				Varfiles:   []string{"example1.tfvars", "example2.tfvars"},
+				Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
 				Variables: []string{"foo=bar"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
@@ -242,6 +254,16 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_invalid_ami": {
 						Name:    "aws_instance_invalid_ami",
 						Enabled: true,
+					},
+				},
+				Plugins: map[string]*PluginConfig{
+					"foo": {
+						Name:    "foo",
+						Enabled: true,
+					},
+					"bar": {
+						Name:    "bar",
+						Enabled: false,
 					},
 				},
 			},
@@ -259,7 +281,7 @@ func Test_Merge(t *testing.T) {
 					"github.com/wata727/example-2": true,
 					"github.com/wata727/example-3": false,
 				},
-				Varfiles:   []string{"example3.tfvars"},
+				Varfiles:  []string{"example3.tfvars"},
 				Variables: []string{"bar=baz"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_ami": {
@@ -269,6 +291,16 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
 						Enabled: false,
+					},
+				},
+				Plugins: map[string]*PluginConfig{
+					"baz": {
+						Name:    "baz",
+						Enabled: true,
+					},
+					"bar": {
+						Name:    "bar",
+						Enabled: true,
 					},
 				},
 			},
@@ -288,7 +320,7 @@ func Test_Merge(t *testing.T) {
 					"github.com/wata727/example-2": true,
 					"github.com/wata727/example-3": false,
 				},
-				Varfiles:   []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
+				Varfiles:  []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
 				Variables: []string{"foo=bar", "bar=baz"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
@@ -302,6 +334,20 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
 						Enabled: false,
+					},
+				},
+				Plugins: map[string]*PluginConfig{
+					"foo": {
+						Name:    "foo",
+						Enabled: true,
+					},
+					"bar": {
+						Name:    "bar",
+						Enabled: true,
+					},
+					"baz": {
+						Name:    "baz",
+						Enabled: true,
 					},
 				},
 			},
@@ -330,7 +376,7 @@ func Test_copy(t *testing.T) {
 			"github.com/wata727/example-1": true,
 			"github.com/wata727/example-2": false,
 		},
-		Varfiles:   []string{"example1.tfvars", "example2.tfvars"},
+		Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
 		Variables: []string{},
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
@@ -340,6 +386,16 @@ func Test_copy(t *testing.T) {
 			"aws_instance_invalid_ami": {
 				Name:    "aws_instance_invalid_ami",
 				Enabled: true,
+			},
+		},
+		Plugins: map[string]*PluginConfig{
+			"foo": {
+				Name:    "foo",
+				Enabled: true,
+			},
+			"bar": {
+				Name:    "bar",
+				Enabled: false,
 			},
 		},
 	}
@@ -397,6 +453,12 @@ func Test_copy(t *testing.T) {
 			Name: "Rules",
 			SideEffect: func(c *Config) {
 				c.Rules["aws_instance_invalid_type"].Enabled = true
+			},
+		},
+		{
+			Name: "Plugins",
+			SideEffect: func(c *Config) {
+				c.Plugins["foo"].Enabled = false
 			},
 		},
 	}

@@ -26,8 +26,8 @@ type Rule interface {
 }
 
 // NewRules returns all available plugin rules.
-func NewRules() ([]Rule, error) {
-	plugins, err := Find()
+func NewRules(c *tflint.Config) ([]Rule, error) {
+	plugins, err := Find(c)
 	if err != nil {
 		return nil, err
 	}

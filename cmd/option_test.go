@@ -33,6 +33,7 @@ func Test_toConfig(t *testing.T) {
 				Varfiles:       []string{},
 				Variables:      []string{},
 				Rules:          map[string]*tflint.RuleConfig{},
+				Plugins:        map[string]*tflint.PluginConfig{},
 			},
 		},
 		{
@@ -47,6 +48,7 @@ func Test_toConfig(t *testing.T) {
 				Varfiles:       []string{},
 				Variables:      []string{},
 				Rules:          map[string]*tflint.RuleConfig{},
+				Plugins:        map[string]*tflint.PluginConfig{},
 			},
 		},
 		{
@@ -61,6 +63,7 @@ func Test_toConfig(t *testing.T) {
 				Varfiles:       []string{},
 				Variables:      []string{},
 				Rules:          map[string]*tflint.RuleConfig{},
+				Plugins:        map[string]*tflint.PluginConfig{},
 			},
 		},
 		{
@@ -79,6 +82,7 @@ func Test_toConfig(t *testing.T) {
 				Varfiles:      []string{},
 				Variables:     []string{},
 				Rules:         map[string]*tflint.RuleConfig{},
+				Plugins:       map[string]*tflint.PluginConfig{},
 			},
 		},
 		{
@@ -96,6 +100,7 @@ func Test_toConfig(t *testing.T) {
 				Varfiles:      []string{},
 				Variables:     []string{},
 				Rules:         map[string]*tflint.RuleConfig{},
+				Plugins:       map[string]*tflint.PluginConfig{},
 			},
 		},
 		{
@@ -114,6 +119,7 @@ func Test_toConfig(t *testing.T) {
 				Varfiles:      []string{},
 				Variables:     []string{},
 				Rules:         map[string]*tflint.RuleConfig{},
+				Plugins:       map[string]*tflint.PluginConfig{},
 			},
 		},
 		{
@@ -128,6 +134,7 @@ func Test_toConfig(t *testing.T) {
 				Varfiles:       []string{},
 				Variables:      []string{},
 				Rules:          map[string]*tflint.RuleConfig{},
+				Plugins:        map[string]*tflint.PluginConfig{},
 			},
 		},
 		{
@@ -142,6 +149,7 @@ func Test_toConfig(t *testing.T) {
 				Varfiles:       []string{},
 				Variables:      []string{},
 				Rules:          map[string]*tflint.RuleConfig{},
+				Plugins:        map[string]*tflint.PluginConfig{},
 			},
 		},
 		{
@@ -156,6 +164,7 @@ func Test_toConfig(t *testing.T) {
 				Varfiles:       []string{"example1.tfvars", "example2.tfvars"},
 				Variables:      []string{},
 				Rules:          map[string]*tflint.RuleConfig{},
+				Plugins:        map[string]*tflint.PluginConfig{},
 			},
 		},
 		{
@@ -170,6 +179,7 @@ func Test_toConfig(t *testing.T) {
 				Varfiles:       []string{"example1.tfvars", "example2.tfvars"},
 				Variables:      []string{},
 				Rules:          map[string]*tflint.RuleConfig{},
+				Plugins:        map[string]*tflint.PluginConfig{},
 			},
 		},
 		{
@@ -184,6 +194,7 @@ func Test_toConfig(t *testing.T) {
 				Varfiles:       []string{},
 				Variables:      []string{"foo=bar", "bar=baz"},
 				Rules:          map[string]*tflint.RuleConfig{},
+				Plugins:        map[string]*tflint.PluginConfig{},
 			},
 		},
 		{
@@ -207,6 +218,7 @@ func Test_toConfig(t *testing.T) {
 						Enabled: true,
 					},
 				},
+				Plugins: map[string]*tflint.PluginConfig{},
 			},
 		},
 		{
@@ -230,6 +242,7 @@ func Test_toConfig(t *testing.T) {
 						Enabled: false,
 					},
 				},
+				Plugins: map[string]*tflint.PluginConfig{},
 			},
 		},
 	}

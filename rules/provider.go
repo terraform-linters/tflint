@@ -83,7 +83,7 @@ func NewRules(c *tflint.Config) []Rule {
 		allRules = DefaultRules
 	}
 
-	pluginRules, err := plugin.NewRules()
+	pluginRules, err := plugin.NewRules(c)
 	if err != nil {
 		panic(err)
 	}
