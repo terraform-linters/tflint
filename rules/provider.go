@@ -46,11 +46,22 @@ var manualDeepCheckRules = []Rule{
 }
 
 // CheckRuleNames returns map of rules indexed by name
-func CheckRuleNames(ruleNames []string) error {
+func CheckRuleNames(ruleNames []string, c *tflint.Config) error {
 	log.Print("[INFO] Checking rules")
 
 	rulesMap := map[string]Rule{}
 	for _, rule := range append(DefaultRules, deepCheckRules...) {
+		rulesMap[rule.Name()] = rule
+	}
+
+	pluginRules, err := plugin.NewRules(c)
+	if err != nil {
+		return err
+	}
+	for _, rule := range pluginRules {
+		if _, exists := rulesMap[rule.Name()]; exists {
+			return fmt.Errorf("Rule %s is duplicated. Rule names must be unique", rule.Name())
+		}
 		rulesMap[rule.Name()] = rule
 	}
 

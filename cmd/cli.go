@@ -162,7 +162,7 @@ func (cli *CLI) Run(args []string) int {
 	for name := range cfg.Rules {
 		ruleNames = append(ruleNames, name)
 	}
-	err = rules.CheckRuleNames(ruleNames)
+	err = rules.CheckRuleNames(ruleNames, cfg)
 	if err != nil {
 		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to check rule config", err), cli.loader.Sources())
 		return ExitCodeError

@@ -29,7 +29,7 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 	for name := range cfg.Rules {
 		ruleNames = append(ruleNames, name)
 	}
-	err = rules.CheckRuleNames(ruleNames)
+	err = rules.CheckRuleNames(ruleNames, cfg)
 	if err != nil {
 		return nil, err
 	}
