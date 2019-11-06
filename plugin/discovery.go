@@ -95,5 +95,8 @@ func prettyOpenError(message string, name string) error {
 	if strings.Contains(message, "plugin was built with a different version of package") {
 		return fmt.Errorf("Broken plugin `%s` found: The plugin is built with a different version of TFLint. Should be built with v%s", name, tflint.Version)
 	}
+	if strings.Contains(message, "plugin already loaded") {
+		return fmt.Errorf("Plugin `%s` already loaded. The same plugin cannot be loaded more than once", name)
+	}
 	return fmt.Errorf("Broken plugin `%s` found: The plugin is invalid format", name)
 }
