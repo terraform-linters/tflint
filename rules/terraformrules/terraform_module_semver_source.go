@@ -51,10 +51,12 @@ func (r *TerraformModuleSemverSourceRule) Check(runner *tflint.Runner) error {
 
 		lower := strings.ToLower(module.SourceAddr)
 
-		if ReGitHub.MatchString(lower) || ReBitbucket.MatchString(lower) || ReGenericGit.MatchString(lower) {
+		if ReGitHub.MatchString(lower) || ReGenericGit.MatchString(lower) {
 			r.checkGitSemverSource(runner, module)
 		} else if strings.HasPrefix(lower, "hg::") {
 			r.checkMercurialSemverSource(runner, module)
+		} else if ReBitbucket.MatchString(lower) {
+			r.checkBitbucketSemverSource(runner, module)
 		}
 	}
 
@@ -88,6 +90,38 @@ func (r *TerraformModuleSemverSourceRule) checkMercurialSemverSource(runner *tfl
 	lower := strings.ToLower(module.SourceAddr)
 
 	if strings.Contains(lower, "rev=") {
+		if !reSemverRevision.MatchString(lower) {
+			runner.EmitIssue(
+				r,
+				fmt.Sprintf("Module source \"%s\" uses a rev which is not a version string", module.SourceAddr),
+				module.SourceAddrRange,
+			)
+		}
+	} else {
+		runner.EmitIssue(
+			r,
+			fmt.Sprintf("Module source \"%s\" is not pinned", module.SourceAddr),
+			module.SourceAddrRange,
+		)
+	}
+}
+
+// Terraform can use a Bitbucket repo as Git or Mercurial.
+//
+// Note: Bitbucket is dropping Mercurial support in 2020, so this can be rolled into
+// checkGitSource after that happens.
+func (r *TerraformModuleSemverSourceRule) checkBitbucketSemverSource(runner *tflint.Runner, module *configs.ModuleCall) {
+	lower := strings.ToLower(module.SourceAddr)
+
+	if strings.Contains(lower, "ref=") {
+		if !reSemverReference.MatchString(lower) {
+			runner.EmitIssue(
+				r,
+				fmt.Sprintf("Module source \"%s\" uses a ref which is not a version string", module.SourceAddr),
+				module.SourceAddrRange,
+			)
+		}
+	} else if strings.Contains(lower, "rev=") {
 		if !reSemverRevision.MatchString(lower) {
 			runner.EmitIssue(
 				r,

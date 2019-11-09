@@ -136,7 +136,7 @@ module "unpinned" {
 			},
 		},
 		{
-			Name: "bitbucket module reference is not semver",
+			Name: "bitbucket git module reference is not semver",
 			Content: `
 module "default_git" {
   source = "bitbucket.org/hashicorp/consul.git?ref=master"
@@ -154,7 +154,7 @@ module "default_git" {
 			},
 		},
 		{
-			Name: "bitbucket Git module reference is pinned to semver",
+			Name: "bitbucket git module reference is pinned to semver",
 			Content: `
 module "pinned_git" {
   source = "bitbucket.org/hashicorp/consul.git?ref=v1.2.3"
@@ -162,10 +162,44 @@ module "pinned_git" {
 			Expected: tflint.Issues{},
 		},
 		{
-			Name: "bitbucket Git module reference is pinned to semver (no leading v)",
+			Name: "bitbucket git module reference is pinned to semver (no leading v)",
 			Content: `
 module "pinned_git" {
   source = "bitbucket.org/hashicorp/consul.git?ref=v1.2.3"
+}`,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: "bitbucket mercurial module reference is not semver",
+			Content: `
+module "default_git" {
+  source = "bitbucket.org/hg/mercurial?rev=default"
+}`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformModuleSemverSourceRule(),
+					Message: "Module source \"bitbucket.org/hg/mercurial?rev=default\" uses a rev which is not a version string",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 52},
+					},
+				},
+			},
+		},
+		{
+			Name: "bitbucket mercurial module reference is pinned to semver",
+			Content: `
+module "pinned_git" {
+  source = "bitbucket.org/hg/mercurial?ref=v1.2.3"
+}`,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: "bitbucket mercurial module reference is pinned to semver (no leading v)",
+			Content: `
+module "pinned_git" {
+  source = "bitbucket.org/hg/mercurial?ref=1.2.3"
 }`,
 			Expected: tflint.Issues{},
 		},
