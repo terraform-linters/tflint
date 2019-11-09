@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/wata727/tflint/plugin"
-	"github.com/wata727/tflint/rules/awsrules"
-	"github.com/wata727/tflint/rules/terraformrules"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/plugin"
+	"github.com/terraform-linters/tflint/rules/awsrules"
+	"github.com/terraform-linters/tflint/rules/terraformrules"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 // Rule is an implementation that receives a Runner and inspects for resources and modules.

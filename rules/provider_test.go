@@ -5,9 +5,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/wata727/tflint/rules/awsrules"
-	"github.com/wata727/tflint/rules/terraformrules"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/rules/awsrules"
+	"github.com/terraform-linters/tflint/rules/terraformrules"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 func Test_CheckRuleNames(t *testing.T) {

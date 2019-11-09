@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 func Test_checkstylePrint(t *testing.T) {

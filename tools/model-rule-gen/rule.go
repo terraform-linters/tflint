@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/wata727/tflint/tools/utils"
+	"github.com/terraform-linters/tflint/tools/utils"
 )
 
 type ruleMeta struct {

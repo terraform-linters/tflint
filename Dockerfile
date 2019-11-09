@@ -10,7 +10,7 @@ RUN make build
 
 FROM alpine:3.10 as prod
 
-LABEL maintainer=wata727
+LABEL maintainer=terraform-linters
 
 RUN apk add --no-cache ca-certificates
 

@@ -15,11 +15,11 @@ import (
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/spf13/afero"
 
-	"github.com/wata727/tflint/formatter"
-	"github.com/wata727/tflint/langserver"
-	"github.com/wata727/tflint/plugin"
-	"github.com/wata727/tflint/rules"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/formatter"
+	"github.com/terraform-linters/tflint/langserver"
+	"github.com/terraform-linters/tflint/plugin"
+	"github.com/terraform-linters/tflint/rules"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 // Exit codes are int values that represent an exit code for a particular error.

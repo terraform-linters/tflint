@@ -14,9 +14,9 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/wata727/tflint/cmd"
-	"github.com/wata727/tflint/formatter"
-	"github.com/wata727/tflint/plugin"
+	"github.com/terraform-linters/tflint/cmd"
+	"github.com/terraform-linters/tflint/formatter"
+	"github.com/terraform-linters/tflint/plugin"
 )
 
 func TestMain(m *testing.M) {

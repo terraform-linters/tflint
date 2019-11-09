@@ -12,8 +12,8 @@ import (
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/golang/mock/gomock"
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/wata727/tflint/client"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/client"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 func TestMain(m *testing.M) {

@@ -9,7 +9,7 @@ import (
 	"github.com/fatih/color"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclparse"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 var colorBold = color.New(color.Bold).SprintfFunc()

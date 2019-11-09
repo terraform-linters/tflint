@@ -5,7 +5,7 @@ import (
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 // AwsElastiCacheClusterPreviousTypeRule checks whether the resource uses previous generation node type

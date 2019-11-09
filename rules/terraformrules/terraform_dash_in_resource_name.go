@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 // TerraformDashInResourceNameRule checks whether resources have any dashes in the name

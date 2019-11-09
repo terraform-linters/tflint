@@ -28,7 +28,7 @@ Warning: "cache.t1.micro" is previous generation node type. (aws_elasticache_clu
   on template.tf line 6:
    6:   node_type            = "cache.t1.micro" // previous node type!
 
-Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/aws_elasticache_cluster_previous_type.md
+Reference: https://github.com/terraform-linters/tflint/blob/v0.11.0/docs/rules/aws_elasticache_cluster_previous_type.md
  
 ```
 

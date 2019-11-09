@@ -7,7 +7,7 @@ import (
 
 	"github.com/fatih/color"
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 func Test_prettyPrint(t *testing.T) {

@@ -1,5 +1,5 @@
 module "ecs_on_spotfleet" {
-  source = "github.com/wata727/tf_aws_ecs_on_spotfleet.git?ref=master"
+  source = "github.com/terraform-linters/tf_aws_ecs_on_spotfleet.git?ref=master"
 }
 
 module "instance" {

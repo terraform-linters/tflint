@@ -10,7 +10,7 @@ import (
 
 	"github.com/hashicorp/logutils"
 	colorable "github.com/mattn/go-colorable"
-	"github.com/wata727/tflint/cmd"
+	"github.com/terraform-linters/tflint/cmd"
 )
 
 func main() {
@@ -35,7 +35,7 @@ func main() {
 			}
 			fmt.Fprintln(os.Stderr, `
 TFLint crashed... :(
-Please attach an output log, describe the situation and version that occurred and post an issue to https://github.com/wata727/tflint/issues`)
+Please attach an output log, describe the situation and version that occurred and post an issue to https://github.com/terraform-linters/tflint/issues`)
 			os.Exit(cmd.ExitCodeError)
 		}
 	}()

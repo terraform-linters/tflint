@@ -7,7 +7,7 @@ import (
 	"regexp"
 
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 // AwsIotThingPrincipalAttachmentInvalidThingRule checks the pattern is valid

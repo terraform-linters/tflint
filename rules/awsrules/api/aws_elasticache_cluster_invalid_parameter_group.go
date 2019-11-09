@@ -7,7 +7,7 @@ import (
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 // AwsElastiCacheClusterInvalidParameterGroupRule checks whether attribute value actually exists

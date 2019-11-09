@@ -27,7 +27,7 @@ checksum:
   name_template: 'checksums.txt'
 release:
   github:
-    owner: wata727
+    owner: terraform-linters
     name: tflint
   draft: true
 snapshot:

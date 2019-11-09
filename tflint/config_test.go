@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/wata727/tflint/client"
+	"github.com/terraform-linters/tflint/client"
 )
 
 func Test_LoadConfig(t *testing.T) {
@@ -37,7 +37,7 @@ func Test_LoadConfig(t *testing.T) {
 					CredsFile: "~/.aws/myapp",
 				},
 				IgnoreModules: map[string]bool{
-					"github.com/wata727/example-module": true,
+					"github.com/terraform-linters/example-module": true,
 				},
 				Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
 				Variables: []string{"foo=bar", "bar=['foo']"},
@@ -186,8 +186,8 @@ func Test_Merge(t *testing.T) {
 			Region:    "us-east-1",
 		},
 		IgnoreModules: map[string]bool{
-			"github.com/wata727/example-1": true,
-			"github.com/wata727/example-2": false,
+			"github.com/terraform-linters/example-1": true,
+			"github.com/terraform-linters/example-2": false,
 		},
 		Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
 		Variables: []string{"foo=bar"},
@@ -241,8 +241,8 @@ func Test_Merge(t *testing.T) {
 					Region:    "us-east-1",
 				},
 				IgnoreModules: map[string]bool{
-					"github.com/wata727/example-1": true,
-					"github.com/wata727/example-2": false,
+					"github.com/terraform-linters/example-1": true,
+					"github.com/terraform-linters/example-2": false,
 				},
 				Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
 				Variables: []string{"foo=bar"},
@@ -278,8 +278,8 @@ func Test_Merge(t *testing.T) {
 					CredsFile: "~/.aws/myapp",
 				},
 				IgnoreModules: map[string]bool{
-					"github.com/wata727/example-2": true,
-					"github.com/wata727/example-3": false,
+					"github.com/terraform-linters/example-2": true,
+					"github.com/terraform-linters/example-3": false,
 				},
 				Varfiles:  []string{"example3.tfvars"},
 				Variables: []string{"bar=baz"},
@@ -316,9 +316,9 @@ func Test_Merge(t *testing.T) {
 					CredsFile: "~/.aws/myapp",
 				},
 				IgnoreModules: map[string]bool{
-					"github.com/wata727/example-1": true,
-					"github.com/wata727/example-2": true,
-					"github.com/wata727/example-3": false,
+					"github.com/terraform-linters/example-1": true,
+					"github.com/terraform-linters/example-2": true,
+					"github.com/terraform-linters/example-3": false,
 				},
 				Varfiles:  []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
 				Variables: []string{"foo=bar", "bar=baz"},
@@ -373,8 +373,8 @@ func Test_copy(t *testing.T) {
 			Region:    "us-east-1",
 		},
 		IgnoreModules: map[string]bool{
-			"github.com/wata727/example-1": true,
-			"github.com/wata727/example-2": false,
+			"github.com/terraform-linters/example-1": true,
+			"github.com/terraform-linters/example-2": false,
 		},
 		Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
 		Variables: []string{},
@@ -434,7 +434,7 @@ func Test_copy(t *testing.T) {
 		{
 			Name: "IgnoreModules",
 			SideEffect: func(c *Config) {
-				c.IgnoreModules["github.com/wata727/example-1"] = false
+				c.IgnoreModules["github.com/terraform-linters/example-1"] = false
 			},
 		},
 		{

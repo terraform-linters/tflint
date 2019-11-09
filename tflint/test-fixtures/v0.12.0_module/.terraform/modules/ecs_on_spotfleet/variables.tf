@@ -42,7 +42,7 @@ variable "app_ssl_policy" {
 
 variable "image" {
   description = "Your docker image name, default it ECS PHP Simple App"
-  default     = "wata727/ecs-demo-php-simple-app:latest"
+  default     = "terraform-linters/ecs-demo-php-simple-app:latest"
 }
 
 variable "container_port" {
