@@ -56,8 +56,10 @@ func (r *TerraformModulePinnedSourceRule) Check(runner *tflint.Runner) error {
 
 		lower := strings.ToLower(module.SourceAddr)
 
-		if reGithub.MatchString(lower) || reBitbucket.MatchString(lower) || reGenericGit.MatchString(lower) {
+		if reGithub.MatchString(lower) || reGenericGit.MatchString(lower) {
 			r.checkGitSource(runner, module)
+		} else if reBitbucket.MatchString(lower) {
+			r.checkBitbucketSource(runner, module)
 		} else if strings.HasPrefix(lower, "hg::") {
 			r.checkMercurialSource(runner, module)
 		}
@@ -92,6 +94,38 @@ func (r *TerraformModulePinnedSourceRule) checkMercurialSource(runner *tflint.Ru
 	lower := strings.ToLower(module.SourceAddr)
 
 	if strings.Contains(lower, "rev=") {
+		if strings.Contains(lower, "rev=default") {
+			runner.EmitIssue(
+				r,
+				fmt.Sprintf("Module source \"%s\" uses default rev \"default\"", module.SourceAddr),
+				module.SourceAddrRange,
+			)
+		}
+	} else {
+		runner.EmitIssue(
+			r,
+			fmt.Sprintf("Module source \"%s\" is not pinned", module.SourceAddr),
+			module.SourceAddrRange,
+		)
+	}
+}
+
+// Terraform can use a Bitbucket repo as Git or Mercurial.
+//
+// Note: Bitbucket is dropping Mercurial support in 2020, so this can be rolled into
+// checkGitSource after that happens.
+func (r *TerraformModulePinnedSourceRule) checkBitbucketSource(runner *tflint.Runner, module *configs.ModuleCall) {
+	lower := strings.ToLower(module.SourceAddr)
+
+	if strings.Contains(lower, "ref=") {
+		if strings.Contains(lower, "ref=master") {
+			runner.EmitIssue(
+				r,
+				fmt.Sprintf("Module source \"%s\" uses default ref \"master\"", module.SourceAddr),
+				module.SourceAddrRange,
+			)
+		}
+	} else if strings.Contains(lower, "rev=") {
 		if strings.Contains(lower, "rev=default") {
 			runner.EmitIssue(
 				r,
