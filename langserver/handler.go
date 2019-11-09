@@ -29,7 +29,12 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 	for name := range cfg.Rules {
 		ruleNames = append(ruleNames, name)
 	}
-	err = rules.CheckRuleNames(ruleNames)
+	err = rules.CheckRuleNames(ruleNames, cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	rules, err := rules.NewRules(cfg)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +44,7 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 		cliConfig:  cliConfig,
 		config:     cfg,
 		fs:         afero.NewCopyOnWriteFs(afero.NewOsFs(), afero.NewMemMapFs()),
-		rules:      rules.NewRules(cfg),
+		rules:      rules,
 		diagsPaths: []string{},
 	}).handle), nil
 }

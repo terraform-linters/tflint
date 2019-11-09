@@ -17,6 +17,7 @@ import (
 
 	"github.com/wata727/tflint/formatter"
 	"github.com/wata727/tflint/langserver"
+	"github.com/wata727/tflint/plugin"
 	"github.com/wata727/tflint/rules"
 	"github.com/wata727/tflint/tflint"
 )
@@ -97,7 +98,7 @@ func (cli *CLI) Run(args []string) int {
 
 	// Show version
 	if opts.Version {
-		fmt.Fprintf(cli.outStream, "TFLint version %s\n", tflint.Version)
+		cli.printVersion(opts)
 		return ExitCodeOK
 	}
 
@@ -162,13 +163,19 @@ func (cli *CLI) Run(args []string) int {
 	for name := range cfg.Rules {
 		ruleNames = append(ruleNames, name)
 	}
-	err = rules.CheckRuleNames(ruleNames)
+	err = rules.CheckRuleNames(ruleNames, cfg)
 	if err != nil {
 		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to check rule config", err), cli.loader.Sources())
 		return ExitCodeError
 	}
 
-	for _, rule := range rules.NewRules(cfg) {
+	rules, err := rules.NewRules(cfg)
+	if err != nil {
+		formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to set up rules", err), cli.loader.Sources())
+		return ExitCodeError
+	}
+
+	for _, rule := range rules {
 		for _, runner := range runners {
 			err := rule.Check(runner)
 			if err != nil {
@@ -191,6 +198,27 @@ func (cli *CLI) Run(args []string) int {
 	}
 
 	return ExitCodeOK
+}
+
+func (cli *CLI) printVersion(opts Options) {
+	fmt.Fprintf(cli.outStream, "TFLint version %s\n", tflint.Version)
+
+	cfg, err := tflint.LoadConfig(opts.Config)
+	if err != nil {
+		log.Printf("[ERROR] %s", err)
+		return
+	}
+	cfg = cfg.Merge(opts.toConfig())
+
+	plugins, err := plugin.Find(cfg)
+	if err != nil {
+		log.Printf("[ERROR] %s", err)
+		return
+	}
+
+	for _, plugin := range plugins {
+		fmt.Fprintf(cli.outStream, "+ ruleset.%s (%s)\n", plugin.Name, plugin.Version)
+	}
 }
 
 func (cli *CLI) startServer(configPath string, cliConfig *tflint.Config) int {
