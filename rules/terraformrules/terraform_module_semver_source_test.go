@@ -165,7 +165,7 @@ module "pinned_git" {
 			Name: "bitbucket git module reference is pinned to semver (no leading v)",
 			Content: `
 module "pinned_git" {
-  source = "bitbucket.org/hashicorp/consul.git?ref=v1.2.3"
+  source = "bitbucket.org/hashicorp/consul.git?ref=1.2.3"
 }`,
 			Expected: tflint.Issues{},
 		},
@@ -191,7 +191,7 @@ module "default_git" {
 			Name: "bitbucket mercurial module reference is pinned to semver",
 			Content: `
 module "pinned_git" {
-  source = "bitbucket.org/hg/mercurial?ref=v1.2.3"
+  source = "bitbucket.org/hg/mercurial?rev=v1.2.3"
 }`,
 			Expected: tflint.Issues{},
 		},
@@ -199,7 +199,7 @@ module "pinned_git" {
 			Name: "bitbucket mercurial module reference is pinned to semver (no leading v)",
 			Content: `
 module "pinned_git" {
-  source = "bitbucket.org/hg/mercurial?ref=1.2.3"
+  source = "bitbucket.org/hg/mercurial?rev=1.2.3"
 }`,
 			Expected: tflint.Issues{},
 		},
