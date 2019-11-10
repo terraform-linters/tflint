@@ -28,7 +28,7 @@ Notice: "default.redis3.2" is default parameter group. You cannot edit it. (aws_
   on template.tf line 9:
    9:   parameter_group_name = "default.redis3.2" // default paramete group!
 
-Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/aws_elasticache_cluster_default_parameter_group.md
+Reference: https://github.com/terraform-linters/tflint/blob/v0.11.0/docs/rules/aws_elasticache_cluster_default_parameter_group.md
  
 ```
 

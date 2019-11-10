@@ -1,4 +1,4 @@
-module github.com/wata727/tflint
+module github.com/terraform-linters/tflint
 
 go 1.13
 

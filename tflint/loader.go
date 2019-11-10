@@ -18,7 +18,7 @@ import (
 	"github.com/spf13/afero"
 )
 
-//go:generate mockgen -source loader.go -destination loader_mock.go -package tflint -self_package github.com/wata727/tflint/tflint
+//go:generate mockgen -source loader.go -destination loader_mock.go -package tflint -self_package github.com/terraform-linters/tflint/tflint
 
 // AbstractLoader is a loader interface for mock
 type AbstractLoader interface {

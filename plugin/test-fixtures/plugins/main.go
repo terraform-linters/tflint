@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/wata727/tflint/plugin"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/plugin"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 // PluginRule is a example rule for testing

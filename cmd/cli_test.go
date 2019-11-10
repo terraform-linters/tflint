@@ -14,8 +14,8 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/rules"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/rules"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 func TestCLIRun__noIssuesFound(t *testing.T) {

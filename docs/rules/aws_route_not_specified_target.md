@@ -20,7 +20,7 @@ Error: The routing target is not specified, each aws_route must contain either e
   on template.tf line 1:
    1: resource "aws_route" "foo" {
 
-Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/aws_route_not_specified_target.md
+Reference: https://github.com/terraform-linters/tflint/blob/v0.11.0/docs/rules/aws_route_not_specified_target.md
  
 ```
 

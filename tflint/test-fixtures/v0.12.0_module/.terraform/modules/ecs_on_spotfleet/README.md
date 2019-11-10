@@ -14,7 +14,7 @@ The outline is as following:
 By using the bundled ruby script, you can try ECS on Spot Fleet fastest.
 
 ```
-$ git clone https://github.com/wata727/tf_aws_ecs_on_spotfleet.git
+$ git clone https://github.com/terraform-linters/tf_aws_ecs_on_spotfleet.git
 $ cd tf_aws_ecs_on_spotfleet/cli
 $ bundle install
 $ ruby wizard.rb generate
@@ -68,7 +68,7 @@ provider "aws" {
 }
 
 module "ecs_on_spotfleet" {
-  source = "github.com/wata727/tf_aws_ecs_on_spotfleet"
+  source = "github.com/terraform-linters/tf_aws_ecs_on_spotfleet"
 
   vpc         = "vpc-12345"
   subnets     = ["subnet-12345", "subnet-abcde"]
@@ -87,4 +87,4 @@ This module is very simple, please remodel and create your own module.
 
 ## Author
 
-[Kazuma Watanabe](https://github.com/wata727)
+[Kazuma Watanabe](https://github.com/terraform-linters)

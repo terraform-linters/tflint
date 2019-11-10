@@ -17,17 +17,17 @@ There are three important packages to understand its behavior:
 
 ## How does it work
 
-These processes are described in [`cmd/cli.go`](https://github.com/wata727/tflint/blob/master/cmd/cli.go).
+These processes are described in [`cmd/cli.go`](https://github.com/terraform-linters/tflint/blob/master/cmd/cli.go).
 
 ### 1. Loading configurations
 
-All Terraform's configuration files are represented as `configs.Config`. [`tflint/tflint.Loader`](https://github.com/wata727/tflint/blob/master/tflint/loader.go) uses the `(*configs.Parser) LoadConfigDir` and `configs.BuildConfig` to access to `configs.Config` in the same way as Terraform.
+All Terraform's configuration files are represented as `configs.Config`. [`tflint/tflint.Loader`](https://github.com/terraform-linters/tflint/blob/master/tflint/loader.go) uses the `(*configs.Parser) LoadConfigDir` and `configs.BuildConfig` to access to `configs.Config` in the same way as Terraform.
 
 Similarly, prepare `terraform.InputValues` using `(*configs.Parser) LoadValuesFile`.
 
 ### 2. Setting up a new Runner
 
-A [`tflint/tflint.Runner`](https://github.com/wata727/tflint/blob/master/tflint/runner.go) is initialized for each `configs.Config`. These have their own evaluation context for that module, represented as `terraform.BuiltinEvalContext`.
+A [`tflint/tflint.Runner`](https://github.com/terraform-linters/tflint/blob/master/tflint/runner.go) is initialized for each `configs.Config`. These have their own evaluation context for that module, represented as `terraform.BuiltinEvalContext`.
 
 it uses `(*terraform.BuiltinEvalContext) EvaluateExpr` to evaluate expressions. Unlike Terraform, it provides a mechanism to determine if an expression can be evaluated.
 
@@ -56,9 +56,9 @@ Create: rules/awsrules/aws_instance_example.go
 Create: rules/awsrules/aws_instance_example_test.go
 ```
 
-A template of rules and tests is generated. In order to inspect configuration files, you need to understand [the Runner API](https://github.com/wata727/tflint/blob/master/tflint/runner.go).
+A template of rules and tests is generated. In order to inspect configuration files, you need to understand [the Runner API](https://github.com/terraform-linters/tflint/blob/master/tflint/runner.go).
 
-Finally, don't forget to register the created rule with [the provider](https://github.com/wata727/tflint/blob/master/rules/provider.go). After that the rule you created is enabled in TFLint.
+Finally, don't forget to register the created rule with [the provider](https://github.com/terraform-linters/tflint/blob/master/rules/provider.go). After that the rule you created is enabled in TFLint.
 
 ## Editing the existing rules
 
@@ -70,9 +70,9 @@ Everything except the ones mentioned later is manually maintained. These can be 
 
 ### SDK-based
 
-[SDK-based rules](https://github.com/wata727/tflint/tree/master/rules/awsrules/models) are automatically generated from [aws-sdk](https://github.com/aws/aws-sdk-go) model definitions. For example, the valid regions of the S3 bucket are defined [here](https://github.com/aws/aws-sdk-go/blob/v1.23.11/models/apis/s3/2006-03-01/api-2.json#L1090-L1105). Based on this, we can generate a rule that checks whether a valid value is selected.
+[SDK-based rules](https://github.com/terraform-linters/tflint/tree/master/rules/awsrules/models) are automatically generated from [aws-sdk](https://github.com/aws/aws-sdk-go) model definitions. For example, the valid regions of the S3 bucket are defined [here](https://github.com/aws/aws-sdk-go/blob/v1.23.11/models/apis/s3/2006-03-01/api-2.json#L1090-L1105). Based on this, we can generate a rule that checks whether a valid value is selected.
 
-These definitions are linked to Terraform resource arguments by [mapping files](https://github.com/wata727/tflint/tree/master/rules/awsrules/models/mappings). If you update these rules, you should update this mapping instead. The following is an example of a mapping file:
+These definitions are linked to Terraform resource arguments by [mapping files](https://github.com/terraform-linters/tflint/tree/master/rules/awsrules/models/mappings). If you update these rules, you should update this mapping instead. The following is an example of a mapping file:
 
 ```hcl
 import = "aws-sdk-go/models/apis/ec2/2016-11-15/api-2.json"
@@ -91,7 +91,7 @@ $ go run ./model-rule-gen
 
 ### API-based
 
-[API-based rules](https://github.com/wata727/tflint/tree/master/rules/awsrules/api) are automatically generated from [definition files](https://github.com/wata727/tflint/tree/master/rules/awsrules/api/definitions). An example definition file is shown below:
+[API-based rules](https://github.com/terraform-linters/tflint/tree/master/rules/awsrules/api) are automatically generated from [definition files](https://github.com/terraform-linters/tflint/tree/master/rules/awsrules/api/definitions). An example definition file is shown below:
 
 ```hcl
 rule "aws_instance_invalid_iam_profile" {

@@ -28,7 +28,7 @@ echo "os=$os"
 echo -e "\n\n===================================================="
 
 get_latest_release() {
-  curl --silent "https://api.github.com/repos/wata727/tflint/releases/latest" | # Get latest release from GitHub api
+  curl --silent "https://api.github.com/repos/terraform-linters/tflint/releases/latest" | # Get latest release from GitHub api
     grep '"tag_name":' |                                            # Get tag line
     sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
 }
@@ -36,7 +36,7 @@ get_latest_release() {
 echo "Looking up the latest version ..."
 latest_version=$(get_latest_release)
 echo "Downloading latest version of tflint which is $latest_version"
-curl -L -o /tmp/tflint.zip "https://github.com/wata727/tflint/releases/download/${latest_version}/tflint_${os}.zip"
+curl -L -o /tmp/tflint.zip "https://github.com/terraform-linters/tflint/releases/download/${latest_version}/tflint_${os}.zip"
 retVal=$?
 if [ $retVal -ne 0 ]; then
   echo "Failed to download tflint_${os}.zip"

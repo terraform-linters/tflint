@@ -6,7 +6,7 @@ import (
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 // AwsSesDomainMailFromInvalidBehaviorOnMxFailureRule checks the pattern is valid

@@ -291,8 +291,8 @@ github.com/ulikunitz/xz v0.5.5/go.mod h1:2bypXElzHzzJZwzH67Y6wb67pO62Rzfn7BSiF4A
 github.com/vmihailenco/msgpack v3.3.3+incompatible/go.mod h1:fy3FlTQTDXWkZ7Bh6AcGMlsjHatGryHQYUTf1ShIgkk=
 github.com/vmihailenco/msgpack v4.0.1+incompatible h1:RMF1enSPeKTlXrXdOcqjFUElywVZjjC6pqse21bKbEU=
 github.com/vmihailenco/msgpack v4.0.1+incompatible/go.mod h1:fy3FlTQTDXWkZ7Bh6AcGMlsjHatGryHQYUTf1ShIgkk=
-github.com/wata727/tflint v0.12.1 h1:dqfr5G1WlIqEUbP0HzasX2EW9H3/WxEW4mYeDCYlzt8=
-github.com/wata727/tflint v0.12.1/go.mod h1:EdXCDwtyFQeHm+90oSNWFOMtNv30oNE5uqsFY4kTrgM=
+github.com/terraform-linters/tflint v0.12.1 h1:dqfr5G1WlIqEUbP0HzasX2EW9H3/WxEW4mYeDCYlzt8=
+github.com/terraform-linters/tflint v0.12.1/go.mod h1:EdXCDwtyFQeHm+90oSNWFOMtNv30oNE5uqsFY4kTrgM=
 github.com/xanzy/ssh-agent v0.2.1/go.mod h1:mLlQY/MoOhWBj+gOGMQkOeiEvkx+8pJSI+0Bx9h2kr4=
 github.com/xiang90/probing v0.0.0-20160813154853-07dd2e8dfe18/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xlab/treeprint v0.0.0-20161029104018-1d6e34225557/go.mod h1:ce1O1j6UtZfjr22oyGxGLbauSBp2YVXpARAosm7dHBg=

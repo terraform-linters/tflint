@@ -20,8 +20,8 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/wata727/tflint/client"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/client"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 func Test_AwsALBInvalidSecurityGroup(t *testing.T) {

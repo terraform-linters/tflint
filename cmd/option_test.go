@@ -6,8 +6,8 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	flags "github.com/jessevdk/go-flags"
-	"github.com/wata727/tflint/client"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/client"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 func Test_toConfig(t *testing.T) {

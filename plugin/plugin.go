@@ -1,7 +1,7 @@
 package plugin
 
 import (
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 // PluginRoot is the root directory of the plugins

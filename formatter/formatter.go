@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 // Formatter outputs appropriate results to stdout and stderr depending on the format

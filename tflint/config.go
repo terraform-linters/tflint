@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
 	homedir "github.com/mitchellh/go-homedir"
-	"github.com/wata727/tflint/client"
+	"github.com/terraform-linters/tflint/client"
 )
 
 var defaultConfigFile = ".tflint.hcl"

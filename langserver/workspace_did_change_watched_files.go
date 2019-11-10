@@ -8,8 +8,8 @@ import (
 	lsp "github.com/sourcegraph/go-lsp"
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/spf13/afero"
-	"github.com/wata727/tflint/rules"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/rules"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 func (h *handler) workspaceDidChangeWatchedFiles(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (result interface{}, err error) {

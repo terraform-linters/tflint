@@ -21,7 +21,7 @@ Notice: `dash-name` resource name has a dash (terraform_dash_in_resource_name)
   on template.tf line 1:
    1: resource "aws_eip" "dash-name" {
 
-Reference: https://github.com/wata727/tflint/blob/v0.11.0/docs/rules/terraform_dash_in_resource_name.md
+Reference: https://github.com/terraform-linters/tflint/blob/v0.11.0/docs/rules/terraform_dash_in_resource_name.md
  
 ```
 

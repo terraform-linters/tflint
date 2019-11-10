@@ -12,7 +12,7 @@ config {
   }
 
   ignore_module = {
-    "github.com/wata727/example-module" = true
+    "github.com/terraform-linters/example-module" = true
   }
 
   varfile = ["example1.tfvars", "example2.tfvars"]

@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/wata727/tflint/plugin"
+	"github.com/terraform-linters/tflint/plugin"
 )
 
 func Test_PluginOpen(t *testing.T) {

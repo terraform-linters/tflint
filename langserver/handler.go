@@ -13,8 +13,8 @@ import (
 	lsp "github.com/sourcegraph/go-lsp"
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/spf13/afero"
-	"github.com/wata727/tflint/rules"
-	"github.com/wata727/tflint/tflint"
+	"github.com/terraform-linters/tflint/rules"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 // NewHandler returns a new JSON-RPC handler
