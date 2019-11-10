@@ -2,7 +2,7 @@
 [![Build Status](https://github.com/terraform-linters/tflint/workflows/build/badge.svg?branch=master)](https://github.com/terraform-linters/tflint/actions)
 [![GitHub release](https://img.shields.io/github/release/terraform-linters/tflint.svg)](https://github.com/terraform-linters/tflint/releases/latest)
 [![Terraform Compatibility](https://img.shields.io/badge/terraform-%3E%3D%200.12-blue)](docs/guides/compatibility.md)
-[![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/terraform-linters/tflint/)
+[![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/wata727/tflint/)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-blue.svg)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/terraform-linters/tflint)](https://goreportcard.com/report/github.com/terraform-linters/tflint)
 
@@ -55,7 +55,7 @@ $ brew install tflint
 
 ### Docker
 
-You can also use [TFLint via Docker](https://hub.docker.com/r/terraform-linters/tflint/).
+You can also use [TFLint via Docker](https://hub.docker.com/r/wata727/tflint/).
 
 ```console
 $ docker run --rm -v $(pwd):/data -t terraform-linters/tflint
