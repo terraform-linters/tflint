@@ -131,7 +131,3 @@ $ TFLINT_LOG=debug tflint
 ## Developing
 
 See [Developer guide](docs/DEVELOPING.md).
-
-## Author
-
-[Kazuma Watanabe](https://github.com/terraform-linters)
