@@ -120,7 +120,7 @@ module "unpinned" {
 			},
 		},
 		{
-			Name: "bitbucket module reference is default",
+			Name: "bitbucket git module reference is default",
 			Content: `
 module "default_git" {
   source = "bitbucket.org/hashicorp/consul.git?ref=master"
@@ -138,10 +138,36 @@ module "default_git" {
 			},
 		},
 		{
-			Name: "bitbucket module reference is pinned",
+			Name: "bitbucket mercurial module reference is default",
+			Content: `
+module "default_git" {
+  source = "bitbucket.org/hg/mercurial?rev=default"
+}`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"bitbucket.org/hg/mercurial?rev=default\" uses default rev \"default\"",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 52},
+					},
+				},
+			},
+		},
+		{
+			Name: "bitbucket git module reference is pinned",
 			Content: `
 module "pinned_git" {
   source = "bitbucket.org/hashicorp/consul.git?ref=pinned"
+}`,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: "bitbucket mercurial module reference is pinned",
+			Content: `
+module "pinned_git" {
+  source = "bitbucket.org/hg/mercurial?rev=pinned"
 }`,
 			Expected: tflint.Issues{},
 		},
