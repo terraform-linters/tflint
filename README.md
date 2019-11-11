@@ -42,7 +42,7 @@ $ tflint -v
 
 For Linux based OS, you can use the [`install_linux.sh`](https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh) to automate the installation process, or try the following oneliner to download latest binary for AMD64 architecture.
 ```
-$ curl -L "$(curl -s https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" > tflint.zip && unzip tflint.zip && rm tflint.zip
+$ curl -L "$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" -o tflint.zip && unzip tflint.zip && rm tflint.zip
 ```
 
 ### Homebrew
