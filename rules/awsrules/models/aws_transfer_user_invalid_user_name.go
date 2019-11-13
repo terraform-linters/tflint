@@ -14,6 +14,8 @@ import (
 type AwsTransferUserInvalidUserNameRule struct {
 	resourceType  string
 	attributeName string
+	max           int
+	min           int
 	pattern       *regexp.Regexp
 }
 
@@ -22,6 +24,8 @@ func NewAwsTransferUserInvalidUserNameRule() *AwsTransferUserInvalidUserNameRule
 	return &AwsTransferUserInvalidUserNameRule{
 		resourceType:  "aws_transfer_user",
 		attributeName: "user_name",
+		max:           32,
+		min:           3,
 		pattern:       regexp.MustCompile(`^[a-zA-Z0-9_][a-zA-Z0-9_-]{2,31}$`),
 	}
 }
@@ -55,6 +59,20 @@ func (r *AwsTransferUserInvalidUserNameRule) Check(runner *tflint.Runner) error 
 		err := runner.EvaluateExpr(attribute.Expr, &val)
 
 		return runner.EnsureNoError(err, func() error {
+			if len(val) > r.max {
+				runner.EmitIssue(
+					r,
+					"user_name must be 32 characters or less",
+					attribute.Expr.Range(),
+				)
+			}
+			if len(val) < r.min {
+				runner.EmitIssue(
+					r,
+					"user_name must be 3 characters or higher",
+					attribute.Expr.Range(),
+				)
+			}
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,

@@ -26,7 +26,7 @@ func NewAwsCognitoIdentityPoolInvalidIdentityPoolNameRule() *AwsCognitoIdentityP
 		attributeName: "identity_pool_name",
 		max:           128,
 		min:           1,
-		pattern:       regexp.MustCompile(`^[\w ]+$`),
+		pattern:       regexp.MustCompile(`^[\w\s+=,.@-]+$`),
 	}
 }
 
@@ -76,7 +76,7 @@ func (r *AwsCognitoIdentityPoolInvalidIdentityPoolNameRule) Check(runner *tflint
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`identity_pool_name does not match valid pattern ^[\w ]+$`,
+					`identity_pool_name does not match valid pattern ^[\w\s+=,.@-]+$`,
 					attribute.Expr.Range(),
 				)
 			}

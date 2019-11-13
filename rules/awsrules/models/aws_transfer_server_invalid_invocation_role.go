@@ -14,6 +14,8 @@ import (
 type AwsTransferServerInvalidInvocationRoleRule struct {
 	resourceType  string
 	attributeName string
+	max           int
+	min           int
 	pattern       *regexp.Regexp
 }
 
@@ -22,6 +24,8 @@ func NewAwsTransferServerInvalidInvocationRoleRule() *AwsTransferServerInvalidIn
 	return &AwsTransferServerInvalidInvocationRoleRule{
 		resourceType:  "aws_transfer_server",
 		attributeName: "invocation_role",
+		max:           2048,
+		min:           20,
 		pattern:       regexp.MustCompile(`^arn:.*role/.*$`),
 	}
 }
@@ -55,6 +59,20 @@ func (r *AwsTransferServerInvalidInvocationRoleRule) Check(runner *tflint.Runner
 		err := runner.EvaluateExpr(attribute.Expr, &val)
 
 		return runner.EnsureNoError(err, func() error {
+			if len(val) > r.max {
+				runner.EmitIssue(
+					r,
+					"invocation_role must be 2048 characters or less",
+					attribute.Expr.Range(),
+				)
+			}
+			if len(val) < r.min {
+				runner.EmitIssue(
+					r,
+					"invocation_role must be 20 characters or higher",
+					attribute.Expr.Range(),
+				)
+			}
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,

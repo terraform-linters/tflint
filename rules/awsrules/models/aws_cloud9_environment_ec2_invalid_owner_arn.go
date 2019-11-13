@@ -22,7 +22,7 @@ func NewAwsCloud9EnvironmentEc2InvalidOwnerArnRule() *AwsCloud9EnvironmentEc2Inv
 	return &AwsCloud9EnvironmentEc2InvalidOwnerArnRule{
 		resourceType:  "aws_cloud9_environment_ec2",
 		attributeName: "owner_arn",
-		pattern:       regexp.MustCompile(`^arn:aws:(iam|sts)::\d+:(root|user|federated-user|assumed-role)\/?\S*$`),
+		pattern:       regexp.MustCompile(`^arn:aws:(iam|sts)::\d+:(root|(user\/[\w+=/:,.@-]{1,64}|federated-user\/[\w+=/:,.@-]{2,32}|assumed-role\/[\w+=/:,.@-]{1,64}\/[\w+=/:,.@-]{1,64}))$`),
 	}
 }
 
@@ -58,7 +58,7 @@ func (r *AwsCloud9EnvironmentEc2InvalidOwnerArnRule) Check(runner *tflint.Runner
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`owner_arn does not match valid pattern ^arn:aws:(iam|sts)::\d+:(root|user|federated-user|assumed-role)\/?\S*$`,
+					`owner_arn does not match valid pattern ^arn:aws:(iam|sts)::\d+:(root|(user\/[\w+=/:,.@-]{1,64}|federated-user\/[\w+=/:,.@-]{2,32}|assumed-role\/[\w+=/:,.@-]{1,64}\/[\w+=/:,.@-]{1,64}))$`,
 					attribute.Expr.Range(),
 				)
 			}
