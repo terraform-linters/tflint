@@ -71,3 +71,4 @@ These rules suggest to better ways.
 |[terraform_documented_outputs](terraform_documented_outputs.md)||
 |[terraform_documented_variables](terraform_documented_variables.md)||
 |[terraform_module_pinned_source](terraform_module_pinned_source.md)|✔|
+|[terraform_module_semver_source](terraform_module_semver_source.md)||

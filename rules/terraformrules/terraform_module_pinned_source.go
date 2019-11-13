@@ -42,9 +42,17 @@ func (r *TerraformModulePinnedSourceRule) Link() string {
 	return tflint.ReferenceLink(r.Name())
 }
 
-var reGithub = regexp.MustCompile("(^github.com/(.+)/(.+)$)|(^git@github.com:(.+)/(.+)$)")
-var reBitbucket = regexp.MustCompile("^bitbucket.org/(.+)/(.+)$")
-var reGenericGit = regexp.MustCompile("(git://(.+)/(.+))|(git::https://(.+)/(.+))|(git::ssh://((.+)@)??(.+)/(.+)/(.+))")
+// ReGitHub matches a module source which is a GitHub repository
+// See https://www.terraform.io/docs/modules/sources.html#github
+var ReGitHub = regexp.MustCompile("(^github.com/(.+)/(.+)$)|(^git@github.com:(.+)/(.+)$)")
+
+// ReBitbucket matches a module source which is a Bitbucket repository
+// See https://www.terraform.io/docs/modules/sources.html#bitbucket
+var ReBitbucket = regexp.MustCompile("^bitbucket.org/(.+)/(.+)$")
+
+// ReGenericGit matches a module source which is a Git repository
+// See https://www.terraform.io/docs/modules/sources.html#generic-git-repository
+var ReGenericGit = regexp.MustCompile("(git://(.+)/(.+))|(git::https://(.+)/(.+))|(git::ssh://((.+)@)??(.+)/(.+)/(.+))")
 
 // Check checks if module source version is default or unpinned
 // Note that this rule is valid only for Git or Mercurial source
@@ -56,9 +64,9 @@ func (r *TerraformModulePinnedSourceRule) Check(runner *tflint.Runner) error {
 
 		lower := strings.ToLower(module.SourceAddr)
 
-		if reGithub.MatchString(lower) || reGenericGit.MatchString(lower) {
+		if ReGitHub.MatchString(lower) || ReGenericGit.MatchString(lower) {
 			r.checkGitSource(runner, module)
-		} else if reBitbucket.MatchString(lower) {
+		} else if ReBitbucket.MatchString(lower) {
 			r.checkBitbucketSource(runner, module)
 		} else if strings.HasPrefix(lower, "hg::") {
 			r.checkMercurialSource(runner, module)
