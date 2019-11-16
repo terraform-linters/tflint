@@ -1,3 +1,31 @@
+## 0.13.0 (2019-11-16)
+
+This is the first release in the terraform-linters organization. This release includes an experimental plugin system. You can easily add custom rules using the Go plugin system. Please see [here](https://github.com/terraform-linters/tflint/blob/v0.13.0/docs/guides/extend.md) for the detail.
+
+### Breaking Changes
+
+- [#496](https://github.com/terraform-linters/tflint/pull/496): Check invalid rule names ([@abitrolly](https://github.com/abitrolly))
+
+### Enhancements
+
+- [#500](https://github.com/terraform-linters/tflint/pull/500): Experimental plugin support ([@wata727](https://github.com/wata727))
+- [#506](https://github.com/terraform-linters/tflint/pull/506) [#514](https://github.com/terraform-linters/tflint/pull/514): Bump github.com/aws/aws-sdk-go from 1.25.4 to 1.25.31 ([@chenrui333](https://github.com/chenrui333),[@wata727](https://github.com/wata727))
+- [#506](https://github.com/terraform-linters/tflint/pull/506) [#523](https://github.com/terraform-linters/tflint/pull/523): Bump terraform to v0.12.15 from v0.12.10 ([@chenrui333](https://github.com/chenrui333),[@wata727](https://github.com/wata727))
+- [#518](https://github.com/terraform-linters/tflint/pull/518): Add an optional checker for semver versions ([@alexwlchan](https://github.com/alexwlchan))
+- [#522](https://github.com/terraform-linters/tflint/pull/522): Bump terraform-provider-aws from v2.32.0 to v2.36.0 ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#517](https://github.com/terraform-linters/tflint/pull/517): When checking if a source is pinned, allow for Mercurial/Bitbucket ([@alexwlchan](https://github.com/alexwlchan))
+
+### Chores
+
+- [#488](https://github.com/terraform-linters/tflint/pull/488): Update base image to alpine v3.10 ([@chenrui333](https://github.com/chenrui333))
+- [#503](https://github.com/terraform-linters/tflint/pull/503): add note about recursive check ([@IslamAzab](https://github.com/IslamAzab))
+- [#515](https://github.com/terraform-linters/tflint/pull/515): Rename import path ([@wata727](https://github.com/wata727))
+- [#516](https://github.com/terraform-linters/tflint/pull/516): Run tests on GitHub Actions ([@wata727](https://github.com/wata727))
+- [#520](https://github.com/terraform-linters/tflint/pull/520): oneliner linux should follow redirects when fetching latest release ([@alexsn](https://github.com/alexsn))
+
 ## 0.12.1 (2019-10-12)
 
 ### Enhancements
