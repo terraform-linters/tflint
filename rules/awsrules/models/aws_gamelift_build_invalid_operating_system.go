@@ -24,6 +24,7 @@ func NewAwsGameliftBuildInvalidOperatingSystemRule() *AwsGameliftBuildInvalidOpe
 		enum: []string{
 			"WINDOWS_2012",
 			"AMAZON_LINUX",
+			"AMAZON_LINUX_2",
 		},
 	}
 }

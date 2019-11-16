@@ -14,6 +14,8 @@ import (
 type AwsTransferServerInvalidLoggingRoleRule struct {
 	resourceType  string
 	attributeName string
+	max           int
+	min           int
 	pattern       *regexp.Regexp
 }
 
@@ -22,6 +24,8 @@ func NewAwsTransferServerInvalidLoggingRoleRule() *AwsTransferServerInvalidLoggi
 	return &AwsTransferServerInvalidLoggingRoleRule{
 		resourceType:  "aws_transfer_server",
 		attributeName: "logging_role",
+		max:           2048,
+		min:           20,
 		pattern:       regexp.MustCompile(`^arn:.*role/.*$`),
 	}
 }
@@ -55,6 +59,20 @@ func (r *AwsTransferServerInvalidLoggingRoleRule) Check(runner *tflint.Runner) e
 		err := runner.EvaluateExpr(attribute.Expr, &val)
 
 		return runner.EnsureNoError(err, func() error {
+			if len(val) > r.max {
+				runner.EmitIssue(
+					r,
+					"logging_role must be 2048 characters or less",
+					attribute.Expr.Range(),
+				)
+			}
+			if len(val) < r.min {
+				runner.EmitIssue(
+					r,
+					"logging_role must be 20 characters or higher",
+					attribute.Expr.Range(),
+				)
+			}
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,

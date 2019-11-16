@@ -18,12 +18,12 @@ func Test_AwsCognitoIdentityPoolInvalidIdentityPoolNameRule(t *testing.T) {
 			Name: "It includes invalid characters",
 			Content: `
 resource "aws_cognito_identity_pool" "foo" {
-	identity_pool_name = "identity-pool"
+	identity_pool_name = "identity:pool"
 }`,
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCognitoIdentityPoolInvalidIdentityPoolNameRule(),
-					Message: `identity_pool_name does not match valid pattern ^[\w ]+$`,
+					Message: `identity_pool_name does not match valid pattern ^[\w\s+=,.@-]+$`,
 				},
 			},
 		},

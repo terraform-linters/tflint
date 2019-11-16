@@ -14,6 +14,8 @@ import (
 type AwsTransferSSHKeyInvalidServerIDRule struct {
 	resourceType  string
 	attributeName string
+	max           int
+	min           int
 	pattern       *regexp.Regexp
 }
 
@@ -22,6 +24,8 @@ func NewAwsTransferSSHKeyInvalidServerIDRule() *AwsTransferSSHKeyInvalidServerID
 	return &AwsTransferSSHKeyInvalidServerIDRule{
 		resourceType:  "aws_transfer_ssh_key",
 		attributeName: "server_id",
+		max:           19,
+		min:           19,
 		pattern:       regexp.MustCompile(`^s-([0-9a-f]{17})$`),
 	}
 }
@@ -55,6 +59,20 @@ func (r *AwsTransferSSHKeyInvalidServerIDRule) Check(runner *tflint.Runner) erro
 		err := runner.EvaluateExpr(attribute.Expr, &val)
 
 		return runner.EnsureNoError(err, func() error {
+			if len(val) > r.max {
+				runner.EmitIssue(
+					r,
+					"server_id must be 19 characters or less",
+					attribute.Expr.Range(),
+				)
+			}
+			if len(val) < r.min {
+				runner.EmitIssue(
+					r,
+					"server_id must be 19 characters or higher",
+					attribute.Expr.Range(),
+				)
+			}
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,

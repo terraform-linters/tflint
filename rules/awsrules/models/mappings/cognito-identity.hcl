@@ -11,7 +11,7 @@ mapping "aws_cognito_identity_pool_roles_attachment" {
 
 test "aws_cognito_identity_pool" "identity_pool_name" {
   ok = "identity pool"
-  ng = "identity-pool"
+  ng = "identity:pool"
 }
 
 test "aws_cognito_identity_pool_roles_attachment" "identity_pool_id" {

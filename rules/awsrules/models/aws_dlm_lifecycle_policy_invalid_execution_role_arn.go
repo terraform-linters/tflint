@@ -10,46 +10,46 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-// AwsDlmLifecyclePolicyInvalidDescriptionRule checks the pattern is valid
-type AwsDlmLifecyclePolicyInvalidDescriptionRule struct {
+// AwsDlmLifecyclePolicyInvalidExecutionRoleArnRule checks the pattern is valid
+type AwsDlmLifecyclePolicyInvalidExecutionRoleArnRule struct {
 	resourceType  string
 	attributeName string
 	max           int
 	pattern       *regexp.Regexp
 }
 
-// NewAwsDlmLifecyclePolicyInvalidDescriptionRule returns new rule with default attributes
-func NewAwsDlmLifecyclePolicyInvalidDescriptionRule() *AwsDlmLifecyclePolicyInvalidDescriptionRule {
-	return &AwsDlmLifecyclePolicyInvalidDescriptionRule{
+// NewAwsDlmLifecyclePolicyInvalidExecutionRoleArnRule returns new rule with default attributes
+func NewAwsDlmLifecyclePolicyInvalidExecutionRoleArnRule() *AwsDlmLifecyclePolicyInvalidExecutionRoleArnRule {
+	return &AwsDlmLifecyclePolicyInvalidExecutionRoleArnRule{
 		resourceType:  "aws_dlm_lifecycle_policy",
-		attributeName: "description",
-		max:           500,
-		pattern:       regexp.MustCompile(`^[0-9A-Za-z _-]+$`),
+		attributeName: "execution_role_arn",
+		max:           2048,
+		pattern:       regexp.MustCompile(`^arn:aws:iam::\d+:role/.*$`),
 	}
 }
 
 // Name returns the rule name
-func (r *AwsDlmLifecyclePolicyInvalidDescriptionRule) Name() string {
-	return "aws_dlm_lifecycle_policy_invalid_description"
+func (r *AwsDlmLifecyclePolicyInvalidExecutionRoleArnRule) Name() string {
+	return "aws_dlm_lifecycle_policy_invalid_execution_role_arn"
 }
 
 // Enabled returns whether the rule is enabled by default
-func (r *AwsDlmLifecyclePolicyInvalidDescriptionRule) Enabled() bool {
+func (r *AwsDlmLifecyclePolicyInvalidExecutionRoleArnRule) Enabled() bool {
 	return true
 }
 
 // Severity returns the rule severity
-func (r *AwsDlmLifecyclePolicyInvalidDescriptionRule) Severity() string {
+func (r *AwsDlmLifecyclePolicyInvalidExecutionRoleArnRule) Severity() string {
 	return tflint.ERROR
 }
 
 // Link returns the rule reference link
-func (r *AwsDlmLifecyclePolicyInvalidDescriptionRule) Link() string {
+func (r *AwsDlmLifecyclePolicyInvalidExecutionRoleArnRule) Link() string {
 	return ""
 }
 
 // Check checks the pattern is valid
-func (r *AwsDlmLifecyclePolicyInvalidDescriptionRule) Check(runner *tflint.Runner) error {
+func (r *AwsDlmLifecyclePolicyInvalidExecutionRoleArnRule) Check(runner *tflint.Runner) error {
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
@@ -60,14 +60,14 @@ func (r *AwsDlmLifecyclePolicyInvalidDescriptionRule) Check(runner *tflint.Runne
 			if len(val) > r.max {
 				runner.EmitIssue(
 					r,
-					"description must be 500 characters or less",
+					"execution_role_arn must be 2048 characters or less",
 					attribute.Expr.Range(),
 				)
 			}
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`description does not match valid pattern ^[0-9A-Za-z _-]+$`,
+					`execution_role_arn does not match valid pattern ^arn:aws:iam::\d+:role/.*$`,
 					attribute.Expr.Range(),
 				)
 			}

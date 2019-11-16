@@ -26,6 +26,8 @@ func NewAwsBudgetsBudgetInvalidBudgetTypeRule() *AwsBudgetsBudgetInvalidBudgetTy
 			"COST",
 			"RI_UTILIZATION",
 			"RI_COVERAGE",
+			"SAVINGS_PLANS_UTILIZATION",
+			"SAVINGS_PLANS_COVERAGE",
 		},
 	}
 }
