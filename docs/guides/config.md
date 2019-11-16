@@ -35,10 +35,6 @@ rule "aws_instance_invalid_type" {
 rule "aws_instance_previous_type" {
   enabled = false
 }
-
-plugin "example" {
-  enabled = true
-}
 ```
 
 You can also use another file as a config file with the `--config` option:
@@ -98,15 +94,5 @@ You can make settings for each rule in the `rule` block. Currently, it can set o
 ```hcl
 rule "aws_instance_previous_type" {
   enabled = false
-}
-```
-
-## `plugin` blocks
-
-You can enable each plugin in the `plugin` block. Currently, it can set only `enabled` option. See [Extending TFLint](extend.md) for details.
-
-```
-plugin "example" {
-  enabled = true
 }
 ```

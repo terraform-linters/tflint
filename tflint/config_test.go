@@ -51,16 +51,6 @@ func Test_LoadConfig(t *testing.T) {
 						Enabled: false,
 					},
 				},
-				Plugins: map[string]*PluginConfig{
-					"foo": {
-						Name:    "foo",
-						Enabled: true,
-					},
-					"bar": {
-						Name:    "bar",
-						Enabled: false,
-					},
-				},
 			},
 		},
 		{
@@ -85,7 +75,6 @@ func Test_LoadConfig(t *testing.T) {
 				Varfiles:      []string{},
 				Variables:     []string{},
 				Rules:         map[string]*RuleConfig{},
-				Plugins:       map[string]*PluginConfig{},
 			},
 		},
 		{
@@ -201,7 +190,6 @@ func Test_Merge(t *testing.T) {
 				Enabled: true,
 			},
 		},
-		Plugins: map[string]*PluginConfig{},
 	}
 
 	cases := []struct {
@@ -256,16 +244,6 @@ func Test_Merge(t *testing.T) {
 						Enabled: true,
 					},
 				},
-				Plugins: map[string]*PluginConfig{
-					"foo": {
-						Name:    "foo",
-						Enabled: true,
-					},
-					"bar": {
-						Name:    "bar",
-						Enabled: false,
-					},
-				},
 			},
 			Other: &Config{
 				Module:    false,
@@ -291,16 +269,6 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
 						Enabled: false,
-					},
-				},
-				Plugins: map[string]*PluginConfig{
-					"baz": {
-						Name:    "baz",
-						Enabled: true,
-					},
-					"bar": {
-						Name:    "bar",
-						Enabled: true,
 					},
 				},
 			},
@@ -334,20 +302,6 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
 						Enabled: false,
-					},
-				},
-				Plugins: map[string]*PluginConfig{
-					"foo": {
-						Name:    "foo",
-						Enabled: true,
-					},
-					"bar": {
-						Name:    "bar",
-						Enabled: true,
-					},
-					"baz": {
-						Name:    "baz",
-						Enabled: true,
 					},
 				},
 			},
@@ -386,16 +340,6 @@ func Test_copy(t *testing.T) {
 			"aws_instance_invalid_ami": {
 				Name:    "aws_instance_invalid_ami",
 				Enabled: true,
-			},
-		},
-		Plugins: map[string]*PluginConfig{
-			"foo": {
-				Name:    "foo",
-				Enabled: true,
-			},
-			"bar": {
-				Name:    "bar",
-				Enabled: false,
 			},
 		},
 	}
@@ -453,12 +397,6 @@ func Test_copy(t *testing.T) {
 			Name: "Rules",
 			SideEffect: func(c *Config) {
 				c.Rules["aws_instance_invalid_type"].Enabled = true
-			},
-		},
-		{
-			Name: "Plugins",
-			SideEffect: func(c *Config) {
-				c.Plugins["foo"].Enabled = false
 			},
 		},
 	}

@@ -22,10 +22,7 @@ func (h *handler) workspaceDidChangeWatchedFiles(ctx context.Context, conn *json
 		return nil, err
 	}
 	h.config = newConfig.Merge(h.cliConfig)
-	h.rules, err = rules.NewRules(h.config)
-	if err != nil {
-		return nil, err
-	}
+	h.rules = rules.NewRules(h.config)
 
 	h.fs = afero.NewCopyOnWriteFs(afero.NewOsFs(), afero.NewMemMapFs())
 

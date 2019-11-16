@@ -27,11 +27,3 @@ rule "aws_instance_invalid_type" {
 rule "aws_instance_previous_type" {
   enabled = false
 }
-
-plugin "foo" {
-  enabled = true
-}
-
-plugin "bar" {
-  enabled = false
-}

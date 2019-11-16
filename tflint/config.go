@@ -28,8 +28,7 @@ type rawConfig struct {
 		TerraformVersion *string          `hcl:"terraform_version"`
 		IgnoreRule       *map[string]bool `hcl:"ignore_rule"`
 	} `hcl:"config,block"`
-	Rules   []RuleConfig   `hcl:"rule,block"`
-	Plugins []PluginConfig `hcl:"plugin,block"`
+	Rules []RuleConfig `hcl:"rule,block"`
 }
 
 // Config describes the behavior of TFLint
@@ -42,17 +41,10 @@ type Config struct {
 	Varfiles       []string
 	Variables      []string
 	Rules          map[string]*RuleConfig
-	Plugins        map[string]*PluginConfig
 }
 
 // RuleConfig is a TFLint's rule config
 type RuleConfig struct {
-	Name    string `hcl:"name,label"`
-	Enabled bool   `hcl:"enabled"`
-}
-
-// PluginConfig is a TFLint's plugin config
-type PluginConfig struct {
 	Name    string `hcl:"name,label"`
 	Enabled bool   `hcl:"enabled"`
 }
@@ -69,7 +61,6 @@ func EmptyConfig() *Config {
 		Varfiles:       []string{},
 		Variables:      []string{},
 		Rules:          map[string]*RuleConfig{},
-		Plugins:        map[string]*PluginConfig{},
 	}
 }
 
@@ -133,7 +124,6 @@ func (c *Config) Merge(other *Config) *Config {
 	ret.Variables = append(ret.Variables, other.Variables...)
 
 	ret.Rules = mergeRuleMap(ret.Rules, other.Rules)
-	ret.Plugins = mergePluginMap(ret.Plugins, other.Plugins)
 
 	return ret
 }
@@ -156,12 +146,6 @@ func (c *Config) copy() *Config {
 		*rules[k] = *v
 	}
 
-	plugins := map[string]*PluginConfig{}
-	for k, v := range c.Plugins {
-		plugins[k] = &PluginConfig{}
-		*plugins[k] = *v
-	}
-
 	return &Config{
 		Module:         c.Module,
 		DeepCheck:      c.DeepCheck,
@@ -171,7 +155,6 @@ func (c *Config) copy() *Config {
 		Varfiles:       varfiles,
 		Variables:      variables,
 		Rules:          rules,
-		Plugins:        plugins,
 	}
 }
 
@@ -208,7 +191,6 @@ func loadConfigFromFile(file string) (*Config, error) {
 	log.Printf("[DEBUG]   Varfiles: %#v", cfg.Varfiles)
 	log.Printf("[DEBUG]   Variables: %#v", cfg.Variables)
 	log.Printf("[DEBUG]   Rules: %#v", cfg.Rules)
-	log.Printf("[DEBUG]   Plugins: %#v", cfg.Plugins)
 
 	return raw.toConfig(), nil
 }
@@ -226,17 +208,6 @@ func mergeBoolMap(a, b map[string]bool) map[string]bool {
 
 func mergeRuleMap(a, b map[string]*RuleConfig) map[string]*RuleConfig {
 	ret := map[string]*RuleConfig{}
-	for k, v := range a {
-		ret[k] = v
-	}
-	for k, v := range b {
-		ret[k] = v
-	}
-	return ret
-}
-
-func mergePluginMap(a, b map[string]*PluginConfig) map[string]*PluginConfig {
-	ret := map[string]*PluginConfig{}
 	for k, v := range a {
 		ret[k] = v
 	}
@@ -282,11 +253,6 @@ func (raw *rawConfig) toConfig() *Config {
 	for _, r := range raw.Rules {
 		var rule = r
 		ret.Rules[rule.Name] = &rule
-	}
-
-	for _, p := range raw.Plugins {
-		var plugin = p
-		ret.Plugins[plugin.Name] = &plugin
 	}
 
 	return ret
