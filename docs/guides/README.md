@@ -7,4 +7,3 @@
 - [Compatibility with Terraform](compatibility.md)
 - [Editor Integration](editor-integration.md)
 - [Advanced Inspection](advanced.md)
-- [Extending TFLint](extend.md)

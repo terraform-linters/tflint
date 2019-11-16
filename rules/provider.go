@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/rules/awsrules"
 	"github.com/terraform-linters/tflint/rules/terraformrules"
 	"github.com/terraform-linters/tflint/tflint"
@@ -47,22 +46,11 @@ var manualDeepCheckRules = []Rule{
 }
 
 // CheckRuleNames returns map of rules indexed by name
-func CheckRuleNames(ruleNames []string, c *tflint.Config) error {
+func CheckRuleNames(ruleNames []string) error {
 	log.Print("[INFO] Checking rules")
 
 	rulesMap := map[string]Rule{}
 	for _, rule := range append(DefaultRules, deepCheckRules...) {
-		rulesMap[rule.Name()] = rule
-	}
-
-	pluginRules, err := plugin.NewRules(c)
-	if err != nil {
-		return err
-	}
-	for _, rule := range pluginRules {
-		if _, exists := rulesMap[rule.Name()]; exists {
-			return fmt.Errorf("Rule %s is duplicated. Rule names must be unique", rule.Name())
-		}
 		rulesMap[rule.Name()] = rule
 	}
 
@@ -82,7 +70,7 @@ func CheckRuleNames(ruleNames []string, c *tflint.Config) error {
 }
 
 // NewRules returns rules according to configuration
-func NewRules(c *tflint.Config) ([]Rule, error) {
+func NewRules(c *tflint.Config) []Rule {
 	log.Print("[INFO] Prepare rules")
 
 	ret := []Rule{}
@@ -93,14 +81,6 @@ func NewRules(c *tflint.Config) ([]Rule, error) {
 		allRules = append(DefaultRules, deepCheckRules...)
 	} else {
 		allRules = DefaultRules
-	}
-
-	pluginRules, err := plugin.NewRules(c)
-	if err != nil {
-		return ret, err
-	}
-	for _, pluginRule := range pluginRules {
-		allRules = append(allRules, pluginRule)
 	}
 
 	for _, rule := range allRules {
@@ -119,5 +99,5 @@ func NewRules(c *tflint.Config) ([]Rule, error) {
 		}
 	}
 	log.Printf("[INFO]   %d rules enabled", len(ret))
-	return ret, nil
+	return ret
 }

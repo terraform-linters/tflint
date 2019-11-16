@@ -87,6 +87,5 @@ func (opts *Options) toConfig() *tflint.Config {
 		Varfiles:      varfiles,
 		Variables:     opts.Variables,
 		Rules:         rules,
-		Plugins:       map[string]*tflint.PluginConfig{},
 	}
 }
