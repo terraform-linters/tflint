@@ -1,3 +1,7 @@
+## 0.13.1 (2019-11-16)
+
+- [#524](https://github.com/terraform-linters/tflint/pull/524): Revert: Experimental plugin support ([@wata727](https://github.com/wata727))
+
 ## 0.13.0 (2019-11-16)
 
 This is the first release in the terraform-linters organization. This release includes an experimental plugin system. You can easily add custom rules using the Go plugin system. Please see [here](https://github.com/terraform-linters/tflint/blob/v0.13.0/docs/guides/extend.md) for the detail.
