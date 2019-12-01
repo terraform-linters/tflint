@@ -58,7 +58,7 @@ $ brew install tflint
 You can also use [TFLint via Docker](https://hub.docker.com/r/wata727/tflint/).
 
 ```console
-$ docker run --rm -v $(pwd):/data -t terraform-linters/tflint
+$ docker run --rm -v $(pwd):/data -t wata727/tflint
 ```
 
 ## Features
