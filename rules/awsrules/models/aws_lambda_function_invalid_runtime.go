@@ -31,6 +31,7 @@ func NewAwsLambdaFunctionInvalidRuntimeRule() *AwsLambdaFunctionInvalidRuntimeRu
 			"python2.7",
 			"python3.6",
 			"python3.7",
+			"python3.8",
 			"dotnetcore1.0",
 			"dotnetcore2.0",
 			"dotnetcore2.1",
