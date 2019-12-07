@@ -26,6 +26,7 @@ func NewAwsCognitoIdentityProviderInvalidProviderTypeRule() *AwsCognitoIdentityP
 			"Facebook",
 			"Google",
 			"LoginWithAmazon",
+			"SignInWithApple",
 			"OIDC",
 		},
 	}

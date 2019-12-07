@@ -24,7 +24,7 @@ func NewAwsDatasyncLocationS3InvalidSubdirectoryRule() *AwsDatasyncLocationS3Inv
 		resourceType:  "aws_datasync_location_s3",
 		attributeName: "subdirectory",
 		max:           4096,
-		pattern:       regexp.MustCompile(`^[a-zA-Z0-9_\-\./]*$`),
+		pattern:       regexp.MustCompile(`^[a-zA-Z0-9_\-\+\./\(\)\p{Zs}]*$`),
 	}
 }
 
@@ -67,7 +67,7 @@ func (r *AwsDatasyncLocationS3InvalidSubdirectoryRule) Check(runner *tflint.Runn
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`subdirectory does not match valid pattern ^[a-zA-Z0-9_\-\./]*$`,
+					`subdirectory does not match valid pattern ^[a-zA-Z0-9_\-\+\./\(\)\p{Zs}]*$`,
 					attribute.Expr.Range(),
 				)
 			}

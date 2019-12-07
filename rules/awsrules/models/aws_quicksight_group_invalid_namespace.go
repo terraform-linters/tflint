@@ -14,6 +14,7 @@ import (
 type AwsQuicksightGroupInvalidNamespaceRule struct {
 	resourceType  string
 	attributeName string
+	max           int
 	pattern       *regexp.Regexp
 }
 
@@ -22,7 +23,8 @@ func NewAwsQuicksightGroupInvalidNamespaceRule() *AwsQuicksightGroupInvalidNames
 	return &AwsQuicksightGroupInvalidNamespaceRule{
 		resourceType:  "aws_quicksight_group",
 		attributeName: "namespace",
-		pattern:       regexp.MustCompile(`^default$`),
+		max:           64,
+		pattern:       regexp.MustCompile(`^[a-zA-Z0-9._-]*$`),
 	}
 }
 
@@ -55,10 +57,17 @@ func (r *AwsQuicksightGroupInvalidNamespaceRule) Check(runner *tflint.Runner) er
 		err := runner.EvaluateExpr(attribute.Expr, &val)
 
 		return runner.EnsureNoError(err, func() error {
+			if len(val) > r.max {
+				runner.EmitIssue(
+					r,
+					"namespace must be 64 characters or less",
+					attribute.Expr.Range(),
+				)
+			}
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`namespace does not match valid pattern ^default$`,
+					`namespace does not match valid pattern ^[a-zA-Z0-9._-]*$`,
 					attribute.Expr.Range(),
 				)
 			}

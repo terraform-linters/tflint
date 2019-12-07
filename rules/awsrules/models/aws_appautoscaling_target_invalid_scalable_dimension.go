@@ -33,6 +33,8 @@ func NewAwsAppautoscalingTargetInvalidScalableDimensionRule() *AwsAppautoscaling
 			"rds:cluster:ReadReplicaCount",
 			"sagemaker:variant:DesiredInstanceCount",
 			"custom-resource:ResourceType:Property",
+			"comprehend:document-classifier-endpoint:DesiredInferenceUnits",
+			"lambda:function:ProvisionedConcurrency",
 		},
 	}
 }
