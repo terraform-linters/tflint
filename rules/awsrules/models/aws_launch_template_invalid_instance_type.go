@@ -162,7 +162,10 @@ func NewAwsLaunchTemplateInvalidInstanceTypeRule() *AwsLaunchTemplateInvalidInst
 			"c5d.2xlarge",
 			"c5d.4xlarge",
 			"c5d.9xlarge",
+			"c5d.12xlarge",
 			"c5d.18xlarge",
+			"c5d.24xlarge",
+			"c5d.metal",
 			"c5n.large",
 			"c5n.xlarge",
 			"c5n.2xlarge",
@@ -286,6 +289,10 @@ func NewAwsLaunchTemplateInvalidInstanceTypeRule() *AwsLaunchTemplateInvalidInst
 			"r5n.12xlarge",
 			"r5n.16xlarge",
 			"r5n.24xlarge",
+			"inf1.xlarge",
+			"inf1.2xlarge",
+			"inf1.6xlarge",
+			"inf1.24xlarge",
 		},
 	}
 }

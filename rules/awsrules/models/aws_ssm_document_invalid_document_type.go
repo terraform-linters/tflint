@@ -27,6 +27,9 @@ func NewAwsSsmDocumentInvalidDocumentTypeRule() *AwsSsmDocumentInvalidDocumentTy
 			"Automation",
 			"Session",
 			"Package",
+			"ApplicationConfiguration",
+			"ApplicationConfigurationSchema",
+			"DeploymentStrategy",
 		},
 	}
 }

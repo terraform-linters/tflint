@@ -30,6 +30,8 @@ func NewAwsAppautoscalingScheduledActionInvalidServiceNamespaceRule() *AwsAppaut
 			"rds",
 			"sagemaker",
 			"custom-resource",
+			"comprehend",
+			"lambda",
 		},
 	}
 }
