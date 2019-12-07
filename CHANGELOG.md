@@ -1,3 +1,17 @@
+## 0.13.2 (2019-12-07)
+
+### Enhancements
+
+- [#526](https://github.com/terraform-linters/tflint/pull/526) [#532](https://github.com/terraform-linters/tflint/pull/532): Bump terraform to v0.12.17 from v0.12.15 ([@chenrui333](https://github.com/chenrui333)
+- [#537](https://github.com/terraform-linters/tflint/pull/537): Bump github.com/aws/aws-sdk-go from 1.25.31 to 1.25.48
+- [#541](https://github.com/terraform-linters/tflint/pull/541): Bump terraform-provider-aws to v2.41.0 from v2.36.0 ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#530](https://github.com/terraform-linters/tflint/pull/530): update the docker image name ([@ozbillwang](https://github.com/ozbillwang))
+- [#534](https://github.com/terraform-linters/tflint/pull/534): Bump the base image to v1.13.5 ([@chenrui333](https://github.com/chenrui333)
+- [#535](https://github.com/terraform-linters/tflint/pull/535): Pin actions/checkout@v1 ([@wata727](https://github.com/wata727))
+
 ## 0.13.1 (2019-11-16)
 
 - [#524](https://github.com/terraform-linters/tflint/pull/524): Revert: Experimental plugin support ([@wata727](https://github.com/wata727))
