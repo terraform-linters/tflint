@@ -1035,6 +1035,56 @@ func (mr *MockRDSAPIMockRecorder) CreateDBParameterGroupRequest(arg0 interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDBParameterGroupRequest", reflect.TypeOf((*MockRDSAPI)(nil).CreateDBParameterGroupRequest), arg0)
 }
 
+// CreateDBProxy mocks base method
+func (m *MockRDSAPI) CreateDBProxy(arg0 *rds.CreateDBProxyInput) (*rds.CreateDBProxyOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateDBProxy", arg0)
+	ret0, _ := ret[0].(*rds.CreateDBProxyOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateDBProxy indicates an expected call of CreateDBProxy
+func (mr *MockRDSAPIMockRecorder) CreateDBProxy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDBProxy", reflect.TypeOf((*MockRDSAPI)(nil).CreateDBProxy), arg0)
+}
+
+// CreateDBProxyWithContext mocks base method
+func (m *MockRDSAPI) CreateDBProxyWithContext(arg0 aws.Context, arg1 *rds.CreateDBProxyInput, arg2 ...request.Option) (*rds.CreateDBProxyOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateDBProxyWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.CreateDBProxyOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateDBProxyWithContext indicates an expected call of CreateDBProxyWithContext
+func (mr *MockRDSAPIMockRecorder) CreateDBProxyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDBProxyWithContext", reflect.TypeOf((*MockRDSAPI)(nil).CreateDBProxyWithContext), varargs...)
+}
+
+// CreateDBProxyRequest mocks base method
+func (m *MockRDSAPI) CreateDBProxyRequest(arg0 *rds.CreateDBProxyInput) (*request.Request, *rds.CreateDBProxyOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateDBProxyRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CreateDBProxyOutput)
+	return ret0, ret1
+}
+
+// CreateDBProxyRequest indicates an expected call of CreateDBProxyRequest
+func (mr *MockRDSAPIMockRecorder) CreateDBProxyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDBProxyRequest", reflect.TypeOf((*MockRDSAPI)(nil).CreateDBProxyRequest), arg0)
+}
+
 // CreateDBSecurityGroup mocks base method
 func (m *MockRDSAPI) CreateDBSecurityGroup(arg0 *rds.CreateDBSecurityGroupInput) (*rds.CreateDBSecurityGroupOutput, error) {
 	m.ctrl.T.Helper()
@@ -1735,6 +1785,56 @@ func (mr *MockRDSAPIMockRecorder) DeleteDBParameterGroupRequest(arg0 interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteDBParameterGroupRequest", reflect.TypeOf((*MockRDSAPI)(nil).DeleteDBParameterGroupRequest), arg0)
 }
 
+// DeleteDBProxy mocks base method
+func (m *MockRDSAPI) DeleteDBProxy(arg0 *rds.DeleteDBProxyInput) (*rds.DeleteDBProxyOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteDBProxy", arg0)
+	ret0, _ := ret[0].(*rds.DeleteDBProxyOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteDBProxy indicates an expected call of DeleteDBProxy
+func (mr *MockRDSAPIMockRecorder) DeleteDBProxy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteDBProxy", reflect.TypeOf((*MockRDSAPI)(nil).DeleteDBProxy), arg0)
+}
+
+// DeleteDBProxyWithContext mocks base method
+func (m *MockRDSAPI) DeleteDBProxyWithContext(arg0 aws.Context, arg1 *rds.DeleteDBProxyInput, arg2 ...request.Option) (*rds.DeleteDBProxyOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteDBProxyWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.DeleteDBProxyOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteDBProxyWithContext indicates an expected call of DeleteDBProxyWithContext
+func (mr *MockRDSAPIMockRecorder) DeleteDBProxyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteDBProxyWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DeleteDBProxyWithContext), varargs...)
+}
+
+// DeleteDBProxyRequest mocks base method
+func (m *MockRDSAPI) DeleteDBProxyRequest(arg0 *rds.DeleteDBProxyInput) (*request.Request, *rds.DeleteDBProxyOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteDBProxyRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DeleteDBProxyOutput)
+	return ret0, ret1
+}
+
+// DeleteDBProxyRequest indicates an expected call of DeleteDBProxyRequest
+func (mr *MockRDSAPIMockRecorder) DeleteDBProxyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteDBProxyRequest", reflect.TypeOf((*MockRDSAPI)(nil).DeleteDBProxyRequest), arg0)
+}
+
 // DeleteDBSecurityGroup mocks base method
 func (m *MockRDSAPI) DeleteDBSecurityGroup(arg0 *rds.DeleteDBSecurityGroupInput) (*rds.DeleteDBSecurityGroupOutput, error) {
 	m.ctrl.T.Helper()
@@ -2083,6 +2183,56 @@ func (m *MockRDSAPI) DeleteOptionGroupRequest(arg0 *rds.DeleteOptionGroupInput) 
 func (mr *MockRDSAPIMockRecorder) DeleteOptionGroupRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOptionGroupRequest", reflect.TypeOf((*MockRDSAPI)(nil).DeleteOptionGroupRequest), arg0)
+}
+
+// DeregisterDBProxyTargets mocks base method
+func (m *MockRDSAPI) DeregisterDBProxyTargets(arg0 *rds.DeregisterDBProxyTargetsInput) (*rds.DeregisterDBProxyTargetsOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeregisterDBProxyTargets", arg0)
+	ret0, _ := ret[0].(*rds.DeregisterDBProxyTargetsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeregisterDBProxyTargets indicates an expected call of DeregisterDBProxyTargets
+func (mr *MockRDSAPIMockRecorder) DeregisterDBProxyTargets(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeregisterDBProxyTargets", reflect.TypeOf((*MockRDSAPI)(nil).DeregisterDBProxyTargets), arg0)
+}
+
+// DeregisterDBProxyTargetsWithContext mocks base method
+func (m *MockRDSAPI) DeregisterDBProxyTargetsWithContext(arg0 aws.Context, arg1 *rds.DeregisterDBProxyTargetsInput, arg2 ...request.Option) (*rds.DeregisterDBProxyTargetsOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeregisterDBProxyTargetsWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.DeregisterDBProxyTargetsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeregisterDBProxyTargetsWithContext indicates an expected call of DeregisterDBProxyTargetsWithContext
+func (mr *MockRDSAPIMockRecorder) DeregisterDBProxyTargetsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeregisterDBProxyTargetsWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DeregisterDBProxyTargetsWithContext), varargs...)
+}
+
+// DeregisterDBProxyTargetsRequest mocks base method
+func (m *MockRDSAPI) DeregisterDBProxyTargetsRequest(arg0 *rds.DeregisterDBProxyTargetsInput) (*request.Request, *rds.DeregisterDBProxyTargetsOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeregisterDBProxyTargetsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DeregisterDBProxyTargetsOutput)
+	return ret0, ret1
+}
+
+// DeregisterDBProxyTargetsRequest indicates an expected call of DeregisterDBProxyTargetsRequest
+func (mr *MockRDSAPIMockRecorder) DeregisterDBProxyTargetsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeregisterDBProxyTargetsRequest", reflect.TypeOf((*MockRDSAPI)(nil).DeregisterDBProxyTargetsRequest), arg0)
 }
 
 // DescribeAccountAttributes mocks base method
@@ -3147,6 +3297,255 @@ func (mr *MockRDSAPIMockRecorder) DescribeDBParametersPagesWithContext(arg0, arg
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBParametersPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBParametersPagesWithContext), varargs...)
+}
+
+// DescribeDBProxies mocks base method
+func (m *MockRDSAPI) DescribeDBProxies(arg0 *rds.DescribeDBProxiesInput) (*rds.DescribeDBProxiesOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeDBProxies", arg0)
+	ret0, _ := ret[0].(*rds.DescribeDBProxiesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeDBProxies indicates an expected call of DescribeDBProxies
+func (mr *MockRDSAPIMockRecorder) DescribeDBProxies(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBProxies", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBProxies), arg0)
+}
+
+// DescribeDBProxiesWithContext mocks base method
+func (m *MockRDSAPI) DescribeDBProxiesWithContext(arg0 aws.Context, arg1 *rds.DescribeDBProxiesInput, arg2 ...request.Option) (*rds.DescribeDBProxiesOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeDBProxiesWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.DescribeDBProxiesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeDBProxiesWithContext indicates an expected call of DescribeDBProxiesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeDBProxiesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBProxiesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBProxiesWithContext), varargs...)
+}
+
+// DescribeDBProxiesRequest mocks base method
+func (m *MockRDSAPI) DescribeDBProxiesRequest(arg0 *rds.DescribeDBProxiesInput) (*request.Request, *rds.DescribeDBProxiesOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeDBProxiesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBProxiesOutput)
+	return ret0, ret1
+}
+
+// DescribeDBProxiesRequest indicates an expected call of DescribeDBProxiesRequest
+func (mr *MockRDSAPIMockRecorder) DescribeDBProxiesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBProxiesRequest", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBProxiesRequest), arg0)
+}
+
+// DescribeDBProxiesPages mocks base method
+func (m *MockRDSAPI) DescribeDBProxiesPages(arg0 *rds.DescribeDBProxiesInput, arg1 func(*rds.DescribeDBProxiesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeDBProxiesPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBProxiesPages indicates an expected call of DescribeDBProxiesPages
+func (mr *MockRDSAPIMockRecorder) DescribeDBProxiesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBProxiesPages", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBProxiesPages), arg0, arg1)
+}
+
+// DescribeDBProxiesPagesWithContext mocks base method
+func (m *MockRDSAPI) DescribeDBProxiesPagesWithContext(arg0 aws.Context, arg1 *rds.DescribeDBProxiesInput, arg2 func(*rds.DescribeDBProxiesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeDBProxiesPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBProxiesPagesWithContext indicates an expected call of DescribeDBProxiesPagesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeDBProxiesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBProxiesPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBProxiesPagesWithContext), varargs...)
+}
+
+// DescribeDBProxyTargetGroups mocks base method
+func (m *MockRDSAPI) DescribeDBProxyTargetGroups(arg0 *rds.DescribeDBProxyTargetGroupsInput) (*rds.DescribeDBProxyTargetGroupsOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeDBProxyTargetGroups", arg0)
+	ret0, _ := ret[0].(*rds.DescribeDBProxyTargetGroupsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeDBProxyTargetGroups indicates an expected call of DescribeDBProxyTargetGroups
+func (mr *MockRDSAPIMockRecorder) DescribeDBProxyTargetGroups(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBProxyTargetGroups", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBProxyTargetGroups), arg0)
+}
+
+// DescribeDBProxyTargetGroupsWithContext mocks base method
+func (m *MockRDSAPI) DescribeDBProxyTargetGroupsWithContext(arg0 aws.Context, arg1 *rds.DescribeDBProxyTargetGroupsInput, arg2 ...request.Option) (*rds.DescribeDBProxyTargetGroupsOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeDBProxyTargetGroupsWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.DescribeDBProxyTargetGroupsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeDBProxyTargetGroupsWithContext indicates an expected call of DescribeDBProxyTargetGroupsWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeDBProxyTargetGroupsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBProxyTargetGroupsWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBProxyTargetGroupsWithContext), varargs...)
+}
+
+// DescribeDBProxyTargetGroupsRequest mocks base method
+func (m *MockRDSAPI) DescribeDBProxyTargetGroupsRequest(arg0 *rds.DescribeDBProxyTargetGroupsInput) (*request.Request, *rds.DescribeDBProxyTargetGroupsOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeDBProxyTargetGroupsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBProxyTargetGroupsOutput)
+	return ret0, ret1
+}
+
+// DescribeDBProxyTargetGroupsRequest indicates an expected call of DescribeDBProxyTargetGroupsRequest
+func (mr *MockRDSAPIMockRecorder) DescribeDBProxyTargetGroupsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBProxyTargetGroupsRequest", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBProxyTargetGroupsRequest), arg0)
+}
+
+// DescribeDBProxyTargetGroupsPages mocks base method
+func (m *MockRDSAPI) DescribeDBProxyTargetGroupsPages(arg0 *rds.DescribeDBProxyTargetGroupsInput, arg1 func(*rds.DescribeDBProxyTargetGroupsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeDBProxyTargetGroupsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBProxyTargetGroupsPages indicates an expected call of DescribeDBProxyTargetGroupsPages
+func (mr *MockRDSAPIMockRecorder) DescribeDBProxyTargetGroupsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBProxyTargetGroupsPages", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBProxyTargetGroupsPages), arg0, arg1)
+}
+
+// DescribeDBProxyTargetGroupsPagesWithContext mocks base method
+func (m *MockRDSAPI) DescribeDBProxyTargetGroupsPagesWithContext(arg0 aws.Context, arg1 *rds.DescribeDBProxyTargetGroupsInput, arg2 func(*rds.DescribeDBProxyTargetGroupsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeDBProxyTargetGroupsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBProxyTargetGroupsPagesWithContext indicates an expected call of DescribeDBProxyTargetGroupsPagesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeDBProxyTargetGroupsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBProxyTargetGroupsPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBProxyTargetGroupsPagesWithContext), varargs...)
+}
+
+// DescribeDBProxyTargets mocks base method
+func (m *MockRDSAPI) DescribeDBProxyTargets(arg0 *rds.DescribeDBProxyTargetsInput) (*rds.DescribeDBProxyTargetsOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeDBProxyTargets", arg0)
+	ret0, _ := ret[0].(*rds.DescribeDBProxyTargetsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeDBProxyTargets indicates an expected call of DescribeDBProxyTargets
+func (mr *MockRDSAPIMockRecorder) DescribeDBProxyTargets(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBProxyTargets", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBProxyTargets), arg0)
+}
+
+// DescribeDBProxyTargetsWithContext mocks base method
+func (m *MockRDSAPI) DescribeDBProxyTargetsWithContext(arg0 aws.Context, arg1 *rds.DescribeDBProxyTargetsInput, arg2 ...request.Option) (*rds.DescribeDBProxyTargetsOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeDBProxyTargetsWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.DescribeDBProxyTargetsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeDBProxyTargetsWithContext indicates an expected call of DescribeDBProxyTargetsWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeDBProxyTargetsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBProxyTargetsWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBProxyTargetsWithContext), varargs...)
+}
+
+// DescribeDBProxyTargetsRequest mocks base method
+func (m *MockRDSAPI) DescribeDBProxyTargetsRequest(arg0 *rds.DescribeDBProxyTargetsInput) (*request.Request, *rds.DescribeDBProxyTargetsOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeDBProxyTargetsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeDBProxyTargetsOutput)
+	return ret0, ret1
+}
+
+// DescribeDBProxyTargetsRequest indicates an expected call of DescribeDBProxyTargetsRequest
+func (mr *MockRDSAPIMockRecorder) DescribeDBProxyTargetsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBProxyTargetsRequest", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBProxyTargetsRequest), arg0)
+}
+
+// DescribeDBProxyTargetsPages mocks base method
+func (m *MockRDSAPI) DescribeDBProxyTargetsPages(arg0 *rds.DescribeDBProxyTargetsInput, arg1 func(*rds.DescribeDBProxyTargetsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeDBProxyTargetsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBProxyTargetsPages indicates an expected call of DescribeDBProxyTargetsPages
+func (mr *MockRDSAPIMockRecorder) DescribeDBProxyTargetsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBProxyTargetsPages", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBProxyTargetsPages), arg0, arg1)
+}
+
+// DescribeDBProxyTargetsPagesWithContext mocks base method
+func (m *MockRDSAPI) DescribeDBProxyTargetsPagesWithContext(arg0 aws.Context, arg1 *rds.DescribeDBProxyTargetsInput, arg2 func(*rds.DescribeDBProxyTargetsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeDBProxyTargetsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBProxyTargetsPagesWithContext indicates an expected call of DescribeDBProxyTargetsPagesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeDBProxyTargetsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBProxyTargetsPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBProxyTargetsPagesWithContext), varargs...)
 }
 
 // DescribeDBSecurityGroups mocks base method
@@ -5111,6 +5510,106 @@ func (mr *MockRDSAPIMockRecorder) ModifyDBParameterGroupRequest(arg0 interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyDBParameterGroupRequest", reflect.TypeOf((*MockRDSAPI)(nil).ModifyDBParameterGroupRequest), arg0)
 }
 
+// ModifyDBProxy mocks base method
+func (m *MockRDSAPI) ModifyDBProxy(arg0 *rds.ModifyDBProxyInput) (*rds.ModifyDBProxyOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifyDBProxy", arg0)
+	ret0, _ := ret[0].(*rds.ModifyDBProxyOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyDBProxy indicates an expected call of ModifyDBProxy
+func (mr *MockRDSAPIMockRecorder) ModifyDBProxy(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyDBProxy", reflect.TypeOf((*MockRDSAPI)(nil).ModifyDBProxy), arg0)
+}
+
+// ModifyDBProxyWithContext mocks base method
+func (m *MockRDSAPI) ModifyDBProxyWithContext(arg0 aws.Context, arg1 *rds.ModifyDBProxyInput, arg2 ...request.Option) (*rds.ModifyDBProxyOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ModifyDBProxyWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.ModifyDBProxyOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyDBProxyWithContext indicates an expected call of ModifyDBProxyWithContext
+func (mr *MockRDSAPIMockRecorder) ModifyDBProxyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyDBProxyWithContext", reflect.TypeOf((*MockRDSAPI)(nil).ModifyDBProxyWithContext), varargs...)
+}
+
+// ModifyDBProxyRequest mocks base method
+func (m *MockRDSAPI) ModifyDBProxyRequest(arg0 *rds.ModifyDBProxyInput) (*request.Request, *rds.ModifyDBProxyOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifyDBProxyRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.ModifyDBProxyOutput)
+	return ret0, ret1
+}
+
+// ModifyDBProxyRequest indicates an expected call of ModifyDBProxyRequest
+func (mr *MockRDSAPIMockRecorder) ModifyDBProxyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyDBProxyRequest", reflect.TypeOf((*MockRDSAPI)(nil).ModifyDBProxyRequest), arg0)
+}
+
+// ModifyDBProxyTargetGroup mocks base method
+func (m *MockRDSAPI) ModifyDBProxyTargetGroup(arg0 *rds.ModifyDBProxyTargetGroupInput) (*rds.ModifyDBProxyTargetGroupOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifyDBProxyTargetGroup", arg0)
+	ret0, _ := ret[0].(*rds.ModifyDBProxyTargetGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyDBProxyTargetGroup indicates an expected call of ModifyDBProxyTargetGroup
+func (mr *MockRDSAPIMockRecorder) ModifyDBProxyTargetGroup(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyDBProxyTargetGroup", reflect.TypeOf((*MockRDSAPI)(nil).ModifyDBProxyTargetGroup), arg0)
+}
+
+// ModifyDBProxyTargetGroupWithContext mocks base method
+func (m *MockRDSAPI) ModifyDBProxyTargetGroupWithContext(arg0 aws.Context, arg1 *rds.ModifyDBProxyTargetGroupInput, arg2 ...request.Option) (*rds.ModifyDBProxyTargetGroupOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ModifyDBProxyTargetGroupWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.ModifyDBProxyTargetGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyDBProxyTargetGroupWithContext indicates an expected call of ModifyDBProxyTargetGroupWithContext
+func (mr *MockRDSAPIMockRecorder) ModifyDBProxyTargetGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyDBProxyTargetGroupWithContext", reflect.TypeOf((*MockRDSAPI)(nil).ModifyDBProxyTargetGroupWithContext), varargs...)
+}
+
+// ModifyDBProxyTargetGroupRequest mocks base method
+func (m *MockRDSAPI) ModifyDBProxyTargetGroupRequest(arg0 *rds.ModifyDBProxyTargetGroupInput) (*request.Request, *rds.ModifyDBProxyTargetGroupOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifyDBProxyTargetGroupRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.ModifyDBProxyTargetGroupOutput)
+	return ret0, ret1
+}
+
+// ModifyDBProxyTargetGroupRequest indicates an expected call of ModifyDBProxyTargetGroupRequest
+func (mr *MockRDSAPIMockRecorder) ModifyDBProxyTargetGroupRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyDBProxyTargetGroupRequest", reflect.TypeOf((*MockRDSAPI)(nil).ModifyDBProxyTargetGroupRequest), arg0)
+}
+
 // ModifyDBSnapshot mocks base method
 func (m *MockRDSAPI) ModifyDBSnapshot(arg0 *rds.ModifyDBSnapshotInput) (*rds.ModifyDBSnapshotOutput, error) {
 	m.ctrl.T.Helper()
@@ -5609,6 +6108,56 @@ func (m *MockRDSAPI) RebootDBInstanceRequest(arg0 *rds.RebootDBInstanceInput) (*
 func (mr *MockRDSAPIMockRecorder) RebootDBInstanceRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RebootDBInstanceRequest", reflect.TypeOf((*MockRDSAPI)(nil).RebootDBInstanceRequest), arg0)
+}
+
+// RegisterDBProxyTargets mocks base method
+func (m *MockRDSAPI) RegisterDBProxyTargets(arg0 *rds.RegisterDBProxyTargetsInput) (*rds.RegisterDBProxyTargetsOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RegisterDBProxyTargets", arg0)
+	ret0, _ := ret[0].(*rds.RegisterDBProxyTargetsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RegisterDBProxyTargets indicates an expected call of RegisterDBProxyTargets
+func (mr *MockRDSAPIMockRecorder) RegisterDBProxyTargets(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterDBProxyTargets", reflect.TypeOf((*MockRDSAPI)(nil).RegisterDBProxyTargets), arg0)
+}
+
+// RegisterDBProxyTargetsWithContext mocks base method
+func (m *MockRDSAPI) RegisterDBProxyTargetsWithContext(arg0 aws.Context, arg1 *rds.RegisterDBProxyTargetsInput, arg2 ...request.Option) (*rds.RegisterDBProxyTargetsOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "RegisterDBProxyTargetsWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.RegisterDBProxyTargetsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RegisterDBProxyTargetsWithContext indicates an expected call of RegisterDBProxyTargetsWithContext
+func (mr *MockRDSAPIMockRecorder) RegisterDBProxyTargetsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterDBProxyTargetsWithContext", reflect.TypeOf((*MockRDSAPI)(nil).RegisterDBProxyTargetsWithContext), varargs...)
+}
+
+// RegisterDBProxyTargetsRequest mocks base method
+func (m *MockRDSAPI) RegisterDBProxyTargetsRequest(arg0 *rds.RegisterDBProxyTargetsInput) (*request.Request, *rds.RegisterDBProxyTargetsOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RegisterDBProxyTargetsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.RegisterDBProxyTargetsOutput)
+	return ret0, ret1
+}
+
+// RegisterDBProxyTargetsRequest indicates an expected call of RegisterDBProxyTargetsRequest
+func (mr *MockRDSAPIMockRecorder) RegisterDBProxyTargetsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterDBProxyTargetsRequest", reflect.TypeOf((*MockRDSAPI)(nil).RegisterDBProxyTargetsRequest), arg0)
 }
 
 // RemoveFromGlobalCluster mocks base method
