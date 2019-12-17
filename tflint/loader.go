@@ -238,6 +238,10 @@ func (l *Loader) moduleWalker() configs.ModuleWalker {
 		}
 
 		dir := filepath.Join(l.currentDir, record.Dir)
+		if filepath.IsAbs(record.Dir) {
+			// If record.Dir is an absolute path, leave it
+			dir = record.Dir
+		}
 		if record.Root != "" {
 			dir = filepath.Join(dir, record.Root)
 		}
