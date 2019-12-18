@@ -44,7 +44,6 @@ type moduleManifest struct {
 	Version    *version.Version `json:"-"`
 	VersionStr string           `json:"Version,omitempty"`
 	Dir        string           `json:"Dir"`
-	Root       string           `json:"Root"`
 }
 
 type moduleManifestFile struct {
@@ -241,9 +240,6 @@ func (l *Loader) moduleWalker() configs.ModuleWalker {
 		if filepath.IsAbs(record.Dir) {
 			// If record.Dir is an absolute path, leave it
 			dir = record.Dir
-		}
-		if record.Root != "" {
-			dir = filepath.Join(dir, record.Root)
 		}
 		log.Printf("[DEBUG] Trying to load the module: key=%s, version=%s, dir=%s", key, record.VersionStr, dir)
 
