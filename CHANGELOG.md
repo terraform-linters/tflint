@@ -1,3 +1,18 @@
+## 0.13.3 (2019-12-18)
+
+### Enhancements
+
+- [#545](https://github.com/terraform-linters/tflint/pull/545): Bump terraform to v0.12.18 ([@chenrui333](https://github.com/chenrui333))
+
+### BugFixes
+
+- [#555](https://github.com/terraform-linters/tflint/pull/555): Parse absolute paths in TF_DATA_DIR correctly ([@madddi](https://github.com/madddi))
+
+### Chores
+
+- [#542](https://github.com/terraform-linters/tflint/pull/542): Fix the pre-commit hook ([@Dunedan](https://github.com/Dunedan))
+- [#556](https://github.com/terraform-linters/tflint/pull/556): Remove legacy TF 0.11 fields from module records ([@madddi](https://github.com/madddi))
+
 ## 0.13.2 (2019-12-07)
 
 ### Enhancements
