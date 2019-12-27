@@ -1,3 +1,15 @@
+## 0.13.4 (2019-12-27)
+
+### Enhancements
+
+- [#563](https://github.com/terraform-linters/tflint/pull/563): Add elasticache support for t3 family ([@BrunoChauvet](https://github.com/BrunoChauvet))
+- [#564](https://github.com/terraform-linters/tflint/pull/564): Bump github.com/aws/aws-sdk-go from 1.25.48 to 1.26.8
+- [#565](https://github.com/terraform-linters/tflint/pull/565): Bump terraform-provider-aws to v2.43.0 from v2.41.0 ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#566](https://github.com/terraform-linters/tflint/pull/566): Add GPG public key ([@wata727](https://github.com/wata727))
+
 ## 0.13.3 (2019-12-18)
 
 ### Enhancements
