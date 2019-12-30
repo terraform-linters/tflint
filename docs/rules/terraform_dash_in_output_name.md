@@ -19,10 +19,10 @@ output "no_dash_name" {
 $ tflint
 1 issue(s) found:
 
-Notice: `dash-bois-he` output name has a dash (terraform_dash_in_output_name)
+Notice: `dash-name` output name has a dash (terraform_dash_in_output_name)
 
   on outputs.tf line 1:
-   1: output "dash-bois-he" {
+   1: output "dash-name" {
 
 Reference: https://github.com/terraform-linters/tflint/blob/master/docs/rules/terraform_dash_in_output_name.md
 ```
