@@ -14,7 +14,7 @@ func Test_TerraformDashInOutputNameRule(t *testing.T) {
 		Expected tflint.Issues
 	}{
 		{
-			Name: "dash in resource name",
+			Name: "dash in output name",
 			Content: `
 output "dash-name" {
 	value = aws_alb.main.dns_name
