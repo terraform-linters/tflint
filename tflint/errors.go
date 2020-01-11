@@ -4,37 +4,37 @@ import "fmt"
 
 const (
 	// EvaluationError is an error when interpolation failed (unexpected)
-	EvaluationError int = 0
+	EvaluationError string = "E:Evaluation"
 	// UnknownValueError is an error when an unknown value is referenced
-	UnknownValueError int = 1 + iota
+	UnknownValueError string = "W:UnknownValue"
 	// NullValueError is an error when null value is referenced
-	NullValueError
+	NullValueError string = "W:NullValue"
 	// TypeConversionError is an error when type conversion of cty.Value failed
-	TypeConversionError
+	TypeConversionError string = "E:TypeConversion"
 	// TypeMismatchError is an error when a type of cty.Value is not as expected
-	TypeMismatchError
+	TypeMismatchError string = "E:TypeMismatch"
 	// UnevaluableError is an error when a received expression has unevaluable references.
-	UnevaluableError
+	UnevaluableError string = "W:Unevaluable"
 	// UnexpectedAttributeError is an error when handle unexpected attributes (e.g. block)
-	UnexpectedAttributeError
+	UnexpectedAttributeError string = "E:UnexpectedAttribute"
 	// ExternalAPIError is an error when calling the external API (e.g. AWS SDK)
-	ExternalAPIError
+	ExternalAPIError string = "E:ExternalAPI"
 	// ContextError is pseudo error code for propagating runtime context.
-	ContextError
+	ContextError string = "I:Context"
 
 	// FatalLevel is a recorverable error, it cause panic
-	FatalLevel int = 0
+	FatalLevel string = "Fatal"
 	// ErrorLevel is a user-level error, it display and feedback error information
-	ErrorLevel int = 1 + iota
+	ErrorLevel string = "Error"
 	// WarningLevel is a user-level warning. Although it is an error, it has no effect on execution.
-	WarningLevel
+	WarningLevel string = "Warning"
 )
 
 // Error is application error object. It has own error code
 // for processing according to a type of error.
 type Error struct {
-	Code    int
-	Level   int
+	Code    string
+	Level   string
 	Message string
 	Cause   error
 }

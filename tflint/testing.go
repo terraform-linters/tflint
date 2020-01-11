@@ -71,10 +71,10 @@ func AssertAppError(t *testing.T, expected Error, got error) {
 			t.Fatalf("expected err is `%s`, but nothing occurred", expected.Error())
 		}
 		if appErr.Code != expected.Code {
-			t.Fatalf("expected error code is `%d`, but get `%d`", expected.Code, appErr.Code)
+			t.Fatalf("expected error code is `%s`, but get `%s`", expected.Code, appErr.Code)
 		}
 		if appErr.Level != expected.Level {
-			t.Fatalf("expected error level is `%d`, but get `%d`", expected.Level, appErr.Level)
+			t.Fatalf("expected error level is `%s`, but get `%s`", expected.Level, appErr.Level)
 		}
 		if appErr.Error() != expected.Error() {
 			t.Fatalf("expected error is `%s`, but get `%s`", expected.Error(), appErr.Error())
