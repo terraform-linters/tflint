@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
 	homedir "github.com/mitchellh/go-homedir"
+	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/client"
 )
 
@@ -136,6 +137,57 @@ func (c *Config) Merge(other *Config) *Config {
 	ret.Plugins = mergePluginMap(ret.Plugins, other.Plugins)
 
 	return ret
+}
+
+// ToPluginConfig converts self into the plugin configuration format
+func (c *Config) ToPluginConfig() *tfplugin.Config {
+	cfg := &tfplugin.Config{Rules: map[string]*tfplugin.RuleConfig{}}
+	for _, rule := range c.Rules {
+		cfg.Rules[rule.Name] = &tfplugin.RuleConfig{
+			Name:    rule.Name,
+			Enabled: rule.Enabled,
+		}
+	}
+	return cfg
+}
+
+// RuleSet is an interface to handle plugin's RuleSet and core RuleSet both
+// In the future, when all RuleSets are cut out into plugins, it will no longer be needed.
+type RuleSet interface {
+	RuleSetName() (string, error)
+	RuleSetVersion() (string, error)
+	RuleNames() ([]string, error)
+}
+
+// ValidateRules checks for duplicate rule names, for invalid rule names, and so on.
+func (c *Config) ValidateRules(rulesets ...RuleSet) error {
+	rulesMap := map[string]string{}
+	for _, ruleset := range rulesets {
+		ruleNames, err := ruleset.RuleNames()
+		if err != nil {
+			return err
+		}
+
+		for _, rule := range ruleNames {
+			rulesetName, err := ruleset.RuleSetName()
+			if err != nil {
+				return err
+			}
+
+			if existsName, exists := rulesMap[rule]; exists {
+				return fmt.Errorf("`%s` is duplicated in %s and %s", rule, existsName, rulesetName)
+			}
+			rulesMap[rule] = rulesetName
+		}
+	}
+
+	for _, rule := range c.Rules {
+		if _, ok := rulesMap[rule.Name]; !ok {
+			return fmt.Errorf("Rule not found: %s", rule.Name)
+		}
+	}
+
+	return nil
 }
 
 func (c *Config) copy() *Config {

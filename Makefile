@@ -2,6 +2,7 @@ default: build
 
 prepare:
 	go mod vendor
+	cd tools; go run ./plugin-stub-gen; cd ../
 
 test: prepare
 	go test -timeout 5m $$(go list ./... | grep -v test-fixtures | grep -v vendor | grep -v aws-sdk-go)
