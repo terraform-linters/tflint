@@ -503,9 +503,9 @@ func (r *Runner) WalkResourceAttributes(resource, attributeName string, walker f
 
 		if attribute, ok := body.Attributes[attributeName]; ok {
 			log.Printf("[DEBUG] Walk `%s` attribute", resource.Type+"."+resource.Name+"."+attributeName)
-			r.currentExpr = attribute.Expr
-			err := walker(attribute)
-			r.currentExpr = nil
+			err := r.WithExpressionContext(attribute.Expr, func() error {
+				return walker(attribute)
+			})
 			if err != nil {
 				return err
 			}
@@ -670,6 +670,14 @@ func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range) {
 			})
 		}
 	}
+}
+
+// WithExpressionContext sets the context of the passed expression currently being processed.
+func (r *Runner) WithExpressionContext(expr hcl.Expression, proc func() error) error {
+	r.currentExpr = expr
+	err := proc()
+	r.currentExpr = nil
+	return err
 }
 
 func (r *Runner) emitIssue(issue *Issue) {
