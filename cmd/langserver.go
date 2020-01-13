@@ -14,10 +14,13 @@ import (
 func (cli *CLI) startLanguageServer(configPath string, cliConfig *tflint.Config) int {
 	log.Println("Starting language server...")
 
-	handler, err := langserver.NewHandler(configPath, cliConfig)
+	handler, plugin, err := langserver.NewHandler(configPath, cliConfig)
 	if err != nil {
 		log.Println(fmt.Sprintf("Failed to start language server: %s", err))
 		return ExitCodeError
+	}
+	if plugin != nil {
+		defer plugin.Clean()
 	}
 
 	var connOpt []jsonrpc2.ConnOpt

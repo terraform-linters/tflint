@@ -33,7 +33,7 @@ func TestMain(m *testing.M) {
 }
 
 func startServer(t *testing.T) (io.Writer, io.Reader) {
-	handler, err := NewHandler(".tflint.hcl", tflint.EmptyConfig())
+	handler, _, err := NewHandler(".tflint.hcl", tflint.EmptyConfig())
 	if err != nil {
 		t.Fatal(err)
 	}

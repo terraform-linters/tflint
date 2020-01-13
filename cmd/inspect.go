@@ -65,7 +65,7 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	for _, ruleset := range plugin.RuleSets {
 		err = ruleset.ApplyConfig(cfg.ToPluginConfig())
 		if err != nil {
-			panic(err)
+			cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to apply config to plugins", err), cli.loader.Sources())
 		}
 		for _, runner := range runners {
 			err = ruleset.Check(tfplugin.NewServer(runner))
