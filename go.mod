@@ -19,6 +19,6 @@ require (
 	github.com/sourcegraph/go-lsp v0.0.0-20181119182933-0c7d621186c1
 	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
 	github.com/spf13/afero v1.2.2
-	github.com/terraform-linters/tflint-plugin-sdk v0.0.0-20200114144432-a55b442a03a9
+	github.com/terraform-linters/tflint-plugin-sdk v0.1.0
 	github.com/zclconf/go-cty v1.1.1
 )

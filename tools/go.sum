@@ -420,8 +420,8 @@ github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJyk=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
-github.com/terraform-linters/tflint-plugin-sdk v0.0.0-20200114144432-a55b442a03a9 h1:gnT+bQLSVlw1ZTKV8cuRKl1ht4clUtWYErTK0jN2NWA=
-github.com/terraform-linters/tflint-plugin-sdk v0.0.0-20200114144432-a55b442a03a9/go.mod h1:c0QfiziWpeVYJXTzevTanBVEghl2o+y5QUVp7kxFbGY=
+github.com/terraform-linters/tflint-plugin-sdk v0.1.0 h1:+lb34sQerhxYC7H+aoa3dpCyjeVsZ6OKelahmHpt/y8=
+github.com/terraform-linters/tflint-plugin-sdk v0.1.0/go.mod h1:c0QfiziWpeVYJXTzevTanBVEghl2o+y5QUVp7kxFbGY=
 github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20191219195657-d7cd077ea2a8 h1:JDlkRkheJwJVLx8YrBqzaIbdA+r3Jkyl7+IE3bQFQlM=
 github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20191219195657-d7cd077ea2a8/go.mod h1:H/5CDOo4SIeQN9/G0KTY0lBE9w8T72d/NZ3oJYzTdgk=
 github.com/timakin/bodyclose v0.0.0-20190930140734-f7f2e9bca95e/go.mod h1:Qimiffbc6q9tBWlVV6x0P9sat/ao1xEkREYPPj9hphk=
