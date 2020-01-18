@@ -33,8 +33,8 @@ resource "aws_instance" "foo" {
 	if resp.Err != nil {
 		t.Fatalf("The response has an unexpected error: %s", resp.Err)
 	}
-	expected := hcl.Attributes{
-		"instance_type": {
+	expected := []*hcl.Attribute{
+		{
 			Name: "instance_type",
 			Expr: &hclsyntax.TemplateExpr{
 				Parts: []hclsyntax.Expression{

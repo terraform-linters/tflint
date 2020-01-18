@@ -18,9 +18,9 @@ func NewServer(runner *tflint.Runner) *Server {
 
 // Attributes returns corresponding hcl.Attributes
 func (s *Server) Attributes(req *tfplugin.AttributesRequest, resp *tfplugin.AttributesResponse) error {
-	ret := hcl.Attributes{}
+	ret := []*hcl.Attribute{}
 	err := s.runner.WalkResourceAttributes(req.Resource, req.AttributeName, func(attr *hcl.Attribute) error {
-		ret[attr.Name] = attr
+		ret = append(ret, attr)
 		return nil
 	})
 	*resp = tfplugin.AttributesResponse{Attributes: ret, Err: err}

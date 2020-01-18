@@ -6,7 +6,7 @@ require (
 	github.com/hashicorp/hcl/v2 v2.2.0
 	github.com/hashicorp/terraform-plugin-sdk v1.4.1
 	github.com/serenize/snaker v0.0.0-20171204205717-a683aaf2d516
-	github.com/terraform-linters/tflint-plugin-sdk v0.0.0-20200112085609-01f836479abf // indirect
+	github.com/terraform-linters/tflint-plugin-sdk v0.0.0-20200114144432-a55b442a03a9
 	github.com/terraform-providers/terraform-provider-aws v2.43.0+incompatible
 )
 

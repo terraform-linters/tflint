@@ -15,6 +15,9 @@ func main() {
 	if err := exec.Command("go", "build", "-o", "../plugin/test-fixtures/plugins/tflint-ruleset-bar"+fileExt(), "plugin-stub-gen/sources/bar/main.go").Run(); err != nil {
 		panic(err)
 	}
+	if err := exec.Command("go", "build", "-o", "../integration/plugin/.tflint.d/plugins/tflint-ruleset-example"+fileExt(), "plugin-stub-gen/sources/example/main.go").Run(); err != nil {
+		panic(err)
+	}
 }
 
 func fileExt() string {
