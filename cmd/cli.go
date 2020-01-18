@@ -75,8 +75,7 @@ func (cli *CLI) Run(args []string) int {
 
 	switch {
 	case opts.Version:
-		fmt.Fprintf(cli.outStream, "TFLint version %s\n", tflint.Version)
-		return ExitCodeOK
+		return cli.printVersion(opts)
 	case opts.Langserver:
 		return cli.startLanguageServer(opts.Config, opts.toConfig())
 	default:
