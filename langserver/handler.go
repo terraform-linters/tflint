@@ -13,25 +13,31 @@ import (
 	lsp "github.com/sourcegraph/go-lsp"
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/spf13/afero"
+	"github.com/terraform-linters/tflint/plugin"
+	tfplugin "github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/rules"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
 // NewHandler returns a new JSON-RPC handler
-func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, error) {
+func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, *tfplugin.Plugin, error) {
 	cfg, err := tflint.LoadConfig(configPath)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	cfg = cfg.Merge(cliConfig)
 
-	var ruleNames []string
-	for name := range cfg.Rules {
-		ruleNames = append(ruleNames, name)
-	}
-	err = rules.CheckRuleNames(ruleNames)
+	plugin, err := tfplugin.Discovery(cfg)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
+	}
+
+	rulesets := []tflint.RuleSet{&rules.RuleSet{}}
+	for _, ruleset := range plugin.RuleSets {
+		rulesets = append(rulesets, ruleset)
+	}
+	if err := cliConfig.ValidateRules(rulesets...); err != nil {
+		return nil, nil, err
 	}
 
 	return jsonrpc2.HandlerWithError((&handler{
@@ -40,8 +46,9 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 		config:     cfg,
 		fs:         afero.NewCopyOnWriteFs(afero.NewOsFs(), afero.NewMemMapFs()),
 		rules:      rules.NewRules(cfg),
+		plugin:     plugin,
 		diagsPaths: []string{},
-	}).handle), nil
+	}).handle), plugin, nil
 }
 
 type handler struct {
@@ -51,6 +58,7 @@ type handler struct {
 	fs         afero.Fs
 	rootDir    string
 	rules      []rules.Rule
+	plugin     *plugin.Plugin
 	shutdown   bool
 	diagsPaths []string
 }
@@ -155,6 +163,19 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 			err := rule.Check(runner)
 			if err != nil {
 				return ret, fmt.Errorf("Failed to check `%s` rule: %s", rule.Name(), err)
+			}
+		}
+	}
+
+	for _, ruleset := range h.plugin.RuleSets {
+		err = ruleset.ApplyConfig(h.config.ToPluginConfig())
+		if err != nil {
+			return ret, fmt.Errorf("Failed to apply config to plugins: %s", err)
+		}
+		for _, runner := range runners {
+			err = ruleset.Check(tfplugin.NewServer(runner))
+			if err != nil {
+				return ret, fmt.Errorf("Failed to check ruleset: %s", err)
 			}
 		}
 	}

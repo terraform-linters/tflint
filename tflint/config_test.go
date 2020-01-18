@@ -1,12 +1,14 @@
 package tflint
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/client"
 )
 
@@ -51,6 +53,16 @@ func Test_LoadConfig(t *testing.T) {
 						Enabled: false,
 					},
 				},
+				Plugins: map[string]*PluginConfig{
+					"foo": {
+						Name:    "foo",
+						Enabled: true,
+					},
+					"bar": {
+						Name:    "bar",
+						Enabled: false,
+					},
+				},
 			},
 		},
 		{
@@ -75,6 +87,7 @@ func Test_LoadConfig(t *testing.T) {
 				Varfiles:      []string{},
 				Variables:     []string{},
 				Rules:         map[string]*RuleConfig{},
+				Plugins:       map[string]*PluginConfig{},
 			},
 		},
 		{
@@ -190,6 +203,7 @@ func Test_Merge(t *testing.T) {
 				Enabled: true,
 			},
 		},
+		Plugins: map[string]*PluginConfig{},
 	}
 
 	cases := []struct {
@@ -244,6 +258,16 @@ func Test_Merge(t *testing.T) {
 						Enabled: true,
 					},
 				},
+				Plugins: map[string]*PluginConfig{
+					"foo": {
+						Name:    "foo",
+						Enabled: true,
+					},
+					"bar": {
+						Name:    "bar",
+						Enabled: false,
+					},
+				},
 			},
 			Other: &Config{
 				Module:    false,
@@ -269,6 +293,16 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
 						Enabled: false,
+					},
+				},
+				Plugins: map[string]*PluginConfig{
+					"baz": {
+						Name:    "baz",
+						Enabled: true,
+					},
+					"bar": {
+						Name:    "bar",
+						Enabled: true,
 					},
 				},
 			},
@@ -304,6 +338,20 @@ func Test_Merge(t *testing.T) {
 						Enabled: false,
 					},
 				},
+				Plugins: map[string]*PluginConfig{
+					"foo": {
+						Name:    "foo",
+						Enabled: true,
+					},
+					"bar": {
+						Name:    "bar",
+						Enabled: true,
+					},
+					"baz": {
+						Name:    "baz",
+						Enabled: true,
+					},
+				},
 			},
 		},
 	}
@@ -312,6 +360,116 @@ func Test_Merge(t *testing.T) {
 		ret := tc.Base.Merge(tc.Other)
 		if !cmp.Equal(tc.Expected, ret) {
 			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(tc.Expected, ret))
+		}
+	}
+}
+
+func Test_ToPluginConfig(t *testing.T) {
+	config := &Config{
+		Rules: map[string]*RuleConfig{
+			"aws_instance_invalid_type": {
+				Name:    "aws_instance_invalid_type",
+				Enabled: false,
+			},
+			"aws_instance_invalid_ami": {
+				Name:    "aws_instance_invalid_ami",
+				Enabled: true,
+			},
+		},
+	}
+
+	ret := config.ToPluginConfig()
+	expected := &tfplugin.Config{
+		Rules: map[string]*tfplugin.RuleConfig{
+			"aws_instance_invalid_type": {
+				Name:    "aws_instance_invalid_type",
+				Enabled: false,
+			},
+			"aws_instance_invalid_ami": {
+				Name:    "aws_instance_invalid_ami",
+				Enabled: true,
+			},
+		},
+	}
+	if !cmp.Equal(expected, ret) {
+		t.Fatalf("Failed to match: %s", cmp.Diff(expected, ret))
+	}
+}
+
+type ruleSetA struct{}
+
+func (*ruleSetA) RuleSetName() (string, error) {
+	return "ruleSetA", nil
+}
+func (*ruleSetA) RuleSetVersion() (string, error) {
+	return "0.1.0", nil
+}
+func (*ruleSetA) RuleNames() ([]string, error) {
+	return []string{"aws_instance_invalid_type"}, nil
+}
+
+type ruleSetB struct{}
+
+func (*ruleSetB) RuleSetName() (string, error) {
+	return "ruleSetB", nil
+}
+func (*ruleSetB) RuleSetVersion() (string, error) {
+	return "0.1.0", nil
+}
+func (*ruleSetB) RuleNames() ([]string, error) {
+	return []string{"aws_instance_invalid_ami"}, nil
+}
+
+func Test_ValidateRules(t *testing.T) {
+	config := &Config{
+		Rules: map[string]*RuleConfig{
+			"aws_instance_invalid_type": {
+				Name:    "aws_instance_invalid_type",
+				Enabled: false,
+			},
+			"aws_instance_invalid_ami": {
+				Name:    "aws_instance_invalid_ami",
+				Enabled: true,
+			},
+		},
+	}
+
+	cases := []struct {
+		Name     string
+		RuleSets []RuleSet
+		Err      error
+	}{
+		{
+			Name:     "valid",
+			RuleSets: []RuleSet{&ruleSetA{}, &ruleSetB{}},
+			Err:      nil,
+		},
+		{
+			Name:     "duplicate",
+			RuleSets: []RuleSet{&ruleSetA{}, &ruleSetB{}, &ruleSetB{}},
+			Err:      errors.New("`aws_instance_invalid_ami` is duplicated in ruleSetB and ruleSetB"),
+		},
+		{
+			Name:     "not found",
+			RuleSets: []RuleSet{&ruleSetB{}},
+			Err:      errors.New("Rule not found: aws_instance_invalid_type"),
+		},
+	}
+
+	for _, tc := range cases {
+		err := config.ValidateRules(tc.RuleSets...)
+
+		if tc.Err == nil {
+			if err != nil {
+				t.Fatalf("Failed %s: Unexpected error occurred: %s", tc.Name, err)
+			}
+		} else {
+			if err == nil {
+				t.Fatalf("Failed %s: Error should have occurred, but didn't", tc.Name)
+			}
+			if err.Error() != tc.Err.Error() {
+				t.Fatalf("Failed %s: error message is not matched: want=%s got=%s", tc.Name, tc.Err, err)
+			}
 		}
 	}
 }
@@ -340,6 +498,16 @@ func Test_copy(t *testing.T) {
 			"aws_instance_invalid_ami": {
 				Name:    "aws_instance_invalid_ami",
 				Enabled: true,
+			},
+		},
+		Plugins: map[string]*PluginConfig{
+			"foo": {
+				Name:    "foo",
+				Enabled: true,
+			},
+			"bar": {
+				Name:    "bar",
+				Enabled: false,
 			},
 		},
 	}
@@ -397,6 +565,12 @@ func Test_copy(t *testing.T) {
 			Name: "Rules",
 			SideEffect: func(c *Config) {
 				c.Rules["aws_instance_invalid_type"].Enabled = true
+			},
+		},
+		{
+			Name: "Plugins",
+			SideEffect: func(c *Config) {
+				c.Plugins["foo"].Enabled = false
 			},
 		},
 	}

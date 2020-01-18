@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
 	homedir "github.com/mitchellh/go-homedir"
+	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/client"
 )
 
@@ -28,7 +29,8 @@ type rawConfig struct {
 		TerraformVersion *string          `hcl:"terraform_version"`
 		IgnoreRule       *map[string]bool `hcl:"ignore_rule"`
 	} `hcl:"config,block"`
-	Rules []RuleConfig `hcl:"rule,block"`
+	Rules   []RuleConfig   `hcl:"rule,block"`
+	Plugins []PluginConfig `hcl:"plugin,block"`
 }
 
 // Config describes the behavior of TFLint
@@ -41,10 +43,17 @@ type Config struct {
 	Varfiles       []string
 	Variables      []string
 	Rules          map[string]*RuleConfig
+	Plugins        map[string]*PluginConfig
 }
 
 // RuleConfig is a TFLint's rule config
 type RuleConfig struct {
+	Name    string `hcl:"name,label"`
+	Enabled bool   `hcl:"enabled"`
+}
+
+// PluginConfig is a TFLint's plugin config
+type PluginConfig struct {
 	Name    string `hcl:"name,label"`
 	Enabled bool   `hcl:"enabled"`
 }
@@ -61,6 +70,7 @@ func EmptyConfig() *Config {
 		Varfiles:       []string{},
 		Variables:      []string{},
 		Rules:          map[string]*RuleConfig{},
+		Plugins:        map[string]*PluginConfig{},
 	}
 }
 
@@ -124,8 +134,60 @@ func (c *Config) Merge(other *Config) *Config {
 	ret.Variables = append(ret.Variables, other.Variables...)
 
 	ret.Rules = mergeRuleMap(ret.Rules, other.Rules)
+	ret.Plugins = mergePluginMap(ret.Plugins, other.Plugins)
 
 	return ret
+}
+
+// ToPluginConfig converts self into the plugin configuration format
+func (c *Config) ToPluginConfig() *tfplugin.Config {
+	cfg := &tfplugin.Config{Rules: map[string]*tfplugin.RuleConfig{}}
+	for _, rule := range c.Rules {
+		cfg.Rules[rule.Name] = &tfplugin.RuleConfig{
+			Name:    rule.Name,
+			Enabled: rule.Enabled,
+		}
+	}
+	return cfg
+}
+
+// RuleSet is an interface to handle plugin's RuleSet and core RuleSet both
+// In the future, when all RuleSets are cut out into plugins, it will no longer be needed.
+type RuleSet interface {
+	RuleSetName() (string, error)
+	RuleSetVersion() (string, error)
+	RuleNames() ([]string, error)
+}
+
+// ValidateRules checks for duplicate rule names, for invalid rule names, and so on.
+func (c *Config) ValidateRules(rulesets ...RuleSet) error {
+	rulesMap := map[string]string{}
+	for _, ruleset := range rulesets {
+		ruleNames, err := ruleset.RuleNames()
+		if err != nil {
+			return err
+		}
+
+		for _, rule := range ruleNames {
+			rulesetName, err := ruleset.RuleSetName()
+			if err != nil {
+				return err
+			}
+
+			if existsName, exists := rulesMap[rule]; exists {
+				return fmt.Errorf("`%s` is duplicated in %s and %s", rule, existsName, rulesetName)
+			}
+			rulesMap[rule] = rulesetName
+		}
+	}
+
+	for _, rule := range c.Rules {
+		if _, ok := rulesMap[rule.Name]; !ok {
+			return fmt.Errorf("Rule not found: %s", rule.Name)
+		}
+	}
+
+	return nil
 }
 
 func (c *Config) copy() *Config {
@@ -146,6 +208,12 @@ func (c *Config) copy() *Config {
 		*rules[k] = *v
 	}
 
+	plugins := map[string]*PluginConfig{}
+	for k, v := range c.Plugins {
+		plugins[k] = &PluginConfig{}
+		*plugins[k] = *v
+	}
+
 	return &Config{
 		Module:         c.Module,
 		DeepCheck:      c.DeepCheck,
@@ -155,6 +223,7 @@ func (c *Config) copy() *Config {
 		Varfiles:       varfiles,
 		Variables:      variables,
 		Rules:          rules,
+		Plugins:        plugins,
 	}
 }
 
@@ -191,6 +260,7 @@ func loadConfigFromFile(file string) (*Config, error) {
 	log.Printf("[DEBUG]   Varfiles: %#v", cfg.Varfiles)
 	log.Printf("[DEBUG]   Variables: %#v", cfg.Variables)
 	log.Printf("[DEBUG]   Rules: %#v", cfg.Rules)
+	log.Printf("[DEBUG]   Plugins: %#v", cfg.Plugins)
 
 	return raw.toConfig(), nil
 }
@@ -208,6 +278,17 @@ func mergeBoolMap(a, b map[string]bool) map[string]bool {
 
 func mergeRuleMap(a, b map[string]*RuleConfig) map[string]*RuleConfig {
 	ret := map[string]*RuleConfig{}
+	for k, v := range a {
+		ret[k] = v
+	}
+	for k, v := range b {
+		ret[k] = v
+	}
+	return ret
+}
+
+func mergePluginMap(a, b map[string]*PluginConfig) map[string]*PluginConfig {
+	ret := map[string]*PluginConfig{}
 	for k, v := range a {
 		ret[k] = v
 	}
@@ -253,6 +334,11 @@ func (raw *rawConfig) toConfig() *Config {
 	for _, r := range raw.Rules {
 		var rule = r
 		ret.Rules[rule.Name] = &rule
+	}
+
+	for _, p := range raw.Plugins {
+		var plugin = p
+		ret.Plugins[plugin.Name] = &plugin
 	}
 
 	return ret

@@ -205,10 +205,10 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 	return runners, nil
 }
 
-// EvaluateExpr is a wrapper of terraform.BultinEvalContext.EvaluateExpr and gocty.FromCtyValue
-// When it received slice as `ret`, it converts cty.Value to expected list type
-// because raw cty.Value has TupleType.
-func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
+// EvalExpr is a wrapper of terraform.BultinEvalContext.EvaluateExpr
+// In addition, this method determines whether the expression is evaluable, contains no unknown values, and so on.
+// The returned cty.Value is converted according to the value passed as `ret`.
+func (r *Runner) EvalExpr(expr hcl.Expression, ret interface{}) (cty.Value, error) {
 	evaluable, err := isEvaluableExpr(expr)
 	if err != nil {
 		err := &Error{
@@ -222,7 +222,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Cause: err,
 		}
 		log.Printf("[ERROR] %s", err)
-		return err
+		return cty.NullVal(cty.NilType), err
 	}
 
 	if !evaluable {
@@ -236,10 +236,28 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			),
 		}
 		log.Printf("[WARN] %s; TFLint ignores an unevaluable expression.", err)
-		return err
+		return cty.NullVal(cty.NilType), err
 	}
 
-	val, diags := r.ctx.EvaluateExpr(expr, cty.DynamicPseudoType, nil)
+	var wantType cty.Type
+	switch ret.(type) {
+	case *string, string:
+		wantType = cty.String
+	case *int, int:
+		wantType = cty.Number
+	case *[]string, []string:
+		wantType = cty.List(cty.String)
+	case *[]int, []int:
+		wantType = cty.List(cty.Number)
+	case *map[string]string, map[string]string:
+		wantType = cty.Map(cty.String)
+	case *map[string]int, map[string]int:
+		wantType = cty.Map(cty.Number)
+	default:
+		panic(fmt.Errorf("Unexpected result type: %T", ret))
+	}
+
+	val, diags := r.ctx.EvaluateExpr(expr, wantType, nil)
 	if diags.HasErrors() {
 		err := &Error{
 			Code:  EvaluationError,
@@ -252,7 +270,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 			Cause: diags.Err(),
 		}
 		log.Printf("[ERROR] %s", err)
-		return err
+		return cty.NullVal(cty.NilType), err
 	}
 
 	err = cty.Walk(val, func(path cty.Path, v cty.Value) (bool, error) {
@@ -288,36 +306,17 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 	})
 
 	if err != nil {
-		return err
+		return cty.NullVal(cty.NilType), err
 	}
 
-	switch ret.(type) {
-	case *string:
-		val, err = convert.Convert(val, cty.String)
-	case *int:
-		val, err = convert.Convert(val, cty.Number)
-	case *[]string:
-		val, err = convert.Convert(val, cty.List(cty.String))
-	case *[]int:
-		val, err = convert.Convert(val, cty.List(cty.Number))
-	case *map[string]string:
-		val, err = convert.Convert(val, cty.Map(cty.String))
-	case *map[string]int:
-		val, err = convert.Convert(val, cty.Map(cty.Number))
-	}
+	return val, nil
+}
 
+// EvaluateExpr evaluates the expression and reflects the result in the value of `ret`.
+// In the future, it will be no longer needed because all evaluation requests are invoked from RPC client
+func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
+	val, err := r.EvalExpr(expr, ret)
 	if err != nil {
-		err := &Error{
-			Code:  TypeConversionError,
-			Level: ErrorLevel,
-			Message: fmt.Sprintf(
-				"Invalid type expression in %s:%d",
-				expr.Range().Filename,
-				expr.Range().Start.Line,
-			),
-			Cause: err,
-		}
-		log.Printf("[ERROR] %s", err)
 		return err
 	}
 
@@ -504,9 +503,9 @@ func (r *Runner) WalkResourceAttributes(resource, attributeName string, walker f
 
 		if attribute, ok := body.Attributes[attributeName]; ok {
 			log.Printf("[DEBUG] Walk `%s` attribute", resource.Type+"."+resource.Name+"."+attributeName)
-			r.currentExpr = attribute.Expr
-			err := walker(attribute)
-			r.currentExpr = nil
+			err := r.WithExpressionContext(attribute.Expr, func() error {
+				return walker(attribute)
+			})
 			if err != nil {
 				return err
 			}
@@ -671,6 +670,14 @@ func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range) {
 			})
 		}
 	}
+}
+
+// WithExpressionContext sets the context of the passed expression currently being processed.
+func (r *Runner) WithExpressionContext(expr hcl.Expression, proc func() error) error {
+	r.currentExpr = expr
+	err := proc()
+	r.currentExpr = nil
+	return err
 }
 
 func (r *Runner) emitIssue(issue *Issue) {

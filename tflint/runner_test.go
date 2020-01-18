@@ -487,9 +487,9 @@ resource "null_resource" "test" {
   key = ["one", "two", "three"]
 }`,
 			Error: Error{
-				Code:    TypeConversionError,
+				Code:    EvaluationError,
 				Level:   ErrorLevel,
-				Message: "Invalid type expression in main.tf:3; string required",
+				Message: "Failed to eval an expression in main.tf:3; Incorrect value type: Invalid expression value: string required.",
 			},
 		},
 		{
