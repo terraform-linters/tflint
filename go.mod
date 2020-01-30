@@ -6,7 +6,7 @@ require (
 	github.com/aws/aws-sdk-go v1.26.8
 	github.com/fatih/color v1.9.0
 	github.com/golang/mock v1.4.0
-	github.com/google/go-cmp v0.3.1
+	github.com/google/go-cmp v0.4.0
 	github.com/hashicorp/aws-sdk-go-base v0.4.0
 	github.com/hashicorp/go-plugin v1.0.1
 	github.com/hashicorp/go-version v1.2.0
