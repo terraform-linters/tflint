@@ -4,7 +4,7 @@
       "rule": {
         "name": "aws_route_not_specified_target",
         "severity": "error",
-        "link": "https://github.com/terraform-linters/tflint/blob/v0.13.4/docs/rules/aws_route_not_specified_target.md"
+        "link": "https://github.com/terraform-linters/tflint/blob/v0.14.0/docs/rules/aws_route_not_specified_target.md"
       },
       "message": "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, or vpc_peering_connection_id.",
       "range": {
@@ -24,7 +24,7 @@
       "rule": {
         "name": "aws_route_specified_multiple_targets",
         "severity": "error",
-        "link": "https://github.com/terraform-linters/tflint/blob/v0.13.4/docs/rules/aws_route_specified_multiple_targets.md"
+        "link": "https://github.com/terraform-linters/tflint/blob/v0.14.0/docs/rules/aws_route_specified_multiple_targets.md"
       },
       "message": "More than one routing target specified. It must be one.",
       "range": {
@@ -64,7 +64,7 @@
       "rule": {
         "name": "aws_route_not_specified_target",
         "severity": "error",
-        "link": "https://github.com/terraform-linters/tflint/blob/v0.13.4/docs/rules/aws_route_not_specified_target.md"
+        "link": "https://github.com/terraform-linters/tflint/blob/v0.14.0/docs/rules/aws_route_not_specified_target.md"
       },
       "message": "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, or vpc_peering_connection_id.",
       "range": {

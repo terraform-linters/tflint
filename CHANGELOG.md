@@ -1,3 +1,29 @@
+## 0.14.0 (2020-01-31)
+
+This release ships an experimental plugin system again! The new plugin system supports all operating systems and works perfectly correctly. See [the documentation](https://github.com/terraform-linters/tflint/blob/v0.14.0/docs/guides/extend.md) about how to use and create plugins.
+
+### Enhancements
+
+- [#568](https://github.com/terraform-linters/tflint/pull/568): Add new rule: terraform_dash_in_output_name ([@osulli](https://github.com/osulli))
+- [#578](https://github.com/terraform-linters/tflint/pull/578): Bump github.com/fatih/color from 1.7.0 to 1.9.0
+- [#579](https://github.com/terraform-linters/tflint/pull/579) [#597](https://github.com/terraform-linters/tflint/pull/597): Bump terraform to v0.12.20 ([@chenrui333](https://github.com/chenrui333))
+- [#585](https://github.com/terraform-linters/tflint/pull/585): Introduce go-plugin based plugin system ([@wata727](https://github.com/wata727))
+- [#601](https://github.com/terraform-linters/tflint/pull/601): Bump github.com/aws/aws-sdk-go from 1.26.8 to 1.28.9
+- [#605](https://github.com/terraform-linters/tflint/pull/605): Bump terraform-provider-aws to v2.46.0 from v2.43.0 ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#604](https://github.com/terraform-linters/tflint/pull/604): Prefer "ActiveMQ" over "ACTIVEMQ" as engine type ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#519](https://github.com/terraform-linters/tflint/pull/519): Set up cache and artifact action ([@wata727](https://github.com/wata727))
+- [#573](https://github.com/terraform-linters/tflint/pull/573): Bump github.com/hashicorp/hcl/v2 from 2.0.0 to 2.3.0 in /tools
+- [#576](https://github.com/terraform-linters/tflint/pull/576): Bump github.com/google/go-cmp from 0.3.1 to 0.4.0
+- [#583](https://github.com/terraform-linters/tflint/pull/583): Bump golang to v1.13.6 for Docker image ([@chenrui333](https://github.com/chenrui333))
+- [#594](https://github.com/terraform-linters/tflint/pull/594): Bump github.com/golang/mock from 1.3.1 to 1.4.0
+- [#603](https://github.com/terraform-linters/tflint/pull/603): Bump github.com/hashicorp/terraform-plugin-sdk from 1.4.1 to 1.6.0 in /tools
+
 ## 0.13.4 (2019-12-27)
 
 ### Enhancements
