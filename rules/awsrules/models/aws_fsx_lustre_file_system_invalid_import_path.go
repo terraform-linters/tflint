@@ -4,6 +4,7 @@ package models
 
 import (
 	"log"
+	"regexp"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
@@ -15,6 +16,7 @@ type AwsFsxLustreFileSystemInvalidImportPathRule struct {
 	attributeName string
 	max           int
 	min           int
+	pattern       *regexp.Regexp
 }
 
 // NewAwsFsxLustreFileSystemInvalidImportPathRule returns new rule with default attributes
@@ -24,6 +26,7 @@ func NewAwsFsxLustreFileSystemInvalidImportPathRule() *AwsFsxLustreFileSystemInv
 		attributeName: "import_path",
 		max:           900,
 		min:           3,
+		pattern:       regexp.MustCompile(`^.{3,900}$`),
 	}
 }
 
@@ -67,6 +70,13 @@ func (r *AwsFsxLustreFileSystemInvalidImportPathRule) Check(runner *tflint.Runne
 				runner.EmitIssue(
 					r,
 					"import_path must be 3 characters or higher",
+					attribute.Expr.Range(),
+				)
+			}
+			if !r.pattern.MatchString(val) {
+				runner.EmitIssue(
+					r,
+					`import_path does not match valid pattern ^.{3,900}$`,
 					attribute.Expr.Range(),
 				)
 			}

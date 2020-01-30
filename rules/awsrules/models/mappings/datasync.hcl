@@ -9,21 +9,21 @@ mapping "aws_datasync_agent" {
 mapping "aws_datasync_location_efs" {
   ec2_config          = Ec2Config
   efs_file_system_arn = EfsFilesystemArn
-  subdirectory        = Subdirectory
+  subdirectory        = EfsSubdirectory
   tags                = TagList
 }
 
 mapping "aws_datasync_location_nfs" {
   on_prem_config  = OnPremConfig
   server_hostname = ServerHostname
-  subdirectory    = Subdirectory
+  subdirectory    = EfsSubdirectory
   tags            = TagList
 }
 
 mapping "aws_datasync_location_s3" {
   s3_bucket_arn = S3BucketArn
   s3_config     = S3Config
-  subdirectory  = Subdirectory
+  subdirectory  = EfsSubdirectory
   tags          = TagList
 }
 

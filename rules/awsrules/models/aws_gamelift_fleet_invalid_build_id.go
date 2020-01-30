@@ -22,7 +22,7 @@ func NewAwsGameliftFleetInvalidBuildIDRule() *AwsGameliftFleetInvalidBuildIDRule
 	return &AwsGameliftFleetInvalidBuildIDRule{
 		resourceType:  "aws_gamelift_fleet",
 		attributeName: "build_id",
-		pattern:       regexp.MustCompile(`^build-\S+`),
+		pattern:       regexp.MustCompile(`^build-\S+|^arn:.*:build\/build-\S+`),
 	}
 }
 
@@ -58,7 +58,7 @@ func (r *AwsGameliftFleetInvalidBuildIDRule) Check(runner *tflint.Runner) error 
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`build_id does not match valid pattern ^build-\S+`,
+					`build_id does not match valid pattern ^build-\S+|^arn:.*:build\/build-\S+`,
 					attribute.Expr.Range(),
 				)
 			}
