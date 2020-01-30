@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/aws/aws-sdk-go v1.26.8
-	github.com/fatih/color v1.7.0
+	github.com/fatih/color v1.9.0
 	github.com/golang/mock v1.3.1
 	github.com/google/go-cmp v0.3.1
 	github.com/hashicorp/aws-sdk-go-base v0.4.0
