@@ -6,7 +6,7 @@ mapping "aws_mq_broker" {
   broker_name                   = __string
   configuration                 = ConfigurationId
   deployment_mode               = DeploymentMode
-  engine_type                   = EngineType
+  engine_type                   = any // EngineType
   engine_version                = __string
   host_instance_type            = __string
   publicly_accessible           = __boolean
@@ -21,7 +21,7 @@ mapping "aws_mq_broker" {
 mapping "aws_mq_configuration" {
   data           = __string
   description    = __string
-  engine_type    = EngineType
+  engine_type    = any // EngineType
   engine_version = __string
   name           = __string
   tags           = __mapOf__string

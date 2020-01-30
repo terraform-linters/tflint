@@ -502,8 +502,6 @@ var modelRules = []Rule{
 	awsmodelrules.NewAwsMediaStoreContainerInvalidNameRule(),
 	awsmodelrules.NewAwsMediaStoreContainerPolicyInvalidContainerNameRule(),
 	awsmodelrules.NewAwsMqBrokerInvalidDeploymentModeRule(),
-	awsmodelrules.NewAwsMqBrokerInvalidEngineTypeRule(),
-	awsmodelrules.NewAwsMqConfigurationInvalidEngineTypeRule(),
 	awsmodelrules.NewAwsMskClusterInvalidClusterNameRule(),
 	awsmodelrules.NewAwsMskClusterInvalidEnhancedMonitoringRule(),
 	awsmodelrules.NewAwsMskClusterInvalidKafkaVersionRule(),
