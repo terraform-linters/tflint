@@ -1035,6 +1035,39 @@ func (mr *MockECSAPIMockRecorder) ListAccountSettingsRequest(arg0 interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountSettingsRequest", reflect.TypeOf((*MockECSAPI)(nil).ListAccountSettingsRequest), arg0)
 }
 
+// ListAccountSettingsPages mocks base method
+func (m *MockECSAPI) ListAccountSettingsPages(arg0 *ecs.ListAccountSettingsInput, arg1 func(*ecs.ListAccountSettingsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAccountSettingsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ListAccountSettingsPages indicates an expected call of ListAccountSettingsPages
+func (mr *MockECSAPIMockRecorder) ListAccountSettingsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountSettingsPages", reflect.TypeOf((*MockECSAPI)(nil).ListAccountSettingsPages), arg0, arg1)
+}
+
+// ListAccountSettingsPagesWithContext mocks base method
+func (m *MockECSAPI) ListAccountSettingsPagesWithContext(arg0 aws.Context, arg1 *ecs.ListAccountSettingsInput, arg2 func(*ecs.ListAccountSettingsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ListAccountSettingsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ListAccountSettingsPagesWithContext indicates an expected call of ListAccountSettingsPagesWithContext
+func (mr *MockECSAPIMockRecorder) ListAccountSettingsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountSettingsPagesWithContext", reflect.TypeOf((*MockECSAPI)(nil).ListAccountSettingsPagesWithContext), varargs...)
+}
+
 // ListAttributes mocks base method
 func (m *MockECSAPI) ListAttributes(arg0 *ecs.ListAttributesInput) (*ecs.ListAttributesOutput, error) {
 	m.ctrl.T.Helper()
