@@ -23,6 +23,7 @@ func NewAwsTransferServerInvalidEndpointTypeRule() *AwsTransferServerInvalidEndp
 		attributeName: "endpoint_type",
 		enum: []string{
 			"PUBLIC",
+			"VPC",
 			"VPC_ENDPOINT",
 		},
 	}

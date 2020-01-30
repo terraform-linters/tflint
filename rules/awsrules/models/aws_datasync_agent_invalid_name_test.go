@@ -23,7 +23,7 @@ resource "aws_datasync_agent" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDatasyncAgentInvalidNameRule(),
-					Message: `name does not match valid pattern ^[a-zA-Z0-9\s+=._:/-]+$`,
+					Message: `name does not match valid pattern ^[a-zA-Z0-9\s+=._:@/-]+$`,
 				},
 			},
 		},

@@ -4,6 +4,7 @@ package models
 
 import (
 	"log"
+	"regexp"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
@@ -15,6 +16,7 @@ type AwsFsxLustreFileSystemInvalidExportPathRule struct {
 	attributeName string
 	max           int
 	min           int
+	pattern       *regexp.Regexp
 }
 
 // NewAwsFsxLustreFileSystemInvalidExportPathRule returns new rule with default attributes
@@ -24,6 +26,7 @@ func NewAwsFsxLustreFileSystemInvalidExportPathRule() *AwsFsxLustreFileSystemInv
 		attributeName: "export_path",
 		max:           900,
 		min:           3,
+		pattern:       regexp.MustCompile(`^.{3,900}$`),
 	}
 }
 
@@ -67,6 +70,13 @@ func (r *AwsFsxLustreFileSystemInvalidExportPathRule) Check(runner *tflint.Runne
 				runner.EmitIssue(
 					r,
 					"export_path must be 3 characters or higher",
+					attribute.Expr.Range(),
+				)
+			}
+			if !r.pattern.MatchString(val) {
+				runner.EmitIssue(
+					r,
+					`export_path does not match valid pattern ^.{3,900}$`,
 					attribute.Expr.Range(),
 				)
 			}

@@ -26,7 +26,7 @@ func NewAwsDatasyncAgentInvalidNameRule() *AwsDatasyncAgentInvalidNameRule {
 		attributeName: "name",
 		max:           256,
 		min:           1,
-		pattern:       regexp.MustCompile(`^[a-zA-Z0-9\s+=._:/-]+$`),
+		pattern:       regexp.MustCompile(`^[a-zA-Z0-9\s+=._:@/-]+$`),
 	}
 }
 
@@ -76,7 +76,7 @@ func (r *AwsDatasyncAgentInvalidNameRule) Check(runner *tflint.Runner) error {
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`name does not match valid pattern ^[a-zA-Z0-9\s+=._:/-]+$`,
+					`name does not match valid pattern ^[a-zA-Z0-9\s+=._:@/-]+$`,
 					attribute.Expr.Range(),
 				)
 			}
