@@ -28,6 +28,8 @@ var manualDefaultRules = []Rule{
 	awsrules.NewAwsElastiCacheClusterInvalidTypeRule(),
 	awsrules.NewAwsElastiCacheClusterPreviousTypeRule(),
 	awsrules.NewAwsInstancePreviousTypeRule(),
+	awsrules.NewAwsMqBrokerInvalidEngineTypeRule(),
+	awsrules.NewAwsMqConfigurationInvalidEngineTypeRule(),
 	awsrules.NewAwsRouteNotSpecifiedTargetRule(),
 	awsrules.NewAwsRouteSpecifiedMultipleTargetsRule(),
 	awsrules.NewAwsS3BucketInvalidACLRule(),
