@@ -385,6 +385,56 @@ func (mr *MockRDSAPIMockRecorder) BacktrackDBClusterRequest(arg0 interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BacktrackDBClusterRequest", reflect.TypeOf((*MockRDSAPI)(nil).BacktrackDBClusterRequest), arg0)
 }
 
+// CancelExportTask mocks base method
+func (m *MockRDSAPI) CancelExportTask(arg0 *rds.CancelExportTaskInput) (*rds.CancelExportTaskOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CancelExportTask", arg0)
+	ret0, _ := ret[0].(*rds.CancelExportTaskOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CancelExportTask indicates an expected call of CancelExportTask
+func (mr *MockRDSAPIMockRecorder) CancelExportTask(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelExportTask", reflect.TypeOf((*MockRDSAPI)(nil).CancelExportTask), arg0)
+}
+
+// CancelExportTaskWithContext mocks base method
+func (m *MockRDSAPI) CancelExportTaskWithContext(arg0 aws.Context, arg1 *rds.CancelExportTaskInput, arg2 ...request.Option) (*rds.CancelExportTaskOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CancelExportTaskWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.CancelExportTaskOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CancelExportTaskWithContext indicates an expected call of CancelExportTaskWithContext
+func (mr *MockRDSAPIMockRecorder) CancelExportTaskWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelExportTaskWithContext", reflect.TypeOf((*MockRDSAPI)(nil).CancelExportTaskWithContext), varargs...)
+}
+
+// CancelExportTaskRequest mocks base method
+func (m *MockRDSAPI) CancelExportTaskRequest(arg0 *rds.CancelExportTaskInput) (*request.Request, *rds.CancelExportTaskOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CancelExportTaskRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.CancelExportTaskOutput)
+	return ret0, ret1
+}
+
+// CancelExportTaskRequest indicates an expected call of CancelExportTaskRequest
+func (mr *MockRDSAPIMockRecorder) CancelExportTaskRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelExportTaskRequest", reflect.TypeOf((*MockRDSAPI)(nil).CancelExportTaskRequest), arg0)
+}
+
 // CopyDBClusterParameterGroup mocks base method
 func (m *MockRDSAPI) CopyDBClusterParameterGroup(arg0 *rds.CopyDBClusterParameterGroupInput) (*rds.CopyDBClusterParameterGroupOutput, error) {
 	m.ctrl.T.Helper()
@@ -4196,6 +4246,89 @@ func (mr *MockRDSAPIMockRecorder) DescribeEventsPagesWithContext(arg0, arg1, arg
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeEventsPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeEventsPagesWithContext), varargs...)
 }
 
+// DescribeExportTasks mocks base method
+func (m *MockRDSAPI) DescribeExportTasks(arg0 *rds.DescribeExportTasksInput) (*rds.DescribeExportTasksOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeExportTasks", arg0)
+	ret0, _ := ret[0].(*rds.DescribeExportTasksOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeExportTasks indicates an expected call of DescribeExportTasks
+func (mr *MockRDSAPIMockRecorder) DescribeExportTasks(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeExportTasks", reflect.TypeOf((*MockRDSAPI)(nil).DescribeExportTasks), arg0)
+}
+
+// DescribeExportTasksWithContext mocks base method
+func (m *MockRDSAPI) DescribeExportTasksWithContext(arg0 aws.Context, arg1 *rds.DescribeExportTasksInput, arg2 ...request.Option) (*rds.DescribeExportTasksOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeExportTasksWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.DescribeExportTasksOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeExportTasksWithContext indicates an expected call of DescribeExportTasksWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeExportTasksWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeExportTasksWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeExportTasksWithContext), varargs...)
+}
+
+// DescribeExportTasksRequest mocks base method
+func (m *MockRDSAPI) DescribeExportTasksRequest(arg0 *rds.DescribeExportTasksInput) (*request.Request, *rds.DescribeExportTasksOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeExportTasksRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.DescribeExportTasksOutput)
+	return ret0, ret1
+}
+
+// DescribeExportTasksRequest indicates an expected call of DescribeExportTasksRequest
+func (mr *MockRDSAPIMockRecorder) DescribeExportTasksRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeExportTasksRequest", reflect.TypeOf((*MockRDSAPI)(nil).DescribeExportTasksRequest), arg0)
+}
+
+// DescribeExportTasksPages mocks base method
+func (m *MockRDSAPI) DescribeExportTasksPages(arg0 *rds.DescribeExportTasksInput, arg1 func(*rds.DescribeExportTasksOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeExportTasksPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeExportTasksPages indicates an expected call of DescribeExportTasksPages
+func (mr *MockRDSAPIMockRecorder) DescribeExportTasksPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeExportTasksPages", reflect.TypeOf((*MockRDSAPI)(nil).DescribeExportTasksPages), arg0, arg1)
+}
+
+// DescribeExportTasksPagesWithContext mocks base method
+func (m *MockRDSAPI) DescribeExportTasksPagesWithContext(arg0 aws.Context, arg1 *rds.DescribeExportTasksInput, arg2 func(*rds.DescribeExportTasksOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeExportTasksPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeExportTasksPagesWithContext indicates an expected call of DescribeExportTasksPagesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeExportTasksPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeExportTasksPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeExportTasksPagesWithContext), varargs...)
+}
+
 // DescribeGlobalClusters mocks base method
 func (m *MockRDSAPI) DescribeGlobalClusters(arg0 *rds.DescribeGlobalClustersInput) (*rds.DescribeGlobalClustersOutput, error) {
 	m.ctrl.T.Helper()
@@ -5158,6 +5291,56 @@ func (m *MockRDSAPI) ListTagsForResourceRequest(arg0 *rds.ListTagsForResourceInp
 func (mr *MockRDSAPIMockRecorder) ListTagsForResourceRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTagsForResourceRequest", reflect.TypeOf((*MockRDSAPI)(nil).ListTagsForResourceRequest), arg0)
+}
+
+// ModifyCertificates mocks base method
+func (m *MockRDSAPI) ModifyCertificates(arg0 *rds.ModifyCertificatesInput) (*rds.ModifyCertificatesOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifyCertificates", arg0)
+	ret0, _ := ret[0].(*rds.ModifyCertificatesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyCertificates indicates an expected call of ModifyCertificates
+func (mr *MockRDSAPIMockRecorder) ModifyCertificates(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyCertificates", reflect.TypeOf((*MockRDSAPI)(nil).ModifyCertificates), arg0)
+}
+
+// ModifyCertificatesWithContext mocks base method
+func (m *MockRDSAPI) ModifyCertificatesWithContext(arg0 aws.Context, arg1 *rds.ModifyCertificatesInput, arg2 ...request.Option) (*rds.ModifyCertificatesOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ModifyCertificatesWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.ModifyCertificatesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyCertificatesWithContext indicates an expected call of ModifyCertificatesWithContext
+func (mr *MockRDSAPIMockRecorder) ModifyCertificatesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyCertificatesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).ModifyCertificatesWithContext), varargs...)
+}
+
+// ModifyCertificatesRequest mocks base method
+func (m *MockRDSAPI) ModifyCertificatesRequest(arg0 *rds.ModifyCertificatesInput) (*request.Request, *rds.ModifyCertificatesOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifyCertificatesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.ModifyCertificatesOutput)
+	return ret0, ret1
+}
+
+// ModifyCertificatesRequest indicates an expected call of ModifyCertificatesRequest
+func (mr *MockRDSAPIMockRecorder) ModifyCertificatesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyCertificatesRequest", reflect.TypeOf((*MockRDSAPI)(nil).ModifyCertificatesRequest), arg0)
 }
 
 // ModifyCurrentDBClusterCapacity mocks base method
@@ -7008,6 +7191,56 @@ func (m *MockRDSAPI) StartDBInstanceRequest(arg0 *rds.StartDBInstanceInput) (*re
 func (mr *MockRDSAPIMockRecorder) StartDBInstanceRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartDBInstanceRequest", reflect.TypeOf((*MockRDSAPI)(nil).StartDBInstanceRequest), arg0)
+}
+
+// StartExportTask mocks base method
+func (m *MockRDSAPI) StartExportTask(arg0 *rds.StartExportTaskInput) (*rds.StartExportTaskOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "StartExportTask", arg0)
+	ret0, _ := ret[0].(*rds.StartExportTaskOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StartExportTask indicates an expected call of StartExportTask
+func (mr *MockRDSAPIMockRecorder) StartExportTask(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartExportTask", reflect.TypeOf((*MockRDSAPI)(nil).StartExportTask), arg0)
+}
+
+// StartExportTaskWithContext mocks base method
+func (m *MockRDSAPI) StartExportTaskWithContext(arg0 aws.Context, arg1 *rds.StartExportTaskInput, arg2 ...request.Option) (*rds.StartExportTaskOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "StartExportTaskWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.StartExportTaskOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StartExportTaskWithContext indicates an expected call of StartExportTaskWithContext
+func (mr *MockRDSAPIMockRecorder) StartExportTaskWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartExportTaskWithContext", reflect.TypeOf((*MockRDSAPI)(nil).StartExportTaskWithContext), varargs...)
+}
+
+// StartExportTaskRequest mocks base method
+func (m *MockRDSAPI) StartExportTaskRequest(arg0 *rds.StartExportTaskInput) (*request.Request, *rds.StartExportTaskOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "StartExportTaskRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.StartExportTaskOutput)
+	return ret0, ret1
+}
+
+// StartExportTaskRequest indicates an expected call of StartExportTaskRequest
+func (mr *MockRDSAPIMockRecorder) StartExportTaskRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartExportTaskRequest", reflect.TypeOf((*MockRDSAPI)(nil).StartExportTaskRequest), arg0)
 }
 
 // StopActivityStream mocks base method
