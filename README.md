@@ -120,6 +120,12 @@ TFLint returns the following exit statuses on exit:
 ### Does TFLint check modules recursively?
 - No. TFLint always checks only the current root module (no recursive check)
 
+### Do I need to install Terraform for TFLint to work?
+- No. TFLint works as a single binary because Terraform is embedded as a library. Note that this means that the version of Terraform used is determined for each TFLint version. See also [Compatibility with Terraform](docs/guides/compatibility.md). 
+
+### TFLint causes a loading error in my code that is valid in Terraform. Why?
+- First, check the version of Terraform you are using. Terraform v0.12 introduced a major syntax change, and unfortunately TFLint only supports that new syntax.
+
 ## Debugging
 
 If you don't get the expected behavior, you can see the detailed logs when running with `TFLINT_LOG` environment variable.
