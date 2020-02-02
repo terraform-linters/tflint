@@ -15,7 +15,7 @@
         },
         "end": {
           "line": 28,
-          "column": 35
+          "column": 30
         }
       },
       "callers": []
@@ -35,7 +35,7 @@
         },
         "end": {
           "line": 32,
-          "column": 47
+          "column": 42
         }
       },
       "callers": []
@@ -55,26 +55,6 @@
         },
         "end": {
           "line": 36,
-          "column": 44
-        }
-      },
-      "callers": []
-    },
-    {
-      "rule": {
-        "name": "aws_instance_invalid_type",
-        "severity": "error",
-        "link": ""
-      },
-      "message": "instance_type is not a valid value",
-      "range": {
-        "filename": "template.tf",
-        "start": {
-          "line": 40,
-          "column": 19
-        },
-        "end": {
-          "line": 40,
           "column": 39
         }
       },
@@ -90,12 +70,32 @@
       "range": {
         "filename": "template.tf",
         "start": {
+          "line": 40,
+          "column": 19
+        },
+        "end": {
+          "line": 40,
+          "column": 34
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_instance_invalid_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance_type is not a valid value",
+      "range": {
+        "filename": "template.tf",
+        "start": {
           "line": 44,
           "column": 19
         },
         "end": {
           "line": 44,
-          "column": 31
+          "column": 26
         }
       },
       "callers": []
