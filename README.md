@@ -92,6 +92,7 @@ Application Options:
       --disable-rule=RULE_NAME              Disable rules from the command line
       --var-file=FILE                       Terraform variable file name
       --var='foo=bar'                       Set a Terraform variable
+      --tag='foo'                           AWS resources tags to lint
       --module                              Inspect modules
       --deep                                Enable deep check mode
       --aws-access-key=ACCESS_KEY           AWS access key used in deep check mode
@@ -121,7 +122,7 @@ TFLint returns the following exit statuses on exit:
 - No. TFLint always checks only the current root module (no recursive check)
 
 ### Do I need to install Terraform for TFLint to work?
-- No. TFLint works as a single binary because Terraform is embedded as a library. Note that this means that the version of Terraform used is determined for each TFLint version. See also [Compatibility with Terraform](docs/guides/compatibility.md). 
+- No. TFLint works as a single binary because Terraform is embedded as a library. Note that this means that the version of Terraform used is determined for each TFLint version. See also [Compatibility with Terraform](docs/guides/compatibility.md).
 
 ### TFLint causes a loading error in my code that is valid in Terraform. Why?
 - First, check the version of Terraform you are using. Terraform v0.12 introduced a major syntax change, and unfortunately TFLint only supports that new syntax.

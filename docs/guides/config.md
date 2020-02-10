@@ -26,6 +26,8 @@ config {
   varfile = ["example1.tfvars", "example2.tfvars"]
 
   variables = ["foo=bar", "bar=[\"baz\"]"]
+
+  tags = []"foo", "bar"]
 }
 
 rule "aws_instance_invalid_type" {
@@ -88,6 +90,12 @@ Set Terraform variables from `tfvars` files. If `terraform.tfvars` or any `*.aut
 CLI flag: `--var`
 
 Set a Terraform variable from a passed value. This flag can be set multiple times.
+
+## `tags`
+
+CLI flag: `--tag`
+
+Check that AWS resources have the expected tag keys. This flag can be set multiple times.
 
 ## `rule` blocks
 
