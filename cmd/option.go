@@ -19,6 +19,7 @@ type Options struct {
 	DisableRules  []string `long:"disable-rule" description:"Disable rules from the command line" value-name:"RULE_NAME"`
 	Varfiles      []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
 	Variables     []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
+	Tags          []string `long:"tag" description:"AWS resources tags to lint" value-name:"'foo'"`
 	Module        bool     `long:"module" description:"Inspect modules"`
 	Deep          bool     `long:"deep" description:"Enable deep check mode"`
 	AwsAccessKey  string   `long:"aws-access-key" description:"AWS access key used in deep check mode" value-name:"ACCESS_KEY"`
@@ -47,6 +48,9 @@ func (opts *Options) toConfig() *tflint.Config {
 	if opts.Variables == nil {
 		opts.Variables = []string{}
 	}
+	if opts.Tags == nil {
+		opts.Tags = []string{}
+	}
 
 	log.Printf("[DEBUG] CLI Options")
 	log.Printf("[DEBUG]   Module: %t", opts.Module)
@@ -57,6 +61,7 @@ func (opts *Options) toConfig() *tflint.Config {
 	log.Printf("[DEBUG]   DisableRules: %#v", opts.DisableRules)
 	log.Printf("[DEBUG]   Varfiles: %#v", varfiles)
 	log.Printf("[DEBUG]   Variables: %#v", opts.Variables)
+	log.Printf("[DEBUG]   Tags: %#v", opts.Tags)
 
 	rules := map[string]*tflint.RuleConfig{}
 	for _, rule := range opts.EnableRules {
@@ -86,6 +91,7 @@ func (opts *Options) toConfig() *tflint.Config {
 		IgnoreModules: ignoreModules,
 		Varfiles:      varfiles,
 		Variables:     opts.Variables,
+		Tags:          opts.Tags,
 		Rules:         rules,
 		Plugins:       map[string]*tflint.PluginConfig{},
 	}

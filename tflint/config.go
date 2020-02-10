@@ -26,6 +26,7 @@ type rawConfig struct {
 		IgnoreModule   *map[string]bool   `hcl:"ignore_module"`
 		Varfile        *[]string          `hcl:"varfile"`
 		Variables      *[]string          `hcl:"variables"`
+		Tags           *[]string          `hcl:"tags"`
 		// Removed options
 		TerraformVersion *string          `hcl:"terraform_version"`
 		IgnoreRule       *map[string]bool `hcl:"ignore_rule"`
@@ -43,6 +44,7 @@ type Config struct {
 	IgnoreModules  map[string]bool
 	Varfiles       []string
 	Variables      []string
+	Tags           []string
 	Rules          map[string]*RuleConfig
 	Plugins        map[string]*PluginConfig
 }
@@ -71,6 +73,7 @@ func EmptyConfig() *Config {
 		IgnoreModules:  map[string]bool{},
 		Varfiles:       []string{},
 		Variables:      []string{},
+		Tags:           []string{},
 		Rules:          map[string]*RuleConfig{},
 		Plugins:        map[string]*PluginConfig{},
 	}
@@ -134,6 +137,7 @@ func (c *Config) Merge(other *Config) *Config {
 	ret.IgnoreModules = mergeBoolMap(ret.IgnoreModules, other.IgnoreModules)
 	ret.Varfiles = append(ret.Varfiles, other.Varfiles...)
 	ret.Variables = append(ret.Variables, other.Variables...)
+	ret.Tags = append(ret.Tags, other.Tags...)
 
 	ret.Rules = mergeRuleMap(ret.Rules, other.Rules)
 	ret.Plugins = mergePluginMap(ret.Plugins, other.Plugins)
@@ -216,6 +220,9 @@ func (c *Config) copy() *Config {
 		*plugins[k] = *v
 	}
 
+	tags := make([]string, len(c.Tags))
+	copy(tags, c.Tags)
+
 	return &Config{
 		Module:         c.Module,
 		DeepCheck:      c.DeepCheck,
@@ -224,6 +231,7 @@ func (c *Config) copy() *Config {
 		IgnoreModules:  ignoreModules,
 		Varfiles:       varfiles,
 		Variables:      variables,
+		Tags:           tags,
 		Rules:          rules,
 		Plugins:        plugins,
 	}
@@ -261,6 +269,7 @@ func loadConfigFromFile(file string) (*Config, error) {
 	log.Printf("[DEBUG]   IgnoreModules: %#v", cfg.IgnoreModules)
 	log.Printf("[DEBUG]   Varfiles: %#v", cfg.Varfiles)
 	log.Printf("[DEBUG]   Variables: %#v", cfg.Variables)
+	log.Printf("[DEBUG]   Tags: %#v", cfg.Tags)
 	log.Printf("[DEBUG]   Rules: %#v", cfg.Rules)
 	log.Printf("[DEBUG]   Plugins: %#v", cfg.Plugins)
 
@@ -330,6 +339,9 @@ func (raw *rawConfig) toConfig() *Config {
 		}
 		if rc.Variables != nil {
 			ret.Variables = *rc.Variables
+		}
+		if rc.Tags != nil {
+			ret.Tags = *rc.Tags
 		}
 	}
 

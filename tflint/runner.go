@@ -653,6 +653,11 @@ func (r *Runner) EachStringSliceExprs(expr hcl.Expression, proc func(val string,
 	})
 }
 
+// GetConfigTags returns the configured tags
+func (r *Runner) GetConfigTags() []string {
+	return r.config.Tags
+}
+
 // EmitIssue builds an issue and accumulates it
 func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range) {
 	if r.TFConfig.Path.IsRoot() {

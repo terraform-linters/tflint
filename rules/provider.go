@@ -85,6 +85,9 @@ func NewRules(c *tflint.Config) []Rule {
 	} else {
 		allRules = DefaultRules
 	}
+	if len(c.Tags) > 0 {
+		allRules = append(DefaultRules, tagsRules...)
+	}
 
 	for _, rule := range allRules {
 		enabled := rule.Enabled()
