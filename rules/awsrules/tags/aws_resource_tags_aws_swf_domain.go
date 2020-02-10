@@ -50,7 +50,7 @@ func (r *AwsSwfDomainTagsRule) Check(runner *tflint.Runner) error {
 		var resourceTags map[string]string
 		err := runner.EvaluateExpr(attribute.Expr, &resourceTags)
 		tags := []string{}
-		for k, _ := range resourceTags {
+		for k := range resourceTags {
 			tags = append(tags, k)
 		}
 
@@ -67,8 +67,10 @@ func (r *AwsSwfDomainTagsRule) Check(runner *tflint.Runner) error {
 				}
 			}
 			if len(found) != len(configTags) {
-				wanted := strings.Join(sort.StringSlice(configTags), ",")
-				found := strings.Join(sort.StringSlice(tags), ",")
+				sort.Strings(configTags)
+				sort.Strings(tags)
+				wanted := strings.Join(configTags, ",")
+				found := strings.Join(tags, ",")
 				runner.EmitIssue(r, fmt.Sprintf("Wanted tags: %v, found: %v\n", wanted, found), attribute.Expr.Range())
 			}
 			return nil

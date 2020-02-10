@@ -45,7 +45,7 @@ resource "aws_instance" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsInstanceTagsRule(),
-					Message: "Wanted tags: foo,bar, found: Bar,Foo\n",
+					Message: "Wanted tags: bar,foo, found: Bar,Foo\n",
 				},
 			},
 		},
