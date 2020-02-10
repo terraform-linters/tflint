@@ -1,7 +1,9 @@
-package awsrules
+package tags
 
 import (
 	"fmt"
+	"strings"
+	"sort"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
@@ -45,15 +47,17 @@ func (r *AwsStoragegatewayCachedIscsiVolumeTagsRule) Link() string {
 // Check checks for matching tags
 func (r *AwsStoragegatewayCachedIscsiVolumeTagsRule) Check(runner *tflint.Runner) error {
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
-		var tags map[string]string
-		err := runner.EvaluateExpr(attribute.Expr, &tags)
+		var resourceTags map[string]string
+		err := runner.EvaluateExpr(attribute.Expr, &resourceTags)
+		tags := []string{}
+		for k, _ := range resourceTags {
+			tags = append(tags, k)
+		}
 
 		return runner.EnsureNoError(err, func() error {
 			configTags := runner.GetConfigTags()
-			tagKeys := []string{}
 			hash := make(map[string]bool)
-			for k, _ := range tags {
-				tagKeys = append(tagKeys, k)
+			for _, k := range tags {
 				hash[k] = true
 			}
 			var found []string
@@ -63,7 +67,9 @@ func (r *AwsStoragegatewayCachedIscsiVolumeTagsRule) Check(runner *tflint.Runner
 				}
 			}
 			if len(found) != len(configTags) {
-				runner.EmitIssue(r, fmt.Sprintf("Wanted tags: %v, found: %v\n", configTags, tags), attribute.Expr.Range() )
+				wanted := strings.Join(sort.StringSlice(configTags), ",")
+				found := strings.Join(sort.StringSlice(tags), ",")
+				runner.EmitIssue(r, fmt.Sprintf("Wanted tags: %v, found: %v\n", wanted, found), attribute.Expr.Range())
 			}
 			return nil
 		})
