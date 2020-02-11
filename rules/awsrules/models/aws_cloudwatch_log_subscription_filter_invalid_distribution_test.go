@@ -23,7 +23,7 @@ resource "aws_cloudwatch_log_subscription_filter" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchLogSubscriptionFilterInvalidDistributionRule(),
-					Message: `distribution is not a valid value`,
+					Message: `"LogStream" is an invalid value as distribution`,
 				},
 			},
 		},

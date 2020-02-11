@@ -23,7 +23,7 @@ resource "aws_elasticache_cluster" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsElastiCacheClusterInvalidAzModeRule(),
-					Message: `az_mode is not a valid value`,
+					Message: `"multi-az" is an invalid value as az_mode`,
 				},
 			},
 		},

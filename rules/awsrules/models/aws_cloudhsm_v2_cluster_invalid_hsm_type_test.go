@@ -23,7 +23,7 @@ resource "aws_cloudhsm_v2_cluster" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudhsmV2ClusterInvalidHsmTypeRule(),
-					Message: `hsm_type does not match valid pattern ^(hsm1\.medium)$`,
+					Message: `"hsm1.micro" does not match valid pattern ^(hsm1\.medium)$`,
 				},
 			},
 		},

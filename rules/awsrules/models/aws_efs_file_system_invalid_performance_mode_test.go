@@ -23,7 +23,7 @@ resource "aws_efs_file_system" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEfsFileSystemInvalidPerformanceModeRule(),
-					Message: `performance_mode is not a valid value`,
+					Message: `"minIO" is an invalid value as performance_mode`,
 				},
 			},
 		},

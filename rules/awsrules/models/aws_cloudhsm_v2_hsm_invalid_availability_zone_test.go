@@ -23,7 +23,7 @@ resource "aws_cloudhsm_v2_hsm" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudhsmV2HsmInvalidAvailabilityZoneRule(),
-					Message: `availability_zone does not match valid pattern ^[a-z]{2}(-(gov))?-(east|west|north|south|central){1,2}-\d[a-z]$`,
+					Message: `"us-east-1" does not match valid pattern ^[a-z]{2}(-(gov))?-(east|west|north|south|central){1,2}-\d[a-z]$`,
 				},
 			},
 		},

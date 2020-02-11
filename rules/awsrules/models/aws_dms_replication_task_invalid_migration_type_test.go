@@ -23,7 +23,7 @@ resource "aws_dms_replication_task" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDmsReplicationTaskInvalidMigrationTypeRule(),
-					Message: `migration_type is not a valid value`,
+					Message: `"partial-load" is an invalid value as migration_type`,
 				},
 			},
 		},

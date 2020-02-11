@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -102,7 +103,7 @@ func (r *AwsSagemakerNotebookInstanceInvalidInstanceTypeRule) Check(runner *tfli
 			if !found {
 				runner.EmitIssue(
 					r,
-					`instance_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as instance_type`, val),
 					attribute.Expr.Range(),
 				)
 			}

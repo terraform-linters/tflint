@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsDxPublicVirtualInterfaceInvalidAddressFamilyRule) Check(runner *tfli
 			if !found {
 				runner.EmitIssue(
 					r,
-					`address_family is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as address_family`, val),
 					attribute.Expr.Range(),
 				)
 			}

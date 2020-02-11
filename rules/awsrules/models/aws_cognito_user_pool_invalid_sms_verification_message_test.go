@@ -23,7 +23,7 @@ resource "aws_cognito_user_pool" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCognitoUserPoolInvalidSmsVerificationMessageRule(),
-					Message: `sms_verification_message does not match valid pattern ^.*\{####\}.*$`,
+					Message: `"Verification code" does not match valid pattern ^.*\{####\}.*$`,
 				},
 			},
 		},

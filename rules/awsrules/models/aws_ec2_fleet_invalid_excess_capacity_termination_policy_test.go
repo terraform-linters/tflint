@@ -23,7 +23,7 @@ resource "aws_ec2_fleet" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEc2FleetInvalidExcessCapacityTerminationPolicyRule(),
-					Message: `excess_capacity_termination_policy is not a valid value`,
+					Message: `"remain" is an invalid value as excess_capacity_termination_policy`,
 				},
 			},
 		},

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -68,7 +69,7 @@ func (r *AwsDynamoDBTableInvalidStreamViewTypeRule) Check(runner *tflint.Runner)
 			if !found {
 				runner.EmitIssue(
 					r,
-					`stream_view_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as stream_view_type`, val),
 					attribute.Expr.Range(),
 				)
 			}

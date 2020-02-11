@@ -23,7 +23,7 @@ resource "aws_appautoscaling_policy" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsAppautoscalingPolicyInvalidPolicyTypeRule(),
-					Message: `policy_type is not a valid value`,
+					Message: `"StopScaling" is an invalid value as policy_type`,
 				},
 			},
 		},

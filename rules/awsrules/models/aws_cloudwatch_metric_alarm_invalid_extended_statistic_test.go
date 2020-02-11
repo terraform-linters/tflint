@@ -23,7 +23,7 @@ resource "aws_cloudwatch_metric_alarm" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchMetricAlarmInvalidExtendedStatisticRule(),
-					Message: `extended_statistic does not match valid pattern ^p(\d{1,2}(\.\d{0,2})?|100)$`,
+					Message: `"p101" does not match valid pattern ^p(\d{1,2}(\.\d{0,2})?|100)$`,
 				},
 			},
 		},

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsVpcEndpointInvalidVpcEndpointTypeRule) Check(runner *tflint.Runner) 
 			if !found {
 				runner.EmitIssue(
 					r,
-					`vpc_endpoint_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as vpc_endpoint_type`, val),
 					attribute.Expr.Range(),
 				)
 			}

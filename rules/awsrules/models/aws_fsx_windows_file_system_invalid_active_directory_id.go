@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsFsxWindowsFileSystemInvalidActiveDirectoryIDRule) Check(runner *tfli
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`active_directory_id does not match valid pattern ^d-[0-9a-f]{10}$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^d-[0-9a-f]{10}$`),
 					attribute.Expr.Range(),
 				)
 			}

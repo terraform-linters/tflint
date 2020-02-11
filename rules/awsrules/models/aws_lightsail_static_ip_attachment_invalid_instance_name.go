@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -58,7 +59,7 @@ func (r *AwsLightsailStaticIPAttachmentInvalidInstanceNameRule) Check(runner *tf
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`instance_name does not match valid pattern ^\w[\w\-]*\w$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^\w[\w\-]*\w$`),
 					attribute.Expr.Range(),
 				)
 			}

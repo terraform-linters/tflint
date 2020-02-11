@@ -23,7 +23,7 @@ resource "aws_cognito_user_pool_client" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCognitoUserPoolClientInvalidNameRule(),
-					Message: `name does not match valid pattern ^[\w\s+=,.@-]+$`,
+					Message: `"client/example" does not match valid pattern ^[\w\s+=,.@-]+$`,
 				},
 			},
 		},

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsCognitoUserPoolDomainInvalidDomainRule) Check(runner *tflint.Runner)
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`domain does not match valid pattern ^[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?$`),
 					attribute.Expr.Range(),
 				)
 			}

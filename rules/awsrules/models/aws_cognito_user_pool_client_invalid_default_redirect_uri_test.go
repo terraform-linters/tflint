@@ -23,7 +23,7 @@ resource "aws_cognito_user_pool_client" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCognitoUserPoolClientInvalidDefaultRedirectURIRule(),
-					Message: `default_redirect_uri does not match valid pattern ^[\p{L}\p{M}\p{S}\p{N}\p{P}]+$`,
+					Message: `"https://example com" does not match valid pattern ^[\p{L}\p{M}\p{S}\p{N}\p{P}]+$`,
 				},
 			},
 		},

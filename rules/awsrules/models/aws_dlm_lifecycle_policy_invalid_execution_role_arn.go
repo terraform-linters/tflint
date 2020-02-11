@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -67,7 +68,7 @@ func (r *AwsDlmLifecyclePolicyInvalidExecutionRoleArnRule) Check(runner *tflint.
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`execution_role_arn does not match valid pattern ^arn:aws:iam::\d+:role/.*$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^arn:aws:iam::\d+:role/.*$`),
 					attribute.Expr.Range(),
 				)
 			}

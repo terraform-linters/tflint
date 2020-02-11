@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -58,7 +59,7 @@ func (r *AwsCloudhsmV2HsmInvalidIPAddressRule) Check(runner *tflint.Runner) erro
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`ip_address does not match valid pattern ^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`),
 					attribute.Expr.Range(),
 				)
 			}

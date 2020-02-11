@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsCognitoUserPoolInvalidMfaConfigurationRule) Check(runner *tflint.Run
 			if !found {
 				runner.EmitIssue(
 					r,
-					`mfa_configuration is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as mfa_configuration`, val),
 					attribute.Expr.Range(),
 				)
 			}

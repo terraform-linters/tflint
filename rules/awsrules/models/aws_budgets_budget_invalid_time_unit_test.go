@@ -23,7 +23,7 @@ resource "aws_budgets_budget" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsBudgetsBudgetInvalidTimeUnitRule(),
-					Message: `time_unit is not a valid value`,
+					Message: `"HOURLY" is an invalid value as time_unit`,
 				},
 			},
 		},

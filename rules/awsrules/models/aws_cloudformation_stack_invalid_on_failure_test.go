@@ -23,7 +23,7 @@ resource "aws_cloudformation_stack" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudformationStackInvalidOnFailureRule(),
-					Message: `on_failure is not a valid value`,
+					Message: `"DO_ANYTHING" is an invalid value as on_failure`,
 				},
 			},
 		},

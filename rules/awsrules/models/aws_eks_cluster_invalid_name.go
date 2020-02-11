@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsEksClusterInvalidNameRule) Check(runner *tflint.Runner) error {
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`name does not match valid pattern ^[0-9A-Za-z][A-Za-z0-9\-_]*`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[0-9A-Za-z][A-Za-z0-9\-_]*`),
 					attribute.Expr.Range(),
 				)
 			}

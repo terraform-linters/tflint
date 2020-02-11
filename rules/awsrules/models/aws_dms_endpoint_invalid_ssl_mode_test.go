@@ -23,7 +23,7 @@ resource "aws_dms_endpoint" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDmsEndpointInvalidSslModeRule(),
-					Message: `ssl_mode is not a valid value`,
+					Message: `"verify-require" is an invalid value as ssl_mode`,
 				},
 			},
 		},

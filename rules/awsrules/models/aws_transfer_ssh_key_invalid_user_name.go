@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsTransferSSHKeyInvalidUserNameRule) Check(runner *tflint.Runner) erro
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`user_name does not match valid pattern ^[a-zA-Z0-9_][a-zA-Z0-9_-]{2,31}$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[a-zA-Z0-9_][a-zA-Z0-9_-]{2,31}$`),
 					attribute.Expr.Range(),
 				)
 			}

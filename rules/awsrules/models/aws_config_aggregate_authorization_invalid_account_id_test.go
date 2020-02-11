@@ -23,7 +23,7 @@ resource "aws_config_aggregate_authorization" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsConfigAggregateAuthorizationInvalidAccountIDRule(),
-					Message: `account_id does not match valid pattern ^\d{12}$`,
+					Message: `"01234567891" does not match valid pattern ^\d{12}$`,
 				},
 			},
 		},

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -58,7 +59,7 @@ func (r *AwsAPIGatewayGatewayResponseInvalidStatusCodeRule) Check(runner *tflint
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`status_code does not match valid pattern ^[1-5]\d\d$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[1-5]\d\d$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsAPIGatewayRestAPIInvalidAPIKeySourceRule) Check(runner *tflint.Runne
 			if !found {
 				runner.EmitIssue(
 					r,
-					`api_key_source is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as api_key_source`, val),
 					attribute.Expr.Range(),
 				)
 			}

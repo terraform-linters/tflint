@@ -23,7 +23,7 @@ resource "aws_eks_cluster" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEksClusterInvalidNameRule(),
-					Message: `name does not match valid pattern ^[0-9A-Za-z][A-Za-z0-9\-_]*`,
+					Message: `"@example" does not match valid pattern ^[0-9A-Za-z][A-Za-z0-9\-_]*`,
 				},
 			},
 		},

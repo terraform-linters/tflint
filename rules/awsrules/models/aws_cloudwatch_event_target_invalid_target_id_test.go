@@ -23,7 +23,7 @@ resource "aws_cloudwatch_event_target" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchEventTargetInvalidTargetIDRule(),
-					Message: `target_id does not match valid pattern ^[\.\-_A-Za-z0-9]+$`,
+					Message: `"run scheduled task every hour" does not match valid pattern ^[\.\-_A-Za-z0-9]+$`,
 				},
 			},
 		},

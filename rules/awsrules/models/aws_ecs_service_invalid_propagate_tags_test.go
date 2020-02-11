@@ -23,7 +23,7 @@ resource "aws_ecs_service" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEcsServiceInvalidPropagateTagsRule(),
-					Message: `propagate_tags is not a valid value`,
+					Message: `"CONTAINER" is an invalid value as propagate_tags`,
 				},
 			},
 		},

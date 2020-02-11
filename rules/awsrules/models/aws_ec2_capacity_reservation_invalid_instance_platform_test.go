@@ -23,7 +23,7 @@ resource "aws_ec2_capacity_reservation" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEc2CapacityReservationInvalidInstancePlatformRule(),
-					Message: `instance_platform is not a valid value`,
+					Message: `"Linux/GNU" is an invalid value as instance_platform`,
 				},
 			},
 		},

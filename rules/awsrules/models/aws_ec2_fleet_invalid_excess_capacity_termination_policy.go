@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsEc2FleetInvalidExcessCapacityTerminationPolicyRule) Check(runner *tf
 			if !found {
 				runner.EmitIssue(
 					r,
-					`excess_capacity_termination_policy is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as excess_capacity_termination_policy`, val),
 					attribute.Expr.Range(),
 				)
 			}

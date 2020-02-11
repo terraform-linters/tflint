@@ -23,7 +23,7 @@ resource "aws_ami" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsAMIInvalidArchitectureRule(),
-					Message: `architecture is not a valid value`,
+					Message: `"x86" is an invalid value as architecture`,
 				},
 			},
 		},

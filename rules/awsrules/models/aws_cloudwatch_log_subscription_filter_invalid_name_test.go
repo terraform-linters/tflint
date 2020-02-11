@@ -23,7 +23,7 @@ resource "aws_cloudwatch_log_subscription_filter" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchLogSubscriptionFilterInvalidNameRule(),
-					Message: `name does not match valid pattern ^[^:*]*$`,
+					Message: `"test_lambdafunction_logfilter:test" does not match valid pattern ^[^:*]*$`,
 				},
 			},
 		},

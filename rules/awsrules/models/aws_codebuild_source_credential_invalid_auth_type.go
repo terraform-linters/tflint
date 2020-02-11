@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsCodebuildSourceCredentialInvalidAuthTypeRule) Check(runner *tflint.R
 			if !found {
 				runner.EmitIssue(
 					r,
-					`auth_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as auth_type`, val),
 					attribute.Expr.Range(),
 				)
 			}

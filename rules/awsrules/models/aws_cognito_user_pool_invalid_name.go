@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsCognitoUserPoolInvalidNameRule) Check(runner *tflint.Runner) error {
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`name does not match valid pattern ^[\w\s+=,.@-]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[\w\s+=,.@-]+$`),
 					attribute.Expr.Range(),
 				)
 			}

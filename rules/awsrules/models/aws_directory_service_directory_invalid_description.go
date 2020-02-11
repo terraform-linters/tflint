@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -67,7 +68,7 @@ func (r *AwsDirectoryServiceDirectoryInvalidDescriptionRule) Check(runner *tflin
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`description does not match valid pattern ^([a-zA-Z0-9_])[\\a-zA-Z0-9_@#%*+=:?./!\s-]*$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^([a-zA-Z0-9_])[\\a-zA-Z0-9_@#%*+=:?./!\s-]*$`),
 					attribute.Expr.Range(),
 				)
 			}

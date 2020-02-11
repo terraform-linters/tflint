@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsSsmPatchGroupInvalidPatchGroupRule) Check(runner *tflint.Runner) err
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`patch_group does not match valid pattern ^([\p{L}\p{Z}\p{N}_.:/=+\-@]*)$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^([\p{L}\p{Z}\p{N}_.:/=+\-@]*)$`),
 					attribute.Expr.Range(),
 				)
 			}

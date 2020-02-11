@@ -23,7 +23,7 @@ resource "aws_batch_compute_environment" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsBatchComputeEnvironmentInvalidTypeRule(),
-					Message: `type is not a valid value`,
+					Message: `"CONTROLLED" is an invalid value as type`,
 				},
 			},
 		},

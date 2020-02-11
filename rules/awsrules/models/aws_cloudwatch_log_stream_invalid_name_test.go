@@ -23,7 +23,7 @@ resource "aws_cloudwatch_log_stream" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchLogStreamInvalidNameRule(),
-					Message: `name does not match valid pattern ^[^:*]*$`,
+					Message: `"Yoda:prod" does not match valid pattern ^[^:*]*$`,
 				},
 			},
 		},

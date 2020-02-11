@@ -23,7 +23,7 @@ resource "aws_cur_report_definition" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCurReportDefinitionInvalidCompressionRule(),
-					Message: `compression is not a valid value`,
+					Message: `"TAR" is an invalid value as compression`,
 				},
 			},
 		},

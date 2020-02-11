@@ -6,7 +6,7 @@
         "severity": "error",
         "link": ""
       },
-      "message": "instance_type is not a valid value",
+      "message": "\"t1.2xlarge\" is an invalid value as instance_type",
       "range": {
         "filename": "template.tf",
         "start": {

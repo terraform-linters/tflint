@@ -23,7 +23,7 @@ resource "aws_codedeploy_app" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCodedeployAppInvalidComputePlatformRule(),
-					Message: `compute_platform is not a valid value`,
+					Message: `"Fargate" is an invalid value as compute_platform`,
 				},
 			},
 		},

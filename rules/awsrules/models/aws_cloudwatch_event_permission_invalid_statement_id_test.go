@@ -23,7 +23,7 @@ resource "aws_cloudwatch_event_permission" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchEventPermissionInvalidStatementIDRule(),
-					Message: `statement_id does not match valid pattern ^[a-zA-Z0-9-_]+$`,
+					Message: `"Organization Access" does not match valid pattern ^[a-zA-Z0-9-_]+$`,
 				},
 			},
 		},

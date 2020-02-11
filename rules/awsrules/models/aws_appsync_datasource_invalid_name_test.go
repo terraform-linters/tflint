@@ -23,7 +23,7 @@ resource "aws_appsync_datasource" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsAppsyncDatasourceInvalidNameRule(),
-					Message: `name does not match valid pattern ^[_A-Za-z][_0-9A-Za-z]*$`,
+					Message: `"01_tf_example" does not match valid pattern ^[_A-Za-z][_0-9A-Za-z]*$`,
 				},
 			},
 		},

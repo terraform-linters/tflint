@@ -23,7 +23,7 @@ resource "aws_spot_fleet_request" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsSpotFleetRequestInvalidInstanceInterruptionBehaviourRule(),
-					Message: `instance_interruption_behaviour is not a valid value`,
+					Message: `"restart" is an invalid value as instance_interruption_behaviour`,
 				},
 			},
 		},

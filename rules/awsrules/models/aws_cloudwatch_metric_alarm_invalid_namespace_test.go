@@ -23,7 +23,7 @@ resource "aws_cloudwatch_metric_alarm" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchMetricAlarmInvalidNamespaceRule(),
-					Message: `namespace does not match valid pattern ^[^:].*$`,
+					Message: `":EC2" does not match valid pattern ^[^:].*$`,
 				},
 			},
 		},

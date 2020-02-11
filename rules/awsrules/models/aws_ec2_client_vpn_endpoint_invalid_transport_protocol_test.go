@@ -23,7 +23,7 @@ resource "aws_ec2_client_vpn_endpoint" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEc2ClientVpnEndpointInvalidTransportProtocolRule(),
-					Message: `transport_protocol is not a valid value`,
+					Message: `"http" is an invalid value as transport_protocol`,
 				},
 			},
 		},

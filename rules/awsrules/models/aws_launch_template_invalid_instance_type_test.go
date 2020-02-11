@@ -23,7 +23,7 @@ resource "aws_launch_template" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsLaunchTemplateInvalidInstanceTypeRule(),
-					Message: `instance_type is not a valid value`,
+					Message: `"t1.2xlarge" is an invalid value as instance_type`,
 				},
 			},
 		},

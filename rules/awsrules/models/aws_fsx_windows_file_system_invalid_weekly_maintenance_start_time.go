@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsFsxWindowsFileSystemInvalidWeeklyMaintenanceStartTimeRule) Check(run
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`weekly_maintenance_start_time does not match valid pattern ^[1-7]:([01]\d|2[0-3]):?([0-5]\d)$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[1-7]:([01]\d|2[0-3]):?([0-5]\d)$`),
 					attribute.Expr.Range(),
 				)
 			}

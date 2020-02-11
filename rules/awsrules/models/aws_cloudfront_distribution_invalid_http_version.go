@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsCloudfrontDistributionInvalidHTTPVersionRule) Check(runner *tflint.R
 			if !found {
 				runner.EmitIssue(
 					r,
-					`http_version is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as http_version`, val),
 					attribute.Expr.Range(),
 				)
 			}

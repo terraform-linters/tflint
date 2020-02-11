@@ -23,7 +23,7 @@ resource "aws_datasync_agent" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDatasyncAgentInvalidActivationKeyRule(),
-					Message: `activation_key does not match valid pattern ^[A-Z0-9]{5}(-[A-Z0-9]{5}){4}$`,
+					Message: `"F0EFT7FPPRGG7MC3I9R327DOH" does not match valid pattern ^[A-Z0-9]{5}(-[A-Z0-9]{5}){4}$`,
 				},
 			},
 		},

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsEcsTaskDefinitionInvalidIpcModeRule) Check(runner *tflint.Runner) er
 			if !found {
 				runner.EmitIssue(
 					r,
-					`ipc_mode is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as ipc_mode`, val),
 					attribute.Expr.Range(),
 				)
 			}

@@ -23,7 +23,7 @@ resource "aws_batch_job_definition" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsBatchJobDefinitionInvalidTypeRule(),
-					Message: `type is not a valid value`,
+					Message: `"docker" is an invalid value as type`,
 				},
 			},
 		},

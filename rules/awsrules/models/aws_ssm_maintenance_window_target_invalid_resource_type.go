@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsSsmMaintenanceWindowTargetInvalidResourceTypeRule) Check(runner *tfl
 			if !found {
 				runner.EmitIssue(
 					r,
-					`resource_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as resource_type`, val),
 					attribute.Expr.Range(),
 				)
 			}

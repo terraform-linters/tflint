@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsCloudformationStackInvalidOnFailureRule) Check(runner *tflint.Runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					`on_failure is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as on_failure`, val),
 					attribute.Expr.Range(),
 				)
 			}

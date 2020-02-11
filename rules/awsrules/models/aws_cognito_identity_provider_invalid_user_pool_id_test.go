@@ -23,7 +23,7 @@ resource "aws_cognito_identity_provider" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCognitoIdentityProviderInvalidUserPoolIDRule(),
-					Message: `user_pool_id does not match valid pattern ^[\w-]+_[0-9a-zA-Z]+$`,
+					Message: `"foobar" does not match valid pattern ^[\w-]+_[0-9a-zA-Z]+$`,
 				},
 			},
 		},

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsCloudwatchEventPermissionInvalidStatementIDRule) Check(runner *tflin
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`statement_id does not match valid pattern ^[a-zA-Z0-9-_]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[a-zA-Z0-9-_]+$`),
 					attribute.Expr.Range(),
 				)
 			}

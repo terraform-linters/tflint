@@ -23,7 +23,7 @@ resource "aws_batch_job_queue" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsBatchJobQueueInvalidStateRule(),
-					Message: `state is not a valid value`,
+					Message: `"ON" is an invalid value as state`,
 				},
 			},
 		},

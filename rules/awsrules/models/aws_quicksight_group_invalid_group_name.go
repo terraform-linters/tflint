@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -67,7 +68,7 @@ func (r *AwsQuicksightGroupInvalidGroupNameRule) Check(runner *tflint.Runner) er
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`group_name does not match valid pattern ^[\x{0020}-\x{00FF}]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[\x{0020}-\x{00FF}]+$`),
 					attribute.Expr.Range(),
 				)
 			}

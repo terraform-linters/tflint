@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsFsxLustreFileSystemInvalidExportPathRule) Check(runner *tflint.Runne
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`export_path does not match valid pattern ^.{3,900}$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^.{3,900}$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -23,7 +23,7 @@ resource "aws_cloudhsm_v2_hsm" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudhsmV2HsmInvalidClusterIDRule(),
-					Message: `cluster_id does not match valid pattern ^cluster-[2-7a-zA-Z]{11,16}$`,
+					Message: `"jxhlf7644ne" does not match valid pattern ^cluster-[2-7a-zA-Z]{11,16}$`,
 				},
 			},
 		},

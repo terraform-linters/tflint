@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -103,7 +104,7 @@ func (r *AwsRoute53HealthCheckInvalidCloudwatchAlarmRegionRule) Check(runner *tf
 			if !found {
 				runner.EmitIssue(
 					r,
-					`cloudwatch_alarm_region is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as cloudwatch_alarm_region`, val),
 					attribute.Expr.Range(),
 				)
 			}

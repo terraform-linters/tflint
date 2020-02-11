@@ -23,7 +23,7 @@ resource "aws_backup_selection" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsBackupSelectionInvalidNameRule(),
-					Message: `name does not match valid pattern ^[a-zA-Z0-9\-\_\.]{1,50}$`,
+					Message: `"tf_example_backup_selection_tf_example_backup_selection" does not match valid pattern ^[a-zA-Z0-9\-\_\.]{1,50}$`,
 				},
 			},
 		},

@@ -23,7 +23,7 @@ resource "aws_datasync_location_efs" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDatasyncLocationEfsInvalidSubdirectoryRule(),
-					Message: `subdirectory does not match valid pattern ^[a-zA-Z0-9_\-\+\./\(\)\p{Zs}]*$`,
+					Message: `"bar	" does not match valid pattern ^[a-zA-Z0-9_\-\+\./\(\)\p{Zs}]*$`,
 				},
 			},
 		},

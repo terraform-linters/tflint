@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -71,7 +72,7 @@ func (r *AwsCloudwatchMetricAlarmInvalidComparisonOperatorRule) Check(runner *tf
 			if !found {
 				runner.EmitIssue(
 					r,
-					`comparison_operator is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as comparison_operator`, val),
 					attribute.Expr.Range(),
 				)
 			}

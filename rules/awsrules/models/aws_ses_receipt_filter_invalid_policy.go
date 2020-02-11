@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsSesReceiptFilterInvalidPolicyRule) Check(runner *tflint.Runner) erro
 			if !found {
 				runner.EmitIssue(
 					r,
-					`policy is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as policy`, val),
 					attribute.Expr.Range(),
 				)
 			}

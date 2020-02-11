@@ -23,7 +23,7 @@ resource "aws_cognito_user_group" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCognitoUserGroupInvalidRoleArnRule(),
-					Message: `role_arn does not match valid pattern ^arn:[\w+=/,.@-]+:[\w+=/,.@-]+:([\w+=/,.@-]*)?:[0-9]+:[\w+=/,.@-]+(:[\w+=/,.@-]+)?(:[\w+=/,.@-]+)?$`,
+					Message: `"aws:iam::123456789012:instance-profile/s3access-profile" does not match valid pattern ^arn:[\w+=/,.@-]+:[\w+=/,.@-]+:([\w+=/,.@-]*)?:[0-9]+:[\w+=/,.@-]+(:[\w+=/,.@-]+)?(:[\w+=/,.@-]+)?$`,
 				},
 			},
 		},

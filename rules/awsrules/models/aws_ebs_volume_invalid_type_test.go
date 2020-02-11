@@ -23,7 +23,7 @@ resource "aws_ebs_volume" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEbsVolumeInvalidTypeRule(),
-					Message: `type is not a valid value`,
+					Message: `"gp3" is an invalid value as type`,
 				},
 			},
 		},

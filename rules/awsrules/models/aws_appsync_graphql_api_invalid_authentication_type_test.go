@@ -23,7 +23,7 @@ resource "aws_appsync_graphql_api" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsAppsyncGraphqlAPIInvalidAuthenticationTypeRule(),
-					Message: `authentication_type is not a valid value`,
+					Message: `"AWS_KEY" is an invalid value as authentication_type`,
 				},
 			},
 		},

@@ -23,7 +23,7 @@ resource "aws_datasync_location_efs" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDatasyncLocationEfsInvalidEfsFileSystemArnRule(),
-					Message: `efs_file_system_arn does not match valid pattern ^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):elasticfilesystem:[a-z\-0-9]*:[0-9]{12}:file-system/fs-.*$`,
+					Message: `"arn:aws:eks:us-east-1:123456789012:cluster/my-cluster" does not match valid pattern ^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):elasticfilesystem:[a-z\-0-9]*:[0-9]{12}:file-system/fs-.*$`,
 				},
 			},
 		},

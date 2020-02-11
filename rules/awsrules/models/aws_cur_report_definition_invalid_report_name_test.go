@@ -23,7 +23,7 @@ resource "aws_cur_report_definition" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCurReportDefinitionInvalidReportNameRule(),
-					Message: `report_name does not match valid pattern ^[0-9A-Za-z!\-_.*\'()]+$`,
+					Message: `"example/cur-report-definition" does not match valid pattern ^[0-9A-Za-z!\-_.*\'()]+$`,
 				},
 			},
 		},

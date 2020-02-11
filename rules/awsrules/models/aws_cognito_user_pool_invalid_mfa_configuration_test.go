@@ -23,7 +23,7 @@ resource "aws_cognito_user_pool" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCognitoUserPoolInvalidMfaConfigurationRule(),
-					Message: `mfa_configuration is not a valid value`,
+					Message: `"IN" is an invalid value as mfa_configuration`,
 				},
 			},
 		},

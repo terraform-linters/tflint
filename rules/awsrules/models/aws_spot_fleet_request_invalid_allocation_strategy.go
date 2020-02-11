@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsSpotFleetRequestInvalidAllocationStrategyRule) Check(runner *tflint.
 			if !found {
 				runner.EmitIssue(
 					r,
-					`allocation_strategy is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as allocation_strategy`, val),
 					attribute.Expr.Range(),
 				)
 			}

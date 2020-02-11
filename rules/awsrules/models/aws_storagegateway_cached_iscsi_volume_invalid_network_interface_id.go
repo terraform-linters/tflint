@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -58,7 +59,7 @@ func (r *AwsStoragegatewayCachedIscsiVolumeInvalidNetworkInterfaceIDRule) Check(
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`network_interface_id does not match valid pattern ^\A(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}\z$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^\A(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}\z$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -23,7 +23,7 @@ resource "aws_codepipeline" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCodepipelineInvalidNameRule(),
-					Message: `name does not match valid pattern ^[A-Za-z0-9.@\-_]+$`,
+					Message: `"test/pipeline" does not match valid pattern ^[A-Za-z0-9.@\-_]+$`,
 				},
 			},
 		},

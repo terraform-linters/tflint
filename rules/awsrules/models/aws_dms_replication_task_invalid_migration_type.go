@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsDmsReplicationTaskInvalidMigrationTypeRule) Check(runner *tflint.Run
 			if !found {
 				runner.EmitIssue(
 					r,
-					`migration_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as migration_type`, val),
 					attribute.Expr.Range(),
 				)
 			}

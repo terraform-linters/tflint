@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -67,7 +68,7 @@ func (r *AwsSagemakerNotebookInstanceInvalidSubnetIDRule) Check(runner *tflint.R
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`subnet_id does not match valid pattern ^[-0-9a-zA-Z]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[-0-9a-zA-Z]+$`),
 					attribute.Expr.Range(),
 				)
 			}

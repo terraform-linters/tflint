@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -102,7 +103,7 @@ func (r *AwsRoute53ZoneAssociationInvalidVpcRegionRule) Check(runner *tflint.Run
 			if !found {
 				runner.EmitIssue(
 					r,
-					`vpc_region is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as vpc_region`, val),
 					attribute.Expr.Range(),
 				)
 			}

@@ -23,7 +23,7 @@ resource "aws_ec2_transit_gateway" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEc2TransitGatewayInvalidAutoAcceptSharedAttachmentsRule(),
-					Message: `auto_accept_shared_attachments is not a valid value`,
+					Message: `"true" is an invalid value as auto_accept_shared_attachments`,
 				},
 			},
 		},

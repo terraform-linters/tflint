@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -67,7 +68,7 @@ func (r *AwsDatasyncAgentInvalidActivationKeyRule) Check(runner *tflint.Runner) 
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`activation_key does not match valid pattern ^[A-Z0-9]{5}(-[A-Z0-9]{5}){4}$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[A-Z0-9]{5}(-[A-Z0-9]{5}){4}$`),
 					attribute.Expr.Range(),
 				)
 			}

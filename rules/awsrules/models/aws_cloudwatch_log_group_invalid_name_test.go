@@ -23,7 +23,7 @@ resource "aws_cloudwatch_log_group" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchLogGroupInvalidNameRule(),
-					Message: `name does not match valid pattern ^[\.\-_/#A-Za-z0-9]+$`,
+					Message: `"Yoda:prod" does not match valid pattern ^[\.\-_/#A-Za-z0-9]+$`,
 				},
 			},
 		},

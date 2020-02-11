@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -67,7 +68,7 @@ func (r *AwsTransferUserInvalidHomeDirectoryRule) Check(runner *tflint.Runner) e
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`home_directory does not match valid pattern ^$|/.*`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^$|/.*`),
 					attribute.Expr.Range(),
 				)
 			}

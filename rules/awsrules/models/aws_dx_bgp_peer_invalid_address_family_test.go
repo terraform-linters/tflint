@@ -23,7 +23,7 @@ resource "aws_dx_bgp_peer" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDxBgpPeerInvalidAddressFamilyRule(),
-					Message: `address_family is not a valid value`,
+					Message: `"ipv2" is an invalid value as address_family`,
 				},
 			},
 		},

@@ -23,7 +23,7 @@ resource "aws_directory_service_directory" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDirectoryServiceDirectoryInvalidSizeRule(),
-					Message: `size is not a valid value`,
+					Message: `"Micro" is an invalid value as size`,
 				},
 			},
 		},

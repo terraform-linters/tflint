@@ -23,7 +23,7 @@ resource "aws_directory_service_directory" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDirectoryServiceDirectoryInvalidEditionRule(),
-					Message: `edition is not a valid value`,
+					Message: `"Free" is an invalid value as edition`,
 				},
 			},
 		},

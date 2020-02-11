@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsFlowLogInvalidTrafficTypeRule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					`traffic_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as traffic_type`, val),
 					attribute.Expr.Range(),
 				)
 			}

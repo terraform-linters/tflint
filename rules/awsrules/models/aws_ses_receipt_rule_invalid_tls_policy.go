@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsSesReceiptRuleInvalidTLSPolicyRule) Check(runner *tflint.Runner) err
 			if !found {
 				runner.EmitIssue(
 					r,
-					`tls_policy is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as tls_policy`, val),
 					attribute.Expr.Range(),
 				)
 			}

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsAPIGatewayIntegrationInvalidContentHandlingRule) Check(runner *tflin
 			if !found {
 				runner.EmitIssue(
 					r,
-					`content_handling is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as content_handling`, val),
 					attribute.Expr.Range(),
 				)
 			}

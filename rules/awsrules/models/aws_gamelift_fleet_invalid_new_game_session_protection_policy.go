@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsGameliftFleetInvalidNewGameSessionProtectionPolicyRule) Check(runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					`new_game_session_protection_policy is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as new_game_session_protection_policy`, val),
 					attribute.Expr.Range(),
 				)
 			}

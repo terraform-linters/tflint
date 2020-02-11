@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsAcmCertificateInvalidPrivateKeyRule) Check(runner *tflint.Runner) er
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`private_key does not match valid pattern ^-{5}BEGIN PRIVATE KEY-{5}\x{000D}?\x{000A}([A-Za-z0-9/+]{64}\x{000D}?\x{000A})*[A-Za-z0-9/+]{1,64}={0,2}\x{000D}?\x{000A}-{5}END PRIVATE KEY-{5}(\x{000D}?\x{000A})?$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^-{5}BEGIN PRIVATE KEY-{5}\x{000D}?\x{000A}([A-Za-z0-9/+]{64}\x{000D}?\x{000A})*[A-Za-z0-9/+]{1,64}={0,2}\x{000D}?\x{000A}-{5}END PRIVATE KEY-{5}(\x{000D}?\x{000A})?$`),
 					attribute.Expr.Range(),
 				)
 			}

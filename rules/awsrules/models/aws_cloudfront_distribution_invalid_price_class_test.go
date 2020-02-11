@@ -23,7 +23,7 @@ resource "aws_cloudfront_distribution" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudfrontDistributionInvalidPriceClassRule(),
-					Message: `price_class is not a valid value`,
+					Message: `"PriceClass_300" is an invalid value as price_class`,
 				},
 			},
 		},

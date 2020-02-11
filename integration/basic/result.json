@@ -46,7 +46,7 @@
         "severity": "error",
         "link": ""
       },
-      "message": "unit is not a valid value",
+      "message": "\"percent\" is an invalid value as unit",
       "range": {
         "filename": "template.tf",
         "start": {

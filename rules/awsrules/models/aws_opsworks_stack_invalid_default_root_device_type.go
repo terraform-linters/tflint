@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsOpsworksStackInvalidDefaultRootDeviceTypeRule) Check(runner *tflint.
 			if !found {
 				runner.EmitIssue(
 					r,
-					`default_root_device_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as default_root_device_type`, val),
 					attribute.Expr.Range(),
 				)
 			}

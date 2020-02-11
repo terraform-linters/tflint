@@ -23,7 +23,7 @@ resource "aws_api_gateway_rest_api" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsAPIGatewayRestAPIInvalidAPIKeySourceRule(),
-					Message: `api_key_source is not a valid value`,
+					Message: `"BODY" is an invalid value as api_key_source`,
 				},
 			},
 		},

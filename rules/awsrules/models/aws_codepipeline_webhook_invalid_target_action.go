@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsCodepipelineWebhookInvalidTargetActionRule) Check(runner *tflint.Run
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`target_action does not match valid pattern ^[A-Za-z0-9.@\-_]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[A-Za-z0-9.@\-_]+$`),
 					attribute.Expr.Range(),
 				)
 			}

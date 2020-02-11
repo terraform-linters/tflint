@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsOrganizationsAccountInvalidEmailRule) Check(runner *tflint.Runner) e
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`email does not match valid pattern ^[^\s@]+@[^\s@]+\.[^\s@]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[^\s@]+@[^\s@]+\.[^\s@]+$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsGlobalacceleratorEndpointGroupInvalidHealthCheckProtocolRule) Check(
 			if !found {
 				runner.EmitIssue(
 					r,
-					`health_check_protocol is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as health_check_protocol`, val),
 					attribute.Expr.Range(),
 				)
 			}

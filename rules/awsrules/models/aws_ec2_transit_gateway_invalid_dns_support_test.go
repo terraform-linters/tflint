@@ -23,7 +23,7 @@ resource "aws_ec2_transit_gateway" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEc2TransitGatewayInvalidDNSSupportRule(),
-					Message: `dns_support is not a valid value`,
+					Message: `"enabled" is an invalid value as dns_support`,
 				},
 			},
 		},

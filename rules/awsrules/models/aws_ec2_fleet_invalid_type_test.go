@@ -23,7 +23,7 @@ resource "aws_ec2_fleet" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEc2FleetInvalidTypeRule(),
-					Message: `type is not a valid value`,
+					Message: `"remain" is an invalid value as type`,
 				},
 			},
 		},

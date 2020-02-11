@@ -23,7 +23,7 @@ resource "aws_cloudwatch_event_permission" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchEventPermissionInvalidActionRule(),
-					Message: `action does not match valid pattern ^events:[a-zA-Z]+$`,
+					Message: `"cloudwatchevents:PutEvents" does not match valid pattern ^events:[a-zA-Z]+$`,
 				},
 			},
 		},

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsALBInvalidIPAddressTypeRule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					`ip_address_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as ip_address_type`, val),
 					attribute.Expr.Range(),
 				)
 			}

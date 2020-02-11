@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsPlacementGroupInvalidStrategyRule) Check(runner *tflint.Runner) erro
 			if !found {
 				runner.EmitIssue(
 					r,
-					`strategy is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as strategy`, val),
 					attribute.Expr.Range(),
 				)
 			}

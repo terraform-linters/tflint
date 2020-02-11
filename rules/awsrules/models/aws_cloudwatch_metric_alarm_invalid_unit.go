@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -91,7 +92,7 @@ func (r *AwsCloudwatchMetricAlarmInvalidUnitRule) Check(runner *tflint.Runner) e
 			if !found {
 				runner.EmitIssue(
 					r,
-					`unit is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as unit`, val),
 					attribute.Expr.Range(),
 				)
 			}

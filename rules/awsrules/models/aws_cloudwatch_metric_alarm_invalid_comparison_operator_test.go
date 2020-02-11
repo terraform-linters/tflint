@@ -23,7 +23,7 @@ resource "aws_cloudwatch_metric_alarm" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchMetricAlarmInvalidComparisonOperatorRule(),
-					Message: `comparison_operator is not a valid value`,
+					Message: `"GreaterThanOrEqual" is an invalid value as comparison_operator`,
 				},
 			},
 		},

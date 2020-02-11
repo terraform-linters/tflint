@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -72,7 +73,7 @@ func (r *AwsAPIGatewayStageInvalidCacheClusterSizeRule) Check(runner *tflint.Run
 			if !found {
 				runner.EmitIssue(
 					r,
-					`cache_cluster_size is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as cache_cluster_size`, val),
 					attribute.Expr.Range(),
 				)
 			}

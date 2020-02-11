@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -58,7 +59,7 @@ func (r *AwsOrganizationsPolicyAttachmentInvalidTargetIDRule) Check(runner *tfli
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`target_id does not match valid pattern ^(r-[0-9a-z]{4,32})|(\d{12})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^(r-[0-9a-z]{4,32})|(\d{12})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})$`),
 					attribute.Expr.Range(),
 				)
 			}

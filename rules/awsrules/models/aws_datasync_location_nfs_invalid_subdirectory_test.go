@@ -23,7 +23,7 @@ resource "aws_datasync_location_nfs" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDatasyncLocationNfsInvalidSubdirectoryRule(),
-					Message: `subdirectory does not match valid pattern ^[a-zA-Z0-9_\-\+\./\(\)\p{Zs}]*$`,
+					Message: `"/exported^path" does not match valid pattern ^[a-zA-Z0-9_\-\+\./\(\)\p{Zs}]*$`,
 				},
 			},
 		},

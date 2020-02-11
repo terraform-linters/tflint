@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsCloudwatchEventRuleInvalidNameRule) Check(runner *tflint.Runner) err
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`name does not match valid pattern ^[\.\-_A-Za-z0-9]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[\.\-_A-Za-z0-9]+$`),
 					attribute.Expr.Range(),
 				)
 			}

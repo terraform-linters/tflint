@@ -23,7 +23,7 @@ resource "aws_instance" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsInstanceInvalidInstanceInitiatedShutdownBehaviorRule(),
-					Message: `instance_initiated_shutdown_behavior is not a valid value`,
+					Message: `"restart" is an invalid value as instance_initiated_shutdown_behavior`,
 				},
 			},
 		},

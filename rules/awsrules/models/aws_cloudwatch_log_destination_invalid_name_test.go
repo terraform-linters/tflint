@@ -23,7 +23,7 @@ resource "aws_cloudwatch_log_destination" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchLogDestinationInvalidNameRule(),
-					Message: `name does not match valid pattern ^[^:*]*$`,
+					Message: `"test:destination" does not match valid pattern ^[^:*]*$`,
 				},
 			},
 		},

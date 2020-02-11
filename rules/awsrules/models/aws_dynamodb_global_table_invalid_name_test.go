@@ -23,7 +23,7 @@ resource "aws_dynamodb_global_table" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDynamoDBGlobalTableInvalidNameRule(),
-					Message: `name does not match valid pattern ^[a-zA-Z0-9_.-]+$`,
+					Message: `"myTable@development" does not match valid pattern ^[a-zA-Z0-9_.-]+$`,
 				},
 			},
 		},

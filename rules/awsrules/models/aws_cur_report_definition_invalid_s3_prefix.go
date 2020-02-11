@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -67,7 +68,7 @@ func (r *AwsCurReportDefinitionInvalidS3PrefixRule) Check(runner *tflint.Runner)
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`s3_prefix does not match valid pattern ^[0-9A-Za-z!\-_.*\'()/]*$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[0-9A-Za-z!\-_.*\'()/]*$`),
 					attribute.Expr.Range(),
 				)
 			}

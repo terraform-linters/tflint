@@ -23,7 +23,7 @@ resource "aws_lb_listener" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsLbListenerInvalidProtocolRule(),
-					Message: `protocol is not a valid value`,
+					Message: `"INVALID" is an invalid value as protocol`,
 				},
 			},
 		},

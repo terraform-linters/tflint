@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -58,7 +59,7 @@ func (r *AwsSecurityhubStandardsSubscriptionInvalidStandardsArnRule) Check(runne
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`standards_arn does not match valid pattern ^.*\S.*$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^.*\S.*$`),
 					attribute.Expr.Range(),
 				)
 			}

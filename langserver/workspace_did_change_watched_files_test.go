@@ -133,7 +133,7 @@ instance_type = "t1.2xlarge"
 				URI: uri,
 				Diagnostics: []lsp.Diagnostic{
 					{
-						Message:  "instance_type is not a valid value",
+						Message:  `"t1.2xlarge" is an invalid value as instance_type`,
 						Severity: lsp.Error,
 						Range: lsp.Range{
 							Start: lsp.Position{Line: 2, Character: 20},

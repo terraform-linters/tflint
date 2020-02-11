@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -67,7 +68,7 @@ func (r *AwsSsmActivationInvalidNameRule) Check(runner *tflint.Runner) error {
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`name does not match valid pattern ^([\p{L}\p{Z}\p{N}_.:/=+\-@]*)$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^([\p{L}\p{Z}\p{N}_.:/=+\-@]*)$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsStoragegatewayCachedIscsiVolumeInvalidTargetNameRule) Check(runner *
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`target_name does not match valid pattern ^[-\.;a-z0-9]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[-\.;a-z0-9]+$`),
 					attribute.Expr.Range(),
 				)
 			}

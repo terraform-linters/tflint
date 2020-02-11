@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -75,7 +76,7 @@ func (r *AwsCurReportDefinitionInvalidS3RegionRule) Check(runner *tflint.Runner)
 			if !found {
 				runner.EmitIssue(
 					r,
-					`s3_region is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as s3_region`, val),
 					attribute.Expr.Range(),
 				)
 			}

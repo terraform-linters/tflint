@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsIAMUserGroupMembershipInvalidUserRule) Check(runner *tflint.Runner) 
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`user does not match valid pattern ^[\w+=,.@-]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[\w+=,.@-]+$`),
 					attribute.Expr.Range(),
 				)
 			}

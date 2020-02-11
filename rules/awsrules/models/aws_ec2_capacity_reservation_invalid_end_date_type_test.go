@@ -23,7 +23,7 @@ resource "aws_ec2_capacity_reservation" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEc2CapacityReservationInvalidEndDateTypeRule(),
-					Message: `end_date_type is not a valid value`,
+					Message: `"unlimit" is an invalid value as end_date_type`,
 				},
 			},
 		},

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsVpcInvalidInstanceTenancyRule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					`instance_tenancy is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as instance_tenancy`, val),
 					attribute.Expr.Range(),
 				)
 			}

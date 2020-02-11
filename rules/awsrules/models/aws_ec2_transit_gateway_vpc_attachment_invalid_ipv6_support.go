@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsEc2TransitGatewayVpcAttachmentInvalidIpv6SupportRule) Check(runner *
 			if !found {
 				runner.EmitIssue(
 					r,
-					`ipv6_support is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as ipv6_support`, val),
 					attribute.Expr.Range(),
 				)
 			}

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -58,7 +59,7 @@ func (r *AwsElastictranscoderPipelineInvalidRoleRule) Check(runner *tflint.Runne
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`role does not match valid pattern ^arn:aws:iam::\w{12}:role/.+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^arn:aws:iam::\w{12}:role/.+$`),
 					attribute.Expr.Range(),
 				)
 			}

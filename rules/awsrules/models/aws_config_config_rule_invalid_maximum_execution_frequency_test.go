@@ -23,7 +23,7 @@ resource "aws_config_config_rule" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsConfigConfigRuleInvalidMaximumExecutionFrequencyRule(),
-					Message: `maximum_execution_frequency is not a valid value`,
+					Message: `"Hour" is an invalid value as maximum_execution_frequency`,
 				},
 			},
 		},

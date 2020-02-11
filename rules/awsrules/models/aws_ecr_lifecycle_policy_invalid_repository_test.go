@@ -23,7 +23,7 @@ resource "aws_ecr_lifecycle_policy" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEcrLifecyclePolicyInvalidRepositoryRule(),
-					Message: `repository does not match valid pattern ^(?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*$`,
+					Message: `"example@com" does not match valid pattern ^(?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*$`,
 				},
 			},
 		},

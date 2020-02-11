@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsNetworkACLRuleInvalidRuleActionRule) Check(runner *tflint.Runner) er
 			if !found {
 				runner.EmitIssue(
 					r,
-					`rule_action is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as rule_action`, val),
 					attribute.Expr.Range(),
 				)
 			}

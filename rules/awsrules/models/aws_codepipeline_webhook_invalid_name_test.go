@@ -23,7 +23,7 @@ resource "aws_codepipeline_webhook" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCodepipelineWebhookInvalidNameRule(),
-					Message: `name does not match valid pattern ^[A-Za-z0-9.@\-_]+$`,
+					Message: `"webhook-github-bar/testing" does not match valid pattern ^[A-Za-z0-9.@\-_]+$`,
 				},
 			},
 		},

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -58,7 +59,7 @@ func (r *AwsCloud9EnvironmentEc2InvalidOwnerArnRule) Check(runner *tflint.Runner
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`owner_arn does not match valid pattern ^arn:aws:(iam|sts)::\d+:(root|(user\/[\w+=/:,.@-]{1,64}|federated-user\/[\w+=/:,.@-]{2,32}|assumed-role\/[\w+=/:,.@-]{1,64}\/[\w+=/:,.@-]{1,64}))$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^arn:aws:(iam|sts)::\d+:(root|(user\/[\w+=/:,.@-]{1,64}|federated-user\/[\w+=/:,.@-]{2,32}|assumed-role\/[\w+=/:,.@-]{1,64}\/[\w+=/:,.@-]{1,64}))$`),
 					attribute.Expr.Range(),
 				)
 			}

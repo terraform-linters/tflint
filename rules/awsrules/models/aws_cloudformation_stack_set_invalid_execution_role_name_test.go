@@ -23,7 +23,7 @@ resource "aws_cloudformation_stack_set" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudformationStackSetInvalidExecutionRoleNameRule(),
-					Message: `execution_role_name does not match valid pattern ^[a-zA-Z_0-9+=,.@-]+$`,
+					Message: `"AWSCloudFormation/StackSet/ExecutionRole" does not match valid pattern ^[a-zA-Z_0-9+=,.@-]+$`,
 				},
 			},
 		},

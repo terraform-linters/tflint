@@ -68,7 +68,7 @@ func didOpenResponse(uri lsp.DocumentURI, t *testing.T) string {
 			URI: uri,
 			Diagnostics: []lsp.Diagnostic{
 				{
-					Message:  "instance_type is not a valid value",
+					Message:  `"t1.2xlarge" is an invalid value as instance_type`,
 					Severity: lsp.Error,
 					Range: lsp.Range{
 						Start: lsp.Position{Line: 1, Character: 20},
@@ -114,11 +114,11 @@ func Test_textDocumentDidOpen_pathFunctions(t *testing.T) {
 				URI: uri,
 				Diagnostics: []lsp.Diagnostic{
 					{
-						Message:  "instance_type is not a valid value",
+						Message:  `"t1.2xlarge" is an invalid value as instance_type`,
 						Severity: lsp.Error,
 						Range: lsp.Range{
 							Start: lsp.Position{Line: 1, Character: 20},
-							End:   lsp.Position{Line: 1, Character: 47},
+							End:   lsp.Position{Line: 1, Character: 53},
 						},
 					},
 				},

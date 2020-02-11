@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -68,7 +69,7 @@ func (r *AwsSsmMaintenanceWindowTaskInvalidTaskTypeRule) Check(runner *tflint.Ru
 			if !found {
 				runner.EmitIssue(
 					r,
-					`task_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as task_type`, val),
 					attribute.Expr.Range(),
 				)
 			}

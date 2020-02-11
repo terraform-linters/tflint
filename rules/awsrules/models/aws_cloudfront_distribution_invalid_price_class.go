@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsCloudfrontDistributionInvalidPriceClassRule) Check(runner *tflint.Ru
 			if !found {
 				runner.EmitIssue(
 					r,
-					`price_class is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as price_class`, val),
 					attribute.Expr.Range(),
 				)
 			}

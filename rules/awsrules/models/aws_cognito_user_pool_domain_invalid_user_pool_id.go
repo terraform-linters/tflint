@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsCognitoUserPoolDomainInvalidUserPoolIDRule) Check(runner *tflint.Run
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`user_pool_id does not match valid pattern ^[\w-]+_[0-9a-zA-Z]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[\w-]+_[0-9a-zA-Z]+$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsElastiCacheClusterInvalidAzModeRule) Check(runner *tflint.Runner) er
 			if !found {
 				runner.EmitIssue(
 					r,
-					`az_mode is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as az_mode`, val),
 					attribute.Expr.Range(),
 				)
 			}

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsCodedeployAppInvalidComputePlatformRule) Check(runner *tflint.Runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					`compute_platform is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as compute_platform`, val),
 					attribute.Expr.Range(),
 				)
 			}

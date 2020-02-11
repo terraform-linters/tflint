@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsInstanceInvalidInstanceInitiatedShutdownBehaviorRule) Check(runner *
 			if !found {
 				runner.EmitIssue(
 					r,
-					`instance_initiated_shutdown_behavior is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as instance_initiated_shutdown_behavior`, val),
 					attribute.Expr.Range(),
 				)
 			}

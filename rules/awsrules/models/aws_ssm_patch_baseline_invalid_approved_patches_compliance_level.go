@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -70,7 +71,7 @@ func (r *AwsSsmPatchBaselineInvalidApprovedPatchesComplianceLevelRule) Check(run
 			if !found {
 				runner.EmitIssue(
 					r,
-					`approved_patches_compliance_level is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as approved_patches_compliance_level`, val),
 					attribute.Expr.Range(),
 				)
 			}

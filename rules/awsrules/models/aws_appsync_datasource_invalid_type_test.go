@@ -23,7 +23,7 @@ resource "aws_appsync_datasource" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsAppsyncDatasourceInvalidTypeRule(),
-					Message: `type is not a valid value`,
+					Message: `"AMAZON_SIMPLEDB" is an invalid value as type`,
 				},
 			},
 		},

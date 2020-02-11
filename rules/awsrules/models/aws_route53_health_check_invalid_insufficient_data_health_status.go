@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsRoute53HealthCheckInvalidInsufficientDataHealthStatusRule) Check(run
 			if !found {
 				runner.EmitIssue(
 					r,
-					`insufficient_data_health_status is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as insufficient_data_health_status`, val),
 					attribute.Expr.Range(),
 				)
 			}

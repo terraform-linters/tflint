@@ -23,7 +23,7 @@ resource "aws_directory_service_directory" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDirectoryServiceDirectoryInvalidShortNameRule(),
-					Message: `short_name does not match valid pattern ^[^\\/:*?\"\<\>|.]+[^\\/:*?\"<>|]*$`,
+					Message: `"CORP:EXAMPLE" does not match valid pattern ^[^\\/:*?\"\<\>|.]+[^\\/:*?\"<>|]*$`,
 				},
 			},
 		},

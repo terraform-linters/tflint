@@ -23,7 +23,7 @@ resource "aws_lb" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsLbInvalidLoadBalancerTypeRule(),
-					Message: `load_balancer_type is not a valid value`,
+					Message: `"classic" is an invalid value as load_balancer_type`,
 				},
 			},
 		},

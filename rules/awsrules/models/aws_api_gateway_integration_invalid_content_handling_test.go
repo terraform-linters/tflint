@@ -23,7 +23,7 @@ resource "aws_api_gateway_integration" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsAPIGatewayIntegrationInvalidContentHandlingRule(),
-					Message: `content_handling is not a valid value`,
+					Message: `"CONVERT_TO_FILE" is an invalid value as content_handling`,
 				},
 			},
 		},

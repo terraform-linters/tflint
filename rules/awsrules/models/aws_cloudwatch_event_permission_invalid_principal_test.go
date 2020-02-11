@@ -23,7 +23,7 @@ resource "aws_cloudwatch_event_permission" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchEventPermissionInvalidPrincipalRule(),
-					Message: `principal does not match valid pattern ^(\d{12}|\*)$`,
+					Message: `"-" does not match valid pattern ^(\d{12}|\*)$`,
 				},
 			},
 		},

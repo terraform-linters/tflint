@@ -23,7 +23,7 @@ resource "aws_api_gateway_integration" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsAPIGatewayIntegrationInvalidConnectionTypeRule(),
-					Message: `connection_type is not a valid value`,
+					Message: `"INTRANET" is an invalid value as connection_type`,
 				},
 			},
 		},

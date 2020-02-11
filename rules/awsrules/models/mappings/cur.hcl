@@ -30,11 +30,6 @@ test "aws_cur_report_definition" "compression" {
   ng = "TAR"
 }
 
-test "aws_cur_report_definition" "s3_prefix" {
-  ok = "example"
-  ng = "example\n"
-}
-
 test "aws_cur_report_definition" "s3_region" {
   ok = "us-east-1"
   ng = "us-gov-east-1"

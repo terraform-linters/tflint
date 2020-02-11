@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -69,7 +70,7 @@ func (r *AwsConfigOrganizationCustomRuleInvalidMaximumExecutionFrequencyRule) Ch
 			if !found {
 				runner.EmitIssue(
 					r,
-					`maximum_execution_frequency is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as maximum_execution_frequency`, val),
 					attribute.Expr.Range(),
 				)
 			}

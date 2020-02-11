@@ -23,7 +23,7 @@ resource "aws_batch_compute_environment" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsBatchComputeEnvironmentInvalidStateRule(),
-					Message: `state is not a valid value`,
+					Message: `"ON" is an invalid value as state`,
 				},
 			},
 		},

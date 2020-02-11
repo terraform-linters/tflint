@@ -23,7 +23,7 @@ resource "aws_appautoscaling_policy" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsAppautoscalingPolicyInvalidServiceNamespaceRule(),
-					Message: `service_namespace is not a valid value`,
+					Message: `"eks" is an invalid value as service_namespace`,
 				},
 			},
 		},

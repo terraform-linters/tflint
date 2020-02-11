@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsDirectoryServiceDirectoryInvalidEditionRule) Check(runner *tflint.Ru
 			if !found {
 				runner.EmitIssue(
 					r,
-					`edition is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as edition`, val),
 					attribute.Expr.Range(),
 				)
 			}

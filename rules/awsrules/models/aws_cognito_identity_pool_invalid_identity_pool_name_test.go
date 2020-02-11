@@ -23,7 +23,7 @@ resource "aws_cognito_identity_pool" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCognitoIdentityPoolInvalidIdentityPoolNameRule(),
-					Message: `identity_pool_name does not match valid pattern ^[\w\s+=,.@-]+$`,
+					Message: `"identity:pool" does not match valid pattern ^[\w\s+=,.@-]+$`,
 				},
 			},
 		},

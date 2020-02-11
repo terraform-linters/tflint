@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsDynamoDBTableInvalidBillingModeRule) Check(runner *tflint.Runner) er
 			if !found {
 				runner.EmitIssue(
 					r,
-					`billing_mode is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as billing_mode`, val),
 					attribute.Expr.Range(),
 				)
 			}

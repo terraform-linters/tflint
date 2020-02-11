@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsS3BucketInvalidRequestPayerRule) Check(runner *tflint.Runner) error 
 			if !found {
 				runner.EmitIssue(
 					r,
-					`request_payer is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as request_payer`, val),
 					attribute.Expr.Range(),
 				)
 			}

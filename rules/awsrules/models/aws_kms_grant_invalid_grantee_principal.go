@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsKmsGrantInvalidGranteePrincipalRule) Check(runner *tflint.Runner) er
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`grantee_principal does not match valid pattern ^[\w+=,.@:/-]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[\w+=,.@:/-]+$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -23,7 +23,7 @@ resource "aws_cloudhsm_v2_cluster" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudhsmV2ClusterInvalidSourceBackupIdentifierRule(),
-					Message: `source_backup_identifier does not match valid pattern ^backup-[2-7a-zA-Z]{11,16}$`,
+					Message: `"rtq2dwi2gq6" does not match valid pattern ^backup-[2-7a-zA-Z]{11,16}$`,
 				},
 			},
 		},
