@@ -59,7 +59,7 @@ func (r *AwsSsmAssociationInvalidDocumentVersionRule) Check(runner *tflint.Runne
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^([$]LATEST|[$]DEFAULT|^[1-9][0-9]*$)$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^([$]LATEST|[$]DEFAULT|^[1-9][0-9]*$)$`),
 					attribute.Expr.Range(),
 				)
 			}

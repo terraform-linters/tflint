@@ -67,7 +67,7 @@ func (r *AwsGlueConnectionInvalidConnectionTypeRule) Check(runner *tflint.Runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as connection_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as connection_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

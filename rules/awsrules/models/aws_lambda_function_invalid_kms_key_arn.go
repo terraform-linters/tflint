@@ -59,7 +59,7 @@ func (r *AwsLambdaFunctionInvalidKmsKeyArnRule) Check(runner *tflint.Runner) err
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -336,7 +336,7 @@ func (r *AwsLaunchTemplateInvalidInstanceTypeRule) Check(runner *tflint.Runner) 
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as instance_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as instance_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

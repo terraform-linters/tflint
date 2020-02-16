@@ -68,7 +68,7 @@ func (r *AwsLambdaFunctionInvalidHandlerRule) Check(runner *tflint.Runner) error
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[^\s]+$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[^\s]+$`),
 					attribute.Expr.Range(),
 				)
 			}

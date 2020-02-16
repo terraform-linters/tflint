@@ -67,7 +67,7 @@ func (r *AwsOrganizationsAccountInvalidIAMUserAccessToBillingRule) Check(runner 
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as iam_user_access_to_billing`, val),
+					fmt.Sprintf(`"%s" is an invalid value as iam_user_access_to_billing`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

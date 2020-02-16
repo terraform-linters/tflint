@@ -59,7 +59,7 @@ func (r *AwsCloudhsmV2HsmInvalidSubnetIDRule) Check(runner *tflint.Runner) error
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^subnet-[0-9a-fA-F]{8,17}$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^subnet-[0-9a-fA-F]{8,17}$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -70,7 +70,7 @@ func (r *AwsCloudwatchMetricAlarmInvalidStatisticRule) Check(runner *tflint.Runn
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as statistic`, val),
+					fmt.Sprintf(`"%s" is an invalid value as statistic`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -76,7 +76,7 @@ func (r *AwsEc2CapacityReservationInvalidInstancePlatformRule) Check(runner *tfl
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as instance_platform`, val),
+					fmt.Sprintf(`"%s" is an invalid value as instance_platform`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

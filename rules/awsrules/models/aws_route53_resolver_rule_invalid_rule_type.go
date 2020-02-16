@@ -68,7 +68,7 @@ func (r *AwsRoute53ResolverRuleInvalidRuleTypeRule) Check(runner *tflint.Runner)
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as rule_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as rule_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

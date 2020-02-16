@@ -67,7 +67,7 @@ func (r *AwsDxBgpPeerInvalidAddressFamilyRule) Check(runner *tflint.Runner) erro
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as address_family`, val),
+					fmt.Sprintf(`"%s" is an invalid value as address_family`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

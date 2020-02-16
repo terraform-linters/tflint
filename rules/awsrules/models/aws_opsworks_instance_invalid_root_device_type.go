@@ -67,7 +67,7 @@ func (r *AwsOpsworksInstanceInvalidRootDeviceTypeRule) Check(runner *tflint.Runn
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as root_device_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as root_device_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

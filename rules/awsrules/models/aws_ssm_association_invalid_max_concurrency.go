@@ -77,7 +77,7 @@ func (r *AwsSsmAssociationInvalidMaxConcurrencyRule) Check(runner *tflint.Runner
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^([1-9][0-9]*|[1-9][0-9]%|[1-9]%|100%)$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^([1-9][0-9]*|[1-9][0-9]%|[1-9]%|100%)$`),
 					attribute.Expr.Range(),
 				)
 			}

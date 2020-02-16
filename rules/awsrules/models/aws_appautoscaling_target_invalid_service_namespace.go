@@ -75,7 +75,7 @@ func (r *AwsAppautoscalingTargetInvalidServiceNamespaceRule) Check(runner *tflin
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as service_namespace`, val),
+					fmt.Sprintf(`"%s" is an invalid value as service_namespace`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

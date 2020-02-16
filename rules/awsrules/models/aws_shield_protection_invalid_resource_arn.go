@@ -77,7 +77,7 @@ func (r *AwsShieldProtectionInvalidResourceArnRule) Check(runner *tflint.Runner)
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^arn:aws.*`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^arn:aws.*`),
 					attribute.Expr.Range(),
 				)
 			}

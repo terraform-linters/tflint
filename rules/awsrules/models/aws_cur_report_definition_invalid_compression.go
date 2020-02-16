@@ -68,7 +68,7 @@ func (r *AwsCurReportDefinitionInvalidCompressionRule) Check(runner *tflint.Runn
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as compression`, val),
+					fmt.Sprintf(`"%s" is an invalid value as compression`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

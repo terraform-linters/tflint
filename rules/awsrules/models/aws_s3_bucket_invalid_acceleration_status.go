@@ -67,7 +67,7 @@ func (r *AwsS3BucketInvalidAccelerationStatusRule) Check(runner *tflint.Runner) 
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as acceleration_status`, val),
+					fmt.Sprintf(`"%s" is an invalid value as acceleration_status`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

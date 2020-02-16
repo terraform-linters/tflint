@@ -59,7 +59,7 @@ func (r *AwsCloudhsmV2ClusterInvalidHsmTypeRule) Check(runner *tflint.Runner) er
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^(hsm1\.medium)$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^(hsm1\.medium)$`),
 					attribute.Expr.Range(),
 				)
 			}

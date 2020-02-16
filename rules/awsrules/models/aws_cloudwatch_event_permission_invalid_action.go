@@ -77,7 +77,7 @@ func (r *AwsCloudwatchEventPermissionInvalidActionRule) Check(runner *tflint.Run
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^events:[a-zA-Z]+$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^events:[a-zA-Z]+$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -69,7 +69,7 @@ func (r *AwsDynamoDBTableInvalidStreamViewTypeRule) Check(runner *tflint.Runner)
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as stream_view_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as stream_view_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

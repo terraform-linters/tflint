@@ -68,7 +68,7 @@ func (r *AwsAMIInvalidArchitectureRule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as architecture`, val),
+					fmt.Sprintf(`"%s" is an invalid value as architecture`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

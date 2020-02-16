@@ -59,7 +59,7 @@ func (r *AwsOrganizationsPolicyAttachmentInvalidPolicyIDRule) Check(runner *tfli
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^p-[0-9a-zA-Z_]{8,128}$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^p-[0-9a-zA-Z_]{8,128}$`),
 					attribute.Expr.Range(),
 				)
 			}

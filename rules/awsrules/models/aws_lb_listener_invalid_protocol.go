@@ -71,7 +71,7 @@ func (r *AwsLbListenerInvalidProtocolRule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as protocol`, val),
+					fmt.Sprintf(`"%s" is an invalid value as protocol`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -59,7 +59,7 @@ func (r *AwsElastictranscoderPipelineInvalidInputBucketRule) Check(runner *tflin
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^(\w|\.|-){1,255}$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^(\w|\.|-){1,255}$`),
 					attribute.Expr.Range(),
 				)
 			}

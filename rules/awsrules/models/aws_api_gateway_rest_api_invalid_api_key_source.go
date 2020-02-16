@@ -67,7 +67,7 @@ func (r *AwsAPIGatewayRestAPIInvalidAPIKeySourceRule) Check(runner *tflint.Runne
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as api_key_source`, val),
+					fmt.Sprintf(`"%s" is an invalid value as api_key_source`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -67,7 +67,7 @@ func (r *AwsOpsworksInstanceInvalidAutoScalingTypeRule) Check(runner *tflint.Run
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as auto_scaling_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as auto_scaling_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

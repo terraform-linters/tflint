@@ -59,7 +59,7 @@ func (r *AwsLambdaPermissionInvalidActionRule) Check(runner *tflint.Runner) erro
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^(lambda:[*]|lambda:[a-zA-Z]+|[*])$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^(lambda:[*]|lambda:[a-zA-Z]+|[*])$`),
 					attribute.Expr.Range(),
 				)
 			}

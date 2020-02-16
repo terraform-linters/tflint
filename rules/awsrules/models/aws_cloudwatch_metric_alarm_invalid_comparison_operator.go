@@ -72,7 +72,7 @@ func (r *AwsCloudwatchMetricAlarmInvalidComparisonOperatorRule) Check(runner *tf
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as comparison_operator`, val),
+					fmt.Sprintf(`"%s" is an invalid value as comparison_operator`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -68,7 +68,7 @@ func (r *AwsEcsTaskDefinitionInvalidIpcModeRule) Check(runner *tflint.Runner) er
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as ipc_mode`, val),
+					fmt.Sprintf(`"%s" is an invalid value as ipc_mode`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

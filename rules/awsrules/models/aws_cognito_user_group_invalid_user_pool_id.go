@@ -77,7 +77,7 @@ func (r *AwsCognitoUserGroupInvalidUserPoolIDRule) Check(runner *tflint.Runner) 
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[\w-]+_[0-9a-zA-Z]+$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\w-]+_[0-9a-zA-Z]+$`),
 					attribute.Expr.Range(),
 				)
 			}

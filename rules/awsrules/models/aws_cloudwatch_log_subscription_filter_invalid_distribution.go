@@ -67,7 +67,7 @@ func (r *AwsCloudwatchLogSubscriptionFilterInvalidDistributionRule) Check(runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as distribution`, val),
+					fmt.Sprintf(`"%s" is an invalid value as distribution`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

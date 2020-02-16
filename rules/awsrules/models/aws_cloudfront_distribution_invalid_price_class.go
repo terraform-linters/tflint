@@ -68,7 +68,7 @@ func (r *AwsCloudfrontDistributionInvalidPriceClassRule) Check(runner *tflint.Ru
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as price_class`, val),
+					fmt.Sprintf(`"%s" is an invalid value as price_class`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

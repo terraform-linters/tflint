@@ -67,7 +67,7 @@ func (r *AwsTransferServerInvalidIdentityProviderTypeRule) Check(runner *tflint.
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as identity_provider_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as identity_provider_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

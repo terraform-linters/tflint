@@ -59,7 +59,7 @@ func (r *AwsOrganizationsAccountInvalidRoleNameRule) Check(runner *tflint.Runner
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[\w+=,.@-]{1,64}$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\w+=,.@-]{1,64}$`),
 					attribute.Expr.Range(),
 				)
 			}

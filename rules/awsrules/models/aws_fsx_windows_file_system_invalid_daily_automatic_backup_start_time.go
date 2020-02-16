@@ -77,7 +77,7 @@ func (r *AwsFsxWindowsFileSystemInvalidDailyAutomaticBackupStartTimeRule) Check(
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^([01]\d|2[0-3]):?([0-5]\d)$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^([01]\d|2[0-3]):?([0-5]\d)$`),
 					attribute.Expr.Range(),
 				)
 			}

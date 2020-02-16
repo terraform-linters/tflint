@@ -59,7 +59,7 @@ func (r *AwsCloudhsmV2HsmInvalidIPAddressRule) Check(runner *tflint.Runner) erro
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`),
 					attribute.Expr.Range(),
 				)
 			}

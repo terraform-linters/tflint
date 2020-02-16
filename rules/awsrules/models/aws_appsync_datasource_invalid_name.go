@@ -77,7 +77,7 @@ func (r *AwsAppsyncDatasourceInvalidNameRule) Check(runner *tflint.Runner) error
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[_A-Za-z][_0-9A-Za-z]*$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[_A-Za-z][_0-9A-Za-z]*$`),
 					attribute.Expr.Range(),
 				)
 			}

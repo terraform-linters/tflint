@@ -67,7 +67,7 @@ func (r *AwsEc2TransitGatewayVpcAttachmentInvalidDNSSupportRule) Check(runner *t
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as dns_support`, val),
+					fmt.Sprintf(`"%s" is an invalid value as dns_support`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

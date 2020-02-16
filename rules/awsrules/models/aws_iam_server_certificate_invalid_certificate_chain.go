@@ -77,7 +77,7 @@ func (r *AwsIAMServerCertificateInvalidCertificateChainRule) Check(runner *tflin
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[\x{0009}\x{000A}\x{000D}\x{0020}-\x{00FF}]+$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\x{0009}\x{000A}\x{000D}\x{0020}-\x{00FF}]+$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -77,7 +77,7 @@ func (r *AwsLambdaAliasInvalidFunctionVersionRule) Check(runner *tflint.Runner) 
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^(\$LATEST|[0-9]+)$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^(\$LATEST|[0-9]+)$`),
 					attribute.Expr.Range(),
 				)
 			}

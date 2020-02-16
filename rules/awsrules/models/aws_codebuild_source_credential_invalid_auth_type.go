@@ -68,7 +68,7 @@ func (r *AwsCodebuildSourceCredentialInvalidAuthTypeRule) Check(runner *tflint.R
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as auth_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as auth_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

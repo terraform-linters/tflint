@@ -68,7 +68,7 @@ func (r *AwsLbTargetGroupInvalidTargetTypeRule) Check(runner *tflint.Runner) err
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as target_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as target_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -59,7 +59,7 @@ func (r *AwsGameliftFleetInvalidBuildIDRule) Check(runner *tflint.Runner) error 
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^build-\S+|^arn:.*:build\/build-\S+`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^build-\S+|^arn:.*:build\/build-\S+`),
 					attribute.Expr.Range(),
 				)
 			}

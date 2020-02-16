@@ -68,7 +68,7 @@ func (r *AwsCodepipelineWebhookInvalidAuthenticationRule) Check(runner *tflint.R
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as authentication`, val),
+					fmt.Sprintf(`"%s" is an invalid value as authentication`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

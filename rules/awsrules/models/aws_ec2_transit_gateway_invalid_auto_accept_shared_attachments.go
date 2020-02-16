@@ -67,7 +67,7 @@ func (r *AwsEc2TransitGatewayInvalidAutoAcceptSharedAttachmentsRule) Check(runne
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as auto_accept_shared_attachments`, val),
+					fmt.Sprintf(`"%s" is an invalid value as auto_accept_shared_attachments`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

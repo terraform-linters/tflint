@@ -67,7 +67,7 @@ func (r *AwsEfsFileSystemInvalidPerformanceModeRule) Check(runner *tflint.Runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as performance_mode`, val),
+					fmt.Sprintf(`"%s" is an invalid value as performance_mode`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

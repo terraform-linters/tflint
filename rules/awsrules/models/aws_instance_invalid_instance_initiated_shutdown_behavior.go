@@ -67,7 +67,7 @@ func (r *AwsInstanceInvalidInstanceInitiatedShutdownBehaviorRule) Check(runner *
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as instance_initiated_shutdown_behavior`, val),
+					fmt.Sprintf(`"%s" is an invalid value as instance_initiated_shutdown_behavior`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

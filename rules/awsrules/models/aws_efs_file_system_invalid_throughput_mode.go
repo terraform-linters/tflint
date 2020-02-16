@@ -67,7 +67,7 @@ func (r *AwsEfsFileSystemInvalidThroughputModeRule) Check(runner *tflint.Runner)
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as throughput_mode`, val),
+					fmt.Sprintf(`"%s" is an invalid value as throughput_mode`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -71,7 +71,7 @@ func (r *AwsSsmPatchBaselineInvalidApprovedPatchesComplianceLevelRule) Check(run
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as approved_patches_compliance_level`, val),
+					fmt.Sprintf(`"%s" is an invalid value as approved_patches_compliance_level`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

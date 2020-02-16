@@ -67,7 +67,7 @@ func (r *AwsEc2FleetInvalidExcessCapacityTerminationPolicyRule) Check(runner *tf
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as excess_capacity_termination_policy`, val),
+					fmt.Sprintf(`"%s" is an invalid value as excess_capacity_termination_policy`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

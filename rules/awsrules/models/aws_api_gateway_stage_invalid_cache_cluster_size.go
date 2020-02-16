@@ -73,7 +73,7 @@ func (r *AwsAPIGatewayStageInvalidCacheClusterSizeRule) Check(runner *tflint.Run
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as cache_cluster_size`, val),
+					fmt.Sprintf(`"%s" is an invalid value as cache_cluster_size`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

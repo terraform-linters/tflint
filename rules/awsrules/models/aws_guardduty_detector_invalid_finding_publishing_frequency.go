@@ -68,7 +68,7 @@ func (r *AwsGuarddutyDetectorInvalidFindingPublishingFrequencyRule) Check(runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as finding_publishing_frequency`, val),
+					fmt.Sprintf(`"%s" is an invalid value as finding_publishing_frequency`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

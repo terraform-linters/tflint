@@ -67,7 +67,7 @@ func (r *AwsGameliftFleetInvalidNewGameSessionProtectionPolicyRule) Check(runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as new_game_session_protection_policy`, val),
+					fmt.Sprintf(`"%s" is an invalid value as new_game_session_protection_policy`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

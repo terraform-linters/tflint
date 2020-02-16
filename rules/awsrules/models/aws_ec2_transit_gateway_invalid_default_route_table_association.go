@@ -67,7 +67,7 @@ func (r *AwsEc2TransitGatewayInvalidDefaultRouteTableAssociationRule) Check(runn
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as default_route_table_association`, val),
+					fmt.Sprintf(`"%s" is an invalid value as default_route_table_association`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -59,7 +59,7 @@ func (r *AwsMacieS3BucketAssociationInvalidMemberAccountIDRule) Check(runner *tf
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[0-9]{12}$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[0-9]{12}$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -68,7 +68,7 @@ func (r *AwsEc2FleetInvalidTypeRule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

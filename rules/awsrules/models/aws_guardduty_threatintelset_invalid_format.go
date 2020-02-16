@@ -89,7 +89,7 @@ func (r *AwsGuarddutyThreatintelsetInvalidFormatRule) Check(runner *tflint.Runne
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as format`, val),
+					fmt.Sprintf(`"%s" is an invalid value as format`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

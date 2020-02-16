@@ -72,7 +72,7 @@ func (r *AwsStoragegatewayNfsFileShareInvalidObjectACLRule) Check(runner *tflint
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as object_acl`, val),
+					fmt.Sprintf(`"%s" is an invalid value as object_acl`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

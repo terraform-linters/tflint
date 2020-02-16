@@ -59,7 +59,7 @@ func (r *AwsCloudhsmV2HsmInvalidClusterIDRule) Check(runner *tflint.Runner) erro
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^cluster-[2-7a-zA-Z]{11,16}$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^cluster-[2-7a-zA-Z]{11,16}$`),
 					attribute.Expr.Range(),
 				)
 			}

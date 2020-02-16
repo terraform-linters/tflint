@@ -66,7 +66,7 @@ func (r *AwsWafregionalRateBasedRuleInvalidRateKeyRule) Check(runner *tflint.Run
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as rate_key`, val),
+					fmt.Sprintf(`"%s" is an invalid value as rate_key`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

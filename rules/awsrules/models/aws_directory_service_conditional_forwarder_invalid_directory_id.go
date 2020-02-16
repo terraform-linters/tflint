@@ -59,7 +59,7 @@ func (r *AwsDirectoryServiceConditionalForwarderInvalidDirectoryIDRule) Check(ru
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^d-[0-9a-f]{10}$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^d-[0-9a-f]{10}$`),
 					attribute.Expr.Range(),
 				)
 			}

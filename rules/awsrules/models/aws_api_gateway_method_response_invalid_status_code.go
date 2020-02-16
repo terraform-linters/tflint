@@ -59,7 +59,7 @@ func (r *AwsAPIGatewayMethodResponseInvalidStatusCodeRule) Check(runner *tflint.
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[1-5]\d\d$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[1-5]\d\d$`),
 					attribute.Expr.Range(),
 				)
 			}

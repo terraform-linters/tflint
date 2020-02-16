@@ -67,7 +67,7 @@ func (r *AwsBatchJobQueueInvalidStateRule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as state`, val),
+					fmt.Sprintf(`"%s" is an invalid value as state`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

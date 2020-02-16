@@ -76,7 +76,7 @@ func (r *AwsCurReportDefinitionInvalidS3RegionRule) Check(runner *tflint.Runner)
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as s3_region`, val),
+					fmt.Sprintf(`"%s" is an invalid value as s3_region`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

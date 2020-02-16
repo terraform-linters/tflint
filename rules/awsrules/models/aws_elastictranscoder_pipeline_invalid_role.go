@@ -59,7 +59,7 @@ func (r *AwsElastictranscoderPipelineInvalidRoleRule) Check(runner *tflint.Runne
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^arn:aws:iam::\w{12}:role/.+$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^arn:aws:iam::\w{12}:role/.+$`),
 					attribute.Expr.Range(),
 				)
 			}

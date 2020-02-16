@@ -77,7 +77,7 @@ func (r *AwsIAMGroupInvalidPathRule) Check(runner *tflint.Runner) error {
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^(\x{002F})|(\x{002F}[\x{0021}-\x{007F}]+\x{002F})$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^(\x{002F})|(\x{002F}[\x{0021}-\x{007F}]+\x{002F})$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -67,7 +67,7 @@ func (r *AwsCloudfrontDistributionInvalidHTTPVersionRule) Check(runner *tflint.R
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as http_version`, val),
+					fmt.Sprintf(`"%s" is an invalid value as http_version`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

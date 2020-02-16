@@ -67,7 +67,7 @@ func (r *AwsMqBrokerInvalidDeploymentModeRule) Check(runner *tflint.Runner) erro
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as deployment_mode`, val),
+					fmt.Sprintf(`"%s" is an invalid value as deployment_mode`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

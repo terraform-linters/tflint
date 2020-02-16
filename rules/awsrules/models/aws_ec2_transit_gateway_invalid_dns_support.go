@@ -67,7 +67,7 @@ func (r *AwsEc2TransitGatewayInvalidDNSSupportRule) Check(runner *tflint.Runner)
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as dns_support`, val),
+					fmt.Sprintf(`"%s" is an invalid value as dns_support`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

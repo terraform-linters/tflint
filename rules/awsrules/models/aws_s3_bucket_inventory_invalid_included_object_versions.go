@@ -67,7 +67,7 @@ func (r *AwsS3BucketInventoryInvalidIncludedObjectVersionsRule) Check(runner *tf
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as included_object_versions`, val),
+					fmt.Sprintf(`"%s" is an invalid value as included_object_versions`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -67,7 +67,7 @@ func (r *AwsS3BucketObjectInvalidServerSideEncryptionRule) Check(runner *tflint.
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as server_side_encryption`, val),
+					fmt.Sprintf(`"%s" is an invalid value as server_side_encryption`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

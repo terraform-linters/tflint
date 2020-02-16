@@ -68,7 +68,7 @@ func (r *AwsSpotFleetRequestInvalidFleetTypeRule) Check(runner *tflint.Runner) e
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as fleet_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as fleet_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

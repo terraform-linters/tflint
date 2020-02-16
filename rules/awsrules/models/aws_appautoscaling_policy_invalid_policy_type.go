@@ -67,7 +67,7 @@ func (r *AwsAppautoscalingPolicyInvalidPolicyTypeRule) Check(runner *tflint.Runn
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as policy_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as policy_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

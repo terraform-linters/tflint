@@ -67,7 +67,7 @@ func (r *AwsEc2CapacityReservationInvalidInstanceMatchCriteriaRule) Check(runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as instance_match_criteria`, val),
+					fmt.Sprintf(`"%s" is an invalid value as instance_match_criteria`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

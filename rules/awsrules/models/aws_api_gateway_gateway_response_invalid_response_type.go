@@ -85,7 +85,7 @@ func (r *AwsAPIGatewayGatewayResponseInvalidResponseTypeRule) Check(runner *tfli
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as response_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as response_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

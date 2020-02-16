@@ -68,7 +68,7 @@ func (r *AwsCodedeployAppInvalidComputePlatformRule) Check(runner *tflint.Runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as compute_platform`, val),
+					fmt.Sprintf(`"%s" is an invalid value as compute_platform`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

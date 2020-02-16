@@ -59,7 +59,7 @@ func (r *AwsCloudwatchMetricAlarmInvalidExtendedStatisticRule) Check(runner *tfl
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^p(\d{1,2}(\.\d{0,2})?|100)$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^p(\d{1,2}(\.\d{0,2})?|100)$`),
 					attribute.Expr.Range(),
 				)
 			}

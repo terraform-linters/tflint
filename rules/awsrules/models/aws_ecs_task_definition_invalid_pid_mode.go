@@ -67,7 +67,7 @@ func (r *AwsEcsTaskDefinitionInvalidPidModeRule) Check(runner *tflint.Runner) er
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as pid_mode`, val),
+					fmt.Sprintf(`"%s" is an invalid value as pid_mode`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

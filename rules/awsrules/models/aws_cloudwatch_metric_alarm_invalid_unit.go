@@ -92,7 +92,7 @@ func (r *AwsCloudwatchMetricAlarmInvalidUnitRule) Check(runner *tflint.Runner) e
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as unit`, val),
+					fmt.Sprintf(`"%s" is an invalid value as unit`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

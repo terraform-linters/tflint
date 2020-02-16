@@ -67,7 +67,7 @@ func (r *AwsOrganizationsOrganizationInvalidFeatureSetRule) Check(runner *tflint
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as feature_set`, val),
+					fmt.Sprintf(`"%s" is an invalid value as feature_set`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -69,7 +69,7 @@ func (r *AwsDmsEndpointInvalidSslModeRule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as ssl_mode`, val),
+					fmt.Sprintf(`"%s" is an invalid value as ssl_mode`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

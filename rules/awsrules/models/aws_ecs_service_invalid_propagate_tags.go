@@ -67,7 +67,7 @@ func (r *AwsEcsServiceInvalidPropagateTagsRule) Check(runner *tflint.Runner) err
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as propagate_tags`, val),
+					fmt.Sprintf(`"%s" is an invalid value as propagate_tags`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

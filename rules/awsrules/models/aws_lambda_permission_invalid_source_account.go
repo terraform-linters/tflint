@@ -59,7 +59,7 @@ func (r *AwsLambdaPermissionInvalidSourceAccountRule) Check(runner *tflint.Runne
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^\d{12}$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^\d{12}$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -67,7 +67,7 @@ func (r *AwsOpsworksInstanceInvalidArchitectureRule) Check(runner *tflint.Runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as architecture`, val),
+					fmt.Sprintf(`"%s" is an invalid value as architecture`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

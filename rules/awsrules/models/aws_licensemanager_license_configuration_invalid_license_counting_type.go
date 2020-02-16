@@ -69,7 +69,7 @@ func (r *AwsLicensemanagerLicenseConfigurationInvalidLicenseCountingTypeRule) Ch
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as license_counting_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as license_counting_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -68,7 +68,7 @@ func (r *AwsSsmParameterInvalidTierRule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as tier`, val),
+					fmt.Sprintf(`"%s" is an invalid value as tier`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

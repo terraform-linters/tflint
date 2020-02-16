@@ -67,7 +67,7 @@ func (r *AwsEc2TransitGatewayInvalidDefaultRouteTablePropagationRule) Check(runn
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as default_route_table_propagation`, val),
+					fmt.Sprintf(`"%s" is an invalid value as default_route_table_propagation`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

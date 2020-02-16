@@ -70,7 +70,7 @@ func (r *AwsConfigOrganizationCustomRuleInvalidMaximumExecutionFrequencyRule) Ch
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as maximum_execution_frequency`, val),
+					fmt.Sprintf(`"%s" is an invalid value as maximum_execution_frequency`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

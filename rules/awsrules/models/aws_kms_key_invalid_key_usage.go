@@ -67,7 +67,7 @@ func (r *AwsKmsKeyInvalidKeyUsageRule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as key_usage`, val),
+					fmt.Sprintf(`"%s" is an invalid value as key_usage`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

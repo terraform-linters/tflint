@@ -78,7 +78,7 @@ func (r *AwsAppautoscalingPolicyInvalidScalableDimensionRule) Check(runner *tfli
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as scalable_dimension`, val),
+					fmt.Sprintf(`"%s" is an invalid value as scalable_dimension`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -67,7 +67,7 @@ func (r *AwsEc2ClientVpnEndpointInvalidTransportProtocolRule) Check(runner *tfli
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as transport_protocol`, val),
+					fmt.Sprintf(`"%s" is an invalid value as transport_protocol`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

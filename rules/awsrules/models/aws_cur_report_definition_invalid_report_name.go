@@ -68,7 +68,7 @@ func (r *AwsCurReportDefinitionInvalidReportNameRule) Check(runner *tflint.Runne
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[0-9A-Za-z!\-_.*\'()]+$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[0-9A-Za-z!\-_.*\'()]+$`),
 					attribute.Expr.Range(),
 				)
 			}

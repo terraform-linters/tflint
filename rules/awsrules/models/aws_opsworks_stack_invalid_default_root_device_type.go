@@ -67,7 +67,7 @@ func (r *AwsOpsworksStackInvalidDefaultRootDeviceTypeRule) Check(runner *tflint.
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as default_root_device_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as default_root_device_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

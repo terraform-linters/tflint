@@ -77,7 +77,7 @@ func (r *AwsCognitoIdentityPoolInvalidDeveloperProviderNameRule) Check(runner *t
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[\w._-]+$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\w._-]+$`),
 					attribute.Expr.Range(),
 				)
 			}

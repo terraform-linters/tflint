@@ -59,7 +59,7 @@ func (r *AwsSsmAssociationInvalidInstanceIDRule) Check(runner *tflint.Runner) er
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^(^i-(\w{8}|\w{17})$)|(^mi-\w{17}$)$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^(^i-(\w{8}|\w{17})$)|(^mi-\w{17}$)$`),
 					attribute.Expr.Range(),
 				)
 			}

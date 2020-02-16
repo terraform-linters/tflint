@@ -68,7 +68,7 @@ func (r *AwsDmsReplicationTaskInvalidMigrationTypeRule) Check(runner *tflint.Run
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as migration_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as migration_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

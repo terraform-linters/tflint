@@ -67,7 +67,7 @@ func (r *AwsEcsServiceInvalidLaunchTypeRule) Check(runner *tflint.Runner) error 
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as launch_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as launch_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

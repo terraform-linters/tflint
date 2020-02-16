@@ -68,7 +68,7 @@ func (r *AwsRoute53HealthCheckInvalidInsufficientDataHealthStatusRule) Check(run
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as insufficient_data_health_status`, val),
+					fmt.Sprintf(`"%s" is an invalid value as insufficient_data_health_status`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -68,7 +68,7 @@ func (r *AwsIAMRoleInvalidDescriptionRule) Check(runner *tflint.Runner) error {
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[\p{L}\p{M}\p{Z}\p{S}\p{N}\p{P}]*$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\p{L}\p{M}\p{Z}\p{S}\p{N}\p{P}]*$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -68,7 +68,7 @@ func (r *AwsGameliftBuildInvalidOperatingSystemRule) Check(runner *tflint.Runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as operating_system`, val),
+					fmt.Sprintf(`"%s" is an invalid value as operating_system`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

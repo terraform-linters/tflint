@@ -69,7 +69,7 @@ func (r *AwsAppsyncGraphqlAPIInvalidAuthenticationTypeRule) Check(runner *tflint
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as authentication_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as authentication_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

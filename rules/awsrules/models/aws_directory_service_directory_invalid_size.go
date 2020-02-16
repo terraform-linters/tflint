@@ -67,7 +67,7 @@ func (r *AwsDirectoryServiceDirectoryInvalidSizeRule) Check(runner *tflint.Runne
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as size`, val),
+					fmt.Sprintf(`"%s" is an invalid value as size`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -77,7 +77,7 @@ func (r *AwsCodepipelineWebhookInvalidNameRule) Check(runner *tflint.Runner) err
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[A-Za-z0-9.@\-_]+$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[A-Za-z0-9.@\-_]+$`),
 					attribute.Expr.Range(),
 				)
 			}

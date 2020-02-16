@@ -67,7 +67,7 @@ func (r *AwsEc2CapacityReservationInvalidTenancyRule) Check(runner *tflint.Runne
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as tenancy`, val),
+					fmt.Sprintf(`"%s" is an invalid value as tenancy`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

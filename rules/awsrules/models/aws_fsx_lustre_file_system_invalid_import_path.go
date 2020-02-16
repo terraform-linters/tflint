@@ -77,7 +77,7 @@ func (r *AwsFsxLustreFileSystemInvalidImportPathRule) Check(runner *tflint.Runne
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^.{3,900}$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^.{3,900}$`),
 					attribute.Expr.Range(),
 				)
 			}

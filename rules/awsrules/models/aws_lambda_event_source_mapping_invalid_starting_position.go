@@ -68,7 +68,7 @@ func (r *AwsLambdaEventSourceMappingInvalidStartingPositionRule) Check(runner *t
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as starting_position`, val),
+					fmt.Sprintf(`"%s" is an invalid value as starting_position`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

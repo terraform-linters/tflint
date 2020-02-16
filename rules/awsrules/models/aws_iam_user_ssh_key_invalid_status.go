@@ -67,7 +67,7 @@ func (r *AwsIAMUserSSHKeyInvalidStatusRule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as status`, val),
+					fmt.Sprintf(`"%s" is an invalid value as status`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

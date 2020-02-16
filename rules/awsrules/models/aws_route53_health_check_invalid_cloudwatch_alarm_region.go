@@ -104,7 +104,7 @@ func (r *AwsRoute53HealthCheckInvalidCloudwatchAlarmRegionRule) Check(runner *tf
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as cloudwatch_alarm_region`, val),
+					fmt.Sprintf(`"%s" is an invalid value as cloudwatch_alarm_region`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

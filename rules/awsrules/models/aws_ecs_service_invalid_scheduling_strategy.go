@@ -67,7 +67,7 @@ func (r *AwsEcsServiceInvalidSchedulingStrategyRule) Check(runner *tflint.Runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as scheduling_strategy`, val),
+					fmt.Sprintf(`"%s" is an invalid value as scheduling_strategy`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -59,7 +59,7 @@ func (r *AwsStoragegatewayCachedIscsiVolumeInvalidSnapshotIDRule) Check(runner *
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^\Asnap-([0-9A-Fa-f]{8}|[0-9A-Fa-f]{17})\z$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^\Asnap-([0-9A-Fa-f]{8}|[0-9A-Fa-f]{17})\z$`),
 					attribute.Expr.Range(),
 				)
 			}

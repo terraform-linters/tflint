@@ -66,7 +66,7 @@ func (r *AwsGlobalacceleratorAcceleratorInvalidIPAddressTypeRule) Check(runner *
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as ip_address_type`, val),
+					fmt.Sprintf(`"%s" is an invalid value as ip_address_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

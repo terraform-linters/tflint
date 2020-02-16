@@ -67,7 +67,7 @@ func (r *AwsIAMUserSSHKeyInvalidEncodingRule) Check(runner *tflint.Runner) error
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as encoding`, val),
+					fmt.Sprintf(`"%s" is an invalid value as encoding`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

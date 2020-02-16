@@ -67,7 +67,7 @@ func (r *AwsRoute53ResolverEndpointInvalidDirectionRule) Check(runner *tflint.Ru
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as direction`, val),
+					fmt.Sprintf(`"%s" is an invalid value as direction`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

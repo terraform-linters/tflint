@@ -103,7 +103,7 @@ func (r *AwsRoute53ZoneAssociationInvalidVpcRegionRule) Check(runner *tflint.Run
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as vpc_region`, val),
+					fmt.Sprintf(`"%s" is an invalid value as vpc_region`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

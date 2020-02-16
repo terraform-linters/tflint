@@ -77,7 +77,7 @@ func (r *AwsTransferServerInvalidLoggingRoleRule) Check(runner *tflint.Runner) e
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^arn:.*role/.*$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^arn:.*role/.*$`),
 					attribute.Expr.Range(),
 				)
 			}

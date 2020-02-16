@@ -67,7 +67,7 @@ func (r *AwsSesDomainMailFromInvalidBehaviorOnMxFailureRule) Check(runner *tflin
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as behavior_on_mx_failure`, val),
+					fmt.Sprintf(`"%s" is an invalid value as behavior_on_mx_failure`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

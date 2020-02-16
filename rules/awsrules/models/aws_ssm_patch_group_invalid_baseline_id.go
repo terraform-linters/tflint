@@ -77,7 +77,7 @@ func (r *AwsSsmPatchGroupInvalidBaselineIDRule) Check(runner *tflint.Runner) err
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[a-zA-Z0-9_\-:/]{20,128}$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-zA-Z0-9_\-:/]{20,128}$`),
 					attribute.Expr.Range(),
 				)
 			}

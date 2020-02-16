@@ -68,7 +68,7 @@ func (r *AwsResourcegroupsGroupInvalidDescriptionRule) Check(runner *tflint.Runn
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[\sa-zA-Z0-9_\.-]*$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\sa-zA-Z0-9_\.-]*$`),
 					attribute.Expr.Range(),
 				)
 			}

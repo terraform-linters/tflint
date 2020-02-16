@@ -77,7 +77,7 @@ func (r *AwsCognitoIdentityPoolRolesAttachmentInvalidIdentityPoolIDRule) Check(r
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[\w-]+:[0-9a-f-]+$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\w-]+:[0-9a-f-]+$`),
 					attribute.Expr.Range(),
 				)
 			}

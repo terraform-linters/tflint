@@ -77,7 +77,7 @@ func (r *AwsStoragegatewayCachedIscsiVolumeInvalidTargetNameRule) Check(runner *
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[-\.;a-z0-9]+$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[-\.;a-z0-9]+$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -67,7 +67,7 @@ func (r *AwsS3BucketInvalidRequestPayerRule) Check(runner *tflint.Runner) error 
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as request_payer`, val),
+					fmt.Sprintf(`"%s" is an invalid value as request_payer`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

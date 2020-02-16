@@ -77,7 +77,7 @@ func (r *AwsCognitoResourceServerInvalidIdentifierRule) Check(runner *tflint.Run
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `^[\x21\x23-\x5B\x5D-\x7E]+$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\x21\x23-\x5B\x5D-\x7E]+$`),
 					attribute.Expr.Range(),
 				)
 			}

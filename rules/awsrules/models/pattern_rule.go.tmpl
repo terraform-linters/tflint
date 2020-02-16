@@ -110,7 +110,7 @@ func (r *{{ .RuleNameCC }}Rule) Check(runner *tflint.Runner) error {
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, val, `{{ .Pattern }}`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `{{ .Pattern }}`),
 					attribute.Expr.Range(),
 				)
 			}
@@ -126,7 +126,7 @@ func (r *{{ .RuleNameCC }}Rule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as {{ .AttributeName }}`, val),
+					fmt.Sprintf(`"%s" is an invalid value as {{ .AttributeName }}`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

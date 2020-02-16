@@ -68,7 +68,7 @@ func (r *AwsSpotInstanceRequestInvalidInstanceInterruptionBehaviourRule) Check(r
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as instance_interruption_behaviour`, val),
+					fmt.Sprintf(`"%s" is an invalid value as instance_interruption_behaviour`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

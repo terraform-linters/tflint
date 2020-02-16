@@ -68,7 +68,7 @@ func (r *AwsPlacementGroupInvalidStrategyRule) Check(runner *tflint.Runner) erro
 			if !found {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" is an invalid value as strategy`, val),
+					fmt.Sprintf(`"%s" is an invalid value as strategy`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}
