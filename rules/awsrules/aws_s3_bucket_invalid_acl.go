@@ -1,6 +1,7 @@
 package awsrules
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -68,7 +69,7 @@ func (r *AwsS3BucketInvalidACLRule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					`acl is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as acl`, val),
 					attribute.Expr.Range(),
 				)
 			}
