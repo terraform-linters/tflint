@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"sort"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -27,26 +26,17 @@ func main() {
 
 	for k, v := range awsProvider.ResourcesMap {
 		if _, ok := v.Schema["tags"]; ok {
-			ruleName := "aws_resource_tags_" + k
-			meta := &tagRuleMeta{
-				RuleName:     ruleName,
-				ResourceName: utils.ToCamel(k),
-				ResourceType: k,
-			}
-			utils.GenerateFile(
-				fmt.Sprintf("../rules/awsrules/tags/%s.go", ruleName),
-				"../rules/awsrules/tags/aws_resource_tags.go.tmpl",
-				meta,
-			)
-
-			providerMeta.ResourceNames = append(providerMeta.ResourceNames, utils.ToCamel(k))
+			providerMeta.ResourceNames = append(providerMeta.ResourceNames, k)
 		}
 	}
 
 	sort.Strings(providerMeta.ResourceNames)
+
+	templateFile := "../rules/provider_aws_tags.go.tmpl"
+	providerFile := "../rules/provider_aws_tags.go"
 	utils.GenerateFile(
-		"../rules/provider_tags.go",
-		"../rules/provider_tags.go.tmpl",
+		providerFile,
+		templateFile,
 		providerMeta,
 	)
 }

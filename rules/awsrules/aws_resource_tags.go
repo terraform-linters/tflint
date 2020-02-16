@@ -1,51 +1,61 @@
-package tags
+package awsrules
 
 import (
 	"fmt"
-	"strings"
 	"sort"
+	"strings"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-// AwsDmsReplicationInstanceTagsRule checks whether the resource is tagged correctly
-type AwsDmsReplicationInstanceTagsRule struct {
+// TagsRule checks whether the resource is tagged correctly
+type TagsRule struct {
 	resourceType  string
 	attributeName string
+	ruleName      string
 }
 
+// NewTagsRules returns new rules for all resources that support tags
+func NewTagsRules(resourceTypes []string) []*TagsRule {
+	tagsRules := []*TagsRule{}
+	for _, resourceType := range resourceTypes {
+		tagsRules = append(tagsRules, newTagsRule(resourceType))
+	}
+	return tagsRules
+}
 
-// NewAwsDmsReplicationInstanceTagsRule returns new tags rule with default attributes
-func NewAwsDmsReplicationInstanceTagsRule() *AwsDmsReplicationInstanceTagsRule {
-	return &AwsDmsReplicationInstanceTagsRule{
-		resourceType:  "aws_dms_replication_instance",
+// newTagsRule returns new tags rule with default attributes
+func newTagsRule(resourceType string) *TagsRule {
+	return &TagsRule{
+		resourceType:  resourceType,
 		attributeName: "tags",
+		ruleName:      "aws_resource_tags_" + resourceType,
 	}
 }
 
 // Name returns the rule name
-func (r *AwsDmsReplicationInstanceTagsRule) Name() string {
-	return "aws_resource_tags_aws_dms_replication_instance"
+func (r *TagsRule) Name() string {
+	return r.ruleName
 }
 
 // Enabled returns whether the rule is enabled by default
-func (r *AwsDmsReplicationInstanceTagsRule) Enabled() bool {
+func (r *TagsRule) Enabled() bool {
 	return true
 }
 
 // Severity returns the rule severity
-func (r *AwsDmsReplicationInstanceTagsRule) Severity() string {
+func (r *TagsRule) Severity() string {
 	return tflint.ERROR
 }
 
 // Link returns the rule reference link
-func (r *AwsDmsReplicationInstanceTagsRule) Link() string {
+func (r *TagsRule) Link() string {
 	return ""
 }
 
 // Check checks for matching tags
-func (r *AwsDmsReplicationInstanceTagsRule) Check(runner *tflint.Runner) error {
+func (r *TagsRule) Check(runner *tflint.Runner) error {
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
 		var resourceTags map[string]string
 		err := runner.EvaluateExpr(attribute.Expr, &resourceTags)
