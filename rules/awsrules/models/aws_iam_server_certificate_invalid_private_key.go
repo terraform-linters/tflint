@@ -3,7 +3,6 @@
 package models
 
 import (
-	"fmt"
 	"log"
 	"regexp"
 
@@ -77,7 +76,7 @@ func (r *AwsIAMServerCertificateInvalidPrivateKeyRule) Check(runner *tflint.Runn
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\x{0009}\x{000A}\x{000D}\x{0020}-\x{00FF}]+$`),
+					`private_key does not match valid pattern ^[\x{0009}\x{000A}\x{000D}\x{0020}-\x{00FF}]+$`,
 					attribute.Expr.Range(),
 				)
 			}

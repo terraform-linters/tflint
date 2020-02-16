@@ -3,7 +3,7 @@
 package models
 
 import (
-{{- if or (ne .Pattern "") (ne (len .Enum) 0) }}
+{{- if and (or (ne .Pattern "") (ne (len .Enum) 0)) (ne .Sensitive true) }}
 	"fmt"
 {{- end }}
 	"log"
@@ -110,7 +110,11 @@ func (r *{{ .RuleNameCC }}Rule) Check(runner *tflint.Runner) error {
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
+{{- if .Sensitive }}
+					`{{ .AttributeName }} does not match valid pattern {{ .Pattern }}`,
+{{- else }}
 					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `{{ .Pattern }}`),
+{{- end }}
 					attribute.Expr.Range(),
 				)
 			}
@@ -126,7 +130,11 @@ func (r *{{ .RuleNameCC }}Rule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
+{{- if .Sensitive }}
+					`{{ .AttributeName }} is an invalid value`,
+{{- else }}
 					fmt.Sprintf(`"%s" is an invalid value as {{ .AttributeName }}`, truncateLongMessage(val)),
+{{- end }}
 					attribute.Expr.Range(),
 				)
 			}

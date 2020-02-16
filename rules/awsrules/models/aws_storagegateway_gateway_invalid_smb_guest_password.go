@@ -3,7 +3,6 @@
 package models
 
 import (
-	"fmt"
 	"log"
 	"regexp"
 
@@ -77,7 +76,7 @@ func (r *AwsStoragegatewayGatewayInvalidSmbGuestPasswordRule) Check(runner *tfli
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[ -~]+$`),
+					`smb_guest_password does not match valid pattern ^[ -~]+$`,
 					attribute.Expr.Range(),
 				)
 			}
