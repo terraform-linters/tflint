@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
 	homedir "github.com/mitchellh/go-homedir"
@@ -48,8 +49,9 @@ type Config struct {
 
 // RuleConfig is a TFLint's rule config
 type RuleConfig struct {
-	Name    string `hcl:"name,label"`
-	Enabled bool   `hcl:"enabled"`
+	Name    string   `hcl:"name,label"`
+	Enabled bool     `hcl:"enabled"`
+	Body    hcl.Body `hcl:",remain"`
 }
 
 // PluginConfig is a TFLint's plugin config

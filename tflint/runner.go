@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/terraform/addrs"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configschema"
@@ -678,6 +679,17 @@ func (r *Runner) WithExpressionContext(expr hcl.Expression, proc func() error) e
 	err := proc()
 	r.currentExpr = nil
 	return err
+}
+
+// DecodeRuleConfig extracts the rule's configuration into the given value
+func (r *Runner) DecodeRuleConfig(ruleName string, val interface{}) error {
+	if rule, exists := r.config.Rules[ruleName]; exists {
+		diags := gohcl.DecodeBody(rule.Body, nil, val)
+		if diags.HasErrors() {
+			return diags
+		}
+	}
+	return nil
 }
 
 func (r *Runner) emitIssue(issue *Issue) {
