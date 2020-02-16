@@ -23,7 +23,7 @@ resource "aws_lb_target_group" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsLbTargetGroupInvalidTargetTypeRule(),
-					Message: `target_type is not a valid value`,
+					Message: `"container" is an invalid value as target_type`,
 				},
 			},
 		},

@@ -1,6 +1,7 @@
 package awsrules
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -64,7 +65,7 @@ func (r *AwsSpotFleetRequestInvalidExcessCapacityTerminationPolicyRule) Check(ru
 			if !found {
 				runner.EmitIssue(
 					r,
-					`excess_capacity_termination_policy is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as excess_capacity_termination_policy`, val),
 					attribute.Expr.Range(),
 				)
 			}

@@ -23,7 +23,7 @@ resource "aws_cognito_identity_provider" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCognitoIdentityProviderInvalidProviderTypeRule(),
-					Message: `provider_type is not a valid value`,
+					Message: `"Apple" is an invalid value as provider_type`,
 				},
 			},
 		},

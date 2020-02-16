@@ -23,7 +23,7 @@ resource "aws_dlm_lifecycle_policy" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDlmLifecyclePolicyInvalidStateRule(),
-					Message: `state is not a valid value`,
+					Message: `"ERROR" is an invalid value as state`,
 				},
 			},
 		},

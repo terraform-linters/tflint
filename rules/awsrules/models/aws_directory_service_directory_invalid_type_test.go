@@ -23,7 +23,7 @@ resource "aws_directory_service_directory" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDirectoryServiceDirectoryInvalidTypeRule(),
-					Message: `type is not a valid value`,
+					Message: `"ActiveDirectory" is an invalid value as type`,
 				},
 			},
 		},

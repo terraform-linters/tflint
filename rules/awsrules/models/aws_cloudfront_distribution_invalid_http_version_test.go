@@ -23,7 +23,7 @@ resource "aws_cloudfront_distribution" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudfrontDistributionInvalidHTTPVersionRule(),
-					Message: `http_version is not a valid value`,
+					Message: `"http1.2" is an invalid value as http_version`,
 				},
 			},
 		},

@@ -23,7 +23,7 @@ resource "aws_ecs_service" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEcsServiceInvalidLaunchTypeRule(),
-					Message: `launch_type is not a valid value`,
+					Message: `"POD" is an invalid value as launch_type`,
 				},
 			},
 		},

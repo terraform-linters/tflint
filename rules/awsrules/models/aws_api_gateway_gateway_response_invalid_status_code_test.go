@@ -23,7 +23,7 @@ resource "aws_api_gateway_gateway_response" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsAPIGatewayGatewayResponseInvalidStatusCodeRule(),
-					Message: `status_code does not match valid pattern ^[1-5]\d\d$`,
+					Message: `"004" does not match valid pattern ^[1-5]\d\d$`,
 				},
 			},
 		},

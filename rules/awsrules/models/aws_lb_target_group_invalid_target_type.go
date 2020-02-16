@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsLbTargetGroupInvalidTargetTypeRule) Check(runner *tflint.Runner) err
 			if !found {
 				runner.EmitIssue(
 					r,
-					`target_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as target_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

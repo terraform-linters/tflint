@@ -23,7 +23,7 @@ resource "aws_codepipeline" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCodepipelineInvalidRoleArnRule(),
-					Message: `role_arn does not match valid pattern ^arn:aws(-[\w]+)*:iam::[0-9]{12}:role/.*$`,
+					Message: `"arn:aws:iam::123456789012:instance-profile/s3access-profile" does not match valid pattern ^arn:aws(-[\w]+)*:iam::[0-9]{12}:role/.*$`,
 				},
 			},
 		},

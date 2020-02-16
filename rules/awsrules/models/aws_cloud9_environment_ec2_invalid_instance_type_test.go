@@ -23,7 +23,7 @@ resource "aws_cloud9_environment_ec2" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloud9EnvironmentEc2InvalidInstanceTypeRule(),
-					Message: `instance_type does not match valid pattern ^[a-z][1-9][.][a-z0-9]+$`,
+					Message: `"t20.micro" does not match valid pattern ^[a-z][1-9][.][a-z0-9]+$`,
 				},
 			},
 		},

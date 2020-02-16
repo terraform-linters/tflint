@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsSsmMaintenanceWindowTargetInvalidWindowIDRule) Check(runner *tflint.
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`window_id does not match valid pattern ^mw-[0-9a-f]{17}$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^mw-[0-9a-f]{17}$`),
 					attribute.Expr.Range(),
 				)
 			}

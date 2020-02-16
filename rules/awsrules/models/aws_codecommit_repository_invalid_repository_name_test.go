@@ -23,7 +23,7 @@ resource "aws_codecommit_repository" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCodecommitRepositoryInvalidRepositoryNameRule(),
-					Message: `repository_name does not match valid pattern ^[\w\.-]+$`,
+					Message: `"mytest@repository" does not match valid pattern ^[\w\.-]+$`,
 				},
 			},
 		},

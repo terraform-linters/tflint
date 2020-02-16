@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -122,7 +123,7 @@ func (r *AwsGameliftFleetInvalidEc2InstanceTypeRule) Check(runner *tflint.Runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					`ec2_instance_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as ec2_instance_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

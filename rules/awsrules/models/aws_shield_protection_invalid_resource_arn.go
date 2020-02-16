@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsShieldProtectionInvalidResourceArnRule) Check(runner *tflint.Runner)
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`resource_arn does not match valid pattern ^arn:aws.*`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^arn:aws.*`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -24,10 +24,10 @@ resource "{{ .ResourceType }}" "foo" {
 				{
 					Rule:    New{{ .RuleNameCC }}Rule(),
 {{- if ne .Pattern "" }}
-					Message: `{{ .AttributeName }} does not match valid pattern {{ .Pattern }}`,
+					Message: `{{ .TestNG }} does not match valid pattern {{ .Pattern }}`,
 {{- end }}
 {{- if ne (len .Enum) 0 }}
-					Message: `{{ .AttributeName }} is not a valid value`,
+					Message: `{{ .TestNG }} is an invalid value as {{ .AttributeName }}`,
 {{- end }}
 				},
 			},

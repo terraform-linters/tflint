@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsCloud9EnvironmentEc2InvalidInstanceTypeRule) Check(runner *tflint.Ru
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`instance_type does not match valid pattern ^[a-z][1-9][.][a-z0-9]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-z][1-9][.][a-z0-9]+$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/terraform-linters/tflint/tools/utils"
 )
 
@@ -13,6 +14,7 @@ type ruleMeta struct {
 	RuleNameCC    string
 	ResourceType  string
 	AttributeName string
+	Sensitive     bool
 	Max           int
 	Min           int
 	Pattern       string
@@ -21,7 +23,7 @@ type ruleMeta struct {
 	TestNG        string
 }
 
-func generateRuleFile(resource, attribute string, model map[string]interface{}) {
+func generateRuleFile(resource, attribute string, model map[string]interface{}, schema *schema.Schema) {
 	ruleName := makeRuleName(resource, attribute)
 
 	meta := &ruleMeta{
@@ -29,6 +31,7 @@ func generateRuleFile(resource, attribute string, model map[string]interface{}) 
 		RuleNameCC:    utils.ToCamel(ruleName),
 		ResourceType:  resource,
 		AttributeName: attribute,
+		Sensitive:     schema.Sensitive,
 		Max:           fetchNumber(model, "max"),
 		Min:           fetchNumber(model, "min"),
 		Pattern:       replacePattern(fetchString(model, "pattern")),

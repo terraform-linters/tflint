@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -70,7 +71,7 @@ func (r *AwsBudgetsBudgetInvalidBudgetTypeRule) Check(runner *tflint.Runner) err
 			if !found {
 				runner.EmitIssue(
 					r,
-					`budget_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as budget_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

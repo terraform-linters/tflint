@@ -23,7 +23,7 @@ resource "aws_instance" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsInstanceInvalidTenancyRule(),
-					Message: `tenancy is not a valid value`,
+					Message: `"server" is an invalid value as tenancy`,
 				},
 			},
 		},

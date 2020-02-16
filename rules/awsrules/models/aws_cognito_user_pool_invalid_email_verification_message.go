@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsCognitoUserPoolInvalidEmailVerificationMessageRule) Check(runner *tf
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`email_verification_message does not match valid pattern ^[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]*\{####\}[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]*$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]*\{####\}[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]*$`),
 					attribute.Expr.Range(),
 				)
 			}

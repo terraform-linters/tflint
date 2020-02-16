@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsIAMRoleInvalidAssumeRolePolicyRule) Check(runner *tflint.Runner) err
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`assume_role_policy does not match valid pattern ^[\x{0009}\x{000A}\x{000D}\x{0020}-\x{00FF}]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\x{0009}\x{000A}\x{000D}\x{0020}-\x{00FF}]+$`),
 					attribute.Expr.Range(),
 				)
 			}

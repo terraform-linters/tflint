@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -58,7 +59,7 @@ func (r *AwsLightsailInstanceInvalidKeyPairNameRule) Check(runner *tflint.Runner
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`key_pair_name does not match valid pattern ^\w[\w\-]*\w$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^\w[\w\-]*\w$`),
 					attribute.Expr.Range(),
 				)
 			}

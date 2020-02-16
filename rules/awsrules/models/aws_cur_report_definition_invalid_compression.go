@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsCurReportDefinitionInvalidCompressionRule) Check(runner *tflint.Runn
 			if !found {
 				runner.EmitIssue(
 					r,
-					`compression is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as compression`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

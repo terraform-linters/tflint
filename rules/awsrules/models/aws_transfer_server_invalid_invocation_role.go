@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsTransferServerInvalidInvocationRoleRule) Check(runner *tflint.Runner
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`invocation_role does not match valid pattern ^arn:.*role/.*$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^arn:.*role/.*$`),
 					attribute.Expr.Range(),
 				)
 			}

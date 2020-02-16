@@ -23,7 +23,7 @@ resource "aws_api_gateway_gateway_response" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsAPIGatewayGatewayResponseInvalidResponseTypeRule(),
-					Message: `response_type is not a valid value`,
+					Message: `"4XX" is an invalid value as response_type`,
 				},
 			},
 		},

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsCloudwatchLogSubscriptionFilterInvalidLogGroupNameRule) Check(runner
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`log_group_name does not match valid pattern ^[\.\-_/#A-Za-z0-9]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\.\-_/#A-Za-z0-9]+$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -23,7 +23,7 @@ resource "aws_cloudwatch_metric_alarm" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchMetricAlarmInvalidStatisticRule(),
-					Message: `statistic is not a valid value`,
+					Message: `"Median" is an invalid value as statistic`,
 				},
 			},
 		},

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsEc2TransitGatewayInvalidDefaultRouteTablePropagationRule) Check(runn
 			if !found {
 				runner.EmitIssue(
 					r,
-					`default_route_table_propagation is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as default_route_table_propagation`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

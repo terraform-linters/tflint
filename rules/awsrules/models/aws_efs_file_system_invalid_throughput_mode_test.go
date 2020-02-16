@@ -23,7 +23,7 @@ resource "aws_efs_file_system" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEfsFileSystemInvalidThroughputModeRule(),
-					Message: `throughput_mode is not a valid value`,
+					Message: `"generalPurpose" is an invalid value as throughput_mode`,
 				},
 			},
 		},

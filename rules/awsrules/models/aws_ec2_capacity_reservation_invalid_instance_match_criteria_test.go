@@ -23,7 +23,7 @@ resource "aws_ec2_capacity_reservation" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEc2CapacityReservationInvalidInstanceMatchCriteriaRule(),
-					Message: `instance_match_criteria is not a valid value`,
+					Message: `"close" is an invalid value as instance_match_criteria`,
 				},
 			},
 		},

@@ -23,7 +23,7 @@ resource "aws_dynamodb_table" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDynamoDBTableInvalidStreamViewTypeRule(),
-					Message: `stream_view_type is not a valid value`,
+					Message: `"OLD_AND_NEW_IMAGE" is an invalid value as stream_view_type`,
 				},
 			},
 		},

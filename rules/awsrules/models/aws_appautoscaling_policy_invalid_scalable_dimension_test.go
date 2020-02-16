@@ -23,7 +23,7 @@ resource "aws_appautoscaling_policy" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsAppautoscalingPolicyInvalidScalableDimensionRule(),
-					Message: `scalable_dimension is not a valid value`,
+					Message: `"ecs:service:DesireCount" is an invalid value as scalable_dimension`,
 				},
 			},
 		},

@@ -23,7 +23,7 @@ resource "aws_cognito_identity_pool_roles_attachment" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCognitoIdentityPoolRolesAttachmentInvalidIdentityPoolIDRule(),
-					Message: `identity_pool_id does not match valid pattern ^[\w-]+:[0-9a-f-]+$`,
+					Message: `"0123456789" does not match valid pattern ^[\w-]+:[0-9a-f-]+$`,
 				},
 			},
 		},

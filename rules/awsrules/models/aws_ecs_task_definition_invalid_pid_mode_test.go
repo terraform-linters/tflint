@@ -23,7 +23,7 @@ resource "aws_ecs_task_definition" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEcsTaskDefinitionInvalidPidModeRule(),
-					Message: `pid_mode is not a valid value`,
+					Message: `"awsvpc" is an invalid value as pid_mode`,
 				},
 			},
 		},

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -58,7 +59,7 @@ func (r *AwsCloudhsmV2ClusterInvalidSourceBackupIdentifierRule) Check(runner *tf
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`source_backup_identifier does not match valid pattern ^backup-[2-7a-zA-Z]{11,16}$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^backup-[2-7a-zA-Z]{11,16}$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -6,7 +6,7 @@
         "severity": "error",
         "link": ""
       },
-      "message": "instance_type is not a valid value",
+      "message": "\"default\" is an invalid value as instance_type",
       "range": {
         "filename": "template.tf",
         "start": {
@@ -26,7 +26,7 @@
         "severity": "error",
         "link": ""
       },
-      "message": "instance_type is not a valid value",
+      "message": "\"default_values_file\" is an invalid value as instance_type",
       "range": {
         "filename": "template.tf",
         "start": {
@@ -46,7 +46,7 @@
         "severity": "error",
         "link": ""
       },
-      "message": "instance_type is not a valid value",
+      "message": "\"auto_values_file\" is an invalid value as instance_type",
       "range": {
         "filename": "template.tf",
         "start": {
@@ -66,7 +66,7 @@
         "severity": "error",
         "link": ""
       },
-      "message": "instance_type is not a valid value",
+      "message": "\"values_file\" is an invalid value as instance_type",
       "range": {
         "filename": "template.tf",
         "start": {
@@ -86,7 +86,7 @@
         "severity": "error",
         "link": ""
       },
-      "message": "instance_type is not a valid value",
+      "message": "\"var\" is an invalid value as instance_type",
       "range": {
         "filename": "template.tf",
         "start": {

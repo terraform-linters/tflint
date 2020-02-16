@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -67,7 +68,7 @@ func (r *AwsIAMServiceLinkedRoleInvalidDescriptionRule) Check(runner *tflint.Run
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`description does not match valid pattern ^[\p{L}\p{M}\p{Z}\p{S}\p{N}\p{P}]*$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\p{L}\p{M}\p{Z}\p{S}\p{N}\p{P}]*$`),
 					attribute.Expr.Range(),
 				)
 			}

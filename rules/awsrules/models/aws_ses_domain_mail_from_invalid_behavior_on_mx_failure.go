@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsSesDomainMailFromInvalidBehaviorOnMxFailureRule) Check(runner *tflin
 			if !found {
 				runner.EmitIssue(
 					r,
-					`behavior_on_mx_failure is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as behavior_on_mx_failure`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -23,7 +23,7 @@ resource "aws_directory_service_conditional_forwarder" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDirectoryServiceConditionalForwarderInvalidDirectoryIDRule(),
-					Message: `directory_id does not match valid pattern ^d-[0-9a-f]{10}$`,
+					Message: `"1234567890" does not match valid pattern ^d-[0-9a-f]{10}$`,
 				},
 			},
 		},

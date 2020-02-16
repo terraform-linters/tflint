@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsRoute53ResolverRuleInvalidRuleTypeRule) Check(runner *tflint.Runner)
 			if !found {
 				runner.EmitIssue(
 					r,
-					`rule_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as rule_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

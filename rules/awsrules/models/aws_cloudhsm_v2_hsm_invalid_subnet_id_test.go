@@ -23,7 +23,7 @@ resource "aws_cloudhsm_v2_hsm" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudhsmV2HsmInvalidSubnetIDRule(),
-					Message: `subnet_id does not match valid pattern ^subnet-[0-9a-fA-F]{8,17}$`,
+					Message: `"0e358c43" does not match valid pattern ^subnet-[0-9a-fA-F]{8,17}$`,
 				},
 			},
 		},

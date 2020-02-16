@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsLambdaAliasInvalidFunctionVersionRule) Check(runner *tflint.Runner) 
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`function_version does not match valid pattern ^(\$LATEST|[0-9]+)$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^(\$LATEST|[0-9]+)$`),
 					attribute.Expr.Range(),
 				)
 			}

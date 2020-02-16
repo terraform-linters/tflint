@@ -23,7 +23,7 @@ resource "aws_directory_service_conditional_forwarder" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDirectoryServiceConditionalForwarderInvalidRemoteDomainNameRule(),
-					Message: `remote_domain_name does not match valid pattern ^([a-zA-Z0-9]+[\\.-])+([a-zA-Z0-9])+[.]?$`,
+					Message: `"example^com" does not match valid pattern ^([a-zA-Z0-9]+[\\.-])+([a-zA-Z0-9])+[.]?$`,
 				},
 			},
 		},

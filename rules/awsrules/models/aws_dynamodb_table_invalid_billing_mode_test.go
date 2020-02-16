@@ -23,7 +23,7 @@ resource "aws_dynamodb_table" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDynamoDBTableInvalidBillingModeRule(),
-					Message: `billing_mode is not a valid value`,
+					Message: `"FLEXIBLE" is an invalid value as billing_mode`,
 				},
 			},
 		},

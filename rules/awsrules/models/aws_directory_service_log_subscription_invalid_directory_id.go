@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -58,7 +59,7 @@ func (r *AwsDirectoryServiceLogSubscriptionInvalidDirectoryIDRule) Check(runner 
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`directory_id does not match valid pattern ^d-[0-9a-f]{10}$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^d-[0-9a-f]{10}$`),
 					attribute.Expr.Range(),
 				)
 			}

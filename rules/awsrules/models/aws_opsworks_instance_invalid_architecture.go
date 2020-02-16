@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsOpsworksInstanceInvalidArchitectureRule) Check(runner *tflint.Runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					`architecture is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as architecture`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

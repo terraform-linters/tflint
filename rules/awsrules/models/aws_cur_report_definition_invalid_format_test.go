@@ -23,7 +23,7 @@ resource "aws_cur_report_definition" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCurReportDefinitionInvalidFormatRule(),
-					Message: `format is not a valid value`,
+					Message: `"textORjson" is an invalid value as format`,
 				},
 			},
 		},

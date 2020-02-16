@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -67,7 +68,7 @@ func (r *AwsLambdaPermissionInvalidEventSourceTokenRule) Check(runner *tflint.Ru
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`event_source_token does not match valid pattern ^[a-zA-Z0-9._\-]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-zA-Z0-9._\-]+$`),
 					attribute.Expr.Range(),
 				)
 			}

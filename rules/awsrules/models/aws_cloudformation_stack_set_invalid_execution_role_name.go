@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsCloudformationStackSetInvalidExecutionRoleNameRule) Check(runner *tf
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`execution_role_name does not match valid pattern ^[a-zA-Z_0-9+=,.@-]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-zA-Z_0-9+=,.@-]+$`),
 					attribute.Expr.Range(),
 				)
 			}

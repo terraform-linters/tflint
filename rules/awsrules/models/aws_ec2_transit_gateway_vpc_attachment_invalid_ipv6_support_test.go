@@ -23,7 +23,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEc2TransitGatewayVpcAttachmentInvalidIpv6SupportRule(),
-					Message: `ipv6_support is not a valid value`,
+					Message: `"on" is an invalid value as ipv6_support`,
 				},
 			},
 		},

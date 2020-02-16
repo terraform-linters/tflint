@@ -23,7 +23,7 @@ resource "aws_cur_report_definition" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCurReportDefinitionInvalidTimeUnitRule(),
-					Message: `time_unit is not a valid value`,
+					Message: `"MONTHLY" is an invalid value as time_unit`,
 				},
 			},
 		},

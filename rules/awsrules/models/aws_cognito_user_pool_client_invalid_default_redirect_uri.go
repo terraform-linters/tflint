@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsCognitoUserPoolClientInvalidDefaultRedirectURIRule) Check(runner *tf
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`default_redirect_uri does not match valid pattern ^[\p{L}\p{M}\p{S}\p{N}\p{P}]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\p{L}\p{M}\p{S}\p{N}\p{P}]+$`),
 					attribute.Expr.Range(),
 				)
 			}

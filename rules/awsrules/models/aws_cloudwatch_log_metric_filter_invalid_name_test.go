@@ -23,7 +23,7 @@ resource "aws_cloudwatch_log_metric_filter" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchLogMetricFilterInvalidNameRule(),
-					Message: `name does not match valid pattern ^[^:*]*$`,
+					Message: `"MyAppAccessCount:prod" does not match valid pattern ^[^:*]*$`,
 				},
 			},
 		},

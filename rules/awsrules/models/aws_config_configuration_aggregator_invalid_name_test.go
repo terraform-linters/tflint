@@ -23,7 +23,7 @@ resource "aws_config_configuration_aggregator" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsConfigConfigurationAggregatorInvalidNameRule(),
-					Message: `name does not match valid pattern ^[\w\-]+$`,
+					Message: `"example.com" does not match valid pattern ^[\w\-]+$`,
 				},
 			},
 		},

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsEc2CapacityReservationInvalidEndDateTypeRule) Check(runner *tflint.R
 			if !found {
 				runner.EmitIssue(
 					r,
-					`end_date_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as end_date_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

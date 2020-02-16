@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -70,7 +71,7 @@ func (r *AwsLbListenerInvalidProtocolRule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					`protocol is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as protocol`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -23,7 +23,7 @@ resource "aws_acmpca_certificate_authority" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsAcmpcaCertificateAuthorityInvalidTypeRule(),
-					Message: `type is not a valid value`,
+					Message: `"ORDINATE" is an invalid value as type`,
 				},
 			},
 		},

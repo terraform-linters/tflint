@@ -23,7 +23,7 @@ resource "aws_cognito_resource_server" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCognitoResourceServerInvalidNameRule(),
-					Message: `name does not match valid pattern ^[\w\s+=,.@-]+$`,
+					Message: `"example/server" does not match valid pattern ^[\w\s+=,.@-]+$`,
 				},
 			},
 		},

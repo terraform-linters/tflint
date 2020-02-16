@@ -23,7 +23,7 @@ resource "aws_ec2_transit_gateway" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEc2TransitGatewayInvalidDefaultRouteTableAssociationRule(),
-					Message: `default_route_table_association is not a valid value`,
+					Message: `"false" is an invalid value as default_route_table_association`,
 				},
 			},
 		},

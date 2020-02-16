@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -58,7 +59,7 @@ func (r *AwsElastictranscoderPipelineInvalidOutputBucketRule) Check(runner *tfli
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`output_bucket does not match valid pattern ^(\w|\.|-){1,255}$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^(\w|\.|-){1,255}$`),
 					attribute.Expr.Range(),
 				)
 			}

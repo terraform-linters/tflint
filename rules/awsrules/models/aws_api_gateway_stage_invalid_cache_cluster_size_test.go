@@ -23,7 +23,7 @@ resource "aws_api_gateway_stage" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsAPIGatewayStageInvalidCacheClusterSizeRule(),
-					Message: `cache_cluster_size is not a valid value`,
+					Message: `"6.2" is an invalid value as cache_cluster_size`,
 				},
 			},
 		},

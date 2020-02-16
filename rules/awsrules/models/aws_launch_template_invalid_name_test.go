@@ -23,7 +23,7 @@ resource "aws_launch_template" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsLaunchTemplateInvalidNameRule(),
-					Message: `name does not match valid pattern ^[a-zA-Z0-9\(\)\.\-/_]+$`,
+					Message: `"foo[bar]" does not match valid pattern ^[a-zA-Z0-9\(\)\.\-/_]+$`,
 				},
 			},
 		},

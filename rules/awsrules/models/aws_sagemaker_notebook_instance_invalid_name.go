@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -67,7 +68,7 @@ func (r *AwsSagemakerNotebookInstanceInvalidNameRule) Check(runner *tflint.Runne
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`name does not match valid pattern ^[a-zA-Z0-9](-*[a-zA-Z0-9])*`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-zA-Z0-9](-*[a-zA-Z0-9])*`),
 					attribute.Expr.Range(),
 				)
 			}

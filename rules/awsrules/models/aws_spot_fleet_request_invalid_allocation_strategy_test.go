@@ -23,7 +23,7 @@ resource "aws_spot_fleet_request" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsSpotFleetRequestInvalidAllocationStrategyRule(),
-					Message: `allocation_strategy is not a valid value`,
+					Message: `"highestPrice" is an invalid value as allocation_strategy`,
 				},
 			},
 		},

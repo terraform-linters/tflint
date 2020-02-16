@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsCurReportDefinitionInvalidFormatRule) Check(runner *tflint.Runner) e
 			if !found {
 				runner.EmitIssue(
 					r,
-					`format is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as format`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

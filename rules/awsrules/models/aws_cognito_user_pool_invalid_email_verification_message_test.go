@@ -23,7 +23,7 @@ resource "aws_cognito_user_pool" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCognitoUserPoolInvalidEmailVerificationMessageRule(),
-					Message: `email_verification_message does not match valid pattern ^[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]*\{####\}[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]*$`,
+					Message: `"Verification code" does not match valid pattern ^[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]*\{####\}[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]*$`,
 				},
 			},
 		},

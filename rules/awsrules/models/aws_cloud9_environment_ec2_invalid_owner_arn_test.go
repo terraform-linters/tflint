@@ -23,7 +23,7 @@ resource "aws_cloud9_environment_ec2" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloud9EnvironmentEc2InvalidOwnerArnRule(),
-					Message: `owner_arn does not match valid pattern ^arn:aws:(iam|sts)::\d+:(root|(user\/[\w+=/:,.@-]{1,64}|federated-user\/[\w+=/:,.@-]{2,32}|assumed-role\/[\w+=/:,.@-]{1,64}\/[\w+=/:,.@-]{1,64}))$`,
+					Message: `"arn:aws:elasticbeanstalk:us-east-1:123456789012:environment/My App/MyEnvironment" does not match valid pattern ^arn:aws:(iam|sts)::\d+:(root|(user\/[\w+=/:,.@-]{1,64}|federated-user\/[\w+=/:,.@-]{2,32}|assumed-role\/[\w+=/:,.@-]{1,64}\/[\w+=/:,.@-]{1,64}))$`,
 				},
 			},
 		},

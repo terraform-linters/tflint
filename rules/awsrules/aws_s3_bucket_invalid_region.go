@@ -1,6 +1,7 @@
 package awsrules
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -84,7 +85,7 @@ func (r *AwsS3BucketInvalidRegionRule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					`region is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as region`, val),
 					attribute.Expr.Range(),
 				)
 			}

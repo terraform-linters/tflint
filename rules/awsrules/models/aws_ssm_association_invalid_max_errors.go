@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsSsmAssociationInvalidMaxErrorsRule) Check(runner *tflint.Runner) err
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`max_errors does not match valid pattern ^([1-9][0-9]*|[0]|[1-9][0-9]%|[0-9]%|100%)$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^([1-9][0-9]*|[0]|[1-9][0-9]%|[0-9]%|100%)$`),
 					attribute.Expr.Range(),
 				)
 			}

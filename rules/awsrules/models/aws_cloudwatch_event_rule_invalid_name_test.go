@@ -23,7 +23,7 @@ resource "aws_cloudwatch_event_rule" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchEventRuleInvalidNameRule(),
-					Message: `name does not match valid pattern ^[\.\-_A-Za-z0-9]+$`,
+					Message: `"capture aws sign in" does not match valid pattern ^[\.\-_A-Za-z0-9]+$`,
 				},
 			},
 		},

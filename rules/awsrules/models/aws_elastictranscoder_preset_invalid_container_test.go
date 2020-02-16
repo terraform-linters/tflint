@@ -23,7 +23,7 @@ resource "aws_elastictranscoder_preset" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsElastictranscoderPresetInvalidContainerRule(),
-					Message: `container does not match valid pattern ^(^mp4$)|(^ts$)|(^webm$)|(^mp3$)|(^flac$)|(^oga$)|(^ogg$)|(^fmp4$)|(^mpg$)|(^flv$)|(^gif$)|(^mxf$)|(^wav$)|(^mp2$)$`,
+					Message: `"mp1" does not match valid pattern ^(^mp4$)|(^ts$)|(^webm$)|(^mp3$)|(^flac$)|(^oga$)|(^ogg$)|(^fmp4$)|(^mpg$)|(^flv$)|(^gif$)|(^mxf$)|(^wav$)|(^mp2$)$`,
 				},
 			},
 		},

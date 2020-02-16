@@ -23,7 +23,7 @@ resource "aws_lb" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsLbInvalidIPAddressTypeRule(),
-					Message: `ip_address_type is not a valid value`,
+					Message: `"ipv6" is an invalid value as ip_address_type`,
 				},
 			},
 		},

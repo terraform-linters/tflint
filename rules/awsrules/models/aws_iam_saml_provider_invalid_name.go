@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsIAMSamlProviderInvalidNameRule) Check(runner *tflint.Runner) error {
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`name does not match valid pattern ^[\w._-]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\w._-]+$`),
 					attribute.Expr.Range(),
 				)
 			}

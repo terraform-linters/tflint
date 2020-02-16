@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsS3BucketObjectInvalidServerSideEncryptionRule) Check(runner *tflint.
 			if !found {
 				runner.EmitIssue(
 					r,
-					`server_side_encryption is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as server_side_encryption`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

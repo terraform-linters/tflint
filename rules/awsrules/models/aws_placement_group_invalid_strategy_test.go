@@ -23,7 +23,7 @@ resource "aws_placement_group" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsPlacementGroupInvalidStrategyRule(),
-					Message: `strategy is not a valid value`,
+					Message: `"instance" is an invalid value as strategy`,
 				},
 			},
 		},

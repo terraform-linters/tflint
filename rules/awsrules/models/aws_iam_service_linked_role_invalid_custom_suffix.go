@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsIAMServiceLinkedRoleInvalidCustomSuffixRule) Check(runner *tflint.Ru
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`custom_suffix does not match valid pattern ^[\w+=,.@-]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\w+=,.@-]+$`),
 					attribute.Expr.Range(),
 				)
 			}

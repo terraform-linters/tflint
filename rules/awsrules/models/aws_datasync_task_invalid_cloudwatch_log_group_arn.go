@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -67,7 +68,7 @@ func (r *AwsDatasyncTaskInvalidCloudwatchLogGroupArnRule) Check(runner *tflint.R
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`cloudwatch_log_group_arn does not match valid pattern ^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):logs:[a-z\-0-9]*:[0-9]{12}:log-group:([^:\*]*)$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):logs:[a-z\-0-9]*:[0-9]{12}:log-group:([^:\*]*)$`),
 					attribute.Expr.Range(),
 				)
 			}

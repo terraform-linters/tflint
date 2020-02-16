@@ -23,7 +23,7 @@ resource "aws_cloudwatch_metric_alarm" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudwatchMetricAlarmInvalidUnitRule(),
-					Message: `unit is not a valid value`,
+					Message: `"GB" is an invalid value as unit`,
 				},
 			},
 		},

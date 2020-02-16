@@ -23,7 +23,7 @@ resource "aws_ec2_capacity_reservation" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEc2CapacityReservationInvalidTenancyRule(),
-					Message: `tenancy is not a valid value`,
+					Message: `"reserved" is an invalid value as tenancy`,
 				},
 			},
 		},

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsGuarddutyDetectorInvalidFindingPublishingFrequencyRule) Check(runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					`finding_publishing_frequency is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as finding_publishing_frequency`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

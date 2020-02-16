@@ -23,7 +23,7 @@ resource "aws_codepipeline_webhook" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCodepipelineWebhookInvalidAuthenticationRule(),
-					Message: `authentication is not a valid value`,
+					Message: `"GITLAB_HMAC" is an invalid value as authentication`,
 				},
 			},
 		},

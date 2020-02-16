@@ -23,7 +23,7 @@ resource "aws_cloudformation_stack_set_instance" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudformationStackSetInstanceInvalidAccountIDRule(),
-					Message: `account_id does not match valid pattern ^[0-9]{12}$`,
+					Message: `"1234567890123" does not match valid pattern ^[0-9]{12}$`,
 				},
 			},
 		},

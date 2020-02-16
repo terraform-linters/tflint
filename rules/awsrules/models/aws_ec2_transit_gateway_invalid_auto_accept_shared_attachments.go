@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsEc2TransitGatewayInvalidAutoAcceptSharedAttachmentsRule) Check(runne
 			if !found {
 				runner.EmitIssue(
 					r,
-					`auto_accept_shared_attachments is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as auto_accept_shared_attachments`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

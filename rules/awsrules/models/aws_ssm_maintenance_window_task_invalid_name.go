@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsSsmMaintenanceWindowTaskInvalidNameRule) Check(runner *tflint.Runner
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`name does not match valid pattern ^[a-zA-Z0-9_\-.]{3,128}$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-zA-Z0-9_\-.]{3,128}$`),
 					attribute.Expr.Range(),
 				)
 			}

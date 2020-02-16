@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -58,7 +59,7 @@ func (r *AwsCloudhsmV2HsmInvalidAvailabilityZoneRule) Check(runner *tflint.Runne
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`availability_zone does not match valid pattern ^[a-z]{2}(-(gov))?-(east|west|north|south|central){1,2}-\d[a-z]$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-z]{2}(-(gov))?-(east|west|north|south|central){1,2}-\d[a-z]$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -23,7 +23,7 @@ resource "aws_ec2_transit_gateway" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEc2TransitGatewayInvalidDefaultRouteTablePropagationRule(),
-					Message: `default_route_table_propagation is not a valid value`,
+					Message: `"disabled" is an invalid value as default_route_table_propagation`,
 				},
 			},
 		},

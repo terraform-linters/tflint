@@ -23,7 +23,7 @@ resource "aws_datasync_location_nfs" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDatasyncLocationNfsInvalidServerHostnameRule(),
-					Message: `server_hostname does not match valid pattern ^(([a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9\-]*[A-Za-z0-9])$`,
+					Message: `"nfs^example^com" does not match valid pattern ^(([a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9\-]*[A-Za-z0-9])$`,
 				},
 			},
 		},

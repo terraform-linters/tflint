@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -77,7 +78,7 @@ func (r *AwsAppautoscalingPolicyInvalidScalableDimensionRule) Check(runner *tfli
 			if !found {
 				runner.EmitIssue(
 					r,
-					`scalable_dimension is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as scalable_dimension`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

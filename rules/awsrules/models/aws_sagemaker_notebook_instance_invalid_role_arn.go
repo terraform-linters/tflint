@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsSagemakerNotebookInstanceInvalidRoleArnRule) Check(runner *tflint.Ru
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`role_arn does not match valid pattern ^arn:aws[a-z\-]*:iam::\d{12}:role/?[a-zA-Z_0-9+=,.@\-_/]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^arn:aws[a-z\-]*:iam::\d{12}:role/?[a-zA-Z_0-9+=,.@\-_/]+$`),
 					attribute.Expr.Range(),
 				)
 			}

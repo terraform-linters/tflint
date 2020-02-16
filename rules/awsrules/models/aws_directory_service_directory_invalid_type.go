@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -68,7 +69,7 @@ func (r *AwsDirectoryServiceDirectoryInvalidTypeRule) Check(runner *tflint.Runne
 			if !found {
 				runner.EmitIssue(
 					r,
-					`type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsElasticsearchDomainPolicyInvalidDomainNameRule) Check(runner *tflint
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`domain_name does not match valid pattern ^[a-z][a-z0-9\-]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-z][a-z0-9\-]+$`),
 					attribute.Expr.Range(),
 				)
 			}

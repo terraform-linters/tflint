@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsCognitoUserPoolInvalidSmsAuthenticationMessageRule) Check(runner *tf
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`sms_authentication_message does not match valid pattern ^.*\{####\}.*$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^.*\{####\}.*$`),
 					attribute.Expr.Range(),
 				)
 			}

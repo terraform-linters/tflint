@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -68,7 +69,7 @@ func (r *AwsLicensemanagerLicenseConfigurationInvalidLicenseCountingTypeRule) Ch
 			if !found {
 				runner.EmitIssue(
 					r,
-					`license_counting_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as license_counting_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

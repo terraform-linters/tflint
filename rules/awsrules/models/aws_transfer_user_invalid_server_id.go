@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsTransferUserInvalidServerIDRule) Check(runner *tflint.Runner) error 
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`server_id does not match valid pattern ^s-([0-9a-f]{17})$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^s-([0-9a-f]{17})$`),
 					attribute.Expr.Range(),
 				)
 			}

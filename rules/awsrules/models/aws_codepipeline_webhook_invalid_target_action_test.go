@@ -23,7 +23,7 @@ resource "aws_codepipeline_webhook" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCodepipelineWebhookInvalidTargetActionRule(),
-					Message: `target_action does not match valid pattern ^[A-Za-z0-9.@\-_]+$`,
+					Message: `"Source/Example" does not match valid pattern ^[A-Za-z0-9.@\-_]+$`,
 				},
 			},
 		},

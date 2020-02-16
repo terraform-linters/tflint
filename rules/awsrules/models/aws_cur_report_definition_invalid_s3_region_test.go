@@ -23,7 +23,7 @@ resource "aws_cur_report_definition" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCurReportDefinitionInvalidS3RegionRule(),
-					Message: `s3_region is not a valid value`,
+					Message: `"us-gov-east-1" is an invalid value as s3_region`,
 				},
 			},
 		},

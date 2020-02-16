@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -67,7 +68,7 @@ func (r *AwsDatasyncLocationS3InvalidSubdirectoryRule) Check(runner *tflint.Runn
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`subdirectory does not match valid pattern ^[a-zA-Z0-9_\-\+\./\(\)\p{Zs}]*$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-zA-Z0-9_\-\+\./\(\)\p{Zs}]*$`),
 					attribute.Expr.Range(),
 				)
 			}

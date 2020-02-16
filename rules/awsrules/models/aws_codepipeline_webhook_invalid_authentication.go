@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -67,7 +68,7 @@ func (r *AwsCodepipelineWebhookInvalidAuthenticationRule) Check(runner *tflint.R
 			if !found {
 				runner.EmitIssue(
 					r,
-					`authentication is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as authentication`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

@@ -23,7 +23,7 @@ resource "aws_budgets_budget" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsBudgetsBudgetInvalidNameRule(),
-					Message: `name does not match valid pattern ^[^:\\]+$`,
+					Message: `"budget:ec2:monthly" does not match valid pattern ^[^:\\]+$`,
 				},
 			},
 		},

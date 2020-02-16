@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsIAMGroupPolicyInvalidPolicyRule) Check(runner *tflint.Runner) error 
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`policy does not match valid pattern ^[\x{0009}\x{000A}\x{000D}\x{0020}-\x{00FF}]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\x{0009}\x{000A}\x{000D}\x{0020}-\x{00FF}]+$`),
 					attribute.Expr.Range(),
 				)
 			}

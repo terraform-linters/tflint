@@ -23,7 +23,7 @@ resource "aws_cloudhsm_v2_hsm" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCloudhsmV2HsmInvalidIPAddressRule(),
-					Message: `ip_address does not match valid pattern ^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`,
+					Message: `"2001:4860:4860::8888" does not match valid pattern ^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`,
 				},
 			},
 		},

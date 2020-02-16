@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsS3BucketInventoryInvalidIncludedObjectVersionsRule) Check(runner *tf
 			if !found {
 				runner.EmitIssue(
 					r,
-					`included_object_versions is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as included_object_versions`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

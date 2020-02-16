@@ -23,7 +23,7 @@ resource "aws_ecs_task_definition" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEcsTaskDefinitionInvalidNetworkModeRule(),
-					Message: `network_mode is not a valid value`,
+					Message: `"vpc" is an invalid value as network_mode`,
 				},
 			},
 		},

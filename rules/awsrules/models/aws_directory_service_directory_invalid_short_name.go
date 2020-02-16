@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -58,7 +59,7 @@ func (r *AwsDirectoryServiceDirectoryInvalidShortNameRule) Check(runner *tflint.
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`short_name does not match valid pattern ^[^\\/:*?\"\<\>|.]+[^\\/:*?\"<>|]*$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[^\\/:*?\"\<\>|.]+[^\\/:*?\"<>|]*$`),
 					attribute.Expr.Range(),
 				)
 			}

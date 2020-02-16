@@ -23,7 +23,7 @@ resource "aws_ecs_service" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEcsServiceInvalidSchedulingStrategyRule(),
-					Message: `scheduling_strategy is not a valid value`,
+					Message: `"SERVER" is an invalid value as scheduling_strategy`,
 				},
 			},
 		},

@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsIAMAccessKeyInvalidStatusRule) Check(runner *tflint.Runner) error {
 			if !found {
 				runner.EmitIssue(
 					r,
-					`status is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as status`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

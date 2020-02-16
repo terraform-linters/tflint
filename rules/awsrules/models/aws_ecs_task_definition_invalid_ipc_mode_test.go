@@ -23,7 +23,7 @@ resource "aws_ecs_task_definition" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEcsTaskDefinitionInvalidIpcModeRule(),
-					Message: `ipc_mode is not a valid value`,
+					Message: `"vpc" is an invalid value as ipc_mode`,
 				},
 			},
 		},

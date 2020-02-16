@@ -23,7 +23,7 @@ resource "aws_budgets_budget" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsBudgetsBudgetInvalidAccountIDRule(),
-					Message: `account_id does not match valid pattern ^\d{12}$`,
+					Message: `"abcdefghijkl" does not match valid pattern ^\d{12}$`,
 				},
 			},
 		},

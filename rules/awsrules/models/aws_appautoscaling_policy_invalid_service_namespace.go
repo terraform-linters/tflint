@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -74,7 +75,7 @@ func (r *AwsAppautoscalingPolicyInvalidServiceNamespaceRule) Check(runner *tflin
 			if !found {
 				runner.EmitIssue(
 					r,
-					`service_namespace is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as service_namespace`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

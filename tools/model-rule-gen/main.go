@@ -77,9 +77,9 @@ func main() {
 					continue
 				}
 				model := shapes[shapeName].(map[string]interface{})
-				checkAttributeType(mapping.Resource, attribute, model, awsProvider)
+				schema := fetchSchema(mapping.Resource, attribute, model, awsProvider)
 				if validMapping(model) {
-					generateRuleFile(mapping.Resource, attribute, model)
+					generateRuleFile(mapping.Resource, attribute, model, schema)
 					for _, test := range mappingFile.Tests {
 						if mapping.Resource == test.Resource && attribute == test.Attribute {
 							generateRuleTestFile(mapping.Resource, attribute, model, test)
@@ -95,7 +95,7 @@ func main() {
 	generateProviderFile(generatedRules)
 }
 
-func checkAttributeType(resource, attribute string, model map[string]interface{}, provider *schema.Provider) {
+func fetchSchema(resource, attribute string, model map[string]interface{}, provider *schema.Provider) *schema.Schema {
 	resourceSchema, ok := provider.ResourcesMap[resource]
 	if !ok {
 		panic(fmt.Sprintf("resource `%s` not found in the Terraform schema", resource))
@@ -113,6 +113,8 @@ func checkAttributeType(resource, attribute string, model map[string]interface{}
 	default:
 		// noop
 	}
+
+	return attrSchema
 }
 
 func validMapping(model map[string]interface{}) bool {

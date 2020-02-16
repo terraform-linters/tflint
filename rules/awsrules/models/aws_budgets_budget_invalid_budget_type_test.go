@@ -23,7 +23,7 @@ resource "aws_budgets_budget" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsBudgetsBudgetInvalidBudgetTypeRule(),
-					Message: `budget_type is not a valid value`,
+					Message: `"MONEY" is an invalid value as budget_type`,
 				},
 			},
 		},

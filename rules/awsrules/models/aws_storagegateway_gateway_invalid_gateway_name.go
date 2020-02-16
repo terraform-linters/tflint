@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsStoragegatewayGatewayInvalidGatewayNameRule) Check(runner *tflint.Ru
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`gateway_name does not match valid pattern ^[ -\.0-\[\]-~]*[!-\.0-\[\]-~][ -\.0-\[\]-~]*$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[ -\.0-\[\]-~]*[!-\.0-\[\]-~][ -\.0-\[\]-~]*$`),
 					attribute.Expr.Range(),
 				)
 			}

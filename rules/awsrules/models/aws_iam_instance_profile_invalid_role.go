@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsIAMInstanceProfileInvalidRoleRule) Check(runner *tflint.Runner) erro
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`role does not match valid pattern ^[\w+=,.@-]+$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\w+=,.@-]+$`),
 					attribute.Expr.Range(),
 				)
 			}

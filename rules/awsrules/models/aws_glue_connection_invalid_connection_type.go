@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsGlueConnectionInvalidConnectionTypeRule) Check(runner *tflint.Runner
 			if !found {
 				runner.EmitIssue(
 					r,
-					`connection_type is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as connection_type`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

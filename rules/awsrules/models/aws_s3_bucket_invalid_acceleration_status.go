@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -66,7 +67,7 @@ func (r *AwsS3BucketInvalidAccelerationStatusRule) Check(runner *tflint.Runner) 
 			if !found {
 				runner.EmitIssue(
 					r,
-					`acceleration_status is not a valid value`,
+					fmt.Sprintf(`"%s" is an invalid value as acceleration_status`, truncateLongMessage(val)),
 					attribute.Expr.Range(),
 				)
 			}

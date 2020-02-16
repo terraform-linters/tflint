@@ -3,6 +3,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 
@@ -76,7 +77,7 @@ func (r *AwsFsxWindowsFileSystemInvalidDailyAutomaticBackupStartTimeRule) Check(
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					`daily_automatic_backup_start_time does not match valid pattern ^([01]\d|2[0-3]):?([0-5]\d)$`,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^([01]\d|2[0-3]):?([0-5]\d)$`),
 					attribute.Expr.Range(),
 				)
 			}

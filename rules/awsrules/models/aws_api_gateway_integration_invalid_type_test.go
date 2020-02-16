@@ -23,7 +23,7 @@ resource "aws_api_gateway_integration" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsAPIGatewayIntegrationInvalidTypeRule(),
-					Message: `type is not a valid value`,
+					Message: `"AWS_HTTP" is an invalid value as type`,
 				},
 			},
 		},

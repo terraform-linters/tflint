@@ -23,7 +23,7 @@ resource "aws_directory_service_directory" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDirectoryServiceDirectoryInvalidNameRule(),
-					Message: `name does not match valid pattern ^([a-zA-Z0-9]+[\\.-])+([a-zA-Z0-9])+$`,
+					Message: `"@example.com" does not match valid pattern ^([a-zA-Z0-9]+[\\.-])+([a-zA-Z0-9])+$`,
 				},
 			},
 		},

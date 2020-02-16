@@ -23,7 +23,7 @@ resource "aws_dms_endpoint" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDmsEndpointInvalidEndpointTypeRule(),
-					Message: `endpoint_type is not a valid value`,
+					Message: `"resource" is an invalid value as endpoint_type`,
 				},
 			},
 		},
