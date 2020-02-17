@@ -93,13 +93,15 @@ Set a Terraform variable from a passed value. This flag can be set multiple time
 
 CLI flag: `--enable-rule`, `--disable-rule`
 
-You can make settings for each rule in the `rule` block. Currently, it can set only `enabled` option. If you set `enabled = false`, TFLint doesn't inspect configuration files by this rule.
+You can make settings for each rule in the `rule` block. All rules have the `enabled` attribute, and when it is false, the rule is ignored from inspection.
 
 ```hcl
 rule "aws_instance_previous_type" {
   enabled = false
 }
 ```
+
+Each rule can have its own configs. See the documentation for each rule for details.
 
 ## `plugin` blocks
 

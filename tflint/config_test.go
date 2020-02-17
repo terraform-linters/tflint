@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/client"
 )
@@ -109,7 +110,10 @@ func Test_LoadConfig(t *testing.T) {
 			t.Fatalf("Failed `%s` test: Unexpected error occurred: %s", tc.Name, err)
 		}
 
-		if !cmp.Equal(tc.Expected, ret) {
+		opts := []cmp.Option{
+			cmpopts.IgnoreFields(RuleConfig{}, "Body"),
+		}
+		if !cmp.Equal(tc.Expected, ret, opts...) {
 			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(tc.Expected, ret))
 		}
 

@@ -14,7 +14,11 @@ import (
 // TestRunner returns a runner for testing.
 // Note that this runner ignores a config, annotations, and input variables.
 func TestRunner(t *testing.T, files map[string]string) *Runner {
-	config := EmptyConfig()
+	return TestRunnerWithConfig(t, files, EmptyConfig())
+}
+
+// TestRunnerWithConfig returns a runner with passed config for testing.
+func TestRunnerWithConfig(t *testing.T, files map[string]string, config *Config) *Runner {
 	fs := afero.Afero{Fs: afero.NewMemMapFs()}
 	for name, src := range files {
 		err := fs.WriteFile(name, []byte(src), os.ModePerm)
