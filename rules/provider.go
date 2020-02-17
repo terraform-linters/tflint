@@ -35,6 +35,7 @@ var manualDefaultRules = []Rule{
 	awsrules.NewAwsS3BucketInvalidACLRule(),
 	awsrules.NewAwsS3BucketInvalidRegionRule(),
 	awsrules.NewAwsSpotFleetRequestInvalidExcessCapacityTerminationPolicyRule(),
+	awsrules.NewAwsResourceTagsRule(),
 	terraformrules.NewTerraformDashInResourceNameRule(),
 	terraformrules.NewTerraformDashInOutputNameRule(),
 	terraformrules.NewTerraformDeprecatedInterpolationRule(),
@@ -84,11 +85,6 @@ func NewRules(c *tflint.Config) []Rule {
 		allRules = append(DefaultRules, deepCheckRules...)
 	} else {
 		allRules = DefaultRules
-	}
-	if len(c.Tags) > 0 {
-		for _, rule := range tagsRules {
-			allRules = append(allRules, rule)
-		}
 	}
 
 	for _, rule := range allRules {

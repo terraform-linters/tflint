@@ -44,7 +44,6 @@ func Test_LoadConfig(t *testing.T) {
 				},
 				Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
 				Variables: []string{"foo=bar", "bar=['foo']"},
-				Tags:      []string{"foo"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -88,7 +87,6 @@ func Test_LoadConfig(t *testing.T) {
 				IgnoreModules: map[string]bool{},
 				Varfiles:      []string{},
 				Variables:     []string{},
-				Tags:          []string{},
 				Rules:         map[string]*RuleConfig{},
 				Plugins:       map[string]*PluginConfig{},
 			},
@@ -199,7 +197,6 @@ func Test_Merge(t *testing.T) {
 		},
 		Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
 		Variables: []string{"foo=bar"},
-		Tags:      []string{"foo"},
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
 				Name:    "aws_instance_invalid_type",
@@ -255,7 +252,6 @@ func Test_Merge(t *testing.T) {
 				},
 				Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
 				Variables: []string{"foo=bar"},
-				Tags:      []string{"foo"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -332,7 +328,6 @@ func Test_Merge(t *testing.T) {
 				},
 				Varfiles:  []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
 				Variables: []string{"foo=bar", "bar=baz"},
-				Tags:      []string{"foo"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -499,7 +494,6 @@ func Test_copy(t *testing.T) {
 		},
 		Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
 		Variables: []string{},
-		Tags:      []string{},
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
 				Name:    "aws_instance_invalid_type",
@@ -569,12 +563,6 @@ func Test_copy(t *testing.T) {
 			Name: "Variables",
 			SideEffect: func(c *Config) {
 				c.Variables = append(c.Variables, "baz=foo")
-			},
-		},
-		{
-			Name: "Tags",
-			SideEffect: func(c *Config) {
-				c.Tags = append(c.Tags, "foo")
 			},
 		},
 		{

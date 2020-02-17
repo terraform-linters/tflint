@@ -32,8 +32,8 @@ func main() {
 
 	sort.Strings(providerMeta.ResourceNames)
 
-	templateFile := "../rules/provider_aws_tags.go.tmpl"
-	providerFile := "../rules/provider_aws_tags.go"
+	templateFile := "../rules/awsrules/aws_resource_tags.go.tmpl"
+	providerFile := "../rules/awsrules/aws_resource_tags.go"
 	utils.GenerateFile(
 		providerFile,
 		templateFile,

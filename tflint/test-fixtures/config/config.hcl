@@ -18,8 +18,6 @@ config {
   varfile = ["example1.tfvars", "example2.tfvars"]
 
   variables = ["foo=bar", "bar=['foo']"]
-
-  tags = ["foo"]
 }
 
 rule "aws_instance_invalid_type" {
