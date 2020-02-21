@@ -9,12 +9,6 @@ import (
 	"github.com/terraform-linters/tflint/tools/utils"
 )
 
-type tagRuleMeta struct {
-	RuleName     string
-	ResourceName string
-	ResourceType string
-}
-
 type providerMeta struct {
 	ResourceNames []string
 }
