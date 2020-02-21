@@ -5,7 +5,7 @@ Require specific tags for all AWS resource types that support them.
 ## Configuration
 
 ```hcl
-rule "terraform_module_pinned_source" {
+rule "aws_resource_tags" {
   enabled = true
   tags = ["Foo", "Bar"]
 }
