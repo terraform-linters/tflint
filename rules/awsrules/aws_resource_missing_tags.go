@@ -2,8 +2,8 @@ package awsrules
 
 import (
 	"fmt"
-	"strings"
 	"sort"
+	"strings"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/terraform/configs"
@@ -12,7 +12,7 @@ import (
 
 // AwsResourceMissingTagsRule checks whether the resource is tagged correctly
 type AwsResourceMissingTagsRule struct {
-	resourceTypes  []string
+	resourceTypes []string
 }
 
 type awsResourceTagsRuleConfig struct {
@@ -269,13 +269,13 @@ func (r *AwsResourceMissingTagsRule) Link() string {
 
 // Check checks for matching tags
 func (r *AwsResourceMissingTagsRule) Check(runner *tflint.Runner) error {
-	config :=  awsResourceTagsRuleConfig{}
+	config := awsResourceTagsRuleConfig{}
 	if err := runner.DecodeRuleConfig(r.Name(), &config); err != nil {
 		return err
 	}
 
 	for _, resourceType := range r.resourceTypes {
-    err := walkResourceTags(runner, resourceType, func(resource *configs.Resource, attribute *hcl.Attribute) error {
+		err := walkResourceTags(runner, resourceType, func(resource *configs.Resource, attribute *hcl.Attribute) error {
 			var resourceTags map[string]string
 			err := runner.EvaluateExpr(attribute.Expr, &resourceTags)
 			return runner.EnsureNoError(err, func() error {
@@ -291,18 +291,18 @@ func (r *AwsResourceMissingTagsRule) Check(runner *tflint.Runner) error {
 					sort.Strings(missing)
 					wanted := strings.Join(missing, ", ")
 					runner.EmitIssue(r, fmt.Sprintf("%s is missing the following tags: %s.", resourceTypeAndName, wanted), attribute.Expr.Range())
+				}
+				return nil
+			})
+		})
+		if err != nil {
+			return err
 		}
-		return nil
-	})
-		}) 
-    if err != nil {
-      return err
-    }
-  }
+	}
 	return nil
 }
 
-func  walkResourceTags(runner *tflint.Runner, resource string, walker func(*configs.Resource, *hcl.Attribute) error) error {
+func walkResourceTags(runner *tflint.Runner, resource string, walker func(*configs.Resource, *hcl.Attribute) error) error {
 	for _, resource := range runner.LookupResourcesByType(resource) {
 		body, _, diags := resource.Config.PartialContent(&hcl.BodySchema{
 			Attributes: []hcl.AttributeSchema{
@@ -311,8 +311,8 @@ func  walkResourceTags(runner *tflint.Runner, resource string, walker func(*conf
 				},
 			},
 		})
-		if diags.HasErrors() { 
-      return diags
+		if diags.HasErrors() {
+			return diags
 		}
 
 		if attribute, ok := body.Attributes["tags"]; ok {
@@ -324,6 +324,5 @@ func  walkResourceTags(runner *tflint.Runner, resource string, walker func(*conf
 			}
 		}
 	}
-  return nil
+	return nil
 }
-
