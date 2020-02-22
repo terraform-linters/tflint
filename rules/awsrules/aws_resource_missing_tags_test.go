@@ -27,14 +27,14 @@ resource "aws_instance" "ec2_instance" {
     }
 }`,
 			Config: `
-rule "aws_resource_tags" {
+rule "aws_resource_missing_tags" {
   enabled = true
   tags = ["Foo", "Bar"]
 }`,
 			Expected: tflint.Issues{
 				{
-					Rule:    NewAwsResourceTagsRule(),
-					Message: "Wanted tags: Bar,Foo, found: bar,foo",
+					Rule:    NewAwsResourceMissingTagsRule(),
+					Message: "aws_instance.ec2_instance is missing the following tags: \"Bar\", \"Foo\".",
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start:    hcl.Pos{Line: 4, Column: 12},
@@ -54,7 +54,7 @@ resource "aws_instance" "ec2_instance" {
     }
 }`,
 			Config: `
-rule "aws_resource_tags" {
+rule "aws_resource_missing_tags" {
   enabled = true
   tags = ["Foo", "Bar"]
 }`,
@@ -62,7 +62,7 @@ rule "aws_resource_tags" {
 		},
 	}
 
-	rule := NewAwsResourceTagsRule()
+	rule := NewAwsResourceMissingTagsRule()
 
 	for _, tc := range cases {
 		runner := tflint.TestRunnerWithConfig(t, map[string]string{"module.tf": tc.Content}, loadConfigfromTempFile(t, tc.Config))
@@ -81,7 +81,7 @@ func loadConfigfromTempFile(t *testing.T, content string) *tflint.Config {
 		return tflint.EmptyConfig()
 	}
 
-	tmpfile, err := ioutil.TempFile("", "aws_resource_tags")
+	tmpfile, err := ioutil.TempFile("", "aws_resource_missing_tags")
 	if err != nil {
 		t.Fatal(err)
 	}

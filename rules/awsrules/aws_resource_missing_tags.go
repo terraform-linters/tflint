@@ -2,15 +2,16 @@ package awsrules
 
 import (
 	"fmt"
-	"sort"
 	"strings"
+	"sort"
 
 	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/terraform/configs"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-// AwsResourceTagsRule checks whether the resource is tagged correctly
-type AwsResourceTagsRule struct {
+// AwsResourceMissingTagsRule checks whether the resource is tagged correctly
+type AwsResourceMissingTagsRule struct {
 	resourceTypes  []string
 }
 
@@ -18,8 +19,8 @@ type awsResourceTagsRuleConfig struct {
 	Tags []string `hcl:"tags"`
 }
 
-// NewAwsResourceTagsRule returns new rules for all resources that support tags
-func NewAwsResourceTagsRule() *AwsResourceTagsRule {
+// NewAwsResourceMissingTagsRule returns new rules for all resources that support tags
+func NewAwsResourceMissingTagsRule() *AwsResourceMissingTagsRule {
 	resourceTypes := []string{
 		"aws_accessanalyzer_analyzer",
 		"aws_acm_certificate",
@@ -241,71 +242,88 @@ func NewAwsResourceTagsRule() *AwsResourceTagsRule {
 		"aws_workspaces_directory",
 		"aws_workspaces_ip_group",
 	}
-	return &AwsResourceTagsRule{
+	return &AwsResourceMissingTagsRule{
 		resourceTypes: resourceTypes,
 	}
 }
 
 // Name returns the rule name
-func (r *AwsResourceTagsRule) Name() string {
-	return "aws_resource_tags"
+func (r *AwsResourceMissingTagsRule) Name() string {
+	return "aws_resource_missing_tags"
 }
 
 // Enabled returns whether the rule is enabled by default
-func (r *AwsResourceTagsRule) Enabled() bool {
-	return true
+func (r *AwsResourceMissingTagsRule) Enabled() bool {
+	return false
 }
 
 // Severity returns the rule severity
-func (r *AwsResourceTagsRule) Severity() string {
-	return tflint.ERROR
+func (r *AwsResourceMissingTagsRule) Severity() string {
+	return tflint.NOTICE
 }
 
 // Link returns the rule reference link
-func (r *AwsResourceTagsRule) Link() string {
+func (r *AwsResourceMissingTagsRule) Link() string {
 	return tflint.ReferenceLink(r.Name())
 }
 
 // Check checks for matching tags
-func (r *AwsResourceTagsRule) Check(runner *tflint.Runner) error {
+func (r *AwsResourceMissingTagsRule) Check(runner *tflint.Runner) error {
 	config :=  awsResourceTagsRuleConfig{}
 	if err := runner.DecodeRuleConfig(r.Name(), &config); err != nil {
 		return err
 	}
 
 	for _, resourceType := range r.resourceTypes {
-		err := runner.WalkResourceAttributes(resourceType, "tags", func(attribute *hcl.Attribute) error {
+    err := walkResourceTags(runner, resourceType, func(resource *configs.Resource, attribute *hcl.Attribute) error {
 			var resourceTags map[string]string
 			err := runner.EvaluateExpr(attribute.Expr, &resourceTags)
-			tags := []string{}
-			for k := range resourceTags {
-				tags = append(tags, k)
-			}
-
 			return runner.EnsureNoError(err, func() error {
-				hash := make(map[string]bool)
-				for _, k := range tags {
-					hash[k] = true
-				}
-				var found []string
+				var missing []string
 				for _, tag := range config.Tags {
-					if _, ok := hash[tag]; ok {
-						found = append(found, tag)
+					if _, ok := resourceTags[tag]; !ok {
+						missing = append(missing, fmt.Sprintf("\"%s\"", tag))
 					}
 				}
-				if len(found) != len(config.Tags) {
-					sort.Strings(config.Tags)
-					sort.Strings(tags)
-					wanted := strings.Join(config.Tags, ",")
-					found := strings.Join(tags, ",")
-					runner.EmitIssue(r, fmt.Sprintf("Wanted tags: %v, found: %v", wanted, found), attribute.Expr.Range())
-				}
-				return nil
-			})
-		})
-		if err != nil {
-			return err
+
+				if len(missing) > 0 {
+					resourceTypeAndName := resource.Type + "." + resource.Name
+					sort.Strings(missing)
+					wanted := strings.Join(missing, ", ")
+					runner.EmitIssue(r, fmt.Sprintf("%s is missing the following tags: %s.", resourceTypeAndName, wanted), attribute.Expr.Range())
 		}
-	}
+		return nil
+	})
+		}) 
+    if err != nil {
+      return err
+    }
+  }
 	return nil
 }
+
+func  walkResourceTags(runner *tflint.Runner, resource string, walker func(*configs.Resource, *hcl.Attribute) error) error {
+	for _, resource := range runner.LookupResourcesByType(resource) {
+		body, _, diags := resource.Config.PartialContent(&hcl.BodySchema{
+			Attributes: []hcl.AttributeSchema{
+				{
+					Name: "tags",
+				},
+			},
+		})
+		if diags.HasErrors() { 
+      return diags
+		}
+
+		if attribute, ok := body.Attributes["tags"]; ok {
+			err := runner.WithExpressionContext(attribute.Expr, func() error {
+				return walker(resource, attribute)
+			})
+			if err != nil {
+				return err
+			}
+		}
+	}
+  return nil
+}
+

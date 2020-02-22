@@ -4,4 +4,4 @@ package rules
 
 import "github.com/terraform-linters/tflint/rules/awsrules"
 
-var awsResourceTagsRule = awsrules.NewAwsResourceTagsRule()
+var awsResourceTagsRule = awsrules.NewAwsResourceMissingTagsRule()

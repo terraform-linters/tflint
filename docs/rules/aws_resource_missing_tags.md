@@ -1,11 +1,11 @@
-# aws_resource_tags
+# aws_resource_missing_tags
 
 Require specific tags for all AWS resource types that support them.
 
 ## Configuration
 
 ```hcl
-rule "aws_resource_tags" {
+rule "aws_resource_missing_tags" {
   enabled = true
   tags = ["Foo", "Bar"]
 }
@@ -27,7 +27,7 @@ resource "aws_instance" "instance" {
 $ tflint
 1 issue(s) found:
 
-Error: Wanted tags: Bar,Foo, found: bar,foo (aws_resource_tags)
+Error: Wanted tags: Bar,Foo, found: bar,foo (aws_resource_missing_tags)
 
   on test.tf line 3:
    3:   tags = {

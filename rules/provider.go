@@ -35,7 +35,7 @@ var manualDefaultRules = []Rule{
 	awsrules.NewAwsS3BucketInvalidACLRule(),
 	awsrules.NewAwsS3BucketInvalidRegionRule(),
 	awsrules.NewAwsSpotFleetRequestInvalidExcessCapacityTerminationPolicyRule(),
-	awsrules.NewAwsResourceTagsRule(),
+	awsrules.NewAwsResourceMissingTagsRule(),
 	terraformrules.NewTerraformDashInResourceNameRule(),
 	terraformrules.NewTerraformDashInOutputNameRule(),
 	terraformrules.NewTerraformDeprecatedInterpolationRule(),
