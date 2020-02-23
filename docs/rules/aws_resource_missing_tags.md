@@ -27,7 +27,7 @@ resource "aws_instance" "instance" {
 $ tflint
 1 issue(s) found:
 
-Error: Wanted tags: Bar,Foo, found: bar,foo (aws_resource_missing_tags)
+Notice: aws_instance.instance is missing the following tags: "Bar", "Foo". (aws_resource_missing_tags)
 
   on test.tf line 3:
    3:   tags = {
@@ -42,4 +42,4 @@ You want to set a standardized set of tags for your AWS resources.
 
 ## How To Fix
 
-Set the tags according to the rule configuration.
+For each resource type that supports tags, ensure that each missing tag is present.
