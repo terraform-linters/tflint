@@ -41,6 +41,7 @@ func NewAwsLambdaFunctionInvalidRuntimeRule() *AwsLambdaFunctionInvalidRuntimeRu
 			"nodejs4.3-edge",
 			"go1.x",
 			"ruby2.5",
+			"ruby2.7",
 			"provided",
 		},
 	}

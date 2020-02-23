@@ -25,7 +25,7 @@ func NewAwsDlmLifecyclePolicyInvalidExecutionRoleArnRule() *AwsDlmLifecyclePolic
 		resourceType:  "aws_dlm_lifecycle_policy",
 		attributeName: "execution_role_arn",
 		max:           2048,
-		pattern:       regexp.MustCompile(`^arn:aws:iam::\d+:role/.*$`),
+		pattern:       regexp.MustCompile(`^arn:aws(-[a-z]{1,3}){0,2}:iam::\d+:role/.*$`),
 	}
 }
 
@@ -68,7 +68,7 @@ func (r *AwsDlmLifecyclePolicyInvalidExecutionRoleArnRule) Check(runner *tflint.
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^arn:aws:iam::\d+:role/.*$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^arn:aws(-[a-z]{1,3}){0,2}:iam::\d+:role/.*$`),
 					attribute.Expr.Range(),
 				)
 			}
