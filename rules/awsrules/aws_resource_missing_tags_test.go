@@ -34,7 +34,7 @@ rule "aws_resource_missing_tags" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsResourceMissingTagsRule(),
-					Message: "aws_instance.ec2_instance is missing the following tags: \"Bar\", \"Foo\".",
+					Message: "The resource is missing the following tags: \"Bar\", \"Foo\".",
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start:    hcl.Pos{Line: 4, Column: 12},
