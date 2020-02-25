@@ -1,0 +1,86 @@
+package awsrules
+
+import (
+	"fmt"
+	"strings"
+	"sort"
+
+	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint/tflint"
+)
+
+// AwsResourceMissingTagsRule checks whether the resource is tagged correctly
+type AwsResourceMissingTagsRule struct {
+	resourceTypes  []string
+}
+
+type awsResourceTagsRuleConfig struct {
+	Tags []string `hcl:"tags"`
+}
+
+// NewAwsResourceMissingTagsRule returns new rules for all resources that support tags
+func NewAwsResourceMissingTagsRule() *AwsResourceMissingTagsRule {
+	resourceTypes := []string{
+		{{- range .ResourceNames }}
+		"{{ . }}",
+		{{- end }}
+	}
+	return &AwsResourceMissingTagsRule{
+		resourceTypes: resourceTypes,
+	}
+}
+
+// Name returns the rule name
+func (r *AwsResourceMissingTagsRule) Name() string {
+	return "aws_resource_missing_tags"
+}
+
+// Enabled returns whether the rule is enabled by default
+func (r *AwsResourceMissingTagsRule) Enabled() bool {
+	return false
+}
+
+// Severity returns the rule severity
+func (r *AwsResourceMissingTagsRule) Severity() string {
+	return tflint.NOTICE
+}
+
+// Link returns the rule reference link
+func (r *AwsResourceMissingTagsRule) Link() string {
+	return tflint.ReferenceLink(r.Name())
+}
+
+// Check checks resources for missing tags
+func (r *AwsResourceMissingTagsRule) Check(runner *tflint.Runner) error {
+  config := awsResourceTagsRuleConfig{}
+  if err := runner.DecodeRuleConfig(r.Name(), &config); err != nil {
+    return err
+  }
+
+	for _, resourceType := range r.resourceTypes {
+    err := runner.WalkResourceAttributes(resourceType, "tags", func(attribute *hcl.Attribute) error {
+      var resourceTags map[string]string
+      err := runner.EvaluateExpr(attribute.Expr, &resourceTags)
+      return runner.EnsureNoError(err, func() error {
+        var missing []string
+        for _, tag := range config.Tags {
+          if _, ok := resourceTags[tag]; !ok {
+            missing = append(missing, fmt.Sprintf("\"%s\"", tag))
+          }
+        }
+        if len(missing) > 0 {
+          sort.Strings(missing)
+          wanted := strings.Join(missing, ", ")
+          issue := fmt.Sprintf("The resource is missing the following tags: %s.", wanted)
+          runner.EmitIssue(r, issue, attribute.Expr.Range())
+        }
+        return nil
+      })
+    })
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
