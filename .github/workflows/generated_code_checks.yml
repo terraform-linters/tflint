@@ -34,3 +34,6 @@ jobs:
     - name: go run ./model-rule-gen
       working-directory: ./tools
       run: go run ./model-rule-gen && git diff --exit-code
+    - name: go run ./tags-gen
+      working-directory: ./tools
+      run: go run ./tags-gen && git diff --exit-code
