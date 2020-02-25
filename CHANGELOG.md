@@ -1,3 +1,27 @@
+## 0.15.0 (2020-02-25)
+
+This release introduces advanced rule configuration syntax. This allows you to customize each rule with its own options. At the moment, only the `terraform_module_pinned_source` rule has its own options. See [documentation](https://github.com/terraform-linters/tflint/blob/v0.15.0/docs/rules/terraform_module_pinned_source.md#configuration) for details.
+
+### Breaking Changes
+
+- [#624](https://github.com/terraform-linters/tflint/pull/624): Merge terraform_module_semver_source into terraform_module_pinned_source ([@wata727](https://github.com/wata727))
+  - The `terraform_module_semver_source` rule has been removed. Instead, use the `terraform_module_pinned_source` rule with `semver` style option.
+
+### Enhancements
+
+- [#609](https://github.com/terraform-linters/tflint/pull/609): Add new terraform_deprecated_interpolation rule ([@wata727](https://github.com/wata727))
+- [#619](https://github.com/terraform-linters/tflint/pull/619): Show the actual value in messages ([@wata727](https://github.com/wata727))
+- [#629](https://github.com/terraform-linters/tflint/pull/629): Bump terraform to v0.12.21 ([@chenrui333](https://github.com/chenrui333))
+- [#617](https://github.com/terraform-linters/tflint/pull/617): Check for tags on AWS resources ([@bwhaley](https://github.com/bwhaley))
+- [#635](https://github.com/terraform-linters/tflint/pull/635): Bump terraform-provider-aws to v2.50.0 from v2.46.0 ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#607](https://github.com/terraform-linters/tflint/pull/607): Add FAQ ([@wata727](https://github.com/wata727))
+- [#608](https://github.com/terraform-linters/tflint/pull/608): Remove go111module on env variable in Dockerfile ([@cedarkuo](https://github.com/cedarkuo))
+- [#610](https://github.com/terraform-linters/tflint/pull/610): Add docker build actions ([@wata727](https://github.com/wata727))
+- [#637](https://github.com/terraform-linters/tflint/pull/637): Regenerate tags rule ([@wata727](https://github.com/wata727))
+
 ## 0.14.0 (2020-01-31)
 
 This release ships an experimental plugin system again! The new plugin system supports all operating systems and works perfectly correctly. See [the documentation](https://github.com/terraform-linters/tflint/blob/v0.14.0/docs/guides/extend.md) about how to use and create plugins.
