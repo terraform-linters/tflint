@@ -2,6 +2,7 @@ package awsrules
 
 import (
 	"fmt"
+	"log"
 	"sort"
 	"strings"
 
@@ -271,34 +272,58 @@ func (r *AwsResourceMissingTagsRule) Link() string {
 
 // Check checks resources for missing tags
 func (r *AwsResourceMissingTagsRule) Check(runner *tflint.Runner) error {
+	attributeName := "tags"
 	config := awsResourceTagsRuleConfig{}
 	if err := runner.DecodeRuleConfig(r.Name(), &config); err != nil {
 		return err
 	}
 
 	for _, resourceType := range r.resourceTypes {
-		err := runner.WalkResourceAttributes(resourceType, "tags", func(attribute *hcl.Attribute) error {
-			var resourceTags map[string]string
-			err := runner.EvaluateExpr(attribute.Expr, &resourceTags)
-			return runner.EnsureNoError(err, func() error {
-				var missing []string
-				for _, tag := range config.Tags {
-					if _, ok := resourceTags[tag]; !ok {
-						missing = append(missing, fmt.Sprintf("\"%s\"", tag))
-					}
-				}
-				if len(missing) > 0 {
-					sort.Strings(missing)
-					wanted := strings.Join(missing, ", ")
-					issue := fmt.Sprintf("The resource is missing the following tags: %s.", wanted)
-					runner.EmitIssue(r, issue, attribute.Expr.Range())
-				}
-				return nil
+		for _, resource := range runner.LookupResourcesByType(resourceType) {
+			body, _, diags := resource.Config.PartialContent(&hcl.BodySchema{
+				Attributes: []hcl.AttributeSchema{
+					{
+						Name: attributeName,
+					},
+				},
 			})
-		})
-		if err != nil {
-			return err
+			if diags.HasErrors() {
+				return diags
+			}
+
+			if attribute, ok := body.Attributes[attributeName]; ok {
+				log.Printf("[DEBUG] Walk `%s` attribute", resource.Type+"."+resource.Name+"."+attributeName)
+				err := runner.WithExpressionContext(attribute.Expr, func() error {
+					var resourceTags map[string]string
+					err := runner.EvaluateExpr(attribute.Expr, &resourceTags)
+					return runner.EnsureNoError(err, func() error {
+						r.emitIssue(runner, resourceTags, config, attribute.Expr.Range())
+						return nil
+					})
+				})
+				if err != nil {
+					return err
+				}
+			} else {
+				log.Printf("[DEBUG] Walk `%s` resource", resource.Type+"."+resource.Name)
+				r.emitIssue(runner, map[string]string{}, config, resource.DeclRange)
+			}
 		}
 	}
 	return nil
+}
+
+func (r *AwsResourceMissingTagsRule) emitIssue(runner *tflint.Runner, tags map[string]string, config awsResourceTagsRuleConfig, location hcl.Range) {
+	var missing []string
+	for _, tag := range config.Tags {
+		if _, ok := tags[tag]; !ok {
+			missing = append(missing, fmt.Sprintf("\"%s\"", tag))
+		}
+	}
+	if len(missing) > 0 {
+		sort.Strings(missing)
+		wanted := strings.Join(missing, ", ")
+		issue := fmt.Sprintf("The resource is missing the following tags: %s.", wanted)
+		runner.EmitIssue(r, issue, location)
+	}
 }

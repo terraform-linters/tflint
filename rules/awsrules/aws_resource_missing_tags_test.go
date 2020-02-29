@@ -44,6 +44,29 @@ rule "aws_resource_missing_tags" {
 			},
 		},
 		{
+			Name: "No tags",
+			Content: `
+resource "aws_instance" "ec2_instance" {
+    instance_type = "t2.micro"
+}`,
+			Config: `
+rule "aws_resource_missing_tags" {
+  enabled = true
+  tags = ["Foo", "Bar"]
+}`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewAwsResourceMissingTagsRule(),
+					Message: "The resource is missing the following tags: \"Bar\", \"Foo\".",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 39},
+					},
+				},
+			},
+		},
+		{
 			Name: "Tags are correct",
 			Content: `
 resource "aws_instance" "ec2_instance" {
