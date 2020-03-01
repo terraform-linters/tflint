@@ -1,3 +1,15 @@
+## 0.15.1 (2020-03-02)
+
+### BugFixes
+
+- [#645](https://github.com/terraform-linters/tflint/pull/645): Emit an issue when there is no tags definition ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#630](https://github.com/terraform-linters/tflint/pull/630): Bump github.com/zclconf/go-cty from 1.2.1 to 1.3.0
+- [#640](https://github.com/terraform-linters/tflint/pull/640): Bump github.com/golang/mock from 1.4.0 to 1.4.1 
+- [#641](https://github.com/terraform-linters/tflint/pull/641): Bump github.com/mattn/go-colorable from 0.1.4 to 0.1.6
+
 ## 0.15.0 (2020-02-25)
 
 This release introduces advanced rule configuration syntax. This allows you to customize each rule with its own options. At the moment, only the `terraform_module_pinned_source` rule has its own options. See [documentation](https://github.com/terraform-linters/tflint/blob/v0.15.0/docs/rules/terraform_module_pinned_source.md#configuration) for details.
