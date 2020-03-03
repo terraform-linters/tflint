@@ -1,6 +1,6 @@
 module github.com/terraform-linters/tflint/tools
 
-go 1.13
+go 1.14
 
 require (
 	github.com/hashicorp/hcl/v2 v2.3.0
