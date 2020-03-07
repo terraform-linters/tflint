@@ -1,6 +1,6 @@
 module github.com/terraform-linters/tflint
 
-go 1.13
+go 1.14
 
 require (
 	github.com/aws/aws-sdk-go v1.28.9
