@@ -1,0 +1,24 @@
+name: lint
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Set up Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.14
+    - name: Run linters
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        make tools lint
