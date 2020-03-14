@@ -53,6 +53,14 @@ macOS users can also use [Homebrew](https://brew.sh) to install TFLint:
 $ brew install tflint
 ```
 
+### Chocolatey
+
+Windows users can use [Chocolatey](https://chocolatey.org):
+
+```cmd
+choco install tflint
+```
+
 ### Docker
 
 You can also use [TFLint via Docker](https://hub.docker.com/r/wata727/tflint/).
