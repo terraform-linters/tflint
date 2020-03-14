@@ -1,3 +1,20 @@
+## 0.15.2 (2020-03-14)
+
+### Enhancements
+
+- [#650](https://github.com/terraform-linters/tflint/pull/650): Bump github.com/zclconf/go-cty from 1.3.0 to 1.3.1
+- [#653](https://github.com/terraform-linters/tflint/pull/653): Bump terraform to v0.12.23 ([@chenrui333](https://github.com/chenrui333))
+- [#665](https://github.com/terraform-linters/tflint/pull/665): Bump github.com/aws/aws-sdk-go from 1.28.9 to 1.29.24
+- [#667](https://github.com/terraform-linters/tflint/pull/667): Bump terraform-provider-aws to v2.53.0 from v2.50.0 ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#647](https://github.com/terraform-linters/tflint/pull/647): Bump github.com/hashicorp/go-plugin from 1.0.1 to 1.1.0
+- [#649](https://github.com/terraform-linters/tflint/pull/649): Bump golang to v1.14 ([@chenrui333](https://github.com/chenrui333))
+- [#657](https://github.com/terraform-linters/tflint/pull/657): Run linters in GitHub Actions ([@wata727](https://github.com/wata727))
+- [#660](https://github.com/terraform-linters/tflint/pull/660): Bump github.com/hashicorp/terraform-plugin-sdk from 1.7.0 to 1.8.0 in /tools
+- [#666](https://github.com/terraform-linters/tflint/pull/666): Add install guide for Windows (choco install) ([@aaronsteers](https://github.com/aaronsteers))
+
 ## 0.15.1 (2020-03-02)
 
 ### BugFixes
