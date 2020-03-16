@@ -324,6 +324,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 	return r.fromCtyValue(val, expr, ret)
 }
 
+// EvaluateExprType is like EvaluateExpr, but also accepts a known cty.Type to pass to EvalExpr
 func (r *Runner) EvaluateExprType(expr hcl.Expression, ret interface{}, wantType cty.Type) error {
 	val, err := r.EvalExpr(expr, ret, wantType)
 	if err != nil {

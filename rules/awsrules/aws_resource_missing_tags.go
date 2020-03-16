@@ -339,7 +339,10 @@ func (r *AwsResourceMissingTagsRule) Check(runner *tflint.Runner) error {
 	return nil
 }
 
-type AwsAutoscalingGroupTag struct {
+// awsAutoscalingGroupTag is used by go-cty to evaluate tags in aws_autoscaling_group resources
+// The type does not need to be public, but its fields do
+// https://github.com/zclconf/go-cty/blob/master/docs/gocty.md#converting-to-and-from-structs
+type awsAutoscalingGroupTag struct {
 	Key               string `cty:"key"`
 	Value             string `cty:"value"`
 	PropagateAtLaunch bool   `cty:"propagate_at_launch"`
@@ -446,7 +449,7 @@ func (r *AwsResourceMissingTagsRule) checkAwsAutoScalingGroupsTags(runner *tflin
 				"value":               cty.String,
 				"propagate_at_launch": cty.Bool,
 			}))
-			var asgTags []AwsAutoscalingGroupTag
+			var asgTags []awsAutoscalingGroupTag
 			err := runner.EvaluateExprType(attribute.Expr, &asgTags, wantType)
 			if err != nil {
 				return err
