@@ -4,6 +4,7 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
+	"github.com/zclconf/go-cty/cty"
 )
 
 // Server is a RPC server for responding to requests from plugins
@@ -29,7 +30,7 @@ func (s *Server) Attributes(req *tfplugin.AttributesRequest, resp *tfplugin.Attr
 
 // EvalExpr returns a value of the evaluated expression
 func (s *Server) EvalExpr(req *tfplugin.EvalExprRequest, resp *tfplugin.EvalExprResponse) error {
-	val, err := s.runner.EvalExpr(req.Expr, req.Ret)
+	val, err := s.runner.EvalExpr(req.Expr, req.Ret, cty.Type{})
 	if err != nil {
 		if appErr, ok := err.(*tflint.Error); ok {
 			err = tfplugin.Error(*appErr)
