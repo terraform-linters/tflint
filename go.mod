@@ -3,7 +3,7 @@ module github.com/terraform-linters/tflint
 go 1.14
 
 require (
-	github.com/aws/aws-sdk-go v1.29.24
+	github.com/aws/aws-sdk-go v1.29.26
 	github.com/fatih/color v1.9.0
 	github.com/golang/mock v1.4.1
 	github.com/google/go-cmp v0.4.0
