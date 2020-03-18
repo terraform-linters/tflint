@@ -300,7 +300,13 @@ func (r *AwsResourceMissingTagsRule) Check(runner *tflint.Runner) error {
 
 		// Special handling for tags on aws_autoscaling_group resources
 		if resourceType == "aws_autoscaling_group" {
-			r.checkAwsAutoScalingGroups(runner, config)
+			err := r.checkAwsAutoScalingGroups(runner, config)
+			err = runner.EnsureNoError(err, func() error {
+				return nil
+			})
+			if err != nil {
+				return err
+			}
 			continue
 		}
 
@@ -410,20 +416,25 @@ func (r *AwsResourceMissingTagsRule) checkAwsAutoScalingGroupsTag(runner *tflint
 			return tags, tagBlock.DefRange, diags
 		}
 
+		if _, ok := attributes["key"]; !ok {
+			err := &tflint.Error{
+				Code:  tflint.UnevaluableError,
+				Level: tflint.WarningLevel,
+				Message: fmt.Sprintf("Did not find expected field \"key\" in aws_autoscaling_group \"%s\" starting at line %d",
+					resource.Name,
+					resource.DeclRange.Start.Line,
+				),
+			}
+			return tags, resource.DeclRange, err
+		}
+
 		var key string
 		err := runner.EvaluateExpr(attributes["key"].Expr, &key)
 		if err != nil {
-			return tags, tagBlock.DefRange, diags
+			return tags, tagBlock.DefRange, err
 		}
-
-		var val string
-		err = runner.EvaluateExpr(attributes["value"].Expr, &val)
-		if err != nil {
-			return tags, tagBlock.DefRange, diags
-		}
-		tags[key] = val
+		tags[key] = ""
 	}
-
 	return tags, resource.DeclRange, nil
 }
 
@@ -491,3 +502,4 @@ func stringInSlice(a string, list []string) bool {
 	}
 	return false
 }
+
