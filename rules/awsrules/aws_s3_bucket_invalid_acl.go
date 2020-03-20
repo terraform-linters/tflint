@@ -27,6 +27,7 @@ func NewAwsS3BucketInvalidACLRule() *AwsS3BucketInvalidACLRule {
 			"aws-exec-read",
 			"authenticated-read",
 			"log-delivery-write",
+			"bucket-owner-full-control",
 		},
 	}
 }
