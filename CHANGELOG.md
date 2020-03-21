@@ -1,3 +1,23 @@
+## 0.15.3 (2020-03-21)
+
+### Enhancements
+
+- [#676](https://github.com/terraform-linters/tflint/pull/676): Bump terraform to v0.12.24 ([@chenrui333](https://github.com/chenrui333))
+- [#681](https://github.com/terraform-linters/tflint/pull/681): Bump terraform-provider-aws to v2.54.0 from v2.53.0 ([@wata727](https://github.com/wata727))
+- [#682](https://github.com/terraform-linters/tflint/pull/682): Bump github.com/aws/aws-sdk-go from 1.29.24 to 1.29.29
+
+### BugFixes
+
+- [#670](https://github.com/terraform-linters/tflint/pull/670): Adds support for aws_autoscaling_group tag blocks and tags attributes ([@bwhaley](https://github.com/bwhaley))
+- [#679](https://github.com/terraform-linters/tflint/pull/679): Add bucket-owner-full-control to allowed S3 ACLs ([@sds](https://github.com/sds))
+- [#680](https://github.com/terraform-linters/tflint/pull/680): Add bucket-owner-read to allowed S3 ACLs ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#664](https://github.com/terraform-linters/tflint/pull/664): Use checkout action v2 ([@chenrui333](https://github.com/chenrui333))
+- [#671](https://github.com/terraform-linters/tflint/pull/671): Bump github.com/golang/mock from 1.4.1 to 1.4.3
+- [#675](https://github.com/terraform-linters/tflint/pull/675): Bump github.com/hashicorp/go-plugin from 1.1.0 to 1.2.0
+
 ## 0.15.2 (2020-03-14)
 
 ### Enhancements
