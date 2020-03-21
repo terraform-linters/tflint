@@ -535,6 +535,56 @@ func (mr *MockElastiCacheAPIMockRecorder) CreateCacheSubnetGroupRequest(arg0 int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCacheSubnetGroupRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).CreateCacheSubnetGroupRequest), arg0)
 }
 
+// CreateGlobalReplicationGroup mocks base method
+func (m *MockElastiCacheAPI) CreateGlobalReplicationGroup(arg0 *elasticache.CreateGlobalReplicationGroupInput) (*elasticache.CreateGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateGlobalReplicationGroup", arg0)
+	ret0, _ := ret[0].(*elasticache.CreateGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateGlobalReplicationGroup indicates an expected call of CreateGlobalReplicationGroup
+func (mr *MockElastiCacheAPIMockRecorder) CreateGlobalReplicationGroup(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateGlobalReplicationGroup", reflect.TypeOf((*MockElastiCacheAPI)(nil).CreateGlobalReplicationGroup), arg0)
+}
+
+// CreateGlobalReplicationGroupWithContext mocks base method
+func (m *MockElastiCacheAPI) CreateGlobalReplicationGroupWithContext(arg0 aws.Context, arg1 *elasticache.CreateGlobalReplicationGroupInput, arg2 ...request.Option) (*elasticache.CreateGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateGlobalReplicationGroupWithContext", varargs...)
+	ret0, _ := ret[0].(*elasticache.CreateGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateGlobalReplicationGroupWithContext indicates an expected call of CreateGlobalReplicationGroupWithContext
+func (mr *MockElastiCacheAPIMockRecorder) CreateGlobalReplicationGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateGlobalReplicationGroupWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).CreateGlobalReplicationGroupWithContext), varargs...)
+}
+
+// CreateGlobalReplicationGroupRequest mocks base method
+func (m *MockElastiCacheAPI) CreateGlobalReplicationGroupRequest(arg0 *elasticache.CreateGlobalReplicationGroupInput) (*request.Request, *elasticache.CreateGlobalReplicationGroupOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateGlobalReplicationGroupRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.CreateGlobalReplicationGroupOutput)
+	return ret0, ret1
+}
+
+// CreateGlobalReplicationGroupRequest indicates an expected call of CreateGlobalReplicationGroupRequest
+func (mr *MockElastiCacheAPIMockRecorder) CreateGlobalReplicationGroupRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateGlobalReplicationGroupRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).CreateGlobalReplicationGroupRequest), arg0)
+}
+
 // CreateReplicationGroup mocks base method
 func (m *MockElastiCacheAPI) CreateReplicationGroup(arg0 *elasticache.CreateReplicationGroupInput) (*elasticache.CreateReplicationGroupOutput, error) {
 	m.ctrl.T.Helper()
@@ -633,6 +683,56 @@ func (m *MockElastiCacheAPI) CreateSnapshotRequest(arg0 *elasticache.CreateSnaps
 func (mr *MockElastiCacheAPIMockRecorder) CreateSnapshotRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSnapshotRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).CreateSnapshotRequest), arg0)
+}
+
+// DecreaseNodeGroupsInGlobalReplicationGroup mocks base method
+func (m *MockElastiCacheAPI) DecreaseNodeGroupsInGlobalReplicationGroup(arg0 *elasticache.DecreaseNodeGroupsInGlobalReplicationGroupInput) (*elasticache.DecreaseNodeGroupsInGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DecreaseNodeGroupsInGlobalReplicationGroup", arg0)
+	ret0, _ := ret[0].(*elasticache.DecreaseNodeGroupsInGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DecreaseNodeGroupsInGlobalReplicationGroup indicates an expected call of DecreaseNodeGroupsInGlobalReplicationGroup
+func (mr *MockElastiCacheAPIMockRecorder) DecreaseNodeGroupsInGlobalReplicationGroup(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DecreaseNodeGroupsInGlobalReplicationGroup", reflect.TypeOf((*MockElastiCacheAPI)(nil).DecreaseNodeGroupsInGlobalReplicationGroup), arg0)
+}
+
+// DecreaseNodeGroupsInGlobalReplicationGroupWithContext mocks base method
+func (m *MockElastiCacheAPI) DecreaseNodeGroupsInGlobalReplicationGroupWithContext(arg0 aws.Context, arg1 *elasticache.DecreaseNodeGroupsInGlobalReplicationGroupInput, arg2 ...request.Option) (*elasticache.DecreaseNodeGroupsInGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DecreaseNodeGroupsInGlobalReplicationGroupWithContext", varargs...)
+	ret0, _ := ret[0].(*elasticache.DecreaseNodeGroupsInGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DecreaseNodeGroupsInGlobalReplicationGroupWithContext indicates an expected call of DecreaseNodeGroupsInGlobalReplicationGroupWithContext
+func (mr *MockElastiCacheAPIMockRecorder) DecreaseNodeGroupsInGlobalReplicationGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DecreaseNodeGroupsInGlobalReplicationGroupWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).DecreaseNodeGroupsInGlobalReplicationGroupWithContext), varargs...)
+}
+
+// DecreaseNodeGroupsInGlobalReplicationGroupRequest mocks base method
+func (m *MockElastiCacheAPI) DecreaseNodeGroupsInGlobalReplicationGroupRequest(arg0 *elasticache.DecreaseNodeGroupsInGlobalReplicationGroupInput) (*request.Request, *elasticache.DecreaseNodeGroupsInGlobalReplicationGroupOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DecreaseNodeGroupsInGlobalReplicationGroupRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DecreaseNodeGroupsInGlobalReplicationGroupOutput)
+	return ret0, ret1
+}
+
+// DecreaseNodeGroupsInGlobalReplicationGroupRequest indicates an expected call of DecreaseNodeGroupsInGlobalReplicationGroupRequest
+func (mr *MockElastiCacheAPIMockRecorder) DecreaseNodeGroupsInGlobalReplicationGroupRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DecreaseNodeGroupsInGlobalReplicationGroupRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).DecreaseNodeGroupsInGlobalReplicationGroupRequest), arg0)
 }
 
 // DecreaseReplicaCount mocks base method
@@ -883,6 +983,56 @@ func (m *MockElastiCacheAPI) DeleteCacheSubnetGroupRequest(arg0 *elasticache.Del
 func (mr *MockElastiCacheAPIMockRecorder) DeleteCacheSubnetGroupRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCacheSubnetGroupRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).DeleteCacheSubnetGroupRequest), arg0)
+}
+
+// DeleteGlobalReplicationGroup mocks base method
+func (m *MockElastiCacheAPI) DeleteGlobalReplicationGroup(arg0 *elasticache.DeleteGlobalReplicationGroupInput) (*elasticache.DeleteGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteGlobalReplicationGroup", arg0)
+	ret0, _ := ret[0].(*elasticache.DeleteGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteGlobalReplicationGroup indicates an expected call of DeleteGlobalReplicationGroup
+func (mr *MockElastiCacheAPIMockRecorder) DeleteGlobalReplicationGroup(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteGlobalReplicationGroup", reflect.TypeOf((*MockElastiCacheAPI)(nil).DeleteGlobalReplicationGroup), arg0)
+}
+
+// DeleteGlobalReplicationGroupWithContext mocks base method
+func (m *MockElastiCacheAPI) DeleteGlobalReplicationGroupWithContext(arg0 aws.Context, arg1 *elasticache.DeleteGlobalReplicationGroupInput, arg2 ...request.Option) (*elasticache.DeleteGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteGlobalReplicationGroupWithContext", varargs...)
+	ret0, _ := ret[0].(*elasticache.DeleteGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteGlobalReplicationGroupWithContext indicates an expected call of DeleteGlobalReplicationGroupWithContext
+func (mr *MockElastiCacheAPIMockRecorder) DeleteGlobalReplicationGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteGlobalReplicationGroupWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).DeleteGlobalReplicationGroupWithContext), varargs...)
+}
+
+// DeleteGlobalReplicationGroupRequest mocks base method
+func (m *MockElastiCacheAPI) DeleteGlobalReplicationGroupRequest(arg0 *elasticache.DeleteGlobalReplicationGroupInput) (*request.Request, *elasticache.DeleteGlobalReplicationGroupOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteGlobalReplicationGroupRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DeleteGlobalReplicationGroupOutput)
+	return ret0, ret1
+}
+
+// DeleteGlobalReplicationGroupRequest indicates an expected call of DeleteGlobalReplicationGroupRequest
+func (mr *MockElastiCacheAPIMockRecorder) DeleteGlobalReplicationGroupRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteGlobalReplicationGroupRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).DeleteGlobalReplicationGroupRequest), arg0)
 }
 
 // DeleteReplicationGroup mocks base method
@@ -1649,6 +1799,89 @@ func (mr *MockElastiCacheAPIMockRecorder) DescribeEventsPagesWithContext(arg0, a
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeEventsPagesWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeEventsPagesWithContext), varargs...)
 }
 
+// DescribeGlobalReplicationGroups mocks base method
+func (m *MockElastiCacheAPI) DescribeGlobalReplicationGroups(arg0 *elasticache.DescribeGlobalReplicationGroupsInput) (*elasticache.DescribeGlobalReplicationGroupsOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeGlobalReplicationGroups", arg0)
+	ret0, _ := ret[0].(*elasticache.DescribeGlobalReplicationGroupsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeGlobalReplicationGroups indicates an expected call of DescribeGlobalReplicationGroups
+func (mr *MockElastiCacheAPIMockRecorder) DescribeGlobalReplicationGroups(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeGlobalReplicationGroups", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeGlobalReplicationGroups), arg0)
+}
+
+// DescribeGlobalReplicationGroupsWithContext mocks base method
+func (m *MockElastiCacheAPI) DescribeGlobalReplicationGroupsWithContext(arg0 aws.Context, arg1 *elasticache.DescribeGlobalReplicationGroupsInput, arg2 ...request.Option) (*elasticache.DescribeGlobalReplicationGroupsOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeGlobalReplicationGroupsWithContext", varargs...)
+	ret0, _ := ret[0].(*elasticache.DescribeGlobalReplicationGroupsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeGlobalReplicationGroupsWithContext indicates an expected call of DescribeGlobalReplicationGroupsWithContext
+func (mr *MockElastiCacheAPIMockRecorder) DescribeGlobalReplicationGroupsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeGlobalReplicationGroupsWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeGlobalReplicationGroupsWithContext), varargs...)
+}
+
+// DescribeGlobalReplicationGroupsRequest mocks base method
+func (m *MockElastiCacheAPI) DescribeGlobalReplicationGroupsRequest(arg0 *elasticache.DescribeGlobalReplicationGroupsInput) (*request.Request, *elasticache.DescribeGlobalReplicationGroupsOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeGlobalReplicationGroupsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DescribeGlobalReplicationGroupsOutput)
+	return ret0, ret1
+}
+
+// DescribeGlobalReplicationGroupsRequest indicates an expected call of DescribeGlobalReplicationGroupsRequest
+func (mr *MockElastiCacheAPIMockRecorder) DescribeGlobalReplicationGroupsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeGlobalReplicationGroupsRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeGlobalReplicationGroupsRequest), arg0)
+}
+
+// DescribeGlobalReplicationGroupsPages mocks base method
+func (m *MockElastiCacheAPI) DescribeGlobalReplicationGroupsPages(arg0 *elasticache.DescribeGlobalReplicationGroupsInput, arg1 func(*elasticache.DescribeGlobalReplicationGroupsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeGlobalReplicationGroupsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeGlobalReplicationGroupsPages indicates an expected call of DescribeGlobalReplicationGroupsPages
+func (mr *MockElastiCacheAPIMockRecorder) DescribeGlobalReplicationGroupsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeGlobalReplicationGroupsPages", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeGlobalReplicationGroupsPages), arg0, arg1)
+}
+
+// DescribeGlobalReplicationGroupsPagesWithContext mocks base method
+func (m *MockElastiCacheAPI) DescribeGlobalReplicationGroupsPagesWithContext(arg0 aws.Context, arg1 *elasticache.DescribeGlobalReplicationGroupsInput, arg2 func(*elasticache.DescribeGlobalReplicationGroupsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeGlobalReplicationGroupsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeGlobalReplicationGroupsPagesWithContext indicates an expected call of DescribeGlobalReplicationGroupsPagesWithContext
+func (mr *MockElastiCacheAPIMockRecorder) DescribeGlobalReplicationGroupsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeGlobalReplicationGroupsPagesWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeGlobalReplicationGroupsPagesWithContext), varargs...)
+}
+
 // DescribeReplicationGroups mocks base method
 func (m *MockElastiCacheAPI) DescribeReplicationGroups(arg0 *elasticache.DescribeReplicationGroupsInput) (*elasticache.DescribeReplicationGroupsOutput, error) {
 	m.ctrl.T.Helper()
@@ -2147,6 +2380,156 @@ func (mr *MockElastiCacheAPIMockRecorder) DescribeUpdateActionsPagesWithContext(
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeUpdateActionsPagesWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).DescribeUpdateActionsPagesWithContext), varargs...)
 }
 
+// DisassociateGlobalReplicationGroup mocks base method
+func (m *MockElastiCacheAPI) DisassociateGlobalReplicationGroup(arg0 *elasticache.DisassociateGlobalReplicationGroupInput) (*elasticache.DisassociateGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DisassociateGlobalReplicationGroup", arg0)
+	ret0, _ := ret[0].(*elasticache.DisassociateGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DisassociateGlobalReplicationGroup indicates an expected call of DisassociateGlobalReplicationGroup
+func (mr *MockElastiCacheAPIMockRecorder) DisassociateGlobalReplicationGroup(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateGlobalReplicationGroup", reflect.TypeOf((*MockElastiCacheAPI)(nil).DisassociateGlobalReplicationGroup), arg0)
+}
+
+// DisassociateGlobalReplicationGroupWithContext mocks base method
+func (m *MockElastiCacheAPI) DisassociateGlobalReplicationGroupWithContext(arg0 aws.Context, arg1 *elasticache.DisassociateGlobalReplicationGroupInput, arg2 ...request.Option) (*elasticache.DisassociateGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DisassociateGlobalReplicationGroupWithContext", varargs...)
+	ret0, _ := ret[0].(*elasticache.DisassociateGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DisassociateGlobalReplicationGroupWithContext indicates an expected call of DisassociateGlobalReplicationGroupWithContext
+func (mr *MockElastiCacheAPIMockRecorder) DisassociateGlobalReplicationGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateGlobalReplicationGroupWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).DisassociateGlobalReplicationGroupWithContext), varargs...)
+}
+
+// DisassociateGlobalReplicationGroupRequest mocks base method
+func (m *MockElastiCacheAPI) DisassociateGlobalReplicationGroupRequest(arg0 *elasticache.DisassociateGlobalReplicationGroupInput) (*request.Request, *elasticache.DisassociateGlobalReplicationGroupOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DisassociateGlobalReplicationGroupRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.DisassociateGlobalReplicationGroupOutput)
+	return ret0, ret1
+}
+
+// DisassociateGlobalReplicationGroupRequest indicates an expected call of DisassociateGlobalReplicationGroupRequest
+func (mr *MockElastiCacheAPIMockRecorder) DisassociateGlobalReplicationGroupRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateGlobalReplicationGroupRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).DisassociateGlobalReplicationGroupRequest), arg0)
+}
+
+// FailoverGlobalReplicationGroup mocks base method
+func (m *MockElastiCacheAPI) FailoverGlobalReplicationGroup(arg0 *elasticache.FailoverGlobalReplicationGroupInput) (*elasticache.FailoverGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FailoverGlobalReplicationGroup", arg0)
+	ret0, _ := ret[0].(*elasticache.FailoverGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FailoverGlobalReplicationGroup indicates an expected call of FailoverGlobalReplicationGroup
+func (mr *MockElastiCacheAPIMockRecorder) FailoverGlobalReplicationGroup(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FailoverGlobalReplicationGroup", reflect.TypeOf((*MockElastiCacheAPI)(nil).FailoverGlobalReplicationGroup), arg0)
+}
+
+// FailoverGlobalReplicationGroupWithContext mocks base method
+func (m *MockElastiCacheAPI) FailoverGlobalReplicationGroupWithContext(arg0 aws.Context, arg1 *elasticache.FailoverGlobalReplicationGroupInput, arg2 ...request.Option) (*elasticache.FailoverGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "FailoverGlobalReplicationGroupWithContext", varargs...)
+	ret0, _ := ret[0].(*elasticache.FailoverGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FailoverGlobalReplicationGroupWithContext indicates an expected call of FailoverGlobalReplicationGroupWithContext
+func (mr *MockElastiCacheAPIMockRecorder) FailoverGlobalReplicationGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FailoverGlobalReplicationGroupWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).FailoverGlobalReplicationGroupWithContext), varargs...)
+}
+
+// FailoverGlobalReplicationGroupRequest mocks base method
+func (m *MockElastiCacheAPI) FailoverGlobalReplicationGroupRequest(arg0 *elasticache.FailoverGlobalReplicationGroupInput) (*request.Request, *elasticache.FailoverGlobalReplicationGroupOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FailoverGlobalReplicationGroupRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.FailoverGlobalReplicationGroupOutput)
+	return ret0, ret1
+}
+
+// FailoverGlobalReplicationGroupRequest indicates an expected call of FailoverGlobalReplicationGroupRequest
+func (mr *MockElastiCacheAPIMockRecorder) FailoverGlobalReplicationGroupRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FailoverGlobalReplicationGroupRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).FailoverGlobalReplicationGroupRequest), arg0)
+}
+
+// IncreaseNodeGroupsInGlobalReplicationGroup mocks base method
+func (m *MockElastiCacheAPI) IncreaseNodeGroupsInGlobalReplicationGroup(arg0 *elasticache.IncreaseNodeGroupsInGlobalReplicationGroupInput) (*elasticache.IncreaseNodeGroupsInGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IncreaseNodeGroupsInGlobalReplicationGroup", arg0)
+	ret0, _ := ret[0].(*elasticache.IncreaseNodeGroupsInGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// IncreaseNodeGroupsInGlobalReplicationGroup indicates an expected call of IncreaseNodeGroupsInGlobalReplicationGroup
+func (mr *MockElastiCacheAPIMockRecorder) IncreaseNodeGroupsInGlobalReplicationGroup(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncreaseNodeGroupsInGlobalReplicationGroup", reflect.TypeOf((*MockElastiCacheAPI)(nil).IncreaseNodeGroupsInGlobalReplicationGroup), arg0)
+}
+
+// IncreaseNodeGroupsInGlobalReplicationGroupWithContext mocks base method
+func (m *MockElastiCacheAPI) IncreaseNodeGroupsInGlobalReplicationGroupWithContext(arg0 aws.Context, arg1 *elasticache.IncreaseNodeGroupsInGlobalReplicationGroupInput, arg2 ...request.Option) (*elasticache.IncreaseNodeGroupsInGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "IncreaseNodeGroupsInGlobalReplicationGroupWithContext", varargs...)
+	ret0, _ := ret[0].(*elasticache.IncreaseNodeGroupsInGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// IncreaseNodeGroupsInGlobalReplicationGroupWithContext indicates an expected call of IncreaseNodeGroupsInGlobalReplicationGroupWithContext
+func (mr *MockElastiCacheAPIMockRecorder) IncreaseNodeGroupsInGlobalReplicationGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncreaseNodeGroupsInGlobalReplicationGroupWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).IncreaseNodeGroupsInGlobalReplicationGroupWithContext), varargs...)
+}
+
+// IncreaseNodeGroupsInGlobalReplicationGroupRequest mocks base method
+func (m *MockElastiCacheAPI) IncreaseNodeGroupsInGlobalReplicationGroupRequest(arg0 *elasticache.IncreaseNodeGroupsInGlobalReplicationGroupInput) (*request.Request, *elasticache.IncreaseNodeGroupsInGlobalReplicationGroupOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IncreaseNodeGroupsInGlobalReplicationGroupRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.IncreaseNodeGroupsInGlobalReplicationGroupOutput)
+	return ret0, ret1
+}
+
+// IncreaseNodeGroupsInGlobalReplicationGroupRequest indicates an expected call of IncreaseNodeGroupsInGlobalReplicationGroupRequest
+func (mr *MockElastiCacheAPIMockRecorder) IncreaseNodeGroupsInGlobalReplicationGroupRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncreaseNodeGroupsInGlobalReplicationGroupRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).IncreaseNodeGroupsInGlobalReplicationGroupRequest), arg0)
+}
+
 // IncreaseReplicaCount mocks base method
 func (m *MockElastiCacheAPI) IncreaseReplicaCount(arg0 *elasticache.IncreaseReplicaCountInput) (*elasticache.IncreaseReplicaCountOutput, error) {
 	m.ctrl.T.Helper()
@@ -2447,6 +2830,56 @@ func (mr *MockElastiCacheAPIMockRecorder) ModifyCacheSubnetGroupRequest(arg0 int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyCacheSubnetGroupRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).ModifyCacheSubnetGroupRequest), arg0)
 }
 
+// ModifyGlobalReplicationGroup mocks base method
+func (m *MockElastiCacheAPI) ModifyGlobalReplicationGroup(arg0 *elasticache.ModifyGlobalReplicationGroupInput) (*elasticache.ModifyGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifyGlobalReplicationGroup", arg0)
+	ret0, _ := ret[0].(*elasticache.ModifyGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyGlobalReplicationGroup indicates an expected call of ModifyGlobalReplicationGroup
+func (mr *MockElastiCacheAPIMockRecorder) ModifyGlobalReplicationGroup(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyGlobalReplicationGroup", reflect.TypeOf((*MockElastiCacheAPI)(nil).ModifyGlobalReplicationGroup), arg0)
+}
+
+// ModifyGlobalReplicationGroupWithContext mocks base method
+func (m *MockElastiCacheAPI) ModifyGlobalReplicationGroupWithContext(arg0 aws.Context, arg1 *elasticache.ModifyGlobalReplicationGroupInput, arg2 ...request.Option) (*elasticache.ModifyGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ModifyGlobalReplicationGroupWithContext", varargs...)
+	ret0, _ := ret[0].(*elasticache.ModifyGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ModifyGlobalReplicationGroupWithContext indicates an expected call of ModifyGlobalReplicationGroupWithContext
+func (mr *MockElastiCacheAPIMockRecorder) ModifyGlobalReplicationGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyGlobalReplicationGroupWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).ModifyGlobalReplicationGroupWithContext), varargs...)
+}
+
+// ModifyGlobalReplicationGroupRequest mocks base method
+func (m *MockElastiCacheAPI) ModifyGlobalReplicationGroupRequest(arg0 *elasticache.ModifyGlobalReplicationGroupInput) (*request.Request, *elasticache.ModifyGlobalReplicationGroupOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ModifyGlobalReplicationGroupRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.ModifyGlobalReplicationGroupOutput)
+	return ret0, ret1
+}
+
+// ModifyGlobalReplicationGroupRequest indicates an expected call of ModifyGlobalReplicationGroupRequest
+func (mr *MockElastiCacheAPIMockRecorder) ModifyGlobalReplicationGroupRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ModifyGlobalReplicationGroupRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).ModifyGlobalReplicationGroupRequest), arg0)
+}
+
 // ModifyReplicationGroup mocks base method
 func (m *MockElastiCacheAPI) ModifyReplicationGroup(arg0 *elasticache.ModifyReplicationGroupInput) (*elasticache.ModifyReplicationGroupOutput, error) {
 	m.ctrl.T.Helper()
@@ -2595,6 +3028,56 @@ func (m *MockElastiCacheAPI) PurchaseReservedCacheNodesOfferingRequest(arg0 *ela
 func (mr *MockElastiCacheAPIMockRecorder) PurchaseReservedCacheNodesOfferingRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PurchaseReservedCacheNodesOfferingRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).PurchaseReservedCacheNodesOfferingRequest), arg0)
+}
+
+// RebalanceSlotsInGlobalReplicationGroup mocks base method
+func (m *MockElastiCacheAPI) RebalanceSlotsInGlobalReplicationGroup(arg0 *elasticache.RebalanceSlotsInGlobalReplicationGroupInput) (*elasticache.RebalanceSlotsInGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RebalanceSlotsInGlobalReplicationGroup", arg0)
+	ret0, _ := ret[0].(*elasticache.RebalanceSlotsInGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RebalanceSlotsInGlobalReplicationGroup indicates an expected call of RebalanceSlotsInGlobalReplicationGroup
+func (mr *MockElastiCacheAPIMockRecorder) RebalanceSlotsInGlobalReplicationGroup(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RebalanceSlotsInGlobalReplicationGroup", reflect.TypeOf((*MockElastiCacheAPI)(nil).RebalanceSlotsInGlobalReplicationGroup), arg0)
+}
+
+// RebalanceSlotsInGlobalReplicationGroupWithContext mocks base method
+func (m *MockElastiCacheAPI) RebalanceSlotsInGlobalReplicationGroupWithContext(arg0 aws.Context, arg1 *elasticache.RebalanceSlotsInGlobalReplicationGroupInput, arg2 ...request.Option) (*elasticache.RebalanceSlotsInGlobalReplicationGroupOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "RebalanceSlotsInGlobalReplicationGroupWithContext", varargs...)
+	ret0, _ := ret[0].(*elasticache.RebalanceSlotsInGlobalReplicationGroupOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RebalanceSlotsInGlobalReplicationGroupWithContext indicates an expected call of RebalanceSlotsInGlobalReplicationGroupWithContext
+func (mr *MockElastiCacheAPIMockRecorder) RebalanceSlotsInGlobalReplicationGroupWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RebalanceSlotsInGlobalReplicationGroupWithContext", reflect.TypeOf((*MockElastiCacheAPI)(nil).RebalanceSlotsInGlobalReplicationGroupWithContext), varargs...)
+}
+
+// RebalanceSlotsInGlobalReplicationGroupRequest mocks base method
+func (m *MockElastiCacheAPI) RebalanceSlotsInGlobalReplicationGroupRequest(arg0 *elasticache.RebalanceSlotsInGlobalReplicationGroupInput) (*request.Request, *elasticache.RebalanceSlotsInGlobalReplicationGroupOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RebalanceSlotsInGlobalReplicationGroupRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*elasticache.RebalanceSlotsInGlobalReplicationGroupOutput)
+	return ret0, ret1
+}
+
+// RebalanceSlotsInGlobalReplicationGroupRequest indicates an expected call of RebalanceSlotsInGlobalReplicationGroupRequest
+func (mr *MockElastiCacheAPIMockRecorder) RebalanceSlotsInGlobalReplicationGroupRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RebalanceSlotsInGlobalReplicationGroupRequest", reflect.TypeOf((*MockElastiCacheAPI)(nil).RebalanceSlotsInGlobalReplicationGroupRequest), arg0)
 }
 
 // RebootCacheCluster mocks base method
