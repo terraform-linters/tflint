@@ -8,10 +8,13 @@ Require specific tags for all AWS resource types that support them.
 rule "aws_resource_missing_tags" {
   enabled = true
   tags = ["Foo", "Bar"]
+  exclude = ["aws_resource_missing_tags"] # (Optional) Exclude some resource types from tag checks
 }
 ```
 
-## Example
+## Examples
+
+Most resources use the `tags` attribute with simple `key`=`value` pairs:
 
 ```hcl
 resource "aws_instance" "instance" {
@@ -34,6 +37,34 @@ Notice: aws_instance.instance is missing the following tags: "Bar", "Foo". (aws_
    4:     foo = "Bar"
    5:     bar = "Baz"
    6:   }
+```
+
+Iterators in `dynamic` blocks cannot be expanded, so the tags in the following example will not be detected.
+
+```hcl
+locals {
+  tags = [
+    {
+      key   = "Name",
+      value = "SomeName",
+    },
+    {
+      key   = "env",
+      value = "SomeEnv",
+    },
+  ]
+}
+resource "aws_autoscaling_group" "this" {
+  dynamic "tag" {
+    for_each = local.tags
+
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
+  }
+}
 ```
 
 ## Why
