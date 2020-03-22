@@ -53,6 +53,8 @@ func Test_NewRules(t *testing.T) {
 	DefaultRules = []Rule{
 		awsrules.NewAwsRouteNotSpecifiedTargetRule(),
 		terraformrules.NewTerraformDashInResourceNameRule(),
+		terraformrules.NewTerraformDashInDataSourceNameRule(),
+		terraformrules.NewTerraformDashInModuleNameRule(),
 	}
 	deepCheckRules = []Rule{
 		awsrules.NewAwsInstanceInvalidAMIRule(),
@@ -103,6 +105,34 @@ func Test_NewRules(t *testing.T) {
 			Expected: []Rule{
 				awsrules.NewAwsRouteNotSpecifiedTargetRule(),
 				terraformrules.NewTerraformDashInResourceNameRule(),
+			},
+		},
+		{
+			Name: "enabled = true",
+			Config: &tflint.Config{
+				Rules: map[string]*tflint.RuleConfig{
+					"terraform_dash_in_data_source_name": {
+						Enabled: true,
+					},
+				},
+			},
+			Expected: []Rule{
+				awsrules.NewAwsRouteNotSpecifiedTargetRule(),
+				terraformrules.NewTerraformDashInDataSourceNameRule(),
+			},
+		},
+		{
+			Name: "enabled = true",
+			Config: &tflint.Config{
+				Rules: map[string]*tflint.RuleConfig{
+					"terraform_dash_in_module_name": {
+						Enabled: true,
+					},
+				},
+			},
+			Expected: []Rule{
+				awsrules.NewAwsRouteNotSpecifiedTargetRule(),
+				terraformrules.NewTerraformDashInModuleNameRule(),
 			},
 		},
 	}
