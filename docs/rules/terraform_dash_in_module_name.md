@@ -5,7 +5,7 @@ Disallow dashes (-) in `module` names.
 ## Example
 
 ```hcl
-module dash-name" {
+module "dash-name" {
 }
 
 module "no_dash_name" {
