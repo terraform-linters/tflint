@@ -38,6 +38,8 @@ var manualDefaultRules = []Rule{
 	awsrules.NewAwsResourceMissingTagsRule(),
 	terraformrules.NewTerraformDashInResourceNameRule(),
 	terraformrules.NewTerraformDashInOutputNameRule(),
+	terraformrules.NewTerraformDashInModuleNameRule(),
+	terraformrules.NewTerraformDashInDataSourceNameRule(),
 	terraformrules.NewTerraformDeprecatedInterpolationRule(),
 	terraformrules.NewTerraformDocumentedOutputsRule(),
 	terraformrules.NewTerraformDocumentedVariablesRule(),
