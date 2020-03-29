@@ -8,7 +8,7 @@ Require specific tags for all AWS resource types that support them.
 rule "aws_resource_missing_tags" {
   enabled = true
   tags = ["Foo", "Bar"]
-  exclude = ["aws_resource_missing_tags"] # (Optional) Exclude some resource types from tag checks
+  exclude = ["aws_autoscaling_group"] # (Optional) Exclude some resource types from tag checks
 }
 ```
 
