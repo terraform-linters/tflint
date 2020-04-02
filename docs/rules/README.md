@@ -75,3 +75,9 @@ These rules suggest to better ways.
 |[terraform_documented_outputs](terraform_documented_outputs.md)||
 |[terraform_documented_variables](terraform_documented_variables.md)||
 |[terraform_module_pinned_source](terraform_module_pinned_source.md)|✔|
+|[terraform_snake_case_data_source_name](terraform_snake_case_data_source_name.md)||
+|[terraform_snake_case_local_name](terraform_snake_case_local_name.md)||
+|[terraform_snake_case_module_name](terraform_snake_case_module_name.md)||
+|[terraform_snake_case_output_name](terraform_snake_case_output_name.md)||
+|[terraform_snake_case_resource_name](terraform_snake_case_resource_name.md)||
+|[terraform_snake_case_variable_name](terraform_snake_case_variable_name.md)||
