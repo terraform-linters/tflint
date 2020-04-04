@@ -115,6 +115,10 @@ func (l *Loader) LoadAnnotations(dir string) (map[string]Annotations, error) {
 	ret := map[string]Annotations{}
 
 	for _, configFile := range configFiles {
+		if !strings.HasSuffix(configFile, ".tf") {
+			continue
+		}
+
 		src, err := l.fs.ReadFile(configFile)
 		if err != nil {
 			return nil, err

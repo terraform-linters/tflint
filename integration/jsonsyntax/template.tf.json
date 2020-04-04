@@ -1,0 +1,10 @@
+{
+  "resource": {
+    "aws_instance": {
+      "example": {
+        "instance_type": "t1.xmicro",
+        "ami": "${join(\"\", [\"ami-123456\"])}"
+      }
+    }
+  }
+}

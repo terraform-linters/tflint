@@ -67,6 +67,11 @@ func TestIntegration(t *testing.T) {
 			Command: "./tflint --format json --module",
 			Dir:     "plugin",
 		},
+		{
+			Name:    "jsonsyntax",
+			Command: "./tflint --format json",
+			Dir:     "jsonsyntax",
+		},
 	}
 
 	dir, _ := os.Getwd()
