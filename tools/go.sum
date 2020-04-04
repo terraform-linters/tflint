@@ -44,7 +44,7 @@ github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
 github.com/bflad/gopaniccheck v0.1.0/go.mod h1:ZCj2vSr7EqVeDaqVsWN4n2MwdROx1YL+LFo47TSWtsA=
 github.com/bflad/tfproviderdocs v0.5.0/go.mod h1:d0k1fQLEu1pdeORxozwuwmvauFaEmMBREQ1fw3J+pPc=
-github.com/bflad/tfproviderlint v0.12.0/go.mod h1:MsNI3eEj7uC7P/h7XmGvzMLtsotLkrvB+NF2/w3RZGc=
+github.com/bflad/tfproviderlint v0.14.0/go.mod h1:1Jtjs6DPKoyqPrbPyMiy33h0ViO2h831uzoOuikCA60=
 github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d h1:xDfNPAt8lFiC1UJrqV3uuy861HCTo708pDMbjHHdCas=
 github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d/go.mod h1:6QX/PXZ00z/TKoufEY6K/a0k6AhaJrQKdFe6OfVXsa4=
 github.com/bgentry/speakeasy v0.1.0 h1:ByYyxL9InA1OWqxJqqp2A5pYHUrCiAL6K3J+LKSsQkY=
@@ -424,8 +424,8 @@ github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81P
 github.com/subosito/gotenv v1.2.0/go.mod h1:N0PQaV/YGNqwC0u51sEeR/aUtSLEXKX9iv69rRypqCw=
 github.com/terraform-linters/tflint-plugin-sdk v0.1.0 h1:+lb34sQerhxYC7H+aoa3dpCyjeVsZ6OKelahmHpt/y8=
 github.com/terraform-linters/tflint-plugin-sdk v0.1.0/go.mod h1:c0QfiziWpeVYJXTzevTanBVEghl2o+y5QUVp7kxFbGY=
-github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20200319153356-a183662640d9 h1:xqOfDQLPKE6UkJi4sq2/R0e/zpQQDypUzuCNPbbcXSE=
-github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20200319153356-a183662640d9/go.mod h1:S5ebfk4piId2DRon9QQgeXU4+A5ICUSJWlzl+OcXPNs=
+github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20200403004102-02afaa62e2ab h1:ARRLe/Gv72pmDXqfNZ+zs1hyW68rJFyzQmE/nMUcLvs=
+github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20200403004102-02afaa62e2ab/go.mod h1:WCqA4nITC9jGabJwbmowbvcGGoIiR2gqyde4sVaqEvU=
 github.com/timakin/bodyclose v0.0.0-20190930140734-f7f2e9bca95e/go.mod h1:Qimiffbc6q9tBWlVV6x0P9sat/ao1xEkREYPPj9hphk=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
 github.com/tommy-muehle/go-mnd v1.1.1/go.mod h1:dSUh0FtTP8VhvkL1S+gUR1OKd9ZnSaozuI6r3m6wOig=

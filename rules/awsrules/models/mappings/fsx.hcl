@@ -19,7 +19,7 @@ mapping "aws_fsx_windows_file_system" {
   automatic_backup_retention_days   = AutomaticBackupRetentionDays
   copy_tags_to_backups              = Flag
   daily_automatic_backup_start_time = DailyTime
-  kms_key_id                        = KmsKeyId
+  kms_key_id                        = any // KmsKeyId
   security_group_ids                = SecurityGroupIds
   self_managed_active_directory     = SelfManagedActiveDirectoryConfiguration
   skip_final_backup                 = Flag
