@@ -1,3 +1,21 @@
+## 0.15.4 (2020-04-04)
+
+### Enhancements
+
+- [#685](https://github.com/terraform-linters/tflint/pull/685): Add dash checks for data sources and modules ([@gkze](https://github.com/gkze))
+- [#702](https://github.com/terraform-linters/tflint/pull/702): Bump terraform-aws-provider to v2.56.0 from v2.54.0 ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#701](https://github.com/terraform-linters/tflint/pull/701): Skip to tokenize JSON syntax code ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#684](https://github.com/terraform-linters/tflint/pull/684): Automate homebrew formula upgrade process ([@chenrui333](https://github.com/chenrui333))
+- [#686](https://github.com/terraform-linters/tflint/pull/686): Fixes the example of excluding resource types ([@bwhaley](https://github.com/bwhaley))
+- [#690](https://github.com/terraform-linters/tflint/pull/690): Bump github.com/hashicorp/terraform-plugin-sdk from 1.8.0 to 1.9.0 in /tools
+- [#699](https://github.com/terraform-linters/tflint/pull/699): Bump github.com/aws/aws-sdk-go from 1.29.29 to 1.30.3
+
 ## 0.15.3 (2020-03-21)
 
 ### Enhancements
