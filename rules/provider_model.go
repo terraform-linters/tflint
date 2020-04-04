@@ -321,7 +321,6 @@ var modelRules = []Rule{
 	awsmodelrules.NewAwsFsxLustreFileSystemInvalidWeeklyMaintenanceStartTimeRule(),
 	awsmodelrules.NewAwsFsxWindowsFileSystemInvalidActiveDirectoryIDRule(),
 	awsmodelrules.NewAwsFsxWindowsFileSystemInvalidDailyAutomaticBackupStartTimeRule(),
-	awsmodelrules.NewAwsFsxWindowsFileSystemInvalidKmsKeyIDRule(),
 	awsmodelrules.NewAwsFsxWindowsFileSystemInvalidWeeklyMaintenanceStartTimeRule(),
 	awsmodelrules.NewAwsGameliftAliasInvalidDescriptionRule(),
 	awsmodelrules.NewAwsGameliftAliasInvalidNameRule(),

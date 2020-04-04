@@ -25,6 +25,7 @@ func NewAwsGlueConnectionInvalidConnectionTypeRule() *AwsGlueConnectionInvalidCo
 		enum: []string{
 			"JDBC",
 			"SFTP",
+			"MONGODB",
 		},
 	}
 }
