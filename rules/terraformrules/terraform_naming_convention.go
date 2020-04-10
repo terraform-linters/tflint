@@ -22,15 +22,22 @@ type terraformNamingConventionRuleConfig struct {
 	Variable *BlockFormatConfig `hcl:"variable,block"`
 }
 
+// BlockFormatConfig defines the pre-defined format or custom regular expression to use
 type BlockFormatConfig struct {
-	Format string `hcl:"format,attr"`
-	Custom string `hcl:"custom,attr"`
+	Format string `hcl:"format,optional"`
+	Custom string `hcl:"custom,optional"`
 }
 
+// NameValidator contains the regular expression to validate block name, if it was a named format, and the format name/regular expression string
 type NameValidator struct {
 	Format        string
 	IsNamedFormat bool
 	Regexp        *regexp.Regexp
+}
+
+// NewTerraformNamingConventionRule returns new rule with default attributes
+func NewTerraformNamingConventionRule() *TerraformNamingConventionRule {
+	return &TerraformNamingConventionRule{}
 }
 
 // Name returns the rule name
@@ -45,7 +52,7 @@ func (r *TerraformNamingConventionRule) Enabled() bool {
 
 // Severity returns the rule severity
 func (r *TerraformNamingConventionRule) Severity() string {
-	return tflint.NOTICE
+	return tflint.WARNING
 }
 
 // Link returns the rule reference link
