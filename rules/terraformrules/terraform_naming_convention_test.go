@@ -1907,6 +1907,464 @@ output "camelCase" {
 	}
 }
 
+// Resource blocks
+func Test_TerraformNamingConventionRule_Resource_DefaultEmpty(t *testing.T) {
+	testResourceSnakeCase(t, "default config", "format: snake_case", `
+rule "terraform_naming_convention" {
+  enabled = true
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Resource_DefaultFormat(t *testing.T) {
+	testResourceMixedSnakeCase(t, `default config (format="mixed_snake_case")`, `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = "mixed_snake_case"
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Resource_DefaultCustom(t *testing.T) {
+	testResourceSnakeCase(t, `default config (custom="^[a-z_]+$")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
+rule "terraform_naming_convention" {
+  enabled = true
+  custom  = "^[a-z][a-z]*(_[a-z]+)*$"
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Resource_DefaultDisabled(t *testing.T) {
+	testResourceDisabled(t, `default config (format=null)`, `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = ""
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Resource_DefaultFormat_OverrideFormat(t *testing.T) {
+	testResourceSnakeCase(t, `overridden config (format="snake_case")`, "format: snake_case", `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = "mixed_snake_case"
+
+  resource {
+    format = "snake_case"
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Resource_DefaultFormat_OverrideCustom(t *testing.T) {
+	testResourceSnakeCase(t, `overridden config (format="snake_case")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = "mixed_snake_case"
+
+  resource {
+    custom = "^[a-z][a-z]*(_[a-z]+)*$"
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Resource_DefaultCustom_OverrideFormat(t *testing.T) {
+	testResourceSnakeCase(t, `overridden config (format="snake_case")`, "format: snake_case", `
+rule "terraform_naming_convention" {
+  enabled = true
+  custom  = "^ignored$"
+
+  resource {
+    format = "snake_case"
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Resource_DefaultCustom_OverrideCustom(t *testing.T) {
+	testResourceSnakeCase(t, `overridden config (format="snake_case")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
+rule "terraform_naming_convention" {
+  enabled = true
+  custom  = "^ignored$"
+
+  resource {
+    custom = "^[a-z][a-z]*(_[a-z]+)*$"
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Resource_DefaultDisabled_OverrideFormat(t *testing.T) {
+	testResourceSnakeCase(t, `overridden config (format="snake_case")`, "format: snake_case", `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = ""
+
+  resource {
+    format = "snake_case"
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Resource_DefaultDisabled_OverrideCustom(t *testing.T) {
+	testResourceSnakeCase(t, `overridden config (format="snake_case")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = ""
+
+  resource {
+    custom = "^[a-z][a-z]*(_[a-z]+)*$"
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Resource_DefaultEmpty_OverrideDisabled(t *testing.T) {
+	testResourceDisabled(t, `overridden config (format=null)`, `
+rule "terraform_naming_convention" {
+  enabled = true
+
+  resource {
+    format = ""
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Resource_DefaultFormat_OverrideDisabled(t *testing.T) {
+	testResourceDisabled(t, `overridden config (format=null)`, `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = "snake_case"
+
+  resource {
+    format = ""
+  }
+}`)
+}
+
+func testResourceSnakeCase(t *testing.T, testType string, formatName string, config string) {
+	rule := NewTerraformNamingConventionRule()
+
+	cases := []struct {
+		Name     string
+		Content  string
+		Config   string
+		Expected tflint.Issues
+	}{
+		{
+			Name: fmt.Sprintf("resource: %s - Invalid snake_case with dash", testType),
+			Content: `
+resource "aws_eip" "dash-name" {
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: fmt.Sprintf("resource name `dash-name` must match the following %s", formatName),
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 31},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Invalid snake_case with camelCase", testType),
+			Content: `
+resource "aws_eip" "camelCased" {
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: fmt.Sprintf("resource name `camelCased` must match the following %s", formatName),
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 32},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Invalid snake_case with double underscore", testType),
+			Content: `
+resource "aws_eip" "foo__bar" {
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: fmt.Sprintf("resource name `foo__bar` must match the following %s", formatName),
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 30},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Invalid snake_case with underscore tail", testType),
+			Content: `
+resource "aws_eip" "foo_bar_" {
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: fmt.Sprintf("resource name `foo_bar_` must match the following %s", formatName),
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 30},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Invalid snake_case with Mixed_Snake_Case", testType),
+			Content: `
+resource "aws_eip" "Foo_Bar" {
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: fmt.Sprintf("resource name `Foo_Bar` must match the following %s", formatName),
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 29},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Valid snake_case", testType),
+			Content: `
+resource "aws_eip" "foo_bar" {
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Valid single word", testType),
+			Content: `
+resource "aws_eip" "foo" {
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+	}
+
+	for _, tc := range cases {
+		runner := tflint.TestRunnerWithConfig(t, map[string]string{"tests.tf": tc.Content}, loadConfigFromNamingConventionTempFile(t, tc.Config))
+
+		if err := rule.Check(runner); err != nil {
+			t.Fatalf("Unexpected error occurred: %s", err)
+		}
+
+		tflint.AssertIssues(t, tc.Expected, runner.Issues)
+	}
+}
+
+func testResourceMixedSnakeCase(t *testing.T, testType string, config string) {
+	rule := NewTerraformNamingConventionRule()
+
+	cases := []struct {
+		Name     string
+		Content  string
+		Config   string
+		Expected tflint.Issues
+	}{
+		{
+			Name: fmt.Sprintf("resource: %s - Invalid mixed_snake_case with dash", testType),
+			Content: `
+resource "aws_eip" "dash-name" {
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: "resource name `dash-name` must match the following format: mixed_snake_case",
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 31},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Invalid mixed_snake_case with double underscore", testType),
+			Content: `
+resource "aws_eip" "Foo__Bar" {
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: "resource name `Foo__Bar` must match the following format: mixed_snake_case",
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 30},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Invalid mixed_snake_case with underscore tail", testType),
+			Content: `
+resource "aws_eip" "Foo_Bar_" {
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: "resource name `Foo_Bar_` must match the following format: mixed_snake_case",
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 30},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Valid snake_case", testType),
+			Content: `
+resource "aws_eip" "foo_bar" {
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Valid single word", testType),
+			Content: `
+resource "aws_eip" "foo" {
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Valid Mixed_Snake_Case", testType),
+			Content: `
+resource "aws_eip" "Foo_Bar" {
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Valid single word with upper characters", testType),
+			Content: `
+resource "aws_eip" "foo" {
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Valid PascalCase", testType),
+			Content: `
+resource "aws_eip" "PascalCase" {
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Valid camelCase", testType),
+			Content: `
+resource "aws_eip" "camelCase" {
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+	}
+
+	for _, tc := range cases {
+		runner := tflint.TestRunnerWithConfig(t, map[string]string{"tests.tf": tc.Content}, loadConfigFromNamingConventionTempFile(t, tc.Config))
+
+		if err := rule.Check(runner); err != nil {
+			t.Fatalf("Unexpected error occurred: %s", err)
+		}
+
+		tflint.AssertIssues(t, tc.Expected, runner.Issues)
+	}
+}
+
+func testResourceDisabled(t *testing.T, testType string, config string) {
+	rule := NewTerraformNamingConventionRule()
+
+	cases := []struct {
+		Name     string
+		Content  string
+		Config   string
+		Expected tflint.Issues
+	}{
+		{
+			Name: fmt.Sprintf("resource: %s - Valid mixed_snake_case with dash", testType),
+			Content: `
+resource "aws_eip" "dash-name" {
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Valid snake_case", testType),
+			Content: `
+resource "aws_eip" "foo_bar" {
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Valid single word", testType),
+			Content: `
+resource "aws_eip" "foo" {
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Valid Mixed_Snake_Case", testType),
+			Content: `
+resource "aws_eip" "Foo_Bar" {
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Valid single word upper characters", testType),
+			Content: `
+resource "aws_eip" "Foo" {
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Valid PascalCase", testType),
+			Content: `
+resource "aws_eip" "PascalCase" {
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("resource: %s - Valid camelCase", testType),
+			Content: `
+resource "aws_eip" "camelCase" {
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+	}
+
+	for _, tc := range cases {
+		runner := tflint.TestRunnerWithConfig(t, map[string]string{"tests.tf": tc.Content}, loadConfigFromNamingConventionTempFile(t, tc.Config))
+
+		if err := rule.Check(runner); err != nil {
+			t.Fatalf("Unexpected error occurred: %s", err)
+		}
+
+		tflint.AssertIssues(t, tc.Expected, runner.Issues)
+	}
+}
+
+
 
 // TODO: Replace with TestRunner
 func loadConfigFromNamingConventionTempFile(t *testing.T, content string) *tflint.Config {
