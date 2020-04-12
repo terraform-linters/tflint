@@ -399,7 +399,7 @@ func testDataDisabled(t *testing.T, testType string, config string) {
 		Expected tflint.Issues
 	}{
 		{
-			Name: fmt.Sprintf("data: %s - Invalid mixed_snake_case with dash", testType),
+			Name: fmt.Sprintf("data: %s - Valid mixed_snake_case with dash", testType),
 			Content: `
 data "aws_eip" "dash-name" {
 }`,
@@ -872,7 +872,7 @@ func testLocalsDisabled(t *testing.T, testType string, config string) {
 		Expected tflint.Issues
 	}{
 		{
-			Name: fmt.Sprintf("locals: %s - Invalid mixed_snake_case with dash", testType),
+			Name: fmt.Sprintf("locals: %s - Valid mixed_snake_case with dash", testType),
 			Content: `
 locals {
   dash-name = "valid"
@@ -1352,7 +1352,7 @@ func testModuleDisabled(t *testing.T, testType string, config string) {
 		Expected tflint.Issues
 	}{
 		{
-			Name: fmt.Sprintf("module: %s - Invalid mixed_snake_case with dash", testType),
+			Name: fmt.Sprintf("module: %s - Valid mixed_snake_case with dash", testType),
 			Content: `
 module "dash-name" {
   source = ""
@@ -1410,6 +1410,486 @@ module "PascalCase" {
 			Content: `
 module "camelCase" {
   source = ""
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+	}
+
+	for _, tc := range cases {
+		runner := tflint.TestRunnerWithConfig(t, map[string]string{"tests.tf": tc.Content}, loadConfigFromNamingConventionTempFile(t, tc.Config))
+
+		if err := rule.Check(runner); err != nil {
+			t.Fatalf("Unexpected error occurred: %s", err)
+		}
+
+		tflint.AssertIssues(t, tc.Expected, runner.Issues)
+	}
+}
+
+// Output blocks
+func Test_TerraformNamingConventionRule_Output_DefaultEmpty(t *testing.T) {
+	testOutputSnakeCase(t, "default config", "format: snake_case", `
+rule "terraform_naming_convention" {
+  enabled = true
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Output_DefaultFormat(t *testing.T) {
+	testOutputMixedSnakeCase(t, `default config (format="mixed_snake_case")`, `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = "mixed_snake_case"
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Output_DefaultCustom(t *testing.T) {
+	testOutputSnakeCase(t, `default config (custom="^[a-z_]+$")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
+rule "terraform_naming_convention" {
+  enabled = true
+  custom  = "^[a-z][a-z]*(_[a-z]+)*$"
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Output_DefaultDisabled(t *testing.T) {
+	testOutputDisabled(t, `default config (format=null)`, `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = ""
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Output_DefaultFormat_OverrideFormat(t *testing.T) {
+	testOutputSnakeCase(t, `overridden config (format="snake_case")`, "format: snake_case", `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = "mixed_snake_case"
+
+  output {
+    format = "snake_case"
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Output_DefaultFormat_OverrideCustom(t *testing.T) {
+	testOutputSnakeCase(t, `overridden config (format="snake_case")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = "mixed_snake_case"
+
+  output {
+    custom = "^[a-z][a-z]*(_[a-z]+)*$"
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Output_DefaultCustom_OverrideFormat(t *testing.T) {
+	testOutputSnakeCase(t, `overridden config (format="snake_case")`, "format: snake_case", `
+rule "terraform_naming_convention" {
+  enabled = true
+  custom  = "^ignored$"
+
+  output {
+    format = "snake_case"
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Output_DefaultCustom_OverrideCustom(t *testing.T) {
+	testOutputSnakeCase(t, `overridden config (format="snake_case")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
+rule "terraform_naming_convention" {
+  enabled = true
+  custom  = "^ignored$"
+
+  output {
+    custom = "^[a-z][a-z]*(_[a-z]+)*$"
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Output_DefaultDisabled_OverrideFormat(t *testing.T) {
+	testOutputSnakeCase(t, `overridden config (format="snake_case")`, "format: snake_case", `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = ""
+
+  output {
+    format = "snake_case"
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Output_DefaultDisabled_OverrideCustom(t *testing.T) {
+	testOutputSnakeCase(t, `overridden config (format="snake_case")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = ""
+
+  output {
+    custom = "^[a-z][a-z]*(_[a-z]+)*$"
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Output_DefaultEmpty_OverrideDisabled(t *testing.T) {
+	testOutputDisabled(t, `overridden config (format=null)`, `
+rule "terraform_naming_convention" {
+  enabled = true
+
+  output {
+    format = ""
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Output_DefaultFormat_OverrideDisabled(t *testing.T) {
+	testOutputDisabled(t, `overridden config (format=null)`, `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = "snake_case"
+
+  output {
+    format = ""
+  }
+}`)
+}
+
+func testOutputSnakeCase(t *testing.T, testType string, formatName string, config string) {
+	rule := NewTerraformNamingConventionRule()
+
+	cases := []struct {
+		Name     string
+		Content  string
+		Config   string
+		Expected tflint.Issues
+	}{
+		{
+			Name: fmt.Sprintf("output: %s - Invalid snake_case with dash", testType),
+			Content: `
+output "dash-name" {
+  value = "invalid"
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: fmt.Sprintf("output name `dash-name` must match the following %s", formatName),
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 19},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Invalid snake_case with camelCase", testType),
+			Content: `
+output "camelCased" {
+  value = "invalid"
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: fmt.Sprintf("output name `camelCased` must match the following %s", formatName),
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 20},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Invalid snake_case with double underscore", testType),
+			Content: `
+output "foo__bar" {
+  value = "invalid"
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: fmt.Sprintf("output name `foo__bar` must match the following %s", formatName),
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 18},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Invalid snake_case with underscore tail", testType),
+			Content: `
+output "foo_bar_" {
+  value = "invalid"
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: fmt.Sprintf("output name `foo_bar_` must match the following %s", formatName),
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 18},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Invalid snake_case with Mixed_Snake_Case", testType),
+			Content: `
+output "Foo_Bar" {
+  value = "invalid"
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: fmt.Sprintf("output name `Foo_Bar` must match the following %s", formatName),
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 17},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Valid snake_case", testType),
+			Content: `
+output "foo_bar" {
+  value = "valid"
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Valid single word", testType),
+			Content: `
+output "foo" {
+  value = "valid"
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+	}
+
+	for _, tc := range cases {
+		runner := tflint.TestRunnerWithConfig(t, map[string]string{"tests.tf": tc.Content}, loadConfigFromNamingConventionTempFile(t, tc.Config))
+
+		if err := rule.Check(runner); err != nil {
+			t.Fatalf("Unexpected error occurred: %s", err)
+		}
+
+		tflint.AssertIssues(t, tc.Expected, runner.Issues)
+	}
+}
+
+func testOutputMixedSnakeCase(t *testing.T, testType string, config string) {
+	rule := NewTerraformNamingConventionRule()
+
+	cases := []struct {
+		Name     string
+		Content  string
+		Config   string
+		Expected tflint.Issues
+	}{
+		{
+			Name: fmt.Sprintf("output: %s - Invalid mixed_snake_case with dash", testType),
+			Content: `
+output "dash-name" {
+  value = "invalid"
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: "output name `dash-name` must match the following format: mixed_snake_case",
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 19},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Invalid mixed_snake_case with double underscore", testType),
+			Content: `
+output "Foo__Bar" {
+  value = "invalid"
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: "output name `Foo__Bar` must match the following format: mixed_snake_case",
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 18},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Invalid mixed_snake_case with underscore tail", testType),
+			Content: `
+output "Foo_Bar_" {
+  value = "invalid"
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: "output name `Foo_Bar_` must match the following format: mixed_snake_case",
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 18},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Valid snake_case", testType),
+			Content: `
+output "foo_bar" {
+  value = "valid"
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Valid single word", testType),
+			Content: `
+output "foo" {
+  value = "valid"
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Valid Mixed_Snake_Case", testType),
+			Content: `
+output "Foo_Bar" {
+  value = "valid"
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Valid single word with upper characters", testType),
+			Content: `
+output "foo" {
+  value = "valid"
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Valid PascalCase", testType),
+			Content: `
+output "PascalCase" {
+  value = "valid"
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Valid camelCase", testType),
+			Content: `
+output "camelCase" {
+  value = "valid"
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+	}
+
+	for _, tc := range cases {
+		runner := tflint.TestRunnerWithConfig(t, map[string]string{"tests.tf": tc.Content}, loadConfigFromNamingConventionTempFile(t, tc.Config))
+
+		if err := rule.Check(runner); err != nil {
+			t.Fatalf("Unexpected error occurred: %s", err)
+		}
+
+		tflint.AssertIssues(t, tc.Expected, runner.Issues)
+	}
+}
+
+func testOutputDisabled(t *testing.T, testType string, config string) {
+	rule := NewTerraformNamingConventionRule()
+
+	cases := []struct {
+		Name     string
+		Content  string
+		Config   string
+		Expected tflint.Issues
+	}{
+		{
+			Name: fmt.Sprintf("output: %s - Valid mixed_snake_case with dash", testType),
+			Content: `
+output "dash-name" {
+  value = "valid"
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Valid snake_case", testType),
+			Content: `
+output "foo_bar" {
+  value = "valid"
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Valid single word", testType),
+			Content: `
+output "foo" {
+  value = "valid"
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Valid Mixed_Snake_Case", testType),
+			Content: `
+output "Foo_Bar" {
+  value = "valid"
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Valid single word upper characters", testType),
+			Content: `
+output "Foo" {
+  value = "valid"
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Valid PascalCase", testType),
+			Content: `
+output "PascalCase" {
+  value = "valid"
+}`,
+			Config:   config,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: fmt.Sprintf("output: %s - Valid camelCase", testType),
+			Content: `
+output "camelCase" {
+  value = "valid"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},
