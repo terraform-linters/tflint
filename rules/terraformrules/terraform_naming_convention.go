@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strings"
 
 	"github.com/terraform-linters/tflint/tflint"
 )
@@ -12,7 +13,8 @@ import (
 type TerraformNamingConventionRule struct{}
 
 type terraformNamingConventionRuleConfig struct {
-	BlockFormatConfig
+	Format string `hcl:"format,optional"`
+	Custom string `hcl:"custom,optional"`
 
 	Data     *BlockFormatConfig `hcl:"data,block"`
 	Locals   *BlockFormatConfig `hcl:"locals,block"`
@@ -59,9 +61,6 @@ func (r *TerraformNamingConventionRule) Severity() string {
 func (r *TerraformNamingConventionRule) Link() string {
 	return tflint.ReferenceLink(r.Name())
 }
-
-var reSnakeCase = regexp.MustCompile("^[a-z][a-z0-9]*(_[a-z0-9]+)*$")
-var reMixedSnakeCase = regexp.MustCompile("^[a-zA-Z][a-zA-Z0-9]*(_[a-zA-Z0-9]+)*$")
 
 // Check checks whether blocks follow naming convention
 func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
@@ -257,34 +256,43 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 }
 
 func (config *BlockFormatConfig) getNameValidator() (*NameValidator, error) {
-	if config.Custom != "" {
+	return getNameValidator(config.Custom, config.Format)
+}
+
+func (config *terraformNamingConventionRuleConfig) getNameValidator() (*NameValidator, error) {
+	return getNameValidator(config.Custom, config.Format)
+}
+
+func getNameValidator(custom string, format string) (*NameValidator, error) {
+	// Prefer custom format if specified
+	if custom != "" {
 		nameValidator := &NameValidator{
 			IsNamedFormat: false,
-			Format:        config.Custom,
-			Regexp:        regexp.MustCompile(config.Custom),
+			Format:        custom,
+			Regexp:        regexp.MustCompile(custom),
 		}
 
 		return nameValidator, nil
-	} else if config.Format != "" {
-		switch config.Format {
+	} else if format != "" {
+		switch strings.ToLower(format) {
 		case "snake_case":
 			nameValidator := &NameValidator{
 				IsNamedFormat: true,
-				Format:        config.Format,
-				Regexp:        reSnakeCase,
+				Format:        format,
+				Regexp:        regexp.MustCompile("^[a-z][a-z0-9]*(_[a-z0-9]+)*$"),
 			}
 
 			return nameValidator, nil
 		case "mixed_snake_case":
 			nameValidator := &NameValidator{
 				IsNamedFormat: true,
-				Format:        config.Format,
-				Regexp:        reSnakeCase,
+				Format:        format,
+				Regexp:        regexp.MustCompile("^[a-zA-Z][a-zA-Z0-9]*(_[a-zA-Z0-9]+)*$"),
 			}
 
 			return nameValidator, nil
 		default:
-			return nil, fmt.Errorf("`%s` is unsupported format", config.Format)
+			return nil, fmt.Errorf("`%s` is unsupported format", format)
 		}
 	}
 

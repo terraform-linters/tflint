@@ -11,14 +11,14 @@ import (
 )
 
 // Data blocks
-func Test_TerraformNamingConventionRule_Data_DefaultConfig(t *testing.T) {
-	testDataSnakeCase(t, "default config", `
+func Test_TerraformNamingConventionRule_Data_DefaultEmpty(t *testing.T) {
+	testDataSnakeCase(t, "default config", "format: snake_case", `
 rule "terraform_naming_convention" {
   enabled = true
 }`)
 }
 
-func Test_TerraformNamingConventionRule_Data_DefaultConfigFormat(t *testing.T) {
+func Test_TerraformNamingConventionRule_Data_DefaultFormat(t *testing.T) {
 	testDataMixedSnakeCase(t, `default config (format="mixed_snake_case")`, `
 rule "terraform_naming_convention" {
   enabled = true
@@ -26,24 +26,24 @@ rule "terraform_naming_convention" {
 }`)
 }
 
-func Test_TerraformNamingConventionRule_Data_DefaultConfigCustom(t *testing.T) {
-	testDataSnakeCase(t, `default config (custom="^[a-z_]+$")`, `
+func Test_TerraformNamingConventionRule_Data_DefaultCustom(t *testing.T) {
+	testDataSnakeCase(t, `default config (custom="^[a-z_]+$")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
 rule "terraform_naming_convention" {
   enabled = true
-  custom  = "^[a-z_]+$"
+  custom  = "^[a-z][a-z]*(_[a-z]+)*$"
 }`)
 }
 
-func Test_TerraformNamingConventionRule_Data_DefaultConfigDisabled(t *testing.T) {
+func Test_TerraformNamingConventionRule_Data_DefaultDisabled(t *testing.T) {
 	testDataDisabled(t, `default config (format=null)`, `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = null
+  format  = ""
 }`)
 }
 
-func Test_TerraformNamingConventionRule_Data_OverriddenConfigFormat(t *testing.T) {
-	testDataSnakeCase(t, `overridden config (format="snake_case")`, `
+func Test_TerraformNamingConventionRule_Data_DefaultFormat_OverrideFormat(t *testing.T) {
+	testDataSnakeCase(t, `overridden config (format="snake_case")`, "format: snake_case", `
 rule "terraform_naming_convention" {
   enabled = true
   format  = "mixed_snake_case"
@@ -54,23 +54,23 @@ rule "terraform_naming_convention" {
 }`)
 }
 
-func Test_TerraformNamingConventionRule_Data_OverriddenConfigCustom(t *testing.T) {
-	testDataSnakeCase(t, `overridden config (format="snake_case")`, `
+func Test_TerraformNamingConventionRule_Data_DefaultFormat_OverrideCustom(t *testing.T) {
+	testDataSnakeCase(t, `overridden config (format="snake_case")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
 rule "terraform_naming_convention" {
   enabled = true
   format  = "mixed_snake_case"
 
   data {
-    custom = "^[a-z_]+$"
+    custom = "^[a-z][a-z]*(_[a-z]+)*$"
   }
 }`)
 }
 
-func Test_TerraformNamingConventionRule_Data_DisabledDefault_OverriddenConfigFormat(t *testing.T) {
-	testDataSnakeCase(t, `overridden config (format="snake_case")`, `
+func Test_TerraformNamingConventionRule_Data_DefaultCustom_OverrideFormat(t *testing.T) {
+	testDataSnakeCase(t, `overridden config (format="snake_case")`, "format: snake_case", `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = null
+  custom  = "^ignored$"
 
   data {
     format = "snake_case"
@@ -78,31 +78,66 @@ rule "terraform_naming_convention" {
 }`)
 }
 
-func Test_TerraformNamingConventionRule_Data_DisabledDefault_OverriddenConfigCustom(t *testing.T) {
-	testDataSnakeCase(t, `overridden config (format="snake_case")`, `
+func Test_TerraformNamingConventionRule_Data_DefaultCustom_OverrideCustom(t *testing.T) {
+	testDataSnakeCase(t, `overridden config (format="snake_case")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = null
+  custom  = "^ignored$"
 
   data {
-    custom = "^[a-z_]+$"
+    custom = "^[a-z][a-z]*(_[a-z]+)*$"
   }
 }`)
 }
 
-func Test_TerraformNamingConventionRule_Data_OverriddenConfigFormatDisabled(t *testing.T) {
+func Test_TerraformNamingConventionRule_Data_DefaultDisabled_OverrideFormat(t *testing.T) {
+	testDataSnakeCase(t, `overridden config (format="snake_case")`, "format: snake_case", `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = ""
+
+  data {
+    format = "snake_case"
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Data_DefaultDisabled_OverrideCustom(t *testing.T) {
+	testDataSnakeCase(t, `overridden config (format="snake_case")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
+rule "terraform_naming_convention" {
+  enabled = true
+  format  = ""
+
+  data {
+    custom = "^[a-z][a-z]*(_[a-z]+)*$"
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Data_DefaultEmpty_OverrideDisabled(t *testing.T) {
+	testDataDisabled(t, `overridden config (format=null)`, `
+rule "terraform_naming_convention" {
+  enabled = true
+
+  data {
+    format = ""
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Data_DefaultFormat_OverrideDisabled(t *testing.T) {
 	testDataDisabled(t, `overridden config (format=null)`, `
 rule "terraform_naming_convention" {
   enabled = true
   format  = "snake_case"
 
   data {
-    format = null
+    format = ""
   }
 }`)
 }
 
-func testDataSnakeCase(t *testing.T, testType string, config string) {
+func testDataSnakeCase(t *testing.T, testType string, formatName string, config string) {
 	rule := NewTerraformNamingConventionRule()
 
 	cases := []struct {
@@ -120,7 +155,7 @@ data "aws_eip" "dash-name" {
 			Expected: tflint.Issues{
 				{
 					Rule:    rule,
-					Message: "data name `dash-name` must match the following format: snake_case",
+					Message: fmt.Sprintf("data name `dash-name` must match the following %s", formatName),
 					Range: hcl.Range{
 						Filename: "tests.tf",
 						Start:    hcl.Pos{Line: 2, Column: 1},
@@ -138,11 +173,47 @@ data "aws_eip" "camelCased" {
 			Expected: tflint.Issues{
 				{
 					Rule:    rule,
-					Message: "data name `camelCased` must match the following format: snake_case",
+					Message: fmt.Sprintf("data name `camelCased` must match the following %s", formatName),
 					Range: hcl.Range{
 						Filename: "tests.tf",
 						Start:    hcl.Pos{Line: 2, Column: 1},
 						End:      hcl.Pos{Line: 2, Column: 28},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("data: %s - Invalid snake_case with double underscore", testType),
+			Content: `
+data "aws_eip" "foo__bar" {
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: fmt.Sprintf("data name `foo__bar` must match the following %s", formatName),
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 26},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("data: %s - Invalid snake_case with underscore tail", testType),
+			Content: `
+data "aws_eip" "foo_bar_" {
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: fmt.Sprintf("data name `foo_bar_` must match the following %s", formatName),
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 26},
 					},
 				},
 			},
@@ -156,7 +227,7 @@ data "aws_eip" "Foo_Bar" {
 			Expected: tflint.Issues{
 				{
 					Rule:    rule,
-					Message: "data name `Foo_Bar` must match the following format: snake_case",
+					Message: fmt.Sprintf("data name `Foo_Bar` must match the following %s", formatName),
 					Range: hcl.Range{
 						Filename: "tests.tf",
 						Start:    hcl.Pos{Line: 2, Column: 1},
@@ -176,7 +247,7 @@ data "aws_eip" "foo_bar" {
 	}
 
 	for _, tc := range cases {
-		runner := tflint.TestRunnerWithConfig(t, map[string]string{"tests.tf": tc.Content}, loadConfigfromTempFile(t, tc.Config))
+		runner := tflint.TestRunnerWithConfig(t, map[string]string{"tests.tf": tc.Content}, loadConfigFromNamingConventionTempFile(t, tc.Config))
 
 		if err := rule.Check(runner); err != nil {
 			t.Fatalf("Unexpected error occurred: %s", err)
@@ -209,6 +280,42 @@ data "aws_eip" "dash-name" {
 						Filename: "tests.tf",
 						Start:    hcl.Pos{Line: 2, Column: 1},
 						End:      hcl.Pos{Line: 2, Column: 27},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("data: %s - Invalid mixed_snake_case with double underscore", testType),
+			Content: `
+data "aws_eip" "Foo__Bar" {
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: "data name `Foo__Bar` must match the following format: mixed_snake_case",
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 26},
+					},
+				},
+			},
+		},
+		{
+			Name: fmt.Sprintf("data: %s - Invalid mixed_snake_case with underscore tail", testType),
+			Content: `
+data "aws_eip" "Foo_Bar_" {
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: "data name `Foo_Bar_` must match the following format: mixed_snake_case",
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 26},
 					},
 				},
 			},
