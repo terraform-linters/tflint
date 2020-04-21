@@ -18,14 +18,14 @@ variable "enabled" {
 
 ```
 $ tflint
-2 issue(s) found:
+1 issue(s) found:
 
 Notice: `no_type` variable has no type (terraform_typed_variables)
 
   on template.tf line 1:
    1: variable "no_type" {
 
-Reference: https://github.com/terraform-linters/tflint/blob/v0.11.0/docs/rules/terraform_type_variables.md
+Reference: https://github.com/terraform-linters/tflint/blob/v0.11.0/docs/rules/terraform_typed_variables.md
  
 ```
 
