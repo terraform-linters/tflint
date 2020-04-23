@@ -29,7 +29,7 @@ func (r *TerraformTypedVariablesRule) Enabled() bool {
 
 // Severity returns the rule severity
 func (r *TerraformTypedVariablesRule) Severity() string {
-	return tflint.NOTICE
+	return tflint.WARNING
 }
 
 // Link returns the rule reference link
