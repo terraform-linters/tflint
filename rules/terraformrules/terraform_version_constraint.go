@@ -16,7 +16,7 @@ type terraformVersionConstraintRuleConfig struct {
 	Version string `hcl:"version,optional"`
 }
 
-// NewTerraformModulePinnedSourceRule returns new rule with default attributes
+// NewTerraformVersionConstraintRule returns new rule with default attributes
 func NewTerraformVersionConstraintRule() *TerraformVersionConstraintRule {
 	return &TerraformVersionConstraintRule{
 		attributeName: "required_version",
