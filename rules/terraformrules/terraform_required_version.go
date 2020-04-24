@@ -12,7 +12,7 @@ type TerraformRequiredVersionRule struct {
 	attributeName string
 }
 
-type TerraformRequiredVersionRuleConfig struct {
+type terraformRequiredVersionRuleConfig struct {
 	Version string `hcl:"version,optional"`
 }
 
@@ -58,7 +58,7 @@ func (r *TerraformRequiredVersionRule) Check(runner *tflint.Runner) error {
 		return nil
 	}
 
-	config := TerraformRequiredVersionRuleConfig{}
+	config := terraformRequiredVersionRuleConfig{}
 	if err := runner.DecodeRuleConfig(r.Name(), &config); err != nil {
 		return err
 	}
