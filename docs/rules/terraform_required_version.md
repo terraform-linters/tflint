@@ -9,6 +9,7 @@ Name | Default | Value
 enabled | true | Boolean
 version |  | 
 
+If a version is specified, the rule will ensure that the `required_version` matches the `version` of the rule.
 ```hcl
 rule "terraform_required_version" {
   enabled = true
