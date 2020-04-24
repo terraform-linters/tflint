@@ -7,7 +7,7 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-func Test_TerraformVersionConstraintRule(t *testing.T) {
+func Test_TerraformRequiredVersionRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
@@ -20,13 +20,13 @@ func Test_TerraformVersionConstraintRule(t *testing.T) {
 terraform {}
 `,
 			Config: `
-rule "terraform_version_constraint" {
+rule "terraform_required_version" {
   enabled = true
 }`,
 			Expected: tflint.Issues{
 				{
-					Rule:    NewTerraformVersionConstraintRule(),
-					Message: "no terraform required_version attribute is declared",
+					Rule:    NewTerraformRequiredVersionRule(),
+					Message: "terraform \"required_version\" attribute is required",
 				},
 			},
 		},
@@ -38,14 +38,14 @@ terraform {
 }
 `,
 			Config: `
-rule "terraform_version_constraint" {
+rule "terraform_required_version" {
   enabled = true
   version = "~> 0.12"
 }`,
 			Expected: tflint.Issues{
 				{
-					Rule:    NewTerraformVersionConstraintRule(),
-					Message: "required_version does not match version \"~> 0.12\"",
+					Rule:    NewTerraformRequiredVersionRule(),
+					Message: "terraform \"required_version\" does not match specified version \"~> 0.12\"",
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start:    hcl.Pos{Line: 3, Column: 3},
@@ -62,7 +62,7 @@ terraform {
 }
 `,
 			Config: `
-rule "terraform_version_constraint" {
+rule "terraform_required_version" {
   enabled = true
   version = "~> 0.12"
 }`,
@@ -76,14 +76,14 @@ terraform {
 }
 `,
 			Config: `
-rule "terraform_version_constraint" {
+rule "terraform_required_version" {
   enabled = true
 }`,
 			Expected: tflint.Issues{},
 		},
 	}
 
-	rule := NewTerraformVersionConstraintRule()
+	rule := NewTerraformRequiredVersionRule()
 
 	for _, tc := range cases {
 		runner := tflint.TestRunnerWithConfig(t, map[string]string{"module.tf": tc.Content}, loadConfigfromTempFile(t, tc.Config))

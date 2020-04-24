@@ -7,44 +7,44 @@ import (
 	"log"
 )
 
-// TerraformVersionConstraintRule checks whether a terraform version has
-type TerraformVersionConstraintRule struct {
+// TerraformRequiredVersionRule checks whether a terraform version has required_version attribute
+type TerraformRequiredVersionRule struct {
 	attributeName string
 }
 
-type terraformVersionConstraintRuleConfig struct {
+type TerraformRequiredVersionRuleConfig struct {
 	Version string `hcl:"version,optional"`
 }
 
-// NewTerraformVersionConstraintRule returns new rule with default attributes
-func NewTerraformVersionConstraintRule() *TerraformVersionConstraintRule {
-	return &TerraformVersionConstraintRule{
+// NewTerraformRequiredVersionRule returns new rule with default attributes
+func NewTerraformRequiredVersionRule() *TerraformRequiredVersionRule {
+	return &TerraformRequiredVersionRule{
 		attributeName: "required_version",
 	}
 }
 
 // Name returns the rule name
-func (r *TerraformVersionConstraintRule) Name() string {
-	return "terraform_version_constraint"
+func (r *TerraformRequiredVersionRule) Name() string {
+	return "terraform_required_version"
 }
 
 // Enabled returns whether the rule is enabled by default
-func (r *TerraformVersionConstraintRule) Enabled() bool {
+func (r *TerraformRequiredVersionRule) Enabled() bool {
 	return false
 }
 
 // Severity returns the rule severity
-func (r *TerraformVersionConstraintRule) Severity() string {
+func (r *TerraformRequiredVersionRule) Severity() string {
 	return tflint.WARNING
 }
 
 // Link returns the rule reference link
-func (r *TerraformVersionConstraintRule) Link() string {
+func (r *TerraformRequiredVersionRule) Link() string {
 	return tflint.ReferenceLink(r.Name())
 }
 
 // Check checks whether variables have descriptions
-func (r *TerraformVersionConstraintRule) Check(runner *tflint.Runner) error {
+func (r *TerraformRequiredVersionRule) Check(runner *tflint.Runner) error {
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	module := runner.TFConfig.Module
@@ -52,13 +52,13 @@ func (r *TerraformVersionConstraintRule) Check(runner *tflint.Runner) error {
 	if len(versionConstraints) == 0 {
 		runner.EmitIssue(
 			r,
-			fmt.Sprintf("no terraform required_version attribute is declared"),
+			fmt.Sprintf("terraform \"required_version\" attribute is required"),
 			hcl.Range{},
 		)
 		return nil
 	}
 
-	config := terraformVersionConstraintRuleConfig{}
+	config := TerraformRequiredVersionRuleConfig{}
 	if err := runner.DecodeRuleConfig(r.Name(), &config); err != nil {
 		return err
 	}
@@ -71,7 +71,7 @@ func (r *TerraformVersionConstraintRule) Check(runner *tflint.Runner) error {
 		if versionConstraint.Required.String() != config.Version {
 			runner.EmitIssue(
 				r,
-				fmt.Sprintf("required_version does not match version \"%s\"", config.Version),
+				fmt.Sprintf("terraform \"required_version\" does not match specified version \"%s\"", config.Version),
 				versionConstraint.DeclRange,
 			)
 		}
