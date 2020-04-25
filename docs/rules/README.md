@@ -74,5 +74,6 @@ These rules suggest to better ways.
 |[terraform_deprecated_interpolation](terraform_deprecated_interpolation.md)|✔|
 |[terraform_documented_outputs](terraform_documented_outputs.md)||
 |[terraform_documented_variables](terraform_documented_variables.md)||
+|[terraform_typed_variables](terraform_typed_variables.md)||
 |[terraform_module_pinned_source](terraform_module_pinned_source.md)|✔|
 |[terraform_required_version](terraform_required_version.md)||
