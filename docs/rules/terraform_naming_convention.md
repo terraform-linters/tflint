@@ -1,4 +1,4 @@
-# terraform_snake_case_data_source_name
+# terraform_naming_convention
 
 Enforces naming conventions for the following blocks:
 
