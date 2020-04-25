@@ -251,7 +251,6 @@ var modelRules = []Rule{
 	awsmodelrules.NewAwsDynamoDBTableInvalidHashKeyRule(),
 	awsmodelrules.NewAwsDynamoDBTableInvalidNameRule(),
 	awsmodelrules.NewAwsDynamoDBTableInvalidRangeKeyRule(),
-	awsmodelrules.NewAwsDynamoDBTableInvalidStreamViewTypeRule(),
 	awsmodelrules.NewAwsDynamoDBTableItemInvalidHashKeyRule(),
 	awsmodelrules.NewAwsDynamoDBTableItemInvalidRangeKeyRule(),
 	awsmodelrules.NewAwsDynamoDBTableItemInvalidTableNameRule(),
