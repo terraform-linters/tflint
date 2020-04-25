@@ -269,13 +269,14 @@ var mixedSnakeCaseRegex = regexp.MustCompile("^[a-zA-Z][a-zA-Z0-9]*(_[a-zA-Z0-9]
 func getNameValidator(custom string, format string) (*NameValidator, error) {
 	// Prefer custom format if specified
 	if custom != "" {
+	  customRegex, err := regexp.Compile(custom)
 		nameValidator := &NameValidator{
 			IsNamedFormat: false,
 			Format:        custom,
-			Regexp:        regexp.MustCompile(custom),
+			Regexp:        customRegex,
 		}
 
-		return nameValidator, nil
+		return nameValidator, err
 	} else if format != "none" {
 		switch strings.ToLower(format) {
 		case "snake_case":
