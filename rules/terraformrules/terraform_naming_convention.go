@@ -263,6 +263,9 @@ func (config *terraformNamingConventionRuleConfig) getNameValidator() (*NameVali
 	return getNameValidator(config.Custom, config.Format)
 }
 
+var snakeCaseRegex = regexp.MustCompile("^[a-z][a-z0-9]*(_[a-z0-9]+)*$")
+var mixedSnakeCaseRegex = regexp.MustCompile("^[a-zA-Z][a-zA-Z0-9]*(_[a-zA-Z0-9]+)*$")
+
 func getNameValidator(custom string, format string) (*NameValidator, error) {
 	// Prefer custom format if specified
 	if custom != "" {
@@ -279,7 +282,7 @@ func getNameValidator(custom string, format string) (*NameValidator, error) {
 			nameValidator := &NameValidator{
 				IsNamedFormat: true,
 				Format:        format,
-				Regexp:        regexp.MustCompile("^[a-z][a-z0-9]*(_[a-z0-9]+)*$"),
+				Regexp:        snakeCaseRegex,
 			}
 
 			return nameValidator, nil
@@ -287,7 +290,7 @@ func getNameValidator(custom string, format string) (*NameValidator, error) {
 			nameValidator := &NameValidator{
 				IsNamedFormat: true,
 				Format:        format,
-				Regexp:        regexp.MustCompile("^[a-zA-Z][a-zA-Z0-9]*(_[a-zA-Z0-9]+)*$"),
+				Regexp:        mixedSnakeCaseRegex,
 			}
 
 			return nameValidator, nil
