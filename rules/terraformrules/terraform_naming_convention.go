@@ -54,7 +54,7 @@ func (r *TerraformNamingConventionRule) Enabled() bool {
 
 // Severity returns the rule severity
 func (r *TerraformNamingConventionRule) Severity() string {
-	return tflint.WARNING
+	return tflint.NOTICE
 }
 
 // Link returns the rule reference link
