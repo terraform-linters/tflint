@@ -33,6 +33,7 @@ func NewAwsAppautoscalingScheduledActionInvalidServiceNamespaceRule() *AwsAppaut
 			"custom-resource",
 			"comprehend",
 			"lambda",
+			"cassandra",
 		},
 	}
 }
