@@ -36,6 +36,7 @@ var manualDefaultRules = []Rule{
 	awsrules.NewAwsS3BucketInvalidRegionRule(),
 	awsrules.NewAwsSpotFleetRequestInvalidExcessCapacityTerminationPolicyRule(),
 	awsrules.NewAwsResourceMissingTagsRule(),
+	awsrules.NewAwsDynamoDBTableInvalidStreamViewTypeRule(),
 	terraformrules.NewTerraformDashInResourceNameRule(),
 	terraformrules.NewTerraformDashInOutputNameRule(),
 	terraformrules.NewTerraformDashInModuleNameRule(),

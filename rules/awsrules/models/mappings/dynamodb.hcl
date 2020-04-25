@@ -16,7 +16,7 @@ mapping "aws_dynamodb_table" {
   local_secondary_index  = LocalSecondaryIndexList
   global_secondary_index = GlobalSecondaryIndexList
   stream_enabled         = StreamEnabled
-  stream_view_type       = StreamViewType
+  stream_view_type       = any # StreamViewType
   server_side_encryption = SSESpecification
   tags                   = TagList
   point_in_time_recovery = PointInTimeRecoverySpecification
@@ -39,7 +39,3 @@ test "aws_dynamodb_table" "billing_mode" {
   ng = "FLEXIBLE"
 }
 
-test "aws_dynamodb_table" "stream_view_type" {
-  ok = "NEW_IMAGE"
-  ng = "OLD_AND_NEW_IMAGE"
-}
