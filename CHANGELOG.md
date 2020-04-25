@@ -1,3 +1,21 @@
+## 0.15.5 (2020-04-25)
+
+### Enhancements
+
+- [#721](https://github.com/terraform-linters/tflint/pull/721): Add a rule to enforce Terraform types for variables ([@mveitas](https://github.com/mveitas))
+- [#725](https://github.com/terraform-linters/tflint/pull/725): Adding rule for terraform_required_version ([@mveitas](https://github.com/mveitas))
+- [#729](https://github.com/terraform-linters/tflint/pull/729): Bump terraform-provider-aws to v2.59.0 from v2.56.0 ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#728](https://github.com/terraform-linters/tflint/pull/728): Allow empty string as a valid value of dynamodb table stream view type ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#707](https://github.com/terraform-linters/tflint/pull/707): Bump github.com/hashicorp/go-plugin from 1.2.0 to 1.2.2
+- [#727](https://github.com/terraform-linters/tflint/pull/727): Bump github.com/hashicorp/terraform-plugin-sdk from 1.9.0 to 1.10.0 in /tools
+- [#730](https://github.com/terraform-linters/tflint/pull/730): Bump github.com/aws/aws-sdk-go from 1.30.3 to 1.30.14
+
 ## 0.15.4 (2020-04-04)
 
 ### Enhancements
