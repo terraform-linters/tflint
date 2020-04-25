@@ -46,6 +46,7 @@ var manualDefaultRules = []Rule{
 	terraformrules.NewTerraformDocumentedVariablesRule(),
 	terraformrules.NewTerraformModulePinnedSourceRule(),
 	terraformrules.NewTerraformTypedVariablesRule(),
+	terraformrules.NewTerraformRequiredVersionRule(),
 }
 
 var manualDeepCheckRules = []Rule{

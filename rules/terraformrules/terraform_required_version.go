@@ -8,19 +8,11 @@ import (
 )
 
 // TerraformRequiredVersionRule checks whether a terraform version has required_version attribute
-type TerraformRequiredVersionRule struct {
-	attributeName string
-}
-
-type terraformRequiredVersionRuleConfig struct {
-	Version string `hcl:"version,optional"`
-}
+type TerraformRequiredVersionRule struct{}
 
 // NewTerraformRequiredVersionRule returns new rule with default attributes
 func NewTerraformRequiredVersionRule() *TerraformRequiredVersionRule {
-	return &TerraformRequiredVersionRule{
-		attributeName: "required_version",
-	}
+	return &TerraformRequiredVersionRule{}
 }
 
 // Name returns the rule name
@@ -56,25 +48,6 @@ func (r *TerraformRequiredVersionRule) Check(runner *tflint.Runner) error {
 			hcl.Range{},
 		)
 		return nil
-	}
-
-	config := terraformRequiredVersionRuleConfig{}
-	if err := runner.DecodeRuleConfig(r.Name(), &config); err != nil {
-		return err
-	}
-
-	if config.Version == "" {
-		return nil
-	}
-
-	for _, versionConstraint := range runner.TFConfig.Module.CoreVersionConstraints {
-		if versionConstraint.Required.String() != config.Version {
-			runner.EmitIssue(
-				r,
-				fmt.Sprintf("terraform \"required_version\" does not match specified version \"%s\"", config.Version),
-				versionConstraint.DeclRange,
-			)
-		}
 	}
 
 	return nil
