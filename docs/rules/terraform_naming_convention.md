@@ -13,7 +13,7 @@ Enforces naming conventions for the following blocks:
 
 Name | Default | Value
 --- | --- | ---
-enabled | `true` | Boolean
+enabled | `false` | Boolean
 format | `snake_case` | `snake_case`, `mixed_snake_case`, `""`
 custom | `""` | String representation of a golang regular expression that the block name must match
 data | | Block settings to override naming convention for data sources
