@@ -38,7 +38,7 @@ func Test_TerraformNamingConventionRule_Data_DefaultDisabled(t *testing.T) {
 	testDataDisabled(t, `default config (format=null)`, `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 }`)
 }
 
@@ -94,7 +94,7 @@ func Test_TerraformNamingConventionRule_Data_DefaultDisabled_OverrideFormat(t *t
 	testDataSnakeCase(t, `overridden config (format="snake_case")`, "format: snake_case", `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 
   data {
     format = "snake_case"
@@ -106,7 +106,7 @@ func Test_TerraformNamingConventionRule_Data_DefaultDisabled_OverrideCustom(t *t
 	testDataSnakeCase(t, `overridden config (format="snake_case")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 
   data {
     custom = "^[a-z][a-z]*(_[a-z]+)*$"
@@ -120,7 +120,7 @@ rule "terraform_naming_convention" {
   enabled = true
 
   data {
-    format = ""
+    format = "none"
   }
 }`)
 }
@@ -132,7 +132,7 @@ rule "terraform_naming_convention" {
   format  = "snake_case"
 
   data {
-    format = ""
+    format = "none"
   }
 }`)
 }
@@ -495,7 +495,7 @@ func Test_TerraformNamingConventionRule_Locals_DefaultDisabled(t *testing.T) {
 	testLocalsDisabled(t, `default config (format=null)`, `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 }`)
 }
 
@@ -551,7 +551,7 @@ func Test_TerraformNamingConventionRule_Locals_DefaultDisabled_OverrideFormat(t 
 	testLocalsSnakeCase(t, `overridden config (format="snake_case")`, "format: snake_case", `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 
   locals {
     format = "snake_case"
@@ -563,7 +563,7 @@ func Test_TerraformNamingConventionRule_Locals_DefaultDisabled_OverrideCustom(t 
 	testLocalsSnakeCase(t, `overridden config (format="snake_case")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 
   locals {
     custom = "^[a-z][a-z]*(_[a-z]+)*$"
@@ -577,7 +577,7 @@ rule "terraform_naming_convention" {
   enabled = true
 
   locals {
-    format = ""
+    format = "none"
   }
 }`)
 }
@@ -589,7 +589,7 @@ rule "terraform_naming_convention" {
   format  = "snake_case"
 
   locals {
-    format = ""
+    format = "none"
   }
 }`)
 }
@@ -975,7 +975,7 @@ func Test_TerraformNamingConventionRule_Module_DefaultDisabled(t *testing.T) {
 	testModuleDisabled(t, `default config (format=null)`, `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 }`)
 }
 
@@ -1031,7 +1031,7 @@ func Test_TerraformNamingConventionRule_Module_DefaultDisabled_OverrideFormat(t 
 	testModuleSnakeCase(t, `overridden config (format="snake_case")`, "format: snake_case", `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 
   module {
     format = "snake_case"
@@ -1043,7 +1043,7 @@ func Test_TerraformNamingConventionRule_Module_DefaultDisabled_OverrideCustom(t 
 	testModuleSnakeCase(t, `overridden config (format="snake_case")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 
   module {
     custom = "^[a-z][a-z]*(_[a-z]+)*$"
@@ -1057,7 +1057,7 @@ rule "terraform_naming_convention" {
   enabled = true
 
   module {
-    format = ""
+    format = "none"
   }
 }`)
 }
@@ -1069,7 +1069,7 @@ rule "terraform_naming_convention" {
   format  = "snake_case"
 
   module {
-    format = ""
+    format = "none"
   }
 }`)
 }
@@ -1455,7 +1455,7 @@ func Test_TerraformNamingConventionRule_Output_DefaultDisabled(t *testing.T) {
 	testOutputDisabled(t, `default config (format=null)`, `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 }`)
 }
 
@@ -1511,7 +1511,7 @@ func Test_TerraformNamingConventionRule_Output_DefaultDisabled_OverrideFormat(t 
 	testOutputSnakeCase(t, `overridden config (format="snake_case")`, "format: snake_case", `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 
   output {
     format = "snake_case"
@@ -1523,7 +1523,7 @@ func Test_TerraformNamingConventionRule_Output_DefaultDisabled_OverrideCustom(t 
 	testOutputSnakeCase(t, `overridden config (format="snake_case")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 
   output {
     custom = "^[a-z][a-z]*(_[a-z]+)*$"
@@ -1537,7 +1537,7 @@ rule "terraform_naming_convention" {
   enabled = true
 
   output {
-    format = ""
+    format = "none"
   }
 }`)
 }
@@ -1549,7 +1549,7 @@ rule "terraform_naming_convention" {
   format  = "snake_case"
 
   output {
-    format = ""
+    format = "none"
   }
 }`)
 }
@@ -1935,7 +1935,7 @@ func Test_TerraformNamingConventionRule_Resource_DefaultDisabled(t *testing.T) {
 	testResourceDisabled(t, `default config (format=null)`, `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 }`)
 }
 
@@ -1991,7 +1991,7 @@ func Test_TerraformNamingConventionRule_Resource_DefaultDisabled_OverrideFormat(
 	testResourceSnakeCase(t, `overridden config (format="snake_case")`, "format: snake_case", `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 
   resource {
     format = "snake_case"
@@ -2003,7 +2003,7 @@ func Test_TerraformNamingConventionRule_Resource_DefaultDisabled_OverrideCustom(
 	testResourceSnakeCase(t, `overridden config (format="snake_case")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 
   resource {
     custom = "^[a-z][a-z]*(_[a-z]+)*$"
@@ -2017,7 +2017,7 @@ rule "terraform_naming_convention" {
   enabled = true
 
   resource {
-    format = ""
+    format = "none"
   }
 }`)
 }
@@ -2029,7 +2029,7 @@ rule "terraform_naming_convention" {
   format  = "snake_case"
 
   resource {
-    format = ""
+    format = "none"
   }
 }`)
 }
@@ -2392,7 +2392,7 @@ func Test_TerraformNamingConventionRule_Variable_DefaultDisabled(t *testing.T) {
 	testVariableDisabled(t, `default config (format=null)`, `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 }`)
 }
 
@@ -2448,7 +2448,7 @@ func Test_TerraformNamingConventionRule_Variable_DefaultDisabled_OverrideFormat(
 	testVariableSnakeCase(t, `overridden config (format="snake_case")`, "format: snake_case", `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 
   variable {
     format = "snake_case"
@@ -2460,7 +2460,7 @@ func Test_TerraformNamingConventionRule_Variable_DefaultDisabled_OverrideCustom(
 	testVariableSnakeCase(t, `overridden config (format="snake_case")`, "RegExp: ^[a-z][a-z]*(_[a-z]+)*$", `
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 
   variable {
     custom = "^[a-z][a-z]*(_[a-z]+)*$"
@@ -2474,7 +2474,7 @@ rule "terraform_naming_convention" {
   enabled = true
 
   variable {
-    format = ""
+    format = "none"
   }
 }`)
 }
@@ -2486,7 +2486,7 @@ rule "terraform_naming_convention" {
   format  = "snake_case"
 
   variable {
-    format = ""
+    format = "none"
   }
 }`)
 }

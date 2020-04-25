@@ -273,7 +273,7 @@ func getNameValidator(custom string, format string) (*NameValidator, error) {
 		}
 
 		return nameValidator, nil
-	} else if format != "" {
+	} else if format != "none" {
 		switch strings.ToLower(format) {
 		case "snake_case":
 			nameValidator := &NameValidator{

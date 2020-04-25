@@ -31,8 +31,7 @@ This option accepts one of the following values:
 
 * `snake_case` - standard snake_case format - all characters must be lower-case, and underscores are allowed.
 * `mixed_snake_case` - modified snake_case format - characters may be upper or lower case, and underscores are allowed.
-* `""` - empty string - signifies "this selector shall not have its format checked".
-This can be useful if you want to enforce no particular format for a block.
+* `none` - signifies "this block shall not have its format checked". This can be useful if you want to enforce no particular format for a block.
 
 #### `custom`
 
@@ -163,7 +162,7 @@ rule "terraform_naming_convention" {
   enabled = true
 
   module {
-    format = ""
+    format = "none"
   }
 }
 ```
@@ -189,7 +188,7 @@ module "Valid_Name-Not-Enforced" {
 ```
 rule "terraform_naming_convention" {
   enabled = true
-  format  = ""
+  format  = "none"
 
   local {
     format = "snake_case"
