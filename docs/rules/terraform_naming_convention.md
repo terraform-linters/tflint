@@ -235,4 +235,4 @@ But this rule is useful if you want to force the following naming conventions in
 
 ## How To Fix
 
-Use lower-case characters and separate words with underscores (`_`)
+Update the block label according to the format or custom regular expression.
