@@ -33,6 +33,7 @@ func NewAwsAppautoscalingPolicyInvalidServiceNamespaceRule() *AwsAppautoscalingP
 			"custom-resource",
 			"comprehend",
 			"lambda",
+			"cassandra",
 		},
 	}
 }

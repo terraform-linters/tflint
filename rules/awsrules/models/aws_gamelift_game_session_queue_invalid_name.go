@@ -25,9 +25,9 @@ func NewAwsGameliftGameSessionQueueInvalidNameRule() *AwsGameliftGameSessionQueu
 	return &AwsGameliftGameSessionQueueInvalidNameRule{
 		resourceType:  "aws_gamelift_game_session_queue",
 		attributeName: "name",
-		max:           256,
+		max:           128,
 		min:           1,
-		pattern:       regexp.MustCompile(`^[a-zA-Z0-9-]+|^arn:.*:gamesessionqueue\/[a-zA-Z0-9-]+$`),
+		pattern:       regexp.MustCompile(`^[a-zA-Z0-9-]+$`),
 	}
 }
 
@@ -63,7 +63,7 @@ func (r *AwsGameliftGameSessionQueueInvalidNameRule) Check(runner *tflint.Runner
 			if len(val) > r.max {
 				runner.EmitIssue(
 					r,
-					"name must be 256 characters or less",
+					"name must be 128 characters or less",
 					attribute.Expr.Range(),
 				)
 			}
@@ -77,7 +77,7 @@ func (r *AwsGameliftGameSessionQueueInvalidNameRule) Check(runner *tflint.Runner
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-zA-Z0-9-]+|^arn:.*:gamesessionqueue\/[a-zA-Z0-9-]+$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-zA-Z0-9-]+$`),
 					attribute.Expr.Range(),
 				)
 			}

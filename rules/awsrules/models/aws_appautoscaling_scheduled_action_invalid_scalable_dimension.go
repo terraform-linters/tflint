@@ -36,6 +36,8 @@ func NewAwsAppautoscalingScheduledActionInvalidScalableDimensionRule() *AwsAppau
 			"custom-resource:ResourceType:Property",
 			"comprehend:document-classifier-endpoint:DesiredInferenceUnits",
 			"lambda:function:ProvisionedConcurrency",
+			"cassandra:table:ReadCapacityUnits",
+			"cassandra:table:WriteCapacityUnits",
 		},
 	}
 }
