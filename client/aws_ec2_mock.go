@@ -7185,6 +7185,56 @@ func (mr *MockEC2APIMockRecorder) DeregisterImageRequest(arg0 interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeregisterImageRequest", reflect.TypeOf((*MockEC2API)(nil).DeregisterImageRequest), arg0)
 }
 
+// DeregisterInstanceEventNotificationAttributes mocks base method
+func (m *MockEC2API) DeregisterInstanceEventNotificationAttributes(arg0 *ec2.DeregisterInstanceEventNotificationAttributesInput) (*ec2.DeregisterInstanceEventNotificationAttributesOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeregisterInstanceEventNotificationAttributes", arg0)
+	ret0, _ := ret[0].(*ec2.DeregisterInstanceEventNotificationAttributesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeregisterInstanceEventNotificationAttributes indicates an expected call of DeregisterInstanceEventNotificationAttributes
+func (mr *MockEC2APIMockRecorder) DeregisterInstanceEventNotificationAttributes(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeregisterInstanceEventNotificationAttributes", reflect.TypeOf((*MockEC2API)(nil).DeregisterInstanceEventNotificationAttributes), arg0)
+}
+
+// DeregisterInstanceEventNotificationAttributesWithContext mocks base method
+func (m *MockEC2API) DeregisterInstanceEventNotificationAttributesWithContext(arg0 aws.Context, arg1 *ec2.DeregisterInstanceEventNotificationAttributesInput, arg2 ...request.Option) (*ec2.DeregisterInstanceEventNotificationAttributesOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeregisterInstanceEventNotificationAttributesWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DeregisterInstanceEventNotificationAttributesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeregisterInstanceEventNotificationAttributesWithContext indicates an expected call of DeregisterInstanceEventNotificationAttributesWithContext
+func (mr *MockEC2APIMockRecorder) DeregisterInstanceEventNotificationAttributesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeregisterInstanceEventNotificationAttributesWithContext", reflect.TypeOf((*MockEC2API)(nil).DeregisterInstanceEventNotificationAttributesWithContext), varargs...)
+}
+
+// DeregisterInstanceEventNotificationAttributesRequest mocks base method
+func (m *MockEC2API) DeregisterInstanceEventNotificationAttributesRequest(arg0 *ec2.DeregisterInstanceEventNotificationAttributesInput) (*request.Request, *ec2.DeregisterInstanceEventNotificationAttributesOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeregisterInstanceEventNotificationAttributesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DeregisterInstanceEventNotificationAttributesOutput)
+	return ret0, ret1
+}
+
+// DeregisterInstanceEventNotificationAttributesRequest indicates an expected call of DeregisterInstanceEventNotificationAttributesRequest
+func (mr *MockEC2APIMockRecorder) DeregisterInstanceEventNotificationAttributesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeregisterInstanceEventNotificationAttributesRequest", reflect.TypeOf((*MockEC2API)(nil).DeregisterInstanceEventNotificationAttributesRequest), arg0)
+}
+
 // DeregisterTransitGatewayMulticastGroupMembers mocks base method
 func (m *MockEC2API) DeregisterTransitGatewayMulticastGroupMembers(arg0 *ec2.DeregisterTransitGatewayMulticastGroupMembersInput) (*ec2.DeregisterTransitGatewayMulticastGroupMembersOutput, error) {
 	m.ctrl.T.Helper()
@@ -10042,6 +10092,56 @@ func (mr *MockEC2APIMockRecorder) DescribeInstanceCreditSpecificationsPagesWithC
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceCreditSpecificationsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeInstanceCreditSpecificationsPagesWithContext), varargs...)
+}
+
+// DescribeInstanceEventNotificationAttributes mocks base method
+func (m *MockEC2API) DescribeInstanceEventNotificationAttributes(arg0 *ec2.DescribeInstanceEventNotificationAttributesInput) (*ec2.DescribeInstanceEventNotificationAttributesOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeInstanceEventNotificationAttributes", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeInstanceEventNotificationAttributesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeInstanceEventNotificationAttributes indicates an expected call of DescribeInstanceEventNotificationAttributes
+func (mr *MockEC2APIMockRecorder) DescribeInstanceEventNotificationAttributes(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceEventNotificationAttributes", reflect.TypeOf((*MockEC2API)(nil).DescribeInstanceEventNotificationAttributes), arg0)
+}
+
+// DescribeInstanceEventNotificationAttributesWithContext mocks base method
+func (m *MockEC2API) DescribeInstanceEventNotificationAttributesWithContext(arg0 aws.Context, arg1 *ec2.DescribeInstanceEventNotificationAttributesInput, arg2 ...request.Option) (*ec2.DescribeInstanceEventNotificationAttributesOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeInstanceEventNotificationAttributesWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeInstanceEventNotificationAttributesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeInstanceEventNotificationAttributesWithContext indicates an expected call of DescribeInstanceEventNotificationAttributesWithContext
+func (mr *MockEC2APIMockRecorder) DescribeInstanceEventNotificationAttributesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceEventNotificationAttributesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeInstanceEventNotificationAttributesWithContext), varargs...)
+}
+
+// DescribeInstanceEventNotificationAttributesRequest mocks base method
+func (m *MockEC2API) DescribeInstanceEventNotificationAttributesRequest(arg0 *ec2.DescribeInstanceEventNotificationAttributesInput) (*request.Request, *ec2.DescribeInstanceEventNotificationAttributesOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeInstanceEventNotificationAttributesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeInstanceEventNotificationAttributesOutput)
+	return ret0, ret1
+}
+
+// DescribeInstanceEventNotificationAttributesRequest indicates an expected call of DescribeInstanceEventNotificationAttributesRequest
+func (mr *MockEC2APIMockRecorder) DescribeInstanceEventNotificationAttributesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceEventNotificationAttributesRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeInstanceEventNotificationAttributesRequest), arg0)
 }
 
 // DescribeInstanceStatus mocks base method
@@ -20572,6 +20672,56 @@ func (m *MockEC2API) RegisterImageRequest(arg0 *ec2.RegisterImageInput) (*reques
 func (mr *MockEC2APIMockRecorder) RegisterImageRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterImageRequest", reflect.TypeOf((*MockEC2API)(nil).RegisterImageRequest), arg0)
+}
+
+// RegisterInstanceEventNotificationAttributes mocks base method
+func (m *MockEC2API) RegisterInstanceEventNotificationAttributes(arg0 *ec2.RegisterInstanceEventNotificationAttributesInput) (*ec2.RegisterInstanceEventNotificationAttributesOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RegisterInstanceEventNotificationAttributes", arg0)
+	ret0, _ := ret[0].(*ec2.RegisterInstanceEventNotificationAttributesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RegisterInstanceEventNotificationAttributes indicates an expected call of RegisterInstanceEventNotificationAttributes
+func (mr *MockEC2APIMockRecorder) RegisterInstanceEventNotificationAttributes(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterInstanceEventNotificationAttributes", reflect.TypeOf((*MockEC2API)(nil).RegisterInstanceEventNotificationAttributes), arg0)
+}
+
+// RegisterInstanceEventNotificationAttributesWithContext mocks base method
+func (m *MockEC2API) RegisterInstanceEventNotificationAttributesWithContext(arg0 aws.Context, arg1 *ec2.RegisterInstanceEventNotificationAttributesInput, arg2 ...request.Option) (*ec2.RegisterInstanceEventNotificationAttributesOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "RegisterInstanceEventNotificationAttributesWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.RegisterInstanceEventNotificationAttributesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RegisterInstanceEventNotificationAttributesWithContext indicates an expected call of RegisterInstanceEventNotificationAttributesWithContext
+func (mr *MockEC2APIMockRecorder) RegisterInstanceEventNotificationAttributesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterInstanceEventNotificationAttributesWithContext", reflect.TypeOf((*MockEC2API)(nil).RegisterInstanceEventNotificationAttributesWithContext), varargs...)
+}
+
+// RegisterInstanceEventNotificationAttributesRequest mocks base method
+func (m *MockEC2API) RegisterInstanceEventNotificationAttributesRequest(arg0 *ec2.RegisterInstanceEventNotificationAttributesInput) (*request.Request, *ec2.RegisterInstanceEventNotificationAttributesOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RegisterInstanceEventNotificationAttributesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.RegisterInstanceEventNotificationAttributesOutput)
+	return ret0, ret1
+}
+
+// RegisterInstanceEventNotificationAttributesRequest indicates an expected call of RegisterInstanceEventNotificationAttributesRequest
+func (mr *MockEC2APIMockRecorder) RegisterInstanceEventNotificationAttributesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterInstanceEventNotificationAttributesRequest", reflect.TypeOf((*MockEC2API)(nil).RegisterInstanceEventNotificationAttributesRequest), arg0)
 }
 
 // RegisterTransitGatewayMulticastGroupMembers mocks base method
