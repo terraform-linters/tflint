@@ -77,72 +77,49 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 		return fmt.Errorf("Invalid default configuration: %v", err)
 	}
 
-	dataNameValidator := defaultNameValidator
+	if err := r.checkDataBlocks(runner, &config, defaultNameValidator); err != nil {
+		return err
+	}
+
+	if err := r.checkLocalValues(runner, &config, defaultNameValidator); err != nil {
+		return err
+	}
+
+	if err := r.checkModuleBlocks(runner, &config, defaultNameValidator); err != nil {
+		return err
+	}
+
+	if err := r.checkOutputBlocks(runner, &config, defaultNameValidator); err != nil {
+		return err
+	}
+
+	if err := r.checkResourceBlocks(runner, &config, defaultNameValidator); err != nil {
+		return err
+	}
+
+	if err := r.checkVariableBlocks(runner, &config, defaultNameValidator); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *TerraformNamingConventionRule) checkDataBlocks(runner *tflint.Runner, config *terraformNamingConventionRuleConfig, defaultValidator *NameValidator) error {
+	validator := defaultValidator
 	if config.Data != nil {
 		nameValidator, err := config.Data.getNameValidator()
 		if err != nil {
 			return fmt.Errorf("Invalid data configuration: %v", err)
 		}
 
-		dataNameValidator = nameValidator
+		validator = nameValidator
 	}
 
-	localsNameValidator := defaultNameValidator
-	if config.Locals != nil {
-		nameValidator, err := config.Locals.getNameValidator()
-		if err != nil {
-			return fmt.Errorf("Invalid locals configuration: %v", err)
-		}
-
-		localsNameValidator = nameValidator
-	}
-
-	moduleNameValidator := defaultNameValidator
-	if config.Module != nil {
-		nameValidator, err := config.Module.getNameValidator()
-		if err != nil {
-			return fmt.Errorf("Invalid module configuration: %v", err)
-		}
-
-		moduleNameValidator = nameValidator
-	}
-
-	outputNameValidator := defaultNameValidator
-	if config.Output != nil {
-		nameValidator, err := config.Output.getNameValidator()
-		if err != nil {
-			return fmt.Errorf("Invalid output configuration: %v", err)
-		}
-
-		outputNameValidator = nameValidator
-	}
-
-	resourceNameValidator := defaultNameValidator
-	if config.Resource != nil {
-		nameValidator, err := config.Resource.getNameValidator()
-		if err != nil {
-			return fmt.Errorf("Invalid resource configuration: %v", err)
-		}
-
-		resourceNameValidator = nameValidator
-	}
-
-	variableNameValidator := defaultNameValidator
-	if config.Variable != nil {
-		nameValidator, err := config.Variable.getNameValidator()
-		if err != nil {
-			return fmt.Errorf("Invalid variable configuration: %v", err)
-		}
-
-		variableNameValidator = nameValidator
-	}
-
-	// Actually run any checks for modules
-	if dataNameValidator != nil {
+	if validator != nil {
 		for _, data := range runner.TFConfig.Module.DataResources {
-			if !dataNameValidator.Regexp.MatchString(data.Name) {
+			if !validator.Regexp.MatchString(data.Name) {
 				var message string
-				if dataNameValidator.IsNamedFormat {
+				if validator.IsNamedFormat {
 					message = "data name `%s` must match the following format: %s"
 				} else {
 					message = "data name `%s` must match the following RegExp: %s"
@@ -150,18 +127,32 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(message, data.Name, dataNameValidator.Format),
+					fmt.Sprintf(message, data.Name, validator.Format),
 					data.DeclRange,
 				)
 			}
 		}
 	}
 
-	if localsNameValidator != nil {
+	return nil
+}
+
+func (r *TerraformNamingConventionRule) checkLocalValues(runner *tflint.Runner, config *terraformNamingConventionRuleConfig, defaultValidator *NameValidator) error {
+	validator := defaultValidator
+	if config.Locals != nil {
+		nameValidator, err := config.Locals.getNameValidator()
+		if err != nil {
+			return fmt.Errorf("Invalid locals configuration: %v", err)
+		}
+
+		validator = nameValidator
+	}
+
+	if validator != nil {
 		for _, local := range runner.TFConfig.Module.Locals {
-			if !localsNameValidator.Regexp.MatchString(local.Name) {
+			if !validator.Regexp.MatchString(local.Name) {
 				var message string
-				if localsNameValidator.IsNamedFormat {
+				if validator.IsNamedFormat {
 					message = "local value name `%s` must match the following format: %s"
 				} else {
 					message = "local value name `%s` must match the following RegExp: %s"
@@ -169,18 +160,32 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(message, local.Name, localsNameValidator.Format),
+					fmt.Sprintf(message, local.Name, validator.Format),
 					local.DeclRange,
 				)
 			}
 		}
 	}
 
-	if moduleNameValidator != nil {
+	return nil
+}
+
+func (r *TerraformNamingConventionRule) checkModuleBlocks(runner *tflint.Runner, config *terraformNamingConventionRuleConfig, defaultValidator *NameValidator) error {
+	validator := defaultValidator
+	if config.Module != nil {
+		nameValidator, err := config.Module.getNameValidator()
+		if err != nil {
+			return fmt.Errorf("Invalid module configuration: %v", err)
+		}
+
+		validator = nameValidator
+	}
+
+	if validator != nil {
 		for _, module := range runner.TFConfig.Module.ModuleCalls {
-			if !moduleNameValidator.Regexp.MatchString(module.Name) {
+			if !validator.Regexp.MatchString(module.Name) {
 				var message string
-				if moduleNameValidator.IsNamedFormat {
+				if validator.IsNamedFormat {
 					message = "module name `%s` must match the following format: %s"
 				} else {
 					message = "module name `%s` must match the following RegExp: %s"
@@ -188,18 +193,32 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(message, module.Name, moduleNameValidator.Format),
+					fmt.Sprintf(message, module.Name, validator.Format),
 					module.DeclRange,
 				)
 			}
 		}
 	}
 
-	if outputNameValidator != nil {
+	return nil
+}
+
+func (r *TerraformNamingConventionRule) checkOutputBlocks(runner *tflint.Runner, config *terraformNamingConventionRuleConfig, defaultValidator *NameValidator) error {
+	validator := defaultValidator
+	if config.Output != nil {
+		nameValidator, err := config.Output.getNameValidator()
+		if err != nil {
+			return fmt.Errorf("Invalid output configuration: %v", err)
+		}
+
+		validator = nameValidator
+	}
+
+	if validator != nil {
 		for _, output := range runner.TFConfig.Module.Outputs {
-			if !outputNameValidator.Regexp.MatchString(output.Name) {
+			if !validator.Regexp.MatchString(output.Name) {
 				var message string
-				if outputNameValidator.IsNamedFormat {
+				if validator.IsNamedFormat {
 					message = "output name `%s` must match the following format: %s"
 				} else {
 					message = "output name `%s` must match the following RegExp: %s"
@@ -207,18 +226,32 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(message, output.Name, outputNameValidator.Format),
+					fmt.Sprintf(message, output.Name, validator.Format),
 					output.DeclRange,
 				)
 			}
 		}
 	}
 
-	if resourceNameValidator != nil {
+	return nil
+}
+
+func (r *TerraformNamingConventionRule) checkResourceBlocks(runner *tflint.Runner, config *terraformNamingConventionRuleConfig, defaultValidator *NameValidator) error {
+	validator := defaultValidator
+	if config.Resource != nil {
+		nameValidator, err := config.Resource.getNameValidator()
+		if err != nil {
+			return fmt.Errorf("Invalid resource configuration: %v", err)
+		}
+
+		validator = nameValidator
+	}
+
+	if validator != nil {
 		for _, resource := range runner.TFConfig.Module.ManagedResources {
-			if !resourceNameValidator.Regexp.MatchString(resource.Name) {
+			if !validator.Regexp.MatchString(resource.Name) {
 				var message string
-				if resourceNameValidator.IsNamedFormat {
+				if validator.IsNamedFormat {
 					message = "resource name `%s` must match the following format: %s"
 				} else {
 					message = "resource name `%s` must match the following RegExp: %s"
@@ -226,18 +259,32 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(message, resource.Name, resourceNameValidator.Format),
+					fmt.Sprintf(message, resource.Name, validator.Format),
 					resource.DeclRange,
 				)
 			}
 		}
 	}
 
-	if variableNameValidator != nil {
+	return nil
+}
+
+func (r *TerraformNamingConventionRule) checkVariableBlocks(runner *tflint.Runner, config *terraformNamingConventionRuleConfig, defaultValidator *NameValidator) error {
+	validator := defaultValidator
+	if config.Variable != nil {
+		nameValidator, err := config.Variable.getNameValidator()
+		if err != nil {
+			return fmt.Errorf("Invalid variable configuration: %v", err)
+		}
+
+		validator = nameValidator
+	}
+
+	if validator != nil {
 		for _, variable := range runner.TFConfig.Module.Variables {
-			if !variableNameValidator.Regexp.MatchString(variable.Name) {
+			if !validator.Regexp.MatchString(variable.Name) {
 				var message string
-				if variableNameValidator.IsNamedFormat {
+				if validator.IsNamedFormat {
 					message = "variable name `%s` must match the following format: %s"
 				} else {
 					message = "variable name `%s` must match the following RegExp: %s"
@@ -245,7 +292,7 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(message, variable.Name, variableNameValidator.Format),
+					fmt.Sprintf(message, variable.Name, validator.Format),
 					variable.DeclRange,
 				)
 			}
