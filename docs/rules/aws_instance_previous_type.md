@@ -31,7 +31,7 @@ Reference: https://github.com/terraform-linters/tflint/blob/v0.11.0/docs/rules/a
 
 ## Why
 
-Previous generation instance types are inferior to current generation in terms of performance and fee. Unless there is a special reason, you should avoid to use these ones.
+Current generation instance types have better performance and lower cost than previous generations. Users should avoid previous generation instance types, especially for new instances.
 
 ## How To Fix
 

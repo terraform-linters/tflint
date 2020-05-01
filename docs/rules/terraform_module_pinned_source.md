@@ -107,12 +107,12 @@ Reference: https://github.com/terraform-linters/tflint/blob/v0.15.0/docs/rules/t
 
 ## Why
 
-Terraform allows you to checkout module definitions from source control. If you do not pin the version to checkout, the dependency you require may introduce major breaking changes without your awareness. To prevent this, always specify an explicit version to checkout.
+Terraform allows you to source modules from source control repositories. If you do not pin the revision to use, the dependency you require may introduce unexpected breaking changes. To prevent this, always specify an explicit version to check out.
 
-More strictly, pinning to a non-permanent reference, such as a branch name, includes ambiguity. The "semver" style is used to avoid such cases.
+Pinning to a mutable reference, such as a branch, still allows for unintended breaking changes. Semver style can help avoid this.
 
 ## How To Fix
 
 Specify a version pin.  For git repositories, it should not be "master". For Mercurial repositories, it should not be "default".
 
-In the "semver" style: Specify a semantic version pin, of the form `vX.Y.Z`.  The leading `v` is optional.
+In the "semver" style: specify a semantic version pin of the form `vX.Y.Z`. The leading `v` is optional.
