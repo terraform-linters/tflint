@@ -26,8 +26,8 @@ Reference: https://github.com/terraform-linters/tflint/blob/v0.11.0/docs/rules/a
 
 ## Why
 
-It occurs an error.
+It results in an error.
 
 ## How To Fix
 
-Add a routing target. There are [kinds of](https://www.terraform.io/docs/providers/aws/r/route.html#argument-reference) `egress_only_gateway_id`, `gateway_id`, `instance_id`, `nat_gateway_id`, `network_interface_id`, `transit_gateway_id`, `vpc_peering_connection_id`.
+Add a routing target. The [supported arguments](https://www.terraform.io/docs/providers/aws/r/route.html#argument-reference) are: `egress_only_gateway_id`, `gateway_id`, `instance_id`, `nat_gateway_id`, `network_interface_id`, `transit_gateway_id`, `vpc_peering_connection_id`.

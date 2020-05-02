@@ -28,7 +28,7 @@ Reference: https://github.com/terraform-linters/tflint/blob/v0.11.0/docs/rules/a
 
 ## Why
 
-It occurs an error.
+It results in an error.
 
 ## How To Fix
 

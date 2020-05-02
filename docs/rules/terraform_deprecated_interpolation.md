@@ -31,7 +31,7 @@ Reference: https://github.com/terraform-linters/tflint/blob/v0.14.0/docs/rules/t
 
 Terraform v0.12 introduces a new interpolation syntax, but continues to support the old 0.11-style interpolation syntax for compatibility.
 
-Terraform will now warn at planning/applying due to its policy to make old syntax errors in the next major release (v0.13). TFLint emits an issue instead of a warning with the same logic.
+Terraform will currently print diagnostic warnings when deprecated interpolations are used. Consistent with its deprecation policy, they will raise errors in the next major release (v0.13). TFLint emits an issue instead of a warning with the same logic.
 
 ## How To Fix
 
