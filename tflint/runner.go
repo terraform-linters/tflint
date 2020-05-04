@@ -776,8 +776,6 @@ func isEvaluableRef(ref *addrs.Reference) bool {
 		return true
 	case addrs.TerraformAttr:
 		return true
-	case addrs.PathAttr:
-		return true
 	default:
 		return false
 	}

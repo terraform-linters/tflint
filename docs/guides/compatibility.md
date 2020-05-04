@@ -16,9 +16,6 @@ Like Terraform, it supports the `--var`,` --var-file` options, automatic loading
 [Named values](https://www.terraform.io/docs/configuration/expressions.html#references-to-named-values) are supported partially. The following named values are available:
 
 - `var.<NAME>`
-- `path.module`
-- `path.root`
-- `path.cwd`
 - `terraform.workspace`
 
 Expressions that reference named values not included above are excluded from the inspection.

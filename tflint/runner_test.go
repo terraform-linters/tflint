@@ -3,7 +3,6 @@ package tflint
 import (
 	"errors"
 	"fmt"
-	"os"
 	"path/filepath"
 	"testing"
 
@@ -143,22 +142,6 @@ resource "null_resource" "test" {
 }`,
 			Expected: "Hello World",
 		},
-		{
-			Name: "path.root",
-			Content: `
-resource "null_resource" "test" {
-  key = path.root
-}`,
-			Expected: ".",
-		},
-		{
-			Name: "path.module",
-			Content: `
-resource "null_resource" "test" {
-  key = path.module
-}`,
-			Expected: ".",
-		},
 	}
 
 	for _, tc := range cases {
@@ -179,36 +162,6 @@ resource "null_resource" "test" {
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
-	}
-}
-
-func Test_EvaluateExpr_pathCwd(t *testing.T) {
-	cwd, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-	expected := filepath.ToSlash(cwd)
-
-	content := `
-resource "null_resource" "test" {
-  key = path.cwd
-}`
-	runner := TestRunner(t, map[string]string{"main.tf": content})
-
-	err = runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-		var ret string
-		if err := runner.EvaluateExpr(attribute.Expr, &ret); err != nil {
-			return err
-		}
-
-		if expected != ret {
-			t.Fatalf("expected value is `%s`, but get `%s`", expected, ret)
-		}
-		return nil
-	})
-
-	if err != nil {
-		t.Fatalf("Failed: `%s` occurred", err)
 	}
 }
 
@@ -899,14 +852,6 @@ resource "null_resource" "test" {
 	}
 }`,
 			Expected: false,
-		},
-		{
-			Name: "path attributes",
-			Content: `
-resource "null_resource" "test" {
-	key = path.cwd
-}`,
-			Expected: true,
 		},
 		{
 			Name: "invalid reference",
