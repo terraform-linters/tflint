@@ -13,9 +13,7 @@ rule "terraform_required_providers" {
 ## Example
 
 ```hcl
-provider "template" {
-  version = "2"
-}
+provider "template" {}
 ```
 
 ```
