@@ -38,7 +38,7 @@ Add the `required_providers` attribute to the `terraform` configuration block an
 ```tf
 terraform {
   required_providers {
-    aws = "~> 2.0"
+    template = "~> 2.0"
   }
 }
 ```
