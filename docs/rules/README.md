@@ -67,10 +67,6 @@ These rules suggest to better ways.
 
 |Rule|Enabled by default|
 | --- | --- |
-|[terraform_dash_in_data_source_name](terraform_dash_in_data_source_name.md)||
-|[terraform_dash_in_module_name](terraform_dash_in_module_name.md)||
-|[terraform_dash_in_output_name](terraform_dash_in_output_name.md)||
-|[terraform_dash_in_resource_name](terraform_dash_in_resource_name.md)||
 |[terraform_deprecated_interpolation](terraform_deprecated_interpolation.md)|✔|
 |[terraform_documented_outputs](terraform_documented_outputs.md)||
 |[terraform_documented_variables](terraform_documented_variables.md)||
