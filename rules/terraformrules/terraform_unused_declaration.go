@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/hashicorp/terraform/addrs"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/lang"
@@ -51,23 +50,11 @@ func (r *TerraformUnusedDeclarationsRule) Check(runner *tflint.Runner) error {
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	decl := r.declarations(runner.TFConfig.Module)
-	for _, resource := range runner.TFConfig.Module.ManagedResources {
-		r.checkForRefsInBody(runner, resource.Config, decl)
-	}
-	for _, data := range runner.TFConfig.Module.DataResources {
-		r.checkForRefsInBody(runner, data.Config, decl)
-	}
-	for _, provider := range runner.TFConfig.Module.ProviderConfigs {
-		r.checkForRefsInBody(runner, provider.Config, decl)
-	}
-	for _, module := range runner.TFConfig.Module.ModuleCalls {
-		r.checkForRefsInBody(runner, module.Config, decl)
-	}
-	for _, output := range runner.TFConfig.Module.Outputs {
-		r.checkForRefsInExpr(runner, output.Expr, decl)
-	}
-	for _, local := range runner.TFConfig.Module.Locals {
-		r.checkForRefsInExpr(runner, local.Expr, decl)
+	err := runner.WalkExpressions(func(expr hcl.Expression) error {
+		return r.checkForRefsInExpr(expr, decl)
+	})
+	if err != nil {
+		return err
 	}
 
 	for _, variable := range decl.Variables {
@@ -115,27 +102,10 @@ func (r *TerraformUnusedDeclarationsRule) declarations(module *configs.Module) *
 	return decl
 }
 
-func (r *TerraformUnusedDeclarationsRule) checkForRefsInBody(runner *tflint.Runner, body hcl.Body, decl *declarations) {
-	nativeBody, ok := body.(*hclsyntax.Body)
-	if !ok {
-		return
-	}
-
-	for _, attr := range nativeBody.Attributes {
-		r.checkForRefsInExpr(runner, attr.Expr, decl)
-	}
-
-	for _, block := range nativeBody.Blocks {
-		r.checkForRefsInBody(runner, block.Body, decl)
-	}
-
-	return
-}
-
-func (r *TerraformUnusedDeclarationsRule) checkForRefsInExpr(runner *tflint.Runner, expr hcl.Expression, decl *declarations) {
+func (r *TerraformUnusedDeclarationsRule) checkForRefsInExpr(expr hcl.Expression, decl *declarations) error {
 	refs, diags := lang.ReferencesInExpr(expr)
 	if diags.HasErrors() {
-		return
+		return diags.Err()
 	}
 
 	for _, ref := range refs {
@@ -150,4 +120,6 @@ func (r *TerraformUnusedDeclarationsRule) checkForRefsInExpr(runner *tflint.Runn
 			delete(decl.DataResources, sub.Resource.String())
 		}
 	}
+
+	return nil
 }

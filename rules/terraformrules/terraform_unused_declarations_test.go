@@ -120,23 +120,6 @@ provider "aws" {
 			Expected: tflint.Issues{},
 		},
 		{
-			Name: "invalid traversal",
-			Content: `
-output "o" {
-	value = {
-		a = var
-		b = data
-		c = local
-		d = data[0]
-		e = var[0]
-		f = local[0]
-		g = data.foo
-	}
-}
-`,
-			Expected: tflint.Issues{},
-		},
-		{
 			Name: "additional traversal",
 			Content: `
 variable "v" {
