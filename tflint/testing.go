@@ -2,6 +2,7 @@ package tflint
 
 import (
 	"os"
+	"reflect"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -50,7 +51,7 @@ func AssertIssues(t *testing.T, expected Issues, actual Issues) {
 	opts := []cmp.Option{
 		// Byte field will be ignored because it's not important in tests such as positions
 		cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
-		cmpopts.IgnoreFields(Issue{}, "Rule"),
+		ruleComparer(),
 	}
 	if !cmp.Equal(expected, actual, opts...) {
 		t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(expected, actual, opts...))
@@ -61,7 +62,7 @@ func AssertIssues(t *testing.T, expected Issues, actual Issues) {
 func AssertIssuesWithoutRange(t *testing.T, expected Issues, actual Issues) {
 	opts := []cmp.Option{
 		cmpopts.IgnoreFields(Issue{}, "Range"),
-		cmpopts.IgnoreFields(Issue{}, "Rule"),
+		ruleComparer(),
 	}
 	if !cmp.Equal(expected, actual, opts...) {
 		t.Fatalf("Expected issues are not matched:\n %s\n", cmp.Diff(expected, actual, opts...))
@@ -86,4 +87,12 @@ func AssertAppError(t *testing.T, expected Error, got error) {
 	} else {
 		t.Fatalf("unexpected error occurred: %s", got)
 	}
+}
+
+// ruleComparer returns a Comparer func that checks that two rule interfaces
+// have the same underlying type. It does not compare struct fields.
+func ruleComparer() cmp.Option {
+	return cmp.Comparer(func(x, y Rule) bool {
+		return reflect.TypeOf(x) == reflect.TypeOf(y)
+	})
 }
