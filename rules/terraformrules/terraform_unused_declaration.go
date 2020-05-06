@@ -6,7 +6,9 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/hashicorp/terraform/addrs"
 	"github.com/hashicorp/terraform/configs"
+	"github.com/hashicorp/terraform/lang"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -50,22 +52,22 @@ func (r *TerraformUnusedDeclarationsRule) Check(runner *tflint.Runner) error {
 
 	decl := r.declarations(runner.TFConfig.Module)
 	for _, resource := range runner.TFConfig.Module.ManagedResources {
-		r.checkForVariablesInBody(runner, resource.Config, decl)
+		r.checkForRefsInBody(runner, resource.Config, decl)
 	}
 	for _, data := range runner.TFConfig.Module.DataResources {
-		r.checkForVariablesInBody(runner, data.Config, decl)
+		r.checkForRefsInBody(runner, data.Config, decl)
 	}
 	for _, provider := range runner.TFConfig.Module.ProviderConfigs {
-		r.checkForVariablesInBody(runner, provider.Config, decl)
+		r.checkForRefsInBody(runner, provider.Config, decl)
 	}
 	for _, module := range runner.TFConfig.Module.ModuleCalls {
-		r.checkForVariablesInBody(runner, module.Config, decl)
+		r.checkForRefsInBody(runner, module.Config, decl)
 	}
 	for _, output := range runner.TFConfig.Module.Outputs {
-		r.checkForVariablesInExpr(runner, output.Expr, decl)
+		r.checkForRefsInExpr(runner, output.Expr, decl)
 	}
 	for _, local := range runner.TFConfig.Module.Locals {
-		r.checkForVariablesInExpr(runner, local.Expr, decl)
+		r.checkForRefsInExpr(runner, local.Expr, decl)
 	}
 
 	for _, variable := range decl.Variables {
@@ -113,57 +115,39 @@ func (r *TerraformUnusedDeclarationsRule) declarations(module *configs.Module) *
 	return decl
 }
 
-func (r *TerraformUnusedDeclarationsRule) checkForVariablesInBody(runner *tflint.Runner, body hcl.Body, decl *declarations) {
+func (r *TerraformUnusedDeclarationsRule) checkForRefsInBody(runner *tflint.Runner, body hcl.Body, decl *declarations) {
 	nativeBody, ok := body.(*hclsyntax.Body)
 	if !ok {
 		return
 	}
 
 	for _, attr := range nativeBody.Attributes {
-		r.checkForVariablesInExpr(runner, attr.Expr, decl)
+		r.checkForRefsInExpr(runner, attr.Expr, decl)
 	}
 
 	for _, block := range nativeBody.Blocks {
-		r.checkForVariablesInBody(runner, block.Body, decl)
+		r.checkForRefsInBody(runner, block.Body, decl)
 	}
 
 	return
 }
 
-func (r *TerraformUnusedDeclarationsRule) checkForVariablesInExpr(runner *tflint.Runner, expr hcl.Expression, decl *declarations) {
-	for _, variable := range expr.Variables() {
-		split := variable.SimpleSplit()
-		if len(split.Rel) == 0 {
-			continue
-		}
-
-		switch split.RootName() {
-		case "var":
-			if attr, ok := split.Rel[0].(hcl.TraverseAttr); ok {
-				delete(decl.Variables, attr.Name)
-			}
-		case "data":
-			if len(split.Rel) < 2 {
-				continue
-			}
-
-			typeAttr, ok := split.Rel[0].(hcl.TraverseAttr)
-			if !ok {
-				continue
-			}
-
-			nameAttr, ok := split.Rel[1].(hcl.TraverseAttr)
-			if !ok {
-				continue
-			}
-
-			delete(decl.DataResources, fmt.Sprintf("data.%s.%s", typeAttr.Name, nameAttr.Name))
-		case "local":
-			if attr, ok := split.Rel[0].(hcl.TraverseAttr); ok {
-				delete(decl.Locals, attr.Name)
-			}
-		}
+func (r *TerraformUnusedDeclarationsRule) checkForRefsInExpr(runner *tflint.Runner, expr hcl.Expression, decl *declarations) {
+	refs, diags := lang.ReferencesInExpr(expr)
+	if diags.HasErrors() {
+		return
 	}
 
-	return
+	for _, ref := range refs {
+		switch sub := ref.Subject.(type) {
+		case addrs.InputVariable:
+			delete(decl.Variables, sub.Name)
+		case addrs.LocalValue:
+			delete(decl.Locals, sub.Name)
+		case addrs.Resource:
+			delete(decl.DataResources, sub.String())
+		case addrs.ResourceInstance:
+			delete(decl.DataResources, sub.Resource.String())
+		}
+	}
 }
