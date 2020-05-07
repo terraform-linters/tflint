@@ -11,6 +11,7 @@ func Test_TerraformUnusedDeclarationsRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
+		JSON     bool
 		Expected tflint.Issues
 	}{
 		{
@@ -136,13 +137,38 @@ output "d" {
 `,
 			Expected: tflint.Issues{},
 		},
+		{
+			Name: "json",
+			JSON: true,
+			Content: `
+{
+  "resource": {
+    "foo": {
+      "bar": {
+        "nested": [{
+          "${var.again}": []
+        }]
+      }
+    }
+	},
+  "variable": {
+    "again": {}
+  }
+}`,
+			Expected: tflint.Issues{},
+		},
 	}
 
 	rule := NewTerraformUnusedDeclarationsRule()
 
 	for _, tc := range cases {
+		filename := "config.tf"
+		if tc.JSON {
+			filename += ".json"
+		}
+
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := tflint.TestRunner(t, map[string]string{"config.tf": tc.Content})
+			runner := tflint.TestRunner(t, map[string]string{filename: tc.Content})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
