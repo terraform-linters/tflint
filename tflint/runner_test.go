@@ -1357,6 +1357,7 @@ func Test_WalkExpressions(t *testing.T) {
 	cases := []struct {
 		Name        string
 		Content     string
+		JSON        bool
 		Expressions []hcl.Range
 		ErrorText   string
 	}{
@@ -1402,28 +1403,28 @@ data "null_dataresource" "test" {
 			Name: "module call",
 			Content: `
 module "m" {
-	source = "."
-	key    = "foo"
+  source = "."
+  key    = "foo"
 }`,
 			Expressions: []hcl.Range{
 				{
 					Start: hcl.Pos{
 						Line:   3,
-						Column: 11,
+						Column: 12,
 					},
 					End: hcl.Pos{
 						Line:   3,
-						Column: 14,
+						Column: 15,
 					},
 				},
 				{
 					Start: hcl.Pos{
 						Line:   4,
-						Column: 11,
+						Column: 12,
 					},
 					End: hcl.Pos{
 						Line:   4,
-						Column: 16,
+						Column: 17,
 					},
 				},
 			},
@@ -1518,10 +1519,67 @@ resource "null_resource" "test" {
 				},
 			},
 		},
+		{
+			Name: "resource json",
+			JSON: true,
+			Content: `
+{
+  "resource": {
+    "null_resource": {
+      "test": {
+        "key": "foo",
+        "nested": {
+          "key": "foo"
+        },
+        "list": [{
+          "key": "foo"
+        }]
+      }
+    }
+  }
+}`,
+			Expressions: []hcl.Range{
+				{
+					Start: hcl.Pos{
+						Line:   6,
+						Column: 16,
+					},
+					End: hcl.Pos{
+						Line:   6,
+						Column: 21,
+					},
+				},
+				{
+					Start: hcl.Pos{
+						Line:   7,
+						Column: 19,
+					},
+					End: hcl.Pos{
+						Line:   9,
+						Column: 10,
+					},
+				},
+				{
+					Start: hcl.Pos{
+						Line:   10,
+						Column: 17,
+					},
+					End: hcl.Pos{
+						Line:   12,
+						Column: 11,
+					},
+				},
+			},
+		},
 	}
 
 	for _, tc := range cases {
-		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
+		filename := "main.tf"
+		if tc.JSON {
+			filename += ".json"
+		}
+
+		runner := TestRunner(t, map[string]string{filename: tc.Content})
 		expressions := make([]hcl.Range, 0)
 
 		err := runner.WalkExpressions(func(expr hcl.Expression) error {
