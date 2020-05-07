@@ -1353,6 +1353,199 @@ func Test_LookupIssues(t *testing.T) {
 	}
 }
 
+func Test_WalkExpressions(t *testing.T) {
+	cases := []struct {
+		Name        string
+		Content     string
+		Expressions []hcl.Range
+		ErrorText   string
+	}{
+		{
+			Name: "resource",
+			Content: `
+resource "null_resource" "test" {
+  key = "foo"
+}`,
+			Expressions: []hcl.Range{
+				{
+					Start: hcl.Pos{
+						Line:   3,
+						Column: 9,
+					},
+					End: hcl.Pos{
+						Line:   3,
+						Column: 14,
+					},
+				},
+			},
+		},
+		{
+			Name: "data source",
+			Content: `
+data "null_dataresource" "test" {
+  key = "foo"
+}`,
+			Expressions: []hcl.Range{
+				{
+					Start: hcl.Pos{
+						Line:   3,
+						Column: 9,
+					},
+					End: hcl.Pos{
+						Line:   3,
+						Column: 14,
+					},
+				},
+			},
+		},
+		{
+			Name: "module call",
+			Content: `
+module "m" {
+	source = "."
+	key    = "foo"
+}`,
+			Expressions: []hcl.Range{
+				{
+					Start: hcl.Pos{
+						Line:   3,
+						Column: 11,
+					},
+					End: hcl.Pos{
+						Line:   3,
+						Column: 14,
+					},
+				},
+				{
+					Start: hcl.Pos{
+						Line:   4,
+						Column: 11,
+					},
+					End: hcl.Pos{
+						Line:   4,
+						Column: 16,
+					},
+				},
+			},
+		},
+		{
+			Name: "provider config",
+			Content: `
+provider "p" {
+  key = "foo"	
+}`,
+			Expressions: []hcl.Range{
+				{
+					Start: hcl.Pos{
+						Line:   3,
+						Column: 9,
+					},
+					End: hcl.Pos{
+						Line:   3,
+						Column: 14,
+					},
+				},
+			},
+		},
+		{
+			Name: "locals",
+			Content: `
+locals {
+  key = "foo"	
+}`,
+			Expressions: []hcl.Range{
+				{
+					Start: hcl.Pos{
+						Line:   3,
+						Column: 9,
+					},
+					End: hcl.Pos{
+						Line:   3,
+						Column: 14,
+					},
+				},
+			},
+		},
+		{
+			Name: "output",
+			Content: `
+output "o" {
+  value = "foo"	
+}`,
+			Expressions: []hcl.Range{
+				{
+					Start: hcl.Pos{
+						Line:   3,
+						Column: 11,
+					},
+					End: hcl.Pos{
+						Line:   3,
+						Column: 16,
+					},
+				},
+			},
+		},
+		{
+			Name: "resource with block",
+			Content: `
+resource "null_resource" "test" {
+  key = "foo"
+  
+  lifecycle {
+    ignore_changes = [key]
+  }
+}`,
+			Expressions: []hcl.Range{
+				{
+					Start: hcl.Pos{
+						Line:   3,
+						Column: 9,
+					},
+					End: hcl.Pos{
+						Line:   3,
+						Column: 14,
+					},
+				},
+				{
+					Start: hcl.Pos{
+						Line:   6,
+						Column: 22,
+					},
+					End: hcl.Pos{
+						Line:   6,
+						Column: 27,
+					},
+				},
+			},
+		},
+	}
+
+	for _, tc := range cases {
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
+		expressions := make([]hcl.Range, 0)
+
+		err := runner.WalkExpressions(func(expr hcl.Expression) error {
+			expressions = append(expressions, expr.Range())
+			return nil
+		})
+		if err == nil {
+			if tc.ErrorText != "" {
+				t.Fatalf("Failed `%s` test: expected error is not occurred `%s`", tc.Name, tc.ErrorText)
+			}
+
+			opts := cmp.Options{
+				cmpopts.IgnoreFields(hcl.Range{}, "Filename"),
+				cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+			}
+			if !cmp.Equal(expressions, tc.Expressions, opts) {
+				t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(expressions, tc.Expressions, opts))
+			}
+		} else if err.Error() != tc.ErrorText {
+			t.Fatalf("Failed `%s` test: expected error is %s, but get %s", tc.Name, tc.ErrorText, err)
+		}
+	}
+}
+
 func Test_WalkResourceAttributes(t *testing.T) {
 	cases := []struct {
 		Name      string
