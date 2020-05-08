@@ -72,6 +72,7 @@ These rules suggest to better ways.
 |[terraform_dash_in_output_name](terraform_dash_in_output_name.md)||
 |[terraform_dash_in_resource_name](terraform_dash_in_resource_name.md)||
 |[terraform_deprecated_interpolation](terraform_deprecated_interpolation.md)|✔|
+|[terraform_unused_declarations](terraform_unused_declarations.md)||
 |[terraform_documented_outputs](terraform_documented_outputs.md)||
 |[terraform_documented_variables](terraform_documented_variables.md)||
 |[terraform_typed_variables](terraform_typed_variables.md)||
