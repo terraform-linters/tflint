@@ -1594,6 +1594,7 @@ resource "null_resource" "test" {
 			opts := cmp.Options{
 				cmpopts.IgnoreFields(hcl.Range{}, "Filename"),
 				cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+				cmpopts.SortSlices(func(x, y hcl.Range) bool { return x.String() > y.String() }),
 			}
 			if !cmp.Equal(expressions, tc.Expressions, opts) {
 				t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(expressions, tc.Expressions, opts))
