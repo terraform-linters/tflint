@@ -59,12 +59,13 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, vari
 		AwsClient: &client.AwsClient{},
 
 		ctx: terraform.BuiltinEvalContext{
+			PathValue: cfg.Path.UnkeyedInstanceShim(),
 			Evaluator: &terraform.Evaluator{
 				Meta: &terraform.ContextMeta{
 					Env: getTFWorkspace(),
 				},
-				Config:             cfg,
-				VariableValues:     prepareVariableValues(cfg.Module.Variables, variables...),
+				Config:             cfg.Root,
+				VariableValues:     prepareVariableValues(cfg, variables...),
 				VariableValuesLock: &sync.Mutex{},
 			},
 		},
@@ -814,19 +815,20 @@ func (r *Runner) listModuleVars(expr hcl.Expression) []*moduleVariable {
 	return ret
 }
 
-// prepareVariableValues prepares Terraform variables from configs, input variables and environment variables.
-// Variables in the configuration are overwritten by environment variables.
-// Finally, they are overwritten by received input variable on the received order.
+// prepareVariableValues builds variableValues from configs, input variables and environment variables.
+// Variables which declared in the configuration are overwritten by environment variables.
+// Finally, they are overwritten by input variables in the order passed.
 // Therefore, CLI flag input variables must be passed at the end of arguments.
 // This is the responsibility of the caller.
-// See https://www.terraform.io/intro/getting-started/variables.html#assigning-variables
-func prepareVariableValues(configVars map[string]*configs.Variable, variables ...terraform.InputValues) map[string]map[string]cty.Value {
-	overrideVariables := terraform.DefaultVariableValues(configVars).Override(getTFEnvVariables()).Override(variables...)
+// See https://learn.hashicorp.com/terraform/getting-started/variables.html#assigning-variables
+func prepareVariableValues(config *configs.Config, variables ...terraform.InputValues) map[string]map[string]cty.Value {
+	moduleKey := config.Path.UnkeyedInstanceShim().String()
+	overrideVariables := terraform.DefaultVariableValues(config.Module.Variables).Override(getTFEnvVariables()).Override(variables...)
 
 	variableValues := make(map[string]map[string]cty.Value)
-	variableValues[""] = make(map[string]cty.Value)
+	variableValues[moduleKey] = make(map[string]cty.Value)
 	for k, iv := range overrideVariables {
-		variableValues[""][k] = iv.Value
+		variableValues[moduleKey][k] = iv.Value
 	}
 	return variableValues
 }
