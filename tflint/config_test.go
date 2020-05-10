@@ -440,28 +440,45 @@ func Test_ValidateRules(t *testing.T) {
 
 	cases := []struct {
 		Name     string
+		Config   *Config
 		RuleSets []RuleSet
 		Err      error
 	}{
 		{
 			Name:     "valid",
+			Config:   config,
 			RuleSets: []RuleSet{&ruleSetA{}, &ruleSetB{}},
 			Err:      nil,
 		},
 		{
 			Name:     "duplicate",
+			Config:   config,
 			RuleSets: []RuleSet{&ruleSetA{}, &ruleSetB{}, &ruleSetB{}},
 			Err:      errors.New("`aws_instance_invalid_ami` is duplicated in ruleSetB and ruleSetB"),
 		},
 		{
 			Name:     "not found",
+			Config:   config,
 			RuleSets: []RuleSet{&ruleSetB{}},
 			Err:      errors.New("Rule not found: aws_instance_invalid_type"),
+		},
+		{
+			Name: "removed rule",
+			Config: &Config{
+				Rules: map[string]*RuleConfig{
+					"terraform_dash_in_resource_name": {
+						Name:    "terraform_dash_in_resource_name",
+						Enabled: true,
+					},
+				},
+			},
+			RuleSets: []RuleSet{&ruleSetA{}, &ruleSetB{}},
+			Err:      errors.New("`terraform_dash_in_resource_name` rule was removed in v0.16.0. Please use `terraform_naming_convention` rule instead"),
 		},
 	}
 
 	for _, tc := range cases {
-		err := config.ValidateRules(tc.RuleSets...)
+		err := tc.Config.ValidateRules(tc.RuleSets...)
 
 		if tc.Err == nil {
 			if err != nil {
