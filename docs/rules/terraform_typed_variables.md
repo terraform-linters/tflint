@@ -1,6 +1,19 @@
 # terraform_typed_variables
-
 Disallow `variable` declarations without type.
+
+**NOTE**: Due to the current implementation of TFLint, it is not able to distinguish between the case where
+no type is declared and `type = any` as Terraform treats these two cases the same. If this rule is enabled
+it will report a warning for variables declared with `type = any`.
+```
+variable "any_type" {
+    description = "A variable with 'any' type declared will generate a warning"
+    type        = any
+}
+```
+
+A future version of TFLint may look to implement lower level checks of the HCL syntax. 
+See https://github.com/terraform-linters/tflint/issues/741 to track this issue.
+
 
 ## Example
 
