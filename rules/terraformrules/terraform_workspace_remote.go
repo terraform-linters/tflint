@@ -67,8 +67,10 @@ func (r *TerraformWorkspaceRemoteRule) checkForTerraformWorkspaceInExpr(runner *
 					"terraform.workspace should not be used with a 'remote' backend",
 					expr.Range(),
 				)
-				return
+				return nil
 			}
 		}
 	}
+
+	return nil
 }
