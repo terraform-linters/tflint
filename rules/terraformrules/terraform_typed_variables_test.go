@@ -11,6 +11,7 @@ func Test_TerraformTypedVariablesRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
+		JSON     bool
 		Expected tflint.Issues
 	}{
 		{
@@ -59,12 +60,55 @@ variable "any" {
 }`,
 			Expected: tflint.Issues{},
 		},
+		{
+			Name: "json with type",
+			JSON: true,
+			Content: `
+{
+	"variable": {
+		"with_type": {
+			"type": "string"
+		}
+	}
+}
+`,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: "json no type",
+			JSON: true,
+			Content: `
+{
+	"variable": {
+		"no_type": {
+			"default": "foo"
+		}
+	}
+}
+`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformTypedVariablesRule(),
+					Message: "`no_type` variable has no type",
+					Range: hcl.Range{
+						Filename: "variables.tf.json",
+						Start:    hcl.Pos{Line: 4, Column: 16},
+						End:      hcl.Pos{Line: 4, Column: 17},
+					},
+				},
+			},
+		},
 	}
 
 	rule := NewTerraformTypedVariablesRule()
 
 	for _, tc := range cases {
-		runner := tflint.TestRunner(t, map[string]string{"variables.tf": tc.Content})
+		filename := "variables.tf"
+		if tc.JSON {
+			filename += ".json"
+		}
+
+		runner := tflint.TestRunner(t, map[string]string{filename: tc.Content})
 
 		if err := rule.Check(runner); err != nil {
 			t.Fatalf("Unexpected error occurred: %s", err)
