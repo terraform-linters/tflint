@@ -233,6 +233,7 @@ func (r *Runner) LookupIssues(files ...string) Issues {
 	return issues
 }
 
+// ReadFile reads a file from the current module from disk by filename
 func (r *Runner) ReadFile(filename string) ([]byte, error) {
 	return afero.ReadFile(r.fs, filepath.Join(r.TFConfig.Module.SourceDir, filename))
 }
