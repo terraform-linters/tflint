@@ -26,7 +26,7 @@ resource "null_resource" "a" {
 }`,
 			Expected: tflint.Issues{
 				{
-					Rule:    NewTerraformDeprecatedInterpolationRule(),
+					Rule:    NewTerraformWorkspaceRemoteRule(),
 					Message: "terraform.workspace should not be used with a 'remote' backend",
 					Range: hcl.Range{
 						Filename: "config.tf",
@@ -73,7 +73,7 @@ data "null_data_source" "a" {
 }`,
 			Expected: tflint.Issues{
 				{
-					Rule:    NewTerraformDeprecatedInterpolationRule(),
+					Rule:    NewTerraformWorkspaceRemoteRule(),
 					Message: "terraform.workspace should not be used with a 'remote' backend",
 					Range: hcl.Range{
 						Filename: "config.tf",
@@ -95,7 +95,7 @@ module "a" {
 }`,
 			Expected: tflint.Issues{
 				{
-					Rule:    NewTerraformDeprecatedInterpolationRule(),
+					Rule:    NewTerraformWorkspaceRemoteRule(),
 					Message: "terraform.workspace should not be used with a 'remote' backend",
 					Range: hcl.Range{
 						Filename: "config.tf",
@@ -118,7 +118,7 @@ provider "aws" {
 }`,
 			Expected: tflint.Issues{
 				{
-					Rule:    NewTerraformDeprecatedInterpolationRule(),
+					Rule:    NewTerraformWorkspaceRemoteRule(),
 					Message: "terraform.workspace should not be used with a 'remote' backend",
 					Range: hcl.Range{
 						Filename: "config.tf",
@@ -139,7 +139,7 @@ locals {
 }`,
 			Expected: tflint.Issues{
 				{
-					Rule:    NewTerraformDeprecatedInterpolationRule(),
+					Rule:    NewTerraformWorkspaceRemoteRule(),
 					Message: "terraform.workspace should not be used with a 'remote' backend",
 					Range: hcl.Range{
 						Filename: "config.tf",
@@ -160,7 +160,7 @@ output "o" {
 }`,
 			Expected: tflint.Issues{
 				{
-					Rule:    NewTerraformDeprecatedInterpolationRule(),
+					Rule:    NewTerraformWorkspaceRemoteRule(),
 					Message: "terraform.workspace should not be used with a 'remote' backend",
 					Range: hcl.Range{
 						Filename: "config.tf",
