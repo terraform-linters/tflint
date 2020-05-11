@@ -17,6 +17,13 @@ import (
 var defaultConfigFile = ".tflint.hcl"
 var fallbackConfigFile = "~/.tflint.hcl"
 
+var removedRulesMap = map[string]string{
+	"terraform_dash_in_data_source_name": "`terraform_dash_in_data_source_name` rule was removed in v0.16.0. Please use `terraform_naming_convention` rule instead",
+	"terraform_dash_in_module_name":      "`terraform_dash_in_module_name` rule was removed in v0.16.0. Please use `terraform_naming_convention` rule instead",
+	"terraform_dash_in_output_name":      "`terraform_dash_in_output_name` rule was removed in v0.16.0. Please use `terraform_naming_convention` rule instead",
+	"terraform_dash_in_resource_name":    "`terraform_dash_in_resource_name` rule was removed in v0.16.0. Please use `terraform_naming_convention` rule instead",
+}
+
 type rawConfig struct {
 	Config *struct {
 		Module         *bool              `hcl:"module"`
@@ -184,7 +191,10 @@ func (c *Config) ValidateRules(rulesets ...RuleSet) error {
 	}
 
 	for _, rule := range c.Rules {
-		if _, ok := rulesMap[rule.Name]; !ok {
+		if _, exists := rulesMap[rule.Name]; !exists {
+			if message, exists := removedRulesMap[rule.Name]; exists {
+				return errors.New(message)
+			}
 			return fmt.Errorf("Rule not found: %s", rule.Name)
 		}
 	}

@@ -37,10 +37,6 @@ var manualDefaultRules = []Rule{
 	awsrules.NewAwsSpotFleetRequestInvalidExcessCapacityTerminationPolicyRule(),
 	awsrules.NewAwsResourceMissingTagsRule(),
 	awsrules.NewAwsDynamoDBTableInvalidStreamViewTypeRule(),
-	terraformrules.NewTerraformDashInResourceNameRule(),
-	terraformrules.NewTerraformDashInOutputNameRule(),
-	terraformrules.NewTerraformDashInModuleNameRule(),
-	terraformrules.NewTerraformDashInDataSourceNameRule(),
 	terraformrules.NewTerraformDeprecatedInterpolationRule(),
 	terraformrules.NewTerraformDocumentedOutputsRule(),
 	terraformrules.NewTerraformDocumentedVariablesRule(),
@@ -50,6 +46,7 @@ var manualDefaultRules = []Rule{
 	terraformrules.NewTerraformRequiredVersionRule(),
 	terraformrules.NewTerraformRequiredProvidersRule(),
 	terraformrules.NewTerraformWorkspaceRemoteRule(),
+	terraformrules.NewTerraformUnusedDeclarationsRule(),
 }
 
 var manualDeepCheckRules = []Rule{

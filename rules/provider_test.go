@@ -11,15 +11,6 @@ import (
 )
 
 func Test_CheckRuleNames(t *testing.T) {
-	// Mock rules in test
-	DefaultRules = []Rule{
-		awsrules.NewAwsRouteNotSpecifiedTargetRule(),
-		terraformrules.NewTerraformDashInResourceNameRule(),
-	}
-	deepCheckRules = []Rule{
-		awsrules.NewAwsInstanceInvalidAMIRule(),
-	}
-
 	cases := []struct {
 		Name     string
 		Rules    []string
@@ -52,9 +43,7 @@ func Test_NewRules(t *testing.T) {
 	// Mock rules in test
 	DefaultRules = []Rule{
 		awsrules.NewAwsRouteNotSpecifiedTargetRule(),
-		terraformrules.NewTerraformDashInResourceNameRule(),
-		terraformrules.NewTerraformDashInDataSourceNameRule(),
-		terraformrules.NewTerraformDashInModuleNameRule(),
+		terraformrules.NewTerraformNamingConventionRule(),
 	}
 	deepCheckRules = []Rule{
 		awsrules.NewAwsInstanceInvalidAMIRule(),
@@ -97,42 +86,14 @@ func Test_NewRules(t *testing.T) {
 			Name: "enabled = true",
 			Config: &tflint.Config{
 				Rules: map[string]*tflint.RuleConfig{
-					"terraform_dash_in_resource_name": {
+					"terraform_naming_convention": {
 						Enabled: true,
 					},
 				},
 			},
 			Expected: []Rule{
 				awsrules.NewAwsRouteNotSpecifiedTargetRule(),
-				terraformrules.NewTerraformDashInResourceNameRule(),
-			},
-		},
-		{
-			Name: "enabled = true",
-			Config: &tflint.Config{
-				Rules: map[string]*tflint.RuleConfig{
-					"terraform_dash_in_data_source_name": {
-						Enabled: true,
-					},
-				},
-			},
-			Expected: []Rule{
-				awsrules.NewAwsRouteNotSpecifiedTargetRule(),
-				terraformrules.NewTerraformDashInDataSourceNameRule(),
-			},
-		},
-		{
-			Name: "enabled = true",
-			Config: &tflint.Config{
-				Rules: map[string]*tflint.RuleConfig{
-					"terraform_dash_in_module_name": {
-						Enabled: true,
-					},
-				},
-			},
-			Expected: []Rule{
-				awsrules.NewAwsRouteNotSpecifiedTargetRule(),
-				terraformrules.NewTerraformDashInModuleNameRule(),
+				terraformrules.NewTerraformNamingConventionRule(),
 			},
 		},
 	}
