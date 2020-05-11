@@ -42,6 +42,7 @@ func TestRunnerWithConfig(t *testing.T, files map[string]string, config *Config)
 	if err != nil {
 		t.Fatal(err)
 	}
+	runner.fs = fs
 
 	return runner
 }

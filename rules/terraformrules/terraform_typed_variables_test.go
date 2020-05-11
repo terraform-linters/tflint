@@ -51,6 +51,14 @@ variable "with_type" {
 }`,
 			Expected: tflint.Issues{},
 		},
+		{
+			Name: "type any",
+			Content: `
+variable "any" {
+  type = any
+}`,
+			Expected: tflint.Issues{},
+		},
 	}
 
 	rule := NewTerraformTypedVariablesRule()

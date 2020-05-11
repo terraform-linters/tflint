@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/lang"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint/client"
 	"github.com/zclconf/go-cty/cty"
 )
@@ -25,6 +27,7 @@ type Runner struct {
 	Issues    Issues
 	AwsClient *client.AwsClient
 
+	fs          afero.Fs
 	ctx         terraform.BuiltinEvalContext
 	annotations map[string]Annotations
 	config      *Config
@@ -54,6 +57,7 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, vari
 		Issues:    Issues{},
 		AwsClient: &client.AwsClient{},
 
+		fs: afero.NewOsFs(),
 		ctx: terraform.BuiltinEvalContext{
 			PathValue: cfg.Path.UnkeyedInstanceShim(),
 			Evaluator: &terraform.Evaluator{
@@ -227,6 +231,10 @@ func (r *Runner) LookupIssues(files ...string) Issues {
 		}
 	}
 	return issues
+}
+
+func (r *Runner) ReadFile(filename string) ([]byte, error) {
+	return afero.ReadFile(r.fs, filepath.Join(r.TFConfig.Module.SourceDir, filename))
 }
 
 // EnsureNoError is a helper for processing when no error occurs
