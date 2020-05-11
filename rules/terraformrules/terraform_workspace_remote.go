@@ -48,15 +48,14 @@ func (r *TerraformWorkspaceRemoteRule) Check(runner *tflint.Runner) error {
 	}
 
 	return runner.WalkExpressions(func(expr hcl.Expression) error {
-		r.checkForTerraformWorkspaceInExpr(runner, expr)
-		return nil
+		return r.checkForTerraformWorkspaceInExpr(runner, expr)
 	})
 }
 
-func (r *TerraformWorkspaceRemoteRule) checkForTerraformWorkspaceInExpr(runner *tflint.Runner, expr hcl.Expression) {
+func (r *TerraformWorkspaceRemoteRule) checkForTerraformWorkspaceInExpr(runner *tflint.Runner, expr hcl.Expression) error {
 	refs, diags := lang.ReferencesInExpr(expr)
 	if diags.HasErrors() {
-		return
+		return diags.Err()
 	}
 
 	for _, ref := range refs {
