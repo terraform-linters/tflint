@@ -45,6 +45,7 @@ var manualDefaultRules = []Rule{
 	terraformrules.NewTerraformTypedVariablesRule(),
 	terraformrules.NewTerraformRequiredVersionRule(),
 	terraformrules.NewTerraformRequiredProvidersRule(),
+	terraformrules.NewTerraformWorkspaceRemoteRule(),
 	terraformrules.NewTerraformUnusedDeclarationsRule(),
 }
 
