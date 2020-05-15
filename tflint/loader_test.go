@@ -136,6 +136,36 @@ func Test_LoadConfig_invalidConfiguration(t *testing.T) {
 	})
 }
 
+func Test_Files(t *testing.T) {
+	withinFixtureDir(t, "v0.12.0_module", func() {
+		loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())
+		if err != nil {
+			t.Fatalf("Unexpected error occurred: %s", err)
+		}
+		_, err = loader.LoadConfig(".")
+		if err != nil {
+			t.Fatalf("Unexpected error occurred: %s", err)
+		}
+
+		files, err := loader.Files()
+		if err != nil {
+			t.Fatalf("Unexpected error occurred: %s", err)
+		}
+
+		filename := "module.tf"
+		b, err := afero.ReadFile(loader.fs, filename)
+
+		expected := map[string]*hcl.File{
+			"module.tf": {Bytes: b},
+		}
+
+		opts := cmpopts.IgnoreFields(hcl.File{}, "Body", "Nav")
+		if !cmp.Equal(expected, files, opts) {
+			t.Fatalf("Test failed. Diff: %s", cmp.Diff(expected, files, opts))
+		}
+	})
+}
+
 func Test_LoadAnnotations(t *testing.T) {
 	withinFixtureDir(t, "annotation_files", func() {
 		loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())

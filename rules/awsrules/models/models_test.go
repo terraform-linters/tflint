@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configload"
 	"github.com/hashicorp/terraform/terraform"
@@ -100,7 +101,7 @@ resource "aws_launch_template" "foo" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}

@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"path/filepath"
 	"strings"
 	"sync"
 
@@ -14,7 +13,6 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/lang"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint/client"
 	"github.com/zclconf/go-cty/cty"
 )
@@ -27,8 +25,8 @@ type Runner struct {
 	Issues    Issues
 	AwsClient *client.AwsClient
 
-	fs          afero.Fs
 	ctx         terraform.BuiltinEvalContext
+	files       map[string]*hcl.File
 	annotations map[string]Annotations
 	config      *Config
 	currentExpr hcl.Expression
@@ -45,7 +43,7 @@ type Rule interface {
 // NewRunner returns new TFLint runner
 // It prepares built-in context (workpace metadata, variables) from
 // received `configs.Config` and `terraform.InputValues`
-func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, variables ...terraform.InputValues) (*Runner, error) {
+func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotations, cfg *configs.Config, variables ...terraform.InputValues) (*Runner, error) {
 	path := "root"
 	if !cfg.Path.IsRoot() {
 		path = cfg.Path.String()
@@ -57,7 +55,6 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, vari
 		Issues:    Issues{},
 		AwsClient: &client.AwsClient{},
 
-		fs: afero.NewOsFs(),
 		ctx: terraform.BuiltinEvalContext{
 			PathValue: cfg.Path.UnkeyedInstanceShim(),
 			Evaluator: &terraform.Evaluator{
@@ -69,6 +66,7 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, vari
 				VariableValuesLock: &sync.Mutex{},
 			},
 		},
+		files:       files,
 		annotations: ants,
 		config:      c,
 	}
@@ -190,7 +188,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 			}
 		}
 
-		runner, err := NewRunner(parent.config, parent.annotations, cfg)
+		runner, err := NewRunner(parent.config, parent.files, parent.annotations, cfg)
 		if err != nil {
 			return runners, err
 		}
@@ -233,9 +231,10 @@ func (r *Runner) LookupIssues(files ...string) Issues {
 	return issues
 }
 
-// ReadFile reads a file from the current module from disk by filename
-func (r *Runner) ReadFile(filename string) ([]byte, error) {
-	return afero.ReadFile(r.fs, filepath.Join(r.TFConfig.Module.SourceDir, filename))
+// File returns the raw *hcl.File representation of a Terraform configuration at the specified path,
+// or nil if there path does not match any configuration.
+func (r *Runner) File(path string) *hcl.File {
+	return r.files[path]
 }
 
 // EnsureNoError is a helper for processing when no error occurs

@@ -3,10 +3,8 @@ package terraformrules
 import (
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/hclparse"
 
 	"github.com/terraform-linters/tflint/tflint"
 )
@@ -58,25 +56,7 @@ func (r *TerraformTypedVariablesRule) Check(runner *tflint.Runner) error {
 }
 
 func (r *TerraformTypedVariablesRule) checkFileSchema(runner *tflint.Runner, filename string) error {
-	bytes, err := runner.ReadFile(filename)
-	if err != nil {
-		return err
-	}
-
-	parser := hclparse.NewParser()
-
-	var file *hcl.File
-	var diags hcl.Diagnostics
-
-	if strings.HasSuffix(filename, ".json") {
-		file, diags = parser.ParseJSON(bytes, filename)
-	} else {
-		file, diags = parser.ParseHCL(bytes, filename)
-	}
-
-	if diags.HasErrors() {
-		return diags
-	}
+	file := runner.File(filename)
 
 	content, _, diags := file.Body.PartialContent(&hcl.BodySchema{
 		Blocks: []hcl.BlockHeaderSchema{

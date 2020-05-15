@@ -169,7 +169,7 @@ resource "aws_alb" "balancer" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -321,7 +321,7 @@ resource "aws_alb" "balancer" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -441,7 +441,7 @@ resource "aws_db_instance" "mysql" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -561,7 +561,7 @@ resource "aws_db_instance" "mysql" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -681,7 +681,7 @@ resource "aws_db_instance" "mysql" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -852,7 +852,7 @@ resource "aws_db_instance" "mysql" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -972,7 +972,7 @@ resource "aws_elasticache_cluster" "redis" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1143,7 +1143,7 @@ resource "aws_elasticache_cluster" "redis" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1263,7 +1263,7 @@ resource "aws_elasticache_cluster" "redis" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1434,7 +1434,7 @@ resource "aws_elb" "balancer" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1609,7 +1609,7 @@ resource "aws_elb" "balancer" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1780,7 +1780,7 @@ resource "aws_elb" "balancer" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1900,7 +1900,7 @@ resource "aws_instance" "web" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2017,7 +2017,7 @@ resource "aws_instance" "web" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2134,7 +2134,7 @@ resource "aws_instance" "web" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2305,7 +2305,7 @@ resource "aws_instance" "web" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2425,7 +2425,7 @@ resource "aws_launch_configuration" "web" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2542,7 +2542,7 @@ resource "aws_route" "foo" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2659,7 +2659,7 @@ resource "aws_route" "foo" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2776,7 +2776,7 @@ resource "aws_route" "foo" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2897,7 +2897,7 @@ resource "aws_route" "foo" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -3014,7 +3014,7 @@ resource "aws_route" "foo" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -3131,7 +3131,7 @@ resource "aws_route" "foo" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -3248,7 +3248,7 @@ resource "aws_route" "foo" {
 			t.Fatal(tfdiags)
 		}
 
-		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
+		runner, err := tflint.NewRunner(tflint.EmptyConfig(), map[string]*hcl.File{}, map[string]tflint.Annotations{}, cfg, map[string]*terraform.InputValue{})
 		if err != nil {
 			t.Fatal(err)
 		}

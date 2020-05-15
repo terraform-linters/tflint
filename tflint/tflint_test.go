@@ -36,8 +36,12 @@ func testRunnerWithInputVariables(t *testing.T, files map[string]string, variabl
 	if err != nil {
 		t.Fatal(err)
 	}
+	f, err := loader.Files()
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	runner, err := NewRunner(config, map[string]Annotations{}, cfg, variables...)
+	runner, err := NewRunner(config, f, map[string]Annotations{}, cfg, variables...)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -89,8 +93,12 @@ func testRunnerWithOsFs(t *testing.T, config *Config) *Runner {
 	if err != nil {
 		t.Fatal(err)
 	}
+	f, err := loader.Files()
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	runner, err := NewRunner(config, map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	runner, err := NewRunner(config, f, map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -118,7 +126,12 @@ func testRunnerWithAnnotations(t *testing.T, files map[string]string, annotation
 		t.Fatal(err)
 	}
 
-	runner, err := NewRunner(config, annotations, cfg, map[string]*terraform.InputValue{})
+	f, err := loader.Files()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	runner, err := NewRunner(config, f, annotations, cfg, map[string]*terraform.InputValue{})
 	if err != nil {
 		t.Fatal(err)
 	}

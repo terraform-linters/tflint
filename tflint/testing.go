@@ -37,12 +37,15 @@ func TestRunnerWithConfig(t *testing.T, files map[string]string, config *Config)
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	runner, err := NewRunner(config, map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	f, err := loader.Files()
 	if err != nil {
 		t.Fatal(err)
 	}
-	runner.fs = fs
+
+	runner, err := NewRunner(config, f, map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	return runner
 }
