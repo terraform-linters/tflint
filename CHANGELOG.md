@@ -1,3 +1,37 @@
+## 0.16.0 (2020-05-16)
+
+In this release, some great Terraform rules are added by great contributors! Please note that many rules are not enabled by default. You need to set it appropriately according to your policy.
+
+The naming convention rules have been merged into the `terraform_naming_convetion` rule, so if you are using the `terraform_dash_in_*` rules you will need to change your configuration. See the documentation for details.
+
+### Breaking Changes
+
+- [#737](https://github.com/terraform-linters/tflint/pull/737): Remove terraform_dash_in_* rules ([@wata727](https://github.com/wata727))
+  - The `terraform_dash_in_data_source_name`, `terraform_dash_in_module_name`, `terraform_dash_in_output_name`, and `terraform_dash_in_resource_name` rules have been removed. Use the `terraform_naming_convention` rule instead.
+
+### Enhancements
+
+- [#697](https://github.com/terraform-linters/tflint/pull/697): Add terraform_naming_convention rule ([@jgeurts](https://github.com/jgeurts))
+- [#731](https://github.com/terraform-linters/tflint/pull/731): Add terraform_required_providers rule ([@bendrucker](https://github.com/bendrucker))
+- [#738](https://github.com/terraform-linters/tflint/pull/738): Add terraform_workspace_remote rule ([@bendrucker](https://github.com/bendrucker))
+- [#739](https://github.com/terraform-linters/tflint/pull/739): Add terraform_unused_declarations rule ([@bendrucker](https://github.com/bendrucker))
+- [#752](https://github.com/terraform-linters/tflint/pull/752): Bump terraform-provider-aws to v2.62.0 from v2.59.0 ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#742](https://github.com/terraform-linters/tflint/pull/742): Build EvalContext as the root module ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#732](https://github.com/terraform-linters/tflint/pull/732): Copy edits for rules docs ([@bendrucker](https://github.com/bendrucker))
+- [#740](https://github.com/terraform-linters/tflint/pull/740): testing: compare Rule types and ignore struct fields ([@bendrucker](https://github.com/bendrucker))
+- [#743](https://github.com/terraform-linters/tflint/pull/743): Split runner file into multiple files ([@wata727](https://github.com/wata727))
+- [#746](https://github.com/terraform-linters/tflint/pull/746): Bump github.com/aws/aws-sdk-go from 1.30.14 to 1.30.24
+- [#747](https://github.com/terraform-linters/tflint/pull/747): Bump github.com/hashicorp/hcl/v2 from 2.3.0 to 2.5.0
+- [#749](https://github.com/terraform-linters/tflint/pull/749): Bump github.com/hashicorp/terraform-plugin-sdk from 1.10.0 to 1.12.0 in /tools
+- [#750](https://github.com/terraform-linters/tflint/pull/750): Bump tf to v0.12.25 ([@chenrui333](https://github.com/chenrui333))
+- [#751](https://github.com/terraform-linters/tflint/pull/751): Bump github.com/hashicorp/hcl/v2 from 2.3.0 to 2.5.1 in /tools
+
 ## 0.15.5 (2020-04-25)
 
 ### Enhancements
