@@ -131,6 +131,8 @@ func NewAwsResourceMissingTagsRule() *AwsResourceMissingTagsRule {
 		"aws_ec2_traffic_mirror_session",
 		"aws_ec2_traffic_mirror_target",
 		"aws_ec2_transit_gateway",
+		"aws_ec2_transit_gateway_peering_attachment",
+		"aws_ec2_transit_gateway_peering_attachment_accepter",
 		"aws_ec2_transit_gateway_route_table",
 		"aws_ec2_transit_gateway_vpc_attachment",
 		"aws_ec2_transit_gateway_vpc_attachment_accepter",
@@ -277,6 +279,7 @@ func NewAwsResourceMissingTagsRule() *AwsResourceMissingTagsRule {
 		"aws_wafregional_web_acl",
 		"aws_workspaces_directory",
 		"aws_workspaces_ip_group",
+		"aws_workspaces_workspace",
 	}
 	return &AwsResourceMissingTagsRule{
 		resourceTypes: resourceTypes,

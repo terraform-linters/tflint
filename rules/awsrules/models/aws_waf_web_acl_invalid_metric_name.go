@@ -11,8 +11,8 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-// AwsWafregionalRuleGroupInvalidNameRule checks the pattern is valid
-type AwsWafregionalRuleGroupInvalidNameRule struct {
+// AwsWafWebACLInvalidMetricNameRule checks the pattern is valid
+type AwsWafWebACLInvalidMetricNameRule struct {
 	resourceType  string
 	attributeName string
 	max           int
@@ -20,11 +20,11 @@ type AwsWafregionalRuleGroupInvalidNameRule struct {
 	pattern       *regexp.Regexp
 }
 
-// NewAwsWafregionalRuleGroupInvalidNameRule returns new rule with default attributes
-func NewAwsWafregionalRuleGroupInvalidNameRule() *AwsWafregionalRuleGroupInvalidNameRule {
-	return &AwsWafregionalRuleGroupInvalidNameRule{
-		resourceType:  "aws_wafregional_rule_group",
-		attributeName: "name",
+// NewAwsWafWebACLInvalidMetricNameRule returns new rule with default attributes
+func NewAwsWafWebACLInvalidMetricNameRule() *AwsWafWebACLInvalidMetricNameRule {
+	return &AwsWafWebACLInvalidMetricNameRule{
+		resourceType:  "aws_waf_web_acl",
+		attributeName: "metric_name",
 		max:           128,
 		min:           1,
 		pattern:       regexp.MustCompile(`^.*\S.*$`),
@@ -32,27 +32,27 @@ func NewAwsWafregionalRuleGroupInvalidNameRule() *AwsWafregionalRuleGroupInvalid
 }
 
 // Name returns the rule name
-func (r *AwsWafregionalRuleGroupInvalidNameRule) Name() string {
-	return "aws_wafregional_rule_group_invalid_name"
+func (r *AwsWafWebACLInvalidMetricNameRule) Name() string {
+	return "aws_waf_web_acl_invalid_metric_name"
 }
 
 // Enabled returns whether the rule is enabled by default
-func (r *AwsWafregionalRuleGroupInvalidNameRule) Enabled() bool {
+func (r *AwsWafWebACLInvalidMetricNameRule) Enabled() bool {
 	return true
 }
 
 // Severity returns the rule severity
-func (r *AwsWafregionalRuleGroupInvalidNameRule) Severity() string {
+func (r *AwsWafWebACLInvalidMetricNameRule) Severity() string {
 	return tflint.ERROR
 }
 
 // Link returns the rule reference link
-func (r *AwsWafregionalRuleGroupInvalidNameRule) Link() string {
+func (r *AwsWafWebACLInvalidMetricNameRule) Link() string {
 	return ""
 }
 
 // Check checks the pattern is valid
-func (r *AwsWafregionalRuleGroupInvalidNameRule) Check(runner *tflint.Runner) error {
+func (r *AwsWafWebACLInvalidMetricNameRule) Check(runner *tflint.Runner) error {
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
@@ -63,14 +63,14 @@ func (r *AwsWafregionalRuleGroupInvalidNameRule) Check(runner *tflint.Runner) er
 			if len(val) > r.max {
 				runner.EmitIssue(
 					r,
-					"name must be 128 characters or less",
+					"metric_name must be 128 characters or less",
 					attribute.Expr.Range(),
 				)
 			}
 			if len(val) < r.min {
 				runner.EmitIssue(
 					r,
-					"name must be 1 characters or higher",
+					"metric_name must be 1 characters or higher",
 					attribute.Expr.Range(),
 				)
 			}

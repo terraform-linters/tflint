@@ -3,7 +3,9 @@
 package models
 
 import (
+	"fmt"
 	"log"
+	"regexp"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
@@ -15,6 +17,7 @@ type AwsWafWebACLInvalidNameRule struct {
 	attributeName string
 	max           int
 	min           int
+	pattern       *regexp.Regexp
 }
 
 // NewAwsWafWebACLInvalidNameRule returns new rule with default attributes
@@ -24,6 +27,7 @@ func NewAwsWafWebACLInvalidNameRule() *AwsWafWebACLInvalidNameRule {
 		attributeName: "name",
 		max:           128,
 		min:           1,
+		pattern:       regexp.MustCompile(`^.*\S.*$`),
 	}
 }
 
@@ -67,6 +71,13 @@ func (r *AwsWafWebACLInvalidNameRule) Check(runner *tflint.Runner) error {
 				runner.EmitIssue(
 					r,
 					"name must be 1 characters or higher",
+					attribute.Expr.Range(),
+				)
+			}
+			if !r.pattern.MatchString(val) {
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^.*\S.*$`),
 					attribute.Expr.Range(),
 				)
 			}

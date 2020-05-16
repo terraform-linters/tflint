@@ -30,6 +30,8 @@ func NewAwsSsmPatchBaselineInvalidOperatingSystemRule() *AwsSsmPatchBaselineInva
 			"REDHAT_ENTERPRISE_LINUX",
 			"SUSE",
 			"CENTOS",
+			"ORACLE_LINUX",
+			"DEBIAN",
 		},
 	}
 }

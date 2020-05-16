@@ -22,7 +22,7 @@ func NewAwsStoragegatewaySmbFileShareInvalidDefaultStorageClassRule() *AwsStorag
 	return &AwsStoragegatewaySmbFileShareInvalidDefaultStorageClassRule{
 		resourceType:  "aws_storagegateway_smb_file_share",
 		attributeName: "default_storage_class",
-		max:           20,
+		max:           50,
 		min:           5,
 	}
 }
@@ -59,7 +59,7 @@ func (r *AwsStoragegatewaySmbFileShareInvalidDefaultStorageClassRule) Check(runn
 			if len(val) > r.max {
 				runner.EmitIssue(
 					r,
-					"default_storage_class must be 20 characters or less",
+					"default_storage_class must be 50 characters or less",
 					attribute.Expr.Range(),
 				)
 			}
