@@ -53,16 +53,29 @@ fi
 echo -e "\n\n===================================================="
 echo "Unpacking /tmp/tflint.zip ..."
 unzip -u /tmp/tflint.zip -d /tmp/
-echo "Installing /tmp/tflint to /usr/local/bin..."
-sudo mkdir -p /usr/local/bin
-sudo install -b -C -v /tmp/tflint /usr/local/bin/
-retVal=$?
-if [ $retVal -ne 0 ]; then
-  echo "Failed to install tflint"
-  exit $retVal
+if [[ $os == "windows"* ]]; then
+  echo "Installing /tmp/tflint to /bin..."
+  mv /tmp/tflint /bin/
+  retVal=$?
+  if [ $retVal -ne 0 ]; then
+    echo "Failed to install tflint"
+    exit $retVal
+  else
+    echo "tflint installed at /bin/ successfully"
+  fi
 else
-  echo "tflint installed at /usr/local/bin/ successfully"
+  echo "Installing /tmp/tflint to /usr/local/bin..."
+  sudo mkdir -p /usr/local/bin
+  sudo install -b -C -v /tmp/tflint /usr/local/bin/
+  retVal=$?
+  if [ $retVal -ne 0 ]; then
+    echo "Failed to install tflint"
+    exit $retVal
+  else
+    echo "tflint installed at /usr/local/bin/ successfully"
+  fi
 fi
+
 echo "Cleaning /tmp/tflint.zip and /tmp/tflint ..."
 rm /tmp/tflint.zip /tmp/tflint
 
