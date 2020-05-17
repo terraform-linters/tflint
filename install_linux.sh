@@ -63,6 +63,8 @@ if [ $retVal -ne 0 ]; then
 else
   echo "tflint installed at /usr/local/bin/ successfully"
 fi
+echo "Cleaning /tmp/tflint.zip and /tmp/tflint ..."
+rm /tmp/tflint.zip /tmp/tflint
 
 echo -e "\n\n===================================================="
 echo "Current tflint version"

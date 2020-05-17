@@ -1,0 +1,28 @@
+name: install_script
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  check:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install latest version
+      run: |
+        bash install_linux.sh
+    - name: Install specific version
+      env:
+        TFLINT_VERSION: v0.15.0
+      run: |
+        bash install_linux.sh
