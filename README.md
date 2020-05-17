@@ -73,11 +73,21 @@ $ docker run --rm -v $(pwd):/data -t wata727/tflint
 
 700+ rules are available. See [Rules](docs/rules).
 
+## Providers
+
+TFLint supports multiple providers via plugins. The following is the Major Cloud support status.
+
+|name|status|description|
+|---|---|---|
+|[AWS](https://github.com/terraform-linters/tflint-ruleset-aws)|Available|Inspections for AWS resources are now built into TFLint. So, it is not necessary to install the plugin separately. In the future, these will be cut out to the plugin, but all are in progress.|
+|[Azure](https://github.com/terraform-linters/tflint-ruleset-azurerm)|Experimental|Experimental support has been started. You can inspect Azure resources by installing the plugin.|
+|[Google Cloud Platform](https://github.com/terraform-linters/tflint-ruleset-google)|Work in Progress|Everything is working and not available.|
+
+Please see the [documentation](docs/guides/extend.md) about the plugin system.
+
 ## Limitations
 
-TFLint currently only inspects Terraform-specific issues and AWS issues.
-
-Also, load configurations in the same way as Terraform v0.12. This means that it cannot inspect configurations that cannot be parsed on Terraform v0.12.
+TFLint load configurations in the same way as Terraform v0.12. This means that it cannot inspect configurations that cannot be parsed on Terraform v0.12.
 
 See [Compatibility with Terraform](docs/guides/compatibility.md) for details.
 
