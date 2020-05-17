@@ -33,10 +33,15 @@ get_latest_release() {
     sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
 }
 
-echo "Looking up the latest version ..."
-latest_version=$(get_latest_release)
-echo "Downloading latest version of tflint which is $latest_version"
-curl -L -o /tmp/tflint.zip "https://github.com/terraform-linters/tflint/releases/download/${latest_version}/tflint_${os}.zip"
+if [[ -z "${TFLINT_VERSION}" ]]; then
+  echo "Looking up the latest version ..."
+  version=$(get_latest_release)
+else
+  version=${TFLINT_VERSION}
+fi
+
+echo "Downloading TFLint $version"
+curl -L -o /tmp/tflint.zip "https://github.com/terraform-linters/tflint/releases/download/${version}/tflint_${os}.zip"
 retVal=$?
 if [ $retVal -ne 0 ]; then
   echo "Failed to download tflint_${os}.zip"
