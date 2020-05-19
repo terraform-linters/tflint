@@ -182,6 +182,27 @@ locals {
 }`,
 			Expected: tflint.Issues{},
 		},
+		{
+			Name: "meta-arguments",
+			Content: `
+terraform {
+	backend "remote" {}
+}
+resource "aws_instance" "foo" {
+  instance_type = "t3.nano"
+
+  lifecycle {
+    ignore_changes = [instance_type]
+  }
+
+  providers = {
+    aws = aws
+  }
+
+  depends_on = [aws_instance.bar]
+}`,
+			Expected: tflint.Issues{},
+		},
 	}
 
 	rule := NewTerraformWorkspaceRemoteRule()

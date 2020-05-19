@@ -121,6 +121,28 @@ provider "aws" {
 			Expected: tflint.Issues{},
 		},
 		{
+			Name: "meta-arguments",
+			Content: `
+variable "used" {}
+resource "null_resource" "n" {
+  triggers = {
+    u = var.used
+	}
+  
+  lifecycle {
+    ignore_changes = [triggers]
+  }
+
+  providers = {
+    null = null
+  }
+
+  depends_on = [aws_instance.foo]
+}
+`,
+			Expected: tflint.Issues{},
+		},
+		{
 			Name: "additional traversal",
 			Content: `
 variable "v" {

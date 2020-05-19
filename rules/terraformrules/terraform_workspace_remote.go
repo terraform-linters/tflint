@@ -55,7 +55,7 @@ func (r *TerraformWorkspaceRemoteRule) Check(runner *tflint.Runner) error {
 func (r *TerraformWorkspaceRemoteRule) checkForTerraformWorkspaceInExpr(runner *tflint.Runner, expr hcl.Expression) error {
 	refs, diags := lang.ReferencesInExpr(expr)
 	if diags.HasErrors() {
-		return diags.Err()
+		return nil
 	}
 
 	for _, ref := range refs {

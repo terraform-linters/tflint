@@ -105,7 +105,7 @@ func (r *TerraformUnusedDeclarationsRule) declarations(module *configs.Module) *
 func (r *TerraformUnusedDeclarationsRule) checkForRefsInExpr(expr hcl.Expression, decl *declarations) error {
 	refs, diags := lang.ReferencesInExpr(expr)
 	if diags.HasErrors() {
-		return diags.Err()
+		return nil
 	}
 
 	for _, ref := range refs {
