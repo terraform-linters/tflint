@@ -55,6 +55,7 @@ func (r *TerraformWorkspaceRemoteRule) Check(runner *tflint.Runner) error {
 func (r *TerraformWorkspaceRemoteRule) checkForTerraformWorkspaceInExpr(runner *tflint.Runner, expr hcl.Expression) error {
 	refs, diags := lang.ReferencesInExpr(expr)
 	if diags.HasErrors() {
+		log.Printf("[DEBUG] Cannot find references in expression, ignoring: %v", diags.Err())
 		return nil
 	}
 

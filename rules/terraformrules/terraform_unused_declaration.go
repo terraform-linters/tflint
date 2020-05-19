@@ -105,6 +105,7 @@ func (r *TerraformUnusedDeclarationsRule) declarations(module *configs.Module) *
 func (r *TerraformUnusedDeclarationsRule) checkForRefsInExpr(expr hcl.Expression, decl *declarations) error {
 	refs, diags := lang.ReferencesInExpr(expr)
 	if diags.HasErrors() {
+		log.Printf("[DEBUG] Cannot find references in expression, ignoring: %v", diags.Err())
 		return nil
 	}
 
