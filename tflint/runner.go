@@ -26,6 +26,7 @@ type Runner struct {
 	AwsClient *client.AwsClient
 
 	ctx         terraform.BuiltinEvalContext
+	files       map[string]*hcl.File
 	annotations map[string]Annotations
 	config      *Config
 	currentExpr hcl.Expression
@@ -42,7 +43,7 @@ type Rule interface {
 // NewRunner returns new TFLint runner
 // It prepares built-in context (workpace metadata, variables) from
 // received `configs.Config` and `terraform.InputValues`
-func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, variables ...terraform.InputValues) (*Runner, error) {
+func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotations, cfg *configs.Config, variables ...terraform.InputValues) (*Runner, error) {
 	path := "root"
 	if !cfg.Path.IsRoot() {
 		path = cfg.Path.String()
@@ -65,6 +66,7 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *configs.Config, vari
 				VariableValuesLock: &sync.Mutex{},
 			},
 		},
+		files:       files,
 		annotations: ants,
 		config:      c,
 	}
@@ -186,7 +188,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 			}
 		}
 
-		runner, err := NewRunner(parent.config, parent.annotations, cfg)
+		runner, err := NewRunner(parent.config, parent.files, parent.annotations, cfg)
 		if err != nil {
 			return runners, err
 		}
@@ -227,6 +229,12 @@ func (r *Runner) LookupIssues(files ...string) Issues {
 		}
 	}
 	return issues
+}
+
+// File returns the raw *hcl.File representation of a Terraform configuration at the specified path,
+// or nil if there path does not match any configuration.
+func (r *Runner) File(path string) *hcl.File {
+	return r.files[path]
 }
 
 // EnsureNoError is a helper for processing when no error occurs

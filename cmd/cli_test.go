@@ -127,6 +127,7 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 
 		loader := tflint.NewMockAbstractLoader(ctrl)
 		loader.EXPECT().LoadConfig(".").Return(configs.NewEmptyConfig(), tc.LoadErr).AnyTimes()
+		loader.EXPECT().Files().Return(map[string]*hcl.File{}, tc.LoadErr).AnyTimes()
 		loader.EXPECT().LoadAnnotations(".").Return(map[string]tflint.Annotations{}, tc.LoadErr).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, tc.LoadErr).AnyTimes()
 		loader.EXPECT().Sources().Return(map[string][]byte{}).AnyTimes()
@@ -264,6 +265,7 @@ func TestCLIRun__issuesFound(t *testing.T) {
 
 		loader := tflint.NewMockAbstractLoader(ctrl)
 		loader.EXPECT().LoadConfig(".").Return(configs.NewEmptyConfig(), nil).AnyTimes()
+		loader.EXPECT().Files().Return(map[string]*hcl.File{}, nil).AnyTimes()
 		loader.EXPECT().LoadAnnotations(".").Return(map[string]tflint.Annotations{}, nil).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, nil).AnyTimes()
 		loader.EXPECT().Sources().Return(map[string][]byte{}).AnyTimes()
@@ -401,6 +403,7 @@ func TestCLIRun__withArguments(t *testing.T) {
 
 		loader := tflint.NewMockAbstractLoader(ctrl)
 		loader.EXPECT().LoadConfig(tc.Dir).Return(configs.NewEmptyConfig(), nil).AnyTimes()
+		loader.EXPECT().Files().Return(map[string]*hcl.File{}, nil).AnyTimes()
 		loader.EXPECT().LoadAnnotations(tc.Dir).Return(map[string]tflint.Annotations{}, nil).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, nil).AnyTimes()
 		loader.EXPECT().Sources().Return(map[string][]byte{}).AnyTimes()

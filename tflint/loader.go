@@ -12,6 +12,7 @@ import (
 
 	version "github.com/hashicorp/go-version"
 	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
@@ -25,6 +26,7 @@ type AbstractLoader interface {
 	LoadConfig(string) (*configs.Config, error)
 	LoadAnnotations(string) (map[string]Annotations, error)
 	LoadValuesFiles(...string) ([]terraform.InputValues, error)
+	Files() (map[string]*hcl.File, error)
 	Sources() map[string][]byte
 }
 
@@ -101,6 +103,34 @@ func (l *Loader) LoadConfig(dir string) (*configs.Config, error) {
 
 	log.Printf("[ERROR] Failed to load modules: %s", diags)
 	return nil, diags
+}
+
+// Files returns a map of hcl.File pointers for every file that has been read by the loader.
+// It uses the source cache to avoid re-loading the files from disk. These files can be used
+// to do low level decoding of Terraform configuration.
+func (l *Loader) Files() (map[string]*hcl.File, error) {
+	sources := l.parser.Sources()
+	result := make(map[string]*hcl.File, len(sources))
+	parser := hclparse.NewParser()
+
+	for path, src := range sources {
+		var file *hcl.File
+		var diags hcl.Diagnostics
+		switch {
+		case strings.HasSuffix(path, ".json"):
+			file, diags = parser.ParseJSON(src, path)
+		default:
+			file, diags = parser.ParseHCL(src, path)
+		}
+
+		if diags.HasErrors() {
+			return nil, diags
+		}
+
+		result[path] = file
+	}
+
+	return result, nil
 }
 
 // LoadAnnotations load TFLint annotation comments as HCL tokens.

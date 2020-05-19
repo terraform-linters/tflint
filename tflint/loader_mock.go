@@ -6,6 +6,7 @@ package tflint
 
 import (
 	gomock "github.com/golang/mock/gomock"
+	hcl "github.com/hashicorp/hcl/v2"
 	configs "github.com/hashicorp/terraform/configs"
 	terraform "github.com/hashicorp/terraform/terraform"
 	reflect "reflect"
@@ -81,6 +82,21 @@ func (m *MockAbstractLoader) LoadValuesFiles(arg0 ...string) ([]terraform.InputV
 func (mr *MockAbstractLoaderMockRecorder) LoadValuesFiles(arg0 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadValuesFiles", reflect.TypeOf((*MockAbstractLoader)(nil).LoadValuesFiles), arg0...)
+}
+
+// Files mocks base method
+func (m *MockAbstractLoader) Files() (map[string]*hcl.File, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Files")
+	ret0, _ := ret[0].(map[string]*hcl.File)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Files indicates an expected call of Files
+func (mr *MockAbstractLoaderMockRecorder) Files() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Files", reflect.TypeOf((*MockAbstractLoader)(nil).Files))
 }
 
 // Sources mocks base method
