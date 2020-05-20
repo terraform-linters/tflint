@@ -260,6 +260,27 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 	})
 }
 
+func Test_RunnerFiles(t *testing.T) {
+	runner := TestRunner(t, map[string]string{
+		"main.tf":       "",
+		"child/main.tf": "",
+	})
+
+	expected := map[string]*hcl.File{
+		"main.tf": {
+			Body:  hcl.EmptyBody(),
+			Bytes: []byte{},
+		},
+	}
+
+	files := runner.Files()
+
+	opt := cmpopts.IgnoreFields(hcl.File{}, "Body", "Nav")
+	if !cmp.Equal(expected, files, opt) {
+		t.Fatalf("Failed test: diff: %s", cmp.Diff(expected, files, opt))
+	}
+}
+
 func Test_LookupResourcesByType(t *testing.T) {
 	content := `
 resource "aws_instance" "web" {
