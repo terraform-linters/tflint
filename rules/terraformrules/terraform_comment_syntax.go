@@ -52,6 +52,10 @@ func (r *TerraformCommentSyntaxRule) Check(runner *tflint.Runner) error {
 }
 
 func (r *TerraformCommentSyntaxRule) checkComments(runner *tflint.Runner, filename string, file *hcl.File) error {
+	if strings.HasSuffix(filename, ".json") {
+		return nil
+	}
+
 	tokens, diags := hclsyntax.LexConfig(file.Bytes, filename, hcl.InitialPos)
 	if diags.HasErrors() {
 		return diags

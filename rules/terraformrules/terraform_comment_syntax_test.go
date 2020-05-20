@@ -58,6 +58,12 @@ variable "foo" {
 `,
 			Expected: tflint.Issues{},
 		},
+		{
+			Name:     "JSON",
+			Content:  `{"variable": {"foo": {"type": "string"}}}`,
+			JSON:     true,
+			Expected: tflint.Issues{},
+		},
 	}
 
 	rule := NewTerraformCommentSyntaxRule()
