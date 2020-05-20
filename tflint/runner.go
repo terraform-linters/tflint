@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -235,6 +236,17 @@ func (r *Runner) LookupIssues(files ...string) Issues {
 // or nil if there path does not match any configuration.
 func (r *Runner) File(path string) *hcl.File {
 	return r.files[path]
+}
+
+// Files returns the raw *hcl.File representation of all Terraform configuration in the module directory.
+func (r *Runner) Files() map[string]*hcl.File {
+	result := make(map[string]*hcl.File)
+	for name, file := range r.files {
+		if filepath.Dir(name) == r.TFConfig.Module.SourceDir {
+			result[name] = file
+		}
+	}
+	return result
 }
 
 // EnsureNoError is a helper for processing when no error occurs
