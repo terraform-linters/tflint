@@ -29,4 +29,4 @@ The Terraform language supports two different syntaxes for single-line comments:
 
 ## How To Fix
 
-Replacing the leading double-slash (`//`) with the number sign (`#`).
+Replace the leading double-slash (`//`) in your comment with the number sign (`#`).
