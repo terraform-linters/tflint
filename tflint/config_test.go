@@ -9,6 +9,8 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/hclsyntax"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/client"
 )
@@ -182,6 +184,15 @@ func Test_LoadConfig_error(t *testing.T) {
 }
 
 func Test_Merge(t *testing.T) {
+	file1, diags := hclsyntax.ParseConfig([]byte(`foo = "bar"`), "test.hcl", hcl.Pos{})
+	if diags.HasErrors() {
+		t.Fatalf("Failed to parse test config: %s", diags)
+	}
+	file2, diags := hclsyntax.ParseConfig([]byte(`bar = "baz"`), "test2.hcl", hcl.Pos{})
+	if diags.HasErrors() {
+		t.Fatalf("Failed to parse test config: %s", diags)
+	}
+
 	cfg := &Config{
 		Module:    true,
 		DeepCheck: true,
@@ -201,10 +212,12 @@ func Test_Merge(t *testing.T) {
 			"aws_instance_invalid_type": {
 				Name:    "aws_instance_invalid_type",
 				Enabled: false,
+				Body:    file1.Body,
 			},
 			"aws_instance_invalid_ami": {
 				Name:    "aws_instance_invalid_ami",
 				Enabled: true,
+				Body:    file2.Body,
 			},
 		},
 		Plugins: map[string]*PluginConfig{},
@@ -256,10 +269,12 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
 						Enabled: false,
+						Body:    file1.Body,
 					},
 					"aws_instance_invalid_ami": {
 						Name:    "aws_instance_invalid_ami",
 						Enabled: true,
+						Body:    file1.Body,
 					},
 				},
 				Plugins: map[string]*PluginConfig{
@@ -293,10 +308,12 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_invalid_ami": {
 						Name:    "aws_instance_invalid_ami",
 						Enabled: false,
+						Body:    file2.Body,
 					},
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
 						Enabled: false,
+						Body:    file2.Body,
 					},
 				},
 				Plugins: map[string]*PluginConfig{
@@ -332,14 +349,17 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
 						Enabled: false,
+						Body:    file1.Body,
 					},
 					"aws_instance_invalid_ami": {
 						Name:    "aws_instance_invalid_ami",
 						Enabled: false,
+						Body:    file2.Body,
 					},
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
 						Enabled: false,
+						Body:    file2.Body,
 					},
 				},
 				Plugins: map[string]*PluginConfig{
@@ -358,11 +378,70 @@ func Test_Merge(t *testing.T) {
 				},
 			},
 		},
+		{
+			Name: "merge rule config with CLI-based config",
+			Base: &Config{
+				Module:         false,
+				DeepCheck:      false,
+				Force:          false,
+				AwsCredentials: client.AwsCredentials{},
+				IgnoreModules:  map[string]bool{},
+				Varfiles:       []string{},
+				Variables:      []string{},
+				Rules: map[string]*RuleConfig{
+					"aws_instance_invalid_type": {
+						Name:    "aws_instance_invalid_type",
+						Enabled: false,
+						Body:    file1.Body,
+					},
+				},
+				Plugins: map[string]*PluginConfig{},
+			},
+			Other: &Config{
+				Module:         false,
+				DeepCheck:      false,
+				Force:          false,
+				AwsCredentials: client.AwsCredentials{},
+				IgnoreModules:  map[string]bool{},
+				Varfiles:       []string{},
+				Variables:      []string{},
+				Rules: map[string]*RuleConfig{
+					"aws_instance_invalid_type": {
+						Name:    "aws_instance_invalid_type",
+						Enabled: true,
+						Body:    hcl.EmptyBody(),
+					},
+				},
+				Plugins: map[string]*PluginConfig{},
+			},
+			Expected: &Config{
+				Module:         false,
+				DeepCheck:      false,
+				Force:          false,
+				AwsCredentials: client.AwsCredentials{},
+				IgnoreModules:  map[string]bool{},
+				Varfiles:       []string{},
+				Variables:      []string{},
+				Rules: map[string]*RuleConfig{
+					"aws_instance_invalid_type": {
+						Name:    "aws_instance_invalid_type",
+						Enabled: true,       // overridden
+						Body:    file1.Body, // keep
+					},
+				},
+				Plugins: map[string]*PluginConfig{},
+			},
+		},
 	}
 
 	for _, tc := range cases {
 		ret := tc.Base.Merge(tc.Other)
-		if !cmp.Equal(tc.Expected, ret) {
+
+		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(hclsyntax.Body{}),
+			cmpopts.IgnoreFields(hclsyntax.Body{}, "Attributes", "Blocks"),
+		}
+		if !cmp.Equal(tc.Expected, ret, opts...) {
 			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(tc.Expected, ret))
 		}
 	}

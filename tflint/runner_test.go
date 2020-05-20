@@ -648,3 +648,57 @@ func Test_EmitIssue(t *testing.T) {
 		}
 	}
 }
+
+func Test_DecodeRuleConfig(t *testing.T) {
+	type ruleSchema struct {
+		Foo string `hcl:"foo"`
+	}
+	options := ruleSchema{}
+
+	file, diags := hclsyntax.ParseConfig([]byte(`foo = "bar"`), "test.hcl", hcl.Pos{})
+	if diags.HasErrors() {
+		t.Fatalf("Failed to parse test config: %s", diags)
+	}
+
+	cfg := EmptyConfig()
+	cfg.Rules["test"] = &RuleConfig{
+		Name:    "test",
+		Enabled: true,
+		Body:    file.Body,
+	}
+
+	runner := TestRunnerWithConfig(t, map[string]string{}, cfg)
+	if err := runner.DecodeRuleConfig("test", &options); err != nil {
+		t.Fatalf("Failed to decode rule config: %s", err)
+	}
+
+	expected := ruleSchema{Foo: "bar"}
+	if !cmp.Equal(options, expected) {
+		t.Fatalf("Failed to decode rule config: diff=%s", cmp.Diff(options, expected))
+	}
+}
+
+func Test_DecodeRuleConfig_emptyBody(t *testing.T) {
+	type ruleSchema struct {
+		Foo string `hcl:"foo"`
+	}
+	options := ruleSchema{}
+
+	cfg := EmptyConfig()
+	cfg.Rules["test"] = &RuleConfig{
+		Name:    "test",
+		Enabled: true,
+		Body:    hcl.EmptyBody(),
+	}
+
+	runner := TestRunnerWithConfig(t, map[string]string{}, cfg)
+	err := runner.DecodeRuleConfig("test", &options)
+	if err == nil {
+		t.Fatal("Expected to fail to decode rule config, but not")
+	}
+
+	expected := "This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration"
+	if err.Error() != expected {
+		t.Fatalf("Expected error message is %s, but got %s", expected, err.Error())
+	}
+}
