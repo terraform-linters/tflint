@@ -1,3 +1,25 @@
+## 0.16.1 (2020-05-21)
+
+### Enhancements
+
+- [#762](https://github.com/terraform-linters/tflint/pull/762): Add terraform_comment_syntax rule ([@bendrucker](https://github.com/bendrucker))
+
+### BugFixes
+
+- [#745](https://github.com/terraform-linters/tflint/pull/745): Expose raw hcl.File objects to rules ([@bendrucker](https://github.com/bendrucker))
+  - See also https://github.com/terraform-linters/tflint/issues/741
+- [#759](https://github.com/terraform-linters/tflint/pull/759): Ignore lang.ReferencesInExpr errors when walking all expressions ([@bendrucker](https://github.com/bendrucker))
+- [#763](https://github.com/terraform-linters/tflint/pull/763): Make rule config which is enabled with CLI non-nilable ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#753](https://github.com/terraform-linters/tflint/pull/753): Bump go to 1.14.3 and alpine to 3.11 ([@chenrui333](https://github.com/chenrui333))
+- [#754](https://github.com/terraform-linters/tflint/pull/754): Add support TFLINT_VERSION environment variable to installation script ([@wata727](https://github.com/wata727))
+- [#755](https://github.com/terraform-linters/tflint/pull/755): Mention about other providers support ([@wata727](https://github.com/wata727))
+- [#756](https://github.com/terraform-linters/tflint/pull/756): Bump github.com/google/go-cmp from 0.4.0 to 0.4.1 
+- [#757](https://github.com/terraform-linters/tflint/pull/757): Bump github.com/hashicorp/hcl/v2 from 2.5.0 to 2.5.1
+- [#758](https://github.com/terraform-linters/tflint/pull/758): Bump github.com/aws/aws-sdk-go from 1.30.24 to 1.30.29
+
 ## 0.16.0 (2020-05-16)
 
 In this release, some great Terraform rules are added by great contributors! Please note that many rules are not enabled by default. You need to set it appropriately according to your policy.
