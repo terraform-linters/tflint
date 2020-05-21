@@ -4,6 +4,7 @@ import (
 	"log"
 	"strings"
 
+	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/client"
 	"github.com/terraform-linters/tflint/tflint"
 )
@@ -63,12 +64,14 @@ func (opts *Options) toConfig() *tflint.Config {
 		rules[rule] = &tflint.RuleConfig{
 			Name:    rule,
 			Enabled: true,
+			Body:    hcl.EmptyBody(),
 		}
 	}
 	for _, rule := range opts.DisableRules {
 		rules[rule] = &tflint.RuleConfig{
 			Name:    rule,
 			Enabled: false,
+			Body:    hcl.EmptyBody(),
 		}
 	}
 

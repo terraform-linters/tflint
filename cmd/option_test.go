@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	hcl "github.com/hashicorp/hcl/v2"
 	flags "github.com/jessevdk/go-flags"
 	"github.com/terraform-linters/tflint/client"
 	"github.com/terraform-linters/tflint/tflint"
@@ -212,10 +213,12 @@ func Test_toConfig(t *testing.T) {
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
 						Enabled: true,
+						Body:    hcl.EmptyBody(),
 					},
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
 						Enabled: true,
+						Body:    hcl.EmptyBody(),
 					},
 				},
 				Plugins: map[string]*tflint.PluginConfig{},
@@ -236,10 +239,12 @@ func Test_toConfig(t *testing.T) {
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
 						Enabled: false,
+						Body:    hcl.EmptyBody(),
 					},
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
 						Enabled: false,
+						Body:    hcl.EmptyBody(),
 					},
 				},
 				Plugins: map[string]*tflint.PluginConfig{},

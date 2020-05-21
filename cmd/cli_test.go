@@ -112,6 +112,12 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Status:  ExitCodeError,
 			Stderr:  "Rule not found: nosuchrule",
 		},
+		{
+			Name:    "enable rule which has required configuration",
+			Command: "./tflint --enable-rule aws_resource_missing_tags",
+			Status:  ExitCodeError,
+			Stderr:  "This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration",
+		},
 	}
 
 	ctrl := gomock.NewController(t)
