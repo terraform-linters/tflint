@@ -40,7 +40,7 @@ func (r *TerraformBlacklistedResourcesRule) Link() string {
 	return tflint.ReferenceLink(r.Name())
 }
 
-// TODO: comment
+// Check whether resources exist of a ceratin type and provides a custom message
 func (r *TerraformBlacklistedResourcesRule) Check(runner *tflint.Runner) error {
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
