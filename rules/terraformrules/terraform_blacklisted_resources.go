@@ -15,7 +15,7 @@ type terraformBlacklistedResourcesRuleConfig struct {
 	Types map[string]string `hcl:"types"`
 }
 
-// TerraformBlacklistedResourcesRule returns a new rule
+// NewTerraformBlacklistedResourcesRule returns a new rule
 func NewTerraformBlacklistedResourcesRule() *TerraformBlacklistedResourcesRule {
 	return &TerraformBlacklistedResourcesRule{}
 }
