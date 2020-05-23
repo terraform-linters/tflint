@@ -325,19 +325,28 @@ func (r *Runner) EachStringSliceExprs(expr hcl.Expression, proc func(val string,
 
 // EmitIssue builds an issue and accumulates it
 func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range) {
+	ruleConfig, exists := r.config.Rules[rule.Name()]
+
+	severity := rule.Severity()
+	if exists && ruleConfig.Serverity != "" {
+		severity = ruleConfig.Serverity
+	}
+
 	if r.TFConfig.Path.IsRoot() {
 		r.emitIssue(&Issue{
-			Rule:    rule,
-			Message: message,
-			Range:   location,
+			Rule:     rule,
+			Message:  message,
+			Severity: severity,
+			Range:    location,
 		})
 	} else {
 		for _, modVar := range r.listModuleVars(r.currentExpr) {
 			r.emitIssue(&Issue{
-				Rule:    rule,
-				Message: message,
-				Range:   modVar.DeclRange,
-				Callers: append(modVar.callers(), location),
+				Rule:     rule,
+				Message:  message,
+				Severity: severity,
+				Range:    modVar.DeclRange,
+				Callers:  append(modVar.callers(), location),
 			})
 		}
 	}

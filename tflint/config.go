@@ -56,9 +56,10 @@ type Config struct {
 
 // RuleConfig is a TFLint's rule config
 type RuleConfig struct {
-	Name    string   `hcl:"name,label"`
-	Enabled bool     `hcl:"enabled"`
-	Body    hcl.Body `hcl:",remain"`
+	Name      string   `hcl:"name,label"`
+	Enabled   bool     `hcl:"enabled"`
+	Serverity string   `hcl:"severity,optional"`
+	Body      hcl.Body `hcl:",remain"`
 }
 
 // PluginConfig is a TFLint's plugin config
