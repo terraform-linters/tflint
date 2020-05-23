@@ -8,7 +8,7 @@ require (
 	github.com/golang/mock v1.4.3
 	github.com/google/go-cmp v0.4.1
 	github.com/hashicorp/aws-sdk-go-base v0.4.0
-	github.com/hashicorp/go-plugin v1.2.2
+	github.com/hashicorp/go-plugin v1.3.0
 	github.com/hashicorp/go-version v1.2.0
 	github.com/hashicorp/hcl/v2 v2.5.1
 	github.com/hashicorp/logutils v1.0.0
@@ -19,6 +19,6 @@ require (
 	github.com/sourcegraph/go-lsp v0.0.0-20181119182933-0c7d621186c1
 	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
 	github.com/spf13/afero v1.2.2
-	github.com/terraform-linters/tflint-plugin-sdk v0.1.0
-	github.com/zclconf/go-cty v1.3.1
+	github.com/terraform-linters/tflint-plugin-sdk v0.1.1
+	github.com/zclconf/go-cty v1.4.1
 )
