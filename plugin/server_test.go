@@ -6,7 +6,6 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/hclsyntax"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
@@ -18,7 +17,7 @@ resource "aws_instance" "foo" {
   instance_type = "t2.micro"
 }`
 
-	server := NewServer(tflint.TestRunner(t, map[string]string{"main.tf": source}))
+	server := NewServer(tflint.TestRunner(t, map[string]string{"main.tf": source}), map[string][]byte{"main.tf": []byte(source)})
 	req := &tfplugin.AttributesRequest{
 		Resource:      "aws_instance",
 		AttributeName: "instance_type",
@@ -33,25 +32,14 @@ resource "aws_instance" "foo" {
 	if resp.Err != nil {
 		t.Fatalf("The response has an unexpected error: %s", resp.Err)
 	}
-	expected := []*hcl.Attribute{
+	expected := []*tfplugin.Attribute{
 		{
 			Name: "instance_type",
-			Expr: &hclsyntax.TemplateExpr{
-				Parts: []hclsyntax.Expression{
-					&hclsyntax.LiteralValueExpr{
-						Val: cty.StringVal("t2.micro"),
-						SrcRange: hcl.Range{
-							Filename: "main.tf",
-							Start:    hcl.Pos{Line: 3, Column: 20},
-							End:      hcl.Pos{Line: 3, Column: 28},
-						},
-					},
-				},
-				SrcRange: hcl.Range{
-					Filename: "main.tf",
-					Start:    hcl.Pos{Line: 3, Column: 19},
-					End:      hcl.Pos{Line: 3, Column: 29},
-				},
+			Expr: []byte(`"t2.micro"`),
+			ExprRange: hcl.Range{
+				Filename: "main.tf",
+				Start:    hcl.Pos{Line: 3, Column: 19},
+				End:      hcl.Pos{Line: 3, Column: 29},
 			},
 			Range: hcl.Range{
 				Filename: "main.tf",
@@ -65,12 +53,9 @@ resource "aws_instance" "foo" {
 			},
 		},
 	}
-	opts := []cmp.Option{
-		cmpopts.IgnoreUnexported(cty.Type{}, cty.Value{}),
-		cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
-	}
-	if !cmp.Equal(expected, resp.Attributes, opts...) {
-		t.Fatalf("Attributes are not matched: %s", cmp.Diff(expected, resp.Attributes, opts...))
+	opt := cmpopts.IgnoreFields(hcl.Pos{}, "Byte")
+	if !cmp.Equal(expected, resp.Attributes, opt) {
+		t.Fatalf("Attributes are not matched: %s", cmp.Diff(expected, resp.Attributes, opt))
 	}
 }
 
@@ -80,13 +65,13 @@ variable "instance_type" {
   default = "t2.micro"
 }`
 
-	server := NewServer(tflint.TestRunner(t, map[string]string{"main.tf": source}))
+	server := NewServer(tflint.TestRunner(t, map[string]string{"main.tf": source}), map[string][]byte{"main.tf": []byte(source)})
 	req := &tfplugin.EvalExprRequest{
-		Expr: &hclsyntax.ScopeTraversalExpr{
-			Traversal: hcl.Traversal{
-				hcl.TraverseRoot{Name: "var"},
-				hcl.TraverseAttr{Name: "instance_type"},
-			},
+		Expr: []byte(`var.instance_type`),
+		ExprRange: hcl.Range{
+			Filename: "template.tf",
+			Start:    hcl.Pos{Line: 1, Column: 1},
+			End:      hcl.Pos{Line: 1, Column: 1},
 		},
 		Ret: "", // string value
 	}
@@ -113,13 +98,13 @@ variable "instance_type" {
 func Test_EvalExpr_errors(t *testing.T) {
 	source := `variable "instance_type" {}`
 
-	server := NewServer(tflint.TestRunner(t, map[string]string{"main.tf": source}))
+	server := NewServer(tflint.TestRunner(t, map[string]string{"main.tf": source}), map[string][]byte{"main.tf": []byte(source)})
 	req := &tfplugin.EvalExprRequest{
-		Expr: &hclsyntax.ScopeTraversalExpr{
-			Traversal: hcl.Traversal{
-				hcl.TraverseRoot{Name: "var"},
-				hcl.TraverseAttr{Name: "instance_type"},
-			},
+		Expr: []byte(`var.instance_type`),
+		ExprRange: hcl.Range{
+			Filename: "template.tf",
+			Start:    hcl.Pos{Line: 1, Column: 1},
+			End:      hcl.Pos{Line: 1, Column: 1},
 		},
 		Ret: "", // string value
 	}
@@ -133,7 +118,7 @@ func Test_EvalExpr_errors(t *testing.T) {
 	expected := tfplugin.Error{
 		Code:    tfplugin.UnknownValueError,
 		Level:   tfplugin.WarningLevel,
-		Message: "Unknown value found in :0; Please use environment variables or tfvars to set the value",
+		Message: "Unknown value found in template.tf:1; Please use environment variables or tfvars to set the value",
 		Cause:   nil,
 	}
 	if !cmp.Equal(expected, resp.Err) {
@@ -150,7 +135,7 @@ func Test_EmitIssue(t *testing.T) {
 		},
 	}
 
-	server := NewServer(runner)
+	server := NewServer(runner, map[string][]byte{})
 	req := &tfplugin.EmitIssueRequest{
 		Rule:    rule,
 		Message: "This is test rule",
@@ -158,6 +143,12 @@ func Test_EmitIssue(t *testing.T) {
 			Filename: "main.tf",
 			Start:    hcl.Pos{Line: 3, Column: 3},
 			End:      hcl.Pos{Line: 3, Column: 30},
+		},
+		Expr: []byte("1"),
+		ExprRange: hcl.Range{
+			Filename: "template.tf",
+			Start:    hcl.Pos{Line: 1, Column: 1},
+			End:      hcl.Pos{Line: 1, Column: 1},
 		},
 	}
 	var resp interface{}
