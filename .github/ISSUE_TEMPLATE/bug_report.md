@@ -26,5 +26,5 @@ It is a good practice to list the versions where the bug occurred.
 Example:
 
 TFLint v0.16.1
-Terraform v0.12.25
+Terraform v0.12.26
 -->
