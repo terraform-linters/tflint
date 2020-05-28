@@ -29,8 +29,8 @@ echo -e "\n\n===================================================="
 
 get_latest_release() {
   curl --silent "https://api.github.com/repos/terraform-linters/tflint/releases/latest" | # Get latest release from GitHub api
-    grep '"tag_name":' |                                            # Get tag line
-    sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
+    grep '"tag_name":' |                                                                  # Get tag line
+    sed -E 's/.*"([^"]+)".*/\1/'                                                          # Pluck JSON value
 }
 
 if [[ -z "${TFLINT_VERSION}" ]]; then
@@ -82,7 +82,3 @@ rm /tmp/tflint.zip /tmp/tflint
 echo -e "\n\n===================================================="
 echo "Current tflint version"
 tflint -v
-
-
-
-
