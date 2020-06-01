@@ -1,6 +1,14 @@
 # terraform_workspace_remote
 
-`terraform.workspace` should not be used with a "remote" backend
+`terraform.workspace` should not be used with a "remote" backend with remote execution. 
+
+If remote operations are [disabled](https://www.terraform.io/docs/cloud/run/index.html#disabling-remote-operations) for your workspace, you can safely disable this rule:
+
+```hcl
+rule "terraform_workspace_remote" {
+  enabled = false
+}
+```
 
 ## Example
 
