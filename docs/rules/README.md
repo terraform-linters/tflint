@@ -68,6 +68,7 @@ These rules suggest to better ways.
 |Rule|Enabled by default|
 | --- | --- |
 |[terraform_deprecated_interpolation](terraform_deprecated_interpolation.md)|✔|
+|[terraform_deprecated_index](terraform_deprecated_index.md)||
 |[terraform_unused_declarations](terraform_unused_declarations.md)||
 |[terraform_comment_syntax](terraform_comment_syntax.md)||
 |[terraform_documented_outputs](terraform_documented_outputs.md)||
