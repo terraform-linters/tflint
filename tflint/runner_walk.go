@@ -10,6 +10,15 @@ import (
 // WalkResourceAttributes searches for resources and passes the appropriate attributes to the walker function
 func (r *Runner) WalkResourceAttributes(resource, attributeName string, walker func(*hcl.Attribute) error) error {
 	for _, resource := range r.LookupResourcesByType(resource) {
+		ok, err := r.willEvaluateResource(resource)
+		if err != nil {
+			return err
+		}
+		if !ok {
+			log.Printf("[WARN] Skip walking `%s` because it may not be created", resource.Type+"."+resource.Name)
+			continue
+		}
+
 		body, _, diags := resource.Config.PartialContent(&hcl.BodySchema{
 			Attributes: []hcl.AttributeSchema{
 				{
@@ -38,6 +47,15 @@ func (r *Runner) WalkResourceAttributes(resource, attributeName string, walker f
 // WalkResourceBlocks walks all blocks of the passed resource and invokes the passed function
 func (r *Runner) WalkResourceBlocks(resource, blockType string, walker func(*hcl.Block) error) error {
 	for _, resource := range r.LookupResourcesByType(resource) {
+		ok, err := r.willEvaluateResource(resource)
+		if err != nil {
+			return err
+		}
+		if !ok {
+			log.Printf("[WARN] Skip walking `%s` because it may not be created", resource.Type+"."+resource.Name)
+			continue
+		}
+
 		body, _, diags := resource.Config.PartialContent(&hcl.BodySchema{
 			Blocks: []hcl.BlockHeaderSchema{
 				{

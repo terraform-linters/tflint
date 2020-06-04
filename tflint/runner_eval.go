@@ -6,6 +6,7 @@ import (
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/terraform/addrs"
+	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/configs/configschema"
 	"github.com/hashicorp/terraform/lang"
 	"github.com/hashicorp/terraform/terraform"
@@ -320,5 +321,45 @@ func isEvaluableRef(ref *addrs.Reference) bool {
 		return true
 	default:
 		return false
+	}
+}
+
+// willEvaluateResource checks whether the passed resource will be evaluated.
+// If `count` is 0 or `for_each` is empty, Terraform will not evaluate the attributes of that resource.
+func (r *Runner) willEvaluateResource(resource *configs.Resource) (bool, error) {
+	var err error
+	if resource.Count != nil {
+		count := 1
+		err = r.EvaluateExpr(resource.Count, &count)
+		if err == nil && count == 0 {
+			return false, nil
+		}
+	} else if resource.ForEach != nil {
+		var forEach cty.Value
+		forEach, err = r.EvalExpr(resource.ForEach, nil, cty.DynamicPseudoType)
+		if err == nil {
+			if !forEach.CanIterateElements() {
+				return false, fmt.Errorf("The `for_each` value is not iterable in %s:%d", resource.ForEach.Range().Filename, resource.ForEach.Range().Start.Line)
+			}
+			if forEach.LengthInt() == 0 {
+				return false, nil
+			}
+		}
+	}
+
+	if err == nil {
+		return true, nil
+	}
+	if appErr, ok := err.(*Error); ok {
+		switch appErr.Level {
+		case WarningLevel:
+			return false, nil
+		case ErrorLevel:
+			return false, err
+		default:
+			panic(appErr)
+		}
+	} else {
+		return false, err
 	}
 }
