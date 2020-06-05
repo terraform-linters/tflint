@@ -37,6 +37,7 @@ var manualDefaultRules = []Rule{
 	awsrules.NewAwsSpotFleetRequestInvalidExcessCapacityTerminationPolicyRule(),
 	awsrules.NewAwsResourceMissingTagsRule(),
 	awsrules.NewAwsDynamoDBTableInvalidStreamViewTypeRule(),
+	terraformrules.NewTerraformDeprecatedIndexRule(),
 	terraformrules.NewTerraformDeprecatedInterpolationRule(),
 	terraformrules.NewTerraformDocumentedOutputsRule(),
 	terraformrules.NewTerraformDocumentedVariablesRule(),
