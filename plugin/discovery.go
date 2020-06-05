@@ -22,7 +22,13 @@ import (
 //
 // Files under these directories that satisfy the "tflint-ruleset-*" naming rules
 // enabled in the configuration are treated as plugins.
+//
+// If the `TFLINT_PLUGIN_DIR` environment variable is set, ignore the above and refer to that directory.
 func Discovery(config *tflint.Config) (*Plugin, error) {
+	if dir := os.Getenv("TFLINT_PLUGIN_DIR"); dir != "" {
+		return findPlugins(config, dir)
+	}
+
 	if _, err := os.Stat(localPluginRoot); !os.IsNotExist(err) {
 		return findPlugins(config, localPluginRoot)
 	}

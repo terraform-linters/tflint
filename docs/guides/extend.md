@@ -12,4 +12,6 @@ plugin "NAME" {
 
 That's all. Now you can freely add custom rules to TFLint!
 
+You can also change the plugin directory with the `TFLINT_PLUGIN_DIR` environment variable.
+
 A plugin is provided as a single binary and can be built using [`tflint-plugin-sdk`](https://github.com/terraform-linters/tflint-plugin-sdk).

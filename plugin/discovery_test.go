@@ -73,6 +73,34 @@ func Test_Discovery_local(t *testing.T) {
 	}
 }
 
+func Test_Discovery_envVar(t *testing.T) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	os.Setenv("TFLINT_PLUGIN_DIR", filepath.Join(cwd, "test-fixtures", "locals", ".tflint.d", "plugins"))
+	defer os.Setenv("TFLINT_PLUGIN_DIR", "")
+
+	plugin, err := Discovery(&tflint.Config{
+		Plugins: map[string]*tflint.PluginConfig{
+			"foo": {
+				Name:    "foo",
+				Enabled: true,
+			},
+		},
+	})
+	defer plugin.Clean()
+
+	if err != nil {
+		t.Fatalf("Unexpected error occurred %s", err)
+	}
+
+	if len(plugin.RuleSets) != 1 {
+		t.Fatalf("Only one plugin must be enabled, but %d plugins are enabled", len(plugin.RuleSets))
+	}
+}
+
 func Test_Discovery_notFound(t *testing.T) {
 	cwd, err := os.Getwd()
 	if err != nil {
