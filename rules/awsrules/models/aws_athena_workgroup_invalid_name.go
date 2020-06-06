@@ -23,7 +23,7 @@ func NewAwsAthenaWorkgroupInvalidNameRule() *AwsAthenaWorkgroupInvalidNameRule {
 	return &AwsAthenaWorkgroupInvalidNameRule{
 		resourceType:  "aws_athena_workgroup",
 		attributeName: "name",
-		pattern:       regexp.MustCompile(`^[a-zA-z0-9._-]{1,128}$`),
+		pattern:       regexp.MustCompile(`^[a-zA-Z0-9._-]{1,128}$`),
 	}
 }
 
@@ -59,7 +59,7 @@ func (r *AwsAthenaWorkgroupInvalidNameRule) Check(runner *tflint.Runner) error {
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-zA-z0-9._-]{1,128}$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-zA-Z0-9._-]{1,128}$`),
 					attribute.Expr.Range(),
 				)
 			}

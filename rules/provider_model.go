@@ -741,6 +741,7 @@ var modelRules = []Rule{
 	awsmodelrules.NewAwsWafregionalWebACLInvalidMetricNameRule(),
 	awsmodelrules.NewAwsWafregionalWebACLInvalidNameRule(),
 	awsmodelrules.NewAwsWafregionalXSSMatchSetInvalidNameRule(),
+	awsmodelrules.NewAwsWorklinkFleetInvalidAuditStreamArnRule(),
 	awsmodelrules.NewAwsWorklinkFleetInvalidDeviceCaCertificateRule(),
 	awsmodelrules.NewAwsWorklinkFleetInvalidDisplayNameRule(),
 	awsmodelrules.NewAwsWorklinkFleetInvalidNameRule(),
