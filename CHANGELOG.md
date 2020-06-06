@@ -1,3 +1,24 @@
+## 0.16.2 (2020-06-06)
+
+### Enhancements
+
+- [#784](https://github.com/terraform-linters/tflint/pull/784): add terraform_deprecated_index (disallows foo.0) ([@bendrucker](https://github.com/bendrucker))
+- [#787](https://github.com/terraform-linters/tflint/pull/787): Change the plugins dir with TFLINT_PLUGIN_DIR environment variable ([@wata727](https://github.com/wata727))
+- [#789](https://github.com/terraform-linters/tflint/pull/789): Allow no extensions on windows ([@jpreese](https://github.com/jpreese))
+- [#790](https://github.com/terraform-linters/tflint/pull/790): Bump terraform-provider-aws to v2.65.0 from v2.62.0 ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#767](https://github.com/terraform-linters/tflint/pull/767): terraform_workspace_remote: document disabling with local execution ([@bendrucker](https://github.com/bendrucker))
+- [#772](https://github.com/terraform-linters/tflint/pull/772): Bump tflint-plugin-sdk to v0.1.1 from v0.1.0 ([@wata727](https://github.com/wata727))
+- [#773](https://github.com/terraform-linters/tflint/pull/773): Bump github.com/hashicorp/terraform-plugin-sdk from 1.12.0 to 1.13.0 in /tools
+- [#774](https://github.com/terraform-linters/tflint/pull/774): Bump github.com/aws/aws-sdk-go from 1.30.29 to 1.31.4
+- [#776](https://github.com/terraform-linters/tflint/pull/776): Bump tf to v0.12.26 ([@chenrui333](https://github.com/chenrui333))
+- [#777](https://github.com/terraform-linters/tflint/pull/777): Update install linux script ([@cedarkuo](https://github.com/cedarkuo))
+- [#779](https://github.com/terraform-linters/tflint/pull/779): Bump github.com/aws/aws-sdk-go from 1.31.4 to 1.31.7
+- [#780](https://github.com/terraform-linters/tflint/pull/780): Bump github.com/zclconf/go-cty from 1.4.1 to 1.4.2
+- [#782](https://github.com/terraform-linters/tflint/pull/782): Update extend.md ([@jpreese](https://github.com/jpreese))
+
 ## 0.16.1 (2020-05-21)
 
 ### Enhancements
