@@ -39,8 +39,8 @@ func findPlugins(config *tflint.Config, dir string) (*Plugin, error) {
 	rulesets := []*tfplugin.Client{}
 
 	for _, cfg := range config.Plugins {
-		pluginPath := filepath.Join(dir, pluginFileName(cfg.Name))
-		if _, err := os.Stat(pluginPath); os.IsNotExist(err) {
+		pluginPath, err := getPluginPath(dir, cfg.Name)
+		if os.IsNotExist(err) {
 			return nil, fmt.Errorf("Plugin `%s` not found in %s", cfg.Name, dir)
 		}
 
@@ -70,9 +70,19 @@ func findPlugins(config *tflint.Config, dir string) (*Plugin, error) {
 	return &Plugin{RuleSets: rulesets, clients: clients}, nil
 }
 
-func pluginFileName(name string) string {
-	if runtime.GOOS == "windows" {
-		return fmt.Sprintf("tflint-ruleset-%s.exe", name)
+func getPluginPath(dir string, name string) (string, error) {
+	pluginPath := filepath.Join(dir, fmt.Sprintf("tflint-ruleset-%s", name))
+
+	_, err := os.Stat(pluginPath)
+	if os.IsNotExist(err) && runtime.GOOS != "windows" {
+		return "", os.ErrNotExist
+	} else if !os.IsNotExist(err) {
+		return pluginPath, nil
 	}
-	return fmt.Sprintf("tflint-ruleset-%s", name)
+
+	if _, err := os.Stat(pluginPath + ".exe"); !os.IsNotExist(err) {
+		return pluginPath + ".exe", nil
+	}
+
+	return "", os.ErrNotExist
 }
