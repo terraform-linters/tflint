@@ -1,6 +1,7 @@
 package tflint
 
 import (
+	"github.com/hashicorp/terraform/configs"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -110,6 +111,19 @@ func (r *Runner) WalkResourceBlocks(resource, blockType string, walker func(*hcl
 					}
 				}
 			}
+		}
+	}
+
+	return nil
+}
+
+// WalkResources walks all blocks of the passed resource and invokes the passed function
+func (r *Runner) WalkResources(resource string, walker func(*configs.Resource) error) error {
+
+	for _, resource := range r.LookupResourcesByType(resource) {
+		err := walker(resource)
+		if err != nil {
+			return err
 		}
 	}
 

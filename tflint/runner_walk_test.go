@@ -2,6 +2,7 @@ package tflint
 
 import (
 	"fmt"
+	"github.com/hashicorp/terraform/configs"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -147,6 +148,51 @@ resource "aws_instance" "test" {
 		} else if err.Error() != tc.ErrorText {
 			t.Fatalf("Failed `%s` test: expected error is %s, but get %s", tc.Name, tc.ErrorText, err)
 		}
+	}
+}
+
+func Test_WalkResources(t *testing.T) {
+	cases := []struct {
+		Name      string
+		Content   string
+		ErrorText string
+	}{
+		{
+			Name: "Ignore unspecified resources",
+			Content: `
+resource "null_resource" "test" {
+  key {
+    foo = "bar"
+  }
+}`,
+		},
+		{
+			Name: "Fail with correct resource",
+			Content: `
+resource "aws_instance" "test" {
+  key {
+    foo = "bar"
+  }
+}`,
+			ErrorText: "Walk aws_instance",
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.Name, func(t *testing.T) {
+			runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
+
+			err := runner.WalkResources("aws_instance", func(block *configs.Resource) error {
+				return fmt.Errorf("Walk %s", block.Type)
+			})
+			if err == nil {
+				if tc.ErrorText != "" {
+					t.Fatalf("Failed `%s` test: expected error is not occurred `%s`", tc.Name, tc.ErrorText)
+				}
+			} else if err.Error() != tc.ErrorText {
+				t.Fatalf("Failed `%s` test: expected error is %s, but get %s", tc.Name, tc.ErrorText, err)
+			}
+		})
 	}
 }
 
