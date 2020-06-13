@@ -59,6 +59,44 @@ resource "aws_instance" "foo" {
 	}
 }
 
+func Test_Blocks(t *testing.T) {
+	source := `
+resource "aws_instance" "foo" {
+  ebs_block_device {
+    volume_size = 10
+  }
+}`
+
+	server := NewServer(tflint.TestRunner(t, map[string]string{"main.tf": source}), map[string][]byte{"main.tf": []byte(source)})
+	req := &tfplugin.BlocksRequest{
+		Resource:  "aws_instance",
+		BlockType: "ebs_block_device",
+	}
+	var resp tfplugin.BlocksResponse
+
+	err := server.Blocks(req, &resp)
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+
+	if resp.Err != nil {
+		t.Fatalf("The response has an unexpected error: %s", resp.Err)
+	}
+	expected := []*tfplugin.Block{
+		{
+			Type:      "ebs_block_device",
+			Body:      []byte(`volume_size = 10`),
+			BodyRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 4, Column: 5}, End: hcl.Pos{Line: 4, Column: 21}},
+			DefRange:  hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 3, Column: 3}, End: hcl.Pos{Line: 3, Column: 19}},
+			TypeRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 3, Column: 3}, End: hcl.Pos{Line: 3, Column: 19}},
+		},
+	}
+	opt := cmpopts.IgnoreFields(hcl.Pos{}, "Byte")
+	if !cmp.Equal(expected, resp.Blocks, opt) {
+		t.Fatalf("Blocks are not matched: %s", cmp.Diff(expected, resp.Blocks, opt))
+	}
+}
+
 func Test_EvalExpr(t *testing.T) {
 	source := `
 variable "instance_type" {

@@ -70,6 +70,38 @@ func ParseExpression(src []byte, filename string, start hcl.Pos) (hcl.Expression
 	panic(fmt.Sprintf("Unexpected file: %s", filename))
 }
 
+// BlockBodyRange attempts to find a range of the passed block's body
+func BlockBodyRange(block *hcl.Block) hcl.Range {
+	if strings.HasSuffix(block.DefRange.Filename, ".tf") {
+		var bodyRange hcl.Range
+
+		// Estimate the range of the body from the range of all attributes and blocks.
+		body := block.Body.(*hclsyntax.Body)
+		for _, attr := range body.Attributes {
+			if bodyRange.Empty() {
+				bodyRange = attr.Range()
+			} else {
+				bodyRange = hcl.RangeOver(bodyRange, attr.Range())
+			}
+		}
+		for _, block := range body.Blocks {
+			if bodyRange.Empty() {
+				bodyRange = block.Range()
+			} else {
+				bodyRange = hcl.RangeOver(bodyRange, block.Range())
+			}
+		}
+		return bodyRange
+	}
+
+	if strings.HasSuffix(block.DefRange.Filename, ".tf.json") {
+		// HACK: In JSON syntax, DefRange corresponds to open brace and MissingItemRange corresponds to close brace.
+		return hcl.RangeOver(block.DefRange, block.Body.MissingItemRange())
+	}
+
+	panic(fmt.Sprintf("Unexpected file: %s", block.DefRange.Filename))
+}
+
 func getTFDataDir() string {
 	dir := os.Getenv("TF_DATA_DIR")
 	if dir != "" {

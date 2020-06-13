@@ -6,6 +6,11 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/hashicorp/hcl/v2/json"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/zclconf/go-cty/cty"
@@ -122,6 +127,86 @@ func Test_ParseTFVariables_errors(t *testing.T) {
 		if err.Error() != tc.Expected {
 			t.Fatalf("Failed `%s` test: Expected `%s`, but got `%s`", tc.Name, tc.Expected, err.Error())
 		}
+	}
+}
+
+func Test_BlockBodyRange_HCL(t *testing.T) {
+	src := `
+ebs_block_device {
+  device_name = "/dev/sdf"
+  volume_size = 10
+  foo {
+    bar = "baz"
+  }
+}
+`
+
+	file, diags := hclsyntax.ParseConfig([]byte(src), "example.tf", hcl.InitialPos)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	body, diags := file.Body.Content(&hcl.BodySchema{
+		Blocks: []hcl.BlockHeaderSchema{
+			{
+				Type: "ebs_block_device",
+			},
+		},
+	})
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+
+	got := BlockBodyRange(body.Blocks[0])
+	expected := hcl.Range{
+		Filename: "example.tf",
+		Start:    hcl.Pos{Line: 3, Column: 3},
+		End:      hcl.Pos{Line: 7, Column: 4},
+	}
+
+	opt := cmpopts.IgnoreFields(hcl.Pos{}, "Byte")
+	if !cmp.Equal(got, expected, opt) {
+		t.Fatalf("Diff=%s", cmp.Diff(got, expected, opt))
+	}
+}
+
+func Test_BlockBodyRange_JSON(t *testing.T) {
+	src := `
+{
+  "ebs_block_device": {
+    "device_name": "/dev/sdf",
+    "volume_size": 10,
+    "foo": {
+      "bar": "baz"
+    }
+  }
+}
+`
+
+	file, diags := json.Parse([]byte(src), "example.tf.json")
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	body, diags := file.Body.Content(&hcl.BodySchema{
+		Blocks: []hcl.BlockHeaderSchema{
+			{
+				Type: "ebs_block_device",
+			},
+		},
+	})
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+
+	got := BlockBodyRange(body.Blocks[0])
+	expected := hcl.Range{
+		Filename: "example.tf.json",
+		Start:    hcl.Pos{Line: 3, Column: 23},
+		End:      hcl.Pos{Line: 9, Column: 4},
+	}
+
+	opt := cmpopts.IgnoreFields(hcl.Pos{}, "Byte")
+	if !cmp.Equal(got, expected, opt) {
+		t.Fatalf("Diff=%s", cmp.Diff(got, expected, opt))
 	}
 }
 
