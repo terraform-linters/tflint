@@ -177,7 +177,7 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 			return ret, fmt.Errorf("Failed to apply config to plugins: %s", err)
 		}
 		for _, runner := range runners {
-			err = ruleset.Check(tfplugin.NewServer(runner))
+			err = ruleset.Check(tfplugin.NewServer(runner, loader.Sources()))
 			if err != nil {
 				return ret, fmt.Errorf("Failed to check ruleset: %s", err)
 			}

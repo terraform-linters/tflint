@@ -9,19 +9,26 @@ import (
 
 // Server is a RPC server for responding to requests from plugins
 type Server struct {
-	runner *tflint.Runner
+	runner  *tflint.Runner
+	sources map[string][]byte
 }
 
 // NewServer initializes a RPC server for plugins
-func NewServer(runner *tflint.Runner) *Server {
-	return &Server{runner: runner}
+func NewServer(runner *tflint.Runner, sources map[string][]byte) *Server {
+	return &Server{runner: runner, sources: sources}
 }
 
 // Attributes returns corresponding hcl.Attributes
 func (s *Server) Attributes(req *tfplugin.AttributesRequest, resp *tfplugin.AttributesResponse) error {
-	ret := []*hcl.Attribute{}
+	ret := []*tfplugin.Attribute{}
 	err := s.runner.WalkResourceAttributes(req.Resource, req.AttributeName, func(attr *hcl.Attribute) error {
-		ret = append(ret, attr)
+		ret = append(ret, &tfplugin.Attribute{
+			Name:      attr.Name,
+			Expr:      attr.Expr.Range().SliceBytes(s.sources[attr.Expr.Range().Filename]),
+			ExprRange: attr.Expr.Range(),
+			Range:     attr.Range,
+			NameRange: attr.NameRange,
+		})
 		return nil
 	})
 	*resp = tfplugin.AttributesResponse{Attributes: ret, Err: err}
@@ -30,7 +37,12 @@ func (s *Server) Attributes(req *tfplugin.AttributesRequest, resp *tfplugin.Attr
 
 // EvalExpr returns a value of the evaluated expression
 func (s *Server) EvalExpr(req *tfplugin.EvalExprRequest, resp *tfplugin.EvalExprResponse) error {
-	val, err := s.runner.EvalExpr(req.Expr, req.Ret, cty.Type{})
+	expr, diags := tflint.ParseExpression(req.Expr, req.ExprRange.Filename, req.ExprRange.Start)
+	if diags.HasErrors() {
+		return diags
+	}
+
+	val, err := s.runner.EvalExpr(expr, req.Ret, cty.Type{})
 	if err != nil {
 		if appErr, ok := err.(*tflint.Error); ok {
 			err = tfplugin.Error(*appErr)
@@ -42,7 +54,12 @@ func (s *Server) EvalExpr(req *tfplugin.EvalExprRequest, resp *tfplugin.EvalExpr
 
 // EmitIssue reflects a issue to the Runner
 func (s *Server) EmitIssue(req *tfplugin.EmitIssueRequest, resp *interface{}) error {
-	s.runner.WithExpressionContext(req.Meta.Expr, func() error {
+	expr, diags := tflint.ParseExpression(req.Expr, req.ExprRange.Filename, req.ExprRange.Start)
+	if diags.HasErrors() {
+		return diags
+	}
+
+	s.runner.WithExpressionContext(expr, func() error {
 		s.runner.EmitIssue(req.Rule, req.Message, req.Location)
 		return nil
 	})
