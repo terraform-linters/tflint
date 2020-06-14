@@ -1,6 +1,7 @@
 package tflint
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
@@ -1027,5 +1028,171 @@ resource "null_resource" "test" {
 				t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 			}
 		})
+	}
+}
+
+func Test_willEvaluateResource(t *testing.T) {
+	cases := []struct {
+		Name     string
+		Content  string
+		Expected bool
+	}{
+		{
+			Name: "no meta-arguments",
+			Content: `
+resource "null_resource" "test" {
+}`,
+			Expected: true,
+		},
+		{
+			Name: "count is not zero (literal)",
+			Content: `
+resource "null_resource" "test" {
+  count = 1
+}`,
+			Expected: true,
+		},
+		{
+			Name: "count is not zero (variable)",
+			Content: `
+variable "foo" {
+  default = 1
+}
+
+resource "null_resource" "test" {
+  count = var.foo
+}`,
+			Expected: true,
+		},
+		{
+			Name: "count is unevaluable",
+			Content: `
+variable "foo" {}
+
+resource "null_resource" "test" {
+  count = var.foo
+}`,
+			Expected: false,
+		},
+		{
+			Name: "count is zero",
+			Content: `
+resource "null_resource" "test" {
+  count = 0
+}`,
+			Expected: false,
+		},
+		{
+			Name: "for_each is not empty (literal)",
+			Content: `
+resource "null_resource" "test" {
+  for_each = {
+    foo = "bar"
+  }
+}`,
+			Expected: true,
+		},
+		{
+			Name: "for_each is not empty (variable)",
+			Content: `
+variable "object" {
+  default = {
+    foo = "bar"
+  }
+}
+
+resource "null_resource" "test" {
+  for_each = var.object
+}`,
+			Expected: true,
+		},
+		{
+			Name: "for_each is unevaluable",
+			Content: `
+variable "foo" {}
+
+resource "null_resource" "test" {
+  for_each = var.foo
+}`,
+			Expected: false,
+		},
+		{
+			Name: "for_each is empty",
+			Content: `
+resource "null_resource" "test" {
+  for_each = {}
+}`,
+			Expected: false,
+		},
+		{
+			Name: "for_each is not empty set",
+			Content: `
+resource "null_resource" "test" {
+  for_each = toset(["foo", "bar"])
+}`,
+			Expected: true,
+		},
+		{
+			Name: "for_each is empty set",
+			Content: `
+resource "null_resource" "test" {
+  for_each = toset([])
+}`,
+			Expected: false,
+		},
+	}
+
+	for _, tc := range cases {
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
+
+		got, err := runner.willEvaluateResource(runner.LookupResourcesByType("null_resource")[0])
+		if err != nil {
+			t.Fatalf("Failed `%s`: %s", tc.Name, err)
+		}
+
+		if got != tc.Expected {
+			t.Fatalf("Failed `%s`: expect to get %t, but got %t", tc.Name, tc.Expected, got)
+		}
+	}
+}
+
+func Test_willEvaluateResource_Error(t *testing.T) {
+	cases := []struct {
+		Name    string
+		Content string
+		Error   error
+	}{
+		{
+			Name: "not iterable",
+			Content: `
+resource "null_resource" "test" {
+  for_each = "foo"
+}`,
+			Error: errors.New("The `for_each` value is not iterable in main.tf:3"),
+		},
+		{
+			Name: "eval error",
+			Content: `
+resource "null_resource" "test" {
+  for_each = var.undefined
+}`,
+			Error: &Error{
+				Code:    EvaluationError,
+				Level:   ErrorLevel,
+				Message: "Failed to eval an expression in main.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined\" has not been declared. This variable can be declared with a variable \"undefined\" {} block.",
+			},
+		},
+	}
+
+	for _, tc := range cases {
+		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
+
+		_, err := runner.willEvaluateResource(runner.LookupResourcesByType("null_resource")[0])
+		if err == nil {
+			t.Fatalf("Failed `%s`: expected to get an error, but not", tc.Name)
+		}
+		if err.Error() != tc.Error.Error() {
+			t.Fatalf("Failed `%s`: expected to get '%s', but got '%s'", tc.Name, tc.Error.Error(), err.Error())
+		}
 	}
 }
