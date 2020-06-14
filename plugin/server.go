@@ -35,6 +35,26 @@ func (s *Server) Attributes(req *tfplugin.AttributesRequest, resp *tfplugin.Attr
 	return nil
 }
 
+// Blocks returns corresponding hcl.Blocks
+func (s *Server) Blocks(req *tfplugin.BlocksRequest, resp *tfplugin.BlocksResponse) error {
+	ret := []*tfplugin.Block{}
+	err := s.runner.WalkResourceBlocks(req.Resource, req.BlockType, func(block *hcl.Block) error {
+		bodyRange := tflint.BlockBodyRange(block)
+		ret = append(ret, &tfplugin.Block{
+			Type:        block.Type,
+			Labels:      block.Labels,
+			Body:        bodyRange.SliceBytes(s.runner.File(block.DefRange.Filename).Bytes),
+			BodyRange:   bodyRange,
+			DefRange:    block.DefRange,
+			TypeRange:   block.TypeRange,
+			LabelRanges: block.LabelRanges,
+		})
+		return nil
+	})
+	*resp = tfplugin.BlocksResponse{Blocks: ret, Err: err}
+	return nil
+}
+
 // EvalExpr returns a value of the evaluated expression
 func (s *Server) EvalExpr(req *tfplugin.EvalExprRequest, resp *tfplugin.EvalExprResponse) error {
 	expr, diags := tflint.ParseExpression(req.Expr, req.ExprRange.Filename, req.ExprRange.Start)
