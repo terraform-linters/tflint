@@ -74,14 +74,19 @@ func (s *Server) EvalExpr(req *tfplugin.EvalExprRequest, resp *tfplugin.EvalExpr
 
 // EmitIssue reflects a issue to the Runner
 func (s *Server) EmitIssue(req *tfplugin.EmitIssueRequest, resp *interface{}) error {
-	expr, diags := tflint.ParseExpression(req.Expr, req.ExprRange.Filename, req.ExprRange.Start)
-	if diags.HasErrors() {
-		return diags
-	}
+	if req.Expr != nil {
+		expr, diags := tflint.ParseExpression(req.Expr, req.ExprRange.Filename, req.ExprRange.Start)
+		if diags.HasErrors() {
+			return diags
+		}
 
-	s.runner.WithExpressionContext(expr, func() error {
+		s.runner.WithExpressionContext(expr, func() error {
+			s.runner.EmitIssue(req.Rule, req.Message, req.Location)
+			return nil
+		})
+	} else {
 		s.runner.EmitIssue(req.Rule, req.Message, req.Location)
 		return nil
-	})
+	}
 	return nil
 }
