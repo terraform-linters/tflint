@@ -56,6 +56,7 @@ func (s *Server) Blocks(req *tfplugin.BlocksRequest, resp *tfplugin.BlocksRespon
 	return nil
 }
 
+// Resources returns corresponding configs.Resource as tfplugin.Resource
 func (s *Server) Resources(req *tfplugin.ResourcesRequest, resp *tfplugin.ResourcesResponse) error {
 	var ret []*tfplugin.Resource
 	err := s.runner.WalkResources(req.Name, func(attr *configs.Resource) error {
