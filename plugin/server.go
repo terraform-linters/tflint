@@ -2,6 +2,7 @@ package plugin
 
 import (
 	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/terraform/configs"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
@@ -52,6 +53,22 @@ func (s *Server) Blocks(req *tfplugin.BlocksRequest, resp *tfplugin.BlocksRespon
 		return nil
 	})
 	*resp = tfplugin.BlocksResponse{Blocks: ret, Err: err}
+	return nil
+}
+
+// Resources returns corresponding configs.Resource as tfplugin.Resource
+func (s *Server) Resources(req *tfplugin.ResourcesRequest, resp *tfplugin.ResourcesResponse) error {
+	var ret []*tfplugin.Resource
+	err := s.runner.WalkResources(req.Name, func(attr *configs.Resource) error {
+		ret = append(ret, &tfplugin.Resource{
+			Name:      attr.Name,
+			Type:      attr.Type,
+			DeclRange: attr.DeclRange,
+			TypeRange: attr.TypeRange,
+		})
+		return nil
+	})
+	*resp = tfplugin.ResourcesResponse{Resources: ret, Err: err}
 	return nil
 }
 
