@@ -10,7 +10,7 @@ require (
 	github.com/hashicorp/aws-sdk-go-base v0.4.0
 	github.com/hashicorp/go-plugin v1.3.0
 	github.com/hashicorp/go-version v1.2.0
-	github.com/hashicorp/hcl/v2 v2.5.1
+	github.com/hashicorp/hcl/v2 v2.6.0
 	github.com/hashicorp/logutils v1.0.0
 	github.com/hashicorp/terraform v0.12.26
 	github.com/jessevdk/go-flags v1.4.0
@@ -20,5 +20,5 @@ require (
 	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
 	github.com/spf13/afero v1.2.2
 	github.com/terraform-linters/tflint-plugin-sdk v0.1.2-0.20200615160547-c1d3caf80fe0
-	github.com/zclconf/go-cty v1.4.2
+	github.com/zclconf/go-cty v1.5.0
 )

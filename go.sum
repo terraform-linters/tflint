@@ -224,6 +224,8 @@ github.com/hashicorp/hcl/v2 v2.0.0/go.mod h1:oVVDG71tEinNGYCxinCYadcmKU9bglqW9pV
 github.com/hashicorp/hcl/v2 v2.3.0/go.mod h1:d+FwDBbOLvpAM3Z6J7gPj/VoAGkNe/gm352ZhjJ/Zv8=
 github.com/hashicorp/hcl/v2 v2.5.1 h1:5ytFZykUu2/4U59ogd2f+XZdi9+6oC/Tv5WzsH6fIDA=
 github.com/hashicorp/hcl/v2 v2.5.1/go.mod h1:bQTN5mpo+jewjJgh8jr0JUguIi7qPHUF6yIfAEN3jqY=
+github.com/hashicorp/hcl/v2 v2.6.0 h1:3krZOfGY6SziUXa6H9PJU6TyohHn7I+ARYnhbeNBz+o=
+github.com/hashicorp/hcl/v2 v2.6.0/go.mod h1:bQTN5mpo+jewjJgh8jr0JUguIi7qPHUF6yIfAEN3jqY=
 github.com/hashicorp/hil v0.0.0-20190212112733-ab17b08d6590 h1:2yzhWGdgQUWZUCNK+AoO35V+HTsgEmcM4J9IkArh7PI=
 github.com/hashicorp/hil v0.0.0-20190212112733-ab17b08d6590/go.mod h1:n2TSygSNwsLJ76m8qFXTSc7beTb+auJxYdqrnoqwZWE=
 github.com/hashicorp/logutils v1.0.0 h1:dLEQVugN8vlakKOUE3ihGLTZJRB4j+M2cdTm/ORI65Y=
@@ -422,6 +424,8 @@ github.com/zclconf/go-cty v1.2.1/go.mod h1:hOPWgoHbaTUnI5k4D2ld+GRpFJSCe6bCM7m1q
 github.com/zclconf/go-cty v1.4.1/go.mod h1:nHzOclRkoj++EU9ZjSrZvRG0BXIWt8c7loYc0qXAFGQ=
 github.com/zclconf/go-cty v1.4.2 h1:GKcsRGjxZnRRlyVk2Y6PyG3fdcn3Pv0D7KT4xyYTLlE=
 github.com/zclconf/go-cty v1.4.2/go.mod h1:nHzOclRkoj++EU9ZjSrZvRG0BXIWt8c7loYc0qXAFGQ=
+github.com/zclconf/go-cty v1.5.0 h1:U0USwJxGTnUd+dT565f92paYOlRtd201pI7+ZGW36XY=
+github.com/zclconf/go-cty v1.5.0/go.mod h1:nHzOclRkoj++EU9ZjSrZvRG0BXIWt8c7loYc0qXAFGQ=
 github.com/zclconf/go-cty-yaml v1.0.1 h1:up11wlgAaDvlAGENcFDnZgkn0qUJurso7k6EpURKNF8=
 github.com/zclconf/go-cty-yaml v1.0.1/go.mod h1:IP3Ylp0wQpYm50IHK8OZWKMu6sPJIUgKa8XhiVHura0=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
