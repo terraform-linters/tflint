@@ -3,7 +3,6 @@ package terraformrules
 import (
 	"fmt"
 	"log"
-	"path"
 	"path/filepath"
 
 	"github.com/hashicorp/hcl/v2"
@@ -131,7 +130,7 @@ func (r *TerraformStandardModuleStructureRule) onlyJSON(runner *tflint.Runner) b
 	}
 
 	for filename := range files {
-		if path.Ext(filename) != ".json" {
+		if filepath.Ext(filename) != ".json" {
 			return false
 		}
 	}
@@ -141,7 +140,7 @@ func (r *TerraformStandardModuleStructureRule) onlyJSON(runner *tflint.Runner) b
 
 func (r *TerraformStandardModuleStructureRule) shouldMove(path string, expected string) bool {
 	// json files are likely generated and conventional filenames do not apply
-	if path.Ext(path) == ".json" {
+	if filepath.Ext(path) == ".json" {
 		return false
 	}
 
