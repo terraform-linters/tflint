@@ -43,6 +43,7 @@ var manualDefaultRules = []Rule{
 	terraformrules.NewTerraformDocumentedVariablesRule(),
 	terraformrules.NewTerraformModulePinnedSourceRule(),
 	terraformrules.NewTerraformNamingConventionRule(),
+	terraformrules.NewTerraformStandardModuleStructureRule(),
 	terraformrules.NewTerraformTypedVariablesRule(),
 	terraformrules.NewTerraformRequiredVersionRule(),
 	terraformrules.NewTerraformRequiredProvidersRule(),
