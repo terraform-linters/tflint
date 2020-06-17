@@ -1,6 +1,7 @@
 package terraformrules
 
 import (
+	"path/filepath"
 	"testing"
 
 	"github.com/hashicorp/hcl/v2"
@@ -54,7 +55,7 @@ func Test_TerraformStandardModuleStructureRule(t *testing.T) {
 					Rule:    NewTerraformStandardModuleStructureRule(),
 					Message: "Module should include an empty outputs.tf file",
 					Range: hcl.Range{
-						Filename: "foo/outputs.tf",
+						Filename: filepath.Join("foo", "outputs.tf"),
 						Start:    hcl.InitialPos,
 					},
 				},
