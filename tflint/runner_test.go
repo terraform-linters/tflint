@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/hcl/v2"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/hashicorp/terraform/configs"
@@ -262,9 +263,9 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 
 func Test_RunnerFiles(t *testing.T) {
 	runner := TestRunner(t, map[string]string{
-		"main.tf":       "",
-		"child/main.tf": "",
+		"main.tf": "",
 	})
+	runner.files["child/main.tf"] = &hcl.File{}
 
 	expected := map[string]*hcl.File{
 		"main.tf": {
