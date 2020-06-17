@@ -62,7 +62,7 @@ func (r *TerraformStandardModuleStructureRule) checkFiles(runner *tflint.Runner)
 
 	files := runner.Files()
 	for name, file := range files {
-		files[path.Base(name)] = file
+		files[filepath.Base(name)] = file
 	}
 
 	if files[filenameMain] == nil {
@@ -70,7 +70,7 @@ func (r *TerraformStandardModuleStructureRule) checkFiles(runner *tflint.Runner)
 			r,
 			fmt.Sprintf("Module should include a %s file as the primary entrypoint", filenameMain),
 			hcl.Range{
-				Filename: path.Join(runner.TFConfig.Module.SourceDir, filenameMain),
+				Filename: filepath.Join(runner.TFConfig.Module.SourceDir, filenameMain),
 				Start:    hcl.InitialPos,
 			},
 		)
@@ -81,7 +81,7 @@ func (r *TerraformStandardModuleStructureRule) checkFiles(runner *tflint.Runner)
 			r,
 			fmt.Sprintf("Module should include an empty %s file", filenameVariables),
 			hcl.Range{
-				Filename: path.Join(runner.TFConfig.Module.SourceDir, filenameVariables),
+				Filename: filepath.Join(runner.TFConfig.Module.SourceDir, filenameVariables),
 				Start:    hcl.InitialPos,
 			},
 		)
@@ -92,7 +92,7 @@ func (r *TerraformStandardModuleStructureRule) checkFiles(runner *tflint.Runner)
 			r,
 			fmt.Sprintf("Module should include an empty %s file", filenameOutputs),
 			hcl.Range{
-				Filename: path.Join(runner.TFConfig.Module.SourceDir, filenameOutputs),
+				Filename: filepath.Join(runner.TFConfig.Module.SourceDir, filenameOutputs),
 				Start:    hcl.InitialPos,
 			},
 		)
@@ -131,7 +131,7 @@ func (r *TerraformStandardModuleStructureRule) onlyJSON(runner *tflint.Runner) b
 	}
 
 	for filename := range files {
-		if filepath.Ext(filename) != ".json" {
+		if path.Ext(filename) != ".json" {
 			return false
 		}
 	}
@@ -141,7 +141,7 @@ func (r *TerraformStandardModuleStructureRule) onlyJSON(runner *tflint.Runner) b
 
 func (r *TerraformStandardModuleStructureRule) shouldMove(path string, expected string) bool {
 	// json files are likely generated and conventional filenames do not apply
-	if filepath.Ext(path) == ".json" {
+	if path.Ext(path) == ".json" {
 		return false
 	}
 
