@@ -1,7 +1,6 @@
 default: build
 
 prepare:
-	go mod vendor
 	cd tools; go run ./plugin-stub-gen; cd ../
 
 test: prepare
