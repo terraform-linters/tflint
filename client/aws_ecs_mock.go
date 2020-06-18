@@ -335,6 +335,56 @@ func (mr *MockECSAPIMockRecorder) DeleteAttributesWithContext(arg0, arg1 interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAttributesWithContext", reflect.TypeOf((*MockECSAPI)(nil).DeleteAttributesWithContext), varargs...)
 }
 
+// DeleteCapacityProvider mocks base method
+func (m *MockECSAPI) DeleteCapacityProvider(arg0 *ecs.DeleteCapacityProviderInput) (*ecs.DeleteCapacityProviderOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteCapacityProvider", arg0)
+	ret0, _ := ret[0].(*ecs.DeleteCapacityProviderOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteCapacityProvider indicates an expected call of DeleteCapacityProvider
+func (mr *MockECSAPIMockRecorder) DeleteCapacityProvider(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCapacityProvider", reflect.TypeOf((*MockECSAPI)(nil).DeleteCapacityProvider), arg0)
+}
+
+// DeleteCapacityProviderRequest mocks base method
+func (m *MockECSAPI) DeleteCapacityProviderRequest(arg0 *ecs.DeleteCapacityProviderInput) (*request.Request, *ecs.DeleteCapacityProviderOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteCapacityProviderRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ecs.DeleteCapacityProviderOutput)
+	return ret0, ret1
+}
+
+// DeleteCapacityProviderRequest indicates an expected call of DeleteCapacityProviderRequest
+func (mr *MockECSAPIMockRecorder) DeleteCapacityProviderRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCapacityProviderRequest", reflect.TypeOf((*MockECSAPI)(nil).DeleteCapacityProviderRequest), arg0)
+}
+
+// DeleteCapacityProviderWithContext mocks base method
+func (m *MockECSAPI) DeleteCapacityProviderWithContext(arg0 context.Context, arg1 *ecs.DeleteCapacityProviderInput, arg2 ...request.Option) (*ecs.DeleteCapacityProviderOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteCapacityProviderWithContext", varargs...)
+	ret0, _ := ret[0].(*ecs.DeleteCapacityProviderOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteCapacityProviderWithContext indicates an expected call of DeleteCapacityProviderWithContext
+func (mr *MockECSAPIMockRecorder) DeleteCapacityProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCapacityProviderWithContext", reflect.TypeOf((*MockECSAPI)(nil).DeleteCapacityProviderWithContext), varargs...)
+}
+
 // DeleteCluster mocks base method
 func (m *MockECSAPI) DeleteCluster(arg0 *ecs.DeleteClusterInput) (*ecs.DeleteClusterOutput, error) {
 	m.ctrl.T.Helper()
