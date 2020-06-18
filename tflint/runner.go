@@ -67,6 +67,8 @@ func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotation
 		Issues:    Issues{},
 		AwsClient: &client.AwsClient{},
 
+		// TODO: As described in the godoc for UnkeyedInstanceShim,
+		// it will need to be replaced now that module.for_each is supported
 		ctx:         ctx.WithPath(cfg.Path.UnkeyedInstanceShim()),
 		files:       files,
 		annotations: ants,
