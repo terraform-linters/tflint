@@ -1,4 +1,4 @@
-// +build ignore
+// +build generators
 
 package main
 
