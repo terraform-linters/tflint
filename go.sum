@@ -605,6 +605,8 @@ github.com/tencentcloud/tencentcloud-sdk-go v3.0.82+incompatible/go.mod h1:0PfYo
 github.com/tencentyun/cos-go-sdk-v5 v0.0.0-20190808065407-f07404cefc8c/go.mod h1:wk2XFUg6egk4tSDNZtXeKfe2G6690UVyt163PuUxBZk=
 github.com/terraform-linters/tflint-plugin-sdk v0.1.2-0.20200615160547-c1d3caf80fe0 h1:Z1OgpTIdGOjZSC7WaBX8KAwDwczS0oc/D2XRiFgMxoQ=
 github.com/terraform-linters/tflint-plugin-sdk v0.1.2-0.20200615160547-c1d3caf80fe0/go.mod h1:MW/OviPYdTTq/aqzGkQW5vQ/zLF3F/LSrWTCTHFyt0o=
+github.com/terraform-linters/tflint-plugin-sdk v0.1.2-0.20200621094814-c5fcef3ab795 h1:0R6dz5vI4qBkmXww0JfjfZFsxjr9EmaWeYXJFRdm6aU=
+github.com/terraform-linters/tflint-plugin-sdk v0.1.2-0.20200621094814-c5fcef3ab795/go.mod h1:MW/OviPYdTTq/aqzGkQW5vQ/zLF3F/LSrWTCTHFyt0o=
 github.com/terraform-providers/terraform-provider-aws v1.60.0 h1:uJw42EpO/1L8tk5P8hpio0mN9+hIdq8ubteidQjfk7Q=
 github.com/terraform-providers/terraform-provider-aws v1.60.0/go.mod h1:3BTwlw5ah5otVMtdUlqMCFRPAjt2oTo1FXqntiSe8S0=
 github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20200604234259-3853d337c01a h1:ujCTSJYKH0UMgO2tNl9PD8imfkf3jQdvgE+4NOjp78k=

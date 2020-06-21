@@ -6,6 +6,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
@@ -94,6 +95,140 @@ resource "aws_instance" "foo" {
 	opt := cmpopts.IgnoreFields(hcl.Pos{}, "Byte")
 	if !cmp.Equal(expected, resp.Blocks, opt) {
 		t.Fatalf("Blocks are not matched: %s", cmp.Diff(expected, resp.Blocks, opt))
+	}
+}
+
+func Test_Resources(t *testing.T) {
+	source := `
+resource "aws_instance" "foo" {
+  provider = aws.west
+  count = 1
+
+  instance_type = "t2.micro"
+
+  connection {
+    type = "ssh"
+  }
+
+  provisioner "local-exec" {
+    command    = "chmod 600 ssh-key.pem"
+    when       = destroy
+    on_failure = continue
+
+    connection {
+      type = "ssh"
+    }
+  }
+
+  lifecycle {
+    create_before_destroy = true
+    prevent_destroy       = true
+    ignore_changes        = all
+  }
+}
+
+resource "aws_s3_bucket" "bar" {
+  bucket = "my-tf-test-bucket"
+  acl    = "private"
+}`
+
+	server := NewServer(tflint.TestRunner(t, map[string]string{"main.tf": source}), map[string][]byte{"main.tf": []byte(source)})
+	req := &tfplugin.ResourcesRequest{Name: "aws_instance"}
+	var resp tfplugin.ResourcesResponse
+
+	err := server.Resources(req, &resp)
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+
+	if resp.Err != nil {
+		t.Fatalf("The response has an unexpected error: %s", resp.Err)
+	}
+
+	expected := []*tfplugin.Resource{
+		{
+			Mode: terraform.ManagedResourceMode,
+			Name: "foo",
+			Type: "aws_instance",
+			Config: []byte(`provider = aws.west
+  count = 1
+
+  instance_type = "t2.micro"
+
+  connection {
+    type = "ssh"
+  }
+
+  provisioner "local-exec" {
+    command    = "chmod 600 ssh-key.pem"
+    when       = destroy
+    on_failure = continue
+
+    connection {
+      type = "ssh"
+    }
+  }
+
+  lifecycle {
+    create_before_destroy = true
+    prevent_destroy       = true
+    ignore_changes        = all
+  }`),
+			ConfigRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 3, Column: 3}, End: hcl.Pos{Line: 26, Column: 4}},
+			Count:       []byte(`1`),
+			CountRange:  hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 4, Column: 11}, End: hcl.Pos{Line: 4, Column: 12}},
+
+			ProviderConfigRef: &terraform.ProviderConfigRef{
+				Name:       "aws",
+				NameRange:  hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 3, Column: 14}, End: hcl.Pos{Line: 3, Column: 17}},
+				Alias:      "west",
+				AliasRange: &hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 3, Column: 17}, End: hcl.Pos{Line: 3, Column: 22}},
+			},
+
+			Managed: &tfplugin.ManagedResource{
+				Connection: &tfplugin.Connection{
+					Config:      []byte(`type = "ssh"`),
+					ConfigRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 9, Column: 5}, End: hcl.Pos{Line: 9, Column: 17}},
+					DeclRange:   hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 8, Column: 3}, End: hcl.Pos{Line: 8, Column: 13}},
+				},
+				Provisioners: []*tfplugin.Provisioner{
+					{
+						Type: "local-exec",
+						Config: []byte(`command    = "chmod 600 ssh-key.pem"
+    when       = destroy
+    on_failure = continue
+
+    connection {
+      type = "ssh"
+    }`),
+						ConfigRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 13, Column: 5}, End: hcl.Pos{Line: 19, Column: 6}},
+						Connection: &tfplugin.Connection{
+							Config:      []byte(`type = "ssh"`),
+							ConfigRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 18, Column: 7}, End: hcl.Pos{Line: 18, Column: 19}},
+							DeclRange:   hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 17, Column: 5}, End: hcl.Pos{Line: 17, Column: 15}},
+						},
+						When:      terraform.ProvisionerWhenDestroy,
+						OnFailure: terraform.ProvisionerOnFailureContinue,
+						DeclRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 12, Column: 3}, End: hcl.Pos{Line: 12, Column: 27}},
+						TypeRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 12, Column: 15}, End: hcl.Pos{Line: 12, Column: 27}},
+					},
+				},
+
+				CreateBeforeDestroy:    true,
+				PreventDestroy:         true,
+				IgnoreAllChanges:       true,
+				CreateBeforeDestroySet: true,
+				PreventDestroySet:      true,
+			},
+
+			DeclRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 2, Column: 1}, End: hcl.Pos{Line: 2, Column: 30}},
+			TypeRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 2, Column: 10}, End: hcl.Pos{Line: 2, Column: 24}},
+		},
+	}
+
+	opt := cmpopts.IgnoreFields(hcl.Pos{}, "Byte")
+	if !cmp.Equal(expected, resp.Resources, opt) {
+		t.Fatalf("Resources are not matched: %s", cmp.Diff(expected, resp.Resources, opt))
 	}
 }
 
