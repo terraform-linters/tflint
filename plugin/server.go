@@ -40,7 +40,7 @@ func (s *Server) Attributes(req *tfplugin.AttributesRequest, resp *tfplugin.Attr
 func (s *Server) Blocks(req *tfplugin.BlocksRequest, resp *tfplugin.BlocksResponse) error {
 	ret := []*tfplugin.Block{}
 	err := s.runner.WalkResourceBlocks(req.Resource, req.BlockType, func(block *hcl.Block) error {
-		bodyRange := tflint.BlockBodyRange(block)
+		bodyRange := tflint.HCLBodyRange(block.Body, block.DefRange)
 		ret = append(ret, &tfplugin.Block{
 			Type:        block.Type,
 			Labels:      block.Labels,
@@ -59,13 +59,8 @@ func (s *Server) Blocks(req *tfplugin.BlocksRequest, resp *tfplugin.BlocksRespon
 // Resources returns corresponding configs.Resource as tfplugin.Resource
 func (s *Server) Resources(req *tfplugin.ResourcesRequest, resp *tfplugin.ResourcesResponse) error {
 	var ret []*tfplugin.Resource
-	err := s.runner.WalkResources(req.Name, func(attr *configs.Resource) error {
-		ret = append(ret, &tfplugin.Resource{
-			Name:      attr.Name,
-			Type:      attr.Type,
-			DeclRange: attr.DeclRange,
-			TypeRange: attr.TypeRange,
-		})
+	err := s.runner.WalkResources(req.Name, func(resource *configs.Resource) error {
+		ret = append(ret, s.encodeResource(resource))
 		return nil
 	})
 	*resp = tfplugin.ResourcesResponse{Resources: ret, Err: err}
