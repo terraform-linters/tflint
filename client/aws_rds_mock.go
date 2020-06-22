@@ -2350,6 +2350,39 @@ func (mr *MockRDSAPIMockRecorder) DescribeCertificates(arg0 interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCertificates", reflect.TypeOf((*MockRDSAPI)(nil).DescribeCertificates), arg0)
 }
 
+// DescribeCertificatesPages mocks base method
+func (m *MockRDSAPI) DescribeCertificatesPages(arg0 *rds.DescribeCertificatesInput, arg1 func(*rds.DescribeCertificatesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeCertificatesPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeCertificatesPages indicates an expected call of DescribeCertificatesPages
+func (mr *MockRDSAPIMockRecorder) DescribeCertificatesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCertificatesPages", reflect.TypeOf((*MockRDSAPI)(nil).DescribeCertificatesPages), arg0, arg1)
+}
+
+// DescribeCertificatesPagesWithContext mocks base method
+func (m *MockRDSAPI) DescribeCertificatesPagesWithContext(arg0 context.Context, arg1 *rds.DescribeCertificatesInput, arg2 func(*rds.DescribeCertificatesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeCertificatesPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeCertificatesPagesWithContext indicates an expected call of DescribeCertificatesPagesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeCertificatesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCertificatesPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeCertificatesPagesWithContext), varargs...)
+}
+
 // DescribeCertificatesRequest mocks base method
 func (m *MockRDSAPI) DescribeCertificatesRequest(arg0 *rds.DescribeCertificatesInput) (*request.Request, *rds.DescribeCertificatesOutput) {
 	m.ctrl.T.Helper()
@@ -2483,6 +2516,39 @@ func (mr *MockRDSAPIMockRecorder) DescribeDBClusterBacktracks(arg0 interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterBacktracks", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterBacktracks), arg0)
 }
 
+// DescribeDBClusterBacktracksPages mocks base method
+func (m *MockRDSAPI) DescribeDBClusterBacktracksPages(arg0 *rds.DescribeDBClusterBacktracksInput, arg1 func(*rds.DescribeDBClusterBacktracksOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeDBClusterBacktracksPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBClusterBacktracksPages indicates an expected call of DescribeDBClusterBacktracksPages
+func (mr *MockRDSAPIMockRecorder) DescribeDBClusterBacktracksPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterBacktracksPages", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterBacktracksPages), arg0, arg1)
+}
+
+// DescribeDBClusterBacktracksPagesWithContext mocks base method
+func (m *MockRDSAPI) DescribeDBClusterBacktracksPagesWithContext(arg0 context.Context, arg1 *rds.DescribeDBClusterBacktracksInput, arg2 func(*rds.DescribeDBClusterBacktracksOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeDBClusterBacktracksPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBClusterBacktracksPagesWithContext indicates an expected call of DescribeDBClusterBacktracksPagesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeDBClusterBacktracksPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterBacktracksPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterBacktracksPagesWithContext), varargs...)
+}
+
 // DescribeDBClusterBacktracksRequest mocks base method
 func (m *MockRDSAPI) DescribeDBClusterBacktracksRequest(arg0 *rds.DescribeDBClusterBacktracksInput) (*request.Request, *rds.DescribeDBClusterBacktracksOutput) {
 	m.ctrl.T.Helper()
@@ -2531,6 +2597,39 @@ func (m *MockRDSAPI) DescribeDBClusterEndpoints(arg0 *rds.DescribeDBClusterEndpo
 func (mr *MockRDSAPIMockRecorder) DescribeDBClusterEndpoints(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterEndpoints", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterEndpoints), arg0)
+}
+
+// DescribeDBClusterEndpointsPages mocks base method
+func (m *MockRDSAPI) DescribeDBClusterEndpointsPages(arg0 *rds.DescribeDBClusterEndpointsInput, arg1 func(*rds.DescribeDBClusterEndpointsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeDBClusterEndpointsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBClusterEndpointsPages indicates an expected call of DescribeDBClusterEndpointsPages
+func (mr *MockRDSAPIMockRecorder) DescribeDBClusterEndpointsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterEndpointsPages", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterEndpointsPages), arg0, arg1)
+}
+
+// DescribeDBClusterEndpointsPagesWithContext mocks base method
+func (m *MockRDSAPI) DescribeDBClusterEndpointsPagesWithContext(arg0 context.Context, arg1 *rds.DescribeDBClusterEndpointsInput, arg2 func(*rds.DescribeDBClusterEndpointsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeDBClusterEndpointsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBClusterEndpointsPagesWithContext indicates an expected call of DescribeDBClusterEndpointsPagesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeDBClusterEndpointsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterEndpointsPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterEndpointsPagesWithContext), varargs...)
 }
 
 // DescribeDBClusterEndpointsRequest mocks base method
@@ -2583,6 +2682,39 @@ func (mr *MockRDSAPIMockRecorder) DescribeDBClusterParameterGroups(arg0 interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterParameterGroups", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterParameterGroups), arg0)
 }
 
+// DescribeDBClusterParameterGroupsPages mocks base method
+func (m *MockRDSAPI) DescribeDBClusterParameterGroupsPages(arg0 *rds.DescribeDBClusterParameterGroupsInput, arg1 func(*rds.DescribeDBClusterParameterGroupsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeDBClusterParameterGroupsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBClusterParameterGroupsPages indicates an expected call of DescribeDBClusterParameterGroupsPages
+func (mr *MockRDSAPIMockRecorder) DescribeDBClusterParameterGroupsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterParameterGroupsPages", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterParameterGroupsPages), arg0, arg1)
+}
+
+// DescribeDBClusterParameterGroupsPagesWithContext mocks base method
+func (m *MockRDSAPI) DescribeDBClusterParameterGroupsPagesWithContext(arg0 context.Context, arg1 *rds.DescribeDBClusterParameterGroupsInput, arg2 func(*rds.DescribeDBClusterParameterGroupsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeDBClusterParameterGroupsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBClusterParameterGroupsPagesWithContext indicates an expected call of DescribeDBClusterParameterGroupsPagesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeDBClusterParameterGroupsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterParameterGroupsPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterParameterGroupsPagesWithContext), varargs...)
+}
+
 // DescribeDBClusterParameterGroupsRequest mocks base method
 func (m *MockRDSAPI) DescribeDBClusterParameterGroupsRequest(arg0 *rds.DescribeDBClusterParameterGroupsInput) (*request.Request, *rds.DescribeDBClusterParameterGroupsOutput) {
 	m.ctrl.T.Helper()
@@ -2631,6 +2763,39 @@ func (m *MockRDSAPI) DescribeDBClusterParameters(arg0 *rds.DescribeDBClusterPara
 func (mr *MockRDSAPIMockRecorder) DescribeDBClusterParameters(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterParameters", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterParameters), arg0)
+}
+
+// DescribeDBClusterParametersPages mocks base method
+func (m *MockRDSAPI) DescribeDBClusterParametersPages(arg0 *rds.DescribeDBClusterParametersInput, arg1 func(*rds.DescribeDBClusterParametersOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeDBClusterParametersPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBClusterParametersPages indicates an expected call of DescribeDBClusterParametersPages
+func (mr *MockRDSAPIMockRecorder) DescribeDBClusterParametersPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterParametersPages", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterParametersPages), arg0, arg1)
+}
+
+// DescribeDBClusterParametersPagesWithContext mocks base method
+func (m *MockRDSAPI) DescribeDBClusterParametersPagesWithContext(arg0 context.Context, arg1 *rds.DescribeDBClusterParametersInput, arg2 func(*rds.DescribeDBClusterParametersOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeDBClusterParametersPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBClusterParametersPagesWithContext indicates an expected call of DescribeDBClusterParametersPagesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeDBClusterParametersPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterParametersPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterParametersPagesWithContext), varargs...)
 }
 
 // DescribeDBClusterParametersRequest mocks base method
@@ -2731,6 +2896,39 @@ func (m *MockRDSAPI) DescribeDBClusterSnapshots(arg0 *rds.DescribeDBClusterSnaps
 func (mr *MockRDSAPIMockRecorder) DescribeDBClusterSnapshots(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterSnapshots", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterSnapshots), arg0)
+}
+
+// DescribeDBClusterSnapshotsPages mocks base method
+func (m *MockRDSAPI) DescribeDBClusterSnapshotsPages(arg0 *rds.DescribeDBClusterSnapshotsInput, arg1 func(*rds.DescribeDBClusterSnapshotsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeDBClusterSnapshotsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBClusterSnapshotsPages indicates an expected call of DescribeDBClusterSnapshotsPages
+func (mr *MockRDSAPIMockRecorder) DescribeDBClusterSnapshotsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterSnapshotsPages", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterSnapshotsPages), arg0, arg1)
+}
+
+// DescribeDBClusterSnapshotsPagesWithContext mocks base method
+func (m *MockRDSAPI) DescribeDBClusterSnapshotsPagesWithContext(arg0 context.Context, arg1 *rds.DescribeDBClusterSnapshotsInput, arg2 func(*rds.DescribeDBClusterSnapshotsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeDBClusterSnapshotsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeDBClusterSnapshotsPagesWithContext indicates an expected call of DescribeDBClusterSnapshotsPagesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeDBClusterSnapshotsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDBClusterSnapshotsPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeDBClusterSnapshotsPagesWithContext), varargs...)
 }
 
 // DescribeDBClusterSnapshotsRequest mocks base method
@@ -4759,6 +4957,39 @@ func (mr *MockRDSAPIMockRecorder) DescribePendingMaintenanceActions(arg0 interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePendingMaintenanceActions", reflect.TypeOf((*MockRDSAPI)(nil).DescribePendingMaintenanceActions), arg0)
 }
 
+// DescribePendingMaintenanceActionsPages mocks base method
+func (m *MockRDSAPI) DescribePendingMaintenanceActionsPages(arg0 *rds.DescribePendingMaintenanceActionsInput, arg1 func(*rds.DescribePendingMaintenanceActionsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribePendingMaintenanceActionsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribePendingMaintenanceActionsPages indicates an expected call of DescribePendingMaintenanceActionsPages
+func (mr *MockRDSAPIMockRecorder) DescribePendingMaintenanceActionsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePendingMaintenanceActionsPages", reflect.TypeOf((*MockRDSAPI)(nil).DescribePendingMaintenanceActionsPages), arg0, arg1)
+}
+
+// DescribePendingMaintenanceActionsPagesWithContext mocks base method
+func (m *MockRDSAPI) DescribePendingMaintenanceActionsPagesWithContext(arg0 context.Context, arg1 *rds.DescribePendingMaintenanceActionsInput, arg2 func(*rds.DescribePendingMaintenanceActionsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribePendingMaintenanceActionsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribePendingMaintenanceActionsPagesWithContext indicates an expected call of DescribePendingMaintenanceActionsPagesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribePendingMaintenanceActionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribePendingMaintenanceActionsPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribePendingMaintenanceActionsPagesWithContext), varargs...)
+}
+
 // DescribePendingMaintenanceActionsRequest mocks base method
 func (m *MockRDSAPI) DescribePendingMaintenanceActionsRequest(arg0 *rds.DescribePendingMaintenanceActionsInput) (*request.Request, *rds.DescribePendingMaintenanceActionsOutput) {
 	m.ctrl.T.Helper()
@@ -4973,6 +5204,39 @@ func (m *MockRDSAPI) DescribeSourceRegions(arg0 *rds.DescribeSourceRegionsInput)
 func (mr *MockRDSAPIMockRecorder) DescribeSourceRegions(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSourceRegions", reflect.TypeOf((*MockRDSAPI)(nil).DescribeSourceRegions), arg0)
+}
+
+// DescribeSourceRegionsPages mocks base method
+func (m *MockRDSAPI) DescribeSourceRegionsPages(arg0 *rds.DescribeSourceRegionsInput, arg1 func(*rds.DescribeSourceRegionsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeSourceRegionsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeSourceRegionsPages indicates an expected call of DescribeSourceRegionsPages
+func (mr *MockRDSAPIMockRecorder) DescribeSourceRegionsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSourceRegionsPages", reflect.TypeOf((*MockRDSAPI)(nil).DescribeSourceRegionsPages), arg0, arg1)
+}
+
+// DescribeSourceRegionsPagesWithContext mocks base method
+func (m *MockRDSAPI) DescribeSourceRegionsPagesWithContext(arg0 context.Context, arg1 *rds.DescribeSourceRegionsInput, arg2 func(*rds.DescribeSourceRegionsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeSourceRegionsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeSourceRegionsPagesWithContext indicates an expected call of DescribeSourceRegionsPagesWithContext
+func (mr *MockRDSAPIMockRecorder) DescribeSourceRegionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSourceRegionsPagesWithContext", reflect.TypeOf((*MockRDSAPI)(nil).DescribeSourceRegionsPagesWithContext), varargs...)
 }
 
 // DescribeSourceRegionsRequest mocks base method
