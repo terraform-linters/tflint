@@ -1,3 +1,5 @@
+// +build generators
+
 package main
 
 import utils "github.com/terraform-linters/tflint/rules/awsrules/generator-utils"
