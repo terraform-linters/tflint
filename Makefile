@@ -14,7 +14,7 @@ install: test
 	go install
 
 lint:
-	golint --set_exit_status $$(go list ./...)
+	go run golang.org/x/lint/golint --set_exit_status $$(go list ./...)
 	go vet ./...
 
 clean:
@@ -23,8 +23,4 @@ clean:
 code: prepare
 	go generate ./...
 
-tools:
-	go install github.com/golang/mock/mockgen
-	go install golang.org/x/lint/golint
-
-.PHONY: prepare test build install lint clean code tools
+.PHONY: prepare test build install lint clean code
