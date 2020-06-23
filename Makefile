@@ -1,7 +1,7 @@
 default: build
 
 prepare:
-	cd tools; go run ./plugin-stub-gen; cd ../
+	go run ./plugin/stub-generator
 
 test: prepare
 	go test -timeout 5m $$(go list ./... | grep -v test-fixtures | grep -v vendor | grep -v aws-sdk-go)
