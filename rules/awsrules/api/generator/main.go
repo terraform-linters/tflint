@@ -75,7 +75,7 @@ func main() {
 
 			utils.GenerateFile(
 				fmt.Sprintf("%s.go", rule.Name),
-				"./rule.go.tmpl",
+				"rule.go.tmpl",
 				meta,
 			)
 

@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/terraform-linters/tflint/tools/utils"
@@ -25,6 +27,9 @@ func main() {
 
 	meta := &metadata{RuleNameCC: utils.ToCamel(ruleName), RuleName: ruleName}
 
-	utils.GenerateFileWithLogs(fmt.Sprintf("../rules/awsrules/%s.go", ruleName), "../rules/rule.go.tmpl", meta)
-	utils.GenerateFileWithLogs(fmt.Sprintf("../rules/awsrules/%s_test.go", ruleName), "../rules/rule_test.go.tmpl", meta)
+	_, file, _, _ := runtime.Caller(0)
+	dir := filepath.Dir(filepath.Dir(file))
+
+	utils.GenerateFileWithLogs(fmt.Sprintf("%s/%s.go", dir, ruleName), fmt.Sprintf("%s/rule.go.tmpl", dir), meta)
+	utils.GenerateFileWithLogs(fmt.Sprintf("%s/%s_test.go", dir, ruleName), fmt.Sprintf("%s/rule_test.go.tmpl", dir), meta)
 }

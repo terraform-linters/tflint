@@ -25,6 +25,5 @@ jobs:
       run: |
         export PATH=$PATH:$(go env GOPATH)/bin
         make tools code && git diff --exit-code
-    - name: go run ./rule-gen
-      working-directory: ./tools
-      run: echo test | go run ./rule-gen
+    - name: go run ./rules/awsrules/generator
+      run: echo test | go run ./rules/awsrules/generator
