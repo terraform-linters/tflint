@@ -33,7 +33,7 @@ type test struct {
 }
 
 func main() {
-	files, err := filepath.Glob("../rules/awsrules/models/mappings/*.hcl")
+	files, err := filepath.Glob("./mappings/*.hcl")
 	if err != nil {
 		panic(err)
 	}
@@ -58,7 +58,7 @@ func main() {
 
 	generatedRules := []string{}
 	for _, mappingFile := range mappingFiles {
-		raw, err := ioutil.ReadFile(fmt.Sprintf("../rules/awsrules/models/%s", mappingFile.Import))
+		raw, err := ioutil.ReadFile(mappingFile.Import)
 		if err != nil {
 			panic(err)
 		}

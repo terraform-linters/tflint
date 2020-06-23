@@ -41,7 +41,7 @@ func generateRuleFile(resource, attribute string, model map[string]interface{}, 
 	// Testing generated regexp
 	regexp.MustCompile(meta.Pattern)
 
-	utils.GenerateFile(fmt.Sprintf("../rules/awsrules/models/%s.go", ruleName), "../rules/awsrules/models/pattern_rule.go.tmpl", meta)
+	utils.GenerateFile(fmt.Sprintf("%s.go", ruleName), "pattern_rule.go.tmpl", meta)
 }
 
 func generateRuleTestFile(resource, attribute string, model map[string]interface{}, test test) {
@@ -63,7 +63,7 @@ func generateRuleTestFile(resource, attribute string, model map[string]interface
 	// Testing generated regexp
 	regexp.MustCompile(meta.Pattern)
 
-	utils.GenerateFile(fmt.Sprintf("../rules/awsrules/models/%s_test.go", ruleName), "../rules/awsrules/models/pattern_rule_test.go.tmpl", meta)
+	utils.GenerateFile(fmt.Sprintf("%s_test.go", ruleName), "pattern_rule_test.go.tmpl", meta)
 }
 
 func makeRuleName(resource, attribute string) string {
