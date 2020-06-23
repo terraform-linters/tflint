@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/terraform-linters/tflint/tools/utils"
+	utils "github.com/terraform-linters/tflint/rules/awsrules/generator-utils"
 	"github.com/terraform-providers/terraform-provider-aws/aws"
 )
 
