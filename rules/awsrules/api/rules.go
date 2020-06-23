@@ -1,3 +1,3 @@
 package api
 
-//go:generate go run ./generator/main.go
+//go:generate go run -tags generators ./generator/main.go

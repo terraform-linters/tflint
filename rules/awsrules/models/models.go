@@ -1,3 +1,3 @@
 package models
 
-//go:generate go run ./generator
+//go:generate go run -tags generators ./generator
