@@ -21,6 +21,7 @@ require (
 	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
 	github.com/spf13/afero v1.3.0
 	github.com/terraform-linters/tflint-plugin-sdk v0.1.2-0.20200621094814-c5fcef3ab795
+	github.com/terraform-linters/tflint/tools v0.0.0-20200622212259-1b57b2fe8f33 // indirect
 	github.com/terraform-providers/terraform-provider-aws v2.65.0+incompatible // indirect
 	github.com/zclconf/go-cty v1.5.0
 )

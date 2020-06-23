@@ -28,9 +28,6 @@ jobs:
     - name: go run ./rule-gen
       working-directory: ./tools
       run: echo test | go run ./rule-gen
-    - name: go run ./api-rule-gen
-      working-directory: ./tools
-      run: go run ./api-rule-gen && git diff --exit-code
     - name: go run ./model-rule-gen
       working-directory: ./tools
       run: go run ./model-rule-gen && git diff --exit-code

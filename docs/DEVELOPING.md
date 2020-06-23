@@ -102,11 +102,10 @@ rule "aws_instance_invalid_iam_profile" {
 }
 ```
 
-In this definition file, a rule that checks whether the `aws_instance.*.iam_instance_profile` value is included in the return values of `source_action` is generated. The rule is generated with the following command:
+In this definition file, a rule that checks whether the `aws_instance.*.iam_instance_profile` value is included in the return values of `source_action` is generated. The rule is generated with `go generate`:
 
 ```console
-$ cd tools
-$ go run ./api-rule-gen
+go generate rules/awsrules/api
 ```
 
 ## Committing
