@@ -30,13 +30,11 @@ TFLint finds such errors in advance:
 You can download the binary built for your architecture from [the latest release](https://github.com/terraform-linters/tflint/releases/latest). The following is an example of installation on macOS:
 
 ```console
-$ wget https://github.com/terraform-linters/tflint/releases/download/v0.16.2/tflint_darwin_amd64.zip
+$ curl --location https://github.com/terraform-linters/tflint/releases/download/v0.16.2/tflint_darwin_amd64.zip --output tflint_darwin_amd64.zip
 $ unzip tflint_darwin_amd64.zip
 Archive:  tflint_darwin_amd64.zip
   inflating: tflint
-$ mkdir -p /usr/local/tflint/bin
-$ export PATH=/usr/local/tflint/bin:$PATH
-$ install tflint /usr/local/tflint/bin
+$ install tflint /usr/local/bin
 $ tflint -v
 ```
 
