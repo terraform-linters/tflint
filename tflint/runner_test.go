@@ -262,9 +262,9 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 
 func Test_RunnerFiles(t *testing.T) {
 	runner := TestRunner(t, map[string]string{
-		"main.tf":       "",
-		"child/main.tf": "",
+		"main.tf": "",
 	})
+	runner.files["child/main.tf"] = &hcl.File{}
 
 	expected := map[string]*hcl.File{
 		"main.tf": {

@@ -21,4 +21,4 @@ jobs:
     - name: Run linters
       run: |
         export PATH=$PATH:$(go env GOPATH)/bin
-        make tools lint
+        make lint

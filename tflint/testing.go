@@ -2,6 +2,7 @@ package tflint
 
 import (
 	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 
@@ -33,7 +34,28 @@ func TestRunnerWithConfig(t *testing.T, files map[string]string, config *Config)
 		t.Fatal(err)
 	}
 
-	cfg, err := loader.LoadConfig(".")
+	dirMap := map[string]*struct{}{}
+	for file := range files {
+		dirMap[filepath.Dir(file)] = nil
+	}
+	dirs := make([]string, 0)
+	for dir := range dirMap {
+		dirs = append(dirs, dir)
+	}
+
+	if len(dirs) > 1 {
+		t.Fatalf("All test files must be in the same directory, got %d directories: %v", len(dirs), dirs)
+		return nil
+	}
+
+	var dir string
+	if len(dirs) == 0 {
+		dir = "."
+	} else {
+		dir = dirs[0]
+	}
+
+	cfg, err := loader.LoadConfig(dir)
 	if err != nil {
 		t.Fatal(err)
 	}

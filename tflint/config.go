@@ -274,7 +274,7 @@ func loadConfigFromFile(file string) (*Config, error) {
 	log.Printf("[DEBUG]   Rules: %#v", cfg.Rules)
 	log.Printf("[DEBUG]   Plugins: %#v", cfg.Plugins)
 
-	return raw.toConfig(), nil
+	return cfg, nil
 }
 
 func mergeBoolMap(a, b map[string]bool) map[string]bool {

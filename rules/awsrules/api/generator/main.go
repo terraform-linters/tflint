@@ -1,3 +1,5 @@
+// +build generators
+
 package main
 
 import (
@@ -8,8 +10,8 @@ import (
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	utils "github.com/terraform-linters/tflint/rules/awsrules/generator-utils"
 	"github.com/terraform-providers/terraform-provider-aws/aws"
-	"github.com/terraform-linters/tflint/tools/utils"
 )
 
 type definition struct {
@@ -41,7 +43,7 @@ type providerMeta struct {
 var awsProvider = aws.Provider().(*schema.Provider)
 
 func main() {
-	files, err := filepath.Glob("../rules/awsrules/api/definitions/*.hcl")
+	files, err := filepath.Glob("./definitions/*.hcl")
 	if err != nil {
 		panic(err)
 	}
@@ -72,8 +74,8 @@ func main() {
 			}
 
 			utils.GenerateFile(
-				fmt.Sprintf("../rules/awsrules/api/%s.go", rule.Name),
-				"../rules/awsrules/api/rule.go.tmpl",
+				fmt.Sprintf("%s.go", rule.Name),
+				"rule.go.tmpl",
 				meta,
 			)
 
@@ -83,8 +85,8 @@ func main() {
 
 	sort.Strings(providerMeta.RuleNameCCList)
 	utils.GenerateFile(
-		"../rules/provider_api.go",
-		"../rules/provider_api.go.tmpl",
+		"../../provider_api.go",
+		"../../provider_api.go.tmpl",
 		providerMeta,
 	)
 }

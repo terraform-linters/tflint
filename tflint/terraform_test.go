@@ -130,7 +130,7 @@ func Test_ParseTFVariables_errors(t *testing.T) {
 	}
 }
 
-func Test_BlockBodyRange_HCL(t *testing.T) {
+func Test_HCLBodyRange_HCL(t *testing.T) {
 	src := `
 ebs_block_device {
   device_name = "/dev/sdf"
@@ -155,8 +155,9 @@ ebs_block_device {
 	if diags.HasErrors() {
 		t.Fatal(diags)
 	}
+	block := body.Blocks[0]
 
-	got := BlockBodyRange(body.Blocks[0])
+	got := HCLBodyRange(block.Body, block.DefRange)
 	expected := hcl.Range{
 		Filename: "example.tf",
 		Start:    hcl.Pos{Line: 3, Column: 3},
@@ -169,7 +170,7 @@ ebs_block_device {
 	}
 }
 
-func Test_BlockBodyRange_JSON(t *testing.T) {
+func Test_HCLBodyRange_JSON(t *testing.T) {
 	src := `
 {
   "ebs_block_device": {
@@ -196,8 +197,9 @@ func Test_BlockBodyRange_JSON(t *testing.T) {
 	if diags.HasErrors() {
 		t.Fatal(diags)
 	}
+	block := body.Blocks[0]
 
-	got := BlockBodyRange(body.Blocks[0])
+	got := HCLBodyRange(block.Body, block.DefRange)
 	expected := hcl.Range{
 		Filename: "example.tf.json",
 		Start:    hcl.Pos{Line: 3, Column: 23},

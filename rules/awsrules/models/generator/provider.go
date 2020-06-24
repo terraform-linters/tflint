@@ -1,6 +1,8 @@
+// +build generators
+
 package main
 
-import "github.com/terraform-linters/tflint/tools/utils"
+import utils "github.com/terraform-linters/tflint/rules/awsrules/generator-utils"
 
 type providerMeta struct {
 	RuleNameCCList []string
@@ -13,5 +15,5 @@ func generateProviderFile(ruleNames []string) {
 		meta.RuleNameCCList = append(meta.RuleNameCCList, utils.ToCamel(ruleName))
 	}
 
-	utils.GenerateFile("../rules/provider_model.go", "../rules/provider_model.go.tmpl", meta)
+	utils.GenerateFile("../../provider_model.go", "../../provider_model.go.tmpl", meta)
 }
