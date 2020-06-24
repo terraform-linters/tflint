@@ -12,7 +12,7 @@ require (
 	github.com/hashicorp/go-version v1.2.1
 	github.com/hashicorp/hcl/v2 v2.6.0
 	github.com/hashicorp/logutils v1.0.0
-	github.com/hashicorp/terraform v0.12.26
+	github.com/hashicorp/terraform v0.12.27
 	github.com/hashicorp/terraform-plugin-sdk v1.14.0
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/mattn/go-colorable v0.1.6
