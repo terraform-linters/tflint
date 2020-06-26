@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
@@ -86,20 +87,16 @@ func EmptyConfig() *Config {
 // LoadConfig loads TFLint config from file
 // If failed to load the default config file, it tries to load config file under the home directory
 // Therefore, if there is no default config file, it will not return an error
-func LoadConfig(file string) (*Config, error) {
-	log.Printf("[INFO] Load config: %s", file)
-	if _, err := os.Stat(file); !os.IsNotExist(err) {
-		cfg, err := loadConfigFromFile(file)
-		if err != nil {
-			log.Printf("[ERROR] %s", err)
-			return nil, err
-		}
-		return cfg, nil
-	} else if file != defaultConfigFile {
+func LoadConfig(dir string) (*Config, error) {
+	log.Printf("[INFO] Load and merge config: %s", dir)
+	config, err := loadMergedConfig(dir)
+	if err != nil {
 		log.Printf("[ERROR] %s", err)
-		return nil, fmt.Errorf("`%s` is not found", file)
-	} else {
-		log.Printf("[INFO] Default config file is not found. Ignored")
+		return nil, err
+	}
+
+	if config != nil {
+		return config, nil
 	}
 
 	fallback, err := homedir.Expand(fallbackConfigFile)
@@ -120,6 +117,40 @@ func LoadConfig(file string) (*Config, error) {
 
 	log.Print("[INFO] Use default config")
 	return EmptyConfig(), nil
+}
+
+func loadMergedConfig(dir string) (*Config, error) {
+	configs := make([]*Config, 0)
+	for ; dir != "/"; dir = filepath.Dir(dir) {
+		file := filepath.Join(dir, defaultConfigFile)
+
+		log.Printf("[DEBUG] Checking for config: %s", file)
+		if _, err := os.Stat(file); !os.IsNotExist(err) {
+			cfg, err := loadConfigFromFile(file)
+			if err != nil {
+				return nil, err
+			}
+
+			log.Printf("[DEBUG] Found config: %s", file)
+			configs = append(configs, cfg)
+		}
+	}
+
+	// reverse
+	for i := len(configs)/2 - 1; i >= 0; i-- {
+		opp := len(configs) - 1 - i
+		configs[i], configs[opp] = configs[opp], configs[i]
+	}
+
+	if len(configs) == 0 {
+		return nil, nil
+	}
+
+	cfg := EmptyConfig()
+	for _, c := range configs {
+		cfg = cfg.Merge(c)
+	}
+	return cfg, nil
 }
 
 // Merge returns a merged copy of the two configs
