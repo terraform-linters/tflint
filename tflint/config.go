@@ -136,19 +136,13 @@ func loadMergedConfig(dir string) (*Config, error) {
 		}
 	}
 
-	// reverse
-	for i := len(configs)/2 - 1; i >= 0; i-- {
-		opp := len(configs) - 1 - i
-		configs[i], configs[opp] = configs[opp], configs[i]
-	}
-
 	if len(configs) == 0 {
 		return nil, nil
 	}
 
 	cfg := EmptyConfig()
-	for _, c := range configs {
-		cfg = cfg.Merge(c)
+	for i := len(configs) - 1; i >= 0; i-- {
+		cfg = cfg.Merge(configs[i])
 	}
 	return cfg, nil
 }
