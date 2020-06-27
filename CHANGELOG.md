@@ -1,3 +1,45 @@
+## 0.17.0 (2020-06-28)
+
+This release contains several improvements for plugins. In order to take advantage of the improved features, the plugin must be built with tflint-plugin-sdk v0.2.0. For details, please see the CHANGELOG of tflint-plugin-sdk.
+
+### Breaking Changes
+
+- [#823](https://github.com/terraform-linters/tflint/pull/823): Bump tflint-plugin-sdk to v0.2.0 ([@wata727](https://github.com/wata727))
+  - This change breaks plugin API backward compatibility. In order for plugins to work against v0.17.0, you need to build with tflint-plugin-sdk v0.2.0.
+
+### Enhancements
+
+- [#795](https://github.com/terraform-linters/tflint/pull/795): rules: RDS on VMware instance types ([@PatMyron](https://github.com/PatMyron))
+- [#796](https://github.com/terraform-linters/tflint/pull/796): plugin: Add Blocks API ([@wata727](https://github.com/wata727))
+- [#800](https://github.com/terraform-linters/tflint/pull/800) [#807](https://github.com/terraform-linters/tflint/pull/807): plugin: Add Resources API ([@iwarapter](https://github.com/iwarapter)) ([@wata727](https://github.com/wata727))
+- [#801](https://github.com/terraform-linters/tflint/pull/801): rules: Add terraform_standard_module_structure rule ([@bendrucker](https://github.com/bendrucker))
+- [#828](https://github.com/terraform-linters/tflint/pull/828): Bump terraform-provider-aws to v2.68.0 from v2.65.0 ([@wata727](https://github.com/wata727))
+
+### Changes
+
+- [#775](https://github.com/terraform-linters/tflint/pull/775): plugin: Support text-based expression sending and receiving on the server ([@wata727](https://github.com/wata727))
+- [#785](https://github.com/terraform-linters/tflint/pull/785): tflint: Do not walk resource attributes if the resource is not created ([@wata727](https://github.com/wata727))
+- [#797](https://github.com/terraform-linters/tflint/pull/797): plugin: Allow to omit metadata expr on EmitIssue ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#792](https://github.com/terraform-linters/tflint/pull/792): Bump github.com/hashicorp/hcl/v2 from 2.5.1 to 2.6.0
+- [#793](https://github.com/terraform-linters/tflint/pull/793): Bump github.com/hashicorp/aws-sdk-go-base from 0.4.0 to 0.5.0
+- [#794](https://github.com/terraform-linters/tflint/pull/794): Bump github.com/hashicorp/hcl/v2 from 2.5.1 to 2.6.0 in /tools
+- [#799](https://github.com/terraform-linters/tflint/pull/799): Bump github.com/zclconf/go-cty from 1.4.2 to 1.5.0
+- [#803](https://github.com/terraform-linters/tflint/pull/803) [#809](https://github.com/terraform-linters/tflint/pull/809): awsrules: add tags package with generator ([@bendrucker](https://github.com/bendrucker))
+- [#805](https://github.com/terraform-linters/tflint/pull/805) [#818](https://github.com/terraform-linters/tflint/pull/818) [#825](https://github.com/terraform-linters/tflint/pull/825): Bump github.com/aws/aws-sdk-go from 1.31.7 to 1.32.11
+- [#806](https://github.com/terraform-linters/tflint/pull/806): Replacing loadConfigFromFile return func by cfg variable ([@cedarkuo](https://github.com/cedarkuo))
+- [#811](https://github.com/terraform-linters/tflint/pull/811): Bump github.com/hashicorp/terraform-plugin-sdk from 1.13.1 to 1.14.0 in /tools
+- [#812](https://github.com/terraform-linters/tflint/pull/812): Bump github.com/google/go-cmp from 0.4.1 to 0.5.0
+- [#813](https://github.com/terraform-linters/tflint/pull/813): Bump github.com/hashicorp/go-version from 1.2.0 to 1.2.1
+- [#815](https://github.com/terraform-linters/tflint/pull/815): Bump github.com/spf13/afero from 1.2.2 to 1.3.0
+- [#819](https://github.com/terraform-linters/tflint/pull/819): Move tools packages into packages they are responsible for generating ([@bendrucker](https://github.com/bendrucker))
+- [#820](https://github.com/terraform-linters/tflint/pull/820): readme: replace wget w/ curl in macOS install example ([@bendrucker](https://github.com/bendrucker))
+- [#821](https://github.com/terraform-linters/tflint/pull/821) [#822](https://github.com/terraform-linters/tflint/pull/822): chore(deps): bump terraform to v0.12.28 ([@chenrui333](https://github.com/chenrui333))
+- [#824](https://github.com/terraform-linters/tflint/pull/824): Create Dependabot config file
+- [#826](https://github.com/terraform-linters/tflint/pull/826): Bump github.com/mattn/go-colorable from 0.1.6 to 0.1.7
+
 ## 0.16.2 (2020-06-06)
 
 ### Enhancements
