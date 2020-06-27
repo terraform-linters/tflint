@@ -3,7 +3,8 @@ package plugin
 import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/terraform/configs"
-	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	client "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint/client"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
 )
@@ -77,7 +78,7 @@ func (s *Server) EvalExpr(req *tfplugin.EvalExprRequest, resp *tfplugin.EvalExpr
 	val, err := s.runner.EvalExpr(expr, req.Ret, cty.Type{})
 	if err != nil {
 		if appErr, ok := err.(*tflint.Error); ok {
-			err = tfplugin.Error(*appErr)
+			err = client.Error(*appErr)
 		}
 	}
 	*resp = tfplugin.EvalExprResponse{Val: val, Err: err}
