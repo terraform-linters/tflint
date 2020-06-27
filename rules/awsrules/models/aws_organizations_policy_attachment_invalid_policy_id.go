@@ -15,6 +15,7 @@ import (
 type AwsOrganizationsPolicyAttachmentInvalidPolicyIDRule struct {
 	resourceType  string
 	attributeName string
+	max           int
 	pattern       *regexp.Regexp
 }
 
@@ -23,6 +24,7 @@ func NewAwsOrganizationsPolicyAttachmentInvalidPolicyIDRule() *AwsOrganizationsP
 	return &AwsOrganizationsPolicyAttachmentInvalidPolicyIDRule{
 		resourceType:  "aws_organizations_policy_attachment",
 		attributeName: "policy_id",
+		max:           130,
 		pattern:       regexp.MustCompile(`^p-[0-9a-zA-Z_]{8,128}$`),
 	}
 }
@@ -56,6 +58,13 @@ func (r *AwsOrganizationsPolicyAttachmentInvalidPolicyIDRule) Check(runner *tfli
 		err := runner.EvaluateExpr(attribute.Expr, &val)
 
 		return runner.EnsureNoError(err, func() error {
+			if len(val) > r.max {
+				runner.EmitIssue(
+					r,
+					"policy_id must be 130 characters or less",
+					attribute.Expr.Range(),
+				)
+			}
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,

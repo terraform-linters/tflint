@@ -20,7 +20,7 @@ lint:
 clean:
 	rm -rf dist/
 
-code: prepare
+code:
 	go generate ./...
 
 .PHONY: prepare test build install lint clean code

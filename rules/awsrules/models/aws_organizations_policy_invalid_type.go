@@ -25,6 +25,7 @@ func NewAwsOrganizationsPolicyInvalidTypeRule() *AwsOrganizationsPolicyInvalidTy
 		enum: []string{
 			"SERVICE_CONTROL_POLICY",
 			"TAG_POLICY",
+			"BACKUP_POLICY",
 		},
 	}
 }

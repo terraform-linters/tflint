@@ -15,6 +15,7 @@ import (
 type AwsOrganizationsAccountInvalidRoleNameRule struct {
 	resourceType  string
 	attributeName string
+	max           int
 	pattern       *regexp.Regexp
 }
 
@@ -23,6 +24,7 @@ func NewAwsOrganizationsAccountInvalidRoleNameRule() *AwsOrganizationsAccountInv
 	return &AwsOrganizationsAccountInvalidRoleNameRule{
 		resourceType:  "aws_organizations_account",
 		attributeName: "role_name",
+		max:           64,
 		pattern:       regexp.MustCompile(`^[\w+=,.@-]{1,64}$`),
 	}
 }
@@ -56,6 +58,13 @@ func (r *AwsOrganizationsAccountInvalidRoleNameRule) Check(runner *tflint.Runner
 		err := runner.EvaluateExpr(attribute.Expr, &val)
 
 		return runner.EnsureNoError(err, func() error {
+			if len(val) > r.max {
+				runner.EmitIssue(
+					r,
+					"role_name must be 64 characters or less",
+					attribute.Expr.Range(),
+				)
+			}
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,

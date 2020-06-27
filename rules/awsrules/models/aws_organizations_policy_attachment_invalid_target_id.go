@@ -15,6 +15,7 @@ import (
 type AwsOrganizationsPolicyAttachmentInvalidTargetIDRule struct {
 	resourceType  string
 	attributeName string
+	max           int
 	pattern       *regexp.Regexp
 }
 
@@ -23,6 +24,7 @@ func NewAwsOrganizationsPolicyAttachmentInvalidTargetIDRule() *AwsOrganizationsP
 	return &AwsOrganizationsPolicyAttachmentInvalidTargetIDRule{
 		resourceType:  "aws_organizations_policy_attachment",
 		attributeName: "target_id",
+		max:           100,
 		pattern:       regexp.MustCompile(`^(r-[0-9a-z]{4,32})|(\d{12})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})$`),
 	}
 }
@@ -56,6 +58,13 @@ func (r *AwsOrganizationsPolicyAttachmentInvalidTargetIDRule) Check(runner *tfli
 		err := runner.EvaluateExpr(attribute.Expr, &val)
 
 		return runner.EnsureNoError(err, func() error {
+			if len(val) > r.max {
+				runner.EmitIssue(
+					r,
+					"target_id must be 100 characters or less",
+					attribute.Expr.Range(),
+				)
+			}
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,

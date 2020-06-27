@@ -315,8 +315,6 @@ var modelRules = []Rule{
 	awsmodelrules.NewAwsFlowLogInvalidLogDestinationTypeRule(),
 	awsmodelrules.NewAwsFlowLogInvalidTrafficTypeRule(),
 	awsmodelrules.NewAwsFmsAdminAccountInvalidAccountIDRule(),
-	awsmodelrules.NewAwsFsxLustreFileSystemInvalidExportPathRule(),
-	awsmodelrules.NewAwsFsxLustreFileSystemInvalidImportPathRule(),
 	awsmodelrules.NewAwsFsxLustreFileSystemInvalidWeeklyMaintenanceStartTimeRule(),
 	awsmodelrules.NewAwsFsxWindowsFileSystemInvalidActiveDirectoryIDRule(),
 	awsmodelrules.NewAwsFsxWindowsFileSystemInvalidDailyAutomaticBackupStartTimeRule(),

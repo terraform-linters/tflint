@@ -22,9 +22,9 @@ require (
 	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
 	github.com/spf13/afero v1.3.0
 	github.com/terraform-linters/tflint-plugin-sdk v0.2.0
-	github.com/terraform-providers/terraform-provider-aws v2.65.0+incompatible
+	github.com/terraform-providers/terraform-provider-aws v2.68.0+incompatible
 	github.com/zclconf/go-cty v1.5.1
 	golang.org/x/lint v0.0.0-20191125180803-fdd1cda4f05f
 )
 
-replace github.com/terraform-providers/terraform-provider-aws v2.65.0+incompatible => github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20200604234259-3853d337c01a
+replace github.com/terraform-providers/terraform-provider-aws v2.68.0+incompatible => github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20200625234409-8688f3adfb43

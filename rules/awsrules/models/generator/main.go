@@ -81,6 +81,7 @@ func main() {
 				model := shapes[shapeName].(map[string]interface{})
 				schema := fetchSchema(mapping.Resource, attribute, model, awsProvider)
 				if validMapping(model) {
+					fmt.Printf("Generating rule for `%s.%s`\n", mapping.Resource, attribute)
 					generateRuleFile(mapping.Resource, attribute, model, schema)
 					for _, test := range mappingFile.Tests {
 						if mapping.Resource == test.Resource && attribute == test.Attribute {
