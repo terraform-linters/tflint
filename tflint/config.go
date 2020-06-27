@@ -84,10 +84,58 @@ func EmptyConfig() *Config {
 	}
 }
 
-// LoadConfig loads TFLint config from file
-// If failed to load the default config file, it tries to load config file under the home directory
-// Therefore, if there is no default config file, it will not return an error
-func LoadConfig(dir string) (*Config, error) {
+// LoadConfig loads TFLint config from a specific file
+// If it fails to load the specified file, it tries to load a default config file in the home directory
+// If no configuration is found, an empty default configuration is returned
+func LoadConfig(file string) (*Config, error) {
+	log.Printf("[INFO] Load config: %s", file)
+	if _, err := os.Stat(file); !os.IsNotExist(err) {
+		cfg, err := loadConfigFromFile(file)
+		if err != nil {
+			log.Printf("[ERROR] %s", err)
+			return nil, err
+		}
+		return cfg, nil
+	} else if file != defaultConfigFile {
+		log.Printf("[ERROR] %s", err)
+		return nil, fmt.Errorf("`%s` is not found", file)
+	} else {
+		log.Printf("[INFO] Default config file is not found. Ignored")
+	}
+
+	fallback, err := homedir.Expand(fallbackConfigFile)
+	if err != nil {
+		log.Printf("[ERROR] %s", err)
+		return nil, err
+	}
+
+	log.Printf("[INFO] Load fallback config: %s", fallback)
+	if _, err := os.Stat(fallback); !os.IsNotExist(err) {
+		cfg, err := loadConfigFromFile(fallback)
+		if err != nil {
+			return nil, err
+		}
+		return cfg, nil
+	}
+	log.Printf("[INFO] Fallback config file is not found. Ignored")
+
+	log.Print("[INFO] Use default config")
+	return EmptyConfig(), nil
+}
+
+// LoadConfigDir loads TFLint config starting from a specified directory.
+// It iterates upwards starting from the specified directory, merging all configuration
+// it finds until it reaches the root directory.
+//
+// When multiple modules are organized hierarchically, as in a Terraform module
+// repository with child modules, this allows TFLint to be invoked on a child
+// module without specifying the path to a configuration file in the parent module
+// directory.
+//
+// It also allows TFLint to operate in a monorepo where many root modules are organized
+// hierarchically. The repository root can store the base configuration, while subdirectories
+// can provide overrides.
+func LoadConfigDir(dir string) (*Config, error) {
 	log.Printf("[INFO] Load and merge config: %s", dir)
 	config, err := loadMergedConfig(dir)
 	if err != nil {
@@ -120,20 +168,38 @@ func LoadConfig(dir string) (*Config, error) {
 }
 
 func loadMergedConfig(dir string) (*Config, error) {
+	dir, err := filepath.Abs(dir)
+	if err != nil {
+		return nil, err
+	}
+
 	configs := make([]*Config, 0)
-	for ; dir != "/"; dir = filepath.Dir(dir) {
+
+	for {
 		file := filepath.Join(dir, defaultConfigFile)
 
 		log.Printf("[DEBUG] Checking for config: %s", file)
-		if _, err := os.Stat(file); !os.IsNotExist(err) {
+		_, err = os.Stat(file)
+
+		if os.IsPermission(err) {
+			log.Printf("[DEBUG] Permission error, returning early: %s", err)
+			break
+		}
+
+		if !os.IsNotExist(err) {
 			cfg, err := loadConfigFromFile(file)
 			if err != nil {
 				return nil, err
 			}
 
-			log.Printf("[DEBUG] Found config: %s", file)
 			configs = append(configs, cfg)
 		}
+
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			break
+		}
+		dir = parent
 	}
 
 	if len(configs) == 0 {
@@ -289,7 +355,7 @@ func loadConfigFromFile(file string) (*Config, error) {
 	}
 
 	cfg := raw.toConfig()
-	log.Printf("[DEBUG] Config loaded")
+	log.Printf("[DEBUG] Config loaded from %s", file)
 	log.Printf("[DEBUG]   Module: %t", cfg.Module)
 	log.Printf("[DEBUG]   DeepCheck: %t", cfg.DeepCheck)
 	log.Printf("[DEBUG]   Force: %t", cfg.Force)

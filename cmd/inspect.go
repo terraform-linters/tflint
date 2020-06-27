@@ -11,7 +11,7 @@ import (
 
 func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	// Setup config
-	cfg, err := tflint.LoadConfig(dir)
+	cfg, err := tflint.LoadConfigDir(dir)
 	if err != nil {
 		cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to load TFLint config", err), map[string][]byte{})
 		return ExitCodeError
