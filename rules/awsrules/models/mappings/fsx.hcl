@@ -3,8 +3,8 @@ import = "aws-sdk-go/models/apis/fsx/2018-03-01/api-2.json"
 mapping "aws_fsx_lustre_file_system" {
   storage_capacity              = StorageCapacity
   subnet_ids                    = SubnetIds
-  export_path                   = ArchivePath
-  import_path                   = ArchivePath
+  export_path                   = any // ArchivePath
+  import_path                   = any // ArchivePath
   imported_file_chunk_size      = Megabytes
   security_group_ids            = SecurityGroupIds
   tags                          = Tags
