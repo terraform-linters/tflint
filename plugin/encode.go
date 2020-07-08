@@ -107,3 +107,15 @@ func (s *Server) encodeProvisioner(provisioner *configs.Provisioner) *tfplugin.P
 		TypeRange: provisioner.TypeRange,
 	}
 }
+
+func (s *Server) encodeBackend(backend *configs.Backend) *tfplugin.Backend {
+	configRange := tflint.HCLBodyRange(backend.Config, backend.DeclRange)
+
+	return &tfplugin.Backend{
+		Type:        backend.Type,
+		Config:      configRange.SliceBytes(s.runner.File(configRange.Filename).Bytes),
+		ConfigRange: configRange,
+		DeclRange:   backend.DeclRange,
+		TypeRange:   backend.TypeRange,
+	}
+}
