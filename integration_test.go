@@ -78,14 +78,14 @@ func TestIntegration(t *testing.T) {
 			Dir:     "path",
 		},
 		{
-			Name:    "multi_directory (from root)",
-			Command: "./tflint --format json --module terraform/environments/dev",
-			Dir:     "multi_directory_from_root",
+			Name:    "init from parent",
+			Command: "./tflint --format json --module root",
+			Dir:     "init-parent",
 		},
 		{
-			Name:    "multi_directory (from terraform/environments/dev)",
+			Name:    "init from cwd",
 			Command: "./tflint --format json --module",
-			Dir:     "multi_directory_from_environment/terraform/environments/dev",
+			Dir:     "init-cwd/root",
 		},
 	}
 
