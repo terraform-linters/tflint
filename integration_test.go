@@ -24,10 +24,11 @@ func TestMain(m *testing.M) {
 
 func TestIntegration(t *testing.T) {
 	cases := []struct {
-		Name    string
-		Command string
-		Env     map[string]string
-		Dir     string
+		Name        string
+		Command     string
+		Env         map[string]string
+		Dir         string
+		DirArgument bool
 	}{
 		{
 			Name:    "basic",
@@ -87,14 +88,22 @@ func TestIntegration(t *testing.T) {
 			Command: "./tflint --format json --module",
 			Dir:     "init-cwd/root",
 		},
+		{
+			Name:        "init from cwd, run from parent",
+			Command:     "./tflint --format json --module",
+			Dir:         "init-cwd/root",
+			DirArgument: true,
+		},
 	}
 
 	dir, _ := os.Getwd()
-	defer os.Chdir(dir)
-
 	for _, tc := range cases {
 		testDir := dir + "/integration/" + tc.Dir
-		os.Chdir(testDir)
+
+		defer os.Chdir(dir)
+		if !tc.DirArgument {
+			os.Chdir(testDir)
+		}
 
 		if tc.Env != nil {
 			for k, v := range tc.Env {
@@ -105,14 +114,19 @@ func TestIntegration(t *testing.T) {
 		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
 		cli := cmd.NewCLI(outStream, errStream)
 		args := strings.Split(tc.Command, " ")
+
+		if tc.DirArgument {
+			args = append(args, testDir)
+		}
+
 		cli.Run(args)
 
 		var b []byte
 		var err error
 		if runtime.GOOS == "windows" && IsWindowsResultExist() {
-			b, err = ioutil.ReadFile("result_windows.json")
+			b, err = ioutil.ReadFile(filepath.Join(testDir, "result_windows.json"))
 		} else {
-			b, err = ioutil.ReadFile("result.json")
+			b, err = ioutil.ReadFile(filepath.Join(testDir, "result.json"))
 		}
 		if err != nil {
 			t.Fatal(err)
