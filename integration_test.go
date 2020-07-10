@@ -77,6 +77,16 @@ func TestIntegration(t *testing.T) {
 			Command: "./tflint --format json --module",
 			Dir:     "path",
 		},
+		{
+			Name:    "multi_directory (from root)",
+			Command: "./tflint --format json --module terraform/environments/dev",
+			Dir:     "multi_directory_from_root",
+		},
+		{
+			Name:    "multi_directory (from terraform/environments/dev)",
+			Command: "./tflint --format json --module",
+			Dir:     "multi_directory_from_environment/terraform/environments/dev",
+		},
 	}
 
 	dir, _ := os.Getwd()
