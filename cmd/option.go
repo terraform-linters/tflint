@@ -29,6 +29,7 @@ type Options struct {
 	AwsRegion     string   `long:"aws-region" description:"AWS region used in deep check mode" value-name:"REGION"`
 	Force         bool     `long:"force" description:"Return zero exit status even if issues found"`
 	NoColor       bool     `long:"no-color" description:"Disable colorized output"`
+	Recursive     bool     `long:"recursive" description:"Inspect directories recursively"`
 }
 
 func (opts *Options) toConfig() *tflint.Config {
@@ -53,6 +54,7 @@ func (opts *Options) toConfig() *tflint.Config {
 	log.Printf("[DEBUG]   Module: %t", opts.Module)
 	log.Printf("[DEBUG]   DeepCheck: %t", opts.Deep)
 	log.Printf("[DEBUG]   Force: %t", opts.Force)
+	log.Printf("[DEBUG]   Recursive: %t", opts.Recursive)
 	log.Printf("[DEBUG]   IgnoreModules: %#v", ignoreModules)
 	log.Printf("[DEBUG]   EnableRules: %#v", opts.EnableRules)
 	log.Printf("[DEBUG]   DisableRules: %#v", opts.DisableRules)
@@ -79,6 +81,7 @@ func (opts *Options) toConfig() *tflint.Config {
 		Module:    opts.Module,
 		DeepCheck: opts.Deep,
 		Force:     opts.Force,
+		Recursive: opts.Recursive,
 		AwsCredentials: client.AwsCredentials{
 			AccessKey: opts.AwsAccessKey,
 			SecretKey: opts.AwsSecretKey,

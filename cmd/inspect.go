@@ -1,7 +1,11 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/spf13/afero"
 	tfplugin "github.com/terraform-linters/tflint/plugin"
@@ -28,7 +32,13 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	}
 
 	// Setup runners
-	runners, appErr := cli.setupRunners(opts, cfg, dir)
+	runners := []*tflint.Runner{}
+	var appErr *tflint.Error
+	if opts.Recursive {
+		runners, appErr = cli.setupRunnersRecursivly(opts, cfg, dir)
+	} else {
+		runners, appErr = cli.setupRunners(opts, cfg, dir)
+	}
 	if appErr != nil {
 		cli.formatter.Print(tflint.Issues{}, appErr, cli.loader.Sources())
 		return ExitCodeError
@@ -125,4 +135,40 @@ func (cli *CLI) setupRunners(opts Options, cfg *tflint.Config, dir string) ([]*t
 	}
 
 	return append(runners, runner), nil
+}
+
+func (cli *CLI) setupRunnersRecursivly(opts Options, cfg *tflint.Config, dir string) ([]*tflint.Runner, *tflint.Error) {
+	runners := []*tflint.Runner{}
+
+	if cfg.Module {
+		return runners, tflint.NewContextError("Failed to walk directories recursively", errors.New("module inspection is not allowed with recursive mode"))
+	}
+
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			return nil
+		}
+		if path != dir && strings.HasPrefix(info.Name(), ".") {
+			return filepath.SkipDir
+		}
+
+		dirRunners, appErr := cli.setupRunners(opts, cfg, path)
+		if appErr != nil {
+			return appErr
+		}
+		runners = append(runners, dirRunners...)
+		return nil
+	})
+
+	if appErr, ok := err.(*tflint.Error); ok {
+		return runners, appErr
+	}
+	if err != nil {
+		return runners, tflint.NewContextError("Failed to walk directories recursively", err)
+	}
+
+	return runners, nil
 }
