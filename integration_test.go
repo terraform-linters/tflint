@@ -24,11 +24,10 @@ func TestMain(m *testing.M) {
 
 func TestIntegration(t *testing.T) {
 	cases := []struct {
-		Name        string
-		Command     string
-		Env         map[string]string
-		Dir         string
-		DirArgument bool
+		Name    string
+		Command string
+		Env     map[string]string
+		Dir     string
 	}{
 		{
 			Name:    "basic",
@@ -95,11 +94,7 @@ func TestIntegration(t *testing.T) {
 		testDir := dir + "/integration/" + tc.Dir
 
 		defer os.Chdir(dir)
-		if !tc.DirArgument {
-			os.Chdir(testDir)
-		} else {
-			os.Chdir(dir)
-		}
+		os.Chdir(testDir)
 
 		if tc.Env != nil {
 			for k, v := range tc.Env {
@@ -110,10 +105,6 @@ func TestIntegration(t *testing.T) {
 		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
 		cli := cmd.NewCLI(outStream, errStream)
 		args := strings.Split(tc.Command, " ")
-
-		if tc.DirArgument {
-			args = append(args, testDir)
-		}
 
 		cli.Run(args)
 
