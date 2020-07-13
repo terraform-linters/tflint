@@ -88,12 +88,6 @@ func TestIntegration(t *testing.T) {
 			Command: "./tflint --format json --module",
 			Dir:     "init-cwd/root",
 		},
-		{
-			Name:        "init from cwd, run from parent",
-			Command:     "./tflint --format json --module",
-			Dir:         "init-cwd/root",
-			DirArgument: true,
-		},
 	}
 
 	dir, _ := os.Getwd()
