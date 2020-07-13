@@ -103,6 +103,8 @@ func TestIntegration(t *testing.T) {
 		defer os.Chdir(dir)
 		if !tc.DirArgument {
 			os.Chdir(testDir)
+		} else {
+			os.Chdir(dir)
 		}
 
 		if tc.Env != nil {
