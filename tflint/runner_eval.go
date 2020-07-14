@@ -38,7 +38,7 @@ func (r *Runner) EvaluateExprType(expr hcl.Expression, ret interface{}, wantType
 // In addition, this method determines whether the expression is evaluable, contains no unknown values, and so on.
 // The returned cty.Value is converted according to the value passed as `ret`.
 func (r *Runner) EvalExpr(expr hcl.Expression, ret interface{}, wantType cty.Type) (cty.Value, error) {
-	evaluable, err := isEvaluableExpr(expr)
+	evaluable, err := r.isEvaluableExpr(expr)
 	if err != nil {
 		err := &Error{
 			Code:  EvaluationError,
@@ -144,7 +144,7 @@ func (r *Runner) EvalExpr(expr hcl.Expression, ret interface{}, wantType cty.Typ
 
 // EvaluateBlock is a wrapper of terraform.BultinEvalContext.EvaluateBlock and gocty.FromCtyValue
 func (r *Runner) EvaluateBlock(block *hcl.Block, schema *configschema.Block, ret interface{}) error {
-	evaluable, err := isEvaluableBlock(block.Body, schema)
+	evaluable, err := r.isEvaluableBlock(block.Body, schema)
 	if err != nil {
 		err := &Error{
 			Code:  EvaluationError,
@@ -285,39 +285,47 @@ func (r *Runner) fromCtyValue(val cty.Value, expr hcl.Expression, ret interface{
 	return nil
 }
 
-func isEvaluableExpr(expr hcl.Expression) (bool, error) {
+func (r *Runner) isEvaluableExpr(expr hcl.Expression) (bool, error) {
 	refs, diags := lang.ReferencesInExpr(expr)
 	if diags.HasErrors() {
 		return false, diags.Err()
 	}
 	for _, ref := range refs {
-		if !isEvaluableRef(ref) {
+		if !r.isEvaluableRef(ref) {
 			return false, nil
 		}
 	}
 	return true, nil
 }
 
-func isEvaluableBlock(body hcl.Body, schema *configschema.Block) (bool, error) {
+func (r *Runner) isEvaluableBlock(body hcl.Body, schema *configschema.Block) (bool, error) {
 	refs, diags := lang.ReferencesInBlock(body, schema)
 	if diags.HasErrors() {
 		return false, diags.Err()
 	}
 	for _, ref := range refs {
-		if !isEvaluableRef(ref) {
+		if !r.isEvaluableRef(ref) {
 			return false, nil
 		}
 	}
 	return true, nil
 }
 
-func isEvaluableRef(ref *addrs.Reference) bool {
+func (r *Runner) isEvaluableRef(ref *addrs.Reference) bool {
 	switch ref.Subject.(type) {
 	case addrs.InputVariable:
 		return true
 	case addrs.TerraformAttr:
+		if r.config.Recursive {
+			// `terraform.workspace` is likely to be configured for each directory, so ignore it here.
+			return false
+		}
 		return true
 	case addrs.PathAttr:
+		if r.config.Recursive {
+			// Ignore `path.cwd` etc. as it is nonsense in recursive mode.
+			return false
+		}
 		return true
 	default:
 		return false

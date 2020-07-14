@@ -140,7 +140,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 		modVars := map[string]*moduleVariable{}
 		for varName, rawVar := range cfg.Module.Variables {
 			if attribute, exists := attributes[varName]; exists {
-				evalauble, err := isEvaluableExpr(attribute.Expr)
+				evalauble, err := parent.isEvaluableExpr(attribute.Expr)
 				if err != nil {
 					return runners, err
 				}
@@ -277,7 +277,7 @@ func (r *Runner) EnsureNoError(err error, proc func() error) error {
 
 // IsNullExpr check the passed expression is null
 func (r *Runner) IsNullExpr(expr hcl.Expression) (bool, error) {
-	evaluable, err := isEvaluableExpr(expr)
+	evaluable, err := r.isEvaluableExpr(expr)
 	if err != nil {
 		return false, err
 	}

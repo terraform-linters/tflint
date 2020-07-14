@@ -919,7 +919,7 @@ resource "null_resource" "test" {
 		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
 		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-			ret, err := isEvaluableExpr(attribute.Expr)
+			ret, err := runner.isEvaluableExpr(attribute.Expr)
 			if err != nil && tc.Error == "" {
 				t.Fatalf("Failed `%s` test: unexpected error occurred: %s", tc.Name, err)
 			}

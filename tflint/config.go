@@ -29,6 +29,7 @@ type rawConfig struct {
 		Module         *bool              `hcl:"module"`
 		DeepCheck      *bool              `hcl:"deep_check"`
 		Force          *bool              `hcl:"force"`
+		Recursive      *bool              `hcl:"recursive"`
 		AwsCredentials *map[string]string `hcl:"aws_credentials"`
 		IgnoreModule   *map[string]bool   `hcl:"ignore_module"`
 		Varfile        *[]string          `hcl:"varfile"`
@@ -46,6 +47,7 @@ type Config struct {
 	Module         bool
 	DeepCheck      bool
 	Force          bool
+	Recursive      bool
 	AwsCredentials client.AwsCredentials
 	IgnoreModules  map[string]bool
 	Varfiles       []string
@@ -74,6 +76,7 @@ func EmptyConfig() *Config {
 		Module:         false,
 		DeepCheck:      false,
 		Force:          false,
+		Recursive:      false,
 		AwsCredentials: client.AwsCredentials{},
 		IgnoreModules:  map[string]bool{},
 		Varfiles:       []string{},
@@ -135,6 +138,9 @@ func (c *Config) Merge(other *Config) *Config {
 	}
 	if other.Force {
 		ret.Force = true
+	}
+	if other.Recursive {
+		ret.Recursive = true
 	}
 
 	ret.AwsCredentials = ret.AwsCredentials.Merge(other.AwsCredentials)
@@ -230,6 +236,7 @@ func (c *Config) copy() *Config {
 		Module:         c.Module,
 		DeepCheck:      c.DeepCheck,
 		Force:          c.Force,
+		Recursive:      c.Recursive,
 		AwsCredentials: c.AwsCredentials,
 		IgnoreModules:  ignoreModules,
 		Varfiles:       varfiles,
@@ -268,6 +275,7 @@ func loadConfigFromFile(file string) (*Config, error) {
 	log.Printf("[DEBUG]   Module: %t", cfg.Module)
 	log.Printf("[DEBUG]   DeepCheck: %t", cfg.DeepCheck)
 	log.Printf("[DEBUG]   Force: %t", cfg.Force)
+	log.Printf("[DEBUG]   Recursive: %t", cfg.Recursive)
 	log.Printf("[DEBUG]   IgnoreModules: %#v", cfg.IgnoreModules)
 	log.Printf("[DEBUG]   Varfiles: %#v", cfg.Varfiles)
 	log.Printf("[DEBUG]   Variables: %#v", cfg.Variables)
@@ -331,6 +339,9 @@ func (raw *rawConfig) toConfig() *Config {
 		}
 		if rc.Force != nil {
 			ret.Force = *rc.Force
+		}
+		if rc.Recursive != nil {
+			ret.Recursive = *rc.Recursive
 		}
 		if rc.AwsCredentials != nil {
 			credentials := *rc.AwsCredentials
