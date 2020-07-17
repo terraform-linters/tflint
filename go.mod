@@ -15,6 +15,7 @@ require (
 	github.com/hashicorp/terraform v0.12.28
 	github.com/hashicorp/terraform-plugin-sdk v1.14.0
 	github.com/jessevdk/go-flags v1.4.0
+	github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024
 	github.com/mattn/go-colorable v0.1.7
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/serenize/snaker v0.0.0-20171204205717-a683aaf2d516
