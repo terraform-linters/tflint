@@ -4,11 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/hashicorp/logutils"
 	flags "github.com/jessevdk/go-flags"
 
 	"github.com/terraform-linters/tflint/formatter"
@@ -58,6 +60,16 @@ func (cli *CLI) Run(args []string) int {
 		color.NoColor = true
 		cli.formatter.NoColor = true
 	}
+	level := os.Getenv("TFLINT_LOG")
+	if opts.LogLevel != "" {
+		level = opts.LogLevel
+	}
+	log.SetOutput(&logutils.LevelFilter{
+		Levels:   []logutils.LogLevel{"TRACE", "DEBUG", "INFO", "WARN", "ERROR"},
+		MinLevel: logutils.LogLevel(strings.ToUpper(level)),
+		Writer:   os.Stderr,
+	})
+	log.SetFlags(log.Ltime | log.Lshortfile)
 
 	if err != nil {
 		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {

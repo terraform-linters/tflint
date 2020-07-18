@@ -29,6 +29,7 @@ type Options struct {
 	AwsRegion     string   `long:"aws-region" description:"AWS region used in deep check mode" value-name:"REGION"`
 	Force         bool     `long:"force" description:"Return zero exit status even if issues found"`
 	NoColor       bool     `long:"no-color" description:"Disable colorized output"`
+	LogLevel      string   `long:"loglevel" description:"Change the loglevel" choice:"trace" choice:"debug" choice:"info" choice:"warn" choice:"error" default:"none"`
 }
 
 func (opts *Options) toConfig() *tflint.Config {
