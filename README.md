@@ -99,27 +99,28 @@ Usage:
   tflint [OPTIONS] [FILE or DIR...]
 
 Application Options:
-  -v, --version                             Print TFLint version
-      --langserver                          Start language server
-  -f, --format=[default|json|checkstyle]    Output format (default: default)
-  -c, --config=FILE                         Config file name (default: .tflint.hcl)
-      --ignore-module=SOURCE                Ignore module sources
-      --enable-rule=RULE_NAME               Enable rules from the command line
-      --disable-rule=RULE_NAME              Disable rules from the command line
-      --var-file=FILE                       Terraform variable file name
-      --var='foo=bar'                       Set a Terraform variable
-      --module                              Inspect modules
-      --deep                                Enable deep check mode
-      --aws-access-key=ACCESS_KEY           AWS access key used in deep check mode
-      --aws-secret-key=SECRET_KEY           AWS secret key used in deep check mode
-      --aws-profile=PROFILE                 AWS shared credential profile name used in deep check mode
-      --aws-creds-file=FILE                 AWS shared credentials file path used in deep checking
-      --aws-region=REGION                   AWS region used in deep check mode
-      --force                               Return zero exit status even if issues found
-      --no-color                            Disable colorized output
+  -v, --version                                   Print TFLint version
+      --langserver                                Start language server
+  -f, --format=[default|json|checkstyle]          Output format (default: default)
+  -c, --config=FILE                               Config file name (default: .tflint.hcl)
+      --ignore-module=SOURCE                      Ignore module sources
+      --enable-rule=RULE_NAME                     Enable rules from the command line
+      --disable-rule=RULE_NAME                    Disable rules from the command line
+      --var-file=FILE                             Terraform variable file name
+      --var='foo=bar'                             Set a Terraform variable
+      --module                                    Inspect modules
+      --deep                                      Enable deep check mode
+      --aws-access-key=ACCESS_KEY                 AWS access key used in deep check mode
+      --aws-secret-key=SECRET_KEY                 AWS secret key used in deep check mode
+      --aws-profile=PROFILE                       AWS shared credential profile name used in deep check mode
+      --aws-creds-file=FILE                       AWS shared credentials file path used in deep checking
+      --aws-region=REGION                         AWS region used in deep check mode
+      --force                                     Return zero exit status even if issues found
+      --no-color                                  Disable colorized output
+      --loglevel=[trace|debug|info|warn|error]    Change the loglevel (default: none)
 
 Help Options:
-  -h, --help                                Show this help message
+  -h, --help                                      Show this help message
 ```
 
 See [User guide](docs/guides) for each option.
