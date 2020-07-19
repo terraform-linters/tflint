@@ -26,6 +26,7 @@ func NewAwsOrganizationsPolicyInvalidTypeRule() *AwsOrganizationsPolicyInvalidTy
 			"SERVICE_CONTROL_POLICY",
 			"TAG_POLICY",
 			"BACKUP_POLICY",
+			"AISERVICES_OPT_OUT_POLICY",
 		},
 	}
 }
