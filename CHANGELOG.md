@@ -1,3 +1,27 @@
+## 0.18.0 (2020-07-19)
+
+This release adds `Backend()` API for accessing the Terraform backend configuration. If you want to use the API, the plugin must be built with tflint-plugin-sdk v0.3.0. For details, please see the CHANGELOG of tflint-plugin-sdk.
+
+### Breaking Changes
+
+- [#845](https://github.com/terraform-linters/tflint/pull/845): Bump tflint-plugin-sdk to v0.3.0 ([@wata727](https://github.com/wata727))
+  - This change breaks plugin API backward compatibility. In order for plugins to work against v0.18.0, you need to build with tflint-plugin-sdk v0.3.0.
+
+### Enhancements
+
+- [#838](https://github.com/terraform-linters/tflint/pull/838): plugin: Add `Backend()` to plugin server ([@pd](https://github.com/pd))
+- [#844](https://github.com/terraform-linters/tflint/pull/844): Add `--loglevel` option ([@wata727](https://github.com/wata727))
+- [#846](https://github.com/terraform-linters/tflint/pull/846): Bump terraform-provider-aws to v2.70.0 from v2.68.0 ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#840](https://github.com/terraform-linters/tflint/pull/840): tflint: Fix module resolution when terraform init is invoked from another directory ([@mkielar](https://github.com/mkielar))
+
+### Chores
+
+- [#830](https://github.com/terraform-linters/tflint/pull/830): Bump github.com/spf13/afero from 1.3.0 to 1.3.1
+- [#847](https://github.com/terraform-linters/tflint/pull/847): Bump github.com/aws/aws-sdk-go from 1.32.12 to 1.33.7
+
 ## 0.17.0 (2020-06-28)
 
 This release contains several improvements for plugins. In order to take advantage of the improved features, the plugin must be built with tflint-plugin-sdk v0.2.0. For details, please see the CHANGELOG of tflint-plugin-sdk.
