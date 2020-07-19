@@ -3,7 +3,7 @@ module github.com/terraform-linters/tflint
 go 1.14
 
 require (
-	github.com/aws/aws-sdk-go v1.32.11
+	github.com/aws/aws-sdk-go v1.32.12
 	github.com/fatih/color v1.9.0
 	github.com/golang/mock v1.4.3
 	github.com/google/go-cmp v0.5.0
@@ -22,9 +22,9 @@ require (
 	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
 	github.com/spf13/afero v1.3.1
 	github.com/terraform-linters/tflint-plugin-sdk v0.3.0
-	github.com/terraform-providers/terraform-provider-aws v2.68.0+incompatible
+	github.com/terraform-providers/terraform-provider-aws v2.70.0+incompatible
 	github.com/zclconf/go-cty v1.5.1
 	golang.org/x/lint v0.0.0-20191125180803-fdd1cda4f05f
 )
 
-replace github.com/terraform-providers/terraform-provider-aws v2.68.0+incompatible => github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20200625234409-8688f3adfb43
+replace github.com/terraform-providers/terraform-provider-aws v2.70.0+incompatible => github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20200710175044-2f23a59662cc
