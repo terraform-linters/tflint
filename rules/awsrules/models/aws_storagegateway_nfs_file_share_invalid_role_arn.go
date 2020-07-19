@@ -3,7 +3,9 @@
 package models
 
 import (
+	"fmt"
 	"log"
+	"regexp"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
@@ -15,6 +17,7 @@ type AwsStoragegatewayNfsFileShareInvalidRoleArnRule struct {
 	attributeName string
 	max           int
 	min           int
+	pattern       *regexp.Regexp
 }
 
 // NewAwsStoragegatewayNfsFileShareInvalidRoleArnRule returns new rule with default attributes
@@ -24,6 +27,7 @@ func NewAwsStoragegatewayNfsFileShareInvalidRoleArnRule() *AwsStoragegatewayNfsF
 		attributeName: "role_arn",
 		max:           2048,
 		min:           20,
+		pattern:       regexp.MustCompile(`^arn:(aws|aws-cn|aws-us-gov):iam::([0-9]+):role/(\S+)$`),
 	}
 }
 
@@ -67,6 +71,13 @@ func (r *AwsStoragegatewayNfsFileShareInvalidRoleArnRule) Check(runner *tflint.R
 				runner.EmitIssue(
 					r,
 					"role_arn must be 20 characters or higher",
+					attribute.Expr.Range(),
+				)
+			}
+			if !r.pattern.MatchString(val) {
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^arn:(aws|aws-cn|aws-us-gov):iam::([0-9]+):role/(\S+)$`),
 					attribute.Expr.Range(),
 				)
 			}

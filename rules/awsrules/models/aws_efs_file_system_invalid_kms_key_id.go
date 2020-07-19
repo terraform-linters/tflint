@@ -3,7 +3,9 @@
 package models
 
 import (
+	"fmt"
 	"log"
+	"regexp"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
@@ -14,7 +16,7 @@ type AwsEfsFileSystemInvalidKmsKeyIDRule struct {
 	resourceType  string
 	attributeName string
 	max           int
-	min           int
+	pattern       *regexp.Regexp
 }
 
 // NewAwsEfsFileSystemInvalidKmsKeyIDRule returns new rule with default attributes
@@ -23,7 +25,7 @@ func NewAwsEfsFileSystemInvalidKmsKeyIDRule() *AwsEfsFileSystemInvalidKmsKeyIDRu
 		resourceType:  "aws_efs_file_system",
 		attributeName: "kms_key_id",
 		max:           2048,
-		min:           1,
+		pattern:       regexp.MustCompile(`^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|alias/[a-zA-Z0-9/_-]+|(arn:aws[-a-z]*:kms:[a-z0-9-]+:\d{12}:((key/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})|(alias/[a-zA-Z0-9/_-]+))))$`),
 	}
 }
 
@@ -63,10 +65,10 @@ func (r *AwsEfsFileSystemInvalidKmsKeyIDRule) Check(runner *tflint.Runner) error
 					attribute.Expr.Range(),
 				)
 			}
-			if len(val) < r.min {
+			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					"kms_key_id must be 1 characters or higher",
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|alias/[a-zA-Z0-9/_-]+|(arn:aws[-a-z]*:kms:[a-z0-9-]+:\d{12}:((key/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})|(alias/[a-zA-Z0-9/_-]+))))$`),
 					attribute.Expr.Range(),
 				)
 			}

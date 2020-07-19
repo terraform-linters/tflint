@@ -3,7 +3,9 @@
 package models
 
 import (
+	"fmt"
 	"log"
+	"regexp"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
@@ -15,6 +17,7 @@ type AwsStoragegatewayNfsFileShareInvalidKmsKeyArnRule struct {
 	attributeName string
 	max           int
 	min           int
+	pattern       *regexp.Regexp
 }
 
 // NewAwsStoragegatewayNfsFileShareInvalidKmsKeyArnRule returns new rule with default attributes
@@ -24,6 +27,7 @@ func NewAwsStoragegatewayNfsFileShareInvalidKmsKeyArnRule() *AwsStoragegatewayNf
 		attributeName: "kms_key_arn",
 		max:           2048,
 		min:           7,
+		pattern:       regexp.MustCompile(`^(^arn:(aws|aws-cn|aws-us-gov):kms:([a-zA-Z0-9-]+):([0-9]+):(key|alias)/(\S+)$)|(^alias/(\S+)$)$`),
 	}
 }
 
@@ -67,6 +71,13 @@ func (r *AwsStoragegatewayNfsFileShareInvalidKmsKeyArnRule) Check(runner *tflint
 				runner.EmitIssue(
 					r,
 					"kms_key_arn must be 7 characters or higher",
+					attribute.Expr.Range(),
+				)
+			}
+			if !r.pattern.MatchString(val) {
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^(^arn:(aws|aws-cn|aws-us-gov):kms:([a-zA-Z0-9-]+):([0-9]+):(key|alias)/(\S+)$)|(^alias/(\S+)$)$`),
 					attribute.Expr.Range(),
 				)
 			}
