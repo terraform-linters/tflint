@@ -12,11 +12,11 @@ import (
 func (f *Formatter) junitPrint(issues tflint.Issues, tferr *tflint.Error, sources map[string][]byte) {
 	cases := make([]formatter.JUnitTestCase, len(issues))
 
-	for _, issue := range issues.Sort() {
-		cases = append(cases, formatter.JUnitTestCase{
-			Name: issue.Rule.Name(),
+	for i, issue := range issues.Sort() {
+		cases[i] = formatter.JUnitTestCase{
+			Name:      issue.Rule.Name(),
 			Classname: issue.Range.Filename,
-			Time: "0",
+			Time:      "0",
 			Failure: &formatter.JUnitFailure{
 				Message: issue.Message,
 				Contents: fmt.Sprintf(
@@ -28,15 +28,15 @@ func (f *Formatter) junitPrint(issues tflint.Issues, tferr *tflint.Error, source
 					issue.Rule.Name(),
 				),
 			},
-		})
+		}
 	}
 
 	suites := formatter.JUnitTestSuites{
 		Suites: []formatter.JUnitTestSuite{
-			formatter.JUnitTestSuite{
-				Time: "0",
-				Tests: len(issues),
-				Failures: len(issues),
+			{
+				Time:      "0",
+				Tests:     len(issues),
+				Failures:  len(issues),
 				TestCases: cases,
 			},
 		},
