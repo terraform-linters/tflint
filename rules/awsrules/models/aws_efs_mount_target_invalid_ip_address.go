@@ -11,8 +11,8 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-// AwsFsxLustreFileSystemInvalidExportPathRule checks the pattern is valid
-type AwsFsxLustreFileSystemInvalidExportPathRule struct {
+// AwsEfsMountTargetInvalidIPAddressRule checks the pattern is valid
+type AwsEfsMountTargetInvalidIPAddressRule struct {
 	resourceType  string
 	attributeName string
 	max           int
@@ -20,39 +20,39 @@ type AwsFsxLustreFileSystemInvalidExportPathRule struct {
 	pattern       *regexp.Regexp
 }
 
-// NewAwsFsxLustreFileSystemInvalidExportPathRule returns new rule with default attributes
-func NewAwsFsxLustreFileSystemInvalidExportPathRule() *AwsFsxLustreFileSystemInvalidExportPathRule {
-	return &AwsFsxLustreFileSystemInvalidExportPathRule{
-		resourceType:  "aws_fsx_lustre_file_system",
-		attributeName: "export_path",
-		max:           900,
-		min:           3,
-		pattern:       regexp.MustCompile(`^.{3,900}$`),
+// NewAwsEfsMountTargetInvalidIPAddressRule returns new rule with default attributes
+func NewAwsEfsMountTargetInvalidIPAddressRule() *AwsEfsMountTargetInvalidIPAddressRule {
+	return &AwsEfsMountTargetInvalidIPAddressRule{
+		resourceType:  "aws_efs_mount_target",
+		attributeName: "ip_address",
+		max:           15,
+		min:           7,
+		pattern:       regexp.MustCompile(`^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$`),
 	}
 }
 
 // Name returns the rule name
-func (r *AwsFsxLustreFileSystemInvalidExportPathRule) Name() string {
-	return "aws_fsx_lustre_file_system_invalid_export_path"
+func (r *AwsEfsMountTargetInvalidIPAddressRule) Name() string {
+	return "aws_efs_mount_target_invalid_ip_address"
 }
 
 // Enabled returns whether the rule is enabled by default
-func (r *AwsFsxLustreFileSystemInvalidExportPathRule) Enabled() bool {
+func (r *AwsEfsMountTargetInvalidIPAddressRule) Enabled() bool {
 	return true
 }
 
 // Severity returns the rule severity
-func (r *AwsFsxLustreFileSystemInvalidExportPathRule) Severity() string {
+func (r *AwsEfsMountTargetInvalidIPAddressRule) Severity() string {
 	return tflint.ERROR
 }
 
 // Link returns the rule reference link
-func (r *AwsFsxLustreFileSystemInvalidExportPathRule) Link() string {
+func (r *AwsEfsMountTargetInvalidIPAddressRule) Link() string {
 	return ""
 }
 
 // Check checks the pattern is valid
-func (r *AwsFsxLustreFileSystemInvalidExportPathRule) Check(runner *tflint.Runner) error {
+func (r *AwsEfsMountTargetInvalidIPAddressRule) Check(runner *tflint.Runner) error {
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
@@ -63,21 +63,21 @@ func (r *AwsFsxLustreFileSystemInvalidExportPathRule) Check(runner *tflint.Runne
 			if len(val) > r.max {
 				runner.EmitIssue(
 					r,
-					"export_path must be 900 characters or less",
+					"ip_address must be 15 characters or less",
 					attribute.Expr.Range(),
 				)
 			}
 			if len(val) < r.min {
 				runner.EmitIssue(
 					r,
-					"export_path must be 3 characters or higher",
+					"ip_address must be 7 characters or higher",
 					attribute.Expr.Range(),
 				)
 			}
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^.{3,900}$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$`),
 					attribute.Expr.Range(),
 				)
 			}

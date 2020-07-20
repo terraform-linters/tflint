@@ -3,7 +3,9 @@
 package models
 
 import (
+	"fmt"
 	"log"
+	"regexp"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
@@ -14,6 +16,7 @@ type AwsOrganizationsPolicyInvalidDescriptionRule struct {
 	resourceType  string
 	attributeName string
 	max           int
+	pattern       *regexp.Regexp
 }
 
 // NewAwsOrganizationsPolicyInvalidDescriptionRule returns new rule with default attributes
@@ -22,6 +25,7 @@ func NewAwsOrganizationsPolicyInvalidDescriptionRule() *AwsOrganizationsPolicyIn
 		resourceType:  "aws_organizations_policy",
 		attributeName: "description",
 		max:           512,
+		pattern:       regexp.MustCompile(`^[\s\S]*$`),
 	}
 }
 
@@ -58,6 +62,13 @@ func (r *AwsOrganizationsPolicyInvalidDescriptionRule) Check(runner *tflint.Runn
 				runner.EmitIssue(
 					r,
 					"description must be 512 characters or less",
+					attribute.Expr.Range(),
+				)
+			}
+			if !r.pattern.MatchString(val) {
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[\s\S]*$`),
 					attribute.Expr.Range(),
 				)
 			}

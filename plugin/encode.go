@@ -4,7 +4,7 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform"
-	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint/client"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -105,5 +105,23 @@ func (s *Server) encodeProvisioner(provisioner *configs.Provisioner) *tfplugin.P
 
 		DeclRange: provisioner.DeclRange,
 		TypeRange: provisioner.TypeRange,
+	}
+}
+
+func (s *Server) encodeBackend(backend *configs.Backend) *tfplugin.Backend {
+	configRange := tflint.HCLBodyRange(backend.Config, backend.DeclRange)
+	config := []byte{}
+	if configRange.Empty() {
+		configRange.Filename = backend.DeclRange.Filename
+	} else {
+		config = configRange.SliceBytes(s.runner.File(configRange.Filename).Bytes)
+	}
+
+	return &tfplugin.Backend{
+		Type:        backend.Type,
+		Config:      config,
+		ConfigRange: configRange,
+		DeclRange:   backend.DeclRange,
+		TypeRange:   backend.TypeRange,
 	}
 }

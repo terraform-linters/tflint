@@ -11,8 +11,8 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-// AwsFsxLustreFileSystemInvalidImportPathRule checks the pattern is valid
-type AwsFsxLustreFileSystemInvalidImportPathRule struct {
+// AwsEfsMountTargetInvalidSubnetIDRule checks the pattern is valid
+type AwsEfsMountTargetInvalidSubnetIDRule struct {
 	resourceType  string
 	attributeName string
 	max           int
@@ -20,39 +20,39 @@ type AwsFsxLustreFileSystemInvalidImportPathRule struct {
 	pattern       *regexp.Regexp
 }
 
-// NewAwsFsxLustreFileSystemInvalidImportPathRule returns new rule with default attributes
-func NewAwsFsxLustreFileSystemInvalidImportPathRule() *AwsFsxLustreFileSystemInvalidImportPathRule {
-	return &AwsFsxLustreFileSystemInvalidImportPathRule{
-		resourceType:  "aws_fsx_lustre_file_system",
-		attributeName: "import_path",
-		max:           900,
-		min:           3,
-		pattern:       regexp.MustCompile(`^.{3,900}$`),
+// NewAwsEfsMountTargetInvalidSubnetIDRule returns new rule with default attributes
+func NewAwsEfsMountTargetInvalidSubnetIDRule() *AwsEfsMountTargetInvalidSubnetIDRule {
+	return &AwsEfsMountTargetInvalidSubnetIDRule{
+		resourceType:  "aws_efs_mount_target",
+		attributeName: "subnet_id",
+		max:           47,
+		min:           15,
+		pattern:       regexp.MustCompile(`^subnet-[0-9a-f]{8,40}$`),
 	}
 }
 
 // Name returns the rule name
-func (r *AwsFsxLustreFileSystemInvalidImportPathRule) Name() string {
-	return "aws_fsx_lustre_file_system_invalid_import_path"
+func (r *AwsEfsMountTargetInvalidSubnetIDRule) Name() string {
+	return "aws_efs_mount_target_invalid_subnet_id"
 }
 
 // Enabled returns whether the rule is enabled by default
-func (r *AwsFsxLustreFileSystemInvalidImportPathRule) Enabled() bool {
+func (r *AwsEfsMountTargetInvalidSubnetIDRule) Enabled() bool {
 	return true
 }
 
 // Severity returns the rule severity
-func (r *AwsFsxLustreFileSystemInvalidImportPathRule) Severity() string {
+func (r *AwsEfsMountTargetInvalidSubnetIDRule) Severity() string {
 	return tflint.ERROR
 }
 
 // Link returns the rule reference link
-func (r *AwsFsxLustreFileSystemInvalidImportPathRule) Link() string {
+func (r *AwsEfsMountTargetInvalidSubnetIDRule) Link() string {
 	return ""
 }
 
 // Check checks the pattern is valid
-func (r *AwsFsxLustreFileSystemInvalidImportPathRule) Check(runner *tflint.Runner) error {
+func (r *AwsEfsMountTargetInvalidSubnetIDRule) Check(runner *tflint.Runner) error {
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkResourceAttributes(r.resourceType, r.attributeName, func(attribute *hcl.Attribute) error {
@@ -63,21 +63,21 @@ func (r *AwsFsxLustreFileSystemInvalidImportPathRule) Check(runner *tflint.Runne
 			if len(val) > r.max {
 				runner.EmitIssue(
 					r,
-					"import_path must be 900 characters or less",
+					"subnet_id must be 47 characters or less",
 					attribute.Expr.Range(),
 				)
 			}
 			if len(val) < r.min {
 				runner.EmitIssue(
 					r,
-					"import_path must be 3 characters or higher",
+					"subnet_id must be 15 characters or higher",
 					attribute.Expr.Range(),
 				)
 			}
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^.{3,900}$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^subnet-[0-9a-f]{8,40}$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -3,7 +3,9 @@
 package models
 
 import (
+	"fmt"
 	"log"
+	"regexp"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
@@ -15,6 +17,7 @@ type AwsEfsFileSystemInvalidCreationTokenRule struct {
 	attributeName string
 	max           int
 	min           int
+	pattern       *regexp.Regexp
 }
 
 // NewAwsEfsFileSystemInvalidCreationTokenRule returns new rule with default attributes
@@ -24,6 +27,7 @@ func NewAwsEfsFileSystemInvalidCreationTokenRule() *AwsEfsFileSystemInvalidCreat
 		attributeName: "creation_token",
 		max:           64,
 		min:           1,
+		pattern:       regexp.MustCompile(`^.+$`),
 	}
 }
 
@@ -67,6 +71,13 @@ func (r *AwsEfsFileSystemInvalidCreationTokenRule) Check(runner *tflint.Runner) 
 				runner.EmitIssue(
 					r,
 					"creation_token must be 1 characters or higher",
+					attribute.Expr.Range(),
+				)
+			}
+			if !r.pattern.MatchString(val) {
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^.+$`),
 					attribute.Expr.Range(),
 				)
 			}

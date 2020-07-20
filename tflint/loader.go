@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"sort"
 	"strings"
 
@@ -271,14 +270,9 @@ func (l *Loader) moduleWalker() configs.ModuleWalker {
 			}
 		}
 
-		dir := filepath.Join(l.currentDir, record.Dir)
-		if filepath.IsAbs(record.Dir) {
-			// If record.Dir is an absolute path, leave it
-			dir = record.Dir
-		}
-		log.Printf("[DEBUG] Trying to load the module: key=%s, version=%s, dir=%s", key, record.VersionStr, dir)
+		log.Printf("[DEBUG] Trying to load the module: key=%s, version=%s, dir=%s", key, record.VersionStr, record.Dir)
 
-		mod, diags := l.parser.LoadConfigDir(dir)
+		mod, diags := l.parser.LoadConfigDir(record.Dir)
 		return mod, record.Version, diags
 	})
 }

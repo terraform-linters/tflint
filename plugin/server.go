@@ -3,7 +3,8 @@ package plugin
 import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/terraform/configs"
-	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	client "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint/client"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
 )
@@ -67,6 +68,20 @@ func (s *Server) Resources(req *tfplugin.ResourcesRequest, resp *tfplugin.Resour
 	return nil
 }
 
+// Backend returns corresponding configs.Backend as tfplugin.Backend
+func (s *Server) Backend(req *tfplugin.BackendRequest, resp *tfplugin.BackendResponse) error {
+	backend := s.runner.Backend()
+	if backend == nil {
+		return nil
+	}
+
+	*resp = tfplugin.BackendResponse{
+		Backend: s.encodeBackend(backend),
+	}
+
+	return nil
+}
+
 // EvalExpr returns a value of the evaluated expression
 func (s *Server) EvalExpr(req *tfplugin.EvalExprRequest, resp *tfplugin.EvalExprResponse) error {
 	expr, diags := tflint.ParseExpression(req.Expr, req.ExprRange.Filename, req.ExprRange.Start)
@@ -77,7 +92,7 @@ func (s *Server) EvalExpr(req *tfplugin.EvalExprRequest, resp *tfplugin.EvalExpr
 	val, err := s.runner.EvalExpr(expr, req.Ret, cty.Type{})
 	if err != nil {
 		if appErr, ok := err.(*tflint.Error); ok {
-			err = tfplugin.Error(*appErr)
+			err = client.Error(*appErr)
 		}
 	}
 	*resp = tfplugin.EvalExprResponse{Val: val, Err: err}

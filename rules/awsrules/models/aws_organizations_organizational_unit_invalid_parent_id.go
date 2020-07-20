@@ -15,6 +15,7 @@ import (
 type AwsOrganizationsOrganizationalUnitInvalidParentIDRule struct {
 	resourceType  string
 	attributeName string
+	max           int
 	pattern       *regexp.Regexp
 }
 
@@ -23,6 +24,7 @@ func NewAwsOrganizationsOrganizationalUnitInvalidParentIDRule() *AwsOrganization
 	return &AwsOrganizationsOrganizationalUnitInvalidParentIDRule{
 		resourceType:  "aws_organizations_organizational_unit",
 		attributeName: "parent_id",
+		max:           100,
 		pattern:       regexp.MustCompile(`^(r-[0-9a-z]{4,32})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})$`),
 	}
 }
@@ -56,6 +58,13 @@ func (r *AwsOrganizationsOrganizationalUnitInvalidParentIDRule) Check(runner *tf
 		err := runner.EvaluateExpr(attribute.Expr, &val)
 
 		return runner.EnsureNoError(err, func() error {
+			if len(val) > r.max {
+				runner.EmitIssue(
+					r,
+					"parent_id must be 100 characters or less",
+					attribute.Expr.Range(),
+				)
+			}
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,

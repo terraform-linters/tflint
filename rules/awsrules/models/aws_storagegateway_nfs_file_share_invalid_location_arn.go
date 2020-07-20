@@ -22,7 +22,7 @@ func NewAwsStoragegatewayNfsFileShareInvalidLocationArnRule() *AwsStoragegateway
 	return &AwsStoragegatewayNfsFileShareInvalidLocationArnRule{
 		resourceType:  "aws_storagegateway_nfs_file_share",
 		attributeName: "location_arn",
-		max:           310,
+		max:           1400,
 		min:           16,
 	}
 }
@@ -59,7 +59,7 @@ func (r *AwsStoragegatewayNfsFileShareInvalidLocationArnRule) Check(runner *tfli
 			if len(val) > r.max {
 				runner.EmitIssue(
 					r,
-					"location_arn must be 310 characters or less",
+					"location_arn must be 1400 characters or less",
 					attribute.Expr.Range(),
 				)
 			}

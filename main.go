@@ -2,26 +2,17 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"runtime"
 	"strings"
 
-	"github.com/hashicorp/logutils"
 	colorable "github.com/mattn/go-colorable"
 	"github.com/terraform-linters/tflint/cmd"
 )
 
 func main() {
 	cli := cmd.NewCLI(colorable.NewColorable(os.Stdout), colorable.NewColorable(os.Stderr))
-	filter := &logutils.LevelFilter{
-		Levels:   []logutils.LogLevel{"TRACE", "DEBUG", "INFO", "WARN", "ERROR"},
-		MinLevel: logutils.LogLevel(strings.ToUpper(os.Getenv("TFLINT_LOG"))),
-		Writer:   os.Stderr,
-	}
-	log.SetOutput(filter)
-	log.SetFlags(log.Ltime | log.Lshortfile)
 
 	defer func() {
 		if r := recover(); r != nil {

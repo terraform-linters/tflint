@@ -7,7 +7,8 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform"
-	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	client "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint/client"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
 )
@@ -288,9 +289,9 @@ func Test_EvalExpr_errors(t *testing.T) {
 		t.Fatalf("Unexpected error occurred: %s", err)
 	}
 
-	expected := tfplugin.Error{
-		Code:    tfplugin.UnknownValueError,
-		Level:   tfplugin.WarningLevel,
+	expected := client.Error{
+		Code:    client.UnknownValueError,
+		Level:   client.WarningLevel,
 		Message: "Unknown value found in template.tf:1; Please use environment variables or tfvars to set the value",
 		Cause:   nil,
 	}
@@ -301,10 +302,10 @@ func Test_EvalExpr_errors(t *testing.T) {
 
 func Test_EmitIssue(t *testing.T) {
 	runner := tflint.TestRunner(t, map[string]string{})
-	rule := &tfplugin.RuleObject{
-		Data: &tfplugin.RuleObjectData{
+	rule := &tfplugin.Rule{
+		Data: &tfplugin.RuleObject{
 			Name:     "test_rule",
-			Severity: tfplugin.ERROR,
+			Severity: client.ERROR,
 		},
 	}
 

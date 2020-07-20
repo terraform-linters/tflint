@@ -252,6 +252,11 @@ func (r *Runner) Files() map[string]*hcl.File {
 	return result
 }
 
+// Backend returns the backend configuration.
+func (r *Runner) Backend() *configs.Backend {
+	return r.TFConfig.Module.Backend
+}
+
 // EnsureNoError is a helper for processing when no error occurs
 // This function skips processing without returning an error to the caller when the error is warning
 func (r *Runner) EnsureNoError(err error, proc func() error) error {
