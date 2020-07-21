@@ -20,9 +20,12 @@ provider "template" {}
 $ tflint
 1 issue(s) found:
 
-Warning: Provider "template" should have a version constraint in required_providers
+Warning: Missing version constraint for provider "template" in "required_providers" (terraform_required_providers)
 
-Reference: https://github.com/terraform-linters/tflint/blob/v0.11.0/docs/rules/terraform_required_providers.md 
+  on main.tf line 1:
+   1: provider "template" {}
+
+Reference: https://github.com/terraform-linters/tflint/blob/v0.18.0/docs/rules/terraform_required_providers.md
 ```
 
 <hr>
@@ -35,13 +38,22 @@ provider "template" {
 
 ```
 $ tflint
-1 issue(s) found:
+2 issue(s) found:
 
-Warning: provider.template: version constraint should be specified in "required_providers"
+Warning: provider.template: version constraint should be specified via "required_providers" (terraform_required_providers)
 
-Reference: https://github.com/terraform-linters/tflint/blob/v0.11.0/docs/rules/terraform_required_providers.md 
+  on main.tf line 1:
+   1: provider "template" {
+
+Reference: https://github.com/terraform-linters/tflint/blob/v0.18.0/docs/rules/terraform_required_providers.md
+
+Warning: Missing version constraint for provider "template" in "required_providers" (terraform_required_providers)
+
+  on main.tf line 1:
+   1: provider "template" {
+
+Reference: https://github.com/terraform-linters/tflint/blob/v0.18.0/docs/rules/terraform_required_providers.md
 ```
-
 
 ## Why
 
