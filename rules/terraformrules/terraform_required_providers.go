@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -39,14 +40,26 @@ func (r *TerraformRequiredProvidersRule) Link() string {
 func (r *TerraformRequiredProvidersRule) Check(runner *tflint.Runner) error {
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
+	providers := make(map[string]hcl.Range)
 	module := runner.TFConfig.Module
+
 	for _, provider := range module.ProviderConfigs {
-		if _, ok := module.ProviderRequirements[provider.Name]; !ok && provider.Version.Required == nil {
-			message := fmt.Sprintf(`Provider "%s" should have a version constraint in required_providers`, provider.Name)
-			if provider.Alias != "" {
-				message += fmt.Sprintf(" (%s.%s)", provider.Name, provider.Alias)
-			}
-			runner.EmitIssue(r, message, provider.DeclRange)
+		if _, ok := providers[provider.Name]; !ok {
+			providers[provider.Name] = provider.DeclRange
+		}
+
+		if provider.Version.Required != nil {
+			runner.EmitIssue(
+				r,
+				fmt.Sprintf(`%s: version constraint should be specified via "required_providers"`, provider.Addr().String()),
+				provider.DeclRange,
+			)
+		}
+	}
+
+	for name, decl := range providers {
+		if _, ok := module.ProviderRequirements[name]; !ok {
+			runner.EmitIssue(r, fmt.Sprintf(`Missing version constraint for provider "%s" in "required_providers"`, name), decl)
 		}
 	}
 
