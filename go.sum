@@ -297,6 +297,7 @@ github.com/hashicorp/go-tfe v0.8.1/go.mod h1:XAV72S4O1iP8BDaqiaPLmL2B4EE6almocnO
 github.com/hashicorp/go-uuid v1.0.0/go.mod h1:6SBZvOh/SIDV7/2o3Jml5SYk/TvGqwFJ/bN7x4byOro=
 github.com/hashicorp/go-uuid v1.0.1 h1:fv1ep09latC32wFoVwnqcnKJGnMSdBanPczbHAYm1BE=
 github.com/hashicorp/go-uuid v1.0.1/go.mod h1:6SBZvOh/SIDV7/2o3Jml5SYk/TvGqwFJ/bN7x4byOro=
+github.com/hashicorp/go-version v1.0.0/go.mod h1:fltr4n8CU8Ke44wwGCBoEymUuxUHl09ZGVZPK5anwXA=
 github.com/hashicorp/go-version v1.1.0 h1:bPIoEKD27tNdebFGGxxYwcL4nepeY4j1QP23PFRGzg0=
 github.com/hashicorp/go-version v1.1.0/go.mod h1:fltr4n8CU8Ke44wwGCBoEymUuxUHl09ZGVZPK5anwXA=
 github.com/hashicorp/go-version v1.2.0 h1:3vNe/fWF5CBgRIguda1meWhsZHy3m8gCJ5wx+dIzX/E=
@@ -594,8 +595,8 @@ github.com/svanharmelen/jsonapi v0.0.0-20180618144545-0c0828c3f16d/go.mod h1:BST
 github.com/tdakkota/asciicheck v0.0.0-20200416190851-d7f85be797a2/go.mod h1:yHp0ai0Z9gUljN3o0xMhYJnH/IcvkdTBOX2fmJ93JEM=
 github.com/tencentcloud/tencentcloud-sdk-go v3.0.82+incompatible/go.mod h1:0PfYow01SHPMhKY31xa+EFz2RStxIqj6JFAJS+IkCi4=
 github.com/tencentyun/cos-go-sdk-v5 v0.0.0-20190808065407-f07404cefc8c/go.mod h1:wk2XFUg6egk4tSDNZtXeKfe2G6690UVyt163PuUxBZk=
-github.com/terraform-linters/tflint-plugin-sdk v0.3.0 h1:TUMBlM17mZKMzaZtp1KLj6T6BHLTunVQ/8f2cWOaMjY=
-github.com/terraform-linters/tflint-plugin-sdk v0.3.0/go.mod h1:QoSqSV/8GSOrQy3OStK3EEdsA3yZm13My4BQcnx3Zic=
+github.com/terraform-linters/tflint-plugin-sdk v0.3.1-0.20200723121039-5ac6ff48b81e h1:Gy5cL13r/anqhQN1YtUsvv5yUhShLPRkNV3TYert7Qo=
+github.com/terraform-linters/tflint-plugin-sdk v0.3.1-0.20200723121039-5ac6ff48b81e/go.mod h1:fS73Ot098SYLuHWF+uDHAEXG9iHsHbcVwgQ1Eu9zy6c=
 github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20200710175044-2f23a59662cc h1:RNa/U0gK3SnatBwk9t/bCqK03u7fSvBMZMOnovUoCd0=
 github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20200710175044-2f23a59662cc/go.mod h1:tJCY7WQBTQPyFIf0JOkHSwTMS46J/JTa8dxhwtMcwdY=
 github.com/terraform-providers/terraform-provider-openstack v1.15.0/go.mod h1:2aQ6n/BtChAl1y2S60vebhyJyZXBsuAI5G4+lHrT1Ew=

@@ -64,6 +64,56 @@ func (s *Server) encodeManagedResource(resource *configs.ManagedResource) *tfplu
 	}
 }
 
+func (s *Server) encodeModuleCall(call *configs.ModuleCall) *tfplugin.ModuleCall {
+	configRange := tflint.HCLBodyRange(call.Config, call.DeclRange)
+
+	var count []byte
+	var countRange hcl.Range
+	if call.Count != nil {
+		count = call.Count.Range().SliceBytes(s.runner.File(call.Count.Range().Filename).Bytes)
+		countRange = call.Count.Range()
+	}
+
+	var forEach []byte
+	var forEachRange hcl.Range
+	if call.ForEach != nil {
+		forEach = call.ForEach.Range().SliceBytes(s.runner.File(call.ForEach.Range().Filename).Bytes)
+		forEachRange = call.ForEach.Range()
+	}
+
+	providers := []tfplugin.PassedProviderConfig{}
+	for _, provider := range call.Providers {
+		providers = append(providers, tfplugin.PassedProviderConfig{
+			InChild:  s.encodeProviderConfigRef(provider.InChild),
+			InParent: s.encodeProviderConfigRef(provider.InParent),
+		})
+	}
+
+	version := call.Version.Required.String()
+
+	return &tfplugin.ModuleCall{
+		Name: call.Name,
+
+		SourceAddr:      call.SourceAddr,
+		SourceAddrRange: call.SourceAddrRange,
+		SourceSet:       call.SourceSet,
+
+		Version:      version,
+		VersionRange: call.Version.DeclRange,
+
+		Config:      configRange.SliceBytes(s.runner.File(configRange.Filename).Bytes),
+		ConfigRange: configRange,
+
+		Count:        count,
+		CountRange:   countRange,
+		ForEach:      forEach,
+		ForEachRange: forEachRange,
+
+		Providers: providers,
+		DeclRange: call.DeclRange,
+	}
+}
+
 func (s *Server) encodeProviderConfigRef(ref *configs.ProviderConfigRef) *terraform.ProviderConfigRef {
 	if ref == nil {
 		return nil

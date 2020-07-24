@@ -1,8 +1,9 @@
 package tflint
 
 import (
-	"github.com/hashicorp/terraform/configs"
 	"log"
+
+	"github.com/hashicorp/terraform/configs"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
@@ -123,6 +124,17 @@ func (r *Runner) WalkResources(resource string, walker func(*configs.Resource) e
 	for _, resource := range r.LookupResourcesByType(resource) {
 		err := walker(resource)
 		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// WalkModuleCalls walks all module calls and invokes the passed function
+func (r *Runner) WalkModuleCalls(walker func(*configs.ModuleCall) error) error {
+	for _, call := range r.TFConfig.Module.ModuleCalls {
+		if err := walker(call); err != nil {
 			return err
 		}
 	}
