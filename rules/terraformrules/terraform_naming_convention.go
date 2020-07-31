@@ -16,12 +16,21 @@ type terraformNamingConventionRuleConfig struct {
 	Format string `hcl:"format,optional"`
 	Custom string `hcl:"custom,optional"`
 
+	CustomFormats []CustomFormatConfig `hcl:"custom_format,block"`
+
 	Data     *BlockFormatConfig `hcl:"data,block"`
 	Locals   *BlockFormatConfig `hcl:"locals,block"`
 	Module   *BlockFormatConfig `hcl:"module,block"`
 	Output   *BlockFormatConfig `hcl:"output,block"`
 	Resource *BlockFormatConfig `hcl:"resource,block"`
 	Variable *BlockFormatConfig `hcl:"variable,block"`
+}
+
+// CustomFormatConfig defines a custom format that can be used instead of the predefined formats
+type CustomFormatConfig struct {
+	Name        string `hcl:"name,label"`
+	Regexp      string `hcl:"regex"`
+	Description string `hcl:"description"`
 }
 
 // BlockFormatConfig defines the pre-defined format or custom regular expression to use
@@ -107,7 +116,7 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 func (r *TerraformNamingConventionRule) checkDataBlocks(runner *tflint.Runner, config *terraformNamingConventionRuleConfig, defaultValidator *NameValidator) error {
 	validator := defaultValidator
 	if config.Data != nil {
-		nameValidator, err := config.Data.getNameValidator()
+		nameValidator, err := config.Data.getNameValidator(config)
 		if err != nil {
 			return fmt.Errorf("Invalid data configuration: %v", err)
 		}
@@ -140,7 +149,7 @@ func (r *TerraformNamingConventionRule) checkDataBlocks(runner *tflint.Runner, c
 func (r *TerraformNamingConventionRule) checkLocalValues(runner *tflint.Runner, config *terraformNamingConventionRuleConfig, defaultValidator *NameValidator) error {
 	validator := defaultValidator
 	if config.Locals != nil {
-		nameValidator, err := config.Locals.getNameValidator()
+		nameValidator, err := config.Locals.getNameValidator(config)
 		if err != nil {
 			return fmt.Errorf("Invalid locals configuration: %v", err)
 		}
@@ -173,7 +182,7 @@ func (r *TerraformNamingConventionRule) checkLocalValues(runner *tflint.Runner, 
 func (r *TerraformNamingConventionRule) checkModuleBlocks(runner *tflint.Runner, config *terraformNamingConventionRuleConfig, defaultValidator *NameValidator) error {
 	validator := defaultValidator
 	if config.Module != nil {
-		nameValidator, err := config.Module.getNameValidator()
+		nameValidator, err := config.Module.getNameValidator(config)
 		if err != nil {
 			return fmt.Errorf("Invalid module configuration: %v", err)
 		}
@@ -206,7 +215,7 @@ func (r *TerraformNamingConventionRule) checkModuleBlocks(runner *tflint.Runner,
 func (r *TerraformNamingConventionRule) checkOutputBlocks(runner *tflint.Runner, config *terraformNamingConventionRuleConfig, defaultValidator *NameValidator) error {
 	validator := defaultValidator
 	if config.Output != nil {
-		nameValidator, err := config.Output.getNameValidator()
+		nameValidator, err := config.Output.getNameValidator(config)
 		if err != nil {
 			return fmt.Errorf("Invalid output configuration: %v", err)
 		}
@@ -239,7 +248,7 @@ func (r *TerraformNamingConventionRule) checkOutputBlocks(runner *tflint.Runner,
 func (r *TerraformNamingConventionRule) checkResourceBlocks(runner *tflint.Runner, config *terraformNamingConventionRuleConfig, defaultValidator *NameValidator) error {
 	validator := defaultValidator
 	if config.Resource != nil {
-		nameValidator, err := config.Resource.getNameValidator()
+		nameValidator, err := config.Resource.getNameValidator(config)
 		if err != nil {
 			return fmt.Errorf("Invalid resource configuration: %v", err)
 		}
@@ -272,7 +281,7 @@ func (r *TerraformNamingConventionRule) checkResourceBlocks(runner *tflint.Runne
 func (r *TerraformNamingConventionRule) checkVariableBlocks(runner *tflint.Runner, config *terraformNamingConventionRuleConfig, defaultValidator *NameValidator) error {
 	validator := defaultValidator
 	if config.Variable != nil {
-		nameValidator, err := config.Variable.getNameValidator()
+		nameValidator, err := config.Variable.getNameValidator(config)
 		if err != nil {
 			return fmt.Errorf("Invalid variable configuration: %v", err)
 		}
@@ -302,18 +311,18 @@ func (r *TerraformNamingConventionRule) checkVariableBlocks(runner *tflint.Runne
 	return nil
 }
 
-func (config *BlockFormatConfig) getNameValidator() (*NameValidator, error) {
-	return getNameValidator(config.Custom, config.Format)
+func (config *BlockFormatConfig) getNameValidator(ruleConfig *terraformNamingConventionRuleConfig) (*NameValidator, error) {
+	return getNameValidator(config.Custom, config.Format, ruleConfig.CustomFormats)
 }
 
 func (config *terraformNamingConventionRuleConfig) getNameValidator() (*NameValidator, error) {
-	return getNameValidator(config.Custom, config.Format)
+	return getNameValidator(config.Custom, config.Format, config.CustomFormats)
 }
 
 var snakeCaseRegex = regexp.MustCompile("^[a-z][a-z0-9]*(_[a-z0-9]+)*$")
 var mixedSnakeCaseRegex = regexp.MustCompile("^[a-zA-Z][a-zA-Z0-9]*(_[a-zA-Z0-9]+)*$")
 
-func getNameValidator(custom string, format string) (*NameValidator, error) {
+func getNameValidator(custom string, format string, customFormats []CustomFormatConfig) (*NameValidator, error) {
 	// Prefer custom format if specified
 	if custom != "" {
 		customRegex, err := regexp.Compile(custom)
@@ -325,6 +334,18 @@ func getNameValidator(custom string, format string) (*NameValidator, error) {
 
 		return nameValidator, err
 	} else if format != "none" {
+		for _, customFormat := range customFormats {
+
+			if customFormat.Name == format {
+				customRegex, err := regexp.Compile(customFormat.Regexp)
+				nameValidator := &NameValidator{
+					IsNamedFormat: true,
+					Format:        customFormat.Description,
+					Regexp:        customRegex,
+				}
+				return nameValidator, err
+			}
+		}
 		switch strings.ToLower(format) {
 		case "snake_case":
 			nameValidator := &NameValidator{

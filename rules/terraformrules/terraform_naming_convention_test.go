@@ -137,6 +137,32 @@ rule "terraform_naming_convention" {
 }`)
 }
 
+func Test_TerraformNamingConventionRule_Data_CustomFormats(t *testing.T) {
+	testDataSnakeCase(t, `default config (custom_format="custom_snake_case")`, "format: Custom Snake Case", `
+rule "terraform_naming_convention" {
+  enabled = true
+  format = "custom_snake_case"
+
+  custom_format "custom_snake_case" {
+    description = "Custom Snake Case"
+    regex       = "^[a-z][a-z0-9]*(_[a-z0-9]+)*$"
+  }
+}`)
+}
+
+func Test_TerraformNamingConventionRule_Data_CustomFormats_OverridePredefined(t *testing.T) {
+	testDataSnakeCase(t, `default config (custom_format="snake_case")`, "format: Custom Snake Case", `
+rule "terraform_naming_convention" {
+  enabled = true
+  format = "snake_case"
+
+  custom_format "snake_case" {
+    description = "Custom Snake Case"
+    regex       = "^[a-z][a-z0-9]*(_[a-z0-9]+)*$"
+  }
+}`)
+}
+
 func testDataSnakeCase(t *testing.T, testType string, formatName string, config string) {
 	rule := NewTerraformNamingConventionRule()
 
