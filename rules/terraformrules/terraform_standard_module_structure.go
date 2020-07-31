@@ -144,5 +144,5 @@ func (r *TerraformStandardModuleStructureRule) shouldMove(path string, expected 
 		return false
 	}
 
-	return path != expected
+	return filepath.Base(path) != expected
 }
