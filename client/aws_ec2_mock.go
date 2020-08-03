@@ -17675,6 +17675,89 @@ func (mr *MockEC2APIMockRecorder) GetEbsEncryptionByDefaultWithContext(arg0, arg
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEbsEncryptionByDefaultWithContext", reflect.TypeOf((*MockEC2API)(nil).GetEbsEncryptionByDefaultWithContext), varargs...)
 }
 
+// GetGroupsForCapacityReservation mocks base method
+func (m *MockEC2API) GetGroupsForCapacityReservation(arg0 *ec2.GetGroupsForCapacityReservationInput) (*ec2.GetGroupsForCapacityReservationOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetGroupsForCapacityReservation", arg0)
+	ret0, _ := ret[0].(*ec2.GetGroupsForCapacityReservationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetGroupsForCapacityReservation indicates an expected call of GetGroupsForCapacityReservation
+func (mr *MockEC2APIMockRecorder) GetGroupsForCapacityReservation(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroupsForCapacityReservation", reflect.TypeOf((*MockEC2API)(nil).GetGroupsForCapacityReservation), arg0)
+}
+
+// GetGroupsForCapacityReservationPages mocks base method
+func (m *MockEC2API) GetGroupsForCapacityReservationPages(arg0 *ec2.GetGroupsForCapacityReservationInput, arg1 func(*ec2.GetGroupsForCapacityReservationOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetGroupsForCapacityReservationPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetGroupsForCapacityReservationPages indicates an expected call of GetGroupsForCapacityReservationPages
+func (mr *MockEC2APIMockRecorder) GetGroupsForCapacityReservationPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroupsForCapacityReservationPages", reflect.TypeOf((*MockEC2API)(nil).GetGroupsForCapacityReservationPages), arg0, arg1)
+}
+
+// GetGroupsForCapacityReservationPagesWithContext mocks base method
+func (m *MockEC2API) GetGroupsForCapacityReservationPagesWithContext(arg0 context.Context, arg1 *ec2.GetGroupsForCapacityReservationInput, arg2 func(*ec2.GetGroupsForCapacityReservationOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetGroupsForCapacityReservationPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetGroupsForCapacityReservationPagesWithContext indicates an expected call of GetGroupsForCapacityReservationPagesWithContext
+func (mr *MockEC2APIMockRecorder) GetGroupsForCapacityReservationPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroupsForCapacityReservationPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).GetGroupsForCapacityReservationPagesWithContext), varargs...)
+}
+
+// GetGroupsForCapacityReservationRequest mocks base method
+func (m *MockEC2API) GetGroupsForCapacityReservationRequest(arg0 *ec2.GetGroupsForCapacityReservationInput) (*request.Request, *ec2.GetGroupsForCapacityReservationOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetGroupsForCapacityReservationRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.GetGroupsForCapacityReservationOutput)
+	return ret0, ret1
+}
+
+// GetGroupsForCapacityReservationRequest indicates an expected call of GetGroupsForCapacityReservationRequest
+func (mr *MockEC2APIMockRecorder) GetGroupsForCapacityReservationRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroupsForCapacityReservationRequest", reflect.TypeOf((*MockEC2API)(nil).GetGroupsForCapacityReservationRequest), arg0)
+}
+
+// GetGroupsForCapacityReservationWithContext mocks base method
+func (m *MockEC2API) GetGroupsForCapacityReservationWithContext(arg0 context.Context, arg1 *ec2.GetGroupsForCapacityReservationInput, arg2 ...request.Option) (*ec2.GetGroupsForCapacityReservationOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetGroupsForCapacityReservationWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.GetGroupsForCapacityReservationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetGroupsForCapacityReservationWithContext indicates an expected call of GetGroupsForCapacityReservationWithContext
+func (mr *MockEC2APIMockRecorder) GetGroupsForCapacityReservationWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroupsForCapacityReservationWithContext", reflect.TypeOf((*MockEC2API)(nil).GetGroupsForCapacityReservationWithContext), varargs...)
+}
+
 // GetHostReservationPurchasePreview mocks base method
 func (m *MockEC2API) GetHostReservationPurchasePreview(arg0 *ec2.GetHostReservationPurchasePreviewInput) (*ec2.GetHostReservationPurchasePreviewOutput, error) {
 	m.ctrl.T.Helper()
