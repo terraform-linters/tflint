@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  check:
+  vm:
     name: ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -18,6 +18,24 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    - name: Install latest version
+      run: |
+        bash install_linux.sh
+    - name: Install specific version
+      env:
+        TFLINT_VERSION: v0.15.0
+      run: |
+        bash install_linux.sh
+  container:
+    runs-on: ubuntu-latest
+    container:
+      image: hashicorp/terraform
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        apk add bash curl unzip sudo
     - name: Install latest version
       run: |
         bash install_linux.sh
