@@ -47,8 +47,10 @@ func Test_TerraformStandardModuleStructureRule(t *testing.T) {
 		{
 			Name: "directory in path",
 			Content: map[string]string{
-				"foo/main.tf":      "",
-				"foo/variables.tf": "",
+				"foo/main.tf": "",
+				"foo/variables.tf": `
+variable "v" {}				
+				`,
 			},
 			Expected: tflint.Issues{
 				{

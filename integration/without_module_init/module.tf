@@ -8,6 +8,6 @@ variable "instance_type" {
 module "instances" {
   source = "./module"
 
-  unknown = "${var.unknown}"
-  instance_type = "${var.instance_type}"
+  unknown = var.unknown
+  instance_type = var.instance_type
 }

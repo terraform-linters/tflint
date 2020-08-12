@@ -50,6 +50,24 @@ provider "null" {
 			},
 		},
 		{
+			Name: "deprecated single interpolation in locals block",
+			Content: `
+locals {
+	foo = "${var.triggers["foo"]}"
+}`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformDeprecatedInterpolationRule(),
+					Message: "Interpolation-only expressions are deprecated in Terraform v0.12.14",
+					Range: hcl.Range{
+						Filename: "config.tf",
+						Start:    hcl.Pos{Line: 3, Column: 8},
+						End:      hcl.Pos{Line: 3, Column: 32},
+					},
+				},
+			},
+		},
+		{
 			Name: "deprecated single interpolation in nested block",
 			Content: `
 resource "null_resource" "a" {

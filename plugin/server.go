@@ -68,6 +68,17 @@ func (s *Server) Resources(req *tfplugin.ResourcesRequest, resp *tfplugin.Resour
 	return nil
 }
 
+// ModuleCalls returns all configs.ModuleCall as tfplugin.ModuleCall
+func (s *Server) ModuleCalls(req *tfplugin.ModuleCallsRequest, resp *tfplugin.ModuleCallsResponse) error {
+	ret := []*tfplugin.ModuleCall{}
+	err := s.runner.WalkModuleCalls(func(call *configs.ModuleCall) error {
+		ret = append(ret, s.encodeModuleCall(call))
+		return nil
+	})
+	*resp = tfplugin.ModuleCallsResponse{ModuleCalls: ret, Err: err}
+	return nil
+}
+
 // Backend returns corresponding configs.Backend as tfplugin.Backend
 func (s *Server) Backend(req *tfplugin.BackendRequest, resp *tfplugin.BackendResponse) error {
 	backend := s.runner.Backend()

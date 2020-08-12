@@ -42,31 +42,10 @@ func (r *TerraformDeprecatedInterpolationRule) Link() string {
 func (r *TerraformDeprecatedInterpolationRule) Check(runner *tflint.Runner) error {
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
-	for _, resource := range runner.TFConfig.Module.ManagedResources {
-		r.checkForDeprecatedInterpolationsInBody(runner, resource.Config)
-	}
-	for _, provider := range runner.TFConfig.Module.ProviderConfigs {
-		r.checkForDeprecatedInterpolationsInBody(runner, provider.Config)
-	}
-
-	return nil
-}
-
-func (r *TerraformDeprecatedInterpolationRule) checkForDeprecatedInterpolationsInBody(runner *tflint.Runner, body hcl.Body) {
-	nativeBody, ok := body.(*hclsyntax.Body)
-	if !ok {
-		return
-	}
-
-	for _, attr := range nativeBody.Attributes {
-		r.checkForDeprecatedInterpolationsInExpr(runner, attr.Expr)
-	}
-
-	for _, block := range nativeBody.Blocks {
-		r.checkForDeprecatedInterpolationsInBody(runner, block.Body)
-	}
-
-	return
+	return runner.WalkExpressions(func(expr hcl.Expression) error {
+		r.checkForDeprecatedInterpolationsInExpr(runner, expr)
+		return nil
+	})
 }
 
 func (r *TerraformDeprecatedInterpolationRule) checkForDeprecatedInterpolationsInExpr(runner *tflint.Runner, expr hcl.Expression) {

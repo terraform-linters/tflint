@@ -101,7 +101,7 @@ Usage:
 Application Options:
   -v, --version                                   Print TFLint version
       --langserver                                Start language server
-  -f, --format=[default|json|checkstyle]          Output format (default: default)
+  -f, --format=[default|json|checkstyle|junit]    Output format (default: default)
   -c, --config=FILE                               Config file name (default: .tflint.hcl)
       --ignore-module=SOURCE                      Ignore module sources
       --enable-rule=RULE_NAME                     Enable rules from the command line
