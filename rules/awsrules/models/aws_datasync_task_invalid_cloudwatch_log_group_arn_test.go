@@ -23,7 +23,7 @@ resource "aws_datasync_task" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsDatasyncTaskInvalidCloudwatchLogGroupArnRule(),
-					Message: `"arn:aws:s3:::my_corporate_bucket" does not match valid pattern ^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):logs:[a-z\-0-9]*:[0-9]{12}:log-group:([^:\*]*)$`,
+					Message: `"arn:aws:s3:::my_corporate_bucket" does not match valid pattern ^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):logs:[a-z\-0-9]*:[0-9]{12}:log-group:([^:\*]*)(:\*)?$`,
 				},
 			},
 		},

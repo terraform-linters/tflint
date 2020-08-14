@@ -529,7 +529,6 @@ var modelRules = []Rule{
 	awsmodelrules.NewAwsQuicksightGroupInvalidDescriptionRule(),
 	awsmodelrules.NewAwsQuicksightGroupInvalidGroupNameRule(),
 	awsmodelrules.NewAwsQuicksightGroupInvalidNamespaceRule(),
-	awsmodelrules.NewAwsResourcegroupsGroupInvalidDescriptionRule(),
 	awsmodelrules.NewAwsResourcegroupsGroupInvalidNameRule(),
 	awsmodelrules.NewAwsRoute53DelegationSetInvalidReferenceNameRule(),
 	awsmodelrules.NewAwsRoute53HealthCheckInvalidCloudwatchAlarmNameRule(),
