@@ -1,4 +1,4 @@
-import = "aws-sdk-go/models/apis/cloudfront/2019-03-26/api-2.json"
+import = "aws-sdk-go/models/apis/cloudfront/2020-05-31/api-2.json"
 
 mapping "aws_cloudfront_distribution" {
   http_version = HttpVersion

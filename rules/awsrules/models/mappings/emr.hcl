@@ -4,15 +4,11 @@ mapping "aws_emr_cluster" {
   name                              = String
   release_label                     = String
   master_instance_group             = any // InstanceGroup
-  master_instance_type              = any // InstanceType
   scale_down_behavior               = ScaleDownBehavior
   additional_info                   = any // XmlString
   service_role                      = String
   security_configuration            = any // XmlString
   core_instance_group               = InstanceGroup
-  core_instance_type                = any // InstanceType
-  core_instance_count               = Integer
-  instance_group                    = InstanceGroup
   log_uri                           = String
   applications                      = ApplicationList
   termination_protection            = Boolean

@@ -57,7 +57,6 @@ mapping "aws_glue_crawler" {
 }
 
 mapping "aws_glue_job" {
-  allocated_capacity     = IntegerValue
   command                = JobCommand
   connections            = ConnectionsList
   default_arguments      = GenericMap
