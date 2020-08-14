@@ -12,7 +12,7 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/terraform-providers/terraform-provider-aws/aws"
 )
 
@@ -56,7 +56,7 @@ func main() {
 		mappingFiles = append(mappingFiles, mf)
 	}
 
-	awsProvider := aws.Provider().(*schema.Provider)
+	awsProvider := aws.Provider()
 
 	generatedRules := []string{}
 	for _, mappingFile := range mappingFiles {
