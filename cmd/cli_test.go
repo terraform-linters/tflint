@@ -58,6 +58,12 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Stdout:  "",
 		},
 		{
+			Name:    "`--explicit-rules-mode` option",
+			Command: "./tflint --explicit-rules-mode",
+			Status:  ExitCodeOK,
+			Stdout:  "",
+		},
+		{
 			Name:    "loading errors are occurred",
 			Command: "./tflint",
 			LoadErr: errors.New("Load error occurred"),
