@@ -12,6 +12,7 @@ config {
   module = true
   deep_check = true
   force = false
+  explicit_rules_mode = false
 
   aws_credentials = {
     access_key = "AWS_ACCESS_KEY"
@@ -64,6 +65,12 @@ Enable [Deep checking](advanced.md#deep-checking).
 CLI flag: `--force`
 
 Return zero exit status even if issues found. TFLint returns non-zero exit status by default. See [Exit statuses](../../README.md#exit-statuses).
+
+## `explicit_rules_mode`
+
+CLI flag: `--explicit-rules-mode`
+
+Only enable rules specifically enabled in the config or on the command line. All other rules, including defaults, are disabled.
 
 ## `aws_credentials`
 
