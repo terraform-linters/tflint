@@ -97,9 +97,9 @@ func Test_NewRules(t *testing.T) {
 			},
 		},
 		{
-			Name: "explicit-rules-mode = true",
+			Name: "only = true",
 			Config: &tflint.Config{
-				ExplicitRulesMode: true,
+				Only: true,
 				Rules: map[string]*tflint.RuleConfig{
 					"terraform_naming_convention": {
 						Enabled: true,

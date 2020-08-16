@@ -11,26 +11,26 @@ import (
 
 // Options is an option specified by arguments.
 type Options struct {
-	Version           bool     `short:"v" long:"version" description:"Print TFLint version"`
-	Langserver        bool     `long:"langserver" description:"Start language server"`
-	Format            string   `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" choice:"junit" default:"default"`
-	Config            string   `short:"c" long:"config" description:"Config file name" value-name:"FILE" default:".tflint.hcl"`
-	IgnoreModules     []string `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE"`
-	EnableRules       []string `long:"enable-rule" description:"Enable rules from the command line" value-name:"RULE_NAME"`
-	DisableRules      []string `long:"disable-rule" description:"Disable rules from the command line" value-name:"RULE_NAME"`
-	ExplicitRulesMode bool     `long:"explicit-rules-mode" description:"Only enable rules provided by the command line or config"`
-	Varfiles          []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
-	Variables         []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
-	Module            bool     `long:"module" description:"Inspect modules"`
-	Deep              bool     `long:"deep" description:"Enable deep check mode"`
-	AwsAccessKey      string   `long:"aws-access-key" description:"AWS access key used in deep check mode" value-name:"ACCESS_KEY"`
-	AwsSecretKey      string   `long:"aws-secret-key" description:"AWS secret key used in deep check mode" value-name:"SECRET_KEY"`
-	AwsProfile        string   `long:"aws-profile" description:"AWS shared credential profile name used in deep check mode" value-name:"PROFILE"`
-	AwsCredsFile      string   `long:"aws-creds-file" description:"AWS shared credentials file path used in deep checking" value-name:"FILE"`
-	AwsRegion         string   `long:"aws-region" description:"AWS region used in deep check mode" value-name:"REGION"`
-	Force             bool     `long:"force" description:"Return zero exit status even if issues found"`
-	NoColor           bool     `long:"no-color" description:"Disable colorized output"`
-	LogLevel          string   `long:"loglevel" description:"Change the loglevel" choice:"trace" choice:"debug" choice:"info" choice:"warn" choice:"error" default:"none"`
+	Version       bool     `short:"v" long:"version" description:"Print TFLint version"`
+	Langserver    bool     `long:"langserver" description:"Start language server"`
+	Format        string   `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" choice:"junit" default:"default"`
+	Config        string   `short:"c" long:"config" description:"Config file name" value-name:"FILE" default:".tflint.hcl"`
+	IgnoreModules []string `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE"`
+	EnableRules   []string `long:"enable-rule" description:"Enable rules from the command line" value-name:"RULE_NAME"`
+	DisableRules  []string `long:"disable-rule" description:"Disable rules from the command line" value-name:"RULE_NAME"`
+	Only          bool     `long:"only" description:"Only enable rules provided by the command line or config"`
+	Varfiles      []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
+	Variables     []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
+	Module        bool     `long:"module" description:"Inspect modules"`
+	Deep          bool     `long:"deep" description:"Enable deep check mode"`
+	AwsAccessKey  string   `long:"aws-access-key" description:"AWS access key used in deep check mode" value-name:"ACCESS_KEY"`
+	AwsSecretKey  string   `long:"aws-secret-key" description:"AWS secret key used in deep check mode" value-name:"SECRET_KEY"`
+	AwsProfile    string   `long:"aws-profile" description:"AWS shared credential profile name used in deep check mode" value-name:"PROFILE"`
+	AwsCredsFile  string   `long:"aws-creds-file" description:"AWS shared credentials file path used in deep checking" value-name:"FILE"`
+	AwsRegion     string   `long:"aws-region" description:"AWS region used in deep check mode" value-name:"REGION"`
+	Force         bool     `long:"force" description:"Return zero exit status even if issues found"`
+	NoColor       bool     `long:"no-color" description:"Disable colorized output"`
+	LogLevel      string   `long:"loglevel" description:"Change the loglevel" choice:"trace" choice:"debug" choice:"info" choice:"warn" choice:"error" default:"none"`
 }
 
 func (opts *Options) toConfig() *tflint.Config {
@@ -58,7 +58,7 @@ func (opts *Options) toConfig() *tflint.Config {
 	log.Printf("[DEBUG]   IgnoreModules: %#v", ignoreModules)
 	log.Printf("[DEBUG]   EnableRules: %#v", opts.EnableRules)
 	log.Printf("[DEBUG]   DisableRules: %#v", opts.DisableRules)
-	log.Printf("[DEBUG]   ExplicitRulesMode: %#v", opts.ExplicitRulesMode)
+	log.Printf("[DEBUG]   Only: %#v", opts.Only)
 	log.Printf("[DEBUG]   Varfiles: %#v", varfiles)
 	log.Printf("[DEBUG]   Variables: %#v", opts.Variables)
 
@@ -89,11 +89,11 @@ func (opts *Options) toConfig() *tflint.Config {
 			CredsFile: opts.AwsCredsFile,
 			Region:    opts.AwsRegion,
 		},
-		IgnoreModules:     ignoreModules,
-		Varfiles:          varfiles,
-		Variables:         opts.Variables,
-		ExplicitRulesMode: opts.ExplicitRulesMode,
-		Rules:             rules,
-		Plugins:           map[string]*tflint.PluginConfig{},
+		IgnoreModules: ignoreModules,
+		Varfiles:      varfiles,
+		Variables:     opts.Variables,
+		Only:          opts.Only,
+		Rules:         rules,
+		Plugins:       map[string]*tflint.PluginConfig{},
 	}
 }

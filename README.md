@@ -106,7 +106,7 @@ Application Options:
       --ignore-module=SOURCE                      Ignore module sources
       --enable-rule=RULE_NAME                     Enable rules from the command line
       --disable-rule=RULE_NAME                    Disable rules from the command line
-      --explicit-rules-mode                       Only enable rules provided by the command line or config
+      --only                                      Only enable rules provided by the command line or config
       --var-file=FILE                             Terraform variable file name
       --var='foo=bar'                             Set a Terraform variable
       --module                                    Inspect modules

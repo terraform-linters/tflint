@@ -66,9 +66,9 @@ CLI flag: `--force`
 
 Return zero exit status even if issues found. TFLint returns non-zero exit status by default. See [Exit statuses](../../README.md#exit-statuses).
 
-## `explicit_rules_mode`
+## `only`
 
-CLI flag: `--explicit-rules-mode`
+CLI flag: `--only`
 
 Only enable rules specifically enabled in the config or on the command line. All other rules, including defaults, are disabled.
 

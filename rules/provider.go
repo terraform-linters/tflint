@@ -95,8 +95,8 @@ func NewRules(c *tflint.Config) []Rule {
 		allRules = DefaultRules
 	}
 
-	if c.ExplicitRulesMode {
-		log.Printf("[DEBUG] Explicit rules mode is enabled. Only adding explicitly-defined rules")
+	if c.Only {
+		log.Printf("[DEBUG] Only mode is enabled. Only adding explicitly-defined rules")
 	}
 
 	for _, rule := range allRules {
@@ -108,7 +108,7 @@ func NewRules(c *tflint.Config) []Rule {
 				log.Printf("[DEBUG] `%s` is disabled", rule.Name())
 			}
 			enabled = r.Enabled
-		} else if c.ExplicitRulesMode {
+		} else if c.Only {
 			enabled = false
 		}
 
@@ -116,8 +116,8 @@ func NewRules(c *tflint.Config) []Rule {
 			ret = append(ret, rule)
 		}
 	}
-	if c.ExplicitRulesMode && len(ret) == 0 {
-		log.Printf("[WARN] Explicit rule mode is enabled and no rules were provided")
+	if c.Only && len(ret) == 0 {
+		log.Printf("[WARN] Only mode is enabled and no rules were provided")
 	}
 	log.Printf("[INFO]   %d rules enabled", len(ret))
 	return ret

@@ -58,8 +58,8 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Stdout:  "",
 		},
 		{
-			Name:    "`--explicit-rules-mode` option",
-			Command: "./tflint --explicit-rules-mode",
+			Name:    "`--only` option",
+			Command: "./tflint --only",
 			Status:  ExitCodeOK,
 			Stdout:  "",
 		},

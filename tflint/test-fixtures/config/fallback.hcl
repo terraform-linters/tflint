@@ -1,7 +1,7 @@
 config {
   deep_check = true
   force = true
-  explicit_rules_mode = true
+  only = true
 
   aws_credentials = {
     access_key = "AWS_ACCESS_KEY"
