@@ -12,7 +12,7 @@ config {
   module = true
   deep_check = true
   force = false
-  explicit_rules_mode = false
+  only = false
 
   aws_credentials = {
     access_key = "AWS_ACCESS_KEY"
