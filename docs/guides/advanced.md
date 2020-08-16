@@ -57,3 +57,28 @@ You can use the `--ignore-module` option if you want to skip inspection for a pa
 ```
 $ tflint --ignore-module=./module
 ```
+
+## Only Mode
+
+TFLint allows you to specifically enable *only* certain rules, and disable all other rules including the default ruleset. This can be useful for splitting up linting workflows, by separating which rules to inspect at which stage.
+
+For example, you might want a centralized tag-keys linter, checking that all taggable AWS resources contain a set of tags across multiple repositories. You might want to separate that from your other TFLint workflows, because each repo may also have a varying set of rule configurations it wants to apply.
+
+To use Only Mode, you can pass rules on the CLI like so:
+```
+$ tflint --only aws_instance_invalid_type --only aws_instance_invalid_ami
+```
+**Note:** usage of `--only` will ignore any other rules defined via command line via `--enable-rule` or `--disable-rule`.
+
+You can also set `only = true` in the config file. Using this method, any rules enabled in your config file will implicitly become `--only` rules, and all other defaults will be ignored.
+
+```hcl
+config {
+  only = true
+  # other options here...
+}
+
+rule "aws_instance_previous_type" {
+  enabled = true
+}
+```

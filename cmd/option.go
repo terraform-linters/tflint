@@ -18,7 +18,7 @@ type Options struct {
 	IgnoreModules []string `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE"`
 	EnableRules   []string `long:"enable-rule" description:"Enable rules from the command line" value-name:"RULE_NAME"`
 	DisableRules  []string `long:"disable-rule" description:"Disable rules from the command line" value-name:"RULE_NAME"`
-	Only          bool     `long:"only" description:"Only enable rules provided by the command line or config"`
+	Only          []string `long:"only" description:"Enable only this rule, disabling all other defaults. Can be specified multiple times" value-name:"RULE_NAME"`
 	Varfiles      []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
 	Variables     []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
 	Module        bool     `long:"module" description:"Inspect modules"`
@@ -63,19 +63,33 @@ func (opts *Options) toConfig() *tflint.Config {
 	log.Printf("[DEBUG]   Variables: %#v", opts.Variables)
 
 	rules := map[string]*tflint.RuleConfig{}
-	for _, rule := range opts.EnableRules {
-		rules[rule] = &tflint.RuleConfig{
-			Name:    rule,
-			Enabled: true,
-			Body:    hcl.EmptyBody(),
+	if len(opts.Only) > 0 {
+		for _, rule := range opts.Only {
+			rules[rule] = &tflint.RuleConfig{
+				Name:    rule,
+				Enabled: true,
+				Body:    hcl.EmptyBody(),
+			}
+		}
+	} else {
+		for _, rule := range opts.EnableRules {
+			rules[rule] = &tflint.RuleConfig{
+				Name:    rule,
+				Enabled: true,
+				Body:    hcl.EmptyBody(),
+			}
+		}
+		for _, rule := range opts.DisableRules {
+			rules[rule] = &tflint.RuleConfig{
+				Name:    rule,
+				Enabled: false,
+				Body:    hcl.EmptyBody(),
+			}
 		}
 	}
-	for _, rule := range opts.DisableRules {
-		rules[rule] = &tflint.RuleConfig{
-			Name:    rule,
-			Enabled: false,
-			Body:    hcl.EmptyBody(),
-		}
+
+	if len(opts.Only) > 0 && (len(opts.EnableRules) > 0 || len(opts.DisableRules) > 0) {
+		log.Printf("[WARN] Usage of --only will ignore other rules provided by --enable-rule or --disable-rule")
 	}
 
 	return &tflint.Config{
@@ -92,7 +106,7 @@ func (opts *Options) toConfig() *tflint.Config {
 		IgnoreModules: ignoreModules,
 		Varfiles:      varfiles,
 		Variables:     opts.Variables,
-		Only:          opts.Only,
+		Only:          len(opts.Only) > 0,
 		Rules:         rules,
 		Plugins:       map[string]*tflint.PluginConfig{},
 	}

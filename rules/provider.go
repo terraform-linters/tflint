@@ -96,7 +96,7 @@ func NewRules(c *tflint.Config) []Rule {
 	}
 
 	if c.Only {
-		log.Printf("[DEBUG] Only mode is enabled. Only adding explicitly-defined rules")
+		log.Printf("[DEBUG] Only mode is enabled. Ignoring default rules")
 	}
 
 	for _, rule := range allRules {

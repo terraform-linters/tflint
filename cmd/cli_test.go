@@ -59,7 +59,7 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 		},
 		{
 			Name:    "`--only` option",
-			Command: "./tflint --only",
+			Command: "./tflint --only aws_instance_invalid_type",
 			Status:  ExitCodeOK,
 			Stdout:  "",
 		},

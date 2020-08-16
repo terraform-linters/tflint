@@ -265,7 +265,7 @@ func Test_toConfig(t *testing.T) {
 		},
 		{
 			Name:    "--only",
-			Command: "./tflint --enable-rule aws_instance_invalid_type --only",
+			Command: "./tflint --only aws_instance_invalid_type",
 			Expected: &tflint.Config{
 				Module:         false,
 				DeepCheck:      false,
