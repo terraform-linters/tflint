@@ -13,6 +13,7 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/hashicorp/terraform/addrs"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/spf13/afero"
@@ -303,7 +304,9 @@ func (l *Loader) initializeModuleManifest() error {
 			}
 			l.moduleSourceVersions[m.Source] = append(l.moduleSourceVersions[m.Source], m.Version)
 		}
-		l.moduleManifest[m.Key] = m
+
+		moduleAddr := addrs.Module(strings.Split(m.Key, "."))
+		l.moduleManifest[moduleAddr.String()] = m
 	}
 
 	return nil

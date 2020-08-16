@@ -26,7 +26,7 @@ type Runner struct {
 	Issues    Issues
 	AwsClient *client.AwsClient
 
-	ctx         terraform.BuiltinEvalContext
+	ctx         terraform.EvalContext
 	files       map[string]*hcl.File
 	annotations map[string]Annotations
 	config      *Config
@@ -51,22 +51,25 @@ func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotation
 	}
 	log.Printf("[INFO] Initialize new runner for %s", path)
 
+	ctx := terraform.BuiltinEvalContext{
+		Evaluator: &terraform.Evaluator{
+			Meta: &terraform.ContextMeta{
+				Env: getTFWorkspace(),
+			},
+			Config:             cfg.Root,
+			VariableValues:     prepareVariableValues(cfg, variables...),
+			VariableValuesLock: &sync.Mutex{},
+		},
+	}
+
 	runner := &Runner{
 		TFConfig:  cfg,
 		Issues:    Issues{},
 		AwsClient: &client.AwsClient{},
 
-		ctx: terraform.BuiltinEvalContext{
-			PathValue: cfg.Path.UnkeyedInstanceShim(),
-			Evaluator: &terraform.Evaluator{
-				Meta: &terraform.ContextMeta{
-					Env: getTFWorkspace(),
-				},
-				Config:             cfg.Root,
-				VariableValues:     prepareVariableValues(cfg, variables...),
-				VariableValuesLock: &sync.Mutex{},
-			},
-		},
+		// TODO: As described in the godoc for UnkeyedInstanceShim,
+		// it will need to be replaced now that module.for_each is supported
+		ctx:         ctx.WithPath(cfg.Path.UnkeyedInstanceShim()),
 		files:       files,
 		annotations: ants,
 		config:      c,
