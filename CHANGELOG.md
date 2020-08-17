@@ -1,3 +1,35 @@
+## 0.19.0 (2020-08-17)
+
+TFLint v0.19 is now compatible with Terraform v0.13 🎉
+
+This version is also compatible with Terraform v0.12 and can be used without an immediate update to Terraform v0.13. However, we recommend an update to keep up with future updates.
+
+### Breaking Changes
+
+- [#874](https://github.com/terraform-linters/tflint/pull/874): Bump tflint-plugin-sdk to v0.4.0 ([@wata727](https://github.com/wata727))
+  - This change breaks plugin API backward compatibility. In order for plugins to work against v0.19.0, you need to build with tflint-plugin-sdk v0.4.0.
+
+### Enhancements
+
+- [#804](https://github.com/terraform-linters/tflint/pull/804): Terraform v0.13 ([@bendrucker](https://github.com/bendrucker))
+- [#843](https://github.com/terraform-linters/tflint/pull/843): formatter: add support for --format junit ([@bendrucker](https://github.com/bendrucker))
+- [#848](https://github.com/terraform-linters/tflint/pull/848): plugin: Expose `Server.ModuleCalls` for SDK ([@pd](https://github.com/pd))
+- [#849](https://github.com/terraform-linters/tflint/pull/849): deprecated_interpolations: evaluate all block types/expressions ([@bendrucker](https://github.com/bendrucker))
+- [#850](https://github.com/terraform-linters/tflint/pull/850): terraform_required_providers: warn on provider.version ([@bendrucker](https://github.com/bendrucker))
+- [#873](https://github.com/terraform-linters/tflint/pull/873): Bump terraform-provider-aws to v3.2.0 from v2.70.0 ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#859](https://github.com/terraform-linters/tflint/pull/859): standard_module_structure: fix false positives when passing a directory ([@bendrucker](https://github.com/bendrucker))
+
+### Chores
+
+- [#854](https://github.com/terraform-linters/tflint/pull/854) [#864](https://github.com/terraform-linters/tflint/pull/864) [#865](https://github.com/terraform-linters/tflint/pull/865) [#876](https://github.com/terraform-linters/tflint/pull/876): Bump github.com/aws/aws-sdk-go from 1.33.7 to 1.34.5
+- [#855](https://github.com/terraform-linters/tflint/pull/855): Bump github.com/google/go-cmp from 0.5.0 to 0.5.1
+- [#856](https://github.com/terraform-linters/tflint/pull/856) [#861](https://github.com/terraform-linters/tflint/pull/861) [#866](https://github.com/terraform-linters/tflint/pull/866): Bump github.com/spf13/afero from 1.3.1 to 1.3.4
+- [#862](https://github.com/terraform-linters/tflint/pull/862): Bump github.com/golang/mock from 1.4.3 to 1.4.4
+- [#870](https://github.com/terraform-linters/tflint/pull/870): test installation on hashicorp/terraform docker image ([@bendrucker](https://github.com/bendrucker))
+
 ## 0.18.0 (2020-07-19)
 
 This release adds `Backend()` API for accessing the Terraform backend configuration. If you want to use the API, the plugin must be built with tflint-plugin-sdk v0.3.0. For details, please see the CHANGELOG of tflint-plugin-sdk.
