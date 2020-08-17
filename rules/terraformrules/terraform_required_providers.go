@@ -58,7 +58,7 @@ func (r *TerraformRequiredProvidersRule) Check(runner *tflint.Runner) error {
 	}
 
 	for name, decl := range providers {
-		if _, ok := module.ProviderRequirements[name]; !ok {
+		if _, ok := module.ProviderRequirements.RequiredProviders[name]; !ok {
 			runner.EmitIssue(r, fmt.Sprintf(`Missing version constraint for provider "%s" in "required_providers"`, name), decl)
 		}
 	}

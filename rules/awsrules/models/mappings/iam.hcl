@@ -49,7 +49,6 @@ mapping "aws_iam_instance_profile" {
   name        = instanceProfileNameType
   name_prefix = any
   path        = pathType
-  roles       = any
   role        = roleNameType
 }
 

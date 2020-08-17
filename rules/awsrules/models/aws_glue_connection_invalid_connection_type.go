@@ -27,6 +27,7 @@ func NewAwsGlueConnectionInvalidConnectionTypeRule() *AwsGlueConnectionInvalidCo
 			"SFTP",
 			"MONGODB",
 			"KAFKA",
+			"NETWORK",
 		},
 	}
 }

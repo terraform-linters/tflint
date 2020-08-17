@@ -65,8 +65,6 @@ mapping "aws_ssm_maintenance_window_task" {
   description      = MaintenanceWindowDescription
   targets          = Targets
   priority         = MaintenanceWindowTaskPriority
-  logging_info     = LoggingInfo
-  task_parameters  = MaintenanceWindowTaskParameters
 }
 
 mapping "aws_ssm_patch_baseline" {
