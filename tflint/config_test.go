@@ -385,6 +385,135 @@ func Test_Merge(t *testing.T) {
 			},
 		},
 		{
+			Name: "CLI --only argument and merge",
+			Base: &Config{
+				Module:    true,
+				DeepCheck: true,
+				Force:     false,
+				AwsCredentials: client.AwsCredentials{
+					AccessKey: "access_key",
+					SecretKey: "secret_key",
+					Profile:   "production",
+					Region:    "us-east-1",
+				},
+				IgnoreModules: map[string]bool{
+					"github.com/terraform-linters/example-1": true,
+					"github.com/terraform-linters/example-2": false,
+				},
+				Varfiles:          []string{"example1.tfvars", "example2.tfvars"},
+				Variables:         []string{"foo=bar"},
+				DisabledByDefault: false,
+				Rules: map[string]*RuleConfig{
+					"aws_instance_invalid_type": {
+						Name:    "aws_instance_invalid_type",
+						Enabled: false,
+						Body:    file1.Body,
+					},
+					"aws_instance_invalid_ami": {
+						Name:    "aws_instance_invalid_ami",
+						Enabled: true,
+						Body:    file1.Body,
+					},
+				},
+				Plugins: map[string]*PluginConfig{
+					"foo": {
+						Name:    "foo",
+						Enabled: true,
+					},
+					"bar": {
+						Name:    "bar",
+						Enabled: false,
+					},
+				},
+			},
+			Other: &Config{
+				Module:    false,
+				DeepCheck: false,
+				Force:     true,
+				AwsCredentials: client.AwsCredentials{
+					AccessKey: "ACCESS_KEY",
+					SecretKey: "SECRET_KEY",
+					Region:    "ap-northeast-1",
+					CredsFile: "~/.aws/myapp",
+				},
+				IgnoreModules: map[string]bool{
+					"github.com/terraform-linters/example-2": true,
+					"github.com/terraform-linters/example-3": false,
+				},
+				Varfiles:          []string{"example3.tfvars"},
+				Variables:         []string{"bar=baz"},
+				DisabledByDefault: true,
+				Rules: map[string]*RuleConfig{
+					"aws_instance_invalid_type": {
+						Name:    "aws_instance_invalid_type",
+						Enabled: true,
+						Body:    hcl.EmptyBody(),
+					},
+					"aws_instance_previous_type": {
+						Name:    "aws_instance_previous_type",
+						Enabled: true,
+						Body:    hcl.EmptyBody(),
+					},
+				},
+				Plugins: map[string]*PluginConfig{
+					"baz": {
+						Name:    "baz",
+						Enabled: true,
+					},
+					"bar": {
+						Name:    "bar",
+						Enabled: true,
+					},
+				},
+			},
+			Expected: &Config{
+				Module:    true,
+				DeepCheck: true, // DeepCheck will not override
+				Force:     true,
+				AwsCredentials: client.AwsCredentials{
+					AccessKey: "ACCESS_KEY",
+					SecretKey: "SECRET_KEY",
+					Profile:   "production",
+					Region:    "ap-northeast-1",
+					CredsFile: "~/.aws/myapp",
+				},
+				IgnoreModules: map[string]bool{
+					"github.com/terraform-linters/example-1": true,
+					"github.com/terraform-linters/example-2": true,
+					"github.com/terraform-linters/example-3": false,
+				},
+				Varfiles:          []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
+				Variables:         []string{"foo=bar", "bar=baz"},
+				DisabledByDefault: true,
+				Rules: map[string]*RuleConfig{
+					"aws_instance_invalid_type": {
+						Name:    "aws_instance_invalid_type",
+						Enabled: true, // Passing an --only rule from CLI will always enable
+						Body:    file1.Body,
+					},
+					"aws_instance_previous_type": {
+						Name:    "aws_instance_previous_type",
+						Enabled: true,
+						Body:    hcl.EmptyBody(),
+					},
+				},
+				Plugins: map[string]*PluginConfig{
+					"foo": {
+						Name:    "foo",
+						Enabled: true,
+					},
+					"bar": {
+						Name:    "bar",
+						Enabled: true,
+					},
+					"baz": {
+						Name:    "baz",
+						Enabled: true,
+					},
+				},
+			},
+		},
+		{
 			Name: "merge rule config with CLI-based config",
 			Base: &Config{
 				Module:            false,
