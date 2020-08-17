@@ -29,7 +29,6 @@ mapping "aws_dx_gateway" {
 mapping "aws_dx_gateway_association" {
   dx_gateway_id                       = DirectConnectGatewayId
   associated_gateway_id               = AssociatedGatewayId
-  vpn_gateway_id                      = AssociatedGatewayId
   associated_gateway_owner_account_id = OwnerAccount
   proposal_id                         = DirectConnectGatewayAssociationProposalId
   allowed_prefixes                    = RouteFilterPrefixList
@@ -39,7 +38,6 @@ mapping "aws_dx_gateway_association_proposal" {
   dx_gateway_id               = DirectConnectGatewayId
   dx_gateway_owner_account_id = OwnerAccount
   associated_gateway_id       = AssociatedGatewayId
-  vpn_gateway_id              = AssociatedGatewayId
   allowed_prefixes            = RouteFilterPrefixList
 }
 

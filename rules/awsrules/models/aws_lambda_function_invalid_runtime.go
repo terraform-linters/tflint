@@ -30,6 +30,7 @@ func NewAwsLambdaFunctionInvalidRuntimeRule() *AwsLambdaFunctionInvalidRuntimeRu
 			"nodejs10.x",
 			"nodejs12.x",
 			"java8",
+			"java8.al2",
 			"java11",
 			"python2.7",
 			"python3.6",
@@ -44,6 +45,7 @@ func NewAwsLambdaFunctionInvalidRuntimeRule() *AwsLambdaFunctionInvalidRuntimeRu
 			"ruby2.5",
 			"ruby2.7",
 			"provided",
+			"provided.al2",
 		},
 	}
 }
