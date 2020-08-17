@@ -70,11 +70,11 @@ $ tflint --only aws_instance_invalid_type --only aws_instance_invalid_ami
 ```
 **Note:** usage of `--only` will ignore any other rules defined via command line via `--enable-rule` or `--disable-rule`.
 
-You can also set `only = true` in the config file. Using this method, any rules enabled in your config file will implicitly become `--only` rules, and all other defaults will be ignored.
+You can also set `disabled_by_default = true` in the config file. Using this method, any rules enabled in your config file will implicitly become `--only` rules, and all other defaults will be ignored.
 
 ```hcl
 config {
-  only = true
+  disabled_by_default = true
   # other options here...
 }
 

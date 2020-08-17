@@ -95,7 +95,7 @@ func NewRules(c *tflint.Config) []Rule {
 		allRules = DefaultRules
 	}
 
-	if c.Only {
+	if c.DisabledByDefault {
 		log.Printf("[DEBUG] Only mode is enabled. Ignoring default rules")
 	}
 
@@ -108,7 +108,7 @@ func NewRules(c *tflint.Config) []Rule {
 				log.Printf("[DEBUG] `%s` is disabled", rule.Name())
 			}
 			enabled = r.Enabled
-		} else if c.Only {
+		} else if c.DisabledByDefault {
 			enabled = false
 		}
 
@@ -116,7 +116,7 @@ func NewRules(c *tflint.Config) []Rule {
 			ret = append(ret, rule)
 		}
 	}
-	if c.Only && len(ret) == 0 {
+	if c.DisabledByDefault && len(ret) == 0 {
 		log.Printf("[WARN] Only mode is enabled and no rules were provided")
 	}
 	log.Printf("[INFO]   %d rules enabled", len(ret))

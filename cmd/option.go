@@ -103,11 +103,11 @@ func (opts *Options) toConfig() *tflint.Config {
 			CredsFile: opts.AwsCredsFile,
 			Region:    opts.AwsRegion,
 		},
-		IgnoreModules: ignoreModules,
-		Varfiles:      varfiles,
-		Variables:     opts.Variables,
-		Only:          len(opts.Only) > 0,
-		Rules:         rules,
-		Plugins:       map[string]*tflint.PluginConfig{},
+		IgnoreModules:     ignoreModules,
+		Varfiles:          varfiles,
+		Variables:         opts.Variables,
+		DisabledByDefault: len(opts.Only) > 0,
+		Rules:             rules,
+		Plugins:           map[string]*tflint.PluginConfig{},
 	}
 }

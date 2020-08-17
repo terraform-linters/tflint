@@ -97,9 +97,9 @@ func Test_NewRules(t *testing.T) {
 			},
 		},
 		{
-			Name: "only = true",
+			Name: "disabled_by_default = true",
 			Config: &tflint.Config{
-				Only: true,
+				DisabledByDefault: true,
 				Rules: map[string]*tflint.RuleConfig{
 					"terraform_naming_convention": {
 						Enabled: true,

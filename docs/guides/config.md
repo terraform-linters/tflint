@@ -12,7 +12,7 @@ config {
   module = true
   deep_check = true
   force = false
-  only = false
+  disabled_by_default = false
 
   aws_credentials = {
     access_key = "AWS_ACCESS_KEY"
@@ -74,7 +74,7 @@ Only enable rules specifically enabled in the config or on the command line. All
 
 ```hcl
 config {
-  only = true
+  disabled_by_default = true
   # other options here...
 }
 
