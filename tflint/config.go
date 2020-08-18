@@ -299,24 +299,17 @@ func mergeBoolMap(a, b map[string]bool) map[string]bool {
 func mergeRuleMap(a, b map[string]*RuleConfig, bDisabledByDefault bool) map[string]*RuleConfig {
 	ret := map[string]*RuleConfig{}
 	if bDisabledByDefault {
-		// Load all rules from CLI
 		for bK, bV := range b {
-			if bV.Body.MissingItemRange().Filename == "<empty>" {
-				// Refuse to add incomplete rules without required
-				// fields in the config
-				configRuleFound := false
-				for aK, aV := range a {
-					if aK == bK {
-						ret[bK] = bV
-						ret[bK].Body = aV.Body
-						ret[bK].Enabled = true
-						configRuleFound = true
-					}
+			configRuleFound := false
+			for aK, aV := range a {
+				if aK == bK {
+					ret[bK] = bV
+					ret[bK].Body = aV.Body
+					ret[bK].Enabled = true
+					configRuleFound = true
 				}
-				if !configRuleFound {
-					log.Printf("[WARN] Ignoring CLI rule %s with missing required fields", bV.Name)
-				}
-			} else {
+			}
+			if !configRuleFound {
 				ret[bK] = bV
 				ret[bK].Enabled = true
 			}

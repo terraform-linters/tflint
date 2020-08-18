@@ -308,7 +308,7 @@ func Test_Merge(t *testing.T) {
 				},
 				Varfiles:          []string{"example3.tfvars"},
 				Variables:         []string{"bar=baz"},
-				DisabledByDefault: true,
+				DisabledByDefault: false,
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_ami": {
 						Name:    "aws_instance_invalid_ami",
@@ -350,7 +350,7 @@ func Test_Merge(t *testing.T) {
 				},
 				Varfiles:          []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
 				Variables:         []string{"foo=bar", "bar=baz"},
-				DisabledByDefault: true,
+				DisabledByDefault: false,
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -452,7 +452,7 @@ func Test_Merge(t *testing.T) {
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
 						Enabled: true,
-						Body:    hcl.EmptyBody(),
+						Body:    hcl.EmptyBody(), // Will not attach, missing config
 					},
 				},
 				Plugins: map[string]*PluginConfig{
@@ -580,7 +580,7 @@ func Test_Merge(t *testing.T) {
 			cmpopts.IgnoreFields(hclsyntax.Body{}, "Attributes", "Blocks"),
 		}
 		if !cmp.Equal(tc.Expected, ret, opts...) {
-			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(tc.Expected, ret))
+			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(tc.Expected, ret, opts...))
 		}
 	}
 }
