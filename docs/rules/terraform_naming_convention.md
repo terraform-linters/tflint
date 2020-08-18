@@ -14,8 +14,9 @@ Enforces naming conventions for the following blocks:
 Name | Default | Value
 --- | --- | ---
 enabled | `false` | Boolean
-format | `snake_case` | `snake_case`, `mixed_snake_case`, `""`
+format | `snake_case` | `snake_case`, `mixed_snake_case`, `none` or a custom format defined using the `custom_formats` attribute
 custom | `""` | String representation of a golang regular expression that the block name must match
+custom_formats | `{}` | Definition of custom formats that can be used in the `format` attribute
 data | | Block settings to override naming convention for data sources
 locals | | Block settings to override naming convention for local values
 module | | Block settings to override naming convention for modules
@@ -35,8 +36,13 @@ This option accepts one of the following values:
 
 #### `custom`
 
-The `custom` option defines a custom regex that the identifier must match. This option allows you to have a 
-bit more finer-grained control over identifiers, letting you force certain patterns and substrings.
+The `custom` option defines a custom regex that the identifier must match. This option allows you to have a bit more finer-grained control over identifiers, letting you force certain patterns and substrings.
+
+#### `custom_formats`
+
+The `custom_formats` attribute defines additional formats that can be used in the `format` option. Like `custom`, it allows you to define a custom regular expression that the identifier must match, but it also lets you supply a description that will be shown when the check fails. Also, it allows you to reuse a custom regex.
+
+This attribute is a map, where the keys are the identifiers of the custom formats, and the values are objects with a `regex` and a `description` key.
 
 ## Examples
 
@@ -44,7 +50,7 @@ bit more finer-grained control over identifiers, letting you force certain patte
 
 #### Rule configuration
 
-```
+```hcl
 rule "terraform_naming_convention" {
   enabled = true
 }
@@ -78,7 +84,7 @@ Reference: https://github.com/terraform-linters/tflint/blob/v0.15.3/docs/rules/t
 
 #### Rule configuration
 
-```
+```hcl
 rule "terraform_naming_convention" {
   enabled = true
 
@@ -110,11 +116,53 @@ Reference: https://github.com/terraform-linters/tflint/blob/v0.15.3/docs/rules/t
 ```
 
 
+### Custom format for all blocks
+
+#### Rule configuration
+
+```hcl
+rule "terraform_naming_convention" {
+  enabled = true
+  format = "custom_format"
+
+  custom_formats = {
+    custom_format = {
+      description = "Custom Format"
+      regex       = "^[a-zA-Z]+([_-][a-zA-Z]+)*$"
+    }
+  }
+}
+```
+
+#### Sample terraform source file
+
+```hcl
+resource "aws_eip" "Invalid_Name_With_Number123" {
+}
+
+resource "aws_eip" "Name-With_Dash" {
+}
+```
+
+```
+$ tflint
+1 issue(s) found:
+
+Notice: resource name `Invalid_Name_With_Number123` must match the following format: Custom Format (terraform_naming_convention)
+
+  on template.tf line 1:
+   1: resource "aws_eip" "Invalid_Name_With_Number123" {
+
+Reference: https://github.com/terraform-linters/tflint/blob/v0.15.3/docs/rules/terraform_naming_convention.md
+ 
+```
+
+
 ### Override default setting for specific block type
 
 #### Rule configuration
 
-```
+```hcl
 rule "terraform_naming_convention" {
   enabled = true
 
@@ -157,7 +205,7 @@ Reference: https://github.com/terraform-linters/tflint/blob/v0.15.3/docs/rules/t
 
 #### Rule configuration
 
-```
+```hcl
 rule "terraform_naming_convention" {
   enabled = true
 
@@ -185,7 +233,7 @@ module "Valid_Name-Not-Enforced" {
 
 #### Rule configuration
 
-```
+```hcl
 rule "terraform_naming_convention" {
   enabled = true
   format  = "none"
