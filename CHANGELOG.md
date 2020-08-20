@@ -1,8 +1,8 @@
 ## 0.19.0 (2020-08-17)
 
-TFLint v0.19 is now compatible with Terraform v0.13 🎉
+TFLint v0.19 relies on and is compatible with Terraform v0.13! 🎉
 
-This version is also compatible with Terraform v0.12 and can be used without an immediate update to Terraform v0.13. However, we recommend an update to keep up with future updates.
+This version is also compatible with most Terraform v0.12 configurations without an immediate update to Terraform v0.13. [Custom variable validation](https://www.terraform.io/docs/configuration/variables.html#custom-validation-rules) was officially added in v0.13. Any modules that enabled this featue during the experiment phase must remove the experiment setting to be compatible with Terraform v0.13. Consult the [Terraform 0.13.0 changelog](https://github.com/hashicorp/terraform/blob/master/CHANGELOG.md#0130-august-10-2020) for a full list of breaking changes. We recommend all users update when possible.
 
 ### Breaking Changes
 
