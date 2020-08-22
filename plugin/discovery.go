@@ -1,12 +1,14 @@
 package plugin
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	plugin "github.com/hashicorp/go-plugin"
 	"github.com/mitchellh/go-homedir"
@@ -58,7 +60,7 @@ func findPlugins(config *tflint.Config, dir string) (*Plugin, error) {
 			})
 			rpcClient, err := client.Client()
 			if err != nil {
-				return nil, err
+				return nil, pluginClientError(err, cfg)
 			}
 			raw, err := rpcClient.Dispense("ruleset")
 			if err != nil {
@@ -91,4 +93,25 @@ func getPluginPath(dir string, name string) (string, error) {
 	}
 
 	return "", os.ErrNotExist
+}
+
+func pluginClientError(err error, config *tflint.PluginConfig) error {
+	if err == nil {
+		return nil
+	}
+
+	if strings.Contains(err.Error(), "Incompatible API version") {
+		message := err.Error()
+		message = strings.Replace(
+			message,
+			"Incompatible API version with plugin.",
+			fmt.Sprintf(`Incompatible API version with plugin "%s".`, config.Name),
+			-1,
+		)
+		message = strings.Replace(message, "Client versions:", "TFLint versions:", -1)
+
+		return errors.New(message)
+	}
+
+	return err
 }
