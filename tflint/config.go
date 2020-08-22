@@ -156,7 +156,10 @@ func (c *Config) Merge(other *Config) *Config {
 
 // ToPluginConfig converts self into the plugin configuration format
 func (c *Config) ToPluginConfig() *tfplugin.Config {
-	cfg := &tfplugin.Config{Rules: map[string]*tfplugin.RuleConfig{}}
+	cfg := &tfplugin.Config{
+		Rules:             map[string]*tfplugin.RuleConfig{},
+		DisabledByDefault: c.DisabledByDefault,
+	}
 	for _, rule := range c.Rules {
 		cfg.Rules[rule.Name] = &tfplugin.RuleConfig{
 			Name:    rule.Name,

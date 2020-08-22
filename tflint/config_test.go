@@ -597,6 +597,7 @@ func Test_ToPluginConfig(t *testing.T) {
 				Enabled: true,
 			},
 		},
+		DisabledByDefault: true,
 	}
 
 	ret := config.ToPluginConfig()
@@ -611,6 +612,7 @@ func Test_ToPluginConfig(t *testing.T) {
 				Enabled: true,
 			},
 		},
+		DisabledByDefault: true,
 	}
 	if !cmp.Equal(expected, ret) {
 		t.Fatalf("Failed to match: %s", cmp.Diff(expected, ret))
