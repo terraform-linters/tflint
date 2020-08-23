@@ -1,3 +1,14 @@
+## 0.19.1 (2020-08-23)
+
+### Enhancements
+
+- [#870](https://github.com/terraform-linters/tflint/pull/860): Support custom formats in terraform_naming_convention rule ([@angelyan](https://github.com/angelyan))
+- [#885](https://github.com/terraform-linters/tflint/pull/885): plugin: Clarify plugin's incompatible API version errors ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#884](https://github.com/terraform-linters/tflint/pull/884): terraform_rules: Add workaround for skipping child modules inspection ([@wata727](https://github.com/wata727))
+
 ## 0.19.0 (2020-08-17)
 
 TFLint v0.19 relies on and is compatible with Terraform v0.13! 🎉
