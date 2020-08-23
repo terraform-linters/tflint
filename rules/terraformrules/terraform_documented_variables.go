@@ -37,6 +37,11 @@ func (r *TerraformDocumentedVariablesRule) Link() string {
 
 // Check checks whether variables have descriptions
 func (r *TerraformDocumentedVariablesRule) Check(runner *tflint.Runner) error {
+	if !runner.TFConfig.Path.IsRoot() {
+		// This rule does not evaluate child modules.
+		return nil
+	}
+
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	for _, variable := range runner.TFConfig.Module.Variables {

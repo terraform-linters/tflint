@@ -38,6 +38,11 @@ func (r *TerraformDeprecatedIndexRule) Link() string {
 
 // Check walks all expressions and emit issues if deprecated index syntax is found
 func (r *TerraformDeprecatedIndexRule) Check(runner *tflint.Runner) error {
+	if !runner.TFConfig.Path.IsRoot() {
+		// This rule does not evaluate child modules.
+		return nil
+	}
+
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkExpressions(func(expr hcl.Expression) error {

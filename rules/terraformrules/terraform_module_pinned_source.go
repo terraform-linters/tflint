@@ -64,6 +64,11 @@ var reSemverRevision = regexp.MustCompile("\\?rev=v?\\d+\\.\\d+\\.\\d+$")
 // Check checks if module source version is pinned
 // Note that this rule is valid only for Git or Mercurial source
 func (r *TerraformModulePinnedSourceRule) Check(runner *tflint.Runner) error {
+	if !runner.TFConfig.Path.IsRoot() {
+		// This rule does not evaluate child modules.
+		return nil
+	}
+
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	config := terraformModulePinnedSourceRuleConfig{Style: "flexible"}

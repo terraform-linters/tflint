@@ -47,6 +47,11 @@ func (r *TerraformUnusedDeclarationsRule) Link() string {
 
 // Check emits issues for any variables, locals, and data sources that are declared but not used
 func (r *TerraformUnusedDeclarationsRule) Check(runner *tflint.Runner) error {
+	if !runner.TFConfig.Path.IsRoot() {
+		// This rule does not evaluate child modules.
+		return nil
+	}
+
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	decl := r.declarations(runner.TFConfig.Module)

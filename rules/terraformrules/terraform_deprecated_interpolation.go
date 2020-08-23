@@ -40,6 +40,11 @@ func (r *TerraformDeprecatedInterpolationRule) Link() string {
 // This logic is equivalent to the warning logic implemented in Terraform.
 // See https://github.com/hashicorp/terraform/pull/23348
 func (r *TerraformDeprecatedInterpolationRule) Check(runner *tflint.Runner) error {
+	if !runner.TFConfig.Path.IsRoot() {
+		// This rule does not evaluate child modules.
+		return nil
+	}
+
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	return runner.WalkExpressions(func(expr hcl.Expression) error {
