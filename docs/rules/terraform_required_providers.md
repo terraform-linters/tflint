@@ -1,6 +1,6 @@
 # terraform_required_providers
 
-Require that all providers have version constraints through `required_providers` or the provider `version` attribute.
+Require that all providers have version constraints through `required_providers`.
 
 ## Configuration
 
