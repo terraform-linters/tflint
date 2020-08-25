@@ -37,6 +37,56 @@ provider "template" {}
 			},
 		},
 		{
+			Name: "implicit provider - resource",
+			Content: `
+resource "random_string" "foo" {
+	length = 16
+}
+`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformRequiredProvidersRule(),
+					Message: `Missing version constraint for provider "random" in "required_providers"`,
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start: hcl.Pos{
+							Line:   2,
+							Column: 1,
+						},
+						End: hcl.Pos{
+							Line:   2,
+							Column: 31,
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "implicit provider - data source",
+			Content: `
+data "template_file" "foo" {
+	template = ""
+}
+`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformRequiredProvidersRule(),
+					Message: `Missing version constraint for provider "template" in "required_providers"`,
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start: hcl.Pos{
+							Line:   2,
+							Column: 1,
+						},
+						End: hcl.Pos{
+							Line:   2,
+							Column: 27,
+						},
+					},
+				},
+			},
+		},
+		{
 			Name: "required_providers set",
 			Content: `
 terraform {
