@@ -7,7 +7,7 @@ require (
 	github.com/fatih/color v1.9.0
 	github.com/golang/mock v1.4.4
 	github.com/google/go-cmp v0.5.1
-	github.com/hashicorp/aws-sdk-go-base v0.5.0
+	github.com/hashicorp/aws-sdk-go-base v0.6.0
 	github.com/hashicorp/go-plugin v1.3.0
 	github.com/hashicorp/go-version v1.2.1
 	github.com/hashicorp/hcl/v2 v2.6.0
@@ -23,9 +23,9 @@ require (
 	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
 	github.com/spf13/afero v1.3.4
 	github.com/terraform-linters/tflint-plugin-sdk v0.4.1-0.20200822151013-70ed6c361b0b
-	github.com/terraform-providers/terraform-provider-aws v3.2.0+incompatible
+	github.com/terraform-providers/terraform-provider-aws v3.3.0+incompatible
 	github.com/zclconf/go-cty v1.5.1
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
 )
 
-replace github.com/terraform-providers/terraform-provider-aws v3.2.0+incompatible => github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20200814011416-90f795918be7
+replace github.com/terraform-providers/terraform-provider-aws v3.3.0+incompatible => github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20200820211857-51f8bae0d4ee
