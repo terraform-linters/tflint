@@ -58,6 +58,12 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Stdout:  "",
 		},
 		{
+			Name:    "`--only` option",
+			Command: "./tflint --only aws_instance_invalid_type",
+			Status:  ExitCodeOK,
+			Stdout:  "",
+		},
+		{
 			Name:    "loading errors are occurred",
 			Command: "./tflint",
 			LoadErr: errors.New("Load error occurred"),
