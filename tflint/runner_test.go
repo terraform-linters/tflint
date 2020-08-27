@@ -42,7 +42,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 		}
 
 		expectedVars := map[string]map[string]*configs.Variable{
-			"root": {
+			"module.root": {
 				"override": {
 					Name:        "override",
 					Default:     cty.StringVal("foo"),
@@ -77,7 +77,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					},
 				},
 			},
-			"root.test": {
+			"module.root.module.test": {
 				"override": {
 					Name:        "override",
 					Default:     cty.StringVal("foo"),
@@ -145,8 +145,8 @@ func Test_NewModuleRunners_modVars(t *testing.T) {
 		}
 
 		child := runners[0]
-		if child.TFConfig.Path.String() != "module1" {
-			t.Fatalf("Expected child config path name is `module1`, but get `%s`", child.TFConfig.Path.String())
+		if child.TFConfig.Path.String() != "module.module1" {
+			t.Fatalf("Expected child config path name is `module.module1`, but get `%s`", child.TFConfig.Path.String())
 		}
 
 		expected := map[string]*moduleVariable{
@@ -173,8 +173,8 @@ func Test_NewModuleRunners_modVars(t *testing.T) {
 		}
 
 		grandchild := runners[1]
-		if grandchild.TFConfig.Path.String() != "module1.module2" {
-			t.Fatalf("Expected child config path name is `module1.module2`, but get `%s`", grandchild.TFConfig.Path.String())
+		if grandchild.TFConfig.Path.String() != "module.module1.module.module2" {
+			t.Fatalf("Expected child config path name is `module.module1.module.module2`, but get `%s`", grandchild.TFConfig.Path.String())
 		}
 
 		expected = map[string]*moduleVariable{

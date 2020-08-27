@@ -12,6 +12,16 @@ module "instances" {
   instance_type = var.instance_type
 }
 
+module "instances_for_each" {
+  source = "./module"
+
+  for_each = toset(["t1.4xlarge"])
+
+  unknown = var.unknown
+  enable = true
+  instance_type = each.key
+}
+
 module "instances_with_annotations" {
   source = "./module"
 

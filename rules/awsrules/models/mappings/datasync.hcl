@@ -3,28 +3,28 @@ import = "aws-sdk-go/models/apis/datasync/2018-11-09/api-2.json"
 mapping "aws_datasync_agent" {
   name           = TagValue
   activation_key = ActivationKey
-  tags           = TagList
+  tags           = InputTagList
 }
 
 mapping "aws_datasync_location_efs" {
   ec2_config          = Ec2Config
   efs_file_system_arn = EfsFilesystemArn
   subdirectory        = EfsSubdirectory
-  tags                = TagList
+  tags                = InputTagList
 }
 
 mapping "aws_datasync_location_nfs" {
   on_prem_config  = OnPremConfig
   server_hostname = ServerHostname
   subdirectory    = EfsSubdirectory
-  tags            = TagList
+  tags            = InputTagList
 }
 
 mapping "aws_datasync_location_s3" {
   s3_bucket_arn = S3BucketArn
   s3_config     = S3Config
   subdirectory  = EfsSubdirectory
-  tags          = TagList
+  tags          = InputTagList
 }
 
 mapping "aws_datasync_task" {
@@ -33,7 +33,7 @@ mapping "aws_datasync_task" {
   cloudwatch_log_group_arn = LogGroupArn
   name                     = TagValue
   options                  = Options
-  tags                     = TagList
+  tags                     = InputTagList
 }
 
 test "aws_datasync_agent" "name" {

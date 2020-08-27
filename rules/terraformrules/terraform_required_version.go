@@ -2,9 +2,10 @@ package terraformrules
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
-	"log"
 )
 
 // TerraformRequiredVersionRule checks whether a terraform version has required_version attribute
@@ -37,6 +38,11 @@ func (r *TerraformRequiredVersionRule) Link() string {
 
 // Check checks whether variables have descriptions
 func (r *TerraformRequiredVersionRule) Check(runner *tflint.Runner) error {
+	if !runner.TFConfig.Path.IsRoot() {
+		// This rule does not evaluate child modules.
+		return nil
+	}
+
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	module := runner.TFConfig.Module

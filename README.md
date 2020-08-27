@@ -30,7 +30,7 @@ TFLint finds such errors in advance:
 You can download the binary built for your architecture from [the latest release](https://github.com/terraform-linters/tflint/releases/latest). The following is an example of installation on macOS:
 
 ```console
-$ curl --location https://github.com/terraform-linters/tflint/releases/download/v0.18.0/tflint_darwin_amd64.zip --output tflint_darwin_amd64.zip
+$ curl --location https://github.com/terraform-linters/tflint/releases/download/v0.19.1/tflint_darwin_amd64.zip --output tflint_darwin_amd64.zip
 $ unzip tflint_darwin_amd64.zip
 Archive:  tflint_darwin_amd64.zip
   inflating: tflint
@@ -85,7 +85,7 @@ Please see the [documentation](docs/guides/extend.md) about the plugin system.
 
 ## Limitations
 
-TFLint load configurations in the same way as Terraform v0.12. This means that it cannot inspect configurations that cannot be parsed on Terraform v0.12.
+TFLint load configurations in the same way as Terraform v0.13. This means that it cannot inspect configurations that cannot be parsed on Terraform v0.13.
 
 See [Compatibility with Terraform](docs/guides/compatibility.md) for details.
 
@@ -106,6 +106,7 @@ Application Options:
       --ignore-module=SOURCE                      Ignore module sources
       --enable-rule=RULE_NAME                     Enable rules from the command line
       --disable-rule=RULE_NAME                    Disable rules from the command line
+      --only=RULE_NAME                            Enable only this rule, disabling all other defaults. Can be specified multiple times
       --var-file=FILE                             Terraform variable file name
       --var='foo=bar'                             Set a Terraform variable
       --module                                    Inspect modules

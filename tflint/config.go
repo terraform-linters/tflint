@@ -26,13 +26,14 @@ var removedRulesMap = map[string]string{
 
 type rawConfig struct {
 	Config *struct {
-		Module         *bool              `hcl:"module"`
-		DeepCheck      *bool              `hcl:"deep_check"`
-		Force          *bool              `hcl:"force"`
-		AwsCredentials *map[string]string `hcl:"aws_credentials"`
-		IgnoreModule   *map[string]bool   `hcl:"ignore_module"`
-		Varfile        *[]string          `hcl:"varfile"`
-		Variables      *[]string          `hcl:"variables"`
+		Module            *bool              `hcl:"module"`
+		DeepCheck         *bool              `hcl:"deep_check"`
+		Force             *bool              `hcl:"force"`
+		AwsCredentials    *map[string]string `hcl:"aws_credentials"`
+		IgnoreModule      *map[string]bool   `hcl:"ignore_module"`
+		Varfile           *[]string          `hcl:"varfile"`
+		Variables         *[]string          `hcl:"variables"`
+		DisabledByDefault *bool              `hcl:"disabled_by_default"`
 		// Removed options
 		TerraformVersion *string          `hcl:"terraform_version"`
 		IgnoreRule       *map[string]bool `hcl:"ignore_rule"`
@@ -43,15 +44,16 @@ type rawConfig struct {
 
 // Config describes the behavior of TFLint
 type Config struct {
-	Module         bool
-	DeepCheck      bool
-	Force          bool
-	AwsCredentials client.AwsCredentials
-	IgnoreModules  map[string]bool
-	Varfiles       []string
-	Variables      []string
-	Rules          map[string]*RuleConfig
-	Plugins        map[string]*PluginConfig
+	Module            bool
+	DeepCheck         bool
+	Force             bool
+	AwsCredentials    client.AwsCredentials
+	IgnoreModules     map[string]bool
+	Varfiles          []string
+	Variables         []string
+	DisabledByDefault bool
+	Rules             map[string]*RuleConfig
+	Plugins           map[string]*PluginConfig
 }
 
 // RuleConfig is a TFLint's rule config
@@ -71,15 +73,16 @@ type PluginConfig struct {
 // It is mainly used for testing
 func EmptyConfig() *Config {
 	return &Config{
-		Module:         false,
-		DeepCheck:      false,
-		Force:          false,
-		AwsCredentials: client.AwsCredentials{},
-		IgnoreModules:  map[string]bool{},
-		Varfiles:       []string{},
-		Variables:      []string{},
-		Rules:          map[string]*RuleConfig{},
-		Plugins:        map[string]*PluginConfig{},
+		Module:            false,
+		DeepCheck:         false,
+		Force:             false,
+		AwsCredentials:    client.AwsCredentials{},
+		IgnoreModules:     map[string]bool{},
+		Varfiles:          []string{},
+		Variables:         []string{},
+		DisabledByDefault: false,
+		Rules:             map[string]*RuleConfig{},
+		Plugins:           map[string]*PluginConfig{},
 	}
 }
 
@@ -136,13 +139,16 @@ func (c *Config) Merge(other *Config) *Config {
 	if other.Force {
 		ret.Force = true
 	}
+	if other.DisabledByDefault {
+		ret.DisabledByDefault = true
+	}
 
 	ret.AwsCredentials = ret.AwsCredentials.Merge(other.AwsCredentials)
 	ret.IgnoreModules = mergeBoolMap(ret.IgnoreModules, other.IgnoreModules)
 	ret.Varfiles = append(ret.Varfiles, other.Varfiles...)
 	ret.Variables = append(ret.Variables, other.Variables...)
 
-	ret.Rules = mergeRuleMap(ret.Rules, other.Rules)
+	ret.Rules = mergeRuleMap(ret.Rules, other.Rules, other.DisabledByDefault)
 	ret.Plugins = mergePluginMap(ret.Plugins, other.Plugins)
 
 	return ret
@@ -150,7 +156,10 @@ func (c *Config) Merge(other *Config) *Config {
 
 // ToPluginConfig converts self into the plugin configuration format
 func (c *Config) ToPluginConfig() *tfplugin.Config {
-	cfg := &tfplugin.Config{Rules: map[string]*tfplugin.RuleConfig{}}
+	cfg := &tfplugin.Config{
+		Rules:             map[string]*tfplugin.RuleConfig{},
+		DisabledByDefault: c.DisabledByDefault,
+	}
 	for _, rule := range c.Rules {
 		cfg.Rules[rule.Name] = &tfplugin.RuleConfig{
 			Name:    rule.Name,
@@ -227,15 +236,16 @@ func (c *Config) copy() *Config {
 	}
 
 	return &Config{
-		Module:         c.Module,
-		DeepCheck:      c.DeepCheck,
-		Force:          c.Force,
-		AwsCredentials: c.AwsCredentials,
-		IgnoreModules:  ignoreModules,
-		Varfiles:       varfiles,
-		Variables:      variables,
-		Rules:          rules,
-		Plugins:        plugins,
+		Module:            c.Module,
+		DeepCheck:         c.DeepCheck,
+		Force:             c.Force,
+		AwsCredentials:    c.AwsCredentials,
+		IgnoreModules:     ignoreModules,
+		Varfiles:          varfiles,
+		Variables:         variables,
+		DisabledByDefault: c.DisabledByDefault,
+		Rules:             rules,
+		Plugins:           plugins,
 	}
 }
 
@@ -271,6 +281,7 @@ func loadConfigFromFile(file string) (*Config, error) {
 	log.Printf("[DEBUG]   IgnoreModules: %#v", cfg.IgnoreModules)
 	log.Printf("[DEBUG]   Varfiles: %#v", cfg.Varfiles)
 	log.Printf("[DEBUG]   Variables: %#v", cfg.Variables)
+	log.Printf("[DEBUG]   DisabledByDefault: %#v", cfg.DisabledByDefault)
 	log.Printf("[DEBUG]   Rules: %#v", cfg.Rules)
 	log.Printf("[DEBUG]   Plugins: %#v", cfg.Plugins)
 
@@ -288,8 +299,27 @@ func mergeBoolMap(a, b map[string]bool) map[string]bool {
 	return ret
 }
 
-func mergeRuleMap(a, b map[string]*RuleConfig) map[string]*RuleConfig {
+func mergeRuleMap(a, b map[string]*RuleConfig, bDisabledByDefault bool) map[string]*RuleConfig {
 	ret := map[string]*RuleConfig{}
+	if bDisabledByDefault {
+		for bK, bV := range b {
+			configRuleFound := false
+			for aK, aV := range a {
+				if aK == bK {
+					ret[bK] = bV
+					ret[bK].Body = aV.Body
+					ret[bK].Enabled = true
+					configRuleFound = true
+				}
+			}
+			if !configRuleFound {
+				ret[bK] = bV
+				ret[bK].Enabled = true
+			}
+		}
+		return ret
+	}
+
 	for k, v := range a {
 		ret[k] = v
 	}
@@ -331,6 +361,9 @@ func (raw *rawConfig) toConfig() *Config {
 		}
 		if rc.Force != nil {
 			ret.Force = *rc.Force
+		}
+		if rc.DisabledByDefault != nil {
+			ret.DisabledByDefault = *rc.DisabledByDefault
 		}
 		if rc.AwsCredentials != nil {
 			credentials := *rc.AwsCredentials

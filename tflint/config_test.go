@@ -44,8 +44,9 @@ func Test_LoadConfig(t *testing.T) {
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-module": true,
 				},
-				Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
-				Variables: []string{"foo=bar", "bar=['foo']"},
+				Varfiles:          []string{"example1.tfvars", "example2.tfvars"},
+				Variables:         []string{"foo=bar", "bar=['foo']"},
+				DisabledByDefault: false,
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -86,11 +87,12 @@ func Test_LoadConfig(t *testing.T) {
 					SecretKey: "AWS_SECRET_KEY",
 					Region:    "us-east-1",
 				},
-				IgnoreModules: map[string]bool{},
-				Varfiles:      []string{},
-				Variables:     []string{},
-				Rules:         map[string]*RuleConfig{},
-				Plugins:       map[string]*PluginConfig{},
+				IgnoreModules:     map[string]bool{},
+				Varfiles:          []string{},
+				Variables:         []string{},
+				DisabledByDefault: true,
+				Rules:             map[string]*RuleConfig{},
+				Plugins:           map[string]*PluginConfig{},
 			},
 		},
 		{
@@ -206,8 +208,9 @@ func Test_Merge(t *testing.T) {
 			"github.com/terraform-linters/example-1": true,
 			"github.com/terraform-linters/example-2": false,
 		},
-		Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
-		Variables: []string{"foo=bar"},
+		Varfiles:          []string{"example1.tfvars", "example2.tfvars"},
+		Variables:         []string{"foo=bar"},
+		DisabledByDefault: false,
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
 				Name:    "aws_instance_invalid_type",
@@ -263,8 +266,9 @@ func Test_Merge(t *testing.T) {
 					"github.com/terraform-linters/example-1": true,
 					"github.com/terraform-linters/example-2": false,
 				},
-				Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
-				Variables: []string{"foo=bar"},
+				Varfiles:          []string{"example1.tfvars", "example2.tfvars"},
+				Variables:         []string{"foo=bar"},
+				DisabledByDefault: false,
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -302,8 +306,9 @@ func Test_Merge(t *testing.T) {
 					"github.com/terraform-linters/example-2": true,
 					"github.com/terraform-linters/example-3": false,
 				},
-				Varfiles:  []string{"example3.tfvars"},
-				Variables: []string{"bar=baz"},
+				Varfiles:          []string{"example3.tfvars"},
+				Variables:         []string{"bar=baz"},
+				DisabledByDefault: false,
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_ami": {
 						Name:    "aws_instance_invalid_ami",
@@ -343,8 +348,9 @@ func Test_Merge(t *testing.T) {
 					"github.com/terraform-linters/example-2": true,
 					"github.com/terraform-linters/example-3": false,
 				},
-				Varfiles:  []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
-				Variables: []string{"foo=bar", "bar=baz"},
+				Varfiles:          []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
+				Variables:         []string{"foo=bar", "bar=baz"},
+				DisabledByDefault: false,
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -379,15 +385,145 @@ func Test_Merge(t *testing.T) {
 			},
 		},
 		{
+			Name: "CLI --only argument and merge",
+			Base: &Config{
+				Module:    true,
+				DeepCheck: true,
+				Force:     false,
+				AwsCredentials: client.AwsCredentials{
+					AccessKey: "access_key",
+					SecretKey: "secret_key",
+					Profile:   "production",
+					Region:    "us-east-1",
+				},
+				IgnoreModules: map[string]bool{
+					"github.com/terraform-linters/example-1": true,
+					"github.com/terraform-linters/example-2": false,
+				},
+				Varfiles:          []string{"example1.tfvars", "example2.tfvars"},
+				Variables:         []string{"foo=bar"},
+				DisabledByDefault: false,
+				Rules: map[string]*RuleConfig{
+					"aws_instance_invalid_type": {
+						Name:    "aws_instance_invalid_type",
+						Enabled: false,
+						Body:    file1.Body,
+					},
+					"aws_instance_invalid_ami": {
+						Name:    "aws_instance_invalid_ami",
+						Enabled: true,
+						Body:    file1.Body,
+					},
+				},
+				Plugins: map[string]*PluginConfig{
+					"foo": {
+						Name:    "foo",
+						Enabled: true,
+					},
+					"bar": {
+						Name:    "bar",
+						Enabled: false,
+					},
+				},
+			},
+			Other: &Config{
+				Module:    false,
+				DeepCheck: false,
+				Force:     true,
+				AwsCredentials: client.AwsCredentials{
+					AccessKey: "ACCESS_KEY",
+					SecretKey: "SECRET_KEY",
+					Region:    "ap-northeast-1",
+					CredsFile: "~/.aws/myapp",
+				},
+				IgnoreModules: map[string]bool{
+					"github.com/terraform-linters/example-2": true,
+					"github.com/terraform-linters/example-3": false,
+				},
+				Varfiles:          []string{"example3.tfvars"},
+				Variables:         []string{"bar=baz"},
+				DisabledByDefault: true,
+				Rules: map[string]*RuleConfig{
+					"aws_instance_invalid_type": {
+						Name:    "aws_instance_invalid_type",
+						Enabled: true,
+						Body:    hcl.EmptyBody(),
+					},
+					"aws_instance_previous_type": {
+						Name:    "aws_instance_previous_type",
+						Enabled: true,
+						Body:    hcl.EmptyBody(), // Will not attach, missing config
+					},
+				},
+				Plugins: map[string]*PluginConfig{
+					"baz": {
+						Name:    "baz",
+						Enabled: true,
+					},
+					"bar": {
+						Name:    "bar",
+						Enabled: true,
+					},
+				},
+			},
+			Expected: &Config{
+				Module:    true,
+				DeepCheck: true, // DeepCheck will not override
+				Force:     true,
+				AwsCredentials: client.AwsCredentials{
+					AccessKey: "ACCESS_KEY",
+					SecretKey: "SECRET_KEY",
+					Profile:   "production",
+					Region:    "ap-northeast-1",
+					CredsFile: "~/.aws/myapp",
+				},
+				IgnoreModules: map[string]bool{
+					"github.com/terraform-linters/example-1": true,
+					"github.com/terraform-linters/example-2": true,
+					"github.com/terraform-linters/example-3": false,
+				},
+				Varfiles:          []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
+				Variables:         []string{"foo=bar", "bar=baz"},
+				DisabledByDefault: true,
+				Rules: map[string]*RuleConfig{
+					"aws_instance_invalid_type": {
+						Name:    "aws_instance_invalid_type",
+						Enabled: true, // Passing an --only rule from CLI will always enable
+						Body:    file1.Body,
+					},
+					"aws_instance_previous_type": {
+						Name:    "aws_instance_previous_type",
+						Enabled: true,
+						Body:    hcl.EmptyBody(),
+					},
+				},
+				Plugins: map[string]*PluginConfig{
+					"foo": {
+						Name:    "foo",
+						Enabled: true,
+					},
+					"bar": {
+						Name:    "bar",
+						Enabled: true,
+					},
+					"baz": {
+						Name:    "baz",
+						Enabled: true,
+					},
+				},
+			},
+		},
+		{
 			Name: "merge rule config with CLI-based config",
 			Base: &Config{
-				Module:         false,
-				DeepCheck:      false,
-				Force:          false,
-				AwsCredentials: client.AwsCredentials{},
-				IgnoreModules:  map[string]bool{},
-				Varfiles:       []string{},
-				Variables:      []string{},
+				Module:            false,
+				DeepCheck:         false,
+				Force:             false,
+				AwsCredentials:    client.AwsCredentials{},
+				IgnoreModules:     map[string]bool{},
+				Varfiles:          []string{},
+				Variables:         []string{},
+				DisabledByDefault: false,
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -398,13 +534,14 @@ func Test_Merge(t *testing.T) {
 				Plugins: map[string]*PluginConfig{},
 			},
 			Other: &Config{
-				Module:         false,
-				DeepCheck:      false,
-				Force:          false,
-				AwsCredentials: client.AwsCredentials{},
-				IgnoreModules:  map[string]bool{},
-				Varfiles:       []string{},
-				Variables:      []string{},
+				Module:            false,
+				DeepCheck:         false,
+				Force:             false,
+				AwsCredentials:    client.AwsCredentials{},
+				IgnoreModules:     map[string]bool{},
+				Varfiles:          []string{},
+				Variables:         []string{},
+				DisabledByDefault: false,
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -415,13 +552,14 @@ func Test_Merge(t *testing.T) {
 				Plugins: map[string]*PluginConfig{},
 			},
 			Expected: &Config{
-				Module:         false,
-				DeepCheck:      false,
-				Force:          false,
-				AwsCredentials: client.AwsCredentials{},
-				IgnoreModules:  map[string]bool{},
-				Varfiles:       []string{},
-				Variables:      []string{},
+				Module:            false,
+				DeepCheck:         false,
+				Force:             false,
+				AwsCredentials:    client.AwsCredentials{},
+				IgnoreModules:     map[string]bool{},
+				Varfiles:          []string{},
+				Variables:         []string{},
+				DisabledByDefault: false,
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -442,7 +580,7 @@ func Test_Merge(t *testing.T) {
 			cmpopts.IgnoreFields(hclsyntax.Body{}, "Attributes", "Blocks"),
 		}
 		if !cmp.Equal(tc.Expected, ret, opts...) {
-			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(tc.Expected, ret))
+			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(tc.Expected, ret, opts...))
 		}
 	}
 }
@@ -459,6 +597,7 @@ func Test_ToPluginConfig(t *testing.T) {
 				Enabled: true,
 			},
 		},
+		DisabledByDefault: true,
 	}
 
 	ret := config.ToPluginConfig()
@@ -473,6 +612,7 @@ func Test_ToPluginConfig(t *testing.T) {
 				Enabled: true,
 			},
 		},
+		DisabledByDefault: true,
 	}
 	if !cmp.Equal(expected, ret) {
 		t.Fatalf("Failed to match: %s", cmp.Diff(expected, ret))
@@ -588,8 +728,9 @@ func Test_copy(t *testing.T) {
 			"github.com/terraform-linters/example-1": true,
 			"github.com/terraform-linters/example-2": false,
 		},
-		Varfiles:  []string{"example1.tfvars", "example2.tfvars"},
-		Variables: []string{},
+		Varfiles:          []string{"example1.tfvars", "example2.tfvars"},
+		Variables:         []string{},
+		DisabledByDefault: true,
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
 				Name:    "aws_instance_invalid_type",
@@ -632,6 +773,12 @@ func Test_copy(t *testing.T) {
 			Name: "Force",
 			SideEffect: func(c *Config) {
 				c.Force = false
+			},
+		},
+		{
+			Name: "DisabledByDefault",
+			SideEffect: func(c *Config) {
+				c.DisabledByDefault = false
 			},
 		},
 		{

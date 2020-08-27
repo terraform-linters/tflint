@@ -12,6 +12,7 @@ config {
   module = true
   deep_check = true
   force = false
+  disabled_by_default = false
 
   aws_credentials = {
     access_key = "AWS_ACCESS_KEY"
@@ -64,6 +65,23 @@ Enable [Deep checking](advanced.md#deep-checking).
 CLI flag: `--force`
 
 Return zero exit status even if issues found. TFLint returns non-zero exit status by default. See [Exit statuses](../../README.md#exit-statuses).
+
+## `only`
+
+CLI flag: `--only`
+
+Only enable rules specifically enabled in the config or on the command line. All other rules, including defaults, are disabled. Note, usage of `--only` on the command line will ignore other rules passed in via `--enable-rule` or `--disabled-rule`. See [Only Mode](advanced.md#only-mode).
+
+```hcl
+config {
+  disabled_by_default = true
+  # other options here...
+}
+
+rule "aws_instance_previous_type" {
+  enabled = true
+}
+```
 
 ## `aws_credentials`
 

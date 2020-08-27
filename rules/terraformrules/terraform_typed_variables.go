@@ -39,6 +39,11 @@ func (r *TerraformTypedVariablesRule) Link() string {
 
 // Check checks whether variables have type
 func (r *TerraformTypedVariablesRule) Check(runner *tflint.Runner) error {
+	if !runner.TFConfig.Path.IsRoot() {
+		// This rule does not evaluate child modules.
+		return nil
+	}
+
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	files := make(map[string]*struct{})

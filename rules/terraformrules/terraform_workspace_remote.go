@@ -40,6 +40,11 @@ func (r *TerraformWorkspaceRemoteRule) Link() string {
 // Check checks for a "remote" backend and if found emits issues for
 // each use of terraform.workspace in an expression.
 func (r *TerraformWorkspaceRemoteRule) Check(runner *tflint.Runner) error {
+	if !runner.TFConfig.Path.IsRoot() {
+		// This rule does not evaluate child modules.
+		return nil
+	}
+
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	backend := runner.TFConfig.Root.Module.Backend

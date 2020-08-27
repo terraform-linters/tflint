@@ -10,7 +10,6 @@ import (
 	"sort"
 	"text/template"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/terraform-providers/terraform-provider-aws/aws"
 )
 
@@ -21,7 +20,7 @@ type TemplateData struct {
 }
 
 func main() {
-	provider := aws.Provider().(*schema.Provider)
+	provider := aws.Provider()
 	resources := make([]string, 0)
 
 	for name, resource := range provider.ResourcesMap {

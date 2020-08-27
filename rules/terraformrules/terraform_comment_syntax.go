@@ -40,6 +40,11 @@ func (r *TerraformCommentSyntaxRule) Link() string {
 
 // Check checks whether variables have type
 func (r *TerraformCommentSyntaxRule) Check(runner *tflint.Runner) error {
+	if !runner.TFConfig.Path.IsRoot() {
+		// This rule does not evaluate child modules.
+		return nil
+	}
+
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	for name, file := range runner.Files() {
