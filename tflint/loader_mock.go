@@ -6,7 +6,7 @@ package tflint
 
 import (
 	gomock "github.com/golang/mock/gomock"
-	hcl "github.com/hashicorp/hcl/v2"
+	v2 "github.com/hashicorp/hcl/v2"
 	configs "github.com/hashicorp/terraform/configs"
 	terraform "github.com/hashicorp/terraform/terraform"
 	reflect "reflect"
@@ -85,10 +85,10 @@ func (mr *MockAbstractLoaderMockRecorder) LoadValuesFiles(arg0 ...interface{}) *
 }
 
 // Files mocks base method
-func (m *MockAbstractLoader) Files() (map[string]*hcl.File, error) {
+func (m *MockAbstractLoader) Files() (map[string]*v2.File, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Files")
-	ret0, _ := ret[0].(map[string]*hcl.File)
+	ret0, _ := ret[0].(map[string]*v2.File)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
