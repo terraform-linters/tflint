@@ -96,6 +96,20 @@ func Test_NewRules(t *testing.T) {
 				terraformrules.NewTerraformNamingConventionRule(),
 			},
 		},
+		{
+			Name: "disabled_by_default = true",
+			Config: &tflint.Config{
+				DisabledByDefault: true,
+				Rules: map[string]*tflint.RuleConfig{
+					"terraform_naming_convention": {
+						Enabled: true,
+					},
+				},
+			},
+			Expected: []Rule{
+				terraformrules.NewTerraformNamingConventionRule(),
+			},
+		},
 	}
 
 	for _, tc := range cases {
