@@ -7,4 +7,3 @@ import (
 	// All imports should be ignored (_)
 	_ "golang.org/x/lint/golint"
 )
-
