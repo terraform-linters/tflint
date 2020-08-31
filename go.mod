@@ -24,7 +24,7 @@ require (
 	github.com/spf13/afero v1.3.4
 	github.com/terraform-linters/tflint-plugin-sdk v0.4.1-0.20200822151013-70ed6c361b0b
 	github.com/terraform-providers/terraform-provider-aws v3.3.0+incompatible
-	github.com/zclconf/go-cty v1.5.1
+	github.com/zclconf/go-cty v1.6.0
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
 )
 
