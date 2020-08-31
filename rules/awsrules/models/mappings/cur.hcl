@@ -17,7 +17,7 @@ test "aws_cur_report_definition" "report_name" {
 
 test "aws_cur_report_definition" "time_unit" {
   ok = "HOURLY"
-  ng = "MONTHLY"
+  ng = "FORNIGHTLY"
 }
 
 test "aws_cur_report_definition" "format" {
