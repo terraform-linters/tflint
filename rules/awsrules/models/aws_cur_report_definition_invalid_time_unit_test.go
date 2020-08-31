@@ -18,12 +18,12 @@ func Test_AwsCurReportDefinitionInvalidTimeUnitRule(t *testing.T) {
 			Name: "It includes invalid characters",
 			Content: `
 resource "aws_cur_report_definition" "foo" {
-	time_unit = "FORTNIGHTLY"
+	time_unit = "FORNIGHTLY"
 }`,
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCurReportDefinitionInvalidTimeUnitRule(),
-					Message: `"FORTNIGHTLY" is an invalid value as time_unit`,
+					Message: `"FORNIGHTLY" is an invalid value as time_unit`,
 				},
 			},
 		},
