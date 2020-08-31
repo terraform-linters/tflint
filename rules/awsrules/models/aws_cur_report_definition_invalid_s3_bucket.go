@@ -3,7 +3,9 @@
 package models
 
 import (
+	"fmt"
 	"log"
+	"regexp"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
@@ -14,6 +16,7 @@ type AwsCurReportDefinitionInvalidS3BucketRule struct {
 	resourceType  string
 	attributeName string
 	max           int
+	pattern       *regexp.Regexp
 }
 
 // NewAwsCurReportDefinitionInvalidS3BucketRule returns new rule with default attributes
@@ -22,6 +25,7 @@ func NewAwsCurReportDefinitionInvalidS3BucketRule() *AwsCurReportDefinitionInval
 		resourceType:  "aws_cur_report_definition",
 		attributeName: "s3_bucket",
 		max:           256,
+		pattern:       regexp.MustCompile(`^[A-Za-z0-9_\.\-]+$`),
 	}
 }
 
@@ -58,6 +62,13 @@ func (r *AwsCurReportDefinitionInvalidS3BucketRule) Check(runner *tflint.Runner)
 				runner.EmitIssue(
 					r,
 					"s3_bucket must be 256 characters or less",
+					attribute.Expr.Range(),
+				)
+			}
+			if !r.pattern.MatchString(val) {
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[A-Za-z0-9_\.\-]+$`),
 					attribute.Expr.Range(),
 				)
 			}
