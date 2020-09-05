@@ -38,7 +38,7 @@ func (r *TerraformCommentSyntaxRule) Link() string {
 	return tflint.ReferenceLink(r.Name())
 }
 
-// Check checks whether variables have type
+//  checks whether single line comments is used
 func (r *TerraformCommentSyntaxRule) Check(runner *tflint.Runner) error {
 	if !runner.TFConfig.Path.IsRoot() {
 		// This rule does not evaluate child modules.
