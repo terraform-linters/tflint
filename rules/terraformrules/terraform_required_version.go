@@ -36,7 +36,7 @@ func (r *TerraformRequiredVersionRule) Link() string {
 	return tflint.ReferenceLink(r.Name())
 }
 
-// Check checks whether variables have descriptions
+// Check Checks whether required_version is set
 func (r *TerraformRequiredVersionRule) Check(runner *tflint.Runner) error {
 	if !runner.TFConfig.Path.IsRoot() {
 		// This rule does not evaluate child modules.
