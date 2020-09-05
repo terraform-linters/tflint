@@ -185,6 +185,11 @@ resource "aws_s3_bucket" "bar" {
 				Alias:      "west",
 				AliasRange: &hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 3, Column: 17}, End: hcl.Pos{Line: 3, Column: 22}},
 			},
+			Provider: terraform.Provider{
+				Type:      "aws",
+				Namespace: "hashicorp",
+				Hostname:  "registry.terraform.io",
+			},
 
 			Managed: &tfplugin.ManagedResource{
 				Connection: &tfplugin.Connection{

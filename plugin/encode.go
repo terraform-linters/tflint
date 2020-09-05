@@ -37,6 +37,11 @@ func (s *Server) encodeResource(resource *configs.Resource) *tfplugin.Resource {
 		ForEachRange: forEachRange,
 
 		ProviderConfigRef: s.encodeProviderConfigRef(resource.ProviderConfigRef),
+		Provider: terraform.Provider{
+			Type:      resource.Provider.Type,
+			Namespace: resource.Provider.Namespace,
+			Hostname:  resource.Provider.Hostname,
+		},
 
 		Managed: s.encodeManagedResource(resource.Managed),
 

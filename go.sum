@@ -406,6 +406,8 @@ github.com/hashicorp/terraform-plugin-test/v2 v2.0.0 h1:fYGV3nZvs8KFGKuY2NPAJDMN
 github.com/hashicorp/terraform-plugin-test/v2 v2.0.0/go.mod h1:C6VALgUlvaif+PnHyRGKWPTdQkMJK4NQ20VJolxZLI0=
 github.com/hashicorp/terraform-svchost v0.0.0-20191011084731-65d371908596 h1:hjyO2JsNZUKT1ym+FAdlBEkGPevazYsmVgIMw7dVELg=
 github.com/hashicorp/terraform-svchost v0.0.0-20191011084731-65d371908596/go.mod h1:kNDNcF7sN4DocDLBkQYz73HGKwN1ANB1blq4lIYLYvg=
+github.com/hashicorp/terraform-svchost v0.0.0-20200729002733-f050f53b9734 h1:HKLsbzeOsfXmKNpr3GiT18XAblV0BjCbzL8KQAMZGa0=
+github.com/hashicorp/terraform-svchost v0.0.0-20200729002733-f050f53b9734/go.mod h1:kNDNcF7sN4DocDLBkQYz73HGKwN1ANB1blq4lIYLYvg=
 github.com/hashicorp/vault v0.10.4/go.mod h1:KfSyffbKxoVyspOdlaGVjIuwLobi07qD1bAbosPMpP0=
 github.com/hashicorp/yamux v0.0.0-20180604194846-3520598351bb/go.mod h1:+NfK9FKeTrX5uv1uIXGdwYDTeHna2qgaIlx54MXqjAM=
 github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d h1:kJCB4vdITiW1eC1vq2e6IsrXKrZit1bv/TDYFGMp4BQ=
@@ -665,8 +667,8 @@ github.com/svanharmelen/jsonapi v0.0.0-20180618144545-0c0828c3f16d/go.mod h1:BST
 github.com/tdakkota/asciicheck v0.0.0-20200416190851-d7f85be797a2/go.mod h1:yHp0ai0Z9gUljN3o0xMhYJnH/IcvkdTBOX2fmJ93JEM=
 github.com/tencentcloud/tencentcloud-sdk-go v3.0.82+incompatible/go.mod h1:0PfYow01SHPMhKY31xa+EFz2RStxIqj6JFAJS+IkCi4=
 github.com/tencentyun/cos-go-sdk-v5 v0.0.0-20190808065407-f07404cefc8c/go.mod h1:wk2XFUg6egk4tSDNZtXeKfe2G6690UVyt163PuUxBZk=
-github.com/terraform-linters/tflint-plugin-sdk v0.4.1-0.20200822151013-70ed6c361b0b h1:FaoCjs6qg297OpM9VbaMffhO9W5OqZCqWXwzReiX38k=
-github.com/terraform-linters/tflint-plugin-sdk v0.4.1-0.20200822151013-70ed6c361b0b/go.mod h1:8ambsL6uszTTnQ9vFOXuUABmd/40ji4YWbKmB/hIYGI=
+github.com/terraform-linters/tflint-plugin-sdk v0.4.1-0.20200830151305-aa1706d5964d h1:j7f5vGDdK5Lz2L3iy/MuvP3P+JZrujUcQ8mIWr5mHJc=
+github.com/terraform-linters/tflint-plugin-sdk v0.4.1-0.20200830151305-aa1706d5964d/go.mod h1:P9m9LS1tpT0S3uKNUhc6ZDGOhrTjduNR+UsTFMSUdhA=
 github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20200820211857-51f8bae0d4ee h1:sR82Aay6Aus6YLm3UykKLuuznJmvaf3wN31AG/JMvII=
 github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20200820211857-51f8bae0d4ee/go.mod h1:ttheJZ00I3Onq1r/HdjZHDV4B3mwOgytFgC28efE5fA=
 github.com/tetafro/godot v0.4.2/go.mod h1:/7NLHhv08H1+8DNj0MElpAACw1ajsCuf3TKNQxA5S+0=
