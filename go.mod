@@ -21,7 +21,7 @@ require (
 	github.com/serenize/snaker v0.0.0-20171204205717-a683aaf2d516
 	github.com/sourcegraph/go-lsp v0.0.0-20181119182933-0c7d621186c1
 	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
-	github.com/spf13/afero v1.3.4
+	github.com/spf13/afero v1.3.5
 	github.com/terraform-linters/tflint-plugin-sdk v0.4.1-0.20200830151305-aa1706d5964d
 	github.com/terraform-providers/terraform-provider-aws v3.3.0+incompatible
 	github.com/zclconf/go-cty v1.6.0
