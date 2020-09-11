@@ -40,6 +40,7 @@ These rules warn of possible errors that can occur at `terraform apply`. Rules m
 |aws_route_invalid_network_interface|✔|
 |aws_route_invalid_route_table|✔|
 |aws_route_invalid_vpc_peering_connection|✔|
+|[aws_s3_bucket_name](aws_s3_bucket_name.md)||
 |[aws_route_not_specified_target](aws_route_not_specified_target.md)||
 |[aws_route_specified_multiple_targets](aws_route_specified_multiple_targets.md)||
 
