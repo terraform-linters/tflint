@@ -34,6 +34,7 @@ var manualDefaultRules = []Rule{
 	awsrules.NewAwsRouteSpecifiedMultipleTargetsRule(),
 	awsrules.NewAwsS3BucketInvalidACLRule(),
 	awsrules.NewAwsS3BucketInvalidRegionRule(),
+	awsrules.NewAwsS3BucketNameMatchRegexRule(),
 	awsrules.NewAwsSpotFleetRequestInvalidExcessCapacityTerminationPolicyRule(),
 	awsrules.NewAwsResourceMissingTagsRule(),
 	awsrules.NewAwsDynamoDBTableInvalidStreamViewTypeRule(),
