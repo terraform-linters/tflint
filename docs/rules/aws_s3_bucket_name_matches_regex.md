@@ -31,7 +31,7 @@ resource "aws_s3_bucket" "foo" {
 $ tflint
 1 issue(s) found:
 
-Error: Bucket name foo.domain.com does not match regex ^prod.*(aws_s3_bucket_name_match_regex)
+Error: Bucket name foo.domain.com does not match regex ^prod.* (aws_s3_bucket_name_match_regex)
 
   on ../infrastructure/infrastructure/shared-services/s3-buckets.tf line 2:
   2:   bucket = "foo.domain.com"
