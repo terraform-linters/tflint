@@ -6,7 +6,8 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/terraform-linters/tflint-plugin-sdk/terraform"
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/addrs"
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/configs"
 	client "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint/client"
 	"github.com/terraform-linters/tflint/tflint"
@@ -148,7 +149,7 @@ resource "aws_s3_bucket" "bar" {
 
 	expected := []*tfplugin.Resource{
 		{
-			Mode: terraform.ManagedResourceMode,
+			Mode: addrs.ManagedResourceMode,
 			Name: "foo",
 			Type: "aws_instance",
 			Config: []byte(`provider = aws.west
@@ -179,13 +180,13 @@ resource "aws_s3_bucket" "bar" {
 			Count:       []byte(`1`),
 			CountRange:  hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 4, Column: 11}, End: hcl.Pos{Line: 4, Column: 12}},
 
-			ProviderConfigRef: &terraform.ProviderConfigRef{
+			ProviderConfigRef: &configs.ProviderConfigRef{
 				Name:       "aws",
 				NameRange:  hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 3, Column: 14}, End: hcl.Pos{Line: 3, Column: 17}},
 				Alias:      "west",
 				AliasRange: &hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 3, Column: 17}, End: hcl.Pos{Line: 3, Column: 22}},
 			},
-			Provider: terraform.Provider{
+			Provider: addrs.Provider{
 				Type:      "aws",
 				Namespace: "hashicorp",
 				Hostname:  "registry.terraform.io",
@@ -213,8 +214,8 @@ resource "aws_s3_bucket" "bar" {
 							ConfigRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 18, Column: 7}, End: hcl.Pos{Line: 18, Column: 19}},
 							DeclRange:   hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 17, Column: 5}, End: hcl.Pos{Line: 17, Column: 15}},
 						},
-						When:      terraform.ProvisionerWhenDestroy,
-						OnFailure: terraform.ProvisionerOnFailureContinue,
+						When:      configs.ProvisionerWhenDestroy,
+						OnFailure: configs.ProvisionerOnFailureContinue,
 						DeclRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 12, Column: 3}, End: hcl.Pos{Line: 12, Column: 27}},
 						TypeRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 12, Column: 15}, End: hcl.Pos{Line: 12, Column: 27}},
 					},

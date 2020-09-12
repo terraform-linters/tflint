@@ -93,6 +93,15 @@ func (s *Server) Backend(req *tfplugin.BackendRequest, resp *tfplugin.BackendRes
 	return nil
 }
 
+// Config returns corresponding configs.Config as tfplugin.Config
+func (s *Server) Config(req *tfplugin.ConfigRequest, resp *tfplugin.ConfigResponse) error {
+	*resp = tfplugin.ConfigResponse{
+		Config: s.encodeConfig(s.runner.TFConfig),
+	}
+
+	return nil
+}
+
 // EvalExpr returns a value of the evaluated expression
 func (s *Server) EvalExpr(req *tfplugin.EvalExprRequest, resp *tfplugin.EvalExprResponse) error {
 	expr, diags := tflint.ParseExpression(req.Expr, req.ExprRange.Filename, req.ExprRange.Start)
