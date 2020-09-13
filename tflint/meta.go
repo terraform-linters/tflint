@@ -3,7 +3,7 @@ package tflint
 import "fmt"
 
 // Version is application version
-const Version string = "0.20.0"
+const Version string = "0.20.1"
 
 // ReferenceLink returns the rule reference link
 func ReferenceLink(name string) string {

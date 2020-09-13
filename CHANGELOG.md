@@ -1,3 +1,9 @@
+## 0.20.1 (2020-09-13)
+
+### Chores
+
+- [#914](https://github.com/terraform-linters/tflint/pull/914): Bump goreleaser version ([@wata727](https://github.com/wata727))
+
 ## 0.20.0 (2020-09-13)
 
 This release introduces a new CLI flag `--only`. This allows you to run the analysis with only certain rules enabled.
