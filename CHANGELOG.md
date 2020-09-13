@@ -2,6 +2,8 @@
 
 This release introduces a new CLI flag `--only`. This allows you to run the analysis with only certain rules enabled.
 
+Also, this release is built with Go v1.15. As a result, darwin/386 build will no longer available from the release. Due to a release process issue, this release does not include pre-built binaries, so please check v0.20.1.
+
 ### Breaking Changes
 
 - [#913](https://github.com/terraform-linters/tflint/pull/913): Bump tflint-plugin-sdk to v0.5.0 ([@wata727](https://github.com/wata727))
