@@ -3,7 +3,7 @@
 Some inspections implicitly assume the behavior of a specific version of provider plugins or Terraform. This always assumes the latest version and is as follows:
 
 - Terraform v0.13.0
-- AWS Provider v3.2.0
+- AWS Provider v3.6.0
 
 Of course, TFLint may work correctly if you run it on other versions. But, false positives/negatives can occur based on this assumption.
 
