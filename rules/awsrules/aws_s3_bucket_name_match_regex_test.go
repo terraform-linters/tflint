@@ -18,13 +18,8 @@ func Test_AwsS3BucketInvalidName(t *testing.T) {
 			Name: "Wanted tags: Bar,Foo, found: bar,foo",
 			Content: `
 resource "aws_s3_bucket" "foo" {
-  bucket = "prod.foo.domain.com"
+  bucket = "blue.foo.domain.com"
   acl    = "private"
-
-  tags = {
-    Name        = "foo"
-    Environment = "prod"
-  }
 }
 
 resource "aws_s3_bucket" "bar" {
@@ -36,25 +31,25 @@ resource "aws_s3_bucket" "bar" {
 	}
   }`,
 			Config: `
-rule "aws_s3_bucket_name_match_regex" {
+rule "aws_s3_bucket_name" {
 	enabled = true
-	regex = "^prod.*"
+	regex = "^blue.*"
 }`,
 			Expected: tflint.Issues{
 				{
-					Rule:    NewAwsS3BucketNameMatchRegexRule(),
-					Message: "Bucket name bar.domain.com does not match regex ^prod.*",
+					Rule:    NewAwsS3BucketNameRule(),
+					Message: "Bucket name bar.domain.com does not match regex ^blue.*",
 					Range: hcl.Range{
 						Filename: "resource.tf",
-						Start:    hcl.Pos{Line: 13, Column: 11},
-						End:      hcl.Pos{Line: 13, Column: 27},
+						Start:    hcl.Pos{Line: 8, Column: 11},
+						End:      hcl.Pos{Line: 8, Column: 27},
 					},
 				},
 			},
 		},
 	}
 
-	rule := NewAwsS3BucketNameMatchRegexRule()
+	rule := NewAwsS3BucketNameRule()
 
 	for _, tc := range cases {
 		runner := tflint.TestRunnerWithConfig(t, map[string]string{"resource.tf": tc.Content}, loadConfigfromTempFile(t, tc.Config))

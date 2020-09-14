@@ -9,8 +9,8 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-// AwsS3BucketNameMatchRegexRule checks ...
-type AwsS3BucketNameMatchRegexRule struct {
+// AwsS3BucketNameRule checks ...
+type AwsS3BucketNameRule struct {
 	resourceType  string
 	attributeName string
 	// Add more field
@@ -21,36 +21,36 @@ type awsS3BucketNameMatchRegexConfig struct {
 	Regex string `hcl:"regex"`
 }
 
-// NewAwsS3BucketNameMatchRegexRule returns new rule with default attributes
-func NewAwsS3BucketNameMatchRegexRule() *AwsS3BucketNameMatchRegexRule {
-	return &AwsS3BucketNameMatchRegexRule{
+// NewAwsS3BucketNameRule returns new rule with default attributes
+func NewAwsS3BucketNameRule() *AwsS3BucketNameRule {
+	return &AwsS3BucketNameRule{
 		resourceType:  "aws_s3_bucket",
 		attributeName: "bucket",
 	}
 }
 
 // Name returns the rule name
-func (r *AwsS3BucketNameMatchRegexRule) Name() string {
-	return "aws_s3_bucket_name_match_regex"
+func (r *AwsS3BucketNameRule) Name() string {
+	return "aws_s3_bucket_name"
 }
 
 // Enabled returns whether the rule is enabled by default
-func (r *AwsS3BucketNameMatchRegexRule) Enabled() bool {
+func (r *AwsS3BucketNameRule) Enabled() bool {
 	return true
 }
 
 // Severity returns the rule severity
-func (r *AwsS3BucketNameMatchRegexRule) Severity() string {
+func (r *AwsS3BucketNameRule) Severity() string {
 	return tflint.ERROR
 }
 
 // Link returns the rule reference link
-func (r *AwsS3BucketNameMatchRegexRule) Link() string {
+func (r *AwsS3BucketNameRule) Link() string {
 	return ""
 }
 
 // Check if the name of the s3 bucket matches the regex defined in the rule
-func (r *AwsS3BucketNameMatchRegexRule) Check(runner *tflint.Runner) error {
+func (r *AwsS3BucketNameRule) Check(runner *tflint.Runner) error {
 	log.Printf("[INFO] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 	config := awsS3BucketNameMatchRegexConfig{}
 	if err := runner.DecodeRuleConfig(r.Name(), &config); err != nil {
