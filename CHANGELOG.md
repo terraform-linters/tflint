@@ -1,3 +1,42 @@
+## 0.20.1 (2020-09-13)
+
+### Chores
+
+- [#914](https://github.com/terraform-linters/tflint/pull/914): Bump goreleaser version ([@wata727](https://github.com/wata727))
+
+## 0.20.0 (2020-09-13)
+
+This release introduces a new CLI flag `--only`. This allows you to run the analysis with only certain rules enabled.
+
+Also, this release is built with Go v1.15. As a result, darwin/386 build will no longer available from the release. Due to a release process issue, this release does not include pre-built binaries, so please check v0.20.1.
+
+### Breaking Changes
+
+- [#913](https://github.com/terraform-linters/tflint/pull/913): Bump tflint-plugin-sdk to v0.5.0 ([@wata727](https://github.com/wata727))
+  - This change breaks plugin API backward compatibility. In order for plugins to work against v0.20.0, you need to build with tflint-plugin-sdk v0.5.0.
+
+### Enhancements
+
+- [#875](https://github.com/terraform-linters/tflint/pull/875): Capability to only run explicitly-provided rules ([@markliederbach](https://github.com/markliederbach))
+- [#889](https://github.com/terraform-linters/tflint/pull/889): required_providers: handle implicit providers ([@bendrucker](https://github.com/bendrucker))
+- [#901](https://github.com/terraform-linters/tflint/pull/901) [#912](https://github.com/terraform-linters/tflint/pull/912): Bump terraform-provider-aws to v3.6.0 from v3.2.0 ([@bendrucker](https://github.com/bendrucker) [@wata727](https://github.com/wata727))
+- [#904](https://github.com/terraform-linters/tflint/pull/904): plugin: Add `Provider` field to `terraform.Resource` ([@wata727](https://github.com/wata727))
+- [#911](https://github.com/terraform-linters/tflint/pull/911): plugin: Add `Config()` method to the plugin server ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#871](https://github.com/terraform-linters/tflint/pull/871): chore(deps): bump go to v1.15 ([@chenrui333](https://github.com/chenrui333) [@bendrucker](https://github.com/bendrucker))
+- [#887](https://github.com/terraform-linters/tflint/pull/887) [#897](https://github.com/terraform-linters/tflint/pull/897) [#899](https://github.com/terraform-linters/tflint/pull/899) [#905](https://github.com/terraform-linters/tflint/pull/905): Bump github.com/aws/aws-sdk-go from 1.34.5 to 1.34.18
+- [#891](https://github.com/terraform-linters/tflint/pull/891) [#902](https://github.com/terraform-linters/tflint/pull/902): chore(deps): terraform 0.13.2 ([@chenrui333](https://github.com/chenrui333))
+- [#892](https://github.com/terraform-linters/tflint/pull/892): update dependabot to include github action dep support ([@chenrui333](https://github.com/chenrui333))
+- [#893](https://github.com/terraform-linters/tflint/pull/893): Bump actions/cache from v1 to v2.1.1
+- [#894](https://github.com/terraform-linters/tflint/pull/894): Bump actions/setup-go from v1 to v2.1.2
+- [#895](https://github.com/terraform-linters/tflint/pull/895): Bump github.com/google/go-cmp from 0.5.1 to 0.5.2
+- [#900](https://github.com/terraform-linters/tflint/pull/900) [#906](https://github.com/terraform-linters/tflint/pull/906): Bump github.com/zclconf/go-cty from 1.5.1 to 1.6.1
+- [#903](https://github.com/terraform-linters/tflint/pull/903): Updated comments to reflect true intent of three methods ([@ritesh-modi](https://github.com/ritesh-modi))
+- [#907](https://github.com/terraform-linters/tflint/pull/907): Bump github.com/spf13/afero from 1.3.4 to 1.3.5
+- [#908](https://github.com/terraform-linters/tflint/pull/908): Remove replace directive ([@jpreese](https://github.com/jpreese))
+
 ## 0.19.1 (2020-08-23)
 
 ### Enhancements

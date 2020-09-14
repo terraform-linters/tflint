@@ -2,13 +2,113 @@ package plugin
 
 import (
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/terraform/configs"
-	"github.com/terraform-linters/tflint-plugin-sdk/terraform"
+	tfconfigs "github.com/hashicorp/terraform/configs"
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/addrs"
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/configs"
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/experiments"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint/client"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-func (s *Server) encodeResource(resource *configs.Resource) *tfplugin.Resource {
+func (s *Server) encodeConfig(config *tfconfigs.Config) *tfplugin.Config {
+	var versionStr string
+	if config.Version != nil {
+		versionStr = config.Version.String()
+	}
+
+	return &tfplugin.Config{
+		Path:            addrs.Module(config.Path),
+		Module:          s.encodeModule(config.Module),
+		CallRange:       config.CallRange,
+		SourceAddr:      config.SourceAddr,
+		SourceAddrRange: config.SourceAddrRange,
+		Version:         versionStr,
+	}
+}
+
+func (s *Server) encodeModule(module *tfconfigs.Module) *tfplugin.Module {
+	versionConstraints := make([]string, len(module.CoreVersionConstraints))
+	versionConstraintRanges := make([]hcl.Range, len(module.CoreVersionConstraints))
+	for i, v := range module.CoreVersionConstraints {
+		versionConstraints[i] = v.Required.String()
+		versionConstraintRanges[i] = v.DeclRange
+	}
+
+	experimentSet := experiments.Set{}
+	for k, v := range module.ActiveExperiments {
+		experimentSet[experiments.Experiment(k)] = v
+	}
+
+	providers := map[string]*tfplugin.Provider{}
+	for k, v := range module.ProviderConfigs {
+		providers[k] = s.encodeProvider(v)
+	}
+
+	localNames := map[addrs.Provider]string{}
+	for k, v := range module.ProviderLocalNames {
+		localNames[addrs.Provider(k)] = v
+	}
+
+	metas := map[addrs.Provider]*tfplugin.ProviderMeta{}
+	for k, v := range module.ProviderMetas {
+		metas[addrs.Provider(k)] = s.encodeProviderMeta(v)
+	}
+
+	variables := map[string]*tfplugin.Variable{}
+	for k, v := range module.Variables {
+		variables[k] = s.encodeVariable(v)
+	}
+
+	locals := map[string]*tfplugin.Local{}
+	for k, v := range module.Locals {
+		locals[k] = s.encodeLocal(v)
+	}
+
+	outputs := map[string]*tfplugin.Output{}
+	for k, v := range module.Outputs {
+		outputs[k] = s.encodeOutput(v)
+	}
+
+	calls := map[string]*tfplugin.ModuleCall{}
+	for k, v := range module.ModuleCalls {
+		calls[k] = s.encodeModuleCall(v)
+	}
+
+	managed := map[string]*tfplugin.Resource{}
+	for k, v := range module.ManagedResources {
+		managed[k] = s.encodeResource(v)
+	}
+
+	data := map[string]*tfplugin.Resource{}
+	for k, v := range module.DataResources {
+		data[k] = s.encodeResource(v)
+	}
+
+	return &tfplugin.Module{
+		SourceDir: module.SourceDir,
+
+		CoreVersionConstraints:      versionConstraints,
+		CoreVersionConstraintRanges: versionConstraintRanges,
+
+		ActiveExperiments:    experimentSet,
+		Backend:              s.encodeBackend(module.Backend),
+		ProviderConfigs:      providers,
+		ProviderRequirements: s.encodeRequiredProviders(module.ProviderRequirements),
+		ProviderLocalNames:   localNames,
+		ProviderMetas:        metas,
+
+		Variables: variables,
+		Locals:    locals,
+		Outputs:   outputs,
+
+		ModuleCalls: calls,
+
+		ManagedResources: managed,
+		DataResources:    data,
+	}
+}
+
+func (s *Server) encodeResource(resource *tfconfigs.Resource) *tfplugin.Resource {
 	configRange := tflint.HCLBodyRange(resource.Config, resource.DeclRange)
 
 	var count []byte
@@ -26,7 +126,7 @@ func (s *Server) encodeResource(resource *configs.Resource) *tfplugin.Resource {
 	}
 
 	return &tfplugin.Resource{
-		Mode:         terraform.ResourceMode(resource.Mode),
+		Mode:         addrs.ResourceMode(resource.Mode),
 		Name:         resource.Name,
 		Type:         resource.Type,
 		Config:       configRange.SliceBytes(s.runner.File(configRange.Filename).Bytes),
@@ -37,7 +137,7 @@ func (s *Server) encodeResource(resource *configs.Resource) *tfplugin.Resource {
 		ForEachRange: forEachRange,
 
 		ProviderConfigRef: s.encodeProviderConfigRef(resource.ProviderConfigRef),
-		Provider: terraform.Provider{
+		Provider: addrs.Provider{
 			Type:      resource.Provider.Type,
 			Namespace: resource.Provider.Namespace,
 			Hostname:  resource.Provider.Hostname,
@@ -50,7 +150,11 @@ func (s *Server) encodeResource(resource *configs.Resource) *tfplugin.Resource {
 	}
 }
 
-func (s *Server) encodeManagedResource(resource *configs.ManagedResource) *tfplugin.ManagedResource {
+func (s *Server) encodeManagedResource(resource *tfconfigs.ManagedResource) *tfplugin.ManagedResource {
+	if resource == nil {
+		return nil
+	}
+
 	provisioners := make([]*tfplugin.Provisioner, len(resource.Provisioners))
 	for i, provisioner := range resource.Provisioners {
 		provisioners[i] = s.encodeProvisioner(provisioner)
@@ -69,7 +173,7 @@ func (s *Server) encodeManagedResource(resource *configs.ManagedResource) *tfplu
 	}
 }
 
-func (s *Server) encodeModuleCall(call *configs.ModuleCall) *tfplugin.ModuleCall {
+func (s *Server) encodeModuleCall(call *tfconfigs.ModuleCall) *tfplugin.ModuleCall {
 	configRange := tflint.HCLBodyRange(call.Config, call.DeclRange)
 
 	var count []byte
@@ -119,12 +223,12 @@ func (s *Server) encodeModuleCall(call *configs.ModuleCall) *tfplugin.ModuleCall
 	}
 }
 
-func (s *Server) encodeProviderConfigRef(ref *configs.ProviderConfigRef) *terraform.ProviderConfigRef {
+func (s *Server) encodeProviderConfigRef(ref *tfconfigs.ProviderConfigRef) *configs.ProviderConfigRef {
 	if ref == nil {
 		return nil
 	}
 
-	return &terraform.ProviderConfigRef{
+	return &configs.ProviderConfigRef{
 		Name:       ref.Name,
 		NameRange:  ref.NameRange,
 		Alias:      ref.Alias,
@@ -132,7 +236,7 @@ func (s *Server) encodeProviderConfigRef(ref *configs.ProviderConfigRef) *terraf
 	}
 }
 
-func (s *Server) encodeConnection(connection *configs.Connection) *tfplugin.Connection {
+func (s *Server) encodeConnection(connection *tfconfigs.Connection) *tfplugin.Connection {
 	if connection == nil {
 		return nil
 	}
@@ -147,7 +251,7 @@ func (s *Server) encodeConnection(connection *configs.Connection) *tfplugin.Conn
 	}
 }
 
-func (s *Server) encodeProvisioner(provisioner *configs.Provisioner) *tfplugin.Provisioner {
+func (s *Server) encodeProvisioner(provisioner *tfconfigs.Provisioner) *tfplugin.Provisioner {
 	configRange := tflint.HCLBodyRange(provisioner.Config, provisioner.DeclRange)
 
 	return &tfplugin.Provisioner{
@@ -155,15 +259,15 @@ func (s *Server) encodeProvisioner(provisioner *configs.Provisioner) *tfplugin.P
 		Config:      configRange.SliceBytes(s.runner.File(configRange.Filename).Bytes),
 		ConfigRange: configRange,
 		Connection:  s.encodeConnection(provisioner.Connection),
-		When:        terraform.ProvisionerWhen(provisioner.When),
-		OnFailure:   terraform.ProvisionerOnFailure(provisioner.OnFailure),
+		When:        configs.ProvisionerWhen(provisioner.When),
+		OnFailure:   configs.ProvisionerOnFailure(provisioner.OnFailure),
 
 		DeclRange: provisioner.DeclRange,
 		TypeRange: provisioner.TypeRange,
 	}
 }
 
-func (s *Server) encodeBackend(backend *configs.Backend) *tfplugin.Backend {
+func (s *Server) encodeBackend(backend *tfconfigs.Backend) *tfplugin.Backend {
 	configRange := tflint.HCLBodyRange(backend.Config, backend.DeclRange)
 	config := []byte{}
 	if configRange.Empty() {
@@ -178,5 +282,141 @@ func (s *Server) encodeBackend(backend *configs.Backend) *tfplugin.Backend {
 		ConfigRange: configRange,
 		DeclRange:   backend.DeclRange,
 		TypeRange:   backend.TypeRange,
+	}
+}
+
+func (s *Server) encodeProvider(provider *tfconfigs.Provider) *tfplugin.Provider {
+	configRange := tflint.HCLBodyRange(provider.Config, provider.DeclRange)
+
+	return &tfplugin.Provider{
+		Name:       provider.Name,
+		NameRange:  provider.NameRange,
+		Alias:      provider.Alias,
+		AliasRange: provider.AliasRange,
+
+		Version:      provider.Version.Required.String(),
+		VersionRange: provider.Version.DeclRange,
+
+		Config:      configRange.SliceBytes(s.runner.File(configRange.Filename).Bytes),
+		ConfigRange: configRange,
+
+		DeclRange: provider.DeclRange,
+	}
+}
+
+func (s *Server) encodeRequiredProviders(providers *tfconfigs.RequiredProviders) *tfplugin.RequiredProviders {
+	if providers == nil {
+		return nil
+	}
+
+	ret := map[string]*tfplugin.RequiredProvider{}
+	for k, v := range providers.RequiredProviders {
+		ret[k] = s.encodeRequiredProvider(v)
+	}
+
+	return &tfplugin.RequiredProviders{
+		RequiredProviders: ret,
+		DeclRange:         providers.DeclRange,
+	}
+}
+
+func (s *Server) encodeRequiredProvider(provider *tfconfigs.RequiredProvider) *tfplugin.RequiredProvider {
+	return &tfplugin.RequiredProvider{
+		Name:             provider.Name,
+		Source:           provider.Source,
+		Type:             addrs.Provider(provider.Type),
+		Requirement:      provider.Requirement.Required.String(),
+		RequirementRange: provider.Requirement.DeclRange,
+		DeclRange:        provider.DeclRange,
+	}
+}
+
+func (s *Server) encodeProviderMeta(meta *tfconfigs.ProviderMeta) *tfplugin.ProviderMeta {
+	configRange := tflint.HCLBodyRange(meta.Config, meta.DeclRange)
+
+	return &tfplugin.ProviderMeta{
+		Provider:    meta.Provider,
+		Config:      configRange.SliceBytes(s.runner.File(configRange.Filename).Bytes),
+		ConfigRange: configRange,
+
+		ProviderRange: meta.ProviderRange,
+		DeclRange:     meta.DeclRange,
+	}
+}
+
+func (s *Server) encodeVariable(variable *tfconfigs.Variable) *tfplugin.Variable {
+	validations := make([]*tfplugin.VariableValidation, len(variable.Validations))
+	for i, v := range variable.Validations {
+		validations[i] = s.encodeVariableValidation(v)
+	}
+
+	return &tfplugin.Variable{
+		Name:        variable.Name,
+		Description: variable.Description,
+		Default:     variable.Default,
+		Type:        variable.Type,
+		ParsingMode: configs.VariableParsingMode(variable.ParsingMode),
+		Validations: validations,
+
+		DescriptionSet: variable.DescriptionSet,
+
+		DeclRange: variable.DeclRange,
+	}
+}
+
+func (s *Server) encodeVariableValidation(validation *tfconfigs.VariableValidation) *tfplugin.VariableValidation {
+	var condition []byte
+	var conditionRange hcl.Range
+	if validation.Condition != nil {
+		condition = validation.Condition.Range().SliceBytes(s.runner.File(validation.Condition.Range().Filename).Bytes)
+		conditionRange = validation.Condition.Range()
+	}
+
+	return &tfplugin.VariableValidation{
+		Condition:      condition,
+		ConditionRange: conditionRange,
+
+		ErrorMessage: validation.ErrorMessage,
+
+		DeclRange: validation.DeclRange,
+	}
+}
+
+func (s *Server) encodeLocal(local *tfconfigs.Local) *tfplugin.Local {
+	var expr []byte
+	var exprRange hcl.Range
+	if local.Expr != nil {
+		expr = local.Expr.Range().SliceBytes(s.runner.File(local.Expr.Range().Filename).Bytes)
+		exprRange = local.Expr.Range()
+	}
+
+	return &tfplugin.Local{
+		Name:      local.Name,
+		Expr:      expr,
+		ExprRange: exprRange,
+
+		DeclRange: local.DeclRange,
+	}
+}
+
+func (s *Server) encodeOutput(output *tfconfigs.Output) *tfplugin.Output {
+	var expr []byte
+	var exprRange hcl.Range
+	if output.Expr != nil {
+		expr = output.Expr.Range().SliceBytes(s.runner.File(output.Expr.Range().Filename).Bytes)
+		exprRange = output.Expr.Range()
+	}
+
+	return &tfplugin.Output{
+		Name:        output.Name,
+		Description: output.Description,
+		Expr:        expr,
+		ExprRange:   exprRange,
+		Sensitive:   output.Sensitive,
+
+		DescriptionSet: output.DescriptionSet,
+		SensitiveSet:   output.SensitiveSet,
+
+		DeclRange: output.DeclRange,
 	}
 }
