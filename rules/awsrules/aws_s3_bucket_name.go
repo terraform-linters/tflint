@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strings"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
@@ -18,7 +19,8 @@ type AwsS3BucketNameRule struct {
 }
 
 type awsS3BucketNameMatchRegexConfig struct {
-	Regex string `hcl:"regex"`
+	Regex  string `hcl:"regex,optional"`
+	Prefix string `hcl:"prefix,optional"`
 }
 
 // NewAwsS3BucketNameRule returns new rule with default attributes
@@ -60,12 +62,23 @@ func (r *AwsS3BucketNameRule) Check(runner *tflint.Runner) error {
 		var val string
 		err := runner.EvaluateExpr(attribute.Expr, &val)
 		return runner.EnsureNoError(err, func() error {
-			if !regexp.MustCompile(config.Regex).MatchString(val) {
-				runner.EmitIssue(
-					r,
-					fmt.Sprintf(`Bucket name %s does not match regex %s`, val, config.Regex),
-					attribute.Expr.Range(),
-				)
+			if config.Prefix != "" {
+				if !strings.HasPrefix(val, config.Prefix) {
+					runner.EmitIssue(
+						r,
+						fmt.Sprintf(`Bucket name %s does not have prefix %s`, val, config.Prefix),
+						attribute.Expr.Range(),
+					)
+				}
+			}
+			if config.Regex != "" {
+				if !regexp.MustCompile(config.Regex).MatchString(val) {
+					runner.EmitIssue(
+						r,
+						fmt.Sprintf(`Bucket name %s does not match regex %s`, val, config.Regex),
+						attribute.Expr.Range(),
+					)
+				}
 			}
 			return nil
 		})
