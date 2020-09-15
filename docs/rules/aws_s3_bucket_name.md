@@ -7,9 +7,13 @@ Ensures all s3 bucket names match a defined regex
 ```hcl
 rule "aws_s3_bucket_name" {
   enabled = true
-  regex = "^blue.*"
+  regex = "^foobar.domain.blue.*" # optional
+  prefix = "blue" # optional
 }
 ```
+
+* `regex` is a `golang regex` a bucket name should match
+* `prefix` is a simple prefix string all buckets should have
 
 ## Examples
 
@@ -38,4 +42,4 @@ You would like a standardized naming convention for all s3 buckets
 
 ## How To Fix
 
-Ensure bucket name matches regex
+Ensure bucket name matches regex or has a specified prefix
