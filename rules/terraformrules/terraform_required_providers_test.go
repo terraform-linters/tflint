@@ -187,6 +187,13 @@ provider "template" {
 				},
 			},
 		},
+		{
+			Name: "terraform provider",
+			Content: `
+data "terraform_remote_state" "foo" {}
+`,
+			Expected: tflint.Issues{},
+		},
 	}
 
 	rule := NewTerraformRequiredProvidersRule()
