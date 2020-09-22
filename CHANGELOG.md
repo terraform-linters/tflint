@@ -1,3 +1,21 @@
+## 0.20.2 (2020-09-22)
+
+### Enhancements
+
+- [#910](https://github.com/terraform-linters/tflint/pull/910) [#924](https://github.com/terraform-linters/tflint/pull/924): Adding a rule to check aws_s3_bucket names match a common regex/prefix ([@sam-burrell](https://github.com/sam-burrell))
+
+### BugFixes
+
+- [#920](https://github.com/terraform-linters/tflint/pull/920): terraform_required_providers: ignore terraform provider ([@bendrucker](https://github.com/bendrucker))
+
+### Chores
+
+- [#915](https://github.com/terraform-linters/tflint/pull/915) [#922](https://github.com/terraform-linters/tflint/pull/922): Bump github.com/aws/aws-sdk-go from 1.34.18 to 1.34.27
+- [#916](https://github.com/terraform-linters/tflint/pull/916) [#921](https://github.com/terraform-linters/tflint/pull/921): Bump github.com/hashicorp/terraform-plugin-sdk/v2 from 2.0.1 to 2.0.3
+- [#918](https://github.com/terraform-linters/tflint/pull/918): Bump tf to v0.13.3 ([@chenrui333](https://github.com/chenrui333))
+- [#923](https://github.com/terraform-linters/tflint/pull/923): Bump github.com/spf13/afero from 1.3.5 to 1.4.0
+- [#925](https://github.com/terraform-linters/tflint/pull/925): GCP support status is now experimental ([@wata727](https://github.com/wata727))
+
 ## 0.20.1 (2020-09-13)
 
 ### Chores
