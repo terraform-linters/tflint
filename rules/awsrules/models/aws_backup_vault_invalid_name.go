@@ -23,7 +23,7 @@ func NewAwsBackupVaultInvalidNameRule() *AwsBackupVaultInvalidNameRule {
 	return &AwsBackupVaultInvalidNameRule{
 		resourceType:  "aws_backup_vault",
 		attributeName: "name",
-		pattern:       regexp.MustCompile(`^[a-zA-Z0-9\-\_\.]{1,50}$`),
+		pattern:       regexp.MustCompile(`^[a-zA-Z0-9\-\_]{2,50}$`),
 	}
 }
 
@@ -59,7 +59,7 @@ func (r *AwsBackupVaultInvalidNameRule) Check(runner *tflint.Runner) error {
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-zA-Z0-9\-\_\.]{1,50}$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-zA-Z0-9\-\_]{2,50}$`),
 					attribute.Expr.Range(),
 				)
 			}
