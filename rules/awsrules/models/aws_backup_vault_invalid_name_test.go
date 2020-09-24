@@ -23,7 +23,7 @@ resource "aws_backup_vault" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsBackupVaultInvalidNameRule(),
-					Message: `"example_backup_vault_example_backup_vault_example_backup_vault" does not match valid pattern ^[a-zA-Z0-9\-\_\.]{1,50}$`,
+					Message: `"example_backup_vault_example_backup_vault_example_backup_vault" does not match valid pattern ^[a-zA-Z0-9\-\_]{2,50}$`,
 				},
 			},
 		},
