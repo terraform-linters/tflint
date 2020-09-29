@@ -23,7 +23,7 @@ resource "aws_cognito_user_pool_domain" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsCognitoUserPoolDomainInvalidDomainRule(),
-					Message: `"auth example" does not match valid pattern ^[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?$`,
+					Message: `"auth example" does not match valid pattern ^[a-z0-9](?:[a-z0-9\-\.]{0,61}[a-z0-9])?$`,
 				},
 			},
 		},
