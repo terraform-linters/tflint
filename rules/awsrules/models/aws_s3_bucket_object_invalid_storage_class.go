@@ -30,6 +30,7 @@ func NewAwsS3BucketObjectInvalidStorageClassRule() *AwsS3BucketObjectInvalidStor
 			"INTELLIGENT_TIERING",
 			"GLACIER",
 			"DEEP_ARCHIVE",
+			"OUTPOSTS",
 		},
 	}
 }

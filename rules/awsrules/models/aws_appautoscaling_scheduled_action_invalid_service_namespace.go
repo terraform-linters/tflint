@@ -34,6 +34,7 @@ func NewAwsAppautoscalingScheduledActionInvalidServiceNamespaceRule() *AwsAppaut
 			"comprehend",
 			"lambda",
 			"cassandra",
+			"kafka",
 		},
 	}
 }
