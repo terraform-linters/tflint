@@ -165,21 +165,11 @@ func (r *AwsResourceMissingTagsRule) checkAwsAutoScalingGroups(runner *tflint.Ru
 // checkAwsAutoScalingGroupsTag checks tag{} blocks on aws_autoscaling_group resources
 func (r *AwsResourceMissingTagsRule) checkAwsAutoScalingGroupsTag(runner *tflint.Runner, config awsResourceTagsRuleConfig, resource *configs.Resource) (map[string]string, hcl.Range, error) {
 	tags := make(map[string]string)
-	body, _, diags := resource.Config.PartialContent(&hcl.BodySchema{
-		Blocks: []hcl.BlockHeaderSchema{
-			{
-				Type: tagBlockName,
-			},
-		},
-	})
-	if diags.HasErrors() {
-		return tags, (hcl.Range{}), diags
-	}
 
-	for _, tagBlock := range body.Blocks {
+	err := runner.WalkResourceBlocks(resource.Type, tagBlockName, func (tagBlock *hcl.Block) error {
 		attributes, diags := tagBlock.Body.JustAttributes()
 		if diags.HasErrors() {
-			return tags, tagBlock.DefRange, diags
+			return diags
 		}
 
 		if _, ok := attributes["key"]; !ok {
@@ -191,16 +181,22 @@ func (r *AwsResourceMissingTagsRule) checkAwsAutoScalingGroupsTag(runner *tflint
 					resource.DeclRange.Start.Line,
 				),
 			}
-			return tags, resource.DeclRange, err
+			return err
 		}
 
 		var key string
 		err := runner.EvaluateExpr(attributes["key"].Expr, &key)
 		if err != nil {
-			return tags, tagBlock.DefRange, err
+			return err
 		}
 		tags[key] = ""
+
+		return nil
+	})
+	if err != nil {
+		return tags, (hcl.Range{}), err
 	}
+
 	return tags, resource.DeclRange, nil
 }
 
