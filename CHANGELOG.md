@@ -1,3 +1,25 @@
+## 0.20.3 (2020-10-18)
+
+### Enhancements
+
+- [#931](https://github.com/terraform-linters/tflint/pull/931) [#952](https://github.com/terraform-linters/tflint/pull/952): Bump terraform-provider-aws to v3.11.0 from v3.6.0 ([@bendrucker](https://github.com/bendrucker) [@wata727](https://github.com/wata727))
+- [#954](https://github.com/terraform-linters/tflint/pull/954): support for m6g and r6g instance types ([@jpatallah](https://github.com/jpatallah))
+
+### BugFixes
+
+- [#951](https://github.com/terraform-linters/tflint/pull/951): missing_tags_rule: Suppress false positives when using dynamic blocks ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#932](https://github.com/terraform-linters/tflint/pull/932) [#940](https://github.com/terraform-linters/tflint/pull/940) [#945](https://github.com/terraform-linters/tflint/pull/945): Bump github.com/aws/aws-sdk-go from 1.34.27 to 1.35.7
+- [#938](https://github.com/terraform-linters/tflint/pull/938): Bump github.com/mattn/go-colorable from 0.1.7 to 0.1.8
+- [#939](https://github.com/terraform-linters/tflint/pull/939): Bump github.com/hashicorp/terraform from 0.13.3 to 0.13.4
+- [#941](https://github.com/terraform-linters/tflint/pull/941): Bump actions/setup-go from v2.1.2 to v2.1.3
+- [#944](https://github.com/terraform-linters/tflint/pull/944): Bump github.com/hashicorp/terraform-plugin-sdk/v2 from 2.0.3 to 2.0.4
+- [#946](https://github.com/terraform-linters/tflint/pull/946): Bump github.com/hashicorp/aws-sdk-go-base from 0.6.0 to 0.7.0
+- [#947](https://github.com/terraform-linters/tflint/pull/947): Bump github.com/spf13/afero from 1.4.0 to 1.4.1
+- [#948](https://github.com/terraform-linters/tflint/pull/948): Bump actions/cache from v2.1.1 to v2.1.2
+
 ## 0.20.2 (2020-09-22)
 
 ### Enhancements
