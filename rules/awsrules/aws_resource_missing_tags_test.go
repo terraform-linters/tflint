@@ -261,6 +261,39 @@ rule "aws_resource_missing_tags" {
 				},
 			},
 		},
+		{
+			Name: "AutoScaling Group with dynamic tags",
+			Content: `
+locals {
+  tags = [
+    {
+      key   = "Foo",
+      value = "bar",
+    },
+    {
+      key   = "Bar",
+      value = "baz",
+    },
+  ]
+}
+resource "aws_autoscaling_group" "this" {
+  dynamic "tag" {
+    for_each = local.tags
+		  
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
+  }
+}`,
+			Config: `
+rule "aws_resource_missing_tags" {
+  enabled = true
+  tags = ["Foo", "Bar"]
+}`,
+			Expected: tflint.Issues{},
+		},
 	}
 
 	rule := NewAwsResourceMissingTagsRule()
