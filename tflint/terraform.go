@@ -11,6 +11,7 @@ import (
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/hashicorp/hcl/v2/json"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/zclconf/go-cty/cty"
@@ -58,13 +59,7 @@ func ParseExpression(src []byte, filename string, start hcl.Pos) (hcl.Expression
 	}
 
 	if strings.HasSuffix(filename, ".tf.json") {
-		return nil, hcl.Diagnostics{
-			&hcl.Diagnostic{
-				Severity: hcl.DiagError,
-				Summary:  "JSON configuration syntax is not supported",
-				Subject:  &hcl.Range{Filename: filename, Start: start, End: start},
-			},
-		}
+		return json.ParseExpressionWithStartPos(src, filename, start)
 	}
 
 	panic(fmt.Sprintf("Unexpected file: %s", filename))
