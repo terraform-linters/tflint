@@ -30,7 +30,11 @@ func (h *handler) textDocumentDidChange(ctx context.Context, conn *jsonrpc2.Conn
 		}
 	}
 
-	changedPath := uriToPath(params.TextDocument.URI)
+	changedPath, err := uriToPath(params.TextDocument.URI)
+
+	if err != nil {
+		return nil, err
+	}
 
 	if err := h.chdir(filepath.Dir(changedPath)); err != nil {
 		return nil, err

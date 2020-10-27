@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/url"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -216,11 +217,17 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 	return ret, nil
 }
 
-func uriToPath(uri lsp.DocumentURI) string {
-	if runtime.GOOS == "windows" {
-		return strings.Replace(string(uri), "file:///", "", 1)
+func uriToPath(uri lsp.DocumentURI) (string, error) {
+	uriToReplace, err := url.QueryUnescape(string(uri))
+
+	if err != nil {
+		return "", err
 	}
-	return strings.Replace(string(uri), "file://", "", 1)
+
+	if runtime.GOOS == "windows" {
+		return strings.Replace(uriToReplace, "file:///", "", 1), nil
+	}
+	return strings.Replace(uriToReplace, "file://", "", 1), nil
 }
 
 func pathToURI(path string) lsp.DocumentURI {
