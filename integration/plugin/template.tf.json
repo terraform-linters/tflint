@@ -1,0 +1,17 @@
+{
+  "resource": {
+    "aws_instance": {
+      "example": {
+        "instance_type": "t1.xmicro",
+        "ami": "${join(\"\", [\"ami-123456\"])}",
+        "ebs_block_device": {
+          "device_name": "bar",
+          "volume_size": 10,
+          "foo": {
+            "bar": 1
+          }
+        }
+      }
+    }
+  }
+}
