@@ -735,6 +735,56 @@ func (mr *MockEC2APIMockRecorder) AssociateDhcpOptionsWithContext(arg0, arg1 int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssociateDhcpOptionsWithContext", reflect.TypeOf((*MockEC2API)(nil).AssociateDhcpOptionsWithContext), varargs...)
 }
 
+// AssociateEnclaveCertificateIamRole mocks base method
+func (m *MockEC2API) AssociateEnclaveCertificateIamRole(arg0 *ec2.AssociateEnclaveCertificateIamRoleInput) (*ec2.AssociateEnclaveCertificateIamRoleOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AssociateEnclaveCertificateIamRole", arg0)
+	ret0, _ := ret[0].(*ec2.AssociateEnclaveCertificateIamRoleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AssociateEnclaveCertificateIamRole indicates an expected call of AssociateEnclaveCertificateIamRole
+func (mr *MockEC2APIMockRecorder) AssociateEnclaveCertificateIamRole(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssociateEnclaveCertificateIamRole", reflect.TypeOf((*MockEC2API)(nil).AssociateEnclaveCertificateIamRole), arg0)
+}
+
+// AssociateEnclaveCertificateIamRoleRequest mocks base method
+func (m *MockEC2API) AssociateEnclaveCertificateIamRoleRequest(arg0 *ec2.AssociateEnclaveCertificateIamRoleInput) (*request.Request, *ec2.AssociateEnclaveCertificateIamRoleOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AssociateEnclaveCertificateIamRoleRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.AssociateEnclaveCertificateIamRoleOutput)
+	return ret0, ret1
+}
+
+// AssociateEnclaveCertificateIamRoleRequest indicates an expected call of AssociateEnclaveCertificateIamRoleRequest
+func (mr *MockEC2APIMockRecorder) AssociateEnclaveCertificateIamRoleRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssociateEnclaveCertificateIamRoleRequest", reflect.TypeOf((*MockEC2API)(nil).AssociateEnclaveCertificateIamRoleRequest), arg0)
+}
+
+// AssociateEnclaveCertificateIamRoleWithContext mocks base method
+func (m *MockEC2API) AssociateEnclaveCertificateIamRoleWithContext(arg0 context.Context, arg1 *ec2.AssociateEnclaveCertificateIamRoleInput, arg2 ...request.Option) (*ec2.AssociateEnclaveCertificateIamRoleOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "AssociateEnclaveCertificateIamRoleWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.AssociateEnclaveCertificateIamRoleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AssociateEnclaveCertificateIamRoleWithContext indicates an expected call of AssociateEnclaveCertificateIamRoleWithContext
+func (mr *MockEC2APIMockRecorder) AssociateEnclaveCertificateIamRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssociateEnclaveCertificateIamRoleWithContext", reflect.TypeOf((*MockEC2API)(nil).AssociateEnclaveCertificateIamRoleWithContext), varargs...)
+}
+
 // AssociateIamInstanceProfile mocks base method
 func (m *MockEC2API) AssociateIamInstanceProfile(arg0 *ec2.AssociateIamInstanceProfileInput) (*ec2.AssociateIamInstanceProfileOutput, error) {
 	m.ctrl.T.Helper()
@@ -16675,6 +16725,56 @@ func (mr *MockEC2APIMockRecorder) DisassociateClientVpnTargetNetworkWithContext(
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateClientVpnTargetNetworkWithContext", reflect.TypeOf((*MockEC2API)(nil).DisassociateClientVpnTargetNetworkWithContext), varargs...)
 }
 
+// DisassociateEnclaveCertificateIamRole mocks base method
+func (m *MockEC2API) DisassociateEnclaveCertificateIamRole(arg0 *ec2.DisassociateEnclaveCertificateIamRoleInput) (*ec2.DisassociateEnclaveCertificateIamRoleOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DisassociateEnclaveCertificateIamRole", arg0)
+	ret0, _ := ret[0].(*ec2.DisassociateEnclaveCertificateIamRoleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DisassociateEnclaveCertificateIamRole indicates an expected call of DisassociateEnclaveCertificateIamRole
+func (mr *MockEC2APIMockRecorder) DisassociateEnclaveCertificateIamRole(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateEnclaveCertificateIamRole", reflect.TypeOf((*MockEC2API)(nil).DisassociateEnclaveCertificateIamRole), arg0)
+}
+
+// DisassociateEnclaveCertificateIamRoleRequest mocks base method
+func (m *MockEC2API) DisassociateEnclaveCertificateIamRoleRequest(arg0 *ec2.DisassociateEnclaveCertificateIamRoleInput) (*request.Request, *ec2.DisassociateEnclaveCertificateIamRoleOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DisassociateEnclaveCertificateIamRoleRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DisassociateEnclaveCertificateIamRoleOutput)
+	return ret0, ret1
+}
+
+// DisassociateEnclaveCertificateIamRoleRequest indicates an expected call of DisassociateEnclaveCertificateIamRoleRequest
+func (mr *MockEC2APIMockRecorder) DisassociateEnclaveCertificateIamRoleRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateEnclaveCertificateIamRoleRequest", reflect.TypeOf((*MockEC2API)(nil).DisassociateEnclaveCertificateIamRoleRequest), arg0)
+}
+
+// DisassociateEnclaveCertificateIamRoleWithContext mocks base method
+func (m *MockEC2API) DisassociateEnclaveCertificateIamRoleWithContext(arg0 context.Context, arg1 *ec2.DisassociateEnclaveCertificateIamRoleInput, arg2 ...request.Option) (*ec2.DisassociateEnclaveCertificateIamRoleOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DisassociateEnclaveCertificateIamRoleWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DisassociateEnclaveCertificateIamRoleOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DisassociateEnclaveCertificateIamRoleWithContext indicates an expected call of DisassociateEnclaveCertificateIamRoleWithContext
+func (mr *MockEC2APIMockRecorder) DisassociateEnclaveCertificateIamRoleWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateEnclaveCertificateIamRoleWithContext", reflect.TypeOf((*MockEC2API)(nil).DisassociateEnclaveCertificateIamRoleWithContext), varargs...)
+}
+
 // DisassociateIamInstanceProfile mocks base method
 func (m *MockEC2API) DisassociateIamInstanceProfile(arg0 *ec2.DisassociateIamInstanceProfileInput) (*ec2.DisassociateIamInstanceProfileOutput, error) {
 	m.ctrl.T.Helper()
@@ -17523,6 +17623,56 @@ func (mr *MockEC2APIMockRecorder) ExportTransitGatewayRoutesWithContext(arg0, ar
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExportTransitGatewayRoutesWithContext", reflect.TypeOf((*MockEC2API)(nil).ExportTransitGatewayRoutesWithContext), varargs...)
+}
+
+// GetAssociatedEnclaveCertificateIamRoles mocks base method
+func (m *MockEC2API) GetAssociatedEnclaveCertificateIamRoles(arg0 *ec2.GetAssociatedEnclaveCertificateIamRolesInput) (*ec2.GetAssociatedEnclaveCertificateIamRolesOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAssociatedEnclaveCertificateIamRoles", arg0)
+	ret0, _ := ret[0].(*ec2.GetAssociatedEnclaveCertificateIamRolesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAssociatedEnclaveCertificateIamRoles indicates an expected call of GetAssociatedEnclaveCertificateIamRoles
+func (mr *MockEC2APIMockRecorder) GetAssociatedEnclaveCertificateIamRoles(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAssociatedEnclaveCertificateIamRoles", reflect.TypeOf((*MockEC2API)(nil).GetAssociatedEnclaveCertificateIamRoles), arg0)
+}
+
+// GetAssociatedEnclaveCertificateIamRolesRequest mocks base method
+func (m *MockEC2API) GetAssociatedEnclaveCertificateIamRolesRequest(arg0 *ec2.GetAssociatedEnclaveCertificateIamRolesInput) (*request.Request, *ec2.GetAssociatedEnclaveCertificateIamRolesOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAssociatedEnclaveCertificateIamRolesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.GetAssociatedEnclaveCertificateIamRolesOutput)
+	return ret0, ret1
+}
+
+// GetAssociatedEnclaveCertificateIamRolesRequest indicates an expected call of GetAssociatedEnclaveCertificateIamRolesRequest
+func (mr *MockEC2APIMockRecorder) GetAssociatedEnclaveCertificateIamRolesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAssociatedEnclaveCertificateIamRolesRequest", reflect.TypeOf((*MockEC2API)(nil).GetAssociatedEnclaveCertificateIamRolesRequest), arg0)
+}
+
+// GetAssociatedEnclaveCertificateIamRolesWithContext mocks base method
+func (m *MockEC2API) GetAssociatedEnclaveCertificateIamRolesWithContext(arg0 context.Context, arg1 *ec2.GetAssociatedEnclaveCertificateIamRolesInput, arg2 ...request.Option) (*ec2.GetAssociatedEnclaveCertificateIamRolesOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetAssociatedEnclaveCertificateIamRolesWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.GetAssociatedEnclaveCertificateIamRolesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAssociatedEnclaveCertificateIamRolesWithContext indicates an expected call of GetAssociatedEnclaveCertificateIamRolesWithContext
+func (mr *MockEC2APIMockRecorder) GetAssociatedEnclaveCertificateIamRolesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAssociatedEnclaveCertificateIamRolesWithContext", reflect.TypeOf((*MockEC2API)(nil).GetAssociatedEnclaveCertificateIamRolesWithContext), varargs...)
 }
 
 // GetAssociatedIpv6PoolCidrs mocks base method
