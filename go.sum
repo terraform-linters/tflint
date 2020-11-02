@@ -365,6 +365,8 @@ github.com/hashicorp/terraform-json v0.5.0 h1:7TV3/F3y7QVSuN4r9BEXqnWqrAyeOtON8f
 github.com/hashicorp/terraform-json v0.5.0/go.mod h1:eAbqb4w0pSlRmdvl8fOyHAi/+8jnkVYN28gJkSJrLhU=
 github.com/hashicorp/terraform-plugin-sdk/v2 v2.0.4 h1:GYkUL3zjrZgig9Gm+/61+YglzESJxXRDMp7qhJsh4j0=
 github.com/hashicorp/terraform-plugin-sdk/v2 v2.0.4/go.mod h1:GP0lmw4Y+XV1OfTmi/hK75t5KWGGzoOzEgUBPGZ6Wq4=
+github.com/hashicorp/terraform-plugin-sdk/v2 v2.1.0 h1:Z5K9y5UGVQO7gvLFk6NMA/v1JZW/HLzJ/TTSoLkqQyY=
+github.com/hashicorp/terraform-plugin-sdk/v2 v2.1.0/go.mod h1:GP0lmw4Y+XV1OfTmi/hK75t5KWGGzoOzEgUBPGZ6Wq4=
 github.com/hashicorp/terraform-svchost v0.0.0-20191011084731-65d371908596 h1:hjyO2JsNZUKT1ym+FAdlBEkGPevazYsmVgIMw7dVELg=
 github.com/hashicorp/terraform-svchost v0.0.0-20191011084731-65d371908596/go.mod h1:kNDNcF7sN4DocDLBkQYz73HGKwN1ANB1blq4lIYLYvg=
 github.com/hashicorp/terraform-svchost v0.0.0-20200729002733-f050f53b9734 h1:HKLsbzeOsfXmKNpr3GiT18XAblV0BjCbzL8KQAMZGa0=
