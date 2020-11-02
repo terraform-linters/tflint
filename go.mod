@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/aws/aws-sdk-go v1.35.19
-	github.com/fatih/color v1.9.0
+	github.com/fatih/color v1.10.0
 	github.com/golang/mock v1.4.4
 	github.com/google/go-cmp v0.5.2
 	github.com/hashicorp/aws-sdk-go-base v0.7.0
@@ -13,7 +13,7 @@ require (
 	github.com/hashicorp/hcl/v2 v2.7.0
 	github.com/hashicorp/logutils v1.0.0
 	github.com/hashicorp/terraform v0.13.5
-	github.com/hashicorp/terraform-plugin-sdk/v2 v2.0.4
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.1.0
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/jstemmer/go-junit-report v0.9.1
 	github.com/mattn/go-colorable v0.1.8
