@@ -115,10 +115,12 @@ func Test_LoadConfig(t *testing.T) {
 		}
 
 		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(PluginConfig{}),
+			cmpopts.IgnoreFields(PluginConfig{}, "Body"),
 			cmpopts.IgnoreFields(RuleConfig{}, "Body"),
 		}
 		if !cmp.Equal(tc.Expected, ret, opts...) {
-			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(tc.Expected, ret))
+			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(tc.Expected, ret, opts...))
 		}
 
 		defaultConfigFile = originalDefault
@@ -576,6 +578,7 @@ func Test_Merge(t *testing.T) {
 		ret := tc.Base.Merge(tc.Other)
 
 		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(PluginConfig{}),
 			cmpopts.IgnoreUnexported(hclsyntax.Body{}),
 			cmpopts.IgnoreFields(hclsyntax.Body{}, "Attributes", "Blocks"),
 		}
@@ -586,22 +589,18 @@ func Test_Merge(t *testing.T) {
 }
 
 func Test_ToPluginConfig(t *testing.T) {
-	config := &Config{
-		Rules: map[string]*RuleConfig{
-			"aws_instance_invalid_type": {
-				Name:    "aws_instance_invalid_type",
-				Enabled: false,
-			},
-			"aws_instance_invalid_ami": {
-				Name:    "aws_instance_invalid_ami",
-				Enabled: true,
-			},
-		},
-		DisabledByDefault: true,
+	currentDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	ret := config.ToPluginConfig()
-	expected := &tfplugin.Config{
+	config, err := LoadConfig(filepath.Join(currentDir, "test-fixtures", "config", "plugin.hcl"))
+	if err != nil {
+		t.Fatalf("Failed: Unexpected error occurred: %s", err)
+	}
+
+	ret := config.ToPluginConfig("foo")
+	expected := &tfplugin.MarshalledConfig{
 		Rules: map[string]*tfplugin.RuleConfig{
 			"aws_instance_invalid_type": {
 				Name:    "aws_instance_invalid_type",
@@ -613,9 +612,16 @@ func Test_ToPluginConfig(t *testing.T) {
 			},
 		},
 		DisabledByDefault: true,
+		BodyRange:         hcl.Range{Start: hcl.Pos{Line: 14, Column: 3}, End: hcl.Pos{Line: 16, Column: 17}},
 	}
-	if !cmp.Equal(expected, ret) {
-		t.Fatalf("Failed to match: %s", cmp.Diff(expected, ret))
+	opts := cmp.Options{
+		cmpopts.IgnoreUnexported(PluginConfig{}),
+		cmpopts.IgnoreFields(hcl.Range{}, "Filename"),
+		cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+		cmpopts.IgnoreFields(tfplugin.MarshalledConfig{}, "BodyBytes"),
+	}
+	if !cmp.Equal(expected, ret, opts...) {
+		t.Fatalf("Failed to match: %s", cmp.Diff(expected, ret, opts...))
 	}
 }
 
@@ -822,14 +828,15 @@ func Test_copy(t *testing.T) {
 		},
 	}
 
+	opt := cmpopts.IgnoreUnexported(PluginConfig{})
 	for _, tc := range cases {
 		ret := cfg.copy()
-		if !cmp.Equal(cfg, ret) {
-			t.Fatalf("The copied config doesn't match original: Diff=%s", cmp.Diff(cfg, ret))
+		if !cmp.Equal(cfg, ret, opt) {
+			t.Fatalf("The copied config doesn't match original: Diff=%s", cmp.Diff(cfg, ret, opt))
 		}
 
 		tc.SideEffect(ret)
-		if cmp.Equal(cfg, ret) {
+		if cmp.Equal(cfg, ret, opt) {
 			t.Fatalf("The original was changed when updating `%s`", tc.Name)
 		}
 	}

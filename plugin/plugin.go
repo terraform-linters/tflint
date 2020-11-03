@@ -13,9 +13,9 @@ var localPluginRoot = "./.tflint.d/plugins"
 // Plugin is an object handling plugins
 // Basically, it is a wrapper for go-plugin and provides an API to handle them collectively.
 type Plugin struct {
-	RuleSets []*tfplugin.Client
+	RuleSets map[string]*tfplugin.Client
 
-	clients []*plugin.Client
+	clients map[string]*plugin.Client
 }
 
 // Clean is a helper for ending plugin processes

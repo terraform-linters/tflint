@@ -172,8 +172,8 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 		}
 	}
 
-	for _, ruleset := range h.plugin.RuleSets {
-		err = ruleset.ApplyConfig(h.config.ToPluginConfig())
+	for name, ruleset := range h.plugin.RuleSets {
+		err = ruleset.ApplyConfig(h.config.ToPluginConfig(name))
 		if err != nil {
 			return ret, fmt.Errorf("Failed to apply config to plugins: %s", err)
 		}
