@@ -8,7 +8,7 @@ require (
 	github.com/golang/mock v1.4.4
 	github.com/google/go-cmp v0.5.3
 	github.com/hashicorp/aws-sdk-go-base v0.7.0
-	github.com/hashicorp/go-plugin v1.3.0
+	github.com/hashicorp/go-plugin v1.4.0
 	github.com/hashicorp/go-version v1.2.1
 	github.com/hashicorp/hcl/v2 v2.7.0
 	github.com/hashicorp/logutils v1.0.0
