@@ -29,6 +29,7 @@ func NewAwsALBListenerInvalidProtocolRule() *AwsALBListenerInvalidProtocolRule {
 			"TLS",
 			"UDP",
 			"TCP_UDP",
+			"GENEVE",
 		},
 	}
 }

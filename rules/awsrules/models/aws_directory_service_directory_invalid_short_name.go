@@ -23,7 +23,7 @@ func NewAwsDirectoryServiceDirectoryInvalidShortNameRule() *AwsDirectoryServiceD
 	return &AwsDirectoryServiceDirectoryInvalidShortNameRule{
 		resourceType:  "aws_directory_service_directory",
 		attributeName: "short_name",
-		pattern:       regexp.MustCompile(`^[^\\/:*?\"\<\>|.]+[^\\/:*?\"<>|]*$`),
+		pattern:       regexp.MustCompile(`^[^\\/:*?"<>|.]+[^\\/:*?"<>|]*$`),
 	}
 }
 
@@ -59,7 +59,7 @@ func (r *AwsDirectoryServiceDirectoryInvalidShortNameRule) Check(runner *tflint.
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[^\\/:*?\"\<\>|.]+[^\\/:*?\"<>|]*$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[^\\/:*?"<>|.]+[^\\/:*?"<>|]*$`),
 					attribute.Expr.Range(),
 				)
 			}

@@ -29,6 +29,7 @@ func NewAwsLbTargetGroupInvalidProtocolRule() *AwsLbTargetGroupInvalidProtocolRu
 			"TLS",
 			"UDP",
 			"TCP_UDP",
+			"GENEVE",
 		},
 	}
 }

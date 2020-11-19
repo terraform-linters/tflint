@@ -29,6 +29,7 @@ func NewAwsALBTargetGroupInvalidProtocolRule() *AwsALBTargetGroupInvalidProtocol
 			"TLS",
 			"UDP",
 			"TCP_UDP",
+			"GENEVE",
 		},
 	}
 }
