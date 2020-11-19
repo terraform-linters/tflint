@@ -25,6 +25,7 @@ func NewAwsALBInvalidLoadBalancerTypeRule() *AwsALBInvalidLoadBalancerTypeRule {
 		enum: []string{
 			"application",
 			"network",
+			"gateway",
 		},
 	}
 }

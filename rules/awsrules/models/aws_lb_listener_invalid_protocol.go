@@ -29,6 +29,7 @@ func NewAwsLbListenerInvalidProtocolRule() *AwsLbListenerInvalidProtocolRule {
 			"TLS",
 			"UDP",
 			"TCP_UDP",
+			"GENEVE",
 		},
 	}
 }

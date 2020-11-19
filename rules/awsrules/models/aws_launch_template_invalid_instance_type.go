@@ -255,6 +255,7 @@ func NewAwsLaunchTemplateInvalidInstanceTypeRule() *AwsLaunchTemplateInvalidInst
 			"p3.8xlarge",
 			"p3.16xlarge",
 			"p3dn.24xlarge",
+			"p4d.24xlarge",
 			"d2.xlarge",
 			"d2.2xlarge",
 			"d2.4xlarge",

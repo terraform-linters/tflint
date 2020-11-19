@@ -35,9 +35,11 @@ func NewAwsAppautoscalingScheduledActionInvalidScalableDimensionRule() *AwsAppau
 			"sagemaker:variant:DesiredInstanceCount",
 			"custom-resource:ResourceType:Property",
 			"comprehend:document-classifier-endpoint:DesiredInferenceUnits",
+			"comprehend:entity-recognizer-endpoint:DesiredInferenceUnits",
 			"lambda:function:ProvisionedConcurrency",
 			"cassandra:table:ReadCapacityUnits",
 			"cassandra:table:WriteCapacityUnits",
+			"kafka:broker-storage:VolumeSize",
 		},
 	}
 }

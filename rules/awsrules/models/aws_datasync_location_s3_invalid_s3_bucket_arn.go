@@ -24,8 +24,8 @@ func NewAwsDatasyncLocationS3InvalidS3BucketArnRule() *AwsDatasyncLocationS3Inva
 	return &AwsDatasyncLocationS3InvalidS3BucketArnRule{
 		resourceType:  "aws_datasync_location_s3",
 		attributeName: "s3_bucket_arn",
-		max:           76,
-		pattern:       regexp.MustCompile(`^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):s3:::([^/]*)$`),
+		max:           156,
+		pattern:       regexp.MustCompile(`^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):(s3|s3-outposts):[a-z\-0-9]*:[0-9]*:.*$`),
 	}
 }
 
@@ -61,14 +61,14 @@ func (r *AwsDatasyncLocationS3InvalidS3BucketArnRule) Check(runner *tflint.Runne
 			if len(val) > r.max {
 				runner.EmitIssue(
 					r,
-					"s3_bucket_arn must be 76 characters or less",
+					"s3_bucket_arn must be 156 characters or less",
 					attribute.Expr.Range(),
 				)
 			}
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):s3:::([^/]*)$`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):(s3|s3-outposts):[a-z\-0-9]*:[0-9]*:.*$`),
 					attribute.Expr.Range(),
 				)
 			}

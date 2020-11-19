@@ -25,6 +25,7 @@ func NewAwsVpcEndpointInvalidVpcEndpointTypeRule() *AwsVpcEndpointInvalidVpcEndp
 		enum: []string{
 			"Interface",
 			"Gateway",
+			"GatewayLoadBalancer",
 		},
 	}
 }
