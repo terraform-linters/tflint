@@ -33,7 +33,7 @@ get_latest_release() {
     sed -E 's/.*"([^"]+)".*/\1/'                                                          # Pluck JSON value
 }
 
-if [[ -z "${TFLINT_VERSION}" ]]; then
+if [ -z "${TFLINT_VERSION}" ] || [ "${TFLINT_VERSION}" == "latest" ]; then
   echo "Looking up the latest version ..."
   version=$(get_latest_release)
 else
