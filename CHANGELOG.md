@@ -1,3 +1,36 @@
+## 0.21.0 (2020-11-23)
+
+This release adds support for JSON configuration syntax in plugins. For this update, the plugin must be built with tflint-plugin-sdk v0.6.0 to work with TFLint v0.21.0. For details, please see the CHANGELOG of tflint-plugin-sdk.
+
+### Breaking Changes
+
+- [#982](https://github.com/terraform-linters/tflint/pull/982): Bump tflint-plugin-sdk to v0.6.0 ([@wata727](https://github.com/wata727))
+  - This change breaks plugin API backward compatibility. In order for plugins to work against v0.21.0, you need to build with tflint-plugin-sdk v0.6.0.
+
+### Enhancements
+
+- [#958](https://github.com/terraform-linters/tflint/pull/958): plugin: Add support for JSON configuration syntax ([@wata727](https://github.com/wata727))
+- [#959](https://github.com/terraform-linters/tflint/pull/959): rules: Add support m6g/r6g DB instance types ([@wata727](https://github.com/wata727))
+- [#967](https://github.com/terraform-linters/tflint/pull/967): plugin: Allow to declare custom attributes in config files ([@wata727](https://github.com/wata727))
+- [#976](https://github.com/terraform-linters/tflint/pull/976) [#981](https://github.com/terraform-linters/tflint/pull/981): Bump terraform-provider-aws to v3.16.0 from v3.11.0 ([@bendrucker](https://github.com/bendrucker) [@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#963](https://github.com/terraform-linters/tflint/pull/963): langserver: escape language server paths in Windows ([@filiptepper](https://github.com/filiptepper))
+
+### Chores
+
+- [#955](https://github.com/terraform-linters/tflint/pull/955) [#979](https://github.com/terraform-linters/tflint/pull/979): Bump github.com/hashicorp/hcl/v2 from 2.6.0 to 2.7.1
+- [#956](https://github.com/terraform-linters/tflint/pull/956) [#962](https://github.com/terraform-linters/tflint/pull/962) [#965](https://github.com/terraform-linters/tflint/pull/965) [#969](https://github.com/terraform-linters/tflint/pull/969) [#973](https://github.com/terraform-linters/tflint/pull/973) [#974](https://github.com/terraform-linters/tflint/pull/974) [#980](https://github.com/terraform-linters/tflint/pull/980): Bump github.com/aws/aws-sdk-go from 1.35.7 to 1.35.33
+- [#960](https://github.com/terraform-linters/tflint/pull/960): Bump github.com/zclconf/go-cty from 1.6.1 to 1.7.0
+- [#961](https://github.com/terraform-linters/tflint/pull/961): Bump github.com/hashicorp/terraform from 0.13.4 to 0.13.5
+- [#964](https://github.com/terraform-linters/tflint/pull/964): Bump github.com/fatih/color from 1.9.0 to 1.10.0
+- [#966](https://github.com/terraform-linters/tflint/pull/966) [#970](https://github.com/terraform-linters/tflint/pull/970) [#978](https://github.com/terraform-linters/tflint/pull/978): Bump github.com/hashicorp/terraform-plugin-sdk/v2 from 2.0.4 to 2.3.0
+- [#968](https://github.com/terraform-linters/tflint/pull/968): Bump github.com/hashicorp/go-plugin from 1.3.0 to 1.4.0
+- [#971](https://github.com/terraform-linters/tflint/pull/971): Bump actions/cache from v2.1.2 to v2.1.3
+- [#972](https://github.com/terraform-linters/tflint/pull/972): Bump github.com/google/go-cmp from 0.5.2 to 0.5.3
+- [#977](https://github.com/terraform-linters/tflint/pull/977): chore: Allow "latest" as TFLINT_VERSION in the installation script ([@wata727](https://github.com/wata727))
+
 ## 0.20.3 (2020-10-18)
 
 ### Enhancements
