@@ -9,6 +9,7 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
+	"github.com/hashicorp/hcl/v2/hclsyntax"
 	homedir "github.com/mitchellh/go-homedir"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/client"
@@ -65,8 +66,12 @@ type RuleConfig struct {
 
 // PluginConfig is a TFLint's plugin config
 type PluginConfig struct {
-	Name    string `hcl:"name,label"`
-	Enabled bool   `hcl:"enabled"`
+	Name    string   `hcl:"name,label"`
+	Enabled bool     `hcl:"enabled"`
+	Body    hcl.Body `hcl:",remain"`
+
+	// file is the result of parsing the HCL file that declares the plugin configuration.
+	file *hcl.File
 }
 
 // EmptyConfig returns default config
@@ -155,10 +160,15 @@ func (c *Config) Merge(other *Config) *Config {
 }
 
 // ToPluginConfig converts self into the plugin configuration format
-func (c *Config) ToPluginConfig() *tfplugin.Config {
-	cfg := &tfplugin.Config{
+func (c *Config) ToPluginConfig(name string) *tfplugin.MarshalledConfig {
+	pluginCfg := c.Plugins[name]
+	cfgRange := configBodyRange(pluginCfg.Body)
+
+	cfg := &tfplugin.MarshalledConfig{
 		Rules:             map[string]*tfplugin.RuleConfig{},
 		DisabledByDefault: c.DisabledByDefault,
+		BodyBytes:         cfgRange.SliceBytes(pluginCfg.file.Bytes),
+		BodyRange:         cfgRange,
 	}
 	for _, rule := range c.Rules {
 		cfg.Rules[rule.Name] = &tfplugin.RuleConfig{
@@ -274,6 +284,10 @@ func loadConfigFromFile(file string) (*Config, error) {
 	}
 
 	cfg := raw.toConfig()
+	for _, plugin := range cfg.Plugins {
+		plugin.file = f
+	}
+
 	log.Printf("[DEBUG] Config loaded")
 	log.Printf("[DEBUG]   Module: %t", cfg.Module)
 	log.Printf("[DEBUG]   DeepCheck: %t", cfg.DeepCheck)
@@ -395,4 +409,26 @@ func (raw *rawConfig) toConfig() *Config {
 	}
 
 	return ret
+}
+
+func configBodyRange(body hcl.Body) hcl.Range {
+	var bodyRange hcl.Range
+
+	// Estimate the range of the body from the range of all attributes and blocks.
+	hclBody := body.(*hclsyntax.Body)
+	for _, attr := range hclBody.Attributes {
+		if bodyRange.Empty() {
+			bodyRange = attr.Range()
+		} else {
+			bodyRange = hcl.RangeOver(bodyRange, attr.Range())
+		}
+	}
+	for _, block := range hclBody.Blocks {
+		if bodyRange.Empty() {
+			bodyRange = block.Range()
+		} else {
+			bodyRange = hcl.RangeOver(bodyRange, block.Range())
+		}
+	}
+	return bodyRange
 }

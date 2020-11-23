@@ -43,8 +43,8 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 }
 
 func findPlugins(config *tflint.Config, dir string) (*Plugin, error) {
-	clients := []*plugin.Client{}
-	rulesets := []*tfplugin.Client{}
+	clients := map[string]*plugin.Client{}
+	rulesets := map[string]*tfplugin.Client{}
 
 	for _, cfg := range config.Plugins {
 		pluginPath, err := getPluginPath(dir, cfg.Name)
@@ -68,8 +68,8 @@ func findPlugins(config *tflint.Config, dir string) (*Plugin, error) {
 			}
 			ruleset := raw.(*tfplugin.Client)
 
-			clients = append(clients, client)
-			rulesets = append(rulesets, ruleset)
+			clients[cfg.Name] = client
+			rulesets[cfg.Name] = ruleset
 		} else {
 			log.Printf("[INFO] Plugin `%s` found, but the plugin is disabled", cfg.Name)
 		}

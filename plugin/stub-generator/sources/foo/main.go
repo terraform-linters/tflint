@@ -7,7 +7,7 @@ import (
 
 func main() {
 	plugin.Serve(&plugin.ServeOpts{
-		RuleSet: tflint.RuleSet{
+		RuleSet: &tflint.BuiltinRuleSet{
 			Name:    "foo",
 			Version: "0.1.0",
 			Rules:   []tflint.Rule{},
