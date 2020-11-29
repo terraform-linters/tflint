@@ -287,6 +287,12 @@ func (s *Server) encodeBackend(backend *tfconfigs.Backend) *tfplugin.Backend {
 
 func (s *Server) encodeProvider(provider *tfconfigs.Provider) *tfplugin.Provider {
 	configRange := tflint.HCLBodyRange(provider.Config, provider.DeclRange)
+	config := []byte{}
+	if configRange.Empty() {
+		configRange.Filename = provider.DeclRange.Filename
+	} else {
+		config = configRange.SliceBytes(s.runner.File(configRange.Filename).Bytes)
+	}
 
 	return &tfplugin.Provider{
 		Name:       provider.Name,
@@ -297,7 +303,7 @@ func (s *Server) encodeProvider(provider *tfconfigs.Provider) *tfplugin.Provider
 		Version:      provider.Version.Required.String(),
 		VersionRange: provider.Version.DeclRange,
 
-		Config:      configRange.SliceBytes(s.runner.File(configRange.Filename).Bytes),
+		Config:      config,
 		ConfigRange: configRange,
 
 		DeclRange: provider.DeclRange,
