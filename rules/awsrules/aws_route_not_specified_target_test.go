@@ -22,7 +22,7 @@ resource "aws_route" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsRouteNotSpecifiedTargetRule(),
-					Message: "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, or vpc_peering_connection_id.",
+					Message: "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, vpc_peering_connection_id or vpc_endpoint_id.",
 					Range: hcl.Range{
 						Filename: "resource.tf",
 						Start:    hcl.Pos{Line: 2, Column: 1},
@@ -109,7 +109,7 @@ resource "aws_route" "foo" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsRouteNotSpecifiedTargetRule(),
-					Message: "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, or vpc_peering_connection_id.",
+					Message: "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, vpc_peering_connection_id or vpc_endpoint_id.",
 					Range: hcl.Range{
 						Filename: "resource.tf",
 						Start:    hcl.Pos{Line: 7, Column: 1},
@@ -117,6 +117,15 @@ resource "aws_route" "foo" {
 					},
 				},
 			},
+		},
+		{
+			Name: "vpc_endpoint_id is specified",
+			Content: `
+resource "aws_route" "foo" {
+	route_table_id = "rtb-1234abcd"
+	vpc_endpoint_id = "vpce-12345678abcdefgh"
+}`,
+			Expected: tflint.Issues{},
 		},
 	}
 
