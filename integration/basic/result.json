@@ -6,7 +6,7 @@
         "severity": "error",
         "link": "https://github.com/terraform-linters/tflint/blob/v0.21.0/docs/rules/aws_route_not_specified_target.md"
       },
-      "message": "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, or vpc_peering_connection_id.",
+      "message": "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, vpc_peering_connection_id or vpc_endpoint_id.",
       "range": {
         "filename": "template.tf",
         "start": {
@@ -66,7 +66,7 @@
         "severity": "error",
         "link": "https://github.com/terraform-linters/tflint/blob/v0.21.0/docs/rules/aws_route_not_specified_target.md"
       },
-      "message": "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, or vpc_peering_connection_id.",
+      "message": "The routing target is not specified, each aws_route must contain either egress_only_gateway_id, gateway_id, instance_id, nat_gateway_id, network_interface_id, transit_gateway_id, vpc_peering_connection_id or vpc_endpoint_id.",
       "range": {
         "filename": "template.tf",
         "start": {
