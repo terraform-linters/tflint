@@ -2449,6 +2449,56 @@ func (mr *MockECSAPIMockRecorder) UntagResourceWithContext(arg0, arg1 interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UntagResourceWithContext", reflect.TypeOf((*MockECSAPI)(nil).UntagResourceWithContext), varargs...)
 }
 
+// UpdateCapacityProvider mocks base method
+func (m *MockECSAPI) UpdateCapacityProvider(arg0 *ecs.UpdateCapacityProviderInput) (*ecs.UpdateCapacityProviderOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateCapacityProvider", arg0)
+	ret0, _ := ret[0].(*ecs.UpdateCapacityProviderOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateCapacityProvider indicates an expected call of UpdateCapacityProvider
+func (mr *MockECSAPIMockRecorder) UpdateCapacityProvider(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCapacityProvider", reflect.TypeOf((*MockECSAPI)(nil).UpdateCapacityProvider), arg0)
+}
+
+// UpdateCapacityProviderRequest mocks base method
+func (m *MockECSAPI) UpdateCapacityProviderRequest(arg0 *ecs.UpdateCapacityProviderInput) (*request.Request, *ecs.UpdateCapacityProviderOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateCapacityProviderRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ecs.UpdateCapacityProviderOutput)
+	return ret0, ret1
+}
+
+// UpdateCapacityProviderRequest indicates an expected call of UpdateCapacityProviderRequest
+func (mr *MockECSAPIMockRecorder) UpdateCapacityProviderRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCapacityProviderRequest", reflect.TypeOf((*MockECSAPI)(nil).UpdateCapacityProviderRequest), arg0)
+}
+
+// UpdateCapacityProviderWithContext mocks base method
+func (m *MockECSAPI) UpdateCapacityProviderWithContext(arg0 context.Context, arg1 *ecs.UpdateCapacityProviderInput, arg2 ...request.Option) (*ecs.UpdateCapacityProviderOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpdateCapacityProviderWithContext", varargs...)
+	ret0, _ := ret[0].(*ecs.UpdateCapacityProviderOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateCapacityProviderWithContext indicates an expected call of UpdateCapacityProviderWithContext
+func (mr *MockECSAPIMockRecorder) UpdateCapacityProviderWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCapacityProviderWithContext", reflect.TypeOf((*MockECSAPI)(nil).UpdateCapacityProviderWithContext), varargs...)
+}
+
 // UpdateClusterSettings mocks base method
 func (m *MockECSAPI) UpdateClusterSettings(arg0 *ecs.UpdateClusterSettingsInput) (*ecs.UpdateClusterSettingsOutput, error) {
 	m.ctrl.T.Helper()
