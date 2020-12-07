@@ -3,4 +3,5 @@
   description: TFLint is a Terraform linter focused on possible errors, best practices, and so on.
   language: golang
   entry: tflint
+  exclude: .*.tfvars$
   types: [terraform]
