@@ -18,12 +18,12 @@ func Test_AwsEbsVolumeInvalidTypeRule(t *testing.T) {
 			Name: "It includes invalid characters",
 			Content: `
 resource "aws_ebs_volume" "foo" {
-	type = "gp3"
+	type = "gp10"
 }`,
 			Expected: tflint.Issues{
 				{
 					Rule:    NewAwsEbsVolumeInvalidTypeRule(),
-					Message: `"gp3" is an invalid value as type`,
+					Message: `"gp10" is an invalid value as type`,
 				},
 			},
 		},

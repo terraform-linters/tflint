@@ -311,7 +311,7 @@ test "aws_ami" "architecture" {
 
 test "aws_ebs_volume" "type" {
   ok = "gp2"
-  ng = "gp3"
+  ng = "gp10"
 }
 
 test "aws_ec2_capacity_reservation" "end_date_type" {
