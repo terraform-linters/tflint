@@ -7422,6 +7422,56 @@ func (mr *MockRDSAPIMockRecorder) StartDBInstance(arg0 interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartDBInstance", reflect.TypeOf((*MockRDSAPI)(nil).StartDBInstance), arg0)
 }
 
+// StartDBInstanceAutomatedBackupsReplication mocks base method
+func (m *MockRDSAPI) StartDBInstanceAutomatedBackupsReplication(arg0 *rds.StartDBInstanceAutomatedBackupsReplicationInput) (*rds.StartDBInstanceAutomatedBackupsReplicationOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "StartDBInstanceAutomatedBackupsReplication", arg0)
+	ret0, _ := ret[0].(*rds.StartDBInstanceAutomatedBackupsReplicationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StartDBInstanceAutomatedBackupsReplication indicates an expected call of StartDBInstanceAutomatedBackupsReplication
+func (mr *MockRDSAPIMockRecorder) StartDBInstanceAutomatedBackupsReplication(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartDBInstanceAutomatedBackupsReplication", reflect.TypeOf((*MockRDSAPI)(nil).StartDBInstanceAutomatedBackupsReplication), arg0)
+}
+
+// StartDBInstanceAutomatedBackupsReplicationRequest mocks base method
+func (m *MockRDSAPI) StartDBInstanceAutomatedBackupsReplicationRequest(arg0 *rds.StartDBInstanceAutomatedBackupsReplicationInput) (*request.Request, *rds.StartDBInstanceAutomatedBackupsReplicationOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "StartDBInstanceAutomatedBackupsReplicationRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.StartDBInstanceAutomatedBackupsReplicationOutput)
+	return ret0, ret1
+}
+
+// StartDBInstanceAutomatedBackupsReplicationRequest indicates an expected call of StartDBInstanceAutomatedBackupsReplicationRequest
+func (mr *MockRDSAPIMockRecorder) StartDBInstanceAutomatedBackupsReplicationRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartDBInstanceAutomatedBackupsReplicationRequest", reflect.TypeOf((*MockRDSAPI)(nil).StartDBInstanceAutomatedBackupsReplicationRequest), arg0)
+}
+
+// StartDBInstanceAutomatedBackupsReplicationWithContext mocks base method
+func (m *MockRDSAPI) StartDBInstanceAutomatedBackupsReplicationWithContext(arg0 context.Context, arg1 *rds.StartDBInstanceAutomatedBackupsReplicationInput, arg2 ...request.Option) (*rds.StartDBInstanceAutomatedBackupsReplicationOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "StartDBInstanceAutomatedBackupsReplicationWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.StartDBInstanceAutomatedBackupsReplicationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StartDBInstanceAutomatedBackupsReplicationWithContext indicates an expected call of StartDBInstanceAutomatedBackupsReplicationWithContext
+func (mr *MockRDSAPIMockRecorder) StartDBInstanceAutomatedBackupsReplicationWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartDBInstanceAutomatedBackupsReplicationWithContext", reflect.TypeOf((*MockRDSAPI)(nil).StartDBInstanceAutomatedBackupsReplicationWithContext), varargs...)
+}
+
 // StartDBInstanceRequest mocks base method
 func (m *MockRDSAPI) StartDBInstanceRequest(arg0 *rds.StartDBInstanceInput) (*request.Request, *rds.StartDBInstanceOutput) {
 	m.ctrl.T.Helper()
@@ -7620,6 +7670,56 @@ func (m *MockRDSAPI) StopDBInstance(arg0 *rds.StopDBInstanceInput) (*rds.StopDBI
 func (mr *MockRDSAPIMockRecorder) StopDBInstance(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StopDBInstance", reflect.TypeOf((*MockRDSAPI)(nil).StopDBInstance), arg0)
+}
+
+// StopDBInstanceAutomatedBackupsReplication mocks base method
+func (m *MockRDSAPI) StopDBInstanceAutomatedBackupsReplication(arg0 *rds.StopDBInstanceAutomatedBackupsReplicationInput) (*rds.StopDBInstanceAutomatedBackupsReplicationOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "StopDBInstanceAutomatedBackupsReplication", arg0)
+	ret0, _ := ret[0].(*rds.StopDBInstanceAutomatedBackupsReplicationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StopDBInstanceAutomatedBackupsReplication indicates an expected call of StopDBInstanceAutomatedBackupsReplication
+func (mr *MockRDSAPIMockRecorder) StopDBInstanceAutomatedBackupsReplication(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StopDBInstanceAutomatedBackupsReplication", reflect.TypeOf((*MockRDSAPI)(nil).StopDBInstanceAutomatedBackupsReplication), arg0)
+}
+
+// StopDBInstanceAutomatedBackupsReplicationRequest mocks base method
+func (m *MockRDSAPI) StopDBInstanceAutomatedBackupsReplicationRequest(arg0 *rds.StopDBInstanceAutomatedBackupsReplicationInput) (*request.Request, *rds.StopDBInstanceAutomatedBackupsReplicationOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "StopDBInstanceAutomatedBackupsReplicationRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*rds.StopDBInstanceAutomatedBackupsReplicationOutput)
+	return ret0, ret1
+}
+
+// StopDBInstanceAutomatedBackupsReplicationRequest indicates an expected call of StopDBInstanceAutomatedBackupsReplicationRequest
+func (mr *MockRDSAPIMockRecorder) StopDBInstanceAutomatedBackupsReplicationRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StopDBInstanceAutomatedBackupsReplicationRequest", reflect.TypeOf((*MockRDSAPI)(nil).StopDBInstanceAutomatedBackupsReplicationRequest), arg0)
+}
+
+// StopDBInstanceAutomatedBackupsReplicationWithContext mocks base method
+func (m *MockRDSAPI) StopDBInstanceAutomatedBackupsReplicationWithContext(arg0 context.Context, arg1 *rds.StopDBInstanceAutomatedBackupsReplicationInput, arg2 ...request.Option) (*rds.StopDBInstanceAutomatedBackupsReplicationOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "StopDBInstanceAutomatedBackupsReplicationWithContext", varargs...)
+	ret0, _ := ret[0].(*rds.StopDBInstanceAutomatedBackupsReplicationOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StopDBInstanceAutomatedBackupsReplicationWithContext indicates an expected call of StopDBInstanceAutomatedBackupsReplicationWithContext
+func (mr *MockRDSAPIMockRecorder) StopDBInstanceAutomatedBackupsReplicationWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StopDBInstanceAutomatedBackupsReplicationWithContext", reflect.TypeOf((*MockRDSAPI)(nil).StopDBInstanceAutomatedBackupsReplicationWithContext), varargs...)
 }
 
 // StopDBInstanceRequest mocks base method
