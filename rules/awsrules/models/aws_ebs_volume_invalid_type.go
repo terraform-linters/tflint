@@ -29,6 +29,7 @@ func NewAwsEbsVolumeInvalidTypeRule() *AwsEbsVolumeInvalidTypeRule {
 			"gp2",
 			"sc1",
 			"st1",
+			"gp3",
 		},
 	}
 }

@@ -25,7 +25,7 @@ func NewAwsSagemakerEndpointConfigurationInvalidNameRule() *AwsSagemakerEndpoint
 		resourceType:  "aws_sagemaker_endpoint_configuration",
 		attributeName: "name",
 		max:           63,
-		pattern:       regexp.MustCompile(`^[a-zA-Z0-9](-*[a-zA-Z0-9])*`),
+		pattern:       regexp.MustCompile(`^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}`),
 	}
 }
 
@@ -68,7 +68,7 @@ func (r *AwsSagemakerEndpointConfigurationInvalidNameRule) Check(runner *tflint.
 			if !r.pattern.MatchString(val) {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-zA-Z0-9](-*[a-zA-Z0-9])*`),
+					fmt.Sprintf(`"%s" does not match valid pattern %s`, truncateLongMessage(val), `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}`),
 					attribute.Expr.Range(),
 				)
 			}
