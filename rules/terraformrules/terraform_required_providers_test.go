@@ -87,17 +87,64 @@ data "template_file" "foo" {
 			},
 		},
 		{
-			Name: "required_providers set",
+			Name: "required_providers object",
 			Content: `
 terraform {
 	required_providers {
-		template = "~> 2"
+		template = {
+			source  = "hashicorp/template"
+			version = "~> 2" 
+		}
 	}
 }
 
 provider "template" {} 
 `,
 			Expected: tflint.Issues{},
+		},
+		{
+			Name: "required_providers string",
+			Content: `
+terraform {
+	required_providers {
+		template = "~> 2" 
+	}
+}
+
+provider "template" {} 
+`,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: "required_providers object missing version",
+			Content: `
+terraform {
+	required_providers {
+		template = {
+			source = "hashicorp/template"
+		}
+	}
+}
+
+provider "template" {} 
+`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformRequiredProvidersRule(),
+					Message: `Missing version constraint for provider "template" in "required_providers"`,
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start: hcl.Pos{
+							Line:   10,
+							Column: 1,
+						},
+						End: hcl.Pos{
+							Line:   10,
+							Column: 20,
+						},
+					},
+				},
+			},
 		},
 		{
 			Name: "single provider with alias",
@@ -125,11 +172,14 @@ provider "template" {
 			},
 		},
 		{
-			Name: "version set with alias",
+			Name: "version set",
 			Content: `
 terraform {
   required_providers {
-    template = "~> 2"
+    template = {
+			source = "hashicorp/template"
+			version = "~> 2"
+		}
   }
 }
 
@@ -144,11 +194,11 @@ provider "template" {
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start: hcl.Pos{
-							Line:   8,
+							Line:   11,
 							Column: 1,
 						},
 						End: hcl.Pos{
-							Line:   8,
+							Line:   11,
 							Column: 20,
 						},
 					},
@@ -156,11 +206,14 @@ provider "template" {
 			},
 		},
 		{
-			Name: "version set",
+			Name: "version set with alias",
 			Content: `
 terraform {
   required_providers {
-    template = "~> 2"
+    template = {
+			source = "hashicorp/template"
+			version = "~> 2"
+		}
   }
 }
 
@@ -176,11 +229,11 @@ provider "template" {
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start: hcl.Pos{
-							Line:   8,
+							Line:   11,
 							Column: 1,
 						},
 						End: hcl.Pos{
-							Line:   8,
+							Line:   11,
 							Column: 20,
 						},
 					},
