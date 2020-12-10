@@ -245,7 +245,7 @@ func (r *Runner) File(path string) *hcl.File {
 func (r *Runner) Files() map[string]*hcl.File {
 	result := make(map[string]*hcl.File)
 	for name, file := range r.files {
-		if filepath.Dir(name) == r.TFConfig.Module.SourceDir {
+		if filepath.Dir(name) == filepath.Clean(r.TFConfig.Module.SourceDir) {
 			result[name] = file
 		}
 	}

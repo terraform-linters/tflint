@@ -64,10 +64,13 @@ func (r *TerraformStandardModuleStructureRule) checkFiles(runner *tflint.Runner)
 		return
 	}
 
-	files := runner.Files()
-	for name, file := range files {
+	f := runner.Files()
+	files := make(map[string]*hcl.File, len(f))
+	for name, file := range f {
 		files[filepath.Base(name)] = file
 	}
+
+	log.Printf("[DEBUG] %d files found: %v", len(files), files)
 
 	if files[filenameMain] == nil {
 		runner.EmitIssue(
