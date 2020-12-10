@@ -36,7 +36,7 @@ func (f *Formatter) printIssueWithSource(issue *tflint.Issue, sources map[string
 	fmt.Fprintf(
 		f.Stdout,
 		"%s: %s (%s)\n\n",
-		colorSeverity(issue.Rule.Severity()), colorBold(issue.Message), issue.Rule.Name(),
+		colorSeverity(issue.Severity), colorBold(issue.Message), issue.Rule.Name(),
 	)
 	fmt.Fprintf(f.Stdout, "  on %s line %d:\n", issue.Range.Filename, issue.Range.Start.Line)
 

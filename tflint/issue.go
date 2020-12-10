@@ -8,10 +8,11 @@ import (
 
 // Issue represents a problem in configurations
 type Issue struct {
-	Rule    Rule
-	Message string
-	Range   hcl.Range
-	Callers []hcl.Range
+	Rule     Rule
+	Message  string
+	Severity string
+	Range    hcl.Range
+	Callers  []hcl.Range
 }
 
 // Issues is an alias for the map of Issue
