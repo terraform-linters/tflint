@@ -1,3 +1,24 @@
+## 0.22.0 (2020-12-09)
+
+This release updates to Terraform 0.14! This adds support for parsing configuration that uses features introduced in Terraform 0.14. See [Terraform's changelog](https://github.com/hashicorp/terraform/blob/v0.14/CHANGELOG.md) for further details.
+
+### Enhancements
+
+- [#992](https://github.com/terraform-linters/tflint/pull/992) [#1001](https://github.com/terraform-linters/tflint/pull/1001): bump terraform from 0.13.5 to 0.14.2 [(@bendrucker)](https://github.com/bendrucker)
+- [#989](https://github.com/terraform-linters/tflint/pull/989): aws_route_not_specified_target: Add vpc_endpoint_id route target [(@Tensho)](https://github.com/Tensho)
+
+### BugFixes
+
+- [#998](https://github.com/terraform-linters/tflint/pull/998): terraform_required_providers: emit error when only source is specified [(@bendrucker)](https://github.com/bendrucker)
+- [#999](https://github.com/terraform-linters/tflint/pull/999): runner: clean Terraform source path for comparison
+
+### Chores
+
+- [#988](https://github.com/terraform-linters/tflint/pull/988): bump github.com/google/go-cmp from 0.5.3 to 0.5.4
+- [#993](https://github.com/terraform-linters/tflint/pull/993) [#993](https://github.com/terraform-linters/tflint/pull/993): Bump github.com/aws/aws-sdk-go from 1.35.35 to 1.36.2
+- [#996](https://github.com/terraform-linters/tflint/pull/996): bump aws sdk submodule to 1.36.3 [(@bmbferreira)](https://github.com/bmbferreira)
+- [#994](https://github.com/terraform-linters/tflint/pull/994): Bump github.com/hashicorp/hcl/v2 from 2.7.1 to 2.7.2
+
 ## 0.21.0 (2020-11-23)
 
 This release adds support for JSON configuration syntax in plugins. For this update, the plugin must be built with tflint-plugin-sdk v0.6.0 to work with TFLint v0.21.0. For details, please see the CHANGELOG of tflint-plugin-sdk.
