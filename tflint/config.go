@@ -62,6 +62,9 @@ type RuleConfig struct {
 	Name    string   `hcl:"name,label"`
 	Enabled bool     `hcl:"enabled"`
 	Body    hcl.Body `hcl:",remain"`
+
+	// file is the result of parsing the HCL file that declares the rule configuration.
+	file *hcl.File
 }
 
 // PluginConfig is a TFLint's plugin config
@@ -284,6 +287,9 @@ func loadConfigFromFile(file string) (*Config, error) {
 	}
 
 	cfg := raw.toConfig()
+	for _, rule := range cfg.Rules {
+		rule.file = f
+	}
 	for _, plugin := range cfg.Plugins {
 		plugin.file = f
 	}
@@ -409,6 +415,11 @@ func (raw *rawConfig) toConfig() *Config {
 	}
 
 	return ret
+}
+
+// Bytes returns the bytes of the configuration file declared in the rule.
+func (r *RuleConfig) Bytes() []byte {
+	return r.file.Bytes
 }
 
 func configBodyRange(body hcl.Body) hcl.Range {

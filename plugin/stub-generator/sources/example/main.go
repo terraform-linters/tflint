@@ -52,7 +52,7 @@ func (r *AwsInstanceExampleTypeRule) Link() string {
 func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
 	return runner.WalkResourceAttributes("aws_instance", "instance_type", func(attribute *hcl.Attribute) error {
 		var instanceType string
-		err := runner.EvaluateExpr(attribute.Expr, &instanceType)
+		err := runner.EvaluateExpr(attribute.Expr, &instanceType, nil)
 
 		return runner.EnsureNoError(err, func() error {
 			return runner.EmitIssueOnExpr(
