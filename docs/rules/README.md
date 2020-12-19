@@ -79,6 +79,6 @@ These rules suggest to better ways.
 |[terraform_naming_convention](terraform_naming_convention.md)||
 |[terraform_required_version](terraform_required_version.md)||
 |[terraform_required_providers](terraform_required_providers.md)||
-|[terraform_unused_required_providers](terraform_required_providers.md)||
+|[terraform_unused_required_providers](terraform_unused_required_providers.md)||
 |[terraform_standard_module_structure](terraform_standard_module_structure.md)||
 |[terraform_workspace_remote](terraform_workspace_remote.md)|✔|
