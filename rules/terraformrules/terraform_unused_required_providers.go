@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/hashicorp/terraform/configs"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-// TerraformUnusedRequiredProvidersRule checks whether Terraform sets version constraints for all configured providers
+// TerraformUnusedRequiredProvidersRule checks whether required providers are used in the module
 type TerraformUnusedRequiredProvidersRule struct{}
 
 // NewTerraformUnusedRequiredProvidersRule returns new rule with default attributes
@@ -35,7 +36,7 @@ func (r *TerraformUnusedRequiredProvidersRule) Link() string {
 	return tflint.ReferenceLink(r.Name())
 }
 
-//Check Checks whether provider required version is set
+//Check checks whether required providers are used
 func (r *TerraformUnusedRequiredProvidersRule) Check(runner *tflint.Runner) error {
 	if !runner.TFConfig.Path.IsRoot() {
 		// This rule does not evaluate child modules.
@@ -44,32 +45,35 @@ func (r *TerraformUnusedRequiredProvidersRule) Check(runner *tflint.Runner) erro
 
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
-providers:
 	for _, required := range runner.TFConfig.Module.ProviderRequirements.RequiredProviders {
-		for _, resource := range runner.TFConfig.Module.ManagedResources {
-			if required.Name == resource.Provider.Type {
-				continue providers
-			}
-		}
-
-		for _, resource := range runner.TFConfig.Module.DataResources {
-			if required.Name == resource.Provider.Type {
-				continue providers
-			}
-		}
-
-		for _, provider := range runner.TFConfig.Module.ProviderConfigs {
-			if required.Name == provider.Name {
-				continue providers
-			}
-		}
-
-		runner.EmitIssue(
-			r,
-			fmt.Sprintf("provider '%s' is declared in required_providers but not used by the module", required.Name),
-			required.DeclRange,
-		)
+		r.checkProvider(runner, required)
 	}
 
 	return nil
+}
+
+func (r *TerraformUnusedRequiredProvidersRule) checkProvider(runner *tflint.Runner, required *configs.RequiredProvider) {
+	for _, resource := range runner.TFConfig.Module.ManagedResources {
+		if required.Name == resource.Provider.Type {
+			return
+		}
+	}
+
+	for _, resource := range runner.TFConfig.Module.DataResources {
+		if required.Name == resource.Provider.Type {
+			return
+		}
+	}
+
+	for _, provider := range runner.TFConfig.Module.ProviderConfigs {
+		if required.Name == provider.Name {
+			return
+		}
+	}
+
+	runner.EmitIssue(
+		r,
+		fmt.Sprintf("provider '%s' is declared in required_providers but not used by the module", required.Name),
+		required.DeclRange,
+	)
 }
