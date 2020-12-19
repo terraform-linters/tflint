@@ -12,12 +12,13 @@ import (
 // Server is a RPC server for responding to requests from plugins
 type Server struct {
 	runner  *tflint.Runner
+	rootRunner *tflint.Runner
 	sources map[string][]byte
 }
 
 // NewServer initializes a RPC server for plugins
-func NewServer(runner *tflint.Runner, sources map[string][]byte) *Server {
-	return &Server{runner: runner, sources: sources}
+func NewServer(runner *tflint.Runner, rootRunner *tflint.Runner, sources map[string][]byte) *Server {
+	return &Server{runner: runner, rootRunner: rootRunner, sources: sources}
 }
 
 // Attributes returns corresponding hcl.Attributes
@@ -102,6 +103,19 @@ func (s *Server) Config(req *tfplugin.ConfigRequest, resp *tfplugin.ConfigRespon
 	return nil
 }
 
+// RootProvider returns the provider configuration on the root module as tfplugin.Provider
+func (s *Server) RootProvider(req *tfplugin.RootProviderRequest, resp *tfplugin.RootProviderResponse) error {
+	provider, exists := s.rootRunner.TFConfig.Module.ProviderConfigs[req.Name]
+	if !exists {
+		return nil
+	}
+
+	*resp = tfplugin.RootProviderResponse{
+		Provider: s.encodeProvider(provider),
+	}
+	return nil
+}
+
 // EvalExpr returns a value of the evaluated expression
 func (s *Server) EvalExpr(req *tfplugin.EvalExprRequest, resp *tfplugin.EvalExprResponse) error {
 	expr, diags := tflint.ParseExpression(req.Expr, req.ExprRange.Filename, req.ExprRange.Start)
@@ -110,6 +124,23 @@ func (s *Server) EvalExpr(req *tfplugin.EvalExprRequest, resp *tfplugin.EvalExpr
 	}
 
 	val, err := s.runner.EvalExpr(expr, req.Ret, cty.Type{})
+	if err != nil {
+		if appErr, ok := err.(*tflint.Error); ok {
+			err = client.Error(*appErr)
+		}
+	}
+	*resp = tfplugin.EvalExprResponse{Val: val, Err: err}
+	return nil
+}
+
+// EvalExprOnRootCtx returns a value of the evaluated expression on the context of the root module.
+func (s *Server) EvalExprOnRootCtx(req *tfplugin.EvalExprRequest, resp *tfplugin.EvalExprResponse) error {
+	expr, diags := tflint.ParseExpression(req.Expr, req.ExprRange.Filename, req.ExprRange.Start)
+	if diags.HasErrors() {
+		return diags
+	}
+
+	val, err := s.rootRunner.EvalExpr(expr, req.Ret, cty.Type{})
 	if err != nil {
 		if appErr, ok := err.(*tflint.Error); ok {
 			err = client.Error(*appErr)

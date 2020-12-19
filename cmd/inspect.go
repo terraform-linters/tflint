@@ -69,7 +69,7 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 			return ExitCodeError
 		}
 		for _, runner := range runners {
-			err = ruleset.Check(tfplugin.NewServer(runner, cli.loader.Sources()))
+			err = ruleset.Check(tfplugin.NewServer(runner, runners[len(runners)-1], cli.loader.Sources()))
 			if err != nil {
 				cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to check ruleset", err), cli.loader.Sources())
 				return ExitCodeError

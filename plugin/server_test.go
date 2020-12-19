@@ -20,7 +20,8 @@ resource "aws_instance" "foo" {
   instance_type = "t2.micro"
 }`
 
-	server := NewServer(tflint.TestRunner(t, map[string]string{"main.tf": source}), map[string][]byte{"main.tf": []byte(source)})
+	runner := tflint.TestRunner(t, map[string]string{"main.tf": source})
+	server := NewServer(runner, runner, map[string][]byte{"main.tf": []byte(source)})
 	req := &tfplugin.AttributesRequest{
 		Resource:      "aws_instance",
 		AttributeName: "instance_type",
@@ -70,7 +71,8 @@ resource "aws_instance" "foo" {
   }
 }`
 
-	server := NewServer(tflint.TestRunner(t, map[string]string{"main.tf": source}), map[string][]byte{"main.tf": []byte(source)})
+	runner := tflint.TestRunner(t, map[string]string{"main.tf": source})
+	server := NewServer(runner, runner, map[string][]byte{"main.tf": []byte(source)})
 	req := &tfplugin.BlocksRequest{
 		Resource:  "aws_instance",
 		BlockType: "ebs_block_device",
@@ -134,7 +136,8 @@ resource "aws_s3_bucket" "bar" {
   acl    = "private"
 }`
 
-	server := NewServer(tflint.TestRunner(t, map[string]string{"main.tf": source}), map[string][]byte{"main.tf": []byte(source)})
+	runner := tflint.TestRunner(t, map[string]string{"main.tf": source})
+	server := NewServer(runner, runner, map[string][]byte{"main.tf": []byte(source)})
 	req := &tfplugin.ResourcesRequest{Name: "aws_instance"}
 	var resp tfplugin.ResourcesResponse
 
@@ -245,7 +248,8 @@ variable "instance_type" {
   default = "t2.micro"
 }`
 
-	server := NewServer(tflint.TestRunner(t, map[string]string{"main.tf": source}), map[string][]byte{"main.tf": []byte(source)})
+	runner := tflint.TestRunner(t, map[string]string{"main.tf": source})
+	server := NewServer(runner, runner, map[string][]byte{"main.tf": []byte(source)})
 	req := &tfplugin.EvalExprRequest{
 		Expr: []byte(`var.instance_type`),
 		ExprRange: hcl.Range{
@@ -278,7 +282,8 @@ variable "instance_type" {
 func Test_EvalExpr_errors(t *testing.T) {
 	source := `variable "instance_type" {}`
 
-	server := NewServer(tflint.TestRunner(t, map[string]string{"main.tf": source}), map[string][]byte{"main.tf": []byte(source)})
+	runner := tflint.TestRunner(t, map[string]string{"main.tf": source})
+	server := NewServer(runner, runner, map[string][]byte{"main.tf": []byte(source)})
 	req := &tfplugin.EvalExprRequest{
 		Expr: []byte(`var.instance_type`),
 		ExprRange: hcl.Range{
@@ -315,7 +320,7 @@ func Test_EmitIssue(t *testing.T) {
 		},
 	}
 
-	server := NewServer(runner, map[string][]byte{})
+	server := NewServer(runner, runner, map[string][]byte{})
 	req := &tfplugin.EmitIssueRequest{
 		Rule:    rule,
 		Message: "This is test rule",

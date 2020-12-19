@@ -551,8 +551,8 @@ github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/svanharmelen/jsonapi v0.0.0-20180618144545-0c0828c3f16d/go.mod h1:BSTlc8jOjh0niykqEGVXOLXdi9o0r0kR8tCYiMvjFgw=
 github.com/tencentcloud/tencentcloud-sdk-go v3.0.82+incompatible/go.mod h1:0PfYow01SHPMhKY31xa+EFz2RStxIqj6JFAJS+IkCi4=
 github.com/tencentyun/cos-go-sdk-v5 v0.0.0-20190808065407-f07404cefc8c/go.mod h1:wk2XFUg6egk4tSDNZtXeKfe2G6690UVyt163PuUxBZk=
-github.com/terraform-linters/tflint-plugin-sdk v0.6.0 h1:EphrAk4FheD/p3dSaBaHzhMQCuE6Wz5UN+9mEjdQ73Q=
-github.com/terraform-linters/tflint-plugin-sdk v0.6.0/go.mod h1:EMiQwq0IiBwylbSgx53sdPBRhOHEXrjXhrD0x5C8SjY=
+github.com/terraform-linters/tflint-plugin-sdk v0.6.1-0.20201205142940-d49361e1c42c h1:c19JJeT1VbTXFpqaxi7FBAv4OJAeKVg0mpNs2ySbgi0=
+github.com/terraform-linters/tflint-plugin-sdk v0.6.1-0.20201205142940-d49361e1c42c/go.mod h1:EMiQwq0IiBwylbSgx53sdPBRhOHEXrjXhrD0x5C8SjY=
 github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20201118192700-9cc6324740c9 h1:0u9SqTq2nbof0t+7xqfI8Ejhmooe3Qqe09fobOCZY6g=
 github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20201118192700-9cc6324740c9/go.mod h1:sToOUnPCXFPwMljH57zM6uOI3q1YVREy4GSlg1Wm8/Y=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20171017195756-830351dc03c6/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
