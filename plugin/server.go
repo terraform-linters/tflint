@@ -175,6 +175,18 @@ func (s *Server) EvalExprOnRootCtx(req *tfplugin.EvalExprRequest, resp *tfplugin
 	return nil
 }
 
+// IsNullExpr returns the result of determining whether the expression is null or not.
+func (s *Server) IsNullExpr(req *tfplugin.IsNullExprRequest, resp *tfplugin.IsNullExprResponse) error {
+	expr, diags := tflint.ParseExpression(req.Expr, req.Range.Filename, req.Range.Start)
+	if diags.HasErrors() {
+		return diags
+	}
+
+	ret, err := s.runner.IsNullExpr(expr)
+	*resp = tfplugin.IsNullExprResponse{Ret: ret, Err: err}
+	return nil
+}
+
 // EmitIssue reflects a issue to the Runner
 func (s *Server) EmitIssue(req *tfplugin.EmitIssueRequest, resp *interface{}) error {
 	if req.Expr != nil {
