@@ -2,6 +2,7 @@ package plugin
 
 import (
 	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/hashicorp/terraform/configs"
 	client "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint/client"
@@ -11,9 +12,9 @@ import (
 
 // Server is a RPC server for responding to requests from plugins
 type Server struct {
-	runner  *tflint.Runner
+	runner     *tflint.Runner
 	rootRunner *tflint.Runner
-	sources map[string][]byte
+	sources    map[string][]byte
 }
 
 // NewServer initializes a RPC server for plugins
@@ -116,6 +117,30 @@ func (s *Server) RootProvider(req *tfplugin.RootProviderRequest, resp *tfplugin.
 	return nil
 }
 
+// RuleConfig returns an encoded HCL format rule config
+func (s *Server) RuleConfig(req *tfplugin.RuleConfigRequest, resp *tfplugin.RuleConfigResponse) error {
+	config := s.runner.RuleConfig(req.Name)
+	if config == nil {
+		*resp = tfplugin.RuleConfigResponse{Exists: false}
+		return nil
+	}
+	// HACK: If you enable the rule through the CLI instead of the file, its hcl.Body will not contain valid range.
+	// @see https://github.com/hashicorp/hcl/blob/v2.8.0/merged.go#L132-L135
+	if config.Body.MissingItemRange().Filename == "<empty>" {
+		*resp = tfplugin.RuleConfigResponse{Err: client.Error{Message: "This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration"}}
+		return nil
+	}
+
+	configRange := configBodyRange(config.Body)
+	*resp = tfplugin.RuleConfigResponse{
+		Exists: true,
+		Config: configRange.SliceBytes(config.Bytes()),
+		Range:  configRange,
+		Err:    nil,
+	}
+	return nil
+}
+
 // EvalExpr returns a value of the evaluated expression
 func (s *Server) EvalExpr(req *tfplugin.EvalExprRequest, resp *tfplugin.EvalExprResponse) error {
 	expr, diags := tflint.ParseExpression(req.Expr, req.ExprRange.Filename, req.ExprRange.Start)
@@ -167,4 +192,26 @@ func (s *Server) EmitIssue(req *tfplugin.EmitIssueRequest, resp *interface{}) er
 		return nil
 	}
 	return nil
+}
+
+func configBodyRange(body hcl.Body) hcl.Range {
+	var bodyRange hcl.Range
+
+	// Estimate the range of the body from the range of all attributes and blocks.
+	hclBody := body.(*hclsyntax.Body)
+	for _, attr := range hclBody.Attributes {
+		if bodyRange.Empty() {
+			bodyRange = attr.Range()
+		} else {
+			bodyRange = hcl.RangeOver(bodyRange, attr.Range())
+		}
+	}
+	for _, block := range hclBody.Blocks {
+		if bodyRange.Empty() {
+			bodyRange = block.Range()
+		} else {
+			bodyRange = hcl.RangeOver(bodyRange, block.Range())
+		}
+	}
+	return bodyRange
 }

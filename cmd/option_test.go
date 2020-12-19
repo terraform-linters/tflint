@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	hcl "github.com/hashicorp/hcl/v2"
 	flags "github.com/jessevdk/go-flags"
 	"github.com/terraform-linters/tflint/client"
@@ -297,8 +298,11 @@ func Test_toConfig(t *testing.T) {
 		}
 
 		ret := opts.toConfig()
-		if !cmp.Equal(tc.Expected, ret) {
-			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(tc.Expected, ret))
+		eqlopts := []cmp.Option{
+			cmpopts.IgnoreUnexported(tflint.RuleConfig{}),
+		}
+		if !cmp.Equal(tc.Expected, ret, eqlopts...) {
+			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(tc.Expected, ret, eqlopts...))
 		}
 	}
 }

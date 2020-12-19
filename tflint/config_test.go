@@ -115,6 +115,7 @@ func Test_LoadConfig(t *testing.T) {
 		}
 
 		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(RuleConfig{}),
 			cmpopts.IgnoreUnexported(PluginConfig{}),
 			cmpopts.IgnoreFields(PluginConfig{}, "Body"),
 			cmpopts.IgnoreFields(RuleConfig{}, "Body"),
@@ -578,6 +579,7 @@ func Test_Merge(t *testing.T) {
 		ret := tc.Base.Merge(tc.Other)
 
 		opts := []cmp.Option{
+			cmpopts.IgnoreUnexported(RuleConfig{}),
 			cmpopts.IgnoreUnexported(PluginConfig{}),
 			cmpopts.IgnoreUnexported(hclsyntax.Body{}),
 			cmpopts.IgnoreFields(hclsyntax.Body{}, "Attributes", "Blocks"),
@@ -828,15 +830,18 @@ func Test_copy(t *testing.T) {
 		},
 	}
 
-	opt := cmpopts.IgnoreUnexported(PluginConfig{})
+	opts := []cmp.Option{
+		cmpopts.IgnoreUnexported(RuleConfig{}),
+		cmpopts.IgnoreUnexported(PluginConfig{}),
+	}
 	for _, tc := range cases {
 		ret := cfg.copy()
-		if !cmp.Equal(cfg, ret, opt) {
-			t.Fatalf("The copied config doesn't match original: Diff=%s", cmp.Diff(cfg, ret, opt))
+		if !cmp.Equal(cfg, ret, opts...) {
+			t.Fatalf("The copied config doesn't match original: Diff=%s", cmp.Diff(cfg, ret, opts...))
 		}
 
 		tc.SideEffect(ret)
-		if cmp.Equal(cfg, ret, opt) {
+		if cmp.Equal(cfg, ret, opts...) {
 			t.Fatalf("The original was changed when updating `%s`", tc.Name)
 		}
 	}

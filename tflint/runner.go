@@ -375,6 +375,11 @@ func (r *Runner) DecodeRuleConfig(ruleName string, val interface{}) error {
 	return nil
 }
 
+// RuleConfig returns the corresponding rule configuration
+func (r *Runner) RuleConfig(ruleName string) *RuleConfig {
+	return r.config.Rules[ruleName]
+}
+
 func (r *Runner) emitIssue(issue *Issue) {
 	if annotations, ok := r.annotations[issue.Range.Filename]; ok {
 		for _, annotation := range annotations {
