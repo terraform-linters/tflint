@@ -50,6 +50,7 @@ var manualDefaultRules = []Rule{
 	terraformrules.NewTerraformRequiredProvidersRule(),
 	terraformrules.NewTerraformWorkspaceRemoteRule(),
 	terraformrules.NewTerraformUnusedDeclarationsRule(),
+	terraformrules.NewTerraformUnusedRequiredProvidersRule(),
 	terraformrules.NewTerraformCommentSyntaxRule(),
 }
 
