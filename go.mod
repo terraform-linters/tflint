@@ -10,7 +10,7 @@ require (
 	github.com/hashicorp/aws-sdk-go-base v0.7.0
 	github.com/hashicorp/go-plugin v1.4.0
 	github.com/hashicorp/go-version v1.2.1
-	github.com/hashicorp/hcl/v2 v2.8.0
+	github.com/hashicorp/hcl/v2 v2.8.1
 	github.com/hashicorp/logutils v1.0.0
 	github.com/hashicorp/terraform v0.14.2
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.3.0
