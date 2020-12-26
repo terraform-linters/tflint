@@ -5,6 +5,7 @@
 [![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/wata727/tflint/)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-blue.svg)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/terraform-linters/tflint)](https://goreportcard.com/report/github.com/terraform-linters/tflint)
+[![Homebrew](https://img.shields.io/badge/dynamic/json.svg?url=https://formulae.brew.sh/api/formula/tflint.json&query=$.versions.stable&label=homebrew)](https://formulae.brew.sh/formula/tflint)
 
 TFLint is a [Terraform](https://www.terraform.io/) linter focused on possible errors, best practices, etc.
 
@@ -139,7 +140,7 @@ TFLint returns the following exit statuses on exit:
 - No. TFLint always checks only the current root module (no recursive check)
 
 ### Do I need to install Terraform for TFLint to work?
-- No. TFLint works as a single binary because Terraform is embedded as a library. Note that this means that the version of Terraform used is determined for each TFLint version. See also [Compatibility with Terraform](docs/guides/compatibility.md). 
+- No. TFLint works as a single binary because Terraform is embedded as a library. Note that this means that the version of Terraform used is determined for each TFLint version. See also [Compatibility with Terraform](docs/guides/compatibility.md).
 
 ### TFLint causes a loading error in my code that is valid in Terraform. Why?
 - First, check the version of Terraform you are using. Terraform v0.12 introduced a major syntax change, and unfortunately TFLint only supports that new syntax.
