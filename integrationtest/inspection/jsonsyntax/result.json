@@ -1,0 +1,25 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is t1.xmicro",
+      "range": {
+        "filename": "template.tf.json",
+        "start": {
+          "line": 5,
+          "column": 26
+        },
+        "end": {
+          "line": 5,
+          "column": 37
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}
