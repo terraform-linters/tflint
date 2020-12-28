@@ -337,16 +337,12 @@ github.com/hashicorp/hcl/v2 v2.0.0/go.mod h1:oVVDG71tEinNGYCxinCYadcmKU9bglqW9pV
 github.com/hashicorp/hcl/v2 v2.3.0/go.mod h1:d+FwDBbOLvpAM3Z6J7gPj/VoAGkNe/gm352ZhjJ/Zv8=
 github.com/hashicorp/hcl/v2 v2.7.1 h1:eZWfKEO93WyE4OnZSD5LVy70YHDV/mmQ49gpKDLpDVM=
 github.com/hashicorp/hcl/v2 v2.7.1/go.mod h1:bQTN5mpo+jewjJgh8jr0JUguIi7qPHUF6yIfAEN3jqY=
-github.com/hashicorp/hcl/v2 v2.8.0 h1:iHLEAsNDp3N2MtqroP1wf0nF/zB2+McHN5YCzwqIm80=
-github.com/hashicorp/hcl/v2 v2.8.0/go.mod h1:bQTN5mpo+jewjJgh8jr0JUguIi7qPHUF6yIfAEN3jqY=
 github.com/hashicorp/hcl/v2 v2.8.1 h1:FJ60CIYaMyJOKzPndhMyjiz353Fd+2jr6PodF5Xzb08=
 github.com/hashicorp/hcl/v2 v2.8.1/go.mod h1:bQTN5mpo+jewjJgh8jr0JUguIi7qPHUF6yIfAEN3jqY=
 github.com/hashicorp/logutils v1.0.0 h1:dLEQVugN8vlakKOUE3ihGLTZJRB4j+M2cdTm/ORI65Y=
 github.com/hashicorp/logutils v1.0.0/go.mod h1:QIAnNjmIWmVIIkWDTG1z5v++HQmx9WQRO+LraFDTW64=
 github.com/hashicorp/memberlist v0.1.0/go.mod h1:ncdBp14cuox2iFOq3kDiquKU6fqsTBc3W6JvZwjxxsE=
 github.com/hashicorp/serf v0.0.0-20160124182025-e4ec8cc423bb/go.mod h1:h/Ru6tmZazX7WO/GDmwdpS975F019L4t5ng5IgwbNrE=
-github.com/hashicorp/terraform v0.14.2 h1:5NfiWYxqV4azt0qI25uqOwoMRU3QsT/9kKggITFesBI=
-github.com/hashicorp/terraform v0.14.2/go.mod h1:zpmSSdH4QT4o1J1+6OeSP2DYIWDCwIrbnLRP5j7z2jI=
 github.com/hashicorp/terraform v0.14.3 h1:j8R+NYIX7mkcymVSYfBDlyusDptIQ4EkrK0xjtVJ2ys=
 github.com/hashicorp/terraform v0.14.3/go.mod h1:KCW7N9s2j7rDfsqE+15Y17y+8r5s35JjxWjl1apL+tM=
 github.com/hashicorp/terraform-config-inspect v0.0.0-20191212124732-c6ae6269b9d7 h1:Pc5TCv9mbxFN6UVX0LH6CpQrdTM5YjbVI2w15237Pjk=
@@ -555,8 +551,8 @@ github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/svanharmelen/jsonapi v0.0.0-20180618144545-0c0828c3f16d/go.mod h1:BSTlc8jOjh0niykqEGVXOLXdi9o0r0kR8tCYiMvjFgw=
 github.com/tencentcloud/tencentcloud-sdk-go v3.0.82+incompatible/go.mod h1:0PfYow01SHPMhKY31xa+EFz2RStxIqj6JFAJS+IkCi4=
 github.com/tencentyun/cos-go-sdk-v5 v0.0.0-20190808065407-f07404cefc8c/go.mod h1:wk2XFUg6egk4tSDNZtXeKfe2G6690UVyt163PuUxBZk=
-github.com/terraform-linters/tflint-plugin-sdk v0.6.1-0.20201219154003-09b2270d9de5 h1:PCwAYfajRygdxp9gtEu6SDfbN9jm2X/TjDgetlf9fck=
-github.com/terraform-linters/tflint-plugin-sdk v0.6.1-0.20201219154003-09b2270d9de5/go.mod h1:EMiQwq0IiBwylbSgx53sdPBRhOHEXrjXhrD0x5C8SjY=
+github.com/terraform-linters/tflint-plugin-sdk v0.6.1-0.20201228090821-2703210e0cdd h1:YgDmHjrqBGaHRY0dl3plfAvnpwQtcYLXi+RWWIQT9F8=
+github.com/terraform-linters/tflint-plugin-sdk v0.6.1-0.20201228090821-2703210e0cdd/go.mod h1:EMiQwq0IiBwylbSgx53sdPBRhOHEXrjXhrD0x5C8SjY=
 github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20201118192700-9cc6324740c9 h1:0u9SqTq2nbof0t+7xqfI8Ejhmooe3Qqe09fobOCZY6g=
 github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20201118192700-9cc6324740c9/go.mod h1:sToOUnPCXFPwMljH57zM6uOI3q1YVREy4GSlg1Wm8/Y=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20171017195756-830351dc03c6/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=

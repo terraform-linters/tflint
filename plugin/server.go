@@ -104,6 +104,21 @@ func (s *Server) Config(req *tfplugin.ConfigRequest, resp *tfplugin.ConfigRespon
 	return nil
 }
 
+// File returns the corresponding hcl.File object
+func (s *Server) File(req *tfplugin.FileRequest, resp *tfplugin.FileResponse) error {
+	file := s.runner.File(req.Filename)
+	if file == nil {
+		*resp = tfplugin.FileResponse{}
+		return nil
+	}
+
+	*resp = tfplugin.FileResponse{
+		Bytes: file.Bytes,
+		Range: tflint.HCLBodyRange(file.Body, hcl.Range{Filename: req.Filename, Start: hcl.InitialPos}),
+	}
+	return nil
+}
+
 // RootProvider returns the provider configuration on the root module as tfplugin.Provider
 func (s *Server) RootProvider(req *tfplugin.RootProviderRequest, resp *tfplugin.RootProviderResponse) error {
 	provider, exists := s.rootRunner.TFConfig.Module.ProviderConfigs[req.Name]
