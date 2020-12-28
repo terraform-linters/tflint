@@ -6,15 +6,15 @@ prepare:
 test: prepare
 	go test -timeout 5m $$(go list ./... | grep -v test-fixtures | grep -v stub-generator | grep -v integrationtest | grep -v aws-sdk-go)
 
-build: test
+build:
 	mkdir -p dist
 	go build -v -o dist/tflint
 
-install: test
+install:
 	go install
 
-e2e: prepare
-	go test -timeout 5m ./integrationtest/inspection ./integrationtest/langserver
+e2e: prepare install
+	go test -timeout 5m ./integrationtest/inspection ./integrationtest/langserver ./integrationtest/bundled
 
 lint:
 	go run golang.org/x/lint/golint --set_exit_status $$(go list ./...)

@@ -18,7 +18,7 @@ func (r *RuleSet) RuleSetVersion() (string, error) {
 // RuleNames is a list of rule names provided by the plugin.
 func (r *RuleSet) RuleNames() ([]string, error) {
 	names := []string{}
-	for _, rule := range append(DefaultRules, deepCheckRules...) {
+	for _, rule := range DefaultRules {
 		names = append(names, rule.Name())
 	}
 	return names, nil

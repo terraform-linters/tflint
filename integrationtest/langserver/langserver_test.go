@@ -15,6 +15,7 @@ import (
 	lsp "github.com/sourcegraph/go-lsp"
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/terraform-linters/tflint/langserver"
+	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -35,8 +36,8 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func startServer(t *testing.T, configPath string) (io.Writer, io.Reader) {
-	handler, _, err := langserver.NewHandler(configPath, tflint.EmptyConfig())
+func startServer(t *testing.T, configPath string) (io.Writer, io.Reader, *plugin.Plugin) {
+	handler, plugin, err := langserver.NewHandler(configPath, tflint.EmptyConfig())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -52,7 +53,7 @@ func startServer(t *testing.T, configPath string) (io.Writer, io.Reader) {
 		connOpt...,
 	)
 
-	return stdinWriter, stdoutReader
+	return stdinWriter, stdoutReader, plugin
 }
 
 func pathToURI(path string) lsp.DocumentURI {

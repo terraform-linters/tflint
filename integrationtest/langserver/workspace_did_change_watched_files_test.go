@@ -24,7 +24,7 @@ plugin "testing" {
     enabled = true
 }
 
-rule "aws_instance_invalid_type" {
+plugin "aws" {
     enabled = false
 }`
 
@@ -33,11 +33,11 @@ plugin "testing" {
     enabled = true
 }
 
-rule "aws_instance_example_type" {
+plugin "aws" {
     enabled = false
 }
 
-rule "aws_instance_invalid_type" {
+rule "aws_instance_example_type" {
     enabled = false
 }`
 
@@ -49,7 +49,8 @@ rule "aws_instance_invalid_type" {
 		}
 		uri := pathToURI(dir + "/main.tf")
 
-		stdin, stdout := startServer(t, dir+"/.tflint.hcl")
+		stdin, stdout, plugin := startServer(t, dir+"/.tflint.hcl")
+		defer plugin.Clean()
 
 		req, err := json.Marshal(jsonrpcMessage{
 			ID:     0,
@@ -116,14 +117,15 @@ plugin "testing" {
     enabled = true
 }
 
-rule "aws_instance_invalid_type" {
+plugin "aws" {
     enabled = false
 }`
 		if err := ioutil.WriteFile(dir+"/.tflint.hcl", []byte(config), os.ModePerm); err != nil {
 			t.Fatal(err)
 		}
 
-		stdin, stdout := startServer(t, dir+"/.tflint.hcl")
+		stdin, stdout, plugin := startServer(t, dir+"/.tflint.hcl")
+		defer plugin.Clean()
 
 		req, err := json.Marshal(jsonrpcMessage{
 			ID:     0,

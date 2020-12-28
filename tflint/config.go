@@ -165,12 +165,18 @@ func (c *Config) Merge(other *Config) *Config {
 // ToPluginConfig converts self into the plugin configuration format
 func (c *Config) ToPluginConfig(name string) *tfplugin.MarshalledConfig {
 	pluginCfg := c.Plugins[name]
-	cfgRange := configBodyRange(pluginCfg.Body)
+
+	var bodyBytes []byte
+	var cfgRange hcl.Range
+	if pluginCfg.Body != nil {
+		cfgRange = configBodyRange(pluginCfg.Body)
+		bodyBytes = cfgRange.SliceBytes(pluginCfg.file.Bytes)
+	}
 
 	cfg := &tfplugin.MarshalledConfig{
 		Rules:             map[string]*tfplugin.RuleConfig{},
 		DisabledByDefault: c.DisabledByDefault,
-		BodyBytes:         cfgRange.SliceBytes(pluginCfg.file.Bytes),
+		BodyBytes:         bodyBytes,
 		BodyRange:         cfgRange,
 	}
 	for _, rule := range c.Rules {

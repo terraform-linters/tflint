@@ -48,15 +48,27 @@ func findPlugins(config *tflint.Config, dir string) (*Plugin, error) {
 
 	for _, cfg := range config.Plugins {
 		pluginPath, err := getPluginPath(dir, cfg.Name)
+		var cmd *exec.Cmd
 		if os.IsNotExist(err) {
-			return nil, fmt.Errorf("Plugin `%s` not found in %s", cfg.Name, dir)
+			if cfg.Name == "aws" {
+				log.Print("[INFO] Plugin `aws` is not installed, but bundled plugins are available.")
+				self, err := os.Executable()
+				if err != nil {
+					return nil, err
+				}
+				cmd = exec.Command(self, "--act-as-aws-plugin")
+			} else {
+				return nil, fmt.Errorf("Plugin `%s` not found in %s", cfg.Name, dir)
+			}
+		} else {
+			cmd = exec.Command(pluginPath)
 		}
 
 		if cfg.Enabled {
 			log.Printf("[INFO] Plugin `%s` found", cfg.Name)
 
 			client := tfplugin.NewClient(&tfplugin.ClientOpts{
-				Cmd: exec.Command(pluginPath),
+				Cmd: cmd,
 			})
 			rpcClient, err := client.Client()
 			if err != nil {

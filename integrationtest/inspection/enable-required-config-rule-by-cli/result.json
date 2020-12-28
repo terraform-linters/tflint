@@ -1,0 +1,8 @@
+{
+  "issues": [],
+  "errors": [
+    {
+      "message": "Failed to check `required_config` rule: This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration"
+    }
+  ]
+}

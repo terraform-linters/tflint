@@ -28,6 +28,15 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 	}
 	cfg = cfg.Merge(cliConfig)
 
+	// AWS plugin is automatically enabled for the backward compatibility.
+	if _, exists := cfg.Plugins["aws"]; !exists {
+		log.Print("[INFO] Plugin `aws` is automatically enabled when the `aws` plugin configuration not found")
+		cfg.Plugins["aws"] = &tflint.PluginConfig{
+			Name:    "aws",
+			Enabled: true,
+		}
+	}
+
 	plugin, err := tfplugin.Discovery(cfg)
 	if err != nil {
 		return nil, nil, err
