@@ -1,0 +1,25 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is m5.2xlarge",
+      "range": {
+        "filename": "template_override.tf",
+        "start": {
+          "line": 3,
+          "column": 26
+        },
+        "end": {
+          "line": 3,
+          "column": 38
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}

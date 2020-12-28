@@ -7,6 +7,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+
+	"github.com/mitchellh/go-homedir"
 )
 
 func main() {
@@ -17,10 +19,20 @@ func main() {
 		panic(err)
 	}
 
+	// Package "plugin" testing
 	execCommand("go", "build", "-o", "../test-fixtures/plugins/tflint-ruleset-foo"+fileExt(), "./sources/foo/main.go")
 	execCommand("cp", "../test-fixtures/plugins/tflint-ruleset-foo"+fileExt(), "../test-fixtures/locals/.tflint.d/plugins/tflint-ruleset-foo"+fileExt())
 	execCommand("go", "build", "-o", "../test-fixtures/plugins/tflint-ruleset-bar"+fileExt(), "./sources/bar/main.go")
-	execCommand("go", "build", "-o", "../../integration/plugin/.tflint.d/plugins/tflint-ruleset-example"+fileExt(), "./sources/example/main.go")
+
+	pluginDir, err := homedir.Expand("~/.tflint.d/plugins")
+	if err != nil {
+		panic(err)
+	}
+
+	// E2E testing
+	execCommand("mkdir", "-p", pluginDir)
+	execCommand("go", "build", "-o", pluginDir+"/tflint-ruleset-testing"+fileExt(), "./sources/testing/main.go")
+	execCommand("go", "build", "-o", "../../integrationtest/inspection/plugin/.tflint.d/plugins/tflint-ruleset-example"+fileExt(), "./sources/example/main.go")
 }
 
 func fileExt() string {

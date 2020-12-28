@@ -1,0 +1,105 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is default",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 28,
+          "column": 19
+        },
+        "end": {
+          "line": 28,
+          "column": 30
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is default_values_file",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 32,
+          "column": 19
+        },
+        "end": {
+          "line": 32,
+          "column": 42
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is auto_values_file",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 36,
+          "column": 19
+        },
+        "end": {
+          "line": 36,
+          "column": 39
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is values_file",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 40,
+          "column": 19
+        },
+        "end": {
+          "line": 40,
+          "column": 34
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is var",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 44,
+          "column": 19
+        },
+        "end": {
+          "line": 44,
+          "column": 26
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}
