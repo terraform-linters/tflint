@@ -71,7 +71,18 @@ func HCLBodyRange(body hcl.Body, defRange hcl.Range) hcl.Range {
 		var bodyRange hcl.Range
 
 		// Estimate the range of the body from the range of all attributes and blocks.
-		hclBody := body.(*hclsyntax.Body)
+		hclBody, ok := body.(*hclsyntax.Body)
+		if !ok {
+			// BUG: If the body is overridden, the structure that satisfies hcl.Body interface may be configs.mergeBody.
+			// In that case, the definition range of the body cannot be acquired by this way because the range of the body spans multiple files.
+			// To avoid panic, here we return an empty range with only the filename set.
+			// As a result, plugins that use this range to get hcl.Body may have incorrect results.
+			// This issue will be fixed by changing the way of transffering the hcl.Body.
+			// See also https://github.com/terraform-linters/tflint-plugin-sdk/issues/89.
+			bodyRange.Filename = defRange.Filename
+			return bodyRange
+		}
+
 		for _, attr := range hclBody.Attributes {
 			if bodyRange.Empty() {
 				bodyRange = attr.Range()
