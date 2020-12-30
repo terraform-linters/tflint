@@ -54,13 +54,13 @@ func (r *TerraformUnusedRequiredProvidersRule) Check(runner *tflint.Runner) erro
 
 func (r *TerraformUnusedRequiredProvidersRule) checkProvider(runner *tflint.Runner, required *configs.RequiredProvider) {
 	for _, resource := range runner.TFConfig.Module.ManagedResources {
-		if required.Name == resource.Provider.Type {
+		if r.usesProvider(resource, required) {
 			return
 		}
 	}
 
 	for _, resource := range runner.TFConfig.Module.DataResources {
-		if required.Name == resource.Provider.Type {
+		if r.usesProvider(resource, required) {
 			return
 		}
 	}
@@ -76,4 +76,12 @@ func (r *TerraformUnusedRequiredProvidersRule) checkProvider(runner *tflint.Runn
 		fmt.Sprintf("provider '%s' is declared in required_providers but not used by the module", required.Name),
 		required.DeclRange,
 	)
+}
+
+func (r *TerraformUnusedRequiredProvidersRule) usesProvider(resource *configs.Resource, required *configs.RequiredProvider) bool {
+	if resource.ProviderConfigRef != nil {
+		return resource.ProviderConfigRef.Name == required.Name
+	}
+
+	return resource.Provider.Type == required.Name
 }

@@ -49,6 +49,40 @@ func Test_TerraformUnusedRequiredProvidersRule(t *testing.T) {
 			Expected: tflint.Issues{},
 		},
 		{
+			Name: "used - resource provider override",
+			Content: `
+				terraform {
+					required_providers {
+						custom-null = {
+							source = "custom/null"
+						}
+					}
+				}
+
+				resource "null_resource" "foo" {
+					provider = custom-null
+				}
+			`,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: "used - data source provider override",
+			Content: `
+				terraform {
+					required_providers {
+						custom-null = {
+							source = "custom/null"
+						}
+					}
+				}
+
+				resource "null_data_source" "foo" {
+					provider = custom-null
+				}
+			`,
+			Expected: tflint.Issues{},
+		},
+		{
 			Name: "used - provider",
 			Content: `
 				terraform {
@@ -72,6 +106,43 @@ func Test_TerraformUnusedRequiredProvidersRule(t *testing.T) {
 							source = "hashicorp/null"
 						}
 					}
+				}
+			`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformUnusedRequiredProvidersRule(),
+					Message: "provider 'null' is declared in required_providers but not used by the module",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start: hcl.Pos{
+							Line:   4,
+							Column: 14,
+						},
+						End: hcl.Pos{
+							Line:   6,
+							Column: 8,
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "unused - override",
+			Content: `
+				terraform {
+					required_providers {
+						null = {
+							source = "hashicorp/null"
+						}
+
+						custom-null = {
+							source = "custom/null"
+						}
+					}
+				}
+
+				resource "null_resource" "foo" {
+					provider = custom-null
 				}
 			`,
 			Expected: tflint.Issues{
