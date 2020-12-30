@@ -5,7 +5,6 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/terraform-linters/tflint/rules/awsrules"
 	"github.com/terraform-linters/tflint/rules/terraformrules"
 	"github.com/terraform-linters/tflint/tflint"
 )
@@ -18,13 +17,13 @@ func Test_CheckRuleNames(t *testing.T) {
 	}{
 		{
 			Name:     "no error",
-			Rules:    []string{"aws_route_not_specified_target"},
+			Rules:    []string{"terraform_deprecated_interpolation"},
 			Expected: nil,
 		},
 		{
 			Name: "invalid rule name",
 			Rules: []string{
-				"aws_route_not_specified_target",
+				"terraform_deprecated_interpolation",
 				"invalid_not_exist",
 			},
 			Expected: errors.New("Rule not found: invalid_not_exist"),
@@ -42,11 +41,8 @@ func Test_CheckRuleNames(t *testing.T) {
 func Test_NewRules(t *testing.T) {
 	// Mock rules in test
 	DefaultRules = []Rule{
-		awsrules.NewAwsRouteNotSpecifiedTargetRule(),
+		terraformrules.NewTerraformDeprecatedInterpolationRule(),
 		terraformrules.NewTerraformNamingConventionRule(),
-	}
-	deepCheckRules = []Rule{
-		awsrules.NewAwsInstanceInvalidAMIRule(),
 	}
 
 	cases := []struct {
@@ -58,24 +54,14 @@ func Test_NewRules(t *testing.T) {
 			Name:   "default",
 			Config: tflint.EmptyConfig(),
 			Expected: []Rule{
-				awsrules.NewAwsRouteNotSpecifiedTargetRule(),
-			},
-		},
-		{
-			Name: "enabled deep check",
-			Config: &tflint.Config{
-				DeepCheck: true,
-			},
-			Expected: []Rule{
-				awsrules.NewAwsRouteNotSpecifiedTargetRule(),
-				awsrules.NewAwsInstanceInvalidAMIRule(),
+				terraformrules.NewTerraformDeprecatedInterpolationRule(),
 			},
 		},
 		{
 			Name: "enabled = false",
 			Config: &tflint.Config{
 				Rules: map[string]*tflint.RuleConfig{
-					"aws_route_not_specified_target": {
+					"terraform_deprecated_interpolation": {
 						Enabled: false,
 					},
 				},
@@ -92,7 +78,7 @@ func Test_NewRules(t *testing.T) {
 				},
 			},
 			Expected: []Rule{
-				awsrules.NewAwsRouteNotSpecifiedTargetRule(),
+				terraformrules.NewTerraformDeprecatedInterpolationRule(),
 				terraformrules.NewTerraformNamingConventionRule(),
 			},
 		},

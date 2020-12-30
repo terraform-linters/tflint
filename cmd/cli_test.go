@@ -59,7 +59,7 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 		},
 		{
 			Name:    "`--only` option",
-			Command: "./tflint --only aws_instance_invalid_type",
+			Command: "./tflint --only terraform_deprecated_interpolation",
 			Status:  ExitCodeOK,
 			Stdout:  "",
 		},
@@ -96,7 +96,7 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 		},
 		{
 			Name:    "removed `--ignore-rule` option",
-			Command: "./tflint --ignore-rule aws_instance_invalid_type",
+			Command: "./tflint --ignore-rule terraform_deprecated_interpolation",
 			Status:  ExitCodeError,
 			Stderr:  "`ignore-rule` option was removed in v0.12.0. Please use `--disable-rule` instead",
 		},
@@ -117,12 +117,6 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Command: "./tflint --enable-rule nosuchrule",
 			Status:  ExitCodeError,
 			Stderr:  "Rule not found: nosuchrule",
-		},
-		{
-			Name:    "enable rule which has required configuration",
-			Command: "./tflint --enable-rule aws_resource_missing_tags",
-			Status:  ExitCodeError,
-			Stderr:  "This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration",
 		},
 	}
 

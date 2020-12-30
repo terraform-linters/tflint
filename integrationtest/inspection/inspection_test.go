@@ -87,6 +87,11 @@ func TestIntegration(t *testing.T) {
 			Command: "./tflint --format json --module",
 			Dir:     "init-cwd/root",
 		},
+		{
+			Name:    "enable rule which has required configuration by CLI options",
+			Command: "./tflint --format json --enable-rule required_config",
+			Dir:     "enable-required-config-rule-by-cli",
+		},
 	}
 
 	dir, _ := os.Getwd()

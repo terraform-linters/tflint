@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/terraform-linters/tflint/rules/awsrules"
 	"github.com/terraform-linters/tflint/rules/terraformrules"
 	"github.com/terraform-linters/tflint/tflint"
 )
@@ -17,27 +16,7 @@ type Rule interface {
 }
 
 // DefaultRules is rules by default
-var DefaultRules = append(manualDefaultRules, modelRules...)
-var deepCheckRules = append(manualDeepCheckRules, apiRules...)
-
-var manualDefaultRules = []Rule{
-	awsrules.NewAwsDBInstanceDefaultParameterGroupRule(),
-	awsrules.NewAwsDBInstanceInvalidTypeRule(),
-	awsrules.NewAwsDBInstancePreviousTypeRule(),
-	awsrules.NewAwsElastiCacheClusterDefaultParameterGroupRule(),
-	awsrules.NewAwsElastiCacheClusterInvalidTypeRule(),
-	awsrules.NewAwsElastiCacheClusterPreviousTypeRule(),
-	awsrules.NewAwsInstancePreviousTypeRule(),
-	awsrules.NewAwsMqBrokerInvalidEngineTypeRule(),
-	awsrules.NewAwsMqConfigurationInvalidEngineTypeRule(),
-	awsrules.NewAwsRouteNotSpecifiedTargetRule(),
-	awsrules.NewAwsRouteSpecifiedMultipleTargetsRule(),
-	awsrules.NewAwsS3BucketInvalidACLRule(),
-	awsrules.NewAwsS3BucketInvalidRegionRule(),
-	awsrules.NewAwsS3BucketNameRule(),
-	awsrules.NewAwsSpotFleetRequestInvalidExcessCapacityTerminationPolicyRule(),
-	awsrules.NewAwsResourceMissingTagsRule(),
-	awsrules.NewAwsDynamoDBTableInvalidStreamViewTypeRule(),
+var DefaultRules = []Rule{
 	terraformrules.NewTerraformDeprecatedIndexRule(),
 	terraformrules.NewTerraformDeprecatedInterpolationRule(),
 	terraformrules.NewTerraformDocumentedOutputsRule(),
@@ -53,17 +32,12 @@ var manualDefaultRules = []Rule{
 	terraformrules.NewTerraformCommentSyntaxRule(),
 }
 
-var manualDeepCheckRules = []Rule{
-	awsrules.NewAwsInstanceInvalidAMIRule(),
-	awsrules.NewAwsLaunchConfigurationInvalidImageIDRule(),
-}
-
 // CheckRuleNames returns map of rules indexed by name
 func CheckRuleNames(ruleNames []string) error {
 	log.Print("[INFO] Checking rules")
 
 	rulesMap := map[string]Rule{}
-	for _, rule := range append(DefaultRules, deepCheckRules...) {
+	for _, rule := range DefaultRules {
 		rulesMap[rule.Name()] = rule
 	}
 
@@ -87,20 +61,12 @@ func NewRules(c *tflint.Config) []Rule {
 	log.Print("[INFO] Prepare rules")
 
 	ret := []Rule{}
-	allRules := []Rule{}
-
-	if c.DeepCheck {
-		log.Printf("[DEBUG] Deep check mode is enabled. Add deep check rules")
-		allRules = append(DefaultRules, deepCheckRules...)
-	} else {
-		allRules = DefaultRules
-	}
 
 	if c.DisabledByDefault {
 		log.Printf("[DEBUG] Only mode is enabled. Ignoring default rules")
 	}
 
-	for _, rule := range allRules {
+	for _, rule := range DefaultRules {
 		enabled := rule.Enabled()
 		if r := c.Rules[rule.Name()]; r != nil {
 			if r.Enabled {

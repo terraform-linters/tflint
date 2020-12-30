@@ -627,6 +627,23 @@ func Test_ToPluginConfig(t *testing.T) {
 	}
 }
 
+func Test_ToPluginConfig_noPluginConfig(t *testing.T) {
+	config := EmptyConfig()
+	config.Plugins["foo"] = &PluginConfig{Name: "foo", Enabled: true}
+
+	ret := config.ToPluginConfig("foo")
+	expected := &tfplugin.MarshalledConfig{
+		Rules: map[string]*tfplugin.RuleConfig{},
+	}
+
+	opts := cmp.Options{
+		cmpopts.IgnoreUnexported(PluginConfig{}),
+	}
+	if !cmp.Equal(expected, ret, opts...) {
+		t.Fatalf("Failed to match: %s", cmp.Diff(expected, ret, opts...))
+	}
+}
+
 type ruleSetA struct{}
 
 func (*ruleSetA) RuleSetName() (string, error) {

@@ -31,6 +31,8 @@ jobs:
         key: ${{ matrix.os }}-go-${{ hashFiles('go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
+    - name: Run test
+      run: make test
     - name: Run build
       run: make build
     - name: Upload Artifact

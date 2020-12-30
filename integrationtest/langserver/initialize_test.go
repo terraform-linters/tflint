@@ -9,23 +9,26 @@ import (
 )
 
 func Test_initialize(t *testing.T) {
-	stdin, stdout := startServer(t, ".tflint.hcl")
+	withinFixtureDir(t, "workdir", func(dir string) {
+		stdin, stdout, plugin := startServer(t, dir+"/.tflint.hcl")
+		defer plugin.Clean()
 
-	go func() {
-		fmt.Fprint(stdin, initializeRequest())
-		fmt.Fprint(stdin, shutdownRequest())
-		fmt.Fprint(stdin, exitRequest())
-	}()
+		go func() {
+			fmt.Fprint(stdin, initializeRequest())
+			fmt.Fprint(stdin, shutdownRequest())
+			fmt.Fprint(stdin, exitRequest())
+		}()
 
-	buf := new(bytes.Buffer)
-	if _, err := buf.ReadFrom(stdout); err != nil {
-		t.Fatal(err)
-	}
+		buf := new(bytes.Buffer)
+		if _, err := buf.ReadFrom(stdout); err != nil {
+			t.Fatal(err)
+		}
 
-	expected := initializeResponse() + emptyResponse()
-	if !cmp.Equal(expected, buf.String()) {
-		t.Fatalf("Diff: %s", cmp.Diff(expected, buf.String()))
-	}
+		expected := initializeResponse() + emptyResponse()
+		if !cmp.Equal(expected, buf.String()) {
+			t.Fatalf("Diff: %s", cmp.Diff(expected, buf.String()))
+		}
+	})
 }
 
 func initializeRequest() string {
