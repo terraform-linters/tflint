@@ -75,28 +75,6 @@ func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotation
 		config:      c,
 	}
 
-	// Initialize client for the root runner
-	if c.DeepCheck && cfg.Path.IsRoot() {
-		// FIXME: Alias providers are not considered
-		providerConfig, err := NewProviderConfig(
-			cfg.Module.ProviderConfigs["aws"],
-			runner,
-			client.AwsProviderBlockSchema,
-		)
-		if err != nil {
-			return nil, err
-		}
-		creds, err := client.ConvertToCredentials(providerConfig)
-		if err != nil {
-			return nil, err
-		}
-
-		runner.AwsClient, err = client.NewAwsClient(c.AwsCredentials.Merge(creds))
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	return runner, nil
 }
 

@@ -12,7 +12,6 @@ import (
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	homedir "github.com/mitchellh/go-homedir"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
-	"github.com/terraform-linters/tflint/client"
 )
 
 var defaultConfigFile = ".tflint.hcl"
@@ -27,17 +26,17 @@ var removedRulesMap = map[string]string{
 
 type rawConfig struct {
 	Config *struct {
-		Module            *bool              `hcl:"module"`
-		DeepCheck         *bool              `hcl:"deep_check"`
-		Force             *bool              `hcl:"force"`
-		AwsCredentials    *map[string]string `hcl:"aws_credentials"`
-		IgnoreModule      *map[string]bool   `hcl:"ignore_module"`
-		Varfile           *[]string          `hcl:"varfile"`
-		Variables         *[]string          `hcl:"variables"`
-		DisabledByDefault *bool              `hcl:"disabled_by_default"`
+		Module            *bool            `hcl:"module"`
+		Force             *bool            `hcl:"force"`
+		IgnoreModule      *map[string]bool `hcl:"ignore_module"`
+		Varfile           *[]string        `hcl:"varfile"`
+		Variables         *[]string        `hcl:"variables"`
+		DisabledByDefault *bool            `hcl:"disabled_by_default"`
 		// Removed options
-		TerraformVersion *string          `hcl:"terraform_version"`
-		IgnoreRule       *map[string]bool `hcl:"ignore_rule"`
+		TerraformVersion *string            `hcl:"terraform_version"`
+		IgnoreRule       *map[string]bool   `hcl:"ignore_rule"`
+		DeepCheck        *bool              `hcl:"deep_check"`
+		AwsCredentials   *map[string]string `hcl:"aws_credentials"`
 	} `hcl:"config,block"`
 	Rules   []RuleConfig   `hcl:"rule,block"`
 	Plugins []PluginConfig `hcl:"plugin,block"`
@@ -46,9 +45,7 @@ type rawConfig struct {
 // Config describes the behavior of TFLint
 type Config struct {
 	Module            bool
-	DeepCheck         bool
 	Force             bool
-	AwsCredentials    client.AwsCredentials
 	IgnoreModules     map[string]bool
 	Varfiles          []string
 	Variables         []string
@@ -82,9 +79,7 @@ type PluginConfig struct {
 func EmptyConfig() *Config {
 	return &Config{
 		Module:            false,
-		DeepCheck:         false,
 		Force:             false,
-		AwsCredentials:    client.AwsCredentials{},
 		IgnoreModules:     map[string]bool{},
 		Varfiles:          []string{},
 		Variables:         []string{},
@@ -141,9 +136,6 @@ func (c *Config) Merge(other *Config) *Config {
 	if other.Module {
 		ret.Module = true
 	}
-	if other.DeepCheck {
-		ret.DeepCheck = true
-	}
 	if other.Force {
 		ret.Force = true
 	}
@@ -151,7 +143,6 @@ func (c *Config) Merge(other *Config) *Config {
 		ret.DisabledByDefault = true
 	}
 
-	ret.AwsCredentials = ret.AwsCredentials.Merge(other.AwsCredentials)
 	ret.IgnoreModules = mergeBoolMap(ret.IgnoreModules, other.IgnoreModules)
 	ret.Varfiles = append(ret.Varfiles, other.Varfiles...)
 	ret.Variables = append(ret.Variables, other.Variables...)
@@ -256,9 +247,7 @@ func (c *Config) copy() *Config {
 
 	return &Config{
 		Module:            c.Module,
-		DeepCheck:         c.DeepCheck,
 		Force:             c.Force,
-		AwsCredentials:    c.AwsCredentials,
 		IgnoreModules:     ignoreModules,
 		Varfiles:          varfiles,
 		Variables:         variables,
@@ -290,6 +279,25 @@ func loadConfigFromFile(file string) (*Config, error) {
 		if raw.Config.IgnoreRule != nil {
 			return nil, errors.New("`ignore_rule` was removed in v0.12.0. Please define `rule` block with `enabled = false` instead")
 		}
+
+		if raw.Config.DeepCheck != nil {
+			return nil, errors.New(`global "deep_check" option was removed in v0.23.0. Please declare "plugin" block like the following:
+
+plugin "aws" {
+  enabled = true
+  deep_check = true
+}`)
+		}
+
+		if raw.Config.AwsCredentials != nil {
+			return nil, errors.New(`"aws_credentials" was removed in v0.23.0. Please declare "plugin" block like the following:
+
+plugin "aws" {
+  enabled = true
+  deep_check = true
+  access_key = ...
+}`)
+		}
 	}
 
 	cfg := raw.toConfig()
@@ -302,7 +310,6 @@ func loadConfigFromFile(file string) (*Config, error) {
 
 	log.Printf("[DEBUG] Config loaded")
 	log.Printf("[DEBUG]   Module: %t", cfg.Module)
-	log.Printf("[DEBUG]   DeepCheck: %t", cfg.DeepCheck)
 	log.Printf("[DEBUG]   Force: %t", cfg.Force)
 	log.Printf("[DEBUG]   IgnoreModules: %#v", cfg.IgnoreModules)
 	log.Printf("[DEBUG]   Varfiles: %#v", cfg.Varfiles)
@@ -382,22 +389,11 @@ func (raw *rawConfig) toConfig() *Config {
 		if rc.Module != nil {
 			ret.Module = *rc.Module
 		}
-		if rc.DeepCheck != nil {
-			ret.DeepCheck = *rc.DeepCheck
-		}
 		if rc.Force != nil {
 			ret.Force = *rc.Force
 		}
 		if rc.DisabledByDefault != nil {
 			ret.DisabledByDefault = *rc.DisabledByDefault
-		}
-		if rc.AwsCredentials != nil {
-			credentials := *rc.AwsCredentials
-			ret.AwsCredentials.AccessKey = credentials["access_key"]
-			ret.AwsCredentials.SecretKey = credentials["secret_key"]
-			ret.AwsCredentials.Profile = credentials["profile"]
-			ret.AwsCredentials.CredsFile = credentials["shared_credentials_file"]
-			ret.AwsCredentials.Region = credentials["region"]
 		}
 		if rc.IgnoreModule != nil {
 			ret.IgnoreModules = *rc.IgnoreModule

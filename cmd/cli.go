@@ -156,5 +156,11 @@ func unknownOptionHandler(option string, arg flags.SplitArgument, args []string)
 	if option == "ignore-rule" {
 		return []string{}, errors.New("`ignore-rule` option was removed in v0.12.0. Please use `--disable-rule` instead")
 	}
+	if option == "deep" {
+		return []string{}, errors.New("`deep` option was removed in v0.23.0. Deep checking is now a feature of the AWS plugin, so please configure the plugin instead")
+	}
+	if option == "aws-access-key" || option == "aws-secret-key" || option == "aws-profile" || option == "aws-creds-file" || option == "aws-region" {
+		return []string{}, fmt.Errorf("`%s` option was removed in v0.23.0. AWS rules are provided by the AWS plugin, so please configure the plugin instead", option)
+	}
 	return []string{}, fmt.Errorf("`%s` is unknown option. Please run `tflint --help`", option)
 }

@@ -12,7 +12,6 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
-	"github.com/terraform-linters/tflint/client"
 )
 
 func Test_LoadConfig(t *testing.T) {
@@ -31,16 +30,8 @@ func Test_LoadConfig(t *testing.T) {
 			Name: "load file",
 			File: filepath.Join(currentDir, "test-fixtures", "config", "config.hcl"),
 			Expected: &Config{
-				Module:    true,
-				DeepCheck: true,
-				Force:     true,
-				AwsCredentials: client.AwsCredentials{
-					AccessKey: "AWS_ACCESS_KEY",
-					SecretKey: "AWS_SECRET_KEY",
-					Region:    "us-east-1",
-					Profile:   "production",
-					CredsFile: "~/.aws/myapp",
-				},
+				Module: true,
+				Force:  true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-module": true,
 				},
@@ -79,14 +70,8 @@ func Test_LoadConfig(t *testing.T) {
 			File:     filepath.Join(currentDir, "test-fixtures", "config", "not_found.hcl"),
 			Fallback: filepath.Join(currentDir, "test-fixtures", "config", "fallback.hcl"),
 			Expected: &Config{
-				Module:    false,
-				DeepCheck: true,
-				Force:     true,
-				AwsCredentials: client.AwsCredentials{
-					AccessKey: "AWS_ACCESS_KEY",
-					SecretKey: "AWS_SECRET_KEY",
-					Region:    "us-east-1",
-				},
+				Module:            false,
+				Force:             true,
 				IgnoreModules:     map[string]bool{},
 				Varfiles:          []string{},
 				Variables:         []string{},
@@ -174,6 +159,27 @@ func Test_LoadConfig_error(t *testing.T) {
 			File:     filepath.Join(currentDir, "test-fixtures", "config", "ignore_rule.hcl"),
 			Expected: "`ignore_rule` was removed in v0.12.0. Please define `rule` block with `enabled = false` instead",
 		},
+		{
+			Name: "deep_check",
+			File: filepath.Join(currentDir, "test-fixtures", "config", "deep_check.hcl"),
+			Expected: `global "deep_check" option was removed in v0.23.0. Please declare "plugin" block like the following:
+
+plugin "aws" {
+  enabled = true
+  deep_check = true
+}`,
+		},
+		{
+			Name: "aws_credentials",
+			File: filepath.Join(currentDir, "test-fixtures", "config", "aws_credentials.hcl"),
+			Expected: `"aws_credentials" was removed in v0.23.0. Please declare "plugin" block like the following:
+
+plugin "aws" {
+  enabled = true
+  deep_check = true
+  access_key = ...
+}`,
+		},
 	}
 
 	for _, tc := range cases {
@@ -199,14 +205,8 @@ func Test_Merge(t *testing.T) {
 	}
 
 	cfg := &Config{
-		Module:    true,
-		DeepCheck: true,
-		Force:     true,
-		AwsCredentials: client.AwsCredentials{
-			AccessKey: "access_key",
-			SecretKey: "secret_key",
-			Region:    "us-east-1",
-		},
+		Module: true,
+		Force:  true,
 		IgnoreModules: map[string]bool{
 			"github.com/terraform-linters/example-1": true,
 			"github.com/terraform-linters/example-2": false,
@@ -256,15 +256,8 @@ func Test_Merge(t *testing.T) {
 		{
 			Name: "override and merge",
 			Base: &Config{
-				Module:    true,
-				DeepCheck: true,
-				Force:     false,
-				AwsCredentials: client.AwsCredentials{
-					AccessKey: "access_key",
-					SecretKey: "secret_key",
-					Profile:   "production",
-					Region:    "us-east-1",
-				},
+				Module: true,
+				Force:  false,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-1": true,
 					"github.com/terraform-linters/example-2": false,
@@ -296,15 +289,8 @@ func Test_Merge(t *testing.T) {
 				},
 			},
 			Other: &Config{
-				Module:    false,
-				DeepCheck: false,
-				Force:     true,
-				AwsCredentials: client.AwsCredentials{
-					AccessKey: "ACCESS_KEY",
-					SecretKey: "SECRET_KEY",
-					Region:    "ap-northeast-1",
-					CredsFile: "~/.aws/myapp",
-				},
+				Module: false,
+				Force:  true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-2": true,
 					"github.com/terraform-linters/example-3": false,
@@ -336,16 +322,8 @@ func Test_Merge(t *testing.T) {
 				},
 			},
 			Expected: &Config{
-				Module:    true,
-				DeepCheck: true, // DeepCheck will not override
-				Force:     true,
-				AwsCredentials: client.AwsCredentials{
-					AccessKey: "ACCESS_KEY",
-					SecretKey: "SECRET_KEY",
-					Profile:   "production",
-					Region:    "ap-northeast-1",
-					CredsFile: "~/.aws/myapp",
-				},
+				Module: true,
+				Force:  true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-1": true,
 					"github.com/terraform-linters/example-2": true,
@@ -390,15 +368,8 @@ func Test_Merge(t *testing.T) {
 		{
 			Name: "CLI --only argument and merge",
 			Base: &Config{
-				Module:    true,
-				DeepCheck: true,
-				Force:     false,
-				AwsCredentials: client.AwsCredentials{
-					AccessKey: "access_key",
-					SecretKey: "secret_key",
-					Profile:   "production",
-					Region:    "us-east-1",
-				},
+				Module: true,
+				Force:  false,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-1": true,
 					"github.com/terraform-linters/example-2": false,
@@ -430,15 +401,8 @@ func Test_Merge(t *testing.T) {
 				},
 			},
 			Other: &Config{
-				Module:    false,
-				DeepCheck: false,
-				Force:     true,
-				AwsCredentials: client.AwsCredentials{
-					AccessKey: "ACCESS_KEY",
-					SecretKey: "SECRET_KEY",
-					Region:    "ap-northeast-1",
-					CredsFile: "~/.aws/myapp",
-				},
+				Module: false,
+				Force:  true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-2": true,
 					"github.com/terraform-linters/example-3": false,
@@ -470,16 +434,8 @@ func Test_Merge(t *testing.T) {
 				},
 			},
 			Expected: &Config{
-				Module:    true,
-				DeepCheck: true, // DeepCheck will not override
-				Force:     true,
-				AwsCredentials: client.AwsCredentials{
-					AccessKey: "ACCESS_KEY",
-					SecretKey: "SECRET_KEY",
-					Profile:   "production",
-					Region:    "ap-northeast-1",
-					CredsFile: "~/.aws/myapp",
-				},
+				Module: true,
+				Force:  true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-1": true,
 					"github.com/terraform-linters/example-2": true,
@@ -520,9 +476,7 @@ func Test_Merge(t *testing.T) {
 			Name: "merge rule config with CLI-based config",
 			Base: &Config{
 				Module:            false,
-				DeepCheck:         false,
 				Force:             false,
-				AwsCredentials:    client.AwsCredentials{},
 				IgnoreModules:     map[string]bool{},
 				Varfiles:          []string{},
 				Variables:         []string{},
@@ -538,9 +492,7 @@ func Test_Merge(t *testing.T) {
 			},
 			Other: &Config{
 				Module:            false,
-				DeepCheck:         false,
 				Force:             false,
-				AwsCredentials:    client.AwsCredentials{},
 				IgnoreModules:     map[string]bool{},
 				Varfiles:          []string{},
 				Variables:         []string{},
@@ -556,9 +508,7 @@ func Test_Merge(t *testing.T) {
 			},
 			Expected: &Config{
 				Module:            false,
-				DeepCheck:         false,
 				Force:             false,
-				AwsCredentials:    client.AwsCredentials{},
 				IgnoreModules:     map[string]bool{},
 				Varfiles:          []string{},
 				Variables:         []string{},
@@ -741,14 +691,8 @@ func Test_ValidateRules(t *testing.T) {
 
 func Test_copy(t *testing.T) {
 	cfg := &Config{
-		Module:    true,
-		DeepCheck: true,
-		Force:     true,
-		AwsCredentials: client.AwsCredentials{
-			AccessKey: "access_key",
-			SecretKey: "secret_key",
-			Region:    "us-east-1",
-		},
+		Module: true,
+		Force:  true,
 		IgnoreModules: map[string]bool{
 			"github.com/terraform-linters/example-1": true,
 			"github.com/terraform-linters/example-2": false,
@@ -789,12 +733,6 @@ func Test_copy(t *testing.T) {
 			},
 		},
 		{
-			Name: "DeepCheck",
-			SideEffect: func(c *Config) {
-				c.DeepCheck = false
-			},
-		},
-		{
 			Name: "Force",
 			SideEffect: func(c *Config) {
 				c.Force = false
@@ -804,15 +742,6 @@ func Test_copy(t *testing.T) {
 			Name: "DisabledByDefault",
 			SideEffect: func(c *Config) {
 				c.DisabledByDefault = false
-			},
-		},
-		{
-			Name: "AwsCredentials",
-			SideEffect: func(c *Config) {
-				c.AwsCredentials = client.AwsCredentials{
-					Profile: "production",
-					Region:  "us-east-1",
-				}
 			},
 		},
 		{
