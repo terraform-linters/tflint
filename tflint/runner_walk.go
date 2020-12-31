@@ -192,6 +192,13 @@ func (r *Runner) WalkExpressions(walker func(hcl.Expression) error) error {
 func (r *Runner) walkBody(b hcl.Body, walker func(hcl.Expression) error) error {
 	body, ok := b.(*hclsyntax.Body)
 	if !ok {
+		// HACK: Other than hclsyntax.Body, there are json.body and configs.mergeBody structs that satisfy hcl.Body,
+		// but since both are private structs, there is no reliable way to determine them.
+		// Here, it is judged by whether it can process `body.JustAttributes`. See also `walkAttributes`.
+		if _, diags := b.JustAttributes(); diags.HasErrors() {
+			log.Printf("[WARN] Ignore attributes of `%T` because we can only handle hclsyntax.Body or json.body", b)
+			return nil
+		}
 		return r.walkAttributes(b, walker)
 	}
 

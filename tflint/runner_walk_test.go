@@ -2,8 +2,9 @@ package tflint
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform/configs"
 	"testing"
+
+	"github.com/hashicorp/terraform/configs"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
@@ -200,6 +201,7 @@ func Test_WalkExpressions(t *testing.T) {
 	cases := []struct {
 		Name        string
 		Content     string
+		Override    string
 		JSON        bool
 		Expressions []hcl.Range
 		ErrorText   string
@@ -414,15 +416,42 @@ resource "null_resource" "test" {
 				},
 			},
 		},
+		{
+			Name: "merged config",
+			Content: `
+provider "aws" {
+  region = "us-east-1"
+
+  assume_role {
+    role_arn = "arn:aws:iam::123412341234:role/ExampleRole"
+  }
+}`,
+			Override: `
+provider "aws" {
+  region = "us-east-1"
+			  
+  assume_role {
+    role_arn = null
+  }
+}`,
+			Expressions: []hcl.Range{},
+		},
 	}
 
 	for _, tc := range cases {
 		filename := "main.tf"
+		override := "main_override.tf"
 		if tc.JSON {
 			filename += ".json"
+			override += ".json"
 		}
 
-		runner := TestRunner(t, map[string]string{filename: tc.Content})
+		var runner *Runner
+		if tc.Override != "" {
+			runner = TestRunner(t, map[string]string{filename: tc.Content, override: tc.Override})
+		} else {
+			runner = TestRunner(t, map[string]string{filename: tc.Content})
+		}
 		expressions := make([]hcl.Range, 0)
 
 		err := runner.WalkExpressions(func(expr hcl.Expression) error {
