@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/terraform-linters/tflint/client"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -22,12 +21,6 @@ type Options struct {
 	Varfiles       []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
 	Variables      []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
 	Module         bool     `long:"module" description:"Inspect modules"`
-	Deep           bool     `long:"deep" description:"Enable deep check mode"`
-	AwsAccessKey   string   `long:"aws-access-key" description:"AWS access key used in deep check mode" value-name:"ACCESS_KEY"`
-	AwsSecretKey   string   `long:"aws-secret-key" description:"AWS secret key used in deep check mode" value-name:"SECRET_KEY"`
-	AwsProfile     string   `long:"aws-profile" description:"AWS shared credential profile name used in deep check mode" value-name:"PROFILE"`
-	AwsCredsFile   string   `long:"aws-creds-file" description:"AWS shared credentials file path used in deep checking" value-name:"FILE"`
-	AwsRegion      string   `long:"aws-region" description:"AWS region used in deep check mode" value-name:"REGION"`
 	Force          bool     `long:"force" description:"Return zero exit status even if issues found"`
 	NoColor        bool     `long:"no-color" description:"Disable colorized output"`
 	LogLevel       string   `long:"loglevel" description:"Change the loglevel" choice:"trace" choice:"debug" choice:"info" choice:"warn" choice:"error" default:"none"`
@@ -54,7 +47,6 @@ func (opts *Options) toConfig() *tflint.Config {
 
 	log.Printf("[DEBUG] CLI Options")
 	log.Printf("[DEBUG]   Module: %t", opts.Module)
-	log.Printf("[DEBUG]   DeepCheck: %t", opts.Deep)
 	log.Printf("[DEBUG]   Force: %t", opts.Force)
 	log.Printf("[DEBUG]   IgnoreModules: %#v", ignoreModules)
 	log.Printf("[DEBUG]   EnableRules: %#v", opts.EnableRules)
@@ -94,16 +86,8 @@ func (opts *Options) toConfig() *tflint.Config {
 	}
 
 	return &tflint.Config{
-		Module:    opts.Module,
-		DeepCheck: opts.Deep,
-		Force:     opts.Force,
-		AwsCredentials: client.AwsCredentials{
-			AccessKey: opts.AwsAccessKey,
-			SecretKey: opts.AwsSecretKey,
-			Profile:   opts.AwsProfile,
-			CredsFile: opts.AwsCredsFile,
-			Region:    opts.AwsRegion,
-		},
+		Module:            opts.Module,
+		Force:             opts.Force,
 		IgnoreModules:     ignoreModules,
 		Varfiles:          varfiles,
 		Variables:         opts.Variables,

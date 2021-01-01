@@ -101,6 +101,42 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 			Stderr:  "`ignore-rule` option was removed in v0.12.0. Please use `--disable-rule` instead",
 		},
 		{
+			Name:    "removed `--deep` option",
+			Command: "./tflint --deep",
+			Status:  ExitCodeError,
+			Stderr:  "`deep` option was removed in v0.23.0. Deep checking is now a feature of the AWS plugin, so please configure the plugin instead",
+		},
+		{
+			Name:    "removed `--aws-access-key` option",
+			Command: "./tflint --aws-access-key AWS_ACCESS_KEY_ID",
+			Status:  ExitCodeError,
+			Stderr:  "`aws-access-key` option was removed in v0.23.0. AWS rules are provided by the AWS plugin, so please configure the plugin instead",
+		},
+		{
+			Name:    "removed `--aws-secret-key` option",
+			Command: "./tflint --aws-secret-key AWS_SECRET_ACCESS_KEY",
+			Status:  ExitCodeError,
+			Stderr:  "`aws-secret-key` option was removed in v0.23.0. AWS rules are provided by the AWS plugin, so please configure the plugin instead",
+		},
+		{
+			Name:    "removed `--aws-profile` option",
+			Command: "./tflint --aws-profile AWS_PROFILE",
+			Status:  ExitCodeError,
+			Stderr:  "`aws-profile` option was removed in v0.23.0. AWS rules are provided by the AWS plugin, so please configure the plugin instead",
+		},
+		{
+			Name:    "removed `--aws-creds-file` option",
+			Command: "./tflint --aws-creds-file FILE",
+			Status:  ExitCodeError,
+			Stderr:  "`aws-creds-file` option was removed in v0.23.0. AWS rules are provided by the AWS plugin, so please configure the plugin instead",
+		},
+		{
+			Name:    "removed `--aws-region` option",
+			Command: "./tflint --aws-region us-east-1",
+			Status:  ExitCodeError,
+			Stderr:  "`aws-region` option was removed in v0.23.0. AWS rules are provided by the AWS plugin, so please configure the plugin instead",
+		},
+		{
 			Name:    "invalid options",
 			Command: "./tflint --unknown",
 			Status:  ExitCodeError,
