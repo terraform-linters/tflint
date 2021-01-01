@@ -2,7 +2,6 @@
 # Make sure to check the documentation at http://goreleaser.com
 env:
   - CGO_ENABLED=0
-  - GO111MODULE=on
 builds:
   - goos:
       - linux

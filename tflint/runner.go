@@ -14,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform/configs"
 	"github.com/hashicorp/terraform/lang"
 	"github.com/hashicorp/terraform/terraform"
-	"github.com/terraform-linters/tflint/client"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -22,9 +21,8 @@ import (
 // For variables interplation, it has Terraform eval context.
 // After checking, it accumulates results as issues.
 type Runner struct {
-	TFConfig  *configs.Config
-	Issues    Issues
-	AwsClient *client.AwsClient
+	TFConfig *configs.Config
+	Issues   Issues
 
 	ctx         terraform.EvalContext
 	files       map[string]*hcl.File
@@ -63,9 +61,8 @@ func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotation
 	}
 
 	runner := &Runner{
-		TFConfig:  cfg,
-		Issues:    Issues{},
-		AwsClient: &client.AwsClient{},
+		TFConfig: cfg,
+		Issues:   Issues{},
 
 		// TODO: As described in the godoc for UnkeyedInstanceShim,
 		// it will need to be replaced now that module.for_each is supported
@@ -175,8 +172,6 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 			return runners, err
 		}
 		runner.modVars = modVars
-		// Inherit parent's AwsClient
-		runner.AwsClient = parent.AwsClient
 		runners = append(runners, runner)
 		moudleRunners, err := NewModuleRunners(runner)
 		if err != nil {
@@ -284,29 +279,6 @@ func (r *Runner) LookupResourcesByType(resourceType string) []*configs.Resource 
 	}
 
 	return ret
-}
-
-// EachStringSliceExprs iterates an evaluated value and the corresponding expression
-// If the given expression is a static list, get an expression for each value
-// If not, the given expression is used as it is
-func (r *Runner) EachStringSliceExprs(expr hcl.Expression, proc func(val string, expr hcl.Expression)) error {
-	var vals []string
-	err := r.EvaluateExpr(expr, &vals)
-
-	exprs, diags := hcl.ExprList(expr)
-	if diags.HasErrors() {
-		log.Printf("[DEBUG] Expr is not static list: %s", diags)
-		for range vals {
-			exprs = append(exprs, expr)
-		}
-	}
-
-	return r.EnsureNoError(err, func() error {
-		for idx, val := range vals {
-			proc(val, exprs[idx])
-		}
-		return nil
-	})
 }
 
 // EmitIssue builds an issue and accumulates it

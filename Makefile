@@ -4,7 +4,7 @@ prepare:
 	go run ./plugin/stub-generator
 
 test: prepare
-	go test -timeout 5m $$(go list ./... | grep -v test-fixtures | grep -v stub-generator | grep -v integrationtest | grep -v aws-sdk-go)
+	go test -timeout 5m $$(go list ./... | grep -v test-fixtures | grep -v stub-generator | grep -v integrationtest)
 
 build:
 	mkdir -p dist
