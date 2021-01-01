@@ -16,22 +16,28 @@ import (
 )
 
 // EvaluateExpr evaluates the expression and reflects the result in the value of `ret`.
-// In the future, it will be no longer needed because all evaluation requests are invoked from RPC client
 func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 	val, err := r.EvalExpr(expr, ret, cty.Type{})
 	if err != nil {
 		return err
 	}
-	return r.fromCtyValue(val, expr, ret)
-}
 
-// EvaluateExprType is like EvaluateExpr, but also accepts a known cty.Type to pass to EvalExpr
-func (r *Runner) EvaluateExprType(expr hcl.Expression, ret interface{}, wantType cty.Type) error {
-	val, err := r.EvalExpr(expr, ret, wantType)
+	err = gocty.FromCtyValue(val, ret)
 	if err != nil {
+		err := &Error{
+			Code:  TypeMismatchError,
+			Level: ErrorLevel,
+			Message: fmt.Sprintf(
+				"Invalid type expression in %s:%d",
+				expr.Range().Filename,
+				expr.Range().Start.Line,
+			),
+			Cause: err,
+		}
+		log.Printf("[ERROR] %s", err)
 		return err
 	}
-	return r.fromCtyValue(val, expr, ret)
+	return nil
 }
 
 // EvalExpr is a wrapper of terraform.BultinEvalContext.EvaluateExpr
@@ -257,25 +263,6 @@ func (r *Runner) EvaluateBlock(block *hcl.Block, schema *configschema.Block, ret
 				"Invalid type block in %s:%d",
 				block.DefRange.Filename,
 				block.DefRange.Start.Line,
-			),
-			Cause: err,
-		}
-		log.Printf("[ERROR] %s", err)
-		return err
-	}
-	return nil
-}
-
-func (r *Runner) fromCtyValue(val cty.Value, expr hcl.Expression, ret interface{}) error {
-	err := gocty.FromCtyValue(val, ret)
-	if err != nil {
-		err := &Error{
-			Code:  TypeMismatchError,
-			Level: ErrorLevel,
-			Message: fmt.Sprintf(
-				"Invalid type expression in %s:%d",
-				expr.Range().Filename,
-				expr.Range().Start.Line,
 			),
 			Cause: err,
 		}
