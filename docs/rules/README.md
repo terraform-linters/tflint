@@ -1,84 +1,20 @@
 # Rules
 
-Rules related to AWS provider and Terraform are available. These rules are enabled by default.
+Rules are usually provided by ruleset plugins, but the rules for the Terraform Language are built into the TFLint binary. Below is a list of available rules.
 
-## AWS Rules
-
-These rules relate to AWS provider.
-
-### Possible Errors
-
-These rules warn of possible errors that can occur at `terraform apply`. Rules marked with `Deep` are only used when enabling deep checking:
-
-|Rule|Deep|
-| --- | --- |
-|aws_alb_invalid_security_group|✔|
-|aws_alb_invalid_subnet|✔|
-|aws_db_instance_invalid_db_subnet_group|✔|
-|aws_db_instance_invalid_option_group|✔|
-|aws_db_instance_invalid_parameter_group|✔|
-|aws_db_instance_invalid_type||
-|aws_db_instance_invalid_vpc_security_group|✔|
-|aws_elasticache_cluster_invalid_parameter_group|✔|
-|aws_elasticache_cluster_invalid_security_group|✔|
-|aws_elasticache_cluster_invalid_subnet_group|✔|
-|aws_elasticache_cluster_invalid_type||
-|aws_elb_invalid_instance|✔|
-|aws_elb_invalid_security_group|✔|
-|aws_elb_invalid_subnet|✔|
-|aws_instance_invalid_ami|✔|
-|aws_instance_invalid_iam_profile|✔|
-|aws_instance_invalid_key_name|✔|
-|aws_instance_invalid_subnet|✔|
-|aws_instance_invalid_vpc_security_group|✔|
-|aws_launch_configuration_invalid_iam_profile|✔|
-|aws_launch_configuration_invalid_image_id|✔|
-|aws_route_invalid_egress_only_gateway|✔|
-|aws_route_invalid_gateway|✔|
-|aws_route_invalid_instance|✔|
-|aws_route_invalid_nat_gateway|✔|
-|aws_route_invalid_network_interface|✔|
-|aws_route_invalid_route_table|✔|
-|aws_route_invalid_vpc_peering_connection|✔|
-|[aws_s3_bucket_name](aws_s3_bucket_name.md)||
-|[aws_route_not_specified_target](aws_route_not_specified_target.md)||
-|[aws_route_specified_multiple_targets](aws_route_specified_multiple_targets.md)||
-
-#### SDK-based Validations
-
-700+ rules based on the aws-sdk validations are also available. See [full list](../../rules/awsrules/models/).
-
-### Best Practices
-
-These rules suggest to better ways.
-
-- [aws_instance_previous_type](aws_instance_previous_type.md)
-- [aws_db_instance_previous_type](aws_db_instance_previous_type.md)
-- [aws_db_instance_default_parameter_group](aws_db_instance_default_parameter_group.md)
-- [aws_elasticache_cluster_previous_type](aws_elasticache_cluster_previous_type.md)
-- [aws_elasticache_cluster_default_parameter_group](aws_elasticache_cluster_default_parameter_group.md)
-
-## Terraform Rules
-
-These rules relate to Terraform itself, not providers.
-
-### Best Practices
-
-These rules suggest to better ways.
-
-|Rule|Enabled by default|
-| --- | --- |
-|[terraform_deprecated_interpolation](terraform_deprecated_interpolation.md)|✔|
-|[terraform_deprecated_index](terraform_deprecated_index.md)||
-|[terraform_unused_declarations](terraform_unused_declarations.md)||
-|[terraform_comment_syntax](terraform_comment_syntax.md)||
-|[terraform_documented_outputs](terraform_documented_outputs.md)||
-|[terraform_documented_variables](terraform_documented_variables.md)||
-|[terraform_typed_variables](terraform_typed_variables.md)||
-|[terraform_module_pinned_source](terraform_module_pinned_source.md)|✔|
-|[terraform_naming_convention](terraform_naming_convention.md)||
-|[terraform_required_version](terraform_required_version.md)||
-|[terraform_required_providers](terraform_required_providers.md)||
-|[terraform_unused_required_providers](terraform_unused_required_providers.md)||
-|[terraform_standard_module_structure](terraform_standard_module_structure.md)||
-|[terraform_workspace_remote](terraform_workspace_remote.md)|✔|
+|Rule|Description|Enabled|
+| --- | --- | --- |
+|[terraform_deprecated_interpolation](terraform_deprecated_interpolation.md)|Disallow deprecated (0.11-style) interpolation|✔|
+|[terraform_deprecated_index](terraform_deprecated_index.md)|Disallow legacy dot index syntax||
+|[terraform_unused_declarations](terraform_unused_declarations.md)|Disallow variables, data sources, and locals that are declared but never used||
+|[terraform_comment_syntax](terraform_comment_syntax.md)|Disallow `//` comments in favor of `#`||
+|[terraform_documented_outputs](terraform_documented_outputs.md)|Disallow `output` declarations without description||
+|[terraform_documented_variables](terraform_documented_variables.md)|Disallow `variable` declarations without description||
+|[terraform_typed_variables](terraform_typed_variables.md)|Disallow `variable` declarations without type||
+|[terraform_module_pinned_source](terraform_module_pinned_source.md)|Disallow specifying a git or mercurial repository as a module source without pinning to a version|✔|
+|[terraform_naming_convention](terraform_naming_convention.md)|Enforces naming conventions for resources, data sources, etc||
+|[terraform_required_version](terraform_required_version.md)|Disallow `terraform` declarations without require_version||
+|[terraform_required_providers](terraform_required_providers.md)|Require that all providers have version constraints through required_providers||
+|[terraform_unused_required_providers](terraform_unused_required_providers.md)|Check that all `required_providers` are used in the module||
+|[terraform_standard_module_structure](terraform_standard_module_structure.md)|Ensure that a module complies with the Terraform Standard Module Structure||
+|[terraform_workspace_remote](terraform_workspace_remote.md)|`terraform.workspace` should not be used with a "remote" backend with remote execution|✔|
