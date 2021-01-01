@@ -212,6 +212,36 @@ func Test_HCLBodyRange_JSON(t *testing.T) {
 	}
 }
 
+func Test_HCLBodyRange_mergeBody(t *testing.T) {
+	base := `
+resource "null_resource" "foo" {
+  foo = "bar"
+}`
+	override := `
+resource "null_resource" "foo" {
+  foo = "baz"
+}`
+
+	baseFile, diags := hclsyntax.ParseConfig([]byte(base), "example.tf", hcl.InitialPos)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	overrideFile, diags := hclsyntax.ParseConfig([]byte(override), "example_override.tf", hcl.InitialPos)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+
+	body := hcl.MergeBodies([]hcl.Body{baseFile.Body, overrideFile.Body})
+
+	got := HCLBodyRange(body, hcl.Range{Filename: "example.tf"})
+	expected := hcl.Range{Filename: "example.tf"}
+
+	opt := cmpopts.IgnoreFields(hcl.Pos{}, "Byte")
+	if !cmp.Equal(got, expected, opt) {
+		t.Fatalf("Diff=%s", cmp.Diff(got, expected, opt))
+	}
+}
+
 func Test_getTFDataDir(t *testing.T) {
 	cases := []struct {
 		Name     string
