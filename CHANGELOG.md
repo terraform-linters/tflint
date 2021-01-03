@@ -1,3 +1,51 @@
+## 0.23.0 (2021-01-03)
+
+This release changes the AWS rules implementation into the AWS ruleset plugin. As a result, there are breaking changes to the config for deep checking. If you are using this feature, please declare the `plugin` settings in `.tflint.hcl` as follows. See the [tflint-ruleset-aws plugin configurations](https://github.com/terraform-linters/tflint-ruleset-aws/blob/v0.1.1/docs/configuration.md) for details.
+
+```hcl
+plugin "aws" {
+  enabled = true
+  deep_check = true
+
+  // Write credentials here...
+}
+```
+
+For backward compatibility, The AWS ruleset plugin is bundled with the binary. So you can still use AWS rules without installing the plugin separetely. The plugin is automatically enabled if there are AWS resources in your Terraform configuration, but it can also be turned on explicitly. See https://github.com/terraform-linters/tflint/pull/1009 for details.
+
+### Breaking Changes
+
+- [#1009](https://github.com/terraform-linters/tflint/pull/1009): Switch AWS rules implementation to the tflint-ruleset-aws plugin ([@wata727](https://github.com/wata727))
+- [#1023](https://github.com/terraform-linters/tflint/pull/1023): Remove global deep checking options ([@wata727](https://github.com/wata727))
+  - Remove `--deep`, `--aws-access-key`, `--aws-secret-key`, `--aws-profile`, `--aws-creds-file`, and `--aws-region` CLI flags. Please configure these via `.tflint.hcl` file.
+  - Remove global `deep_check` and `aws_credentials` configs from `.tflint.hcl`. Please configure these in `plugin` blocks.
+- [#1026](https://github.com/terraform-linters/tflint/pull/1026): Bump tflint-plugin-sdk and bundled plugins ([@wata727](https://github.com/wata727))
+  - This change breaks plugin API backward compatibility. In order for plugins to work against v0.23.0, you need to build with tflint-plugin-sdk v0.7.0.
+
+### Enhancements
+
+- [#986](https://github.com/terraform-linters/tflint/pull/986): plugin: Extend runner API for accessing the root provider ([@wata727](https://github.com/wata727))
+- [#1003](https://github.com/terraform-linters/tflint/pull/1003): plugin: Add support for fetching rule config ([@wata727](https://github.com/wata727))
+- [#1007](https://github.com/terraform-linters/tflint/pull/1007): rule: terraform_unused_required_providers ([@bendrucker](https://github.com/bendrucker))
+- [#1008](https://github.com/terraform-linters/tflint/pull/1008): plugin: Add `IsNullExpr` API ([@wata727](https://github.com/wata727))
+- [#1017](https://github.com/terraform-linters/tflint/pull/1017): plugin: Add `File` API ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#1019](https://github.com/terraform-linters/tflint/pull/1019): tflint: Add workaround to get the range of `configs.mergeBody` ([@wata727](https://github.com/wata727))
+- [#1020](https://github.com/terraform-linters/tflint/pull/1020): tflint: Skip walking expressions of merged bodies ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1010](https://github.com/terraform-linters/tflint/pull/1010): build(deps): Bump github.com/hashicorp/hcl/v2 from 2.8.0 to 2.8.1
+- [#1011](https://github.com/terraform-linters/tflint/pull/1011): build(deps): Bump github.com/zclconf/go-cty from 1.7.0 to 1.7.1
+- [#1013](https://github.com/terraform-linters/tflint/pull/1013): build(deps): Bump github.com/hashicorp/terraform from 0.14.2 to 0.14.3
+- [#1015](https://github.com/terraform-linters/tflint/pull/1015): docs: add homebrew badge ([@chenrui333](https://github.com/chenrui333))
+- [#1018](https://github.com/terraform-linters/tflint/pull/1018): Tweaks E2E testing ([@wata727](https://github.com/wata727))
+- [#1021](https://github.com/terraform-linters/tflint/pull/1021): deps: match afero version to terraform ([@bendrucker](https://github.com/bendrucker))
+- [#1024](https://github.com/terraform-linters/tflint/pull/1024): Cleanup AWS relevant implementations ([@wata727](https://github.com/wata727))
+- [#1025](https://github.com/terraform-linters/tflint/pull/1025): Revise documentation ([@wata727](https://github.com/wata727))
+
 ## 0.22.0 (2020-12-09)
 
 This release updates to Terraform 0.14! This adds support for parsing configuration that uses features introduced in Terraform 0.14. See [Terraform's changelog](https://github.com/hashicorp/terraform/blob/v0.14/CHANGELOG.md) for further details.

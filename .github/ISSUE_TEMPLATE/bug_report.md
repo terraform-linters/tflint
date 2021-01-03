@@ -25,6 +25,11 @@ It is a good practice to list the versions where the bug occurred.
 
 Example:
 
-TFLint v0.22.0
-Terraform v0.14.2
+```console
+$ tflint -v
+TFLint version 0.23.0
++ ruleset.aws (0.1.1-bundled)
+$ terraform -v
+Terraform v0.14.3
+```
 -->
