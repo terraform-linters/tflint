@@ -1,9 +1,6 @@
 # Compatibility with Terraform
 
-Some inspections implicitly assume the behavior of a specific version of provider plugins or Terraform. This always assumes the latest version and is as follows:
-
-- Terraform v0.13.5
-- AWS Provider v3.16.0
+Since TFLint embeds a specific version of Terraform as a library, some features implicitly assume the behavior of Terraform v0.14.3.
 
 Of course, TFLint may work correctly if you run it on other versions. But, false positives/negatives can occur based on this assumption.
 
@@ -13,7 +10,7 @@ Like Terraform, it supports the `--var`,` --var-file` options, automatic loading
 
 ## Named Values
 
-[Named values](https://www.terraform.io/docs/configuration/expressions.html#references-to-named-values) are supported partially. The following named values are available:
+[Named values](https://www.terraform.io/docs/configuration/expressions/references.html) are supported partially. The following named values are available:
 
 - `var.<NAME>`
 - `path.module`
@@ -33,3 +30,4 @@ The following environment variables are supported:
 
 - [TF_VAR_name](https://www.terraform.io/docs/commands/environment-variables.html#tf_var_name)
 - [TF_DATA_DIR](https://www.terraform.io/docs/commands/environment-variables.html#tf_data_dir)
+- [TF_WORKSPACE](https://www.terraform.io/docs/commands/environment-variables.html#tf_workspace)

@@ -1,10 +1,12 @@
 # TFLint User Guide
 
+This guide describes the various features of TFLint for end users.
+
+## Table of Contents
+
 - [Introduction](../../README.md) (README)
 - [Configuring TFLint](config.md)
+- [Module Inspection](module-inspection.md)
 - [Annotations](annotations.md)
-- [Credentials](credentials.md)
 - [Compatibility with Terraform](compatibility.md)
 - [Editor Integration](editor-integration.md)
-- [Advanced Inspection](advanced.md)
-- [Extending TFLint](extend.md)
