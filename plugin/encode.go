@@ -363,8 +363,10 @@ func (s *Server) encodeVariable(variable *tfconfigs.Variable) *tfplugin.Variable
 		Type:        variable.Type,
 		ParsingMode: configs.VariableParsingMode(variable.ParsingMode),
 		Validations: validations,
+		Sensitive:   variable.Sensitive,
 
 		DescriptionSet: variable.DescriptionSet,
+		SensitiveSet:   variable.SensitiveSet,
 
 		DeclRange: variable.DeclRange,
 	}
