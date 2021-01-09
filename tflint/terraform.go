@@ -55,6 +55,9 @@ func ParseTFVariables(vars []string, declVars map[string]*configs.Variable) (ter
 // ParseExpression is a wrapper for a function that parses JSON and HCL expressions
 func ParseExpression(src []byte, filename string, start hcl.Pos) (hcl.Expression, hcl.Diagnostics) {
 	if strings.HasSuffix(filename, ".tf") {
+		// HACK: Always add a newline to avoid heredoc parse errors.
+		// @see https://github.com/hashicorp/hcl/issues/441
+		src = []byte(string(src) + "\n")
 		return hclsyntax.ParseExpression(src, filename, start)
 	}
 

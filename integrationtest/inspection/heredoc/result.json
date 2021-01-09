@@ -1,0 +1,25 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is t2.micro\n",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 2,
+          "column": 19
+        },
+        "end": {
+          "line": 4,
+          "column": 4
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}
