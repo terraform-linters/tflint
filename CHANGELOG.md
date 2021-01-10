@@ -1,3 +1,10 @@
+## 0.23.1 (2021-01-11)
+
+### BugFixes
+
+- [#1032](https://github.com/terraform-linters/tflint/pull/1032): Add workaround for parsing heredoc expressions ([@wata727](https://github.com/wata727))
+- [#1033](https://github.com/terraform-linters/tflint/pull/1033): Bump bundled AWS plugin to v0.1.2 ([@wata727](https://github.com/wata727))
+
 ## 0.23.0 (2021-01-03)
 
 This release changes the AWS rules implementation into the AWS ruleset plugin. As a result, there are breaking changes to the config for deep checking. If you are using this feature, please declare the `plugin` settings in `.tflint.hcl` as follows. See the [tflint-ruleset-aws plugin configurations](https://github.com/terraform-linters/tflint-ruleset-aws/blob/v0.1.1/docs/configuration.md) for details.
