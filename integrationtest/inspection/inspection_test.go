@@ -92,6 +92,11 @@ func TestIntegration(t *testing.T) {
 			Command: "./tflint --format json --enable-rule required_config",
 			Dir:     "enable-required-config-rule-by-cli",
 		},
+		{
+			Name:    "heredoc",
+			Command: "./tflint --format json",
+			Dir:     "heredoc",
+		},
 	}
 
 	dir, _ := os.Getwd()
