@@ -33,6 +33,24 @@ func TestBundledPlugin(t *testing.T) {
 			Command: "tflint --format json --force",
 			Dir:     "basic",
 		},
+		{
+			// Regression: https://github.com/terraform-linters/tflint-ruleset-aws/issues/41
+			Name:    "rule config",
+			Command: "tflint --format json --force",
+			Dir:     "rule-config",
+		},
+		{
+			// Regression: https://github.com/terraform-linters/tflint/issues/1028
+			Name:    "deep checking rule config",
+			Command: "tflint --format json --force",
+			Dir:     "deep-checking-rule-config",
+		},
+		{
+			// Regression: https://github.com/terraform-linters/tflint/issues/1029
+			Name:    "heredoc",
+			Command: "tflint --format json --force",
+			Dir:     "heredoc",
+		},
 	}
 
 	dir, _ := os.Getwd()
