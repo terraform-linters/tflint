@@ -1,0 +1,25 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_s3_bucket_name",
+        "severity": "warning",
+        "link": "https://github.com/terraform-linters/tflint-ruleset-aws/blob/v0.1.2/docs/rules/aws_s3_bucket_name.md"
+      },
+      "message": "Bucket name \"foo_bar\" does not match regex \"^[a-z\\-]+$\"",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 2,
+          "column": 12
+        },
+        "end": {
+          "line": 2,
+          "column": 21
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}
