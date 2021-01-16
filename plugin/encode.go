@@ -268,6 +268,9 @@ func (s *Server) encodeProvisioner(provisioner *tfconfigs.Provisioner) *tfplugin
 }
 
 func (s *Server) encodeBackend(backend *tfconfigs.Backend) *tfplugin.Backend {
+	if backend == nil {
+		return nil
+	}
 	configRange := tflint.HCLBodyRange(backend.Config, backend.DeclRange)
 	config := []byte{}
 	if configRange.Empty() {
