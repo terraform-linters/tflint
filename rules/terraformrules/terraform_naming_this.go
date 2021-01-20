@@ -45,8 +45,7 @@ func (r *TerraformNamingThisRule) Check(runner *tflint.Runner) error {
 	// Group resources
 	countPerType := make(map[string]int)
 	for _, resource := range managedResources {
-		val, _ := countPerType[resource.Type]
-		countPerType[resource.Type] = val + 1
+		countPerType[resource.Type]++
 	}
 
 	// Find resources with wrong name
