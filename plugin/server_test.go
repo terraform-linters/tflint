@@ -414,7 +414,6 @@ resource "aws_s3_bucket" "bar" {
 			CoreVersionConstraints: []string{},
 			CoreVersionConstraintRanges: []hcl.Range{},
 			ActiveExperiments: experiments.Set{},
-			Backend: &tfplugin.Backend{},
 			ProviderConfigs: map[string]*tfplugin.Provider{},
 			ProviderRequirements: &tfplugin.RequiredProviders{
 				RequiredProviders: map[string]*tfplugin.RequiredProvider{},
