@@ -7,7 +7,7 @@ import (
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/configs"
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/experiments"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint/client"
-	"github.com/zclconf/go-cty/cty"
+	"github.com/zclconf/go-cty/cty/msgpack"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -361,10 +361,7 @@ func (s *Server) encodeVariable(variable *tfconfigs.Variable) *tfplugin.Variable
 		validations[i] = s.encodeVariableValidation(v)
 	}
 
-	defaultVal := variable.Default
-	if !defaultVal.IsKnown() {
-		defaultVal = cty.Value{}
-	}
+	defaultVal, _ := msgpack.Marshal(variable.Default, variable.Default.Type())
 
 	return &tfplugin.Variable{
 		Name:        variable.Name,
