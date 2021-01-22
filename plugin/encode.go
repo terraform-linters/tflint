@@ -8,6 +8,7 @@ import (
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/experiments"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint/client"
 	"github.com/zclconf/go-cty/cty/msgpack"
+	"github.com/zclconf/go-cty/cty/json"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -362,12 +363,13 @@ func (s *Server) encodeVariable(variable *tfconfigs.Variable) *tfplugin.Variable
 	}
 
 	defaultVal, _ := msgpack.Marshal(variable.Default, variable.Default.Type())
-
+	// We need to use json because cty.DynamicPseudoType cannot be encoded by gob
+	typeVal, _ := json.MarshalType(variable.Type)
 	return &tfplugin.Variable{
 		Name:        variable.Name,
 		Description: variable.Description,
 		Default:     defaultVal,
-		Type:        variable.Type,
+		Type:        typeVal,
 		ParsingMode: configs.VariableParsingMode(variable.ParsingMode),
 		Validations: validations,
 		Sensitive:   variable.Sensitive,
