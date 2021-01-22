@@ -18,6 +18,7 @@ type Options struct {
 	EnableRules    []string `long:"enable-rule" description:"Enable rules from the command line" value-name:"RULE_NAME"`
 	DisableRules   []string `long:"disable-rule" description:"Disable rules from the command line" value-name:"RULE_NAME"`
 	Only           []string `long:"only" description:"Enable only this rule, disabling all other defaults. Can be specified multiple times" value-name:"RULE_NAME"`
+	EnablePlugins  []string `long:"enable-plugin" description:"Enable plugins from the command line" value-name:"PLUGIN_NAME"`
 	Varfiles       []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
 	Variables      []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
 	Module         bool     `long:"module" description:"Inspect modules"`
@@ -52,6 +53,7 @@ func (opts *Options) toConfig() *tflint.Config {
 	log.Printf("[DEBUG]   EnableRules: %#v", opts.EnableRules)
 	log.Printf("[DEBUG]   DisableRules: %#v", opts.DisableRules)
 	log.Printf("[DEBUG]   Only: %#v", opts.Only)
+	log.Printf("[DEBUG]   EnablePlugins: %#v", opts.EnablePlugins)
 	log.Printf("[DEBUG]   Varfiles: %#v", varfiles)
 	log.Printf("[DEBUG]   Variables: %#v", opts.Variables)
 
@@ -85,6 +87,15 @@ func (opts *Options) toConfig() *tflint.Config {
 		log.Printf("[WARN] Usage of --only will ignore other rules provided by --enable-rule or --disable-rule")
 	}
 
+	plugins := map[string]*tflint.PluginConfig{}
+	for _, plugin := range opts.EnablePlugins {
+		plugins[plugin] = &tflint.PluginConfig{
+			Name:    plugin,
+			Enabled: true,
+			Body:    nil,
+		}
+	}
+
 	return &tflint.Config{
 		Module:            opts.Module,
 		Force:             opts.Force,
@@ -93,6 +104,6 @@ func (opts *Options) toConfig() *tflint.Config {
 		Variables:         opts.Variables,
 		DisabledByDefault: len(opts.Only) > 0,
 		Rules:             rules,
-		Plugins:           map[string]*tflint.PluginConfig{},
+		Plugins:           plugins,
 	}
 }
