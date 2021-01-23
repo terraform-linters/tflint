@@ -63,7 +63,12 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	defer plugin.Clean()
 
 	rulesets := []tflint.RuleSet{&rules.RuleSet{}}
-	for _, ruleset := range plugin.RuleSets {
+	for name, ruleset := range plugin.RuleSets {
+		err = ruleset.ApplyConfig(cfg.ToPluginConfig(name))
+		if err != nil {
+			cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to apply config to plugins", err), cli.loader.Sources())
+			return ExitCodeError
+		}
 		rulesets = append(rulesets, ruleset)
 	}
 	if err := cfg.ValidateRules(rulesets...); err != nil {
@@ -82,12 +87,7 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 		}
 	}
 
-	for name, ruleset := range plugin.RuleSets {
-		err = ruleset.ApplyConfig(cfg.ToPluginConfig(name))
-		if err != nil {
-			cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to apply config to plugins", err), cli.loader.Sources())
-			return ExitCodeError
-		}
+	for _, ruleset := range plugin.RuleSets {
 		for _, runner := range runners {
 			err = ruleset.Check(tfplugin.NewServer(runner, rootRunner, cli.loader.Sources()))
 			if err != nil {
