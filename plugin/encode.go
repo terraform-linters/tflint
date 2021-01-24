@@ -7,26 +7,33 @@ import (
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/configs"
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/experiments"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint/client"
+	"github.com/zclconf/go-cty/cty/msgpack"
+	"github.com/zclconf/go-cty/cty/json"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-func (s *Server) encodeConfig(config *tfconfigs.Config) *tfplugin.Config {
+func (s *Server) encodeConfig(config *tfconfigs.Config) (*tfplugin.Config, error) {
 	var versionStr string
 	if config.Version != nil {
 		versionStr = config.Version.String()
 	}
 
+	module, err := s.encodeModule(config.Module)
+	if err != nil {
+		return nil, err
+	}
+
 	return &tfplugin.Config{
 		Path:            addrs.Module(config.Path),
-		Module:          s.encodeModule(config.Module),
+		Module:          module,
 		CallRange:       config.CallRange,
 		SourceAddr:      config.SourceAddr,
 		SourceAddrRange: config.SourceAddrRange,
 		Version:         versionStr,
-	}
+	}, nil
 }
 
-func (s *Server) encodeModule(module *tfconfigs.Module) *tfplugin.Module {
+func (s *Server) encodeModule(module *tfconfigs.Module) (*tfplugin.Module, error) {
 	versionConstraints := make([]string, len(module.CoreVersionConstraints))
 	versionConstraintRanges := make([]hcl.Range, len(module.CoreVersionConstraints))
 	for i, v := range module.CoreVersionConstraints {
@@ -56,7 +63,11 @@ func (s *Server) encodeModule(module *tfconfigs.Module) *tfplugin.Module {
 
 	variables := map[string]*tfplugin.Variable{}
 	for k, v := range module.Variables {
-		variables[k] = s.encodeVariable(v)
+		var err error
+		variables[k], err = s.encodeVariable(v)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	locals := map[string]*tfplugin.Local{}
@@ -105,7 +116,7 @@ func (s *Server) encodeModule(module *tfconfigs.Module) *tfplugin.Module {
 
 		ManagedResources: managed,
 		DataResources:    data,
-	}
+	}, nil
 }
 
 func (s *Server) encodeResource(resource *tfconfigs.Resource) *tfplugin.Resource {
@@ -354,17 +365,26 @@ func (s *Server) encodeProviderMeta(meta *tfconfigs.ProviderMeta) *tfplugin.Prov
 	}
 }
 
-func (s *Server) encodeVariable(variable *tfconfigs.Variable) *tfplugin.Variable {
+func (s *Server) encodeVariable(variable *tfconfigs.Variable) (*tfplugin.Variable, error) {
 	validations := make([]*tfplugin.VariableValidation, len(variable.Validations))
 	for i, v := range variable.Validations {
 		validations[i] = s.encodeVariableValidation(v)
 	}
 
+	defaultVal, err := msgpack.Marshal(variable.Default, variable.Default.Type())
+	if err != nil {
+		return nil, err
+	}
+	// We need to use json because cty.DynamicPseudoType cannot be encoded by gob
+	typeVal, err := json.MarshalType(variable.Type)
+	if err != nil {
+		return nil, err
+	}
 	return &tfplugin.Variable{
 		Name:        variable.Name,
 		Description: variable.Description,
-		Default:     variable.Default,
-		Type:        variable.Type,
+		Default:     defaultVal,
+		Type:        typeVal,
 		ParsingMode: configs.VariableParsingMode(variable.ParsingMode),
 		Validations: validations,
 		Sensitive:   variable.Sensitive,
@@ -373,7 +393,7 @@ func (s *Server) encodeVariable(variable *tfconfigs.Variable) *tfplugin.Variable
 		SensitiveSet:   variable.SensitiveSet,
 
 		DeclRange: variable.DeclRange,
-	}
+	}, nil
 }
 
 func (s *Server) encodeVariableValidation(validation *tfconfigs.VariableValidation) *tfplugin.VariableValidation {

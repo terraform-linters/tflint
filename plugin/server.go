@@ -97,8 +97,12 @@ func (s *Server) Backend(req *tfplugin.BackendRequest, resp *tfplugin.BackendRes
 
 // Config returns corresponding configs.Config as tfplugin.Config
 func (s *Server) Config(req *tfplugin.ConfigRequest, resp *tfplugin.ConfigResponse) error {
+	config, err := s.encodeConfig(s.runner.TFConfig)
+	if err != nil {
+		return err
+	}
 	*resp = tfplugin.ConfigResponse{
-		Config: s.encodeConfig(s.runner.TFConfig),
+		Config: config,
 	}
 
 	return nil
