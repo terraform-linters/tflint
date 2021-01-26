@@ -159,7 +159,7 @@ func (c *Config) ToPluginConfig(name string) *tfplugin.MarshalledConfig {
 
 	var bodyBytes []byte
 	var cfgRange hcl.Range
-	if pluginCfg.Body != nil {
+	if pluginCfg.Body != nil && pluginCfg.file != nil {
 		cfgRange = configBodyRange(pluginCfg.Body)
 		bodyBytes = cfgRange.SliceBytes(pluginCfg.file.Bytes)
 	}
@@ -377,6 +377,10 @@ func mergePluginMap(a, b map[string]*PluginConfig) map[string]*PluginConfig {
 	}
 	for k, v := range b {
 		ret[k] = v
+		if prevConfig, exists := ret[k]; exists && v.Body == nil {
+			// Use the plugin config from the config file when the plugin is enabled via CLI
+			ret[k].Body = prevConfig.Body
+		}
 	}
 	return ret
 }
