@@ -15,8 +15,12 @@ jobs:
     - name: Restore Cache
       uses: actions/cache@v2.1.3
       with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
+        path: |-
+          ~/go/pkg/mod
+          ~/.cache/go-build
+          ~/Library/Caches/go-build
+          %LocalAppData%\go-build
+        key: ${{ matrix.os }}-go-${{ hashFiles('go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
     - name: make code

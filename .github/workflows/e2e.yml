@@ -24,5 +24,16 @@ jobs:
       uses: actions/setup-go@v2.1.3
       with:
         go-version: 1.15
+    - name: Restore Cache
+      uses: actions/cache@v2.1.3
+      with:
+        path: |-
+          ~/go/pkg/mod
+          ~/.cache/go-build
+          ~/Library/Caches/go-build
+          %LocalAppData%\go-build
+        key: ${{ matrix.os }}-go-${{ hashFiles('go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
     - name: Run e2e
       run: make e2e
