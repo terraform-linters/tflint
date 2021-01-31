@@ -1,3 +1,28 @@
+## 0.24.0 (2021-01-31)
+
+This release fixes some bugs about the plugin system. For this update, the plugin must be built with tflint-plugin-sdk v0.8.0 to work with TFLint v0.24.0. For details, please see the CHANGELOG of tflint-plugin-sdk.
+
+### Breaking Changes
+
+- [#1052](https://github.com/terraform-linters/tflint/pull/1052): Bump tflint-plugin-sdk and bundled plugins ([@wata727](https://github.com/wata727))
+  - This change breaks plugin API backward compatibility. In order for plugins to work against v0.24.0, you need to build with tflint-plugin-sdk v0.8.0.
+
+### Changes
+
+- [#1043](https://github.com/terraform-linters/tflint/pull/1043): Call ApplyConfig before ValidateRules ([@richardTowers](https://github.com/richardTowers))
+
+### BugFixes
+
+- [#1040](https://github.com/terraform-linters/tflint/pull/1040): Fix panic on empty backend in Config() ([@syndicut](https://github.com/syndicut))
+- [#1041](https://github.com/terraform-linters/tflint/pull/1041): Fix gob encoder error on unknown value ([@syndicut](https://github.com/syndicut))
+
+### Chores
+
+- [#1034](https://github.com/terraform-linters/tflint/pull/1034): build(deps): Bump github.com/hashicorp/hcl/v2 from 2.8.1 to 2.8.2
+- [#1035](https://github.com/terraform-linters/tflint/pull/1035) [#1044](https://github.com/terraform-linters/tflint/pull/1044): build(deps): Bump github.com/hashicorp/terraform from 0.14.3 to 0.14.5
+- [#1046](https://github.com/terraform-linters/tflint/pull/1046): go: cache builds ([@bendrucker](https://github.com/bendrucker))
+- [#1047](https://github.com/terraform-linters/tflint/pull/1047): add module/build caching to e2e + gen  ([@bendrucker](https://github.com/bendrucker))
+
 ## 0.23.1 (2021-01-11)
 
 ### BugFixes

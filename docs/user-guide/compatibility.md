@@ -1,6 +1,6 @@
 # Compatibility with Terraform
 
-Since TFLint embeds a specific version of Terraform as a library, some features implicitly assume the behavior of Terraform v0.14.3.
+Since TFLint embeds a specific version of Terraform as a library, some features implicitly assume the behavior of Terraform v0.14.5.
 
 Of course, TFLint may work correctly if you run it on other versions. But, false positives/negatives can occur based on this assumption.
 
