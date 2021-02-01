@@ -51,6 +51,12 @@ func TestBundledPlugin(t *testing.T) {
 			Command: "tflint --format json --force",
 			Dir:     "heredoc",
 		},
+		{
+			// Regression: https://github.com/terraform-linters/tflint/issues/1054
+			Name:    "disabled-rules",
+			Command: "tflint --format json --force",
+			Dir:     "disabled-rules",
+		},
 	}
 
 	dir, _ := os.Getwd()
