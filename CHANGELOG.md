@@ -1,3 +1,9 @@
+## 0.24.1 (2021-02-02)
+
+### BugFixes
+
+- [#1055](https://github.com/terraform-linters/tflint/pull/1055): Bump tflint-plugin-sdk and bundled plugins ([@wata727](https://github.com/wata727))
+
 ## 0.24.0 (2021-01-31)
 
 This release fixes some bugs about the plugin system. For this update, the plugin must be built with tflint-plugin-sdk v0.8.0 to work with TFLint v0.24.0. For details, please see the CHANGELOG of tflint-plugin-sdk.
