@@ -190,6 +190,31 @@ func Test_toConfig(t *testing.T) {
 				Plugins: map[string]*tflint.PluginConfig{},
 			},
 		},
+		{
+			Name:    "--enable-plugin",
+			Command: "./tflint --enable-plugin test --enable-plugin another-test",
+			Expected: &tflint.Config{
+				Module:            false,
+				Force:             false,
+				IgnoreModules:     map[string]bool{},
+				Varfiles:          []string{},
+				Variables:         []string{},
+				DisabledByDefault: false,
+				Rules:             map[string]*tflint.RuleConfig{},
+				Plugins: map[string]*tflint.PluginConfig{
+					"test": {
+						Name:    "test",
+						Enabled: true,
+						Body:    nil,
+					},
+					"another-test": {
+						Name:    "another-test",
+						Enabled: true,
+						Body:    nil,
+					},
+				},
+			},
+		},
 	}
 
 	for _, tc := range cases {
@@ -204,6 +229,7 @@ func Test_toConfig(t *testing.T) {
 		ret := opts.toConfig()
 		eqlopts := []cmp.Option{
 			cmpopts.IgnoreUnexported(tflint.RuleConfig{}),
+			cmpopts.IgnoreUnexported(tflint.PluginConfig{}),
 		}
 		if !cmp.Equal(tc.Expected, ret, eqlopts...) {
 			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(tc.Expected, ret, eqlopts...))

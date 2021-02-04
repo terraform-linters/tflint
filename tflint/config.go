@@ -377,6 +377,11 @@ func mergePluginMap(a, b map[string]*PluginConfig) map[string]*PluginConfig {
 	}
 	for k, v := range b {
 		ret[k] = v
+		if prevConfig, exists := ret[k]; exists && v.Body == nil {
+			// Use the plugin config from the config file when the plugin is enabled via CLI
+			ret[k].Body = prevConfig.Body
+			ret[k].file = prevConfig.file
+		}
 	}
 	return ret
 }
