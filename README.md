@@ -112,3 +112,7 @@ $ TFLINT_LOG=debug tflint
 ## Developing
 
 See [Developer Guide](docs/developer-guide).
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/terraform-linters/tflint.svg)](https://starchart.cc/terraform-linters/tflint)
