@@ -1,9 +1,9 @@
 FROM golang:1.15-alpine3.12 as builder
 
-RUN apk --no-cache add git make gcc musl-dev zip
+RUN apk add --no-cache make
 
 WORKDIR /tflint
-ADD . /tflint
+COPY . /tflint
 RUN make build
 
 FROM alpine:3.12 as prod
