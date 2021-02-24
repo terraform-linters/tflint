@@ -63,6 +63,8 @@ func (cli *CLI) Run(args []string) int {
 	level := os.Getenv("TFLINT_LOG")
 	if opts.LogLevel != "" {
 		level = opts.LogLevel
+		// Pass log level to plugin processes
+		os.Setenv("TFLINT_LOG", level)
 	}
 	log.SetOutput(&logutils.LevelFilter{
 		Levels:   []logutils.LogLevel{"TRACE", "DEBUG", "INFO", "WARN", "ERROR"},
