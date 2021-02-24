@@ -267,6 +267,25 @@ data "aws_eip" "Foo_Bar" {
 			},
 		},
 		{
+			Name: fmt.Sprintf("data: %s - Invalid snake_case with count = 0", testType),
+			Content: `
+data "aws_eip" "camelCased" {
+	count = 0
+}`,
+			Config: config,
+			Expected: tflint.Issues{
+				{
+					Rule:    rule,
+					Message: fmt.Sprintf("data name `camelCased` must match the following %s", formatName),
+					Range: hcl.Range{
+						Filename: "tests.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 28},
+					},
+				},
+			},
+		},
+		{
 			Name: fmt.Sprintf("data: %s - Valid snake_case", testType),
 			Content: `
 data "aws_eip" "foo_bar" {
