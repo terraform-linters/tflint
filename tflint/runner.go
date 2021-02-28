@@ -370,17 +370,17 @@ func prepareVariableValues(config *configs.Config, variables ...terraform.InputV
 	return variableValues
 }
 
-func listVarRefs(expr hcl.Expression) []addrs.InputVariable {
+func listVarRefs(expr hcl.Expression) map[string]addrs.InputVariable {
 	refs, diags := lang.ReferencesInExpr(expr)
 	if diags.HasErrors() {
 		// Maybe this is bug
 		panic(diags.Err())
 	}
 
-	ret := []addrs.InputVariable{}
+	ret := map[string]addrs.InputVariable{}
 	for _, ref := range refs {
 		if varRef, ok := ref.Subject.(addrs.InputVariable); ok {
-			ret = append(ret, varRef)
+			ret[varRef.String()] = varRef
 		}
 	}
 
