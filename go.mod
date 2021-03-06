@@ -19,7 +19,7 @@ require (
 	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
 	github.com/spf13/afero v1.2.2 // matches version used by terraform
 	github.com/terraform-linters/tflint-plugin-sdk v0.8.1
-	github.com/terraform-linters/tflint-ruleset-aws v0.2.1
+	github.com/terraform-linters/tflint-ruleset-aws v0.3.0
 	github.com/zclconf/go-cty v1.8.0
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
 )
