@@ -4,7 +4,7 @@
       "rule": {
         "name": "aws_s3_bucket_name",
         "severity": "warning",
-        "link": "https://github.com/terraform-linters/tflint-ruleset-aws/blob/v0.2.1/docs/rules/aws_s3_bucket_name.md"
+        "link": "https://github.com/terraform-linters/tflint-ruleset-aws/blob/v0.3.0/docs/rules/aws_s3_bucket_name.md"
       },
       "message": "Bucket name \"foo_bar\" does not match regex \"^[a-z\\-]+$\"",
       "range": {
