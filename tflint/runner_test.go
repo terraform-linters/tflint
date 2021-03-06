@@ -9,6 +9,7 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/hashicorp/terraform/addrs"
 	"github.com/hashicorp/terraform/configs"
 	"github.com/zclconf/go-cty/cty"
 )
@@ -206,7 +207,10 @@ func Test_NewModuleRunners_modVars(t *testing.T) {
 				},
 			},
 		}
-		opts = []cmp.Option{cmpopts.IgnoreFields(hcl.Pos{}, "Byte")}
+		opts = []cmp.Option{
+			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
+			cmpopts.SortSlices(func(x, y *moduleVariable) bool { return x.DeclRange.Start.Line > y.DeclRange.Start.Line }),
+		}
 		if !cmp.Equal(expected, grandchild.modVars, opts...) {
 			t.Fatalf("`%s` module variables are unmatched: Diff=%s", grandchild.TFConfig.Path.String(), cmp.Diff(expected, grandchild.modVars, opts...))
 		}
@@ -643,5 +647,63 @@ func Test_DecodeRuleConfig_emptyBody(t *testing.T) {
 	expected := "This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration"
 	if err.Error() != expected {
 		t.Fatalf("Expected error message is %s, but got %s", expected, err.Error())
+	}
+}
+
+func Test_listVarRefs(t *testing.T) {
+	cases := []struct {
+		Name     string
+		Expr     string
+		Expected map[string]addrs.InputVariable
+	}{
+		{
+			Name:     "literal",
+			Expr:     "1",
+			Expected: map[string]addrs.InputVariable{},
+		},
+		{
+			Name: "input variable",
+			Expr: "var.foo",
+			Expected: map[string]addrs.InputVariable{
+				"var.foo": {Name: "foo"},
+			},
+		},
+		{
+			Name:     "local variable",
+			Expr:     "local.bar",
+			Expected: map[string]addrs.InputVariable{},
+		},
+		{
+			Name: "multiple input variables",
+			Expr: `format("Hello, %s %s!", var.first_name, var.last_name)`,
+			Expected: map[string]addrs.InputVariable{
+				"var.first_name": {Name: "first_name"},
+				"var.last_name":  {Name: "last_name"},
+			},
+		},
+		{
+			Name: "map input variable",
+			Expr: `{
+  name = var.tags["name"]
+  env  = var.tags["env"]
+}`,
+			Expected: map[string]addrs.InputVariable{
+				"var.tags": {Name: "tags"},
+			},
+		},
+	}
+
+	for _, tc := range cases {
+		expr, diags := hclsyntax.ParseExpression([]byte(tc.Expr), "template.tf", hcl.InitialPos)
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+
+		refs := listVarRefs(expr)
+
+		opt := cmpopts.IgnoreUnexported(addrs.InputVariable{})
+		if !cmp.Equal(tc.Expected, refs, opt) {
+			t.Fatalf("%s: Diff=%s", tc.Name, cmp.Diff(tc.Expected, refs, opt))
+		}
 	}
 }
