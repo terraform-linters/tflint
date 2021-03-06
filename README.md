@@ -75,6 +75,7 @@ Application Options:
       --enable-rule=RULE_NAME                     Enable rules from the command line
       --disable-rule=RULE_NAME                    Disable rules from the command line
       --only=RULE_NAME                            Enable only this rule, disabling all other defaults. Can be specified multiple times
+      --enable-plugin=PLUGIN_NAME                 Enable plugins from the command line
       --var-file=FILE                             Terraform variable file name
       --var='foo=bar'                             Set a Terraform variable
       --module                                    Inspect modules
@@ -84,6 +85,7 @@ Application Options:
 
 Help Options:
   -h, --help                                      Show this help message
+
 ```
 
 See [User Guide](docs/user-guide) for details.

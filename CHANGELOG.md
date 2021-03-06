@@ -1,3 +1,27 @@
+## 0.25.0 (2021-03-06)
+
+### Enhancements
+
+- [#1042](https://github.com/terraform-linters/tflint/pull/1042): Added option to enable plugins from the cli ([@janritter](https://github.com/janritter))
+- [#1076](https://github.com/terraform-linters/tflint/pull/1076): Bump bundled plugins ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#1070](https://github.com/terraform-linters/tflint/pull/1070): pass --loglevel to plugins as TFLINT_LOG ([@bendrucker](https://github.com/bendrucker))
+- [#1072](https://github.com/terraform-linters/tflint/pull/1072): tflint: Remove duplicate variable references ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1057](https://github.com/terraform-linters/tflint/pull/1057): add stargazers chart ([@chenrui333](https://github.com/chenrui333))
+- [#1058](https://github.com/terraform-linters/tflint/pull/1058) [#1064](https://github.com/terraform-linters/tflint/pull/1064): build(deps): Bump github.com/hashicorp/terraform from 0.14.5 to 0.14.7
+- [#1059](https://github.com/terraform-linters/tflint/pull/1059): build(deps): Bump actions/cache from v2.1.3 to v2.1.4
+- [#1060](https://github.com/terraform-linters/tflint/pull/1060): docker: remove unused build tools ([@pujan14](https://github.com/pujan14))
+- [#1062](https://github.com/terraform-linters/tflint/pull/1062) [#1073](https://github.com/terraform-linters/tflint/pull/1073): chore: update go to v1.16 ([@chenrui333](https://github.com/chenrui333))
+- [#1065](https://github.com/terraform-linters/tflint/pull/1065): build(deps): Bump github.com/golang/mock from 1.4.4 to 1.5.0
+- [#1071](https://github.com/terraform-linters/tflint/pull/1071): terraform_naming_convention: test with count = 0 ([@bendrucker](https://github.com/bendrucker))
+- [#1074](https://github.com/terraform-linters/tflint/pull/1074): build(deps): Bump github.com/hashicorp/hcl/v2 from 2.8.2 to 2.9.0
+- [#1075](https://github.com/terraform-linters/tflint/pull/1075): build(deps): Bump github.com/zclconf/go-cty from 1.7.1 to 1.8.0
+
 ## 0.24.1 (2021-02-02)
 
 ### BugFixes
