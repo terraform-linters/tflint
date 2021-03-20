@@ -57,6 +57,12 @@ func TestBundledPlugin(t *testing.T) {
 			Command: "tflint --format json --force",
 			Dir:     "disabled-rules",
 		},
+		{
+			// Regression: https://github.com/terraform-linters/tflint-ruleset-aws/issues/48
+			Name:    "cty-based-eval",
+			Command: "tflint --format json --force",
+			Dir:     "cty-based-eval",
+		},
 	}
 
 	dir, _ := os.Getwd()
