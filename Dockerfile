@@ -1,4 +1,4 @@
-FROM golang:1.16-alpine3.12 as builder
+FROM golang:1.16-alpine3.13 as builder
 
 RUN apk add --no-cache make
 
@@ -6,7 +6,7 @@ WORKDIR /tflint
 COPY . /tflint
 RUN make build
 
-FROM alpine:3.12 as prod
+FROM alpine:3.13 as prod
 
 LABEL maintainer=terraform-linters
 
