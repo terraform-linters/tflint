@@ -24,7 +24,7 @@ type Options struct {
 	Module         bool     `long:"module" description:"Inspect modules"`
 	Force          bool     `long:"force" description:"Return zero exit status even if issues found"`
 	NoColor        bool     `long:"no-color" description:"Disable colorized output"`
-	LogLevel       string   `long:"loglevel" description:"Change the loglevel" choice:"trace" choice:"debug" choice:"info" choice:"warn" choice:"error" default:"none"`
+	LogLevel       string   `long:"loglevel" description:"Change the loglevel" choice:"trace" choice:"debug" choice:"info" choice:"warn" choice:"error"`
 	ActAsAwsPlugin bool     `long:"act-as-aws-plugin" hidden:"true"`
 }
 
