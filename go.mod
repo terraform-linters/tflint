@@ -7,7 +7,7 @@ require (
 	github.com/golang/mock v1.5.0
 	github.com/google/go-cmp v0.5.5
 	github.com/hashicorp/go-plugin v1.4.0
-	github.com/hashicorp/go-version v1.2.1
+	github.com/hashicorp/go-version v1.3.0
 	github.com/hashicorp/hcl/v2 v2.9.1
 	github.com/hashicorp/logutils v1.0.0
 	github.com/hashicorp/terraform v0.14.9
@@ -19,7 +19,7 @@ require (
 	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
 	github.com/spf13/afero v1.2.2 // matches version used by terraform
 	github.com/terraform-linters/tflint-plugin-sdk v0.8.2
-	github.com/terraform-linters/tflint-ruleset-aws v0.3.1-0.20210320093704-d770eccc81e0
+	github.com/terraform-linters/tflint-ruleset-aws v0.3.1
 	github.com/zclconf/go-cty v1.8.1
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
 )
