@@ -1,3 +1,25 @@
+## 0.26.0 (2021-04-04)
+
+### Enhancements
+
+- [#1085](https://github.com/terraform-linters/tflint/pull/1085): formatter: Add support for --format compact ([@wata727](https://github.com/wata727))
+- [#1093](https://github.com/terraform-linters/tflint/pull/1093): Bump bundled plugins ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#1080](https://github.com/terraform-linters/tflint/pull/1080): plugin: Wrap errors to avoid gob encoding errors ([@wata727](https://github.com/wata727))
+- [#1084](https://github.com/terraform-linters/tflint/pull/1084) [#1092](https://github.com/terraform-linters/tflint/pull/1092): plugin: Pass types to EvalExpr ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1077](https://github.com/terraform-linters/tflint/pull/1077): build(deps): Bump github.com/google/go-cmp from 0.5.4 to 0.5.5
+- [#1081](https://github.com/terraform-linters/tflint/pull/1081) [#1091](https://github.com/terraform-linters/tflint/pull/1091): build(deps): Bump github.com/hashicorp/terraform from 0.14.7 to 0.14.9
+- [#1082](https://github.com/terraform-linters/tflint/pull/1082): build(deps): Bump github.com/hashicorp/hcl/v2 from 2.9.0 to 2.9.1
+- [#1086](https://github.com/terraform-linters/tflint/pull/1086): update dockerfile to use alpine 3.13 ([@chenrui333](https://github.com/chenrui333))
+- [#1087](https://github.com/terraform-linters/tflint/pull/1087): update dependabot to manage docker deps ([@chenrui333](https://github.com/chenrui333))
+- [#1088](https://github.com/terraform-linters/tflint/pull/1088): build(deps): Bump github.com/zclconf/go-cty from 1.8.0 to 1.8.1
+- [#1089](https://github.com/terraform-linters/tflint/pull/1089): build(deps): Bump github.com/jessevdk/go-flags from 1.4.0 to 1.5.0
+
 ## 0.25.0 (2021-03-06)
 
 ### Enhancements
