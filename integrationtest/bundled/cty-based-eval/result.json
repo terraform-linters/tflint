@@ -4,7 +4,7 @@
       "rule": {
         "name": "aws_resource_missing_tags",
         "severity": "info",
-        "link": "https://github.com/terraform-linters/tflint-ruleset-aws/blob/v0.3.0/docs/rules/aws_resource_missing_tags.md"
+        "link": "https://github.com/terraform-linters/tflint-ruleset-aws/blob/v0.3.1/docs/rules/aws_resource_missing_tags.md"
       },
       "message": "The resource is missing the following tags: \"Environment\", \"Name\", \"Type\".",
       "range": {
