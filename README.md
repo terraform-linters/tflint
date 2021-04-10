@@ -45,6 +45,8 @@ $ docker run --rm -v $(pwd):/data -t wata727/tflint
 
 Please note that this Docker image is not suitable for production CI/CD pipelines.
 
+If you want to run on GitHub Actions, [setup-tflint](https://github.com/terraform-linters/setup-tflint) action is available.
+
 ## Getting Started
 
 If you are using an AWS/Azure/GCP provider, it is a good idea to install the plugin and try it according to each usage:
