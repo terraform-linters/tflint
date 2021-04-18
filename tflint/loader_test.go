@@ -14,8 +14,8 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-func Test_LoadConfig_v0_12_0(t *testing.T) {
-	withinFixtureDir(t, "v0.12.0_module", func() {
+func Test_LoadConfig_v0_15_0(t *testing.T) {
+	withinFixtureDir(t, "v0.15.0_module", func() {
 		loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, moduleConfig())
 		if err != nil {
 			t.Fatalf("Unexpected error occurred: %s", err)
@@ -25,16 +25,12 @@ func Test_LoadConfig_v0_12_0(t *testing.T) {
 			t.Fatalf("Unexpected error occurred: %s", err)
 		}
 
-		if _, exists := config.Children["ecs_on_spotfleet"]; !exists {
-			t.Fatalf("`ecs_on_spotfleet` module is not loaded: %#v", config.Children)
-		}
-
-		if _, exists := config.Children["ecs_on_spotfleet"].Module.ManagedResources["aws_ecs_cluster.main"]; !exists {
-			t.Fatalf("`ecs_on_spotfleet` module resource `aws_ecs_cluster.main` is not loaded: %#v", config.Children["ecs_on_spotfleet"].Module.ManagedResources)
-		}
-
 		if _, exists := config.Children["instance"]; !exists {
 			t.Fatalf("`instance` module is not loaded: %#v", config.Children)
+		}
+
+		if _, exists := config.Children["instance"].Module.ManagedResources["aws_instance.main"]; !exists {
+			t.Fatalf("`instance` module resource `aws_instance.main` is not loaded: %#v", config.Children["instance"].Module.ManagedResources)
 		}
 
 		if _, exists := config.Children["consul"]; !exists {
@@ -137,7 +133,7 @@ func Test_LoadConfig_invalidConfiguration(t *testing.T) {
 }
 
 func Test_Files(t *testing.T) {
-	withinFixtureDir(t, "v0.12.0_module", func() {
+	withinFixtureDir(t, "v0.15.0_module", func() {
 		loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())
 		if err != nil {
 			t.Fatalf("Unexpected error occurred: %s", err)

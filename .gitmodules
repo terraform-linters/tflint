@@ -1,0 +1,3 @@
+[submodule "tflint/test-fixtures/v0.15.0_module/.terraform/modules/consul"]
+	path = tflint/test-fixtures/v0.15.0_module/.terraform/modules/consul
+	url = https://github.com/hashicorp/terraform-aws-consul

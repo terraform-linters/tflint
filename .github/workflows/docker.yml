@@ -8,6 +8,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        submodules: true
     - name: docker build
       run: docker build -t terraform-linters/tflint .
     - name: docker run
