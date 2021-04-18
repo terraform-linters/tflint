@@ -1,3 +1,15 @@
+## 0.27.0 (2021-04-18)
+
+This release adds support for Terraform v0.15. We strongly recommend that you update to Terraform v0.15 before updating TFLint to this version. See the [upgrade guide](https://www.terraform.io/upgrade-guides/0-15.html) for details.
+
+### Breaking Changes
+
+- [#1096](https://github.com/terraform-linters/tflint/pull/1096) [#1099](https://github.com/terraform-linters/tflint/pull/1099): build(deps): Bump github.com/hashicorp/terraform from 0.14.9 to 0.15.0
+
+### Chores
+
+- [#1095](https://github.com/terraform-linters/tflint/pull/1095): Add README about GitHub Actions ([@wata727](https://github.com/wata727))
+
 ## 0.26.0 (2021-04-04)
 
 ### Enhancements
