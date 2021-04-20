@@ -63,6 +63,12 @@ func TestBundledPlugin(t *testing.T) {
 			Command: "tflint --format json --force",
 			Dir:     "cty-based-eval",
 		},
+		{
+			// Regression: https://github.com/terraform-linters/tflint/issues/1102
+			Name:    "map-attribute",
+			Command: "tflint --format json --force",
+			Dir:     "map-attribute",
+		},
 	}
 
 	dir, _ := os.Getwd()
