@@ -90,7 +90,7 @@ func TestBundledPlugin(t *testing.T) {
 		cmd.Stderr = errStream
 
 		if err := cmd.Run(); err != nil {
-			panic(fmt.Sprintf("Failed to exec command: %s", err))
+			fmt.Fprintf(os.Stderr, "Failed to exec command (%s)\n", err)
 		}
 
 		var b []byte
