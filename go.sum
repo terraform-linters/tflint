@@ -529,8 +529,8 @@ github.com/tencentcloud/tencentcloud-sdk-go v3.0.82+incompatible/go.mod h1:0PfYo
 github.com/tencentyun/cos-go-sdk-v5 v0.0.0-20190808065407-f07404cefc8c/go.mod h1:wk2XFUg6egk4tSDNZtXeKfe2G6690UVyt163PuUxBZk=
 github.com/terraform-linters/tflint-plugin-sdk v0.8.2 h1:A46VFbdBH8K1JwFjC4X5hbW35oL6gIoRxjlzzz27q7I=
 github.com/terraform-linters/tflint-plugin-sdk v0.8.2/go.mod h1:UsVDOw0Urg0POULWugZ6XFzWJ6i0NaTFYtlYrQe4Auw=
-github.com/terraform-linters/tflint-ruleset-aws v0.3.1 h1:ipsJto4kbVBUdt12E+r1uLTJV/nAkg3zzm2F/y7qYxQ=
-github.com/terraform-linters/tflint-ruleset-aws v0.3.1/go.mod h1:8XZ7U81vk51+NGE76ygQKtVEhNP6tuI+m0UFB205jTI=
+github.com/terraform-linters/tflint-ruleset-aws v0.3.2-0.20210424063642-35a8256b9439 h1:mWefOM7fzpMpNYJYfm0CGT9zmAs9Z8DoFC2ac52QnxM=
+github.com/terraform-linters/tflint-ruleset-aws v0.3.2-0.20210424063642-35a8256b9439/go.mod h1:8XZ7U81vk51+NGE76ygQKtVEhNP6tuI+m0UFB205jTI=
 github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20210401223222-6eda2394d8c0/go.mod h1:zHbWVcgJdvGPS7TgOYxr1p2Fgrtok7rVw9EOhSgtC9M=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20171017195756-830351dc03c6/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
 github.com/tombuildsstuff/giovanni v0.15.1/go.mod h1:0TZugJPEtqzPlMpuJHYfXY6Dq2uLPrXf98D2XQSxNbA=

@@ -63,6 +63,12 @@ func TestBundledPlugin(t *testing.T) {
 			Command: "tflint --format json --force",
 			Dir:     "cty-based-eval",
 		},
+		{
+			// Regression: https://github.com/terraform-linters/tflint/issues/1102
+			Name:    "map-attribute",
+			Command: "tflint --format json --force",
+			Dir:     "map-attribute",
+		},
 	}
 
 	dir, _ := os.Getwd()
@@ -84,7 +90,7 @@ func TestBundledPlugin(t *testing.T) {
 		cmd.Stderr = errStream
 
 		if err := cmd.Run(); err != nil {
-			panic(fmt.Sprintf("Failed to exec command: %s", err))
+			fmt.Fprintf(os.Stderr, "Failed to exec command (%s)\n", err)
 		}
 
 		var b []byte
