@@ -18,6 +18,11 @@ func (cli *CLI) printVersion(opts Options) int {
 		log.Printf("[ERROR] Failed to load TFLint config: %s", err)
 		return ExitCodeOK
 	}
+	if len(opts.Only) > 0 {
+		for _, rule := range cfg.Rules {
+			rule.Enabled = false
+		}
+	}
 	cfg = cfg.Merge(opts.toConfig())
 
 	cli.loader, err = tflint.NewLoader(afero.Afero{Fs: afero.NewOsFs()}, cfg)

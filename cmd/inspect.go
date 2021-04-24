@@ -17,6 +17,11 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 		cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to load TFLint config", err), map[string][]byte{})
 		return ExitCodeError
 	}
+	if len(opts.Only) > 0 {
+		for _, rule := range cfg.Rules {
+			rule.Enabled = false
+		}
+	}
 	cfg = cfg.Merge(opts.toConfig())
 
 	// Setup loader

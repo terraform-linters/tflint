@@ -75,6 +75,11 @@ func TestBundledPlugin(t *testing.T) {
 			Command: "tflint --enable-rule aws_s3_bucket_name --format json --force",
 			Dir:     "rule-config",
 		},
+		{
+			Name:    "rule config with --only",
+			Command: "tflint --only aws_s3_bucket_name --format json --force",
+			Dir:     "rule-config",
+		},
 	}
 
 	dir, _ := os.Getwd()

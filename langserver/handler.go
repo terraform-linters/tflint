@@ -26,6 +26,11 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 	if err != nil {
 		return nil, nil, err
 	}
+	if cliConfig.DisabledByDefault {
+		for _, rule := range cfg.Rules {
+			rule.Enabled = false
+		}
+	}
 	cfg = cfg.Merge(cliConfig)
 
 	// AWS plugin is automatically enabled for the backward compatibility.

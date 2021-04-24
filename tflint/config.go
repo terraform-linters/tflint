@@ -147,7 +147,7 @@ func (c *Config) Merge(other *Config) *Config {
 	ret.Varfiles = append(ret.Varfiles, other.Varfiles...)
 	ret.Variables = append(ret.Variables, other.Variables...)
 
-	ret.Rules = mergeRuleMap(ret.Rules, other.Rules, other.DisabledByDefault)
+	ret.Rules = mergeRuleMap(ret.Rules, other.Rules)
 	ret.Plugins = mergePluginMap(ret.Plugins, other.Plugins)
 
 	return ret
@@ -332,27 +332,8 @@ func mergeBoolMap(a, b map[string]bool) map[string]bool {
 	return ret
 }
 
-func mergeRuleMap(a, b map[string]*RuleConfig, bDisabledByDefault bool) map[string]*RuleConfig {
+func mergeRuleMap(a, b map[string]*RuleConfig) map[string]*RuleConfig {
 	ret := map[string]*RuleConfig{}
-	if bDisabledByDefault {
-		for bK, bV := range b {
-			configRuleFound := false
-			for aK, aV := range a {
-				if aK == bK {
-					ret[bK] = bV
-					ret[bK].Body = aV.Body
-					ret[bK].Enabled = true
-					configRuleFound = true
-				}
-			}
-			if !configRuleFound {
-				ret[bK] = bV
-				ret[bK].Enabled = true
-			}
-		}
-		return ret
-	}
-
 	for k, v := range a {
 		ret[k] = v
 	}
