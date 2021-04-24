@@ -361,8 +361,9 @@ func mergeRuleMap(a, b map[string]*RuleConfig, bDisabledByDefault bool) map[stri
 		// @see https://github.com/hashicorp/hcl/blob/v2.5.0/merged.go#L132-L135
 		if prevConfig, exists := ret[k]; exists && v.Body.MissingItemRange().Filename == "<empty>" {
 			ret[k] = v
-			// Do not override body
+			// Do not override body and file
 			ret[k].Body = prevConfig.Body
+			ret[k].file = prevConfig.file
 		} else {
 			ret[k] = v
 		}

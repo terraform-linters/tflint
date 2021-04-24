@@ -69,6 +69,12 @@ func TestBundledPlugin(t *testing.T) {
 			Command: "tflint --format json --force",
 			Dir:     "map-attribute",
 		},
+		{
+			// Regression: https://github.com/terraform-linters/tflint/issues/1103
+			Name:    "rule config with --enable-rule",
+			Command: "tflint --enable-rule aws_s3_bucket_name --format json --force",
+			Dir:     "rule-config",
+		},
 	}
 
 	dir, _ := os.Getwd()
