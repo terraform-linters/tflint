@@ -27,8 +27,8 @@ Example:
 
 ```console
 $ tflint -v
-TFLint version 0.27.0
-+ ruleset.aws (0.3.1-bundled)
+TFLint version 0.28.0
++ ruleset.aws (0.4.0-bundled)
 $ terraform -v
 Terraform v0.15.0
 ```

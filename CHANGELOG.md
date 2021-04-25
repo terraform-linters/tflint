@@ -1,3 +1,19 @@
+## 0.28.0 (2021-04-25)
+
+### Enhancements
+
+- [#1107](https://github.com/terraform-linters/tflint/pull/1107): Bump bundled AWS ruleset plugin ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#1105](https://github.com/terraform-linters/tflint/pull/1105): Fix crash when passed --enable-rule with a configured rule ([@wata727](https://github.com/wata727))
+- [#1106](https://github.com/terraform-linters/tflint/pull/1106): Fix crash when passed --only with a configured rule ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1100](https://github.com/terraform-linters/tflint/pull/1100): build(deps): Bump actions/cache from v2.1.4 to v2.1.5
+- [#1104](https://github.com/terraform-linters/tflint/pull/1104): add integration test for map[string]string attr ([@bendrucker](https://github.com/bendrucker))
+
 ## 0.27.0 (2021-04-18)
 
 This release adds support for Terraform v0.15. We strongly recommend that you update to Terraform v0.15 before updating TFLint to this version. See the [upgrade guide](https://www.terraform.io/upgrade-guides/0-15.html) for details.
