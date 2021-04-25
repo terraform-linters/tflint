@@ -385,7 +385,7 @@ func Test_Merge(t *testing.T) {
 					},
 					"aws_instance_invalid_ami": {
 						Name:    "aws_instance_invalid_ami",
-						Enabled: true,
+						Enabled: false,
 						Body:    file1.Body,
 					},
 				},
@@ -454,6 +454,11 @@ func Test_Merge(t *testing.T) {
 						Name:    "aws_instance_previous_type",
 						Enabled: true,
 						Body:    hcl.EmptyBody(),
+					},
+					"aws_instance_invalid_ami": {
+						Name:    "aws_instance_invalid_ami",
+						Enabled: false,
+						Body:    file1.Body,
 					},
 				},
 				Plugins: map[string]*PluginConfig{
