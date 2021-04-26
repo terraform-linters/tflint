@@ -6,7 +6,7 @@ require (
 	github.com/fatih/color v1.10.0
 	github.com/golang/mock v1.5.0
 	github.com/google/go-cmp v0.5.5
-	github.com/hashicorp/go-plugin v1.4.0
+	github.com/hashicorp/go-plugin v1.4.1
 	github.com/hashicorp/go-version v1.3.0
 	github.com/hashicorp/hcl/v2 v2.10.0
 	github.com/hashicorp/logutils v1.0.0
