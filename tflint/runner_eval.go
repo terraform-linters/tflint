@@ -70,7 +70,7 @@ func (r *Runner) EvalExpr(expr hcl.Expression, ret interface{}, wantType cty.Typ
 				expr.Range().Start.Line,
 			),
 		}
-		log.Printf("[WARN] %s; TFLint ignores an unevaluable expression.", err)
+		log.Printf("[WARN] %s. TFLint ignores unevaluable expressions.", err)
 		return cty.NullVal(cty.NilType), err
 	}
 
@@ -134,7 +134,7 @@ func (r *Runner) EvalExpr(expr hcl.Expression, ret interface{}, wantType cty.Typ
 					expr.Range().Start.Line,
 				),
 			}
-			log.Printf("[WARN] %s; TFLint ignores an expression includes an null value.", err)
+			log.Printf("[WARN] %s. TFLint ignores expressions with null values.", err)
 			return false, err
 		}
 
@@ -176,7 +176,7 @@ func (r *Runner) EvaluateBlock(block *hcl.Block, schema *configschema.Block, ret
 				block.DefRange.Start.Line,
 			),
 		}
-		log.Printf("[WARN] %s; TFLint ignores an unevaluable block.", err)
+		log.Printf("[WARN] %s. TFLint ignores unevaluable blocks.", err)
 		return err
 	}
 
@@ -202,12 +202,12 @@ func (r *Runner) EvaluateBlock(block *hcl.Block, schema *configschema.Block, ret
 				Code:  UnknownValueError,
 				Level: WarningLevel,
 				Message: fmt.Sprintf(
-					"Unknown value found in %s:%d; Please use environment variables or tfvars to set the value",
+					"Unknown value found in %s:%d",
 					block.DefRange.Filename,
 					block.DefRange.Start.Line,
 				),
 			}
-			log.Printf("[WARN] %s; TFLint ignores a block includes an unknown value.", err)
+			log.Printf("[WARN] %s. TFLint can only evaluate provided variables and skips blocks with unknown values.", err)
 			return false, err
 		}
 
@@ -220,7 +220,7 @@ func (r *Runner) EvaluateBlock(block *hcl.Block, schema *configschema.Block, ret
 	val, err = cty.Transform(val, func(path cty.Path, v cty.Value) (cty.Value, error) {
 		if v.IsNull() {
 			log.Printf(
-				"[DEBUG] Null value found in %s:%d, but TFLint treats this value as an empty value",
+				"[DEBUG] Null value found in %s:%d. TFLint treats this value as an empty value.",
 				block.DefRange.Filename,
 				block.DefRange.Start.Line,
 			)
