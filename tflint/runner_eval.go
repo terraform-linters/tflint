@@ -115,12 +115,12 @@ func (r *Runner) EvalExpr(expr hcl.Expression, ret interface{}, wantType cty.Typ
 				Code:  UnknownValueError,
 				Level: WarningLevel,
 				Message: fmt.Sprintf(
-					"Unknown value found in %s:%d; Please use environment variables or tfvars to set the value",
+					"Unknown value found in %s:%d",
 					expr.Range().Filename,
 					expr.Range().Start.Line,
 				),
 			}
-			log.Printf("[WARN] %s; TFLint ignores an expression includes an unknown value.", err)
+			log.Printf("[WARN] %s. TFLint can only evaluate provided variables and skips dynamic values.", err)
 			return false, err
 		}
 
