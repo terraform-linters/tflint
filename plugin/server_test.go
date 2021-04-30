@@ -304,7 +304,7 @@ func Test_EvalExpr_errors(t *testing.T) {
 	expected := client.Error{
 		Code:    client.UnknownValueError,
 		Level:   client.WarningLevel,
-		Message: "Unknown value found in template.tf:1. TFLint can only evaluate provided variables and skips dynamic values.",
+		Message: "Unknown value found in template.tf:1",
 		Cause:   nil,
 	}
 	if !cmp.Equal(expected, resp.Err) {

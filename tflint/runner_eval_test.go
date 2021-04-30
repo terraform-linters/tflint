@@ -444,7 +444,7 @@ resource "null_resource" "test" {
 			Error: Error{
 				Code:    UnknownValueError,
 				Level:   WarningLevel,
-				Message: "Unknown value found in main.tf:5; Please use environment variables or tfvars to set the value",
+				Message: "Unknown value found in main.tf:5",
 			},
 		},
 		{
@@ -552,7 +552,7 @@ resource "null_resource" "test" {
 			Error: Error{
 				Code:    UnknownValueError,
 				Level:   WarningLevel,
-				Message: "Unknown value found in main.tf:5; Please use environment variables or tfvars to set the value",
+				Message: "Unknown value found in main.tf:5",
 			},
 		},
 		{
@@ -719,7 +719,7 @@ resource "null_resource" "test" {
 			Error: Error{
 				Code:    UnknownValueError,
 				Level:   WarningLevel,
-				Message: "Unknown value found in main.tf:5; Please use environment variables or tfvars to set the value",
+				Message: "Unknown value found in main.tf:5",
 			},
 		},
 		{

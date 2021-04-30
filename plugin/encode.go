@@ -7,9 +7,9 @@ import (
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/configs"
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/experiments"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint/client"
-	"github.com/zclconf/go-cty/cty/msgpack"
-	"github.com/zclconf/go-cty/cty/json"
 	"github.com/terraform-linters/tflint/tflint"
+	"github.com/zclconf/go-cty/cty/json"
+	"github.com/zclconf/go-cty/cty/msgpack"
 )
 
 func (s *Server) encodeConfig(config *tfconfigs.Config) (*tfplugin.Config, error) {
