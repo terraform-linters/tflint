@@ -304,7 +304,7 @@ func Test_EvalExpr_errors(t *testing.T) {
 	expected := client.Error{
 		Code:    client.UnknownValueError,
 		Level:   client.WarningLevel,
-		Message: "Unknown value found in template.tf:1; Please use environment variables or tfvars to set the value",
+		Message: "Unknown value found in template.tf:1. TFLint can only evaluate provided variables and skips dynamic values.",
 		Cause:   nil,
 	}
 	if !cmp.Equal(expected, resp.Err) {
@@ -410,20 +410,20 @@ resource "aws_s3_bucket" "bar" {
 
 	expected := &tfplugin.Config{
 		Module: &tfplugin.Module{
-			SourceDir: ".",
-			CoreVersionConstraints: []string{},
+			SourceDir:                   ".",
+			CoreVersionConstraints:      []string{},
 			CoreVersionConstraintRanges: []hcl.Range{},
-			ActiveExperiments: experiments.Set{},
-			ProviderConfigs: map[string]*tfplugin.Provider{},
+			ActiveExperiments:           experiments.Set{},
+			ProviderConfigs:             map[string]*tfplugin.Provider{},
 			ProviderRequirements: &tfplugin.RequiredProviders{
 				RequiredProviders: map[string]*tfplugin.RequiredProvider{},
 			},
 			ProviderLocalNames: map[addrs.Provider]string{},
-			ProviderMetas: map[addrs.Provider]*tfplugin.ProviderMeta{},
-			Variables: map[string]*tfplugin.Variable{},
-			Locals: map[string]*tfplugin.Local{},
-			Outputs: map[string]*tfplugin.Output{},
-			ModuleCalls: map[string]*tfplugin.ModuleCall{},
+			ProviderMetas:      map[addrs.Provider]*tfplugin.ProviderMeta{},
+			Variables:          map[string]*tfplugin.Variable{},
+			Locals:             map[string]*tfplugin.Local{},
+			Outputs:            map[string]*tfplugin.Output{},
+			ModuleCalls:        map[string]*tfplugin.ModuleCall{},
 			ManagedResources: map[string]*tfplugin.Resource{
 				"aws_instance.foo": {
 					Mode: addrs.ManagedResourceMode,
