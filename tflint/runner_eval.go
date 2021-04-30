@@ -70,7 +70,7 @@ func (r *Runner) EvalExpr(expr hcl.Expression, ret interface{}, wantType cty.Typ
 				expr.Range().Start.Line,
 			),
 		}
-		log.Printf("[WARN] %s. TFLint ignores unevaluable expressions.", err)
+		log.Printf("[INFO] %s. TFLint ignores unevaluable expressions.", err)
 		return cty.NullVal(cty.NilType), err
 	}
 
@@ -120,7 +120,7 @@ func (r *Runner) EvalExpr(expr hcl.Expression, ret interface{}, wantType cty.Typ
 					expr.Range().Start.Line,
 				),
 			}
-			log.Printf("[WARN] %s. TFLint can only evaluate provided variables and skips dynamic values.", err)
+			log.Printf("[INFO] %s. TFLint can only evaluate provided variables and skips dynamic values.", err)
 			return false, err
 		}
 
@@ -134,7 +134,7 @@ func (r *Runner) EvalExpr(expr hcl.Expression, ret interface{}, wantType cty.Typ
 					expr.Range().Start.Line,
 				),
 			}
-			log.Printf("[WARN] %s. TFLint ignores expressions with null values.", err)
+			log.Printf("[INFO] %s. TFLint ignores expressions with null values.", err)
 			return false, err
 		}
 
@@ -176,7 +176,7 @@ func (r *Runner) EvaluateBlock(block *hcl.Block, schema *configschema.Block, ret
 				block.DefRange.Start.Line,
 			),
 		}
-		log.Printf("[WARN] %s. TFLint ignores unevaluable blocks.", err)
+		log.Printf("[INFO] %s. TFLint ignores unevaluable blocks.", err)
 		return err
 	}
 
@@ -207,7 +207,7 @@ func (r *Runner) EvaluateBlock(block *hcl.Block, schema *configschema.Block, ret
 					block.DefRange.Start.Line,
 				),
 			}
-			log.Printf("[WARN] %s. TFLint can only evaluate provided variables and skips blocks with unknown values.", err)
+			log.Printf("[INFO] %s. TFLint can only evaluate provided variables and skips blocks with unknown values.", err)
 			return false, err
 		}
 
