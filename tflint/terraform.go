@@ -72,6 +72,7 @@ func ParseExpression(src []byte, filename string, start hcl.Pos) (hcl.Expression
 func HCLBodyRange(body hcl.Body, defRange hcl.Range) hcl.Range {
 	if strings.HasSuffix(defRange.Filename, ".tf") {
 		var bodyRange hcl.Range
+		bodyRange.Filename = defRange.Filename
 
 		// Estimate the range of the body from the range of all attributes and blocks.
 		hclBody, ok := body.(*hclsyntax.Body)
@@ -82,7 +83,6 @@ func HCLBodyRange(body hcl.Body, defRange hcl.Range) hcl.Range {
 			// As a result, plugins that use this range to get hcl.Body may have incorrect results.
 			// This issue will be fixed by changing the way of transffering the hcl.Body.
 			// See also https://github.com/terraform-linters/tflint-plugin-sdk/issues/89.
-			bodyRange.Filename = defRange.Filename
 			return bodyRange
 		}
 

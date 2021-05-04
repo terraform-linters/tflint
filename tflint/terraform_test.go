@@ -242,6 +242,33 @@ resource "null_resource" "foo" {
 	}
 }
 
+func Test_HCLBodyRange_emptyBody(t *testing.T) {
+	src := `ebs_block_device {}`
+
+	file, diags := hclsyntax.ParseConfig([]byte(src), "example.tf", hcl.InitialPos)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	body, diags := file.Body.Content(&hcl.BodySchema{
+		Blocks: []hcl.BlockHeaderSchema{
+			{
+				Type: "ebs_block_device",
+			},
+		},
+	})
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	block := body.Blocks[0]
+	got := HCLBodyRange(block.Body, block.DefRange)
+	expected := hcl.Range{Filename: "example.tf"}
+
+	opt := cmpopts.IgnoreFields(hcl.Pos{}, "Byte")
+	if !cmp.Equal(got, expected, opt) {
+		t.Fatalf("Diff=%s", cmp.Diff(got, expected, opt))
+	}
+}
+
 func Test_getTFDataDir(t *testing.T) {
 	cases := []struct {
 		Name     string
