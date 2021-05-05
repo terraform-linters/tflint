@@ -1,3 +1,18 @@
+## 0.28.1 (2021-05-05)
+
+### BugFixes
+
+- [#1118](https://github.com/terraform-linters/tflint/pull/1118): tflint: Fix panic when encoding empty body ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1108](https://github.com/terraform-linters/tflint/pull/1108): build(deps): Bump github.com/hashicorp/hcl/v2 from 2.9.1 to 2.10.0
+- [#1109](https://github.com/terraform-linters/tflint/pull/1109): build(deps): Bump github.com/zclconf/go-cty from 1.8.1 to 1.8.2
+- [#1110](https://github.com/terraform-linters/tflint/pull/1110): build(deps): Bump github.com/hashicorp/go-plugin from 1.4.0 to 1.4.1
+- [#1113](https://github.com/terraform-linters/tflint/pull/1113): Log at INFO level when TFLint cannot statically evaluate an expression ([@bendrucker](https://github.com/bendrucker))
+- [#1115](https://github.com/terraform-linters/tflint/pull/1115): Set the GPG key expiration to 2023-05-01 ([@wata727](https://github.com/wata727))
+- [#1116](https://github.com/terraform-linters/tflint/pull/1116): build(deps): Bump github.com/hashicorp/terraform from 0.15.0 to 0.15.1
+
 ## 0.28.0 (2021-04-25)
 
 ### Enhancements
