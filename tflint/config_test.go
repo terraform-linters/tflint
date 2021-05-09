@@ -54,8 +54,13 @@ func Test_LoadConfig(t *testing.T) {
 						Enabled: true,
 					},
 					"bar": {
-						Name:    "bar",
-						Enabled: false,
+						Name:        "bar",
+						Enabled:     false,
+						Version:     "0.1.0",
+						Source:      "github.com/foo/bar",
+						SigningKey:  "SIGNING_KEY",
+						SourceOwner: "foo",
+						SourceRepo:  "bar",
 					},
 				},
 			},
@@ -179,6 +184,26 @@ plugin "aws" {
   deep_check = true
   access_key = ...
 }`,
+		},
+		{
+			Name:     "plugin without source",
+			File:     filepath.Join(currentDir, "test-fixtures", "config", "plugin_without_source.hcl"),
+			Expected: "plugin `foo`: `source` attribute cannot be omitted when specifying `version`",
+		},
+		{
+			Name:     "plugin without version",
+			File:     filepath.Join(currentDir, "test-fixtures", "config", "plugin_without_version.hcl"),
+			Expected: "plugin `foo`: `version` attribute cannot be omitted when specifying `source`",
+		},
+		{
+			Name:     "plugin with invalid source",
+			File:     filepath.Join(currentDir, "test-fixtures", "config", "plugin_with_invalid_source.hcl"),
+			Expected: "plugin `foo`: `source` is invalid. Must be in the format `github.com/owner/repo`",
+		},
+		{
+			Name:     "plugin with invalid source host",
+			File:     filepath.Join(currentDir, "test-fixtures", "config", "plugin_with_invalid_source_host.hcl"),
+			Expected: "plugin `foo`: `source` is invalid. Hostname must be `github.com`",
 		},
 	}
 

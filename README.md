@@ -59,6 +59,27 @@ For AWS users, you can use the bundled plugin built into the TFLint binary witho
 
 Rules for the Terraform Language is built into the TFLint binary, so you don't need to install any plugins. Please see [Rules](docs/rules) for a list of available rules.
 
+If you want to extend TFLint with other plugins, you can declare the plugins in the config file and easily install them with `tflint --init`.
+
+```hcl
+plugin "foo" {
+  enabled = true
+  version = "0.1.0"
+  source  = "github.com/org/tflint-ruleset-foo"
+
+  signing_key = <<-KEY
+  -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+  mQINBFzpPOMBEADOat4P4z0jvXaYdhfy+UcGivb2XYgGSPQycTgeW1YuGLYdfrwz
+  9okJj9pMMWgt/HpW8WrJOLv7fGecFT3eIVGDOzyT8j2GIRJdXjv8ZbZIn1Q+1V72
+  AkqlyThflWOZf8GFrOw+UAR1OASzR00EDxC9BqWtW5YZYfwFUQnmhxU+9Cd92e6i
+  ...
+  KEY
+}
+```
+
+See also [Configuring Plugins](docs/user-guide/plugins.md).
+
 ## Usage
 
 TFLint inspects files under the current directory by default. You can change the behavior with the following options/arguments:
@@ -70,6 +91,7 @@ Usage:
 
 Application Options:
   -v, --version                                           Print TFLint version
+      --init                                              Install plugins
       --langserver                                        Start language server
   -f, --format=[default|json|checkstyle|junit|compact]    Output format (default: default)
   -c, --config=FILE                                       Config file name (default: .tflint.hcl)
@@ -83,7 +105,7 @@ Application Options:
       --module                                            Inspect modules
       --force                                             Return zero exit status even if issues found
       --no-color                                          Disable colorized output
-      --loglevel=[trace|debug|info|warn|error]            Change the loglevel (default: none)
+      --loglevel=[trace|debug|info|warn|error]            Change the loglevel
 
 Help Options:
   -h, --help                                              Show this help message

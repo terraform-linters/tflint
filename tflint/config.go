@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
@@ -66,9 +67,17 @@ type RuleConfig struct {
 
 // PluginConfig is a TFLint's plugin config
 type PluginConfig struct {
-	Name    string   `hcl:"name,label"`
-	Enabled bool     `hcl:"enabled"`
-	Body    hcl.Body `hcl:",remain"`
+	Name       string `hcl:"name,label"`
+	Enabled    bool   `hcl:"enabled"`
+	Version    string `hcl:"version,optional"`
+	Source     string `hcl:"source,optional"`
+	SigningKey string `hcl:"signing_key,optional"`
+
+	Body hcl.Body `hcl:",remain"`
+
+	// Parsed source attributes
+	SourceOwner string
+	SourceRepo  string
 
 	// file is the result of parsing the HCL file that declares the plugin configuration.
 	file *hcl.File
@@ -306,6 +315,10 @@ plugin "aws" {
 	}
 	for _, plugin := range cfg.Plugins {
 		plugin.file = f
+
+		if err := plugin.validate(); err != nil {
+			return nil, err
+		}
 	}
 
 	log.Printf("[DEBUG] Config loaded")
@@ -431,4 +444,29 @@ func configBodyRange(body hcl.Body) hcl.Range {
 		}
 	}
 	return bodyRange
+}
+
+func (c *PluginConfig) validate() error {
+	if c.Version != "" && c.Source == "" {
+		return fmt.Errorf("plugin `%s`: `source` attribute cannot be omitted when specifying `version`", c.Name)
+	}
+
+	if c.Source != "" {
+		if c.Version == "" {
+			return fmt.Errorf("plugin `%s`: `version` attribute cannot be omitted when specifying `source`", c.Name)
+		}
+
+		parts := strings.Split(c.Source, "/")
+		// Expected `github.com/owner/repo` format
+		if len(parts) != 3 {
+			return fmt.Errorf("plugin `%s`: `source` is invalid. Must be in the format `github.com/owner/repo`", c.Name)
+		}
+		if parts[0] != "github.com" {
+			return fmt.Errorf("plugin `%s`: `source` is invalid. Hostname must be `github.com`", c.Name)
+		}
+		c.SourceOwner = parts[1]
+		c.SourceRepo = parts[2]
+	}
+
+	return nil
 }

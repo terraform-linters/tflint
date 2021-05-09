@@ -5,7 +5,7 @@ You can change the behavior not only in CLI flags but also in config files. By d
 - Current directory (`./.tflint.hcl`)
 - Home directory (`~/.tflint.hcl`)
 
-The config file is written in [HCL](https://github.com/hashicorp/hcl/tree/hcl2). An example is shown below:
+The config file is written in [HCL](https://github.com/hashicorp/hcl). An example is shown below:
 
 ```hcl
 config {
@@ -22,12 +22,14 @@ config {
   variables = ["foo=bar", "bar=[\"baz\"]"]
 }
 
-rule "aws_instance_invalid_type" {
-  enabled = false
-}
-
 plugin "aws" {
   enabled = true
+  version = "0.4.0"
+  source  = "github.com/terraform-linters/tflint-ruleset-aws"
+}
+
+rule "aws_instance_invalid_type" {
+  enabled = false
 }
 ```
 
@@ -146,18 +148,4 @@ Each rule can have its own configs. See the documentation for each rule for deta
 
 ## `plugin` blocks
 
-You can enable each plugin in the `plugin` block. All plugins have the `enabled` attribute, and when it is true, the plugin is enabled.
-
-```hcl
-plugin "NAME" {
-  enabled = true
-}
-```
-
-When the plugin is enabled, TFLint invokes the `tflint-ruleset-<NAME>` (`tflint-ruleset-<NAME>.exe` on Windows) binary in the `~/.tflint.d/plugins` (or `./.tflint.d/plugins`) directory. So you should install the binary into the directory in advance.
-
-**NOTE:** AWS plugin is bundled with the TFLint binary for backward compatibility, so you can use it without installing it separately. And it is automatically enabled when your Terraform configuration requires AWS provider.
-
-You can also change the plugin directory with the `TFLINT_PLUGIN_DIR` environment variable.
-
-Each plugin can have its own configs. See the documentation for each plugin for details.
+You can declare the plugin to use. See [Configuring Plugins](plugins.md)
