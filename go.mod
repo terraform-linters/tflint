@@ -10,7 +10,7 @@ require (
 	github.com/hashicorp/go-version v1.3.0
 	github.com/hashicorp/hcl/v2 v2.10.0
 	github.com/hashicorp/logutils v1.0.0
-	github.com/hashicorp/terraform v0.15.1
+	github.com/hashicorp/terraform v0.15.3
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/jstemmer/go-junit-report v0.9.1
 	github.com/mattn/go-colorable v0.1.8
@@ -20,6 +20,6 @@ require (
 	github.com/spf13/afero v1.2.2 // matches version used by terraform
 	github.com/terraform-linters/tflint-plugin-sdk v0.8.2
 	github.com/terraform-linters/tflint-ruleset-aws v0.4.0
-	github.com/zclconf/go-cty v1.8.2
+	github.com/zclconf/go-cty v1.8.3
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
 )
