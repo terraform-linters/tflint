@@ -111,6 +111,17 @@ module "m" {
 			Expected: tflint.Issues{},
 		},
 		{
+			Name: "local used in module",
+			Content: `
+locals { used = "used" }
+module "m" {
+	source = "."
+	u = local.used
+}
+`,
+			Expected: tflint.Issues{},
+		},
+		{
 			Name: "variable used in provider",
 			Content: `
 variable "aws_region" {}
