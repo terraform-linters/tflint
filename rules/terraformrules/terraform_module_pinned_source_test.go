@@ -35,7 +35,7 @@ module "unpinned" {
 			},
 		},
 		{
-			Name: "git module reference is default",
+			Name: "git module reference is master",
 			Content: `
 module "default_git" {
   source = "git://hashicorp.com/consul.git?ref=master"
@@ -51,6 +51,32 @@ module "default_git" {
 					},
 				},
 			},
+		},
+		{
+			Name: "git module reference is main",
+			Content: `
+module "default_git" {
+  source = "git://hashicorp.com/consul.git?ref=main&depth=99"
+}`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"git://hashicorp.com/consul.git?ref=main&depth=99\" uses default ref \"main\"",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 62},
+					},
+				},
+			},
+		},
+		{
+			Name: "git module reference is master's-feature-branch",
+			Content: `
+module "default_git" {
+  source = "git://hashicorp.com/consul.git?ref=master's-feature-branch"
+}`,
+			Expected: tflint.Issues{},
 		},
 		{
 			Name: "git module reference is pinned",

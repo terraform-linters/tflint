@@ -58,6 +58,7 @@ var ReBitbucket = regexp.MustCompile("^bitbucket.org/(.+)/(.+)$")
 // See https://www.terraform.io/docs/modules/sources.html#generic-git-repository
 var ReGenericGit = regexp.MustCompile("(git://(.+)/(.+))|(git::https://(.+)/(.+))|(git::ssh://((.+)@)??(.+)/(.+)/(.+))")
 
+var reBadBranchReference = regexp.MustCompile("ref=(master|main|develop)($|\\&)")
 var reSemverReference = regexp.MustCompile("\\?ref=v?\\d+\\.\\d+\\.\\d+$")
 var reSemverRevision = regexp.MustCompile("\\?rev=v?\\d+\\.\\d+\\.\\d+$")
 
@@ -156,10 +157,11 @@ func (r *TerraformModulePinnedSourceRule) checkRefSource(runner *tflint.Runner, 
 	switch config.Style {
 	// The "flexible" style enforces to pin source, except for the default branch
 	case "flexible":
-		if strings.Contains(lower, "ref=master") {
+		matches := reBadBranchReference.FindStringSubmatch(lower)
+		if len(matches) >= 2 {
 			runner.EmitIssue(
 				r,
-				fmt.Sprintf("Module source \"%s\" uses default ref \"master\"", module.SourceAddr),
+				fmt.Sprintf("Module source \"%s\" uses default ref \"%s\"", module.SourceAddr, matches[1]),
 				module.SourceAddrRange,
 			)
 		}
