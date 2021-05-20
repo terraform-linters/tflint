@@ -8,11 +8,13 @@ Name | Default | Value
 --- | --- | ---
 enabled | true | Boolean
 style | `flexible` | `flexible`, `semver`
+default_ref_regexp | `master` | A regular expression
 
 ```hcl
 rule "terraform_module_pinned_source" {
   enabled = true
   style = "flexible"
+  default_ref_regexp = "master|main|develop"
 }
 ```
 
@@ -67,9 +69,11 @@ Reference: https://github.com/terraform-linters/tflint/blob/v0.15.0/docs/rules/t
 
 ```
 
+For `ref=` sources, the default branches to deny are those matched by the regular expression `default_ref_regexp`, which defaults to `master`.
+
 ### style = "semver"
 
-In the "semver" style, all sources must be pinned to semantic version reference. This is stricter than the "flexible" style.
+In the "semver" style, all sources must be pinned to semantic version reference. This is stricter than the "flexible" style. The `default_ref_regexp` setting is ignored altogether.
 
 ```hcl
 module "unpinned" {

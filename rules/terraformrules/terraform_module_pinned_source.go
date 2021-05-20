@@ -16,7 +16,9 @@ type TerraformModulePinnedSourceRule struct {
 }
 
 type terraformModulePinnedSourceRuleConfig struct {
-	Style string `hcl:"style,optional"`
+	Style            string         `hcl:"style,optional"`
+	DefaultRefRegexp string         `hcl:"default_ref_regexp,optional"`
+	defaultRefRegexp *regexp.Regexp `hcl:"-"`
 }
 
 // NewTerraformModulePinnedSourceRule returns new rule with default attributes
@@ -58,7 +60,6 @@ var ReBitbucket = regexp.MustCompile("^bitbucket.org/(.+)/(.+)$")
 // See https://www.terraform.io/docs/modules/sources.html#generic-git-repository
 var ReGenericGit = regexp.MustCompile("(git://(.+)/(.+))|(git::https://(.+)/(.+))|(git::ssh://((.+)@)??(.+)/(.+)/(.+))")
 
-var reBadBranchReference = regexp.MustCompile("ref=(master|main|develop)($|\\&)")
 var reSemverReference = regexp.MustCompile("\\?ref=v?\\d+\\.\\d+\\.\\d+$")
 var reSemverRevision = regexp.MustCompile("\\?rev=v?\\d+\\.\\d+\\.\\d+$")
 
@@ -72,10 +73,16 @@ func (r *TerraformModulePinnedSourceRule) Check(runner *tflint.Runner) error {
 
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
-	config := terraformModulePinnedSourceRuleConfig{Style: "flexible"}
+	config := terraformModulePinnedSourceRuleConfig{}
+	config.Style = "flexible"
+	config.DefaultRefRegexp = "master"
 	if err := runner.DecodeRuleConfig(r.Name(), &config); err != nil {
 		return err
 	}
+
+	re := fmt.Sprintf("ref=(%s)($|\\&)", config.DefaultRefRegexp)
+	log.Printf("[TRACE] Source that matches `%s` is considered a Default Ref", re)
+	config.defaultRefRegexp = regexp.MustCompile(re)
 
 	var err error
 	for _, module := range runner.TFConfig.Module.ModuleCalls {
@@ -157,8 +164,8 @@ func (r *TerraformModulePinnedSourceRule) checkRefSource(runner *tflint.Runner, 
 	switch config.Style {
 	// The "flexible" style enforces to pin source, except for the default branch
 	case "flexible":
-		matches := reBadBranchReference.FindStringSubmatch(lower)
-		if len(matches) >= 2 {
+		matches := config.defaultRefRegexp.FindStringSubmatch(lower)
+		if len(matches) > 1 {
 			runner.EmitIssue(
 				r,
 				fmt.Sprintf("Module source \"%s\" uses default ref \"%s\"", module.SourceAddr, matches[1]),

@@ -56,7 +56,35 @@ module "default_git" {
 			Name: "git module reference is main",
 			Content: `
 module "default_git" {
+  source = "git://hashicorp.com/consul.git?ref=main"
+}`,
+			Config: `
+rule "terraform_module_pinned_source" {
+  enabled = true
+  default_ref_regexp = "master|main|develop"
+}`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"git://hashicorp.com/consul.git?ref=main\" uses default ref \"main\"",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 53},
+					},
+				},
+			},
+		},
+		{
+			Name: "git module reference is main with another url parameter",
+			Content: `
+module "default_git" {
   source = "git://hashicorp.com/consul.git?ref=main&depth=99"
+}`,
+			Config: `
+rule "terraform_module_pinned_source" {
+  enabled = true
+  default_ref_regexp = "master|main|develop"
 }`,
 			Expected: tflint.Issues{
 				{
