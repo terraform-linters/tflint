@@ -22,7 +22,10 @@ func main() {
 	// Package "plugin" testing
 	execCommand("go", "build", "-o", "../test-fixtures/plugins/tflint-ruleset-foo"+fileExt(), "./sources/foo/main.go")
 	execCommand("cp", "../test-fixtures/plugins/tflint-ruleset-foo"+fileExt(), "../test-fixtures/locals/.tflint.d/plugins/tflint-ruleset-foo"+fileExt())
-	execCommand("go", "build", "-o", "../test-fixtures/plugins/tflint-ruleset-bar"+fileExt(), "./sources/bar/main.go")
+	execCommand("go", "build", "-o", "../test-fixtures/plugins/github.com/terraform-linters/tflint-ruleset-bar/0.1.0/tflint-ruleset-bar"+fileExt(), "./sources/bar/main.go")
+	execCommand("cp", "../test-fixtures/plugins/github.com/terraform-linters/tflint-ruleset-bar/0.1.0/tflint-ruleset-bar"+fileExt(), "../test-fixtures/locals/.tflint.d/plugins/github.com/terraform-linters/tflint-ruleset-bar/0.1.0/tflint-ruleset-bar"+fileExt())
+	// Without .exe in Windows
+	execCommand("cp", "../test-fixtures/plugins/tflint-ruleset-foo"+fileExt(), "../test-fixtures/plugins/tflint-ruleset-baz")
 
 	pluginDir, err := homedir.Expand("~/.tflint.d/plugins")
 	if err != nil {

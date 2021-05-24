@@ -6,6 +6,7 @@ This guide describes the various features of TFLint for end users.
 
 - [Introduction](../../README.md) (README)
 - [Configuring TFLint](config.md)
+- [Configuring Plugins](plugins.md)
 - [Module Inspection](module-inspection.md)
 - [Annotations](annotations.md)
 - [Compatibility with Terraform](compatibility.md)

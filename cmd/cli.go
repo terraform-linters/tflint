@@ -90,6 +90,8 @@ func (cli *CLI) Run(args []string) int {
 	switch {
 	case opts.Version:
 		return cli.printVersion(opts)
+	case opts.Init:
+		return cli.init(opts)
 	case opts.Langserver:
 		return cli.startLanguageServer(opts.Config, opts.toConfig())
 	case opts.ActAsAwsPlugin:

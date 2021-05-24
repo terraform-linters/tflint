@@ -16,41 +16,20 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-// Discovery searches plugins according the passed configuration
-// The search priority of plugins is as follows:
-//
-//   1. Current directory (./.tflint.d/plugins)
-//   2. Home directory (~/.tflint.d/plugins)
-//
-// Files under these directories that satisfy the "tflint-ruleset-*" naming rules
-// enabled in the configuration are treated as plugins.
-//
-// If the `TFLINT_PLUGIN_DIR` environment variable is set, ignore the above and refer to that directory.
+// Discovery searches and launches plugins according the passed configuration.
+// If the plugin is not enabled, skip without starting.
+// The AWS plugin is treated specially. Plugins for which no version is specified will launch the bundled plugin
+// instead of returning an error. This is a process for backward compatibility.
 func Discovery(config *tflint.Config) (*Plugin, error) {
-	if dir := os.Getenv("TFLINT_PLUGIN_DIR"); dir != "" {
-		return findPlugins(config, dir)
-	}
-
-	if _, err := os.Stat(localPluginRoot); !os.IsNotExist(err) {
-		return findPlugins(config, localPluginRoot)
-	}
-
-	pluginDir, err := homedir.Expand(PluginRoot)
-	if err != nil {
-		return nil, err
-	}
-	return findPlugins(config, pluginDir)
-}
-
-func findPlugins(config *tflint.Config, dir string) (*Plugin, error) {
 	clients := map[string]*plugin.Client{}
 	rulesets := map[string]*tfplugin.Client{}
 
 	for _, cfg := range config.Plugins {
-		pluginPath, err := getPluginPath(dir, cfg.Name)
+		installCfg := NewInstallConfig(cfg)
+		pluginPath, err := FindPluginPath(installCfg)
 		var cmd *exec.Cmd
 		if os.IsNotExist(err) {
-			if cfg.Name == "aws" {
+			if cfg.Name == "aws" && installCfg.ManuallyInstalled() {
 				log.Print("[INFO] Plugin `aws` is not installed, but bundled plugins are available.")
 				self, err := os.Executable()
 				if err != nil {
@@ -58,7 +37,14 @@ func findPlugins(config *tflint.Config, dir string) (*Plugin, error) {
 				}
 				cmd = exec.Command(self, "--act-as-aws-plugin")
 			} else {
-				return nil, fmt.Errorf("Plugin `%s` not found in %s", cfg.Name, dir)
+				if installCfg.ManuallyInstalled() {
+					pluginDir, err := getPluginDir()
+					if err != nil {
+						return nil, err
+					}
+					return nil, fmt.Errorf("Plugin `%s` not found in %s", cfg.Name, pluginDir)
+				}
+				return nil, fmt.Errorf("Plugin `%s` not found. Did you run `tflint --init`?", cfg.Name)
 			}
 		} else {
 			cmd = exec.Command(pluginPath)
@@ -90,18 +76,56 @@ func findPlugins(config *tflint.Config, dir string) (*Plugin, error) {
 	return &Plugin{RuleSets: rulesets, clients: clients}, nil
 }
 
-func getPluginPath(dir string, name string) (string, error) {
-	pluginPath := filepath.Join(dir, fmt.Sprintf("tflint-ruleset-%s", name))
+// FindPluginPath returns the plugin binary path.
+func FindPluginPath(config *InstallConfig) (string, error) {
+	dir, err := getPluginDir()
+	if err != nil {
+		return "", err
+	}
 
-	_, err := os.Stat(pluginPath)
+	path, err := findPluginPath(filepath.Join(dir, config.InstallPath()))
+	if err != nil {
+		return "", err
+	}
+	log.Printf("[DEBUG] Find plugin path: %s", path)
+	return path, err
+}
+
+// getPluginDir returns the base plugin directory.
+// Adopted with the following priorities:
+//
+//   1. `TFLINT_PLUGIN_DIR` environment variable
+//   2. Current directory (./.tflint.d/plugins)
+//   3. Home directory (~/.tflint.d/plugins)
+//
+// If the environment variable is set, other directories will not be considered,
+// but if the current directory does not exist, it will fallback to the home directory.
+func getPluginDir() (string, error) {
+	if dir := os.Getenv("TFLINT_PLUGIN_DIR"); dir != "" {
+		return dir, nil
+	}
+
+	_, err := os.Stat(localPluginRoot)
+	if os.IsNotExist(err) {
+		return homedir.Expand(PluginRoot)
+	}
+
+	return localPluginRoot, err
+}
+
+// findPluginPath returns the path of the existing plugin.
+// Only in the case of Windows, the pattern with the `.exe` is also considered,
+// and if it exists, the extension is added to the argument.
+func findPluginPath(path string) (string, error) {
+	_, err := os.Stat(path)
 	if os.IsNotExist(err) && runtime.GOOS != "windows" {
 		return "", os.ErrNotExist
 	} else if !os.IsNotExist(err) {
-		return pluginPath, nil
+		return path, nil
 	}
 
-	if _, err := os.Stat(pluginPath + ".exe"); !os.IsNotExist(err) {
-		return pluginPath + ".exe", nil
+	if _, err := os.Stat(path + ".exe"); !os.IsNotExist(err) {
+		return path + ".exe", nil
 	}
 
 	return "", os.ErrNotExist

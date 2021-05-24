@@ -25,4 +25,7 @@ plugin "foo" {
 
 plugin "bar" {
   enabled = false
+  version = "0.1.0"
+  source = "github.com/foo/bar"
+  signing_key = "SIGNING_KEY"
 }
