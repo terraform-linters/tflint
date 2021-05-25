@@ -193,16 +193,16 @@ rule "terraform_module_pinned_source" {
 			Name: "bitbucket module is not pinned",
 			Content: `
 module "unpinned" {
-  source = "bitbucket.org/hashicorp/consul"
+  source = "bitbucket.org/hashicorp/tf-test-git"
 }`,
 			Expected: tflint.Issues{
 				{
 					Rule:    NewTerraformModulePinnedSourceRule(),
-					Message: "Module source \"bitbucket.org/hashicorp/consul\" is not pinned",
+					Message: "Module source \"bitbucket.org/hashicorp/tf-test-git\" is not pinned",
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start:    hcl.Pos{Line: 3, Column: 12},
-						End:      hcl.Pos{Line: 3, Column: 44},
+						End:      hcl.Pos{Line: 3, Column: 49},
 					},
 				},
 			},
@@ -211,34 +211,16 @@ module "unpinned" {
 			Name: "bitbucket git module reference is default",
 			Content: `
 module "default_git" {
-  source = "bitbucket.org/hashicorp/consul.git?ref=master"
+  source = "bitbucket.org/hashicorp/tf-test-git.git?ref=master"
 }`,
 			Expected: tflint.Issues{
 				{
 					Rule:    NewTerraformModulePinnedSourceRule(),
-					Message: "Module source \"bitbucket.org/hashicorp/consul.git?ref=master\" uses default ref \"master\"",
+					Message: "Module source \"bitbucket.org/hashicorp/tf-test-git.git?ref=master\" uses default ref \"master\"",
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start:    hcl.Pos{Line: 3, Column: 12},
-						End:      hcl.Pos{Line: 3, Column: 59},
-					},
-				},
-			},
-		},
-		{
-			Name: "bitbucket mercurial module reference is default",
-			Content: `
-module "default_git" {
-  source = "bitbucket.org/hg/mercurial?rev=default"
-}`,
-			Expected: tflint.Issues{
-				{
-					Rule:    NewTerraformModulePinnedSourceRule(),
-					Message: "Module source \"bitbucket.org/hg/mercurial?rev=default\" uses default rev \"default\"",
-					Range: hcl.Range{
-						Filename: "module.tf",
-						Start:    hcl.Pos{Line: 3, Column: 12},
-						End:      hcl.Pos{Line: 3, Column: 52},
+						End:      hcl.Pos{Line: 3, Column: 64},
 					},
 				},
 			},
@@ -247,7 +229,7 @@ module "default_git" {
 			Name: "bitbucket git module reference is pinned",
 			Content: `
 module "pinned_git" {
-  source = "bitbucket.org/hashicorp/consul.git?ref=pinned"
+  source = "bitbucket.org/hashicorp/tf-test-git.git?ref=pinned"
 }`,
 			Expected: tflint.Issues{},
 		},
@@ -255,7 +237,7 @@ module "pinned_git" {
 			Name: "bitbucket git module reference is pinned, but style is semver",
 			Content: `
 module "pinned_git" {
-  source = "bitbucket.org/hashicorp/consul.git?ref=pinned"
+  source = "bitbucket.org/hashicorp/tf-test-git.git?ref=pinned"
 }`,
 			Config: `
 rule "terraform_module_pinned_source" {
@@ -265,11 +247,11 @@ rule "terraform_module_pinned_source" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewTerraformModulePinnedSourceRule(),
-					Message: "Module source \"bitbucket.org/hashicorp/consul.git?ref=pinned\" uses a ref which is not a version string",
+					Message: "Module source \"bitbucket.org/hashicorp/tf-test-git.git?ref=pinned\" uses a ref which is not a version string",
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start:    hcl.Pos{Line: 3, Column: 12},
-						End:      hcl.Pos{Line: 3, Column: 59},
+						End:      hcl.Pos{Line: 3, Column: 64},
 					},
 				},
 			},
@@ -278,64 +260,12 @@ rule "terraform_module_pinned_source" {
 			Name: "bitbucket git module reference is pinned to semver",
 			Content: `
 module "pinned_git" {
-  source = "bitbucket.org/hashicorp/consul.git?ref=v1.2.3"
+  source = "bitbucket.org/hashicorp/tf-test-git.git?ref=v1.2.3"
 }`,
 			Config: `
 rule "terraform_module_pinned_source" {
   enabled = true
   style = "semver"
-}`,
-			Expected: tflint.Issues{},
-		},
-		{
-			Name: "bitbucket mercurial module reference is pinned",
-			Content: `
-module "pinned_git" {
-  source = "bitbucket.org/hg/mercurial?rev=pinned"
-}`,
-			Expected: tflint.Issues{},
-		},
-		{
-			Name: "bitbucket mercurial module reference is pinned, but style is semver",
-			Content: `
-module "pinned_git" {
-  source = "bitbucket.org/hg/mercurial?rev=pinned"
-}`,
-			Config: `
-rule "terraform_module_pinned_source" {
-  enabled = true
-  style = "semver"
-}`,
-			Expected: tflint.Issues{
-				{
-					Rule:    NewTerraformModulePinnedSourceRule(),
-					Message: "Module source \"bitbucket.org/hg/mercurial?rev=pinned\" uses a rev which is not a version string",
-					Range: hcl.Range{
-						Filename: "module.tf",
-						Start:    hcl.Pos{Line: 3, Column: 12},
-						End:      hcl.Pos{Line: 3, Column: 51},
-					},
-				},
-			},
-		},
-		{
-			Name: "bitbucket mercurial module reference is pinned to semver",
-			Content: `
-module "pinned_git" {
-  source = "bitbucket.org/hg/mercurial?rev=v1.2.3"
-}`,
-			Config: `
-rule "terraform_module_pinned_source" {
-  enabled = true
-  style = "semver"
-}`,
-			Expected: tflint.Issues{},
-		},
-		{
-			Name: "bitbucket mercurial module reference is pinned to semver (no leading v)",
-			Content: `
-module "pinned_git" {
-  source = "bitbucket.org/hg/mercurial?rev=1.2.3"
 }`,
 			Expected: tflint.Issues{},
 		},
@@ -505,13 +435,16 @@ rule "terraform_module_pinned_source" {
 	rule := NewTerraformModulePinnedSourceRule()
 
 	for _, tc := range cases {
-		runner := tflint.TestRunnerWithConfig(t, map[string]string{"module.tf": tc.Content}, loadConfigfromTempFile(t, tc.Config))
+		tc := tc
+		t.Run(tc.Name, func(t *testing.T) {
+			runner := tflint.TestRunnerWithConfig(t, map[string]string{"module.tf": tc.Content}, loadConfigfromTempFile(t, tc.Config))
 
-		if err := rule.Check(runner); err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
-		}
+			if err := rule.Check(runner); err != nil {
+				t.Fatalf("Unexpected error occurred: %s", err)
+			}
 
-		tflint.AssertIssues(t, tc.Expected, runner.Issues)
+			tflint.AssertIssues(t, tc.Expected, runner.Issues)
+		})
 	}
 }
 
