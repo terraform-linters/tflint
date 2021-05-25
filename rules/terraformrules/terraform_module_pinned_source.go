@@ -76,23 +76,26 @@ func (r *TerraformModulePinnedSourceRule) Check(runner *tflint.Runner) error {
 		return err
 	}
 
-	var err error
 	for _, module := range runner.TFConfig.Module.ModuleCalls {
-		log.Printf("[DEBUG] Walk `%s` attribute", module.Name+".source")
-
-		lower := strings.ToLower(module.SourceAddr)
-
-		if ReGitHub.MatchString(lower) || ReGenericGit.MatchString(lower) {
-			err = r.checkGitSource(runner, module, config)
-		} else if ReBitbucket.MatchString(lower) {
-			err = r.checkBitbucketSource(runner, module, config)
-		} else if strings.HasPrefix(lower, "hg::") {
-			err = r.checkMercurialSource(runner, module, config)
-		}
-
-		if err != nil {
+		if err := r.checkModule(runner, module, config); err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (r *TerraformModulePinnedSourceRule) checkModule(runner *tflint.Runner, module *configs.ModuleCall, config terraformModulePinnedSourceRuleConfig) error {
+	log.Printf("[DEBUG] Walk `%s` attribute", module.Name+".source")
+
+	lower := strings.ToLower(module.SourceAddr)
+
+	if ReGitHub.MatchString(lower) || ReGenericGit.MatchString(lower) {
+		return r.checkGitSource(runner, module, config)
+	} else if ReBitbucket.MatchString(lower) {
+		return r.checkBitbucketSource(runner, module, config)
+	} else if strings.HasPrefix(lower, "hg::") {
+		return r.checkMercurialSource(runner, module, config)
 	}
 
 	return nil
