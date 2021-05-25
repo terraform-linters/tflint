@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/url"
-	"regexp"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/hashicorp/go-getter"
 
 	"github.com/hashicorp/terraform/configs"
@@ -47,8 +47,6 @@ func (r *TerraformModulePinnedSourceRule) Severity() string {
 func (r *TerraformModulePinnedSourceRule) Link() string {
 	return tflint.ReferenceLink(r.Name())
 }
-
-var reSemver = regexp.MustCompile("v?\\d+\\.\\d+\\.\\d+$")
 
 // Check checks if module source version is pinned
 // Note that this rule is valid only for Git or Mercurial source
@@ -133,7 +131,8 @@ func (r *TerraformModulePinnedSourceRule) checkRevision(runner *tflint.Runner, m
 		}
 	// The "semver" style enforces to pin source like semantic versioning
 	case "semver":
-		if !reSemver.MatchString(value) {
+		_, err := semver.NewVersion(value)
+		if err != nil {
 			runner.EmitIssue(
 				r,
 				fmt.Sprintf("Module source \"%s\" uses a %s which is not a version string", module.SourceAddr, key),
