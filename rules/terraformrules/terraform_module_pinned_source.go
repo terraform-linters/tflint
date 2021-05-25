@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"path/filepath"
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/hashicorp/go-getter"
@@ -75,7 +76,7 @@ func (r *TerraformModulePinnedSourceRule) Check(runner *tflint.Runner) error {
 func (r *TerraformModulePinnedSourceRule) checkModule(runner *tflint.Runner, module *configs.ModuleCall, config terraformModulePinnedSourceRuleConfig) error {
 	log.Printf("[DEBUG] Walk `%s` attribute", module.Name+".source")
 
-	source, err := getter.Detect(module.SourceAddr, "", getter.Detectors)
+	source, err := getter.Detect(module.SourceAddr, filepath.Dir(module.DeclRange.Filename), getter.Detectors)
 	if err != nil {
 		return err
 	}

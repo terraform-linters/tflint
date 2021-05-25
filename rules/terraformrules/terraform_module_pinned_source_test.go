@@ -17,6 +17,14 @@ func Test_TerraformModulePinnedSource(t *testing.T) {
 		Expected tflint.Issues
 	}{
 		{
+			Name: "local module",
+			Content: `
+module "unpinned" {
+  source = "./local"
+}`,
+			Expected: tflint.Issues{},
+		},
+		{
 			Name: "git module is not pinned",
 			Content: `
 module "unpinned" {
