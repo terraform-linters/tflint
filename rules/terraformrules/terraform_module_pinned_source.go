@@ -121,7 +121,7 @@ func (r *TerraformModulePinnedSourceRule) checkRevision(runner *tflint.Runner, m
 			if value == branch {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf("Module source \"%s\" uses default %s \"%s\"", module.SourceAddr, key, branch),
+					fmt.Sprintf("Module source \"%s\" uses a default branch as %s (%s)", module.SourceAddr, key, branch),
 					module.SourceAddrRange,
 				)
 

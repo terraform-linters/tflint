@@ -51,7 +51,7 @@ module "default_git" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewTerraformModulePinnedSourceRule(),
-					Message: "Module source \"git://hashicorp.com/consul.git?ref=master\" uses default ref \"master\"",
+					Message: "Module source \"git://hashicorp.com/consul.git?ref=master\" uses a default branch as ref (master)",
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start:    hcl.Pos{Line: 3, Column: 12},
@@ -82,7 +82,7 @@ rule "terraform_module_pinned_source" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewTerraformModulePinnedSourceRule(),
-					Message: "Module source \"git://hashicorp.com/consul.git?ref=pinned\" uses a ref which is not a version string",
+					Message: "Module source \"git://hashicorp.com/consul.git?ref=pinned\" uses a ref which is not a semantic version string",
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start:    hcl.Pos{Line: 3, Column: 12},
@@ -162,7 +162,7 @@ module "default_git" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewTerraformModulePinnedSourceRule(),
-					Message: "Module source \"github.com/hashicorp/consul.git?ref=master\" uses default ref \"master\"",
+					Message: "Module source \"github.com/hashicorp/consul.git?ref=master\" uses a default branch as ref (master)",
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start:    hcl.Pos{Line: 3, Column: 12},
@@ -201,7 +201,7 @@ rule "terraform_module_pinned_source" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewTerraformModulePinnedSourceRule(),
-					Message: "Module source \"github.com/hashicorp/consul.git?ref=pinned\" uses a ref which is not a version string",
+					Message: "Module source \"github.com/hashicorp/consul.git?ref=pinned\" uses a ref which is not a semantic version string",
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start:    hcl.Pos{Line: 3, Column: 12},
@@ -250,7 +250,7 @@ module "default_git" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewTerraformModulePinnedSourceRule(),
-					Message: "Module source \"bitbucket.org/hashicorp/tf-test-git.git?ref=master\" uses default ref \"master\"",
+					Message: "Module source \"bitbucket.org/hashicorp/tf-test-git.git?ref=master\" uses a default branch as ref (master)",
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start:    hcl.Pos{Line: 3, Column: 12},
@@ -281,7 +281,7 @@ rule "terraform_module_pinned_source" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewTerraformModulePinnedSourceRule(),
-					Message: "Module source \"bitbucket.org/hashicorp/tf-test-git.git?ref=pinned\" uses a ref which is not a version string",
+					Message: "Module source \"bitbucket.org/hashicorp/tf-test-git.git?ref=pinned\" uses a ref which is not a semantic version string",
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start:    hcl.Pos{Line: 3, Column: 12},
@@ -351,7 +351,7 @@ module "default_generic_git_https" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewTerraformModulePinnedSourceRule(),
-					Message: "Module source \"git::https://hashicorp.com/consul.git?ref=master\" uses default ref \"master\"",
+					Message: "Module source \"git::https://hashicorp.com/consul.git?ref=master\" uses a default branch as ref (master)",
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start:    hcl.Pos{Line: 3, Column: 12},
@@ -370,7 +370,7 @@ module "default_generic_git_ssh" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewTerraformModulePinnedSourceRule(),
-					Message: "Module source \"git::ssh://git@github.com/owner/repo.git?ref=master\" uses default ref \"master\"",
+					Message: "Module source \"git::ssh://git@github.com/owner/repo.git?ref=master\" uses a default branch as ref (master)",
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start:    hcl.Pos{Line: 3, Column: 12},
@@ -396,6 +396,29 @@ module "pinned_generic_git_ssh" {
 }
 `,
 			Expected: tflint.Issues{},
+		},
+		{
+			Name: "github module reference is unpinned via custom branches",
+			Content: `
+module "pinned_git" {
+  source = "github.com/hashicorp/consul.git?ref=foo"
+}`,
+			Config: `
+rule "terraform_module_pinned_source" {
+  enabled = true
+  default_branches = ["foo"]
+}`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"github.com/hashicorp/consul.git?ref=foo\" uses a default branch as ref (foo)",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 53},
+					},
+				},
+			},
 		},
 		{
 			Name: "mercurial module is not pinned",
@@ -424,7 +447,7 @@ module "default_mercurial" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewTerraformModulePinnedSourceRule(),
-					Message: "Module source \"hg::http://hashicorp.com/consul.hg?rev=default\" uses default rev \"default\"",
+					Message: "Module source \"hg::http://hashicorp.com/consul.hg?rev=default\" uses a default branch as rev (default)",
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start:    hcl.Pos{Line: 3, Column: 12},
