@@ -100,7 +100,7 @@ Warning: Module source "git://hashicorp.com/consul.git" is not pinned (terraform
 
 Reference: https://github.com/terraform-linters/tflint/blob/v0.15.0/docs/rules/terraform_module_pinned_source.md
 
-Warning: Module source "git://hashicorp.com/consul.git?ref=feature" uses a ref which is not a version string (terraform_module_pinned_source)
+Warning: Module source "git://hashicorp.com/consul.git?ref=feature" uses a ref which is not a semantic version string (terraform_module_pinned_source)
 
   on template.tf line 6:
    6:   source = "git://hashicorp.com/consul.git?ref=feature"
