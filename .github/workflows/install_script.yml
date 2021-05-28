@@ -32,12 +32,13 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: hashicorp/terraform
+      options: --user 0
     steps:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Install dependencies
       run: |
-        apk add bash curl unzip sudo
+        apk add bash curl unzip
     - name: Install latest version
       run: |
         bash install_linux.sh
