@@ -8,13 +8,17 @@ Name | Default | Value
 --- | --- | ---
 enabled | true | Boolean
 style | `flexible` | `flexible`, `semver`
+default_branches | `["master", "main", "default", "develop"]` | 
 
 ```hcl
 rule "terraform_module_pinned_source" {
   enabled = true
   style = "flexible"
+  default_branches = ["dev"]
 }
 ```
+
+Configured `default_branches` will be appended to the defaults rather than overriding them.
 
 ## Example
 
@@ -51,14 +55,14 @@ Warning: Module source "git://hashicorp.com/consul.git" is not pinned (terraform
 
 Reference: https://github.com/terraform-linters/tflint/blob/v0.15.0/docs/rules/terraform_module_pinned_source.md
 
-Warning: Module source "git://hashicorp.com/consul.git?ref=master" uses default ref "master" (terraform_module_pinned_source)
+Warning: Module source "git://hashicorp.com/consul.git?ref=master" uses a default branch as ref (master) (terraform_module_pinned_source)
 
   on template.tf line 6:
    6:   source = "git://hashicorp.com/consul.git?ref=master"
 
 Reference: https://github.com/terraform-linters/tflint/blob/v0.15.0/docs/rules/terraform_module_pinned_source.md
 
-Warning: Module source "hg::http://hashicorp.com/consul.hg?rev=default" uses default rev "default" (terraform_module_pinned_source)
+Warning: Module source "hg::http://hashicorp.com/consul.hg?rev=default" uses a default branch as rev (default) (terraform_module_pinned_source)
 
   on template.tf line 10:
   10:   source = "hg::http://hashicorp.com/consul.hg?rev=default"
@@ -96,7 +100,7 @@ Warning: Module source "git://hashicorp.com/consul.git" is not pinned (terraform
 
 Reference: https://github.com/terraform-linters/tflint/blob/v0.15.0/docs/rules/terraform_module_pinned_source.md
 
-Warning: Module source "git://hashicorp.com/consul.git?ref=feature" uses a ref which is not a version string (terraform_module_pinned_source)
+Warning: Module source "git://hashicorp.com/consul.git?ref=feature" uses a ref which is not a semantic version string (terraform_module_pinned_source)
 
   on template.tf line 6:
    6:   source = "git://hashicorp.com/consul.git?ref=feature"
