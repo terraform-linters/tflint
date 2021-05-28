@@ -66,7 +66,7 @@ if [[ $os == "windows"* ]]; then
 else
   echo "Installing /tmp/tflint to /usr/local/bin..."
   
-  if [[ $EUID == 0 ]]; then SUDO=""; else
+  if [[ "$(id -u)" == 0 ]]; then SUDO=""; else
     SUDO="sudo";
   fi
 
