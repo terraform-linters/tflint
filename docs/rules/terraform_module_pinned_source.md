@@ -8,13 +8,17 @@ Name | Default | Value
 --- | --- | ---
 enabled | true | Boolean
 style | `flexible` | `flexible`, `semver`
+default_branches | `["master", "main", "default", "develop"]` | 
 
 ```hcl
 rule "terraform_module_pinned_source" {
   enabled = true
   style = "flexible"
+  default_branches = ["dev"]
 }
 ```
+
+Configured `default_branches` will be appended to the defaults rather than overriding them.
 
 ## Example
 
