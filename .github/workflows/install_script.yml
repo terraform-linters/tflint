@@ -32,6 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: hashicorp/terraform
+      options: --user 0
     steps:
     - name: Checkout
       uses: actions/checkout@v2
