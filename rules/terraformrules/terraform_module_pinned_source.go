@@ -19,7 +19,8 @@ type TerraformModulePinnedSourceRule struct {
 }
 
 type terraformModulePinnedSourceRuleConfig struct {
-	Style string `hcl:"style,optional"`
+	Style           string   `hcl:"style,optional"`
+	DefaultBranches []string `hcl:"default_branches,optional"`
 }
 
 // NewTerraformModulePinnedSourceRule returns new rule with default attributes
@@ -60,6 +61,7 @@ func (r *TerraformModulePinnedSourceRule) Check(runner *tflint.Runner) error {
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
 	config := terraformModulePinnedSourceRuleConfig{Style: "flexible"}
+	config.DefaultBranches = append(config.DefaultBranches, "master", "main", "default", "develop")
 	if err := runner.DecodeRuleConfig(r.Name(), &config); err != nil {
 		return err
 	}
@@ -113,30 +115,26 @@ func (r *TerraformModulePinnedSourceRule) checkModule(runner *tflint.Runner, mod
 
 func (r *TerraformModulePinnedSourceRule) checkRevision(runner *tflint.Runner, module *configs.ModuleCall, config terraformModulePinnedSourceRuleConfig, key string, value string) error {
 	switch config.Style {
-	// The "flexible" style enforces to pin source, except for the default branch
+	// The "flexible" style requires a revision that is not a default branch
 	case "flexible":
-		if key == "ref" && value == "master" {
-			runner.EmitIssue(
-				r,
-				fmt.Sprintf("Module source \"%s\" uses default %s \"master\"", module.SourceAddr, key),
-				module.SourceAddrRange,
-			)
-		}
+		for _, branch := range config.DefaultBranches {
+			if value == branch {
+				runner.EmitIssue(
+					r,
+					fmt.Sprintf("Module source \"%s\" uses default %s \"%s\"", module.SourceAddr, key, branch),
+					module.SourceAddrRange,
+				)
 
-		if key == "rev" && value == "default" {
-			runner.EmitIssue(
-				r,
-				fmt.Sprintf("Module source \"%s\" uses default %s \"default\"", module.SourceAddr, key),
-				module.SourceAddrRange,
-			)
+				return nil
+			}
 		}
-	// The "semver" style enforces to pin source like semantic versioning
+	// The "semver" style requires a revision that is a semantic version
 	case "semver":
 		_, err := semver.NewVersion(value)
 		if err != nil {
 			runner.EmitIssue(
 				r,
-				fmt.Sprintf("Module source \"%s\" uses a %s which is not a version string", module.SourceAddr, key),
+				fmt.Sprintf("Module source \"%s\" uses a %s which is not a semantic version string", module.SourceAddr, key),
 				module.SourceAddrRange,
 			)
 		}
