@@ -3,8 +3,11 @@ package terraformrules
 import (
 	"fmt"
 	"log"
-	"regexp"
-	"strings"
+	"net/url"
+	"path/filepath"
+
+	"github.com/Masterminds/semver/v3"
+	"github.com/hashicorp/go-getter"
 
 	"github.com/hashicorp/terraform/configs"
 	"github.com/terraform-linters/tflint/tflint"
@@ -46,21 +49,6 @@ func (r *TerraformModulePinnedSourceRule) Link() string {
 	return tflint.ReferenceLink(r.Name())
 }
 
-// ReGitHub matches a module source which is a GitHub repository
-// See https://www.terraform.io/docs/modules/sources.html#github
-var ReGitHub = regexp.MustCompile("(^github.com/(.+)/(.+)$)|(^git@github.com:(.+)/(.+)$)")
-
-// ReBitbucket matches a module source which is a Bitbucket repository
-// See https://www.terraform.io/docs/modules/sources.html#bitbucket
-var ReBitbucket = regexp.MustCompile("^bitbucket.org/(.+)/(.+)$")
-
-// ReGenericGit matches a module source which is a Git repository
-// See https://www.terraform.io/docs/modules/sources.html#generic-git-repository
-var ReGenericGit = regexp.MustCompile("(git://(.+)/(.+))|(git::https://(.+)/(.+))|(git::ssh://((.+)@)??(.+)/(.+)/(.+))")
-
-var reSemverReference = regexp.MustCompile("\\?ref=v?\\d+\\.\\d+\\.\\d+$")
-var reSemverRevision = regexp.MustCompile("\\?rev=v?\\d+\\.\\d+\\.\\d+$")
-
 // Check checks if module source version is pinned
 // Note that this rule is valid only for Git or Mercurial source
 func (r *TerraformModulePinnedSourceRule) Check(runner *tflint.Runner) error {
@@ -76,21 +64,8 @@ func (r *TerraformModulePinnedSourceRule) Check(runner *tflint.Runner) error {
 		return err
 	}
 
-	var err error
 	for _, module := range runner.TFConfig.Module.ModuleCalls {
-		log.Printf("[DEBUG] Walk `%s` attribute", module.Name+".source")
-
-		lower := strings.ToLower(module.SourceAddr)
-
-		if ReGitHub.MatchString(lower) || ReGenericGit.MatchString(lower) {
-			err = r.checkGitSource(runner, module, config)
-		} else if ReBitbucket.MatchString(lower) {
-			err = r.checkBitbucketSource(runner, module, config)
-		} else if strings.HasPrefix(lower, "hg::") {
-			err = r.checkMercurialSource(runner, module, config)
-		}
-
-		if err != nil {
+		if err := r.checkModule(runner, module, config); err != nil {
 			return err
 		}
 	}
@@ -98,106 +73,70 @@ func (r *TerraformModulePinnedSourceRule) Check(runner *tflint.Runner) error {
 	return nil
 }
 
-func (r *TerraformModulePinnedSourceRule) checkGitSource(runner *tflint.Runner, module *configs.ModuleCall, config terraformModulePinnedSourceRuleConfig) error {
-	lower := strings.ToLower(module.SourceAddr)
+func (r *TerraformModulePinnedSourceRule) checkModule(runner *tflint.Runner, module *configs.ModuleCall, config terraformModulePinnedSourceRuleConfig) error {
+	log.Printf("[DEBUG] Walk `%s` attribute", module.Name+".source")
 
-	if strings.Contains(lower, "ref=") {
-		return r.checkRefSource(runner, module, config)
+	source, err := getter.Detect(module.SourceAddr, filepath.Dir(module.DeclRange.Filename), getter.Detectors)
+	if err != nil {
+		return err
+	}
+
+	u, err := url.Parse(source)
+	if err != nil {
+		return err
+	}
+
+	switch u.Scheme {
+	case "git", "hg":
+	default:
+		return nil
+	}
+
+	query := u.Query()
+
+	if ref := query.Get("ref"); ref != "" {
+		return r.checkRevision(runner, module, config, "ref", ref)
+	}
+
+	if rev := query.Get("rev"); rev != "" {
+		return r.checkRevision(runner, module, config, "rev", rev)
 	}
 
 	runner.EmitIssue(
 		r,
-		fmt.Sprintf("Module source \"%s\" is not pinned", module.SourceAddr),
+		fmt.Sprintf(`Module source "%s" is not pinned`, module.SourceAddr),
 		module.SourceAddrRange,
 	)
-	return nil
-}
-
-func (r *TerraformModulePinnedSourceRule) checkMercurialSource(runner *tflint.Runner, module *configs.ModuleCall, config terraformModulePinnedSourceRuleConfig) error {
-	lower := strings.ToLower(module.SourceAddr)
-
-	if strings.Contains(lower, "rev=") {
-		return r.checkRevSource(runner, module, config)
-	}
-
-	runner.EmitIssue(
-		r,
-		fmt.Sprintf("Module source \"%s\" is not pinned", module.SourceAddr),
-		module.SourceAddrRange,
-	)
-	return nil
-}
-
-// Terraform can use a Bitbucket repo as Git or Mercurial.
-//
-// Note: Bitbucket is dropping Mercurial support in 2020, so this can be rolled into
-// checkGitSource after that happens.
-func (r *TerraformModulePinnedSourceRule) checkBitbucketSource(runner *tflint.Runner, module *configs.ModuleCall, config terraformModulePinnedSourceRuleConfig) error {
-	lower := strings.ToLower(module.SourceAddr)
-
-	if strings.Contains(lower, "ref=") {
-		return r.checkRefSource(runner, module, config)
-	} else if strings.Contains(lower, "rev=") {
-		return r.checkRevSource(runner, module, config)
-	} else {
-		runner.EmitIssue(
-			r,
-			fmt.Sprintf("Module source \"%s\" is not pinned", module.SourceAddr),
-			module.SourceAddrRange,
-		)
-	}
 
 	return nil
 }
 
-func (r *TerraformModulePinnedSourceRule) checkRefSource(runner *tflint.Runner, module *configs.ModuleCall, config terraformModulePinnedSourceRuleConfig) error {
-	lower := strings.ToLower(module.SourceAddr)
-
+func (r *TerraformModulePinnedSourceRule) checkRevision(runner *tflint.Runner, module *configs.ModuleCall, config terraformModulePinnedSourceRuleConfig, key string, value string) error {
 	switch config.Style {
 	// The "flexible" style enforces to pin source, except for the default branch
 	case "flexible":
-		if strings.Contains(lower, "ref=master") {
+		if key == "ref" && value == "master" {
 			runner.EmitIssue(
 				r,
-				fmt.Sprintf("Module source \"%s\" uses default ref \"master\"", module.SourceAddr),
+				fmt.Sprintf("Module source \"%s\" uses default %s \"master\"", module.SourceAddr, key),
+				module.SourceAddrRange,
+			)
+		}
+
+		if key == "rev" && value == "default" {
+			runner.EmitIssue(
+				r,
+				fmt.Sprintf("Module source \"%s\" uses default %s \"default\"", module.SourceAddr, key),
 				module.SourceAddrRange,
 			)
 		}
 	// The "semver" style enforces to pin source like semantic versioning
 	case "semver":
-		if !reSemverReference.MatchString(lower) {
+		_, err := semver.NewVersion(value)
+		if err != nil {
 			runner.EmitIssue(
 				r,
-				fmt.Sprintf("Module source \"%s\" uses a ref which is not a version string", module.SourceAddr),
-				module.SourceAddrRange,
-			)
-		}
-	default:
-		return fmt.Errorf("`%s` is invalid style", config.Style)
-	}
-
-	return nil
-}
-
-func (r *TerraformModulePinnedSourceRule) checkRevSource(runner *tflint.Runner, module *configs.ModuleCall, config terraformModulePinnedSourceRuleConfig) error {
-	lower := strings.ToLower(module.SourceAddr)
-
-	switch config.Style {
-	// The "flexible" style enforces to pin source, except for the default reference
-	case "flexible":
-		if strings.Contains(lower, "rev=default") {
-			runner.EmitIssue(
-				r,
-				fmt.Sprintf("Module source \"%s\" uses default rev \"default\"", module.SourceAddr),
-				module.SourceAddrRange,
-			)
-		}
-	// The "semver" style enforces to pin source like semantic versioning
-	case "semver":
-		if !reSemverRevision.MatchString(lower) {
-			runner.EmitIssue(
-				r,
-				fmt.Sprintf("Module source \"%s\" uses a rev which is not a version string", module.SourceAddr),
+				fmt.Sprintf("Module source \"%s\" uses a %s which is not a version string", module.SourceAddr, key),
 				module.SourceAddrRange,
 			)
 		}
