@@ -136,6 +136,24 @@ module "unpinned" {
 			},
 		},
 		{
+			Name: "github ssh module is not pinned",
+			Content: `
+module "unpinned" {
+  source = "git@github.com:hashicorp/consul.git"
+}`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: "Module source \"git@github.com:hashicorp/consul.git\" is not pinned",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 49},
+					},
+				},
+			},
+		},
+		{
 			Name: "github module reference is default",
 			Content: `
 module "default_git" {
@@ -158,6 +176,14 @@ module "default_git" {
 			Content: `
 module "pinned_git" {
   source = "github.com/hashicorp/consul.git?ref=pinned"
+}`,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: "github ssh module is pinned",
+			Content: `
+module "unpinned" {
+  source = "git@github.com:hashicorp/consul.git?ref=pinned"
 }`,
 			Expected: tflint.Issues{},
 		},
