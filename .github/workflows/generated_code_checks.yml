@@ -15,7 +15,7 @@ jobs:
       with:
         go-version: 1.16
     - name: Restore Cache
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: |-
           ~/go/pkg/mod
