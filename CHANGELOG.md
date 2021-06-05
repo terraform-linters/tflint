@@ -1,3 +1,21 @@
+## 0.29.0 (2021-06-05)
+
+This release introduces the `--init` option for installing plugins automatically. This makes it easy to install plugin binaries published on GitHub Release that meet conventions. See [Configuring Plugins](docs/user-guide/plugins.md) for details.
+
+### Enhancements
+
+- [#1119](https://github.com/terraform-linters/tflint/pull/1119): cmd: Add --init for installing plugins automatically ([@wata727](https://github.com/wata727))
+- [#1126](https://github.com/terraform-linters/tflint/pull/1126): terraform_module_pinned_source: support additional default_branches ([@bendrucker](https://github.com/bendrucker))
+- [#1130](https://github.com/terraform-linters/tflint/pull/1130): Bump bundled AWS ruleset plugin ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1120](https://github.com/terraform-linters/tflint/pull/1120): build(deps): Bump github.com/hashicorp/terraform from 0.15.1 to 0.15.3
+- [#1121](https://github.com/terraform-linters/tflint/pull/1121): build(deps): Bump github.com/zclconf/go-cty from 1.8.2 to 1.8.3
+- [#1124](https://github.com/terraform-linters/tflint/pull/1124): Refactor terraform_module_pinned_source rule ([@bendrucker](https://github.com/bendrucker))
+- [#1127](https://github.com/terraform-linters/tflint/pull/1127): install: handle running as root (without sudo) ([@bendrucker](https://github.com/bendrucker))
+- [#1128](https://github.com/terraform-linters/tflint/pull/1128): build(deps): Bump actions/cache from 2.1.5 to 2.1.6
+
 ## 0.28.1 (2021-05-05)
 
 ### BugFixes
