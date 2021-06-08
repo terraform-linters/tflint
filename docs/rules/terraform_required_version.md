@@ -1,6 +1,6 @@
 # terraform_required_version
 
-Disallow `terraform` declarations without require_version.
+Disallow `terraform` declarations without `required_version`.
 
 ## Configuration
 
