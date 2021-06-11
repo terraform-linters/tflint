@@ -539,3 +539,48 @@ resource "aws_s3_bucket" "bar" {
 		t.Fatalf("Config is not matched: %s", cmp.Diff(expected, resp.Config, opt))
 	}
 }
+
+func Test_Files(t *testing.T) {
+	var files = map[string]string{
+		"main.tf": `
+			resource "aws_instance" "foo" {
+				instance_type = "t2.micro"
+			}`,
+		"outputs.tf": `
+			output "dummy" {
+				value = "test"
+			}`,
+		"providers.tf": `
+			provider "aws" {
+				region = "us-east-1"
+			}`,
+	}
+
+	sources := make(map[string][]byte)
+	for k, v := range files {
+		sources[k] = []byte(v)
+	}
+
+	runner := tflint.TestRunner(t, files)
+	server := NewServer(runner, runner, sources)
+	req := &tfplugin.FilesRequest{}
+	var resp tfplugin.FilesResponse
+
+	err := server.Files(req, &resp)
+	if err != nil {
+		t.Fatalf("Unexpected error occurred: %s", err)
+	}
+
+	if resp.Err != nil {
+		t.Fatalf("The response has an unexpected error: %s", resp.Err)
+	}
+	expected := map[string][]byte{
+		"main.tf":      sources["main.tf"],
+		"outputs.tf":   sources["outputs.tf"],
+		"providers.tf": sources["providers.tf"],
+	}
+
+	if !cmp.Equal(expected, resp.Files) {
+		t.Fatalf("Files not match: %s", cmp.Diff(expected, resp.Files))
+	}
+}
