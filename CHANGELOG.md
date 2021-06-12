@@ -1,3 +1,10 @@
+## 0.29.1 (2021-06-12)
+
+### Chores
+
+- [#1131](https://github.com/terraform-linters/tflint/pull/1131): Fix description for terraform_required_version ([@dcousens](https://github.com/dcousens))
+- [#1134](https://github.com/terraform-linters/tflint/pull/1134): build: Add support for darwin/arm64 build ([@wata727](https://github.com/wata727))
+
 ## 0.29.0 (2021-06-05)
 
 This release introduces the `--init` option for installing plugins automatically. This makes it easy to install plugin binaries published on GitHub Release that meet conventions. See [Configuring Plugins](docs/user-guide/plugins.md) for details.
