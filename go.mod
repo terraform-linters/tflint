@@ -21,7 +21,7 @@ require (
 	github.com/sourcegraph/go-lsp v0.0.0-20181119182933-0c7d621186c1
 	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
 	github.com/spf13/afero v1.2.2 // matches version used by terraform
-	github.com/terraform-linters/tflint-plugin-sdk v0.8.2
+	github.com/terraform-linters/tflint-plugin-sdk v0.8.3-0.20210614125323-8364139f3745
 	github.com/terraform-linters/tflint-ruleset-aws v0.4.1
 	github.com/zclconf/go-cty v1.8.3
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a

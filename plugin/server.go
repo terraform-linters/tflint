@@ -134,6 +134,20 @@ func (s *Server) File(req *tfplugin.FileRequest, resp *tfplugin.FileResponse) er
 	return nil
 }
 
+// Files returns the corresponding hcl.File representation (in bytes) of all Terraform
+// configuration in the module directory.
+func (s *Server) Files(req *tfplugin.FilesRequest, resp *tfplugin.FilesResponse) error {
+	*resp = tfplugin.FilesResponse{
+		Files: map[string][]byte{},
+		Err:   nil,
+	}
+
+	for name, file := range s.runner.Files() {
+		resp.Files[name] = file.Bytes
+	}
+	return nil
+}
+
 // RootProvider returns the provider configuration on the root module as tfplugin.Provider
 func (s *Server) RootProvider(req *tfplugin.RootProviderRequest, resp *tfplugin.RootProviderResponse) error {
 	provider, exists := s.rootRunner.TFConfig.Module.ProviderConfigs[req.Name]
