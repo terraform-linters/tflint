@@ -9,7 +9,7 @@ import (
 	"github.com/Masterminds/semver/v3"
 	"github.com/hashicorp/go-getter"
 
-	"github.com/hashicorp/terraform/configs"
+	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/tflint"
 )
 

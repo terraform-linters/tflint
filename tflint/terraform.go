@@ -12,8 +12,8 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/hashicorp/hcl/v2/json"
-	"github.com/hashicorp/terraform/configs"
-	"github.com/hashicorp/terraform/terraform"
+	"github.com/terraform-linters/tflint/terraform/configs"
+	"github.com/terraform-linters/tflint/terraform/terraform"
 	"github.com/zclconf/go-cty/cty"
 )
 

@@ -5,9 +5,9 @@ import (
 	"log"
 
 	"github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/terraform/addrs"
-	"github.com/hashicorp/terraform/configs"
-	"github.com/hashicorp/terraform/lang"
+	"github.com/terraform-linters/tflint/terraform/addrs"
+	"github.com/terraform-linters/tflint/terraform/configs"
+	"github.com/terraform-linters/tflint/terraform/lang"
 	"github.com/terraform-linters/tflint/tflint"
 )
 

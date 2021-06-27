@@ -3,9 +3,9 @@ package plugin
 import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/hashicorp/terraform/configs"
 	client "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint/client"
+	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/tflint"
 )
 

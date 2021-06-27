@@ -12,9 +12,9 @@ import (
 	"github.com/fatih/color"
 	"github.com/golang/mock/gomock"
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/terraform/configs"
-	"github.com/hashicorp/terraform/terraform"
 	"github.com/terraform-linters/tflint/rules"
+	"github.com/terraform-linters/tflint/terraform/configs"
+	"github.com/terraform-linters/tflint/terraform/terraform"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
