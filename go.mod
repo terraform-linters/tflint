@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/Masterminds/semver/v3 v3.1.1
-	github.com/agext/levenshtein v1.2.2
+	github.com/agext/levenshtein v1.2.3
 	github.com/apparentlymart/go-cidr v1.1.0
 	github.com/apparentlymart/go-versions v1.0.1
 	github.com/bmatcuk/doublestar v1.3.4
