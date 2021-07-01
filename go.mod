@@ -8,7 +8,7 @@ require (
 	github.com/apparentlymart/go-cidr v1.1.0
 	github.com/apparentlymart/go-versions v1.0.1
 	github.com/bmatcuk/doublestar v1.3.4
-	github.com/fatih/color v1.10.0
+	github.com/fatih/color v1.12.0
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/google/go-cmp v0.5.6
