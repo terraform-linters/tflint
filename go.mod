@@ -9,7 +9,7 @@ require (
 	github.com/apparentlymart/go-versions v1.0.1
 	github.com/bmatcuk/doublestar v1.3.4
 	github.com/fatih/color v1.10.0
-	github.com/golang/mock v1.5.0
+	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/google/go-cmp v0.5.6
 	github.com/google/go-github/v35 v35.3.0
@@ -38,9 +38,8 @@ require (
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
 	golang.org/x/mod v0.4.2
-	golang.org/x/net v0.0.0-20210326060303-6b1517762897
+	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
 	golang.org/x/term v0.0.0-20201210144234-2321bbc49cbf // indirect
 	golang.org/x/text v0.3.6
-	golang.org/x/tools v0.0.0-20201028111035-eafbe7b904eb // indirect
 	google.golang.org/api v0.34.0 // indirect
 )
