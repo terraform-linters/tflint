@@ -358,8 +358,8 @@ github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/terraform-linters/tflint-plugin-sdk v0.8.2/go.mod h1:UsVDOw0Urg0POULWugZ6XFzWJ6i0NaTFYtlYrQe4Auw=
 github.com/terraform-linters/tflint-plugin-sdk v0.8.3-0.20210614125323-8364139f3745 h1:Pfug/EdNJFp82PJh1EjOCrF4sXIR+MA/K5Xsgdja2Ek=
 github.com/terraform-linters/tflint-plugin-sdk v0.8.3-0.20210614125323-8364139f3745/go.mod h1:UsVDOw0Urg0POULWugZ6XFzWJ6i0NaTFYtlYrQe4Auw=
-github.com/terraform-linters/tflint-ruleset-aws v0.4.1 h1:g+c6nrHl09W2RmSbEZG4UtIVKVknERHPTMQysukuTsk=
-github.com/terraform-linters/tflint-ruleset-aws v0.4.1/go.mod h1:OoFdm8gUCOiKHlhvZQ1/r8EhGF75aYUM/URrBFjIXus=
+github.com/terraform-linters/tflint-ruleset-aws v0.4.3 h1:qpRwmVlJNz2UwWwDz2MxyetXIBDuTBiq+j9kzi82l3Q=
+github.com/terraform-linters/tflint-ruleset-aws v0.4.3/go.mod h1:OoFdm8gUCOiKHlhvZQ1/r8EhGF75aYUM/URrBFjIXus=
 github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20210603220658-c16ad68fc0b6/go.mod h1:9t9ETRrldqJ/AI5x4zJYywM0ykXJR2PmaSj/ir0lJjY=
 github.com/ulikunitz/xz v0.5.8 h1:ERv8V6GKqVi23rgu5cj9pVfVzJbOqAY2Ntl88O6c2nQ=
 github.com/ulikunitz/xz v0.5.8/go.mod h1:nbz6k7qbPmH4IRqmfOplQw/tblSgqTqBwxkY0oWt/14=

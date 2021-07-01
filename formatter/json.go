@@ -8,63 +8,68 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-type jsonIssue struct {
-	Rule    jsonRule    `json:"rule"`
+// JSONIssue is a temporary structure for converting TFLint issues to JSON.
+type JSONIssue struct {
+	Rule    JSONRule    `json:"rule"`
 	Message string      `json:"message"`
-	Range   jsonRange   `json:"range"`
-	Callers []jsonRange `json:"callers"`
+	Range   JSONRange   `json:"range"`
+	Callers []JSONRange `json:"callers"`
 }
 
-type jsonRule struct {
+// JSONRule is a temporary structure for converting TFLint rules to JSON.
+type JSONRule struct {
 	Name     string `json:"name"`
 	Severity string `json:"severity"`
 	Link     string `json:"link"`
 }
 
-type jsonRange struct {
+// JSONRange is a temporary structure for converting ranges to JSON.
+type JSONRange struct {
 	Filename string  `json:"filename"`
-	Start    jsonPos `json:"start"`
-	End      jsonPos `json:"end"`
+	Start    JSONPos `json:"start"`
+	End      JSONPos `json:"end"`
 }
 
-type jsonPos struct {
+// JSONPos is a temporary structure for converting positions to JSON.
+type JSONPos struct {
 	Line   int `json:"line"`
 	Column int `json:"column"`
 }
 
-type jsonError struct {
+// JSONError is a temporary structure for converting TFLint errors to JSON.
+type JSONError struct {
 	Message string `json:"message"`
 }
 
-// JSONOutput is a temporary structure for converting to JSON
+// JSONOutput is a temporary structure for converting to JSON.
 type JSONOutput struct {
-	Issues []jsonIssue `json:"issues"`
-	Errors []jsonError `json:"errors"`
+	Issues []JSONIssue `json:"issues"`
+	Errors []JSONError `json:"errors"`
 }
 
 func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
-	ret := &JSONOutput{Issues: make([]jsonIssue, len(issues)), Errors: []jsonError{}}
+	ret := &JSONOutput{Issues: make([]JSONIssue, len(issues)), Errors: []JSONError{}}
 
 	for idx, issue := range issues.Sort() {
-		ret.Issues[idx] = jsonIssue{
-			Rule: jsonRule{
+		ret.Issues[idx] = JSONIssue{
+			Rule: JSONRule{
 				Name:     issue.Rule.Name(),
 				Severity: toSeverity(issue.Rule.Severity()),
 				Link:     issue.Rule.Link(),
 			},
 			Message: issue.Message,
-			Range: jsonRange{
+			Range: JSONRange{
 				Filename: issue.Range.Filename,
-				Start:    jsonPos{Line: issue.Range.Start.Line, Column: issue.Range.Start.Column},
-				End:      jsonPos{Line: issue.Range.End.Line, Column: issue.Range.End.Column},
+				Start:    JSONPos{Line: issue.Range.Start.Line, Column: issue.Range.Start.Column},
+				End:      JSONPos{Line: issue.Range.End.Line, Column: issue.Range.End.Column},
 			},
-			Callers: make([]jsonRange, len(issue.Callers)),
+			Callers: make([]JSONRange, len(issue.Callers)),
 		}
 		for i, caller := range issue.Callers {
-			ret.Issues[idx].Callers[i] = jsonRange{
+			ret.Issues[idx].Callers[i] = JSONRange{
 				Filename: caller.Filename,
-				Start:    jsonPos{Line: caller.Start.Line, Column: caller.Start.Column},
-				End:      jsonPos{Line: caller.End.Line, Column: caller.End.Column},
+				Start:    JSONPos{Line: caller.Start.Line, Column: caller.Start.Column},
+				End:      JSONPos{Line: caller.End.Line, Column: caller.End.Column},
 			}
 		}
 	}
@@ -77,9 +82,9 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 			errs = []error{tferr.Cause}
 		}
 
-		ret.Errors = make([]jsonError, len(errs))
+		ret.Errors = make([]JSONError, len(errs))
 		for idx, err := range errs {
-			ret.Errors[idx] = jsonError{Message: err.Error()}
+			ret.Errors[idx] = JSONError{Message: err.Error()}
 		}
 	}
 
