@@ -16,7 +16,7 @@ require (
 	github.com/google/uuid v1.2.0
 	github.com/gorilla/websocket v1.4.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0
-	github.com/hashicorp/go-getter v1.5.3
+	github.com/hashicorp/go-getter v1.5.5
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hashicorp/go-plugin v1.4.1
 	github.com/hashicorp/go-uuid v1.0.2
