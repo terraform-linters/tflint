@@ -14,6 +14,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/terraform-linters/tflint/formatter"
 )
 
@@ -125,7 +126,10 @@ func TestBundledPlugin(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		if !cmp.Equal(got, expected) {
+		opts := []cmp.Option{
+			cmpopts.IgnoreFields(formatter.JSONRule{}, "Link"),
+		}
+		if !cmp.Equal(got, expected, opts...) {
 			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(expected, got))
 		}
 	}
