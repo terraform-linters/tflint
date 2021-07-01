@@ -7,7 +7,7 @@ require (
 	github.com/agext/levenshtein v1.2.2
 	github.com/apparentlymart/go-cidr v1.1.0
 	github.com/apparentlymart/go-versions v1.0.1
-	github.com/bmatcuk/doublestar v1.1.5
+	github.com/bmatcuk/doublestar v1.3.4
 	github.com/fatih/color v1.10.0
 	github.com/golang/mock v1.5.0
 	github.com/golang/protobuf v1.4.3 // indirect
