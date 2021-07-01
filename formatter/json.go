@@ -8,6 +8,7 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
+// JSONIssue is a temporary structure for converting TFLint issues to JSON.
 type JSONIssue struct {
 	Rule    JSONRule    `json:"rule"`
 	Message string      `json:"message"`
@@ -15,28 +16,32 @@ type JSONIssue struct {
 	Callers []JSONRange `json:"callers"`
 }
 
+// JSONRule is a temporary structure for converting TFLint rules to JSON.
 type JSONRule struct {
 	Name     string `json:"name"`
 	Severity string `json:"severity"`
 	Link     string `json:"link"`
 }
 
+// JSONRange is a temporary structure for converting ranges to JSON.
 type JSONRange struct {
 	Filename string  `json:"filename"`
 	Start    JSONPos `json:"start"`
 	End      JSONPos `json:"end"`
 }
 
+// JSONPos is a temporary structure for converting positions to JSON.
 type JSONPos struct {
 	Line   int `json:"line"`
 	Column int `json:"column"`
 }
 
+// JSONError is a temporary structure for converting TFLint errors to JSON.
 type JSONError struct {
 	Message string `json:"message"`
 }
 
-// JSONOutput is a temporary structure for converting to JSON
+// JSONOutput is a temporary structure for converting to JSON.
 type JSONOutput struct {
 	Issues []JSONIssue `json:"issues"`
 	Errors []JSONError `json:"errors"`
