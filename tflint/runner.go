@@ -10,10 +10,10 @@ import (
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
-	"github.com/hashicorp/terraform/addrs"
-	"github.com/hashicorp/terraform/configs"
-	"github.com/hashicorp/terraform/lang"
-	"github.com/hashicorp/terraform/terraform"
+	"github.com/terraform-linters/tflint/terraform/addrs"
+	"github.com/terraform-linters/tflint/terraform/configs"
+	"github.com/terraform-linters/tflint/terraform/lang"
+	"github.com/terraform-linters/tflint/terraform/terraform"
 	"github.com/zclconf/go-cty/cty"
 )
 

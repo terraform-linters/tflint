@@ -9,8 +9,8 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	v2 "github.com/hashicorp/hcl/v2"
-	configs "github.com/hashicorp/terraform/configs"
-	terraform "github.com/hashicorp/terraform/terraform"
+	configs "github.com/terraform-linters/tflint/terraform/configs"
+	terraform "github.com/terraform-linters/tflint/terraform/terraform"
 )
 
 // MockAbstractLoader is a mock of AbstractLoader interface.

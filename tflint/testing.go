@@ -9,8 +9,8 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/terraform/terraform"
 	"github.com/spf13/afero"
+	"github.com/terraform-linters/tflint/terraform/terraform"
 )
 
 // TestRunner returns a runner for testing.

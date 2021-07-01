@@ -13,10 +13,10 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/hashicorp/terraform/addrs"
-	"github.com/hashicorp/terraform/configs"
-	"github.com/hashicorp/terraform/terraform"
 	"github.com/spf13/afero"
+	"github.com/terraform-linters/tflint/terraform/addrs"
+	"github.com/terraform-linters/tflint/terraform/configs"
+	"github.com/terraform-linters/tflint/terraform/terraform"
 )
 
 //go:generate go run github.com/golang/mock/mockgen -source loader.go -destination loader_mock.go -package tflint -self_package github.com/terraform-linters/tflint/tflint

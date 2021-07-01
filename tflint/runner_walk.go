@@ -3,7 +3,7 @@ package tflint
 import (
 	"log"
 
-	"github.com/hashicorp/terraform/configs"
+	"github.com/terraform-linters/tflint/terraform/configs"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"

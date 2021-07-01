@@ -8,8 +8,8 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/hashicorp/terraform/terraform"
 	"github.com/spf13/afero"
+	"github.com/terraform-linters/tflint/terraform/terraform"
 )
 
 func TestMain(m *testing.M) {
