@@ -18,7 +18,7 @@ require (
 	github.com/hashicorp/errwrap v1.1.0
 	github.com/hashicorp/go-getter v1.5.5
 	github.com/hashicorp/go-multierror v1.1.1
-	github.com/hashicorp/go-plugin v1.4.1
+	github.com/hashicorp/go-plugin v1.4.2
 	github.com/hashicorp/go-uuid v1.0.2
 	github.com/hashicorp/go-version v1.3.0
 	github.com/hashicorp/hcl/v2 v2.10.0
@@ -31,8 +31,8 @@ require (
 	github.com/sourcegraph/go-lsp v0.0.0-20181119182933-0c7d621186c1
 	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
 	github.com/spf13/afero v1.2.2 // matches version used by terraform
-	github.com/terraform-linters/tflint-plugin-sdk v0.8.3-0.20210614125323-8364139f3745
-	github.com/terraform-linters/tflint-ruleset-aws v0.4.3
+	github.com/terraform-linters/tflint-plugin-sdk v0.9.0
+	github.com/terraform-linters/tflint-ruleset-aws v0.5.0
 	github.com/zclconf/go-cty v1.8.4
 	github.com/zclconf/go-cty-yaml v1.0.2
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a
