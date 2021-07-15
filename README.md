@@ -21,13 +21,13 @@ TFLint is a framework and each feature is provided by plugins, the key features 
 Bash script (Linux):
 
 ```console
-$ curl https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+curl https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 ```
 
 Homebrew (macOS):
 
 ```console
-$ brew install tflint
+brew install tflint
 ```
 
 Chocolatey (Windows):
@@ -36,13 +36,22 @@ Chocolatey (Windows):
 choco install tflint
 ```
 
-Docker:
+### Docker
+
+Instead of installing directly, you can use the Docker images:
+
+| Name | Description |
+| ---- | ----------- |
+| [ghcr.io/terraform-linters/tflint](https://github.com/terraform-linters/tflint/pkgs/container/tflint) | Basic image |
+| [ghcr.io/terraform-linters/tflint-bundle](https://github.com/terraform-linters/tflint-bundle/pkgs/container/tflint-bundle) | A Docker image with TFLint and ruleset plugins |
+
+Example:
 
 ```console
-$ docker run --rm -v $(pwd):/data -t ghcr.io/terraform-linters/tflint
+docker run --rm -v $(pwd):/data -t ghcr.io/terraform-linters/tflint
 ```
 
-Please note that this Docker image is not suitable for production CI/CD pipelines.
+### GitHub Actions
 
 If you want to run on GitHub Actions, [setup-tflint](https://github.com/terraform-linters/setup-tflint) action is available.
 
