@@ -207,8 +207,9 @@ github.com/hashicorp/go-getter v1.5.5/go.mod h1:BrrV/1clo8cCYu6mxvboYg+KutTiFnXj
 github.com/hashicorp/go-hclog v0.0.0-20180709165350-ff2cf002a8dd/go.mod h1:9bjs9uLqI8l75knNv3lV1kA55veR+WUPSiKIWcQHudI=
 github.com/hashicorp/go-hclog v0.14.1/go.mod h1:whpDNt7SSdeAju8AWKIWsul05p54N/39EeqMAyrmvFQ=
 github.com/hashicorp/go-hclog v0.15.0/go.mod h1:whpDNt7SSdeAju8AWKIWsul05p54N/39EeqMAyrmvFQ=
-github.com/hashicorp/go-hclog v0.16.1 h1:IVQwpTGNRRIHafnTs2dQLIk4ENtneRIEEJWOVDqz99o=
 github.com/hashicorp/go-hclog v0.16.1/go.mod h1:whpDNt7SSdeAju8AWKIWsul05p54N/39EeqMAyrmvFQ=
+github.com/hashicorp/go-hclog v0.16.2 h1:K4ev2ib4LdQETX5cSZBG0DVLk1jwGqSPXBjdah3veNs=
+github.com/hashicorp/go-hclog v0.16.2/go.mod h1:whpDNt7SSdeAju8AWKIWsul05p54N/39EeqMAyrmvFQ=
 github.com/hashicorp/go-multierror v1.0.0/go.mod h1:dHtQlpGsu+cZNNAkkCN/P3hoUDHhCYQXV3UM06sGGrk=
 github.com/hashicorp/go-multierror v1.1.1 h1:H5DkEtf6CXdFp0N0Em5UCwQpXMWke8IA0+lD48awMYo=
 github.com/hashicorp/go-multierror v1.1.1/go.mod h1:iw975J/qwKPdAO1clOe2L8331t/9/fmwbPZ6JB6eMoM=
@@ -354,8 +355,9 @@ github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5CcY=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
-github.com/terraform-linters/tflint-plugin-sdk v0.9.0 h1:W5Y3nDEeEQPNkfENYzqj4w1jOTU+Zj0HQwBnFbaxeAQ=
 github.com/terraform-linters/tflint-plugin-sdk v0.9.0/go.mod h1:wtmUaxVqz3W4wrZxqSk5PnVznjpoAZ94NZsAfTKVp5g=
+github.com/terraform-linters/tflint-plugin-sdk v0.9.1 h1:Q7+QmvkxrINjsxQ9iOR9GDIppS7kT2hXQBHNaZ+01ug=
+github.com/terraform-linters/tflint-plugin-sdk v0.9.1/go.mod h1:2pu+KHPrxfV/Y0inO9c5w4ptL6dNIHu8Em7ZxXBNP4E=
 github.com/terraform-linters/tflint-ruleset-aws v0.5.0 h1:q4H9wI4KGHOw2lkgeFE6wdmIGAYdHZEuf0bjArM+XNw=
 github.com/terraform-linters/tflint-ruleset-aws v0.5.0/go.mod h1:khAGVJ/GZw99FkKpHNRPIiy0XOqkoJYFerq703R9fls=
 github.com/terraform-providers/terraform-provider-aws v1.60.1-0.20210702165135-63f852f1a2b6/go.mod h1:3mySlX6hr0D4MikLB7F9XE8LuCBTnSCQTl47J5jjyrs=

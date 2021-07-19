@@ -31,7 +31,7 @@ require (
 	github.com/sourcegraph/go-lsp v0.0.0-20181119182933-0c7d621186c1
 	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
 	github.com/spf13/afero v1.2.2 // matches version used by terraform
-	github.com/terraform-linters/tflint-plugin-sdk v0.9.0
+	github.com/terraform-linters/tflint-plugin-sdk v0.9.1
 	github.com/terraform-linters/tflint-ruleset-aws v0.5.0
 	github.com/zclconf/go-cty v1.9.0
 	github.com/zclconf/go-cty-yaml v1.0.2
