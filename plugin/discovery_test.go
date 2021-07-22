@@ -149,6 +149,40 @@ func Test_Discovery_notFound(t *testing.T) {
 	}
 }
 
+func Test_Discovery_plugin_name_is_directory(t *testing.T) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Chdir(cwd)
+
+	err = os.Chdir(filepath.Join(cwd, "test-fixtures", "plugin_name_is_directory"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	original := PluginRoot
+	PluginRoot = filepath.Join(cwd, "test-fixtures", "plugin_name_is_directory")
+	defer func() { PluginRoot = original }()
+
+	_, err = Discovery(&tflint.Config{
+		Plugins: map[string]*tflint.PluginConfig{
+			"foo": {
+				Name:    "foo",
+				Enabled: true,
+			},
+		},
+	})
+
+	if err == nil {
+		t.Fatal("The error should have occurred, but didn't")
+	}
+	expected := fmt.Sprintf("Plugin `foo` not found in %s", PluginRoot)
+	if err.Error() != expected {
+		t.Fatalf("The error message is not matched: want=%s, got=%s", expected, err.Error())
+	}
+}
+
 func Test_Discovery_notFoundForAutoInstallation(t *testing.T) {
 	cwd, err := os.Getwd()
 	if err != nil {
