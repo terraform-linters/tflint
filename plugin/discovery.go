@@ -117,15 +117,24 @@ func getPluginDir() (string, error) {
 // Only in the case of Windows, the pattern with the `.exe` is also considered,
 // and if it exists, the extension is added to the argument.
 func findPluginPath(path string) (string, error) {
-	_, err := os.Stat(path)
-	if os.IsNotExist(err) && runtime.GOOS != "windows" {
-		return "", os.ErrNotExist
-	} else if !os.IsNotExist(err) {
-		return path, nil
+	if runtime.GOOS != "windows" {
+		return checkPluginExistance(path)
 	}
 
-	if _, err := os.Stat(path + ".exe"); !os.IsNotExist(err) {
-		return path + ".exe", nil
+	returnPath, err := checkPluginExistance(path)
+	if os.IsNotExist(err) {
+		return checkPluginExistance(path + ".exe")
+	}
+
+	return returnPath, err
+}
+
+func checkPluginExistance(path string) (string, error) {
+	info, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		return "", os.ErrNotExist
+	} else if !os.IsNotExist(err) && !info.IsDir() {
+		return path, nil
 	}
 
 	return "", os.ErrNotExist
