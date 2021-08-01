@@ -14,7 +14,6 @@ require (
 	github.com/google/go-cmp v0.5.6
 	github.com/google/go-github/v35 v35.3.0
 	github.com/google/uuid v1.3.0
-	github.com/gorilla/websocket v1.4.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0
 	github.com/hashicorp/go-getter v1.5.5
 	github.com/hashicorp/go-multierror v1.1.1
@@ -29,7 +28,7 @@ require (
 	github.com/mattn/go-colorable v0.1.8
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/sourcegraph/go-lsp v0.0.0-20181119182933-0c7d621186c1
-	github.com/sourcegraph/jsonrpc2 v0.0.0-20190106185902-35a74f039c6a
+	github.com/sourcegraph/jsonrpc2 v0.1.0
 	github.com/spf13/afero v1.2.2 // matches version used by terraform
 	github.com/terraform-linters/tflint-plugin-sdk v0.9.1
 	github.com/terraform-linters/tflint-ruleset-aws v0.5.0
