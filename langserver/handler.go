@@ -35,7 +35,7 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 
 	// AWS plugin is automatically enabled for the backward compatibility.
 	if _, exists := cfg.Plugins["aws"]; !exists {
-		log.Print("[INFO] Plugin `aws` is automatically enabled when the `aws` plugin configuration not found")
+		log.Print("WARNING: The plugin `aws` is not explicitly enabled. The bundled plugin will be enabled instead, but it is deprecated and will be removed in a future version. Please see https://github.com/terraform-linters/tflint/pull/1160 for details.")
 		cfg.Plugins["aws"] = &tflint.PluginConfig{
 			Name:    "aws",
 			Enabled: true,
