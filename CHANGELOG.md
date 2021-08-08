@@ -1,3 +1,29 @@
+## 0.31.0 (2021-08-08)
+
+### Enhancements
+
+- [#1177](https://github.com/terraform-linters/tflint/pull/1177): Bump bundled AWS ruleset plugin ([@wata727](https://github.com/wata727))
+
+### Changes
+
+- [#1160](https://github.com/terraform-linters/tflint/pull/1160): plugin: Deprecate bundled plugins ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#1169](https://github.com/terraform-linters/tflint/pull/1169): fix: return error if plugin is not a file ([@josh-barker-coles](https://github.com/josh-barker-coles))
+
+### Chores
+
+- [#1156](https://github.com/terraform-linters/tflint/pull/1156): grammar fix on installation script ([@radius314](https://github.com/radius314))
+- [#1158](https://github.com/terraform-linters/tflint/pull/1158): terraform: Remove unused internal packages impl ([@wata727](https://github.com/wata727))
+- [#1161](https://github.com/terraform-linters/tflint/pull/1161): build(deps): Bump github.com/zclconf/go-cty from 1.8.4 to 1.9.0
+- [#1164](https://github.com/terraform-linters/tflint/pull/1164): Update README about Docker images ([@wata727](https://github.com/wata727))
+- [#1166](https://github.com/terraform-linters/tflint/pull/1166): build(deps): Bump github.com/terraform-linters/tflint-plugin-sdk from 0.9.0 to 0.9.1
+- [#1167](https://github.com/terraform-linters/tflint/pull/1167): build(deps): Bump github.com/google/uuid from 1.2.0 to 1.3.0
+- [#1172](https://github.com/terraform-linters/tflint/pull/1172): build(deps): Bump github.com/hashicorp/hcl/v2 from 2.10.0 to 2.10.1
+- [#1174](https://github.com/terraform-linters/tflint/pull/1174): Bump github.com/sourcegraph/jsonrpc2 to v0.1.0 ([@wata727](https://github.com/wata727))
+- [#1175](https://github.com/terraform-linters/tflint/pull/1175): build(deps): Bump github.com/hashicorp/go-getter from 1.5.5 to 1.5.6
+
 ## 0.30.0 (2021-07-04)
 
 This release follows the package internalization of Terraform v1.0, and copied some packages as part of TFLint. As a result, the hashicorp/terraform dependency has remove from go.mod, but the copied packages are still included. Therefore, it does not have a significant impact on users. See https://github.com/terraform-linters/tflint/issues/937 for more information.
