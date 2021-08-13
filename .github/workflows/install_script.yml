@@ -23,11 +23,20 @@ jobs:
     - name: Install latest version
       run: |
         bash install_linux.sh
+        tflint -v
     - name: Install specific version
       env:
         TFLINT_VERSION: v0.15.0
       run: |
         bash install_linux.sh
+        tflint -v
+    - name: Install to custom path
+      run: |
+        mkdir "$TFLINT_INSTALL_PATH"
+        bash install_linux.sh
+        "$TFLINT_INSTALL_PATH/tflint" -v
+      env:
+        TFLINT_INSTALL_PATH: /custom/tflint
   container:
     runs-on: ubuntu-latest
     container:
