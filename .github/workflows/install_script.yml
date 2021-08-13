@@ -32,7 +32,7 @@ jobs:
         tflint -v
     - name: Install to custom path
       run: |
-        mkdir -p "$TFLINT_INSTALL_PATH"
+        sudo mkdir -p "$TFLINT_INSTALL_PATH"
         bash install_linux.sh
         "$TFLINT_INSTALL_PATH/tflint" -v
       env:
