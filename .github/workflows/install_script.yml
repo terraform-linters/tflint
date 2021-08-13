@@ -22,8 +22,7 @@ jobs:
         submodules: true
     - name: Append to /bin to Windows $PATH
       if: ${{ startsWith(matrix.os, 'windows') }}
-      run: echo /bin >> "$GITHUB_PATH"
-      shell: bash
+      run: echo "$pwd.drive.name\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Appendbash
     - name: Install latest version
       run: |
         ./install_linux.sh
