@@ -21,7 +21,7 @@ jobs:
       with:
         submodules: true
     - name: Append to /bin to Windows $PATH
-      if: ${{ matrix.os == 'windows' }}
+      if: ${{ startsWith(matrix.os, 'windows') }}
       run: echo /bin >> "$GITHUB_PATH"
       shell: bash
     - name: Install latest version
