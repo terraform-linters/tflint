@@ -214,7 +214,7 @@ func TestTerraformModuleVersion_NonRegistry(t *testing.T) {
 	for _, tc := range cases {
 		tc := tc
 		t.Run(tc.Name, func(t *testing.T) {
-			content := fmt.Sprintf(testTerraformModuleVersion_NonRegistrySource, tc.Source)
+			content := fmt.Sprintf(testTerraformModuleVersionNonRegistrySource, tc.Source)
 			runner := tflint.TestRunner(t, map[string]string{"module.tf": content})
 
 			if err := rule.Check(runner); err != nil {
@@ -255,7 +255,7 @@ rule "terraform_module_version" {
 }
 `
 
-const testTerraformModuleVersion_NonRegistrySource = `
+const testTerraformModuleVersionNonRegistrySource = `
 module "m" {
 	source = "%s"
 }

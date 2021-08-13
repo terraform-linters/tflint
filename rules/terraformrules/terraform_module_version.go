@@ -15,6 +15,7 @@ var exactVersionRegexp = regexp.MustCompile(`^=?\s*\d+\.\d+\.\d+$`)
 // TerraformModuleVersionRule checks that Terraform modules sourced from a registry specify a version
 type TerraformModuleVersionRule struct{}
 
+// TerraformModuleVersionRuleConfig is the config structure for the TerraformModuleVersionRule rule
 type TerraformModuleVersionRuleConfig struct {
 	Exact bool `hcl:"exact,optional"`
 }
