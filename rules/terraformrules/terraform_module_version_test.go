@@ -27,6 +27,15 @@ module "m" {
 			Expected: tflint.Issues{},
 		},
 		{
+			Name: "multiple digits",
+			Content: `
+module "m" {
+  source = "ns/name/provider"
+	version = "10.0.0"
+}`,
+			Expected: tflint.Issues{},
+		},
+		{
 			Name: "version equals",
 			Content: `
 module "m" {
