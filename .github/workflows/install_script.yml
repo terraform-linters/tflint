@@ -35,10 +35,11 @@ jobs:
         tflint -v
     - name: Install to custom path
       run: |
+        mkdir "$TFLINT_INSTALL_PATH"
         ./install_linux.sh
-        ./tflint" -v
+        "$TFLINT_INSTALL_PATH/tflint" -v
       env:
-        TFLINT_INSTALL_PATH: ${{ github.workspace }}
+        TFLINT_INSTALL_PATH: ${{ github.workspace }}/install-path
       shell: bash
   container:
     runs-on: ubuntu-latest
