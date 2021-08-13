@@ -2,7 +2,6 @@
 [![Build Status](https://github.com/terraform-linters/tflint/workflows/build/badge.svg?branch=master)](https://github.com/terraform-linters/tflint/actions)
 [![GitHub release](https://img.shields.io/github/release/terraform-linters/tflint.svg)](https://github.com/terraform-linters/tflint/releases/latest)
 [![Terraform Compatibility](https://img.shields.io/badge/terraform-%3E%3D%200.12-blue)](docs/user-guide/compatibility.md)
-[![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/wata727/tflint/)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-blue.svg)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/terraform-linters/tflint)](https://goreportcard.com/report/github.com/terraform-linters/tflint)
 [![Homebrew](https://img.shields.io/badge/dynamic/json.svg?url=https://formulae.brew.sh/api/formula/tflint.json&query=$.versions.stable&label=homebrew)](https://formulae.brew.sh/formula/tflint)
@@ -22,13 +21,13 @@ TFLint is a framework and each feature is provided by plugins, the key features 
 Bash script (Linux):
 
 ```console
-$ curl https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+curl https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 ```
 
 Homebrew (macOS):
 
 ```console
-$ brew install tflint
+brew install tflint
 ```
 
 Chocolatey (Windows):
@@ -37,13 +36,22 @@ Chocolatey (Windows):
 choco install tflint
 ```
 
-Docker:
+### Docker
+
+Instead of installing directly, you can use the Docker images:
+
+| Name | Description |
+| ---- | ----------- |
+| [ghcr.io/terraform-linters/tflint](https://github.com/terraform-linters/tflint/pkgs/container/tflint) | Basic image |
+| [ghcr.io/terraform-linters/tflint-bundle](https://github.com/terraform-linters/tflint-bundle/pkgs/container/tflint-bundle) | A Docker image with TFLint and ruleset plugins |
+
+Example:
 
 ```console
-$ docker run --rm -v $(pwd):/data -t wata727/tflint
+docker run --rm -v $(pwd):/data -t ghcr.io/terraform-linters/tflint
 ```
 
-Please note that this Docker image is not suitable for production CI/CD pipelines.
+### GitHub Actions
 
 If you want to run on GitHub Actions, [setup-tflint](https://github.com/terraform-linters/setup-tflint) action is available.
 

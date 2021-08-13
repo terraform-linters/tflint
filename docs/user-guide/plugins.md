@@ -58,6 +58,16 @@ Plugins under the terraform-linters organization (AWS/GCP/Azure ruleset plugins)
 
 AWS plugin is bundled with the TFLint binary for backward compatibility, so you can use it without installing it separately. And it is automatically enabled when your Terraform configuration requires AWS provider.
 
+## Avoiding rate limiting
+
+When you install plugins with `tflint --init`, call the GitHub API to get release metadata. This is typically an unauthenticated request with a rate limit of 60 requests per hour.
+
+https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting
+
+This limitation can be a problem if you need to run `--init` frequently, such as in CI environments. If you want to increase the rate limit, you can send an authenticated request by setting an OAuth2 access token in the `GITHUB_TOKEN` environment variable.
+
+It's also a good idea to cache the plugin directory, as TFLint will only send requests if plugins aren't installed. See also the [setup-tflint's example](https://github.com/terraform-linters/setup-tflint#usage).
+
 ## Advanced Usage
 
 You can also install the plugin manually. This is mainly useful for plugin development and for plugins that are not published on GitHub. In that case, omit the `source` and `version` attributes.

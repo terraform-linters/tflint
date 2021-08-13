@@ -48,6 +48,7 @@ func (cli *CLI) printVersion(opts Options) int {
 		for addr := range reqs {
 			if addr.Type == "aws" {
 				log.Print("[INFO] AWS provider requirements found. Enable the plugin `aws` automatically")
+				fmt.Fprintln(cli.errStream, "WARNING: The plugin `aws` is not explicitly enabled. The bundled plugin will be enabled instead, but it is deprecated and will be removed in a future version. Please see https://github.com/terraform-linters/tflint/pull/1160 for details.")
 				cfg.Plugins["aws"] = &tflint.PluginConfig{
 					Name:    "aws",
 					Enabled: true,

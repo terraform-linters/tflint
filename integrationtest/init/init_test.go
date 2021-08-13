@@ -33,12 +33,12 @@ func TestIntegration(t *testing.T) {
 	if !strings.Contains(outStream.String(), "Installing `aws` plugin...") {
 		t.Fatalf("Expected to contain an installation log, but did not: stdout=%s, stderr=%s", outStream, errStream)
 	}
-	if !strings.Contains(outStream.String(), "Installed `aws` (source: github.com/terraform-linters/tflint-ruleset-aws, version: 0.4.0)") {
+	if !strings.Contains(outStream.String(), "Installed `aws` (source: github.com/terraform-linters/tflint-ruleset-aws, version: 0.5.0)") {
 		t.Fatalf("Expected to contain an installed log, but did not: stdout=%s, stderr=%s", outStream, errStream)
 	}
 
 	cli.Run([]string{"./tflint", "-v"})
-	if !strings.Contains(outStream.String(), "ruleset.aws (0.4.0)") {
+	if !strings.Contains(outStream.String(), "ruleset.aws (0.5.0)") {
 		t.Fatalf("Expected to contain a plugin version output, but did not: stdout=%s, stderr=%s", outStream, errStream)
 	}
 

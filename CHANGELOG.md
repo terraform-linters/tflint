@@ -1,3 +1,58 @@
+## 0.31.0 (2021-08-08)
+
+### Enhancements
+
+- [#1177](https://github.com/terraform-linters/tflint/pull/1177): Bump bundled AWS ruleset plugin ([@wata727](https://github.com/wata727))
+
+### Changes
+
+- [#1160](https://github.com/terraform-linters/tflint/pull/1160): plugin: Deprecate bundled plugins ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#1169](https://github.com/terraform-linters/tflint/pull/1169): fix: return error if plugin is not a file ([@josh-barker-coles](https://github.com/josh-barker-coles))
+
+### Chores
+
+- [#1156](https://github.com/terraform-linters/tflint/pull/1156): grammar fix on installation script ([@radius314](https://github.com/radius314))
+- [#1158](https://github.com/terraform-linters/tflint/pull/1158): terraform: Remove unused internal packages impl ([@wata727](https://github.com/wata727))
+- [#1161](https://github.com/terraform-linters/tflint/pull/1161): build(deps): Bump github.com/zclconf/go-cty from 1.8.4 to 1.9.0
+- [#1164](https://github.com/terraform-linters/tflint/pull/1164): Update README about Docker images ([@wata727](https://github.com/wata727))
+- [#1166](https://github.com/terraform-linters/tflint/pull/1166): build(deps): Bump github.com/terraform-linters/tflint-plugin-sdk from 0.9.0 to 0.9.1
+- [#1167](https://github.com/terraform-linters/tflint/pull/1167): build(deps): Bump github.com/google/uuid from 1.2.0 to 1.3.0
+- [#1172](https://github.com/terraform-linters/tflint/pull/1172): build(deps): Bump github.com/hashicorp/hcl/v2 from 2.10.0 to 2.10.1
+- [#1174](https://github.com/terraform-linters/tflint/pull/1174): Bump github.com/sourcegraph/jsonrpc2 to v0.1.0 ([@wata727](https://github.com/wata727))
+- [#1175](https://github.com/terraform-linters/tflint/pull/1175): build(deps): Bump github.com/hashicorp/go-getter from 1.5.5 to 1.5.6
+
+## 0.30.0 (2021-07-04)
+
+This release follows the package internalization of Terraform v1.0, and copied some packages as part of TFLint. As a result, the hashicorp/terraform dependency has remove from go.mod, but the copied packages are still included. Therefore, it does not have a significant impact on users. See https://github.com/terraform-linters/tflint/issues/937 for more information.
+
+Also, this release adds a new API for the plugin system. For this update, plugins must be built with tflint-plugin-sdk v0.9.0 to work with TFLint v0.30.0. For details, please see the CHANGELOG of tflint-plugin-sdk.
+
+Finally, the Docker image was previously hosted under wata727/tflint, but has been moved to the GitHub Container Registry. If you are using this image, please migrate to ghcr.io/terraform-linters/tflint.
+
+### Enhancements
+
+- [#1132](https://github.com/terraform-linters/tflint/pull/1132): plugin: Expose Files() runner method to Server ([@jonathansp](https://github.com/jonathansp))
+- [#1143](https://github.com/terraform-linters/tflint/pull/1143): plugin: Allow authenticated requests via GITHUB_TOKEN ([@wata727](https://github.com/wata727))
+- [#1148](https://github.com/terraform-linters/tflint/pull/1148) [#1154](https://github.com/terraform-linters/tflint/pull/1154): Bump bundled AWS ruleset plugin ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1137](https://github.com/terraform-linters/tflint/pull/1137): build(deps): Bump alpine from 3.13 to 3.14.0
+- [#1141](https://github.com/terraform-linters/tflint/pull/1141): Copy internal packages from Terraform v1.0 ([@wata727](https://github.com/wata727))
+- [#1144](https://github.com/terraform-linters/tflint/pull/1144): build(deps): Bump golang.org/x/text from 0.3.5 to 0.3.6
+- [#1145](https://github.com/terraform-linters/tflint/pull/1145): build(deps): Bump github.com/bmatcuk/doublestar from 1.1.5 to 1.3.4
+- [#1146](https://github.com/terraform-linters/tflint/pull/1146): build(deps): Bump github.com/zclconf/go-cty from 1.8.3 to 1.8.4
+- [#1147](https://github.com/terraform-linters/tflint/pull/1147): build(deps): Bump github.com/fatih/color from 1.10.0 to 1.12.0
+- [#1149](https://github.com/terraform-linters/tflint/pull/1149): build(deps): Bump github.com/agext/levenshtein from 1.2.2 to 1.2.3
+- [#1150](https://github.com/terraform-linters/tflint/pull/1150): build(deps): Bump github.com/golang/mock from 1.5.0 to 1.6.0
+- [#1151](https://github.com/terraform-linters/tflint/pull/1151): build(deps): Bump github.com/google/go-github/v35 from 35.2.0 to 35.3.0
+- [#1152](https://github.com/terraform-linters/tflint/pull/1152): build(deps): Bump github.com/hashicorp/go-uuid from 1.0.1 to 1.0.2
+- [#1153](https://github.com/terraform-linters/tflint/pull/1153): build(deps): Bump github.com/hashicorp/go-getter from 1.5.3 to 1.5.5
+- [#1155](https://github.com/terraform-linters/tflint/pull/1155): docker: Migrate to GitHub Container Registry ([@wata727](https://github.com/wata727))
+
 ## 0.29.1 (2021-06-12)
 
 ### Chores

@@ -47,7 +47,7 @@ if [ $retVal -ne 0 ]; then
   echo "Failed to download tflint_${os}.zip"
   exit $retVal
 else
-  echo "Download was successfully"
+  echo "Downloaded successfully"
 fi
 
 echo -e "\n\n===================================================="
