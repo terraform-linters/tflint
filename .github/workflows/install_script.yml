@@ -22,21 +22,22 @@ jobs:
         submodules: true
     - name: Install latest version
       run: |
-        bash install_linux.sh
+        install_linux.sh
         tflint -v
     - name: Install specific version
       env:
         TFLINT_VERSION: v0.15.0
       run: |
-        bash install_linux.sh
+        install_linux.sh
         tflint -v
     - name: Install to custom path
       run: |
         sudo mkdir -p "$TFLINT_INSTALL_PATH"
-        bash install_linux.sh
+        install_linux.sh
         "$TFLINT_INSTALL_PATH/tflint" -v
       env:
         TFLINT_INSTALL_PATH: /custom/tflint
+      shell: bash
   container:
     runs-on: ubuntu-latest
     container:
@@ -50,9 +51,11 @@ jobs:
         apk add bash curl unzip
     - name: Install latest version
       run: |
-        bash install_linux.sh
+        install_linux.sh
+        tflint -v
     - name: Install specific version
       env:
         TFLINT_VERSION: v0.15.0
       run: |
-        bash install_linux.sh
+        install_linux.sh
+        tflint -v
