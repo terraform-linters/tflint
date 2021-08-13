@@ -85,7 +85,7 @@ else
 fi
 
 echo "Cleaning /tmp/tflint.zip and /tmp/tflint ..."
-rm /tmp/tflint.zip /tmp/tflint
+rm -f /tmp/tflint.zip /tmp/tflint
 
 echo -e "\n\n===================================================="
 echo "Current tflint version"
