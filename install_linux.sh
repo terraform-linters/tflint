@@ -54,35 +54,38 @@ echo -e "\n\n===================================================="
 echo "Unpacking /tmp/tflint.zip ..."
 unzip -u /tmp/tflint.zip -d /tmp/
 if [[ $os == "windows"* ]]; then
-  echo "Installing /tmp/tflint to /bin..."
-  mv /tmp/tflint /bin/
+  dest="${TFLINT_INSTALL_PATH:-/bin}/"
+  echo "Installing /tmp/tflint to ${dest}..."
+  mv /tmp/tflint "$dest"
   retVal=$?
   if [ $retVal -ne 0 ]; then
     echo "Failed to install tflint"
     exit $retVal
   else
-    echo "tflint installed at /bin/ successfully"
+    echo "tflint installed at ${dest} successfully"
   fi
 else
-  echo "Installing /tmp/tflint to /usr/local/bin..."
+  dest="${TFLINT_INSTALL_PATH:-/usr/local/bin}/"
+  echo "Installing /tmp/tflint to ${dest}..."
   
   if [[ "$(id -u)" == 0 ]]; then SUDO=""; else
     SUDO="sudo";
   fi
 
-  $SUDO mkdir -p /usr/local/bin
-  $SUDO install -b -c -v /tmp/tflint /usr/local/bin/
+  
+  $SUDO mkdir -p "$dest"
+  $SUDO install -b -c -v /tmp/tflint "$dest"
   retVal=$?
   if [ $retVal -ne 0 ]; then
     echo "Failed to install tflint"
     exit $retVal
   else
-    echo "tflint installed at /usr/local/bin/ successfully"
+    echo "tflint installed at ${dest} successfully"
   fi
 fi
 
 echo "Cleaning /tmp/tflint.zip and /tmp/tflint ..."
-rm /tmp/tflint.zip /tmp/tflint
+rm -f /tmp/tflint.zip /tmp/tflint
 
 echo -e "\n\n===================================================="
 echo "Current tflint version"
