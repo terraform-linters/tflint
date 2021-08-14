@@ -91,4 +91,4 @@ rm -f /tmp/tflint.zip /tmp/tflint
 
 echo -e "\n\n===================================================="
 echo "Current tflint version"
-tflint -v
+"${dest}/tflint" -v
