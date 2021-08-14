@@ -4,6 +4,8 @@ processor=$(uname -m)
 
 if [ "$processor" == "x86_64" ]; then
   arch="amd64"
+elif [ "$processor" == "arm64" ]; then
+  arch="arm64"
 else
   arch="386"
 fi
