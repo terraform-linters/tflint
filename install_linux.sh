@@ -4,6 +4,8 @@ processor=$(uname -m)
 
 if [ "$processor" == "x86_64" ]; then
   arch="amd64"
+elif [ "$processor" == "arm64" ]; then
+  arch="arm64"
 else
   arch="386"
 fi
@@ -41,7 +43,7 @@ else
 fi
 
 echo "Downloading TFLint $version"
-curl -L -o /tmp/tflint.zip "https://github.com/terraform-linters/tflint/releases/download/${version}/tflint_${os}.zip"
+curl --fail --silent -L -o /tmp/tflint.zip "https://github.com/terraform-linters/tflint/releases/download/${version}/tflint_${os}.zip"
 retVal=$?
 if [ $retVal -ne 0 ]; then
   echo "Failed to download tflint_${os}.zip"
