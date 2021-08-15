@@ -77,7 +77,7 @@ else
 
   
   $SUDO mkdir -p "$dest"
-  $SUDO install --backup=none -c -v /tmp/tflint "$dest"
+  $SUDO install -c -v /tmp/tflint "$dest"
   retVal=$?
   if [ $retVal -ne 0 ]; then
     echo "Failed to install tflint"
