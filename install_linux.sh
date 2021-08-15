@@ -70,7 +70,7 @@ else
   dest="${TFLINT_INSTALL_PATH:-/usr/local/bin}/"
   echo "Installing /tmp/tflint to ${dest}..."
   
-  if [ -w "$TFLINT_INSTALL_PATH" ]; then SUDO=""; else
+  if [[ -w "$dest" ]]; then SUDO=""; else
     # current user does not have write access to install directory
     SUDO="sudo";
   fi
