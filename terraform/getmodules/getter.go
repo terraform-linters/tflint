@@ -1,13 +1,8 @@
 package getmodules
 
 import (
-	"fmt"
-	"log"
-	"os"
-
 	cleanhttp "github.com/hashicorp/go-cleanhttp"
 	getter "github.com/hashicorp/go-getter"
-	"github.com/terraform-linters/tflint/terraform/copy"
 )
 
 // We configure our own go-getter detector and getter sets here, because
@@ -98,64 +93,3 @@ var getterHTTPGetter = &getter.HttpGetter{
 // imports getmodules in order to indirectly access our go-getter
 // configuration.)
 type reusingGetter map[string]string
-
-// getWithGoGetter fetches the package at the given address into the given
-// target directory. The given address must already be in normalized form
-// (using NormalizePackageAddress) or else the behavior is undefined.
-//
-// This function deals only in entire packages, so it's always the caller's
-// responsibility to handle any subdirectory specification and select a
-// suitable subdirectory of the given installation directory after installation
-// has succeeded.
-//
-// This function would ideally accept packageAddr as a value of type
-// addrs.ModulePackage, but we can't do that because the addrs package
-// depends on this package for package address parsing. Therefore we just
-// use a string here but assume that the caller got that value by calling
-// the String method on a valid addrs.ModulePackage value.
-//
-// The errors returned by this function are those surfaced by the underlying
-// go-getter library, which have very inconsistent quality as
-// end-user-actionable error messages. At this time we do not have any
-// reasonable way to improve these error messages at this layer because
-// the underlying errors are not separately recognizable.
-func (g reusingGetter) getWithGoGetter(instPath, packageAddr string) error {
-	var err error
-
-	if prevDir, exists := g[packageAddr]; exists {
-		log.Printf("[TRACE] getmodules: copying previous install of %q from %s to %s", packageAddr, prevDir, instPath)
-		err := os.Mkdir(instPath, os.ModePerm)
-		if err != nil {
-			return fmt.Errorf("failed to create directory %s: %s", instPath, err)
-		}
-		err = copy.CopyDir(instPath, prevDir)
-		if err != nil {
-			return fmt.Errorf("failed to copy from %s to %s: %s", prevDir, instPath, err)
-		}
-	} else {
-		log.Printf("[TRACE] getmodules: fetching %q to %q", packageAddr, instPath)
-		client := getter.Client{
-			Src: packageAddr,
-			Dst: instPath,
-			Pwd: instPath,
-
-			Mode: getter.ClientModeDir,
-
-			Detectors:     goGetterNoDetectors, // our caller should've already done detection
-			Decompressors: goGetterDecompressors,
-			Getters:       goGetterGetters,
-		}
-		err = client.Get()
-		if err != nil {
-			return err
-		}
-		// Remember where we installed this so we might reuse this directory
-		// on subsequent calls to avoid re-downloading.
-		g[packageAddr] = instPath
-	}
-
-	// If we get down here then we've either downloaded the package or
-	// copied a previous tree we downloaded, and so either way we should
-	// have got the full module package structure written into instPath.
-	return nil
-}
