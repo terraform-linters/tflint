@@ -70,13 +70,14 @@ else
   dest="${TFLINT_INSTALL_PATH:-/usr/local/bin}/"
   echo "Installing /tmp/tflint to ${dest}..."
   
-  if [[ "$(id -u)" == 0 ]]; then SUDO=""; else
+  if [[ -w "$dest" ]]; then SUDO=""; else
+    # current user does not have write access to install directory
     SUDO="sudo";
   fi
 
   
   $SUDO mkdir -p "$dest"
-  $SUDO install -b -c -v /tmp/tflint "$dest"
+  $SUDO install -c -v /tmp/tflint "$dest"
   retVal=$?
   if [ $retVal -ne 0 ]; then
     echo "Failed to install tflint"
@@ -91,4 +92,4 @@ rm -f /tmp/tflint.zip /tmp/tflint
 
 echo -e "\n\n===================================================="
 echo "Current tflint version"
-tflint -v
+"${dest}/tflint" -v

@@ -21,7 +21,7 @@ TFLint is a framework and each feature is provided by plugins, the key features 
 Bash script (Linux):
 
 ```console
-curl https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 ```
 
 Homebrew (macOS):
