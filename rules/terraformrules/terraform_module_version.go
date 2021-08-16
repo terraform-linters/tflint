@@ -92,6 +92,8 @@ func (r *TerraformModuleVersionRule) checkVersion(runner *tflint.Runner, module 
 			fmt.Sprintf("module %q should specify a version", module.Name),
 			module.DeclRange,
 		)
+
+		return nil
 	}
 
 	if !config.Exact {
@@ -104,6 +106,8 @@ func (r *TerraformModuleVersionRule) checkVersion(runner *tflint.Runner, module 
 			fmt.Sprintf("module %q should specify an exact version, but multiple constraints were found", module.Name),
 			module.Version.DeclRange,
 		)
+
+		return nil
 	}
 
 	if !exactVersionRegexp.MatchString(module.Version.Required[0].String()) {
