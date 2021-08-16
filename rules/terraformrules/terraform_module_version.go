@@ -5,13 +5,14 @@ import (
 	"log"
 	"regexp"
 
-	"github.com/hashicorp/go-version"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-var versionRegexp = regexp.MustCompile(`^=?\s*` + version.VersionRegexpRaw + "$")
+// SemVer regexp with optional leading =
+// https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+var exactVersionRegexp = regexp.MustCompile(`^=?\s*` + `(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$`)
 
 // TerraformModuleVersionRule checks that Terraform modules sourced from a registry specify a version
 type TerraformModuleVersionRule struct{}
@@ -108,9 +109,10 @@ func (r *TerraformModuleVersionRule) checkVersion(runner *tflint.Runner, module 
 			module.Version.DeclRange,
 		)
 
+		return nil
 	}
 
-	if !versionRegexp.MatchString(module.Version.Required[0].String()) {
+	if !exactVersionRegexp.MatchString(module.Version.Required[0].String()) {
 		runner.EmitIssue(
 			r,
 			fmt.Sprintf("module %q should specify an exact version, but a range was found", module.Name),
