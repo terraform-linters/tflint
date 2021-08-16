@@ -5,12 +5,13 @@ import (
 	"log"
 	"regexp"
 
+	"github.com/hashicorp/go-version"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-var exactVersionRegexp = regexp.MustCompile(`^=?\s*\d+\.\d+\.\d+$`)
+var versionRegexp = regexp.MustCompile(`^=?\s*` + version.VersionRegexpRaw + "$")
 
 // TerraformModuleVersionRule checks that Terraform modules sourced from a registry specify a version
 type TerraformModuleVersionRule struct{}
@@ -107,10 +108,9 @@ func (r *TerraformModuleVersionRule) checkVersion(runner *tflint.Runner, module 
 			module.Version.DeclRange,
 		)
 
-		return nil
 	}
 
-	if !exactVersionRegexp.MatchString(module.Version.Required[0].String()) {
+	if !versionRegexp.MatchString(module.Version.Required[0].String()) {
 		runner.EmitIssue(
 			r,
 			fmt.Sprintf("module %q should specify an exact version, but a range was found", module.Name),
