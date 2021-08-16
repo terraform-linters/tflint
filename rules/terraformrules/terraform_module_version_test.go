@@ -45,6 +45,15 @@ module "m" {
 			Expected: tflint.Issues{},
 		},
 		{
+			Name: "prerelease",
+			Content: `
+module "m" {
+  source = "ns/name/provider"
+	version = "2.0.0-pre"
+}`,
+			Expected: tflint.Issues{},
+		},
+		{
 			Name: "custom host",
 			Content: `
 module "m" {
