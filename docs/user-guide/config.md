@@ -52,8 +52,8 @@ CLI flag: `--force`
 Return zero exit status even if issues found. TFLint returns the following exit statuses on exit by default:
 
 - 0: No issues found
-- 2: Errors occurred
-- 3: No errors occurred, but issues found
+- 1: Errors occurred
+- 2: No errors occurred, but issues found
 
 ## `disabled_by_default`
 
