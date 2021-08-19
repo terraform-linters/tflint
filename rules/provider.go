@@ -22,6 +22,7 @@ var DefaultRules = []Rule{
 	terraformrules.NewTerraformDocumentedOutputsRule(),
 	terraformrules.NewTerraformDocumentedVariablesRule(),
 	terraformrules.NewTerraformModulePinnedSourceRule(),
+	terraformrules.NewTerraformModuleVersionRule(),
 	terraformrules.NewTerraformNamingConventionRule(),
 	terraformrules.NewTerraformStandardModuleStructureRule(),
 	terraformrules.NewTerraformTypedVariablesRule(),
