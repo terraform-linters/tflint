@@ -39,13 +39,13 @@ You can also use another file as a config file with the `--config` option:
 $ tflint --config other_config.hcl
 ```
 
-## `module`
+### `module`
 
 CLI flag: `--module`
 
 Enable [Module Inspection](module-inspection.md).
 
-## `force`
+### `force`
 
 CLI flag: `--force`
 
@@ -55,7 +55,7 @@ Return zero exit status even if issues found. TFLint returns the following exit 
 - 2: Errors occurred
 - 3: No errors occurred, but issues found
 
-## `disabled_by_default`
+### `disabled_by_default`
 
 CLI flag: `--only`
 
@@ -80,7 +80,7 @@ rule "aws_instance_previous_type" {
 $ tflint --only aws_instance_invalid_type --only aws_instance_previous_type
 ```
 
-## `ignore_module`
+### `ignore_module`
 
 CLI flag: `--ignore-module`
 
@@ -100,7 +100,7 @@ config {
 $ tflint --ignore-module terraform-aws-modules/vpc/aws --ignore-module terraform-aws-modules/security-group/aws
 ```
 
-## `varfile`
+### `varfile`
 
 CLI flag: `--var-file`
 
@@ -116,7 +116,7 @@ config {
 $ tflint --var-file example1.tfvars --var-file example2.tfvars
 ```
 
-## `variables`
+### `variables`
 
 CLI flag: `--var`
 
@@ -132,11 +132,19 @@ config {
 $ tflint --var "foo=bar" --var "bar=[\"baz\"]"
 ```
 
-## `rule` blocks
+### `rule` blocks
 
 CLI flag: `--enable-rule`, `--disable-rule`
 
-You can make settings for each rule in the `rule` block. All rules have the `enabled` attribute, and when it is false, the rule is ignored from inspection.
+You can configure TFLint rules using `rule` blocks. Each rule's implementation specifies whether it will be enabled by default. In some rulesets, the majority of rules are disabled by default. Use `rule` blocks to enable them:
+
+```hcl
+rule "terraform_unused_declarations" {
+  enabled = true
+}
+```
+
+The `enabled` attribute is required for all `rule` blocks. For rules that are enabled by default, set `enabled = false` to disable the rule:
 
 ```hcl
 rule "aws_instance_previous_type" {
@@ -144,8 +152,8 @@ rule "aws_instance_previous_type" {
 }
 ```
 
-Each rule can have its own configs. See the documentation for each rule for details.
+Some rules support additional attributes that configure their behavior. See the documentation for each rule for details.
 
-## `plugin` blocks
+### `plugin` blocks
 
 You can declare the plugin to use. See [Configuring Plugins](plugins.md)
