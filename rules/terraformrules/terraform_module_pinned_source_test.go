@@ -69,6 +69,24 @@ module "pinned_git" {
 			Expected: tflint.Issues{},
 		},
 		{
+			Name: "invalid URL",
+			Content: `
+module "invalid" {
+  source = "git://#{}.com"
+}`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformModulePinnedSourceRule(),
+					Message: `Module source "git://#{}.com" is not a valid URL`,
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3, Column: 12},
+						End:      hcl.Pos{Line: 3, Column: 27},
+					},
+				},
+			},
+		},
+		{
 			Name: "git module reference is pinned, but style is semver",
 			Content: `
 module "pinned_git" {
