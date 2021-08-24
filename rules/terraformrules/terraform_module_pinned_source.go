@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/url"
 	"path/filepath"
+	"strings"
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/hashicorp/go-getter"
@@ -91,6 +92,27 @@ func (r *TerraformModulePinnedSourceRule) checkModule(runner *tflint.Runner, mod
 	switch u.Scheme {
 	case "git", "hg":
 	default:
+		return nil
+	}
+
+	if u.Opaque != "" {
+		// for git:: or hg:: pseudo-URLs, Opaque is :https, but query will still be parsed
+		query := u.RawQuery
+		u, err = url.Parse(strings.TrimPrefix(u.Opaque, ":"))
+		if err != nil {
+			return err
+		}
+
+		u.RawQuery = query
+	}
+
+	if u.Hostname() == "" {
+		runner.EmitIssue(
+			r,
+			fmt.Sprintf("Module source %q is not a valid URL", module.SourceAddr),
+			module.SourceAddrRange,
+		)
+
 		return nil
 	}
 
