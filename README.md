@@ -63,8 +63,6 @@ If you are using an AWS/Azure/GCP provider, it is a good idea to install the plu
 - [Microsoft Azure](https://github.com/terraform-linters/tflint-ruleset-azurerm)
 - [Google Cloud Platform](https://github.com/terraform-linters/tflint-ruleset-google)
 
-For AWS users, you can use the bundled plugin built into the TFLint binary without installing the plugin separately for backward compatibility.
-
 Rules for the Terraform Language is built into the TFLint binary, so you don't need to install any plugins. Please see [Rules](docs/rules) for a list of available rules.
 
 If you want to extend TFLint with other plugins, you can declare the plugins in the config file and easily install them with `tflint --init`.
