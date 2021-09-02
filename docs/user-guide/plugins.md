@@ -54,10 +54,6 @@ Plugin developer's PGP public signing key. When this attribute is set, TFLint wi
 
 Plugins under the terraform-linters organization (AWS/GCP/Azure ruleset plugins) can use the built-in signing key, so this attribute can be omitted.
 
-## Compatibility Notice
-
-AWS plugin is bundled with the TFLint binary for backward compatibility, so you can use it without installing it separately. And it is automatically enabled when your Terraform configuration requires AWS provider.
-
 ## Avoiding rate limiting
 
 When you install plugins with `tflint --init`, call the GitHub API to get release metadata. This is typically an unauthenticated request with a rate limit of 60 requests per hour.
