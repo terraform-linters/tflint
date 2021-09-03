@@ -1,8 +1,5 @@
 run:
   timeout: 5m
-linters:
-  disable:
-    - varcheck
 issues:
   exclude-rules:
     - path: terraform/
