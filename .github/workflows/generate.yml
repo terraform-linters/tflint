@@ -1,9 +1,9 @@
-name: generated-code
+name: Generate
 
 on: pull_request
 
 jobs:
-  checks:
+  generate:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -25,6 +25,6 @@ jobs:
         key: ${{ matrix.os }}-go-${{ hashFiles('go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
-    - name: make code
-      run: |
-        make code && git diff --exit-code
+    - run: go generate ./...
+    - run: git add --intent-to-add .
+    - run: git diff --exit-code
