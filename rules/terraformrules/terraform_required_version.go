@@ -1,7 +1,6 @@
 package terraformrules
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/hashicorp/hcl/v2"
@@ -50,7 +49,7 @@ func (r *TerraformRequiredVersionRule) Check(runner *tflint.Runner) error {
 	if len(versionConstraints) == 0 {
 		runner.EmitIssue(
 			r,
-			fmt.Sprintf("terraform \"required_version\" attribute is required"),
+			`terraform "required_version" attribute is required`,
 			hcl.Range{},
 		)
 		return nil

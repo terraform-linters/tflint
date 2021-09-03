@@ -2,8 +2,12 @@ run:
   timeout: 5m
 linters:
   disable:
-    - gosimple
     - revive
     - staticcheck
     - unused
     - varcheck
+issues:
+  exclude-rules:
+    - path: terraform/
+      linters:
+        - gosimple
