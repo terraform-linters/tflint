@@ -2,7 +2,6 @@ run:
   timeout: 5m
 linters:
   disable:
-    - unused
     - varcheck
 issues:
   exclude-rules:
