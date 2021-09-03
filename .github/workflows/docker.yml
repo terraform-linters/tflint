@@ -26,7 +26,6 @@ jobs:
       with:
         platforms: ${{ matrix.platform }}
     - name: Set up Docker Buildx
-      id: buildx
       uses: docker/setup-buildx-action@v1
     - name: Docker meta
       id: meta
