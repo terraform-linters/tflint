@@ -22,7 +22,7 @@ lint:
 clean:
 	rm -rf dist/
 
-code:
+generate:
 	go generate ./...
 
-.PHONY: prepare test build install e2e lint clean code
+.PHONY: prepare test build install e2e lint clean generate
