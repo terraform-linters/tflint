@@ -2,7 +2,6 @@ run:
   timeout: 5m
 linters:
   disable:
-    - errcheck
     - gosimple
     - govet
     - ineffassign

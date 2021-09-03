@@ -49,7 +49,11 @@ func Test_Discovery_local(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.Chdir(cwd)
+	defer func() {
+		if err = os.Chdir(cwd); err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	err = os.Chdir(filepath.Join(cwd, "test-fixtures", "locals"))
 	if err != nil {
@@ -120,7 +124,11 @@ func Test_Discovery_notFound(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.Chdir(cwd)
+	defer func() {
+		if err = os.Chdir(cwd); err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	err = os.Chdir(filepath.Join(cwd, "test-fixtures", "no_plugins"))
 	if err != nil {
@@ -154,7 +162,11 @@ func Test_Discovery_plugin_name_is_directory(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.Chdir(cwd)
+	defer func() {
+		if err = os.Chdir(cwd); err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	err = os.Chdir(filepath.Join(cwd, "test-fixtures", "plugin_name_is_directory"))
 	if err != nil {
@@ -188,7 +200,11 @@ func Test_Discovery_notFoundForAutoInstallation(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.Chdir(cwd)
+	defer func() {
+		if err = os.Chdir(cwd); err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	err = os.Chdir(filepath.Join(cwd, "test-fixtures", "no_plugins"))
 	if err != nil {
@@ -267,7 +283,11 @@ func Test_FindPluginPath_locals(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.Chdir(cwd)
+	defer func() {
+		if err = os.Chdir(cwd); err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	dir := filepath.Join(cwd, "test-fixtures", "locals")
 	err = os.Chdir(dir)

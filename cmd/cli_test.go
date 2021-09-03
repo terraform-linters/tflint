@@ -427,7 +427,9 @@ func TestCLIRun__withArguments(t *testing.T) {
 	originalRules := rules.DefaultRules
 
 	defer func() {
-		os.Chdir(currentDir)
+		if err := os.Chdir(currentDir); err != nil {
+			t.Fatal(err)
+		}
 		rules.DefaultRules = originalRules
 		ctrl.Finish()
 	}()

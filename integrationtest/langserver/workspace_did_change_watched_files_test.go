@@ -73,7 +73,7 @@ rule "aws_instance_example_type" {
 			fmt.Fprint(stdin, initializeRequest())
 			fmt.Fprint(stdin, didOpenRequest(uri, content, t))
 			// Change config file from outside of LSP
-			ioutil.WriteFile(dir+"/.tflint.hcl", []byte(changedConfig), os.ModePerm)
+			_ = ioutil.WriteFile(dir+"/.tflint.hcl", []byte(changedConfig), os.ModePerm)
 			fmt.Fprint(stdin, toJSONRPC2(string(req)))
 			fmt.Fprint(stdin, shutdownRequest())
 			fmt.Fprint(stdin, exitRequest())

@@ -14,8 +14,14 @@ func TestIntegration(t *testing.T) {
 	current, _ := os.Getwd()
 	dir := filepath.Join(current, "basic")
 
-	defer os.Chdir(current)
-	os.Chdir(dir)
+	defer func() {
+		if err := os.Chdir(current); err != nil {
+			t.Fatal(err)
+		}
+	}()
+	if err := os.Chdir(dir); err != nil {
+		t.Fatal(err)
+	}
 
 	pluginDir := t.TempDir()
 	os.Setenv("TFLINT_PLUGIN_DIR", pluginDir)
