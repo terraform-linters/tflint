@@ -1,7 +1,6 @@
 package getmodules
 
 import (
-	cleanhttp "github.com/hashicorp/go-cleanhttp"
 	getter "github.com/hashicorp/go-getter"
 )
 
@@ -45,51 +44,3 @@ var goGetterDetectors = []getter.Detector{
 	new(getter.S3Detector),
 	new(fileDetector),
 }
-
-var goGetterNoDetectors = []getter.Detector{}
-
-var goGetterDecompressors = map[string]getter.Decompressor{
-	"bz2": new(getter.Bzip2Decompressor),
-	"gz":  new(getter.GzipDecompressor),
-	"xz":  new(getter.XzDecompressor),
-	"zip": new(getter.ZipDecompressor),
-
-	"tar.bz2":  new(getter.TarBzip2Decompressor),
-	"tar.tbz2": new(getter.TarBzip2Decompressor),
-
-	"tar.gz": new(getter.TarGzipDecompressor),
-	"tgz":    new(getter.TarGzipDecompressor),
-
-	"tar.xz": new(getter.TarXzDecompressor),
-	"txz":    new(getter.TarXzDecompressor),
-}
-
-var goGetterGetters = map[string]getter.Getter{
-	"file":  new(getter.FileGetter),
-	"gcs":   new(getter.GCSGetter),
-	"git":   new(getter.GitGetter),
-	"hg":    new(getter.HgGetter),
-	"s3":    new(getter.S3Getter),
-	"http":  getterHTTPGetter,
-	"https": getterHTTPGetter,
-}
-
-var getterHTTPClient = cleanhttp.DefaultClient()
-
-var getterHTTPGetter = &getter.HttpGetter{
-	Client: getterHTTPClient,
-	Netrc:  true,
-}
-
-// A reusingGetter is a helper for the module installer that remembers
-// the final resolved addresses of all of the sources it has already been
-// asked to install, and will copy from a prior installation directory if
-// it has the same resolved source address.
-//
-// The keys in a reusingGetter are the normalized (post-detection) package
-// addresses, and the values are the paths where each source was previously
-// installed. (Users of this map should treat the keys as addrs.ModulePackage
-// values, but we can't type them that way because the addrs package
-// imports getmodules in order to indirectly access our go-getter
-// configuration.)
-type reusingGetter map[string]string
