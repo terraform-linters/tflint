@@ -238,10 +238,11 @@ func (s *Server) EmitIssue(req *tfplugin.EmitIssueRequest, resp *interface{}) er
 			return diags
 		}
 
-		s.runner.WithExpressionContext(expr, func() error {
+		_ = s.runner.WithExpressionContext(expr, func() error {
 			s.runner.EmitIssue(req.Rule, req.Message, req.Location)
 			return nil
 		})
+
 	} else {
 		s.runner.EmitIssue(req.Rule, req.Message, req.Location)
 		return nil

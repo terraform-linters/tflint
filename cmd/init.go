@@ -30,7 +30,7 @@ func (cli *CLI) init(opts Options) int {
 
 			sigchecker := tfplugin.NewSignatureChecker(installCfg)
 			if !sigchecker.HasSigningKey() {
-				color.New(color.FgYellow).Fprintln(cli.outStream, "No signing key configured. Set `signing_key` to verify that the release is signed by the plugin developer")
+				_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, "No signing key configured. Set `signing_key` to verify that the release is signed by the plugin developer")
 			}
 
 			_, err = installCfg.Install()

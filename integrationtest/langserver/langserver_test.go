@@ -94,7 +94,11 @@ func withinFixtureDir(t *testing.T, dir string, test func(dir string)) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.Chdir(current)
+	defer func() {
+		if err = os.Chdir(current); err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	dir, err = filepath.Abs("test-fixtures/" + dir)
 	if err != nil {
@@ -108,7 +112,11 @@ func withinTempDir(t *testing.T, test func(dir string)) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.Chdir(current)
+	defer func() {
+		if err = os.Chdir(current); err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	dir, err := ioutil.TempDir("", "withinTempDir")
 	if err != nil {

@@ -103,8 +103,14 @@ func TestIntegration(t *testing.T) {
 	for _, tc := range cases {
 		testDir := filepath.Join(dir, tc.Dir)
 
-		defer os.Chdir(dir)
-		os.Chdir(testDir)
+		defer func() {
+			if err := os.Chdir(dir); err != nil {
+				t.Fatal(err)
+			}
+		}()
+		if err := os.Chdir(testDir); err != nil {
+			t.Fatal(err)
+		}
 
 		if tc.Env != nil {
 			for k, v := range tc.Env {

@@ -21,6 +21,7 @@ jobs:
       with:
         go-version: 1.17
     - name: Run linters
-      run: |
-        export PATH=$PATH:$(go env GOPATH)/bin
-        make lint
+      uses: golangci/golangci-lint-action@v2
+      with:
+        version: v1.42
+        args : --verbose

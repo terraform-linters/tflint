@@ -85,53 +85,62 @@ func TestBundledPlugin(t *testing.T) {
 
 	dir, _ := os.Getwd()
 	for _, tc := range cases {
-		testDir := filepath.Join(dir, tc.Dir)
+		t.Run(tc.Name, func(t *testing.T) {
+			testDir := filepath.Join(dir, tc.Dir)
 
-		defer os.Chdir(dir)
-		os.Chdir(testDir)
+			t.Cleanup(func() {
+				if err := os.Chdir(dir); err != nil {
+					t.Fatal(err)
+				}
+			})
 
-		args := strings.Split(tc.Command, " ")
-		var cmd *exec.Cmd
-		if runtime.GOOS == "windows" {
-			cmd = exec.Command("tflint.exe", args[1:]...)
-		} else {
-			cmd = exec.Command("tflint", args[1:]...)
-		}
-		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
-		cmd.Stdout = outStream
-		cmd.Stderr = errStream
+			if err := os.Chdir(testDir); err != nil {
+				t.Fatal(err)
+			}
 
-		if err := cmd.Run(); err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to exec command (%s)\n", err)
-		}
+			args := strings.Split(tc.Command, " ")
+			var cmd *exec.Cmd
+			if runtime.GOOS == "windows" {
+				cmd = exec.Command("tflint.exe", args[1:]...)
+			} else {
+				cmd = exec.Command("tflint", args[1:]...)
+			}
+			outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
+			cmd.Stdout = outStream
+			cmd.Stderr = errStream
 
-		var b []byte
-		var err error
-		if runtime.GOOS == "windows" && IsWindowsResultExist() {
-			b, err = ioutil.ReadFile(filepath.Join(testDir, "result_windows.json"))
-		} else {
-			b, err = ioutil.ReadFile(filepath.Join(testDir, "result.json"))
-		}
-		if err != nil {
-			t.Fatal(err)
-		}
+			if err := cmd.Run(); err != nil {
+				fmt.Fprintf(os.Stderr, "Failed to exec command (%s)\n", err)
+			}
 
-		var expected *formatter.JSONOutput
-		if err := json.Unmarshal(b, &expected); err != nil {
-			t.Fatal(err)
-		}
+			var b []byte
+			var err error
+			if runtime.GOOS == "windows" && IsWindowsResultExist() {
+				b, err = ioutil.ReadFile(filepath.Join(testDir, "result_windows.json"))
+			} else {
+				b, err = ioutil.ReadFile(filepath.Join(testDir, "result.json"))
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
 
-		var got *formatter.JSONOutput
-		if err := json.Unmarshal(outStream.Bytes(), &got); err != nil {
-			t.Fatal(err)
-		}
+			var expected *formatter.JSONOutput
+			if err := json.Unmarshal(b, &expected); err != nil {
+				t.Fatal(err)
+			}
 
-		opts := []cmp.Option{
-			cmpopts.IgnoreFields(formatter.JSONRule{}, "Link"),
-		}
-		if !cmp.Equal(got, expected, opts...) {
-			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(expected, got))
-		}
+			var got *formatter.JSONOutput
+			if err := json.Unmarshal(outStream.Bytes(), &got); err != nil {
+				t.Fatal(err)
+			}
+
+			opts := []cmp.Option{
+				cmpopts.IgnoreFields(formatter.JSONRule{}, "Link"),
+			}
+			if !cmp.Equal(got, expected, opts...) {
+				t.Fatalf("diff=%s", cmp.Diff(expected, got))
+			}
+		})
 	}
 }
 

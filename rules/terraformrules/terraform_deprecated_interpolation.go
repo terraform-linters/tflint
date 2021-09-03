@@ -63,6 +63,4 @@ func (r *TerraformDeprecatedInterpolationRule) checkForDeprecatedInterpolationsI
 		"Interpolation-only expressions are deprecated in Terraform v0.12.14",
 		expr.Range(),
 	)
-
-	return
 }
