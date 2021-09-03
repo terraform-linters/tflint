@@ -18,11 +18,11 @@ func Test_LoadConfig_v0_15_0(t *testing.T) {
 	withinFixtureDir(t, "v0.15.0_module", func() {
 		loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, moduleConfig())
 		if err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
+			t.Fatal(err)
 		}
 		config, err := loader.LoadConfig(".")
 		if err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
+			t.Fatal(err)
 		}
 
 		if _, exists := config.Children["instance"]; !exists {
@@ -83,7 +83,7 @@ func Test_LoadConfig_moduleNotFound(t *testing.T) {
 	withinFixtureDir(t, "before_terraform_init", func() {
 		loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, moduleConfig())
 		if err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
+			t.Fatal(err)
 		}
 		_, err = loader.LoadConfig(".")
 		if err == nil {
@@ -101,11 +101,11 @@ func Test_LoadConfig_disableModules(t *testing.T) {
 	withinFixtureDir(t, "before_terraform_init", func() {
 		loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())
 		if err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
+			t.Fatal(err)
 		}
 		config, err := loader.LoadConfig(".")
 		if err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
+			t.Fatal(err)
 		}
 
 		if len(config.Children) != 0 {
@@ -118,7 +118,7 @@ func Test_LoadConfig_invalidConfiguration(t *testing.T) {
 	withinFixtureDir(t, "invalid_configuration", func() {
 		loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())
 		if err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
+			t.Fatal(err)
 		}
 		_, err = loader.LoadConfig(".")
 		if err == nil {
@@ -136,20 +136,23 @@ func Test_Files(t *testing.T) {
 	withinFixtureDir(t, "v0.15.0_module", func() {
 		loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())
 		if err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
+			t.Fatal(err)
 		}
 		_, err = loader.LoadConfig(".")
 		if err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
+			t.Fatal(err)
 		}
 
 		files, err := loader.Files()
 		if err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
+			t.Fatal(err)
 		}
 
 		filename := "module.tf"
 		b, err := afero.ReadFile(loader.fs, filename)
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		expected := map[string]*hcl.File{
 			"module.tf": {Bytes: b},
@@ -166,11 +169,11 @@ func Test_LoadAnnotations(t *testing.T) {
 	withinFixtureDir(t, "annotation_files", func() {
 		loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())
 		if err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
+			t.Fatal(err)
 		}
 		ret, err := loader.LoadAnnotations(".")
 		if err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
+			t.Fatal(err)
 		}
 
 		expected := map[string]Annotations{
@@ -216,11 +219,11 @@ func Test_LoadValuesFiles(t *testing.T) {
 	withinFixtureDir(t, "values_files", func() {
 		loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())
 		if err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
+			t.Fatal(err)
 		}
 		ret, err := loader.LoadValuesFiles("cli1.tfvars", "cli2.tfvars")
 		if err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
+			t.Fatal(err)
 		}
 
 		expected := []terraform.InputValues{
@@ -266,7 +269,7 @@ func Test_LoadValuesFiles_invalidValuesFile(t *testing.T) {
 	withinFixtureDir(t, "invalid_values_files", func() {
 		loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, EmptyConfig())
 		if err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
+			t.Fatal(err)
 		}
 		_, err = loader.LoadValuesFiles()
 		if err == nil {
