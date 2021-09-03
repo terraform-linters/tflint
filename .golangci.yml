@@ -1,0 +1,13 @@
+run:
+  timeout: 5m
+linters:
+  disable:
+    - deadcode
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - revive
+    - staticcheck
+    - unused
+    - varcheck
