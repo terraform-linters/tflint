@@ -1,8 +1,6 @@
 # Module Inspection
 
-By default, TFLint inspects only the root module, so if a resource to be inspected is cut out into a module, it will be ignored from inspection targets.
-
-To avoid such problems, TFLint can also inspect [Module Calls](https://www.terraform.io/docs/configuration/blocks/modules/syntax.html#calling-a-child-module). In this case, it checks based on the input variables passed to the calling module.
+By default, TFLint inspects only the root module. It can optionally also inspect [module calls](https://www.terraform.io/docs/configuration/blocks/modules/syntax.html#calling-a-child-module). When this option is enabled, the child module is evaluated with the specified variable inputs. Module inspection is designed to run on both local modules (`./*`) and remotely sourced ones (registry, git, etc.). It attempts to validate module _calls_ (`module`) rather than linting the static content of child modules.
 
 ```hcl
 module "aws_instance" {
@@ -28,10 +26,26 @@ Callers:
 
 ```
 
-Module inspection is disabled by default. Inspection is enabled by running with the `--module` option. Note that you need to run `terraform init` first because of TFLint loads modules in the same way as Terraform. 
+## Caveats
 
-You can use the `--ignore-module` option if you want to skip inspection for a particular module. Note that you need to pass module sources rather than module ids for backward compatibility.
+* Module inspection mode _does not recursively search_ for Terraform modules. It follows `module` blocks in the root module where TFLint was invoked.
+* Issues _must_ be associated with a variable that was passed to the module. If an issue within a child module is detected in an expression that does not reference a variable (`var`), it will be discarded.
+* Rules that evaluate syntax rather than content _should_ ignore child modules.
+
+If you want to evaluate all TFLint rules on non-root modules, pass their paths directly to TFLint.
+
+## Enabling
+
+Module inspection is disabled by default and can be enabled with the `--module` flag. It can also be enabled via configuration:
+
+```hcl
+config {
+  module = true
+}
+```
+
+You must run `terraform init` before invoking TFLint with module inspection so that modules are loaded into the `.terraform` directory. You can use the `--ignore-module` option if you want to skip inspection for a particular module:
 
 ```
-$ tflint --ignore-module=./module
+tflint --ignore-module=./module
 ```
