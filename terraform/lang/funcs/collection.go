@@ -206,7 +206,6 @@ var IndexFunc = function.New(&function.Spec{
 			}
 		}
 		return cty.NilVal, errors.New("item not found")
-
 	},
 })
 
@@ -447,7 +446,7 @@ var OneFunc = function.New(&function.Spec{
 				// It would be very strange to get here, because that would
 				// suggest that the length is either not a number or isn't
 				// an integer, which would suggest a bug in cty.
-				return cty.NilVal, fmt.Errorf("invalid collection length: %s", err)
+				return cty.NilVal, fmt.Errorf("invalid collection length: %w", err)
 			}
 			switch l {
 			case 0:
@@ -488,7 +487,6 @@ var SumFunc = function.New(&function.Spec{
 	},
 	Type: function.StaticReturnType(cty.Number),
 	Impl: func(args []cty.Value, retType cty.Type) (ret cty.Value, err error) {
-
 		if !args[0].CanIterateElements() {
 			return cty.NilVal, function.NewArgErrorf(0, "cannot sum noniterable")
 		}

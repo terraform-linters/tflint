@@ -7,8 +7,10 @@ import (
 
 // PluginRoot is the root directory of the plugins
 // This variable is exposed for testing.
-var PluginRoot = "~/.tflint.d/plugins"
-var localPluginRoot = "./.tflint.d/plugins"
+var (
+	PluginRoot      = "~/.tflint.d/plugins"
+	localPluginRoot = "./.tflint.d/plugins"
+)
 
 // Plugin is an object handling plugins
 // Basically, it is a wrapper for go-plugin and provides an API to handle them collectively.

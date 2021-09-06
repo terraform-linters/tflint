@@ -3,7 +3,6 @@ package getproviders
 import (
 	"github.com/apparentlymart/go-versions/versions"
 	"github.com/apparentlymart/go-versions/versions/constraints"
-
 	"github.com/terraform-linters/tflint/terraform/addrs"
 )
 

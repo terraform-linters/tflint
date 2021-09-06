@@ -64,7 +64,6 @@ func MakeFileFunc(baseDir string, encBase64 bool) function.Function {
 // the templatefile function, since that would risk the same file being
 // included into itself indefinitely.
 func MakeTemplateFileFunc(baseDir string, funcsCb func() map[string]function.Function) function.Function {
-
 	params := []function.Parameter{
 		{
 			Name: "path",
@@ -177,7 +176,6 @@ func MakeTemplateFileFunc(baseDir string, funcsCb func() map[string]function.Fun
 			return renderTmpl(expr, args[1])
 		},
 	})
-
 }
 
 // MakeFileExistsFunc constructs a function that takes a path
@@ -195,7 +193,7 @@ func MakeFileExistsFunc(baseDir string) function.Function {
 			path := args[0].AsString()
 			path, err := homedir.Expand(path)
 			if err != nil {
-				return cty.UnknownVal(cty.Bool), fmt.Errorf("failed to expand ~: %s", err)
+				return cty.UnknownVal(cty.Bool), fmt.Errorf("failed to expand ~: %w", err)
 			}
 
 			if !filepath.IsAbs(path) {
@@ -253,13 +251,12 @@ func MakeFileSetFunc(baseDir string) function.Function {
 
 			matches, err := doublestar.Glob(pattern)
 			if err != nil {
-				return cty.UnknownVal(cty.Set(cty.String)), fmt.Errorf("failed to glob pattern (%s): %s", pattern, err)
+				return cty.UnknownVal(cty.Set(cty.String)), fmt.Errorf("failed to glob pattern (%s): %w", pattern, err)
 			}
 
 			var matchVals []cty.Value
 			for _, match := range matches {
 				fi, err := os.Stat(match)
-
 				if err != nil {
 					return cty.UnknownVal(cty.Set(cty.String)), fmt.Errorf("failed to stat (%s): %s", match, err)
 				}
@@ -346,7 +343,6 @@ var PathExpandFunc = function.New(&function.Spec{
 	},
 	Type: function.StaticReturnType(cty.String),
 	Impl: func(args []cty.Value, retType cty.Type) (cty.Value, error) {
-
 		homePath, err := homedir.Expand(args[0].AsString())
 		return cty.StringVal(homePath), err
 	},

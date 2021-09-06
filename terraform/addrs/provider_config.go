@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/terraform-linters/tflint/terraform/tfdiags"
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/terraform-linters/tflint/terraform/tfdiags"
+	"github.com/zclconf/go-cty/cty"
 )
 
 // ProviderConfig is an interface type whose dynamic type can be either
@@ -365,7 +364,6 @@ func (pc AbsProviderConfig) Inherited() (AbsProviderConfig, bool) {
 		Module:   parentMod,
 		Provider: pc.Provider,
 	}, true
-
 }
 
 // LegacyString() returns a legacy-style AbsProviderConfig string and should only be used for legacy state shimming.

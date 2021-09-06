@@ -14,7 +14,6 @@ import (
 	lsp "github.com/sourcegraph/go-lsp"
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/spf13/afero"
-	"github.com/terraform-linters/tflint/plugin"
 	tfplugin "github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/rules"
 	"github.com/terraform-linters/tflint/tflint"
@@ -73,7 +72,7 @@ type handler struct {
 	fs         afero.Fs
 	rootDir    string
 	rules      []rules.Rule
-	plugin     *plugin.Plugin
+	plugin     *tfplugin.Plugin
 	shutdown   bool
 	diagsPaths []string
 }
@@ -233,7 +232,6 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 
 func uriToPath(uri lsp.DocumentURI) (string, error) {
 	uriToReplace, err := url.QueryUnescape(string(uri))
-
 	if err != nil {
 		return "", err
 	}

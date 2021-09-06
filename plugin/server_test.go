@@ -541,7 +541,7 @@ resource "aws_s3_bucket" "bar" {
 }
 
 func Test_Files(t *testing.T) {
-	var files = map[string]string{
+	files := map[string]string{
 		"main.tf": `
 			resource "aws_instance" "foo" {
 				instance_type = "t2.micro"

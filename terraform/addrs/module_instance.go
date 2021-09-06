@@ -6,10 +6,9 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/terraform-linters/tflint/terraform/tfdiags"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
-
-	"github.com/terraform-linters/tflint/terraform/tfdiags"
 )
 
 // ModuleInstance is an address for a particular module instance within the
@@ -22,9 +21,7 @@ import (
 // creation.
 type ModuleInstance []ModuleInstanceStep
 
-var (
-	_ Targetable = ModuleInstance(nil)
-)
+var _ Targetable = ModuleInstance(nil)
 
 func ParseModuleInstance(traversal hcl.Traversal) (ModuleInstance, tfdiags.Diagnostics) {
 	mi, remain, diags := parseModuleInstancePrefix(traversal)

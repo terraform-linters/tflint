@@ -35,9 +35,11 @@ type ModuleSource interface {
 	moduleSource()
 }
 
-var _ ModuleSource = ModuleSourceLocal("")
-var _ ModuleSource = ModuleSourceRegistry{}
-var _ ModuleSource = ModuleSourceRemote{}
+var (
+	_ ModuleSource = ModuleSourceLocal("")
+	_ ModuleSource = ModuleSourceRegistry{}
+	_ ModuleSource = ModuleSourceRemote{}
+)
 
 var moduleSourceLocalPrefixes = []string{
 	"./",
@@ -192,8 +194,10 @@ type ModuleSourceRegistry struct {
 // source addresses that do not have an explicit hostname.
 const DefaultModuleRegistryHost = svchost.Hostname("registry.terraform.io")
 
-var moduleRegistryNamePattern = regexp.MustCompile("^[0-9A-Za-z](?:[0-9A-Za-z-_]{0,62}[0-9A-Za-z])?$")
-var moduleRegistryTargetSystemPattern = regexp.MustCompile("^[0-9a-z]{1,64}$")
+var (
+	moduleRegistryNamePattern         = regexp.MustCompile("^[0-9A-Za-z](?:[0-9A-Za-z-_]{0,62}[0-9A-Za-z])?$")
+	moduleRegistryTargetSystemPattern = regexp.MustCompile("^[0-9a-z]{1,64}$")
+)
 
 func parseModuleSourceRegistry(raw string) (ModuleSourceRegistry, error) {
 	var err error
@@ -251,17 +255,17 @@ func parseModuleSourceRegistry(raw string) (ModuleSourceRegistry, error) {
 			// an address with an explicit hostname.
 			return ret, fmt.Errorf("source address must have three more components after the hostname: the namespace, the name, and the target system")
 		}
-		return ret, fmt.Errorf("invalid namespace %q: %s", parts[0], err)
+		return ret, fmt.Errorf("invalid namespace %q: %w", parts[0], err)
 	}
 	if ret.PackageAddr.Name, err = parseModuleRegistryName(parts[1]); err != nil {
-		return ret, fmt.Errorf("invalid module name %q: %s", parts[1], err)
+		return ret, fmt.Errorf("invalid module name %q: %w", parts[1], err)
 	}
 	if ret.PackageAddr.TargetSystem, err = parseModuleRegistryTargetSystem(parts[2]); err != nil {
 		if strings.Contains(parts[2], "?") {
 			// The user was trying to include a query string, probably?
 			return ret, fmt.Errorf("module registry addresses may not include a query string portion")
 		}
-		return ret, fmt.Errorf("invalid target system %q: %s", parts[2], err)
+		return ret, fmt.Errorf("invalid target system %q: %w", parts[2], err)
 	}
 
 	return ret, nil

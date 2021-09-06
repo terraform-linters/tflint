@@ -4,13 +4,12 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/hcl/v2/ext/tryfunc"
+	"github.com/terraform-linters/tflint/terraform/experiments"
+	"github.com/terraform-linters/tflint/terraform/lang/funcs"
 	ctyyaml "github.com/zclconf/go-cty-yaml"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/function"
 	"github.com/zclconf/go-cty/cty/function/stdlib"
-
-	"github.com/terraform-linters/tflint/terraform/experiments"
-	"github.com/terraform-linters/tflint/terraform/lang/funcs"
 )
 
 var impureFunctions = []string{

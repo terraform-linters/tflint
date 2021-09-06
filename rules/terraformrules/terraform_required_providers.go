@@ -36,7 +36,7 @@ func (r *TerraformRequiredProvidersRule) Link() string {
 	return tflint.ReferenceLink(r.Name())
 }
 
-//Check Checks whether provider required version is set
+// Check Checks whether provider required version is set
 func (r *TerraformRequiredProvidersRule) Check(runner *tflint.Runner) error {
 	if !runner.TFConfig.Path.IsRoot() {
 		// This rule does not evaluate child modules.

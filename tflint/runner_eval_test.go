@@ -171,7 +171,6 @@ resource "null_resource" "test" {
 			}
 			return nil
 		})
-
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
@@ -254,7 +253,6 @@ resource "null_resource" "test" {
 			}
 			return nil
 		})
-
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
@@ -291,7 +289,6 @@ resource "null_resource" "test" {
 			}
 			return nil
 		})
-
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
@@ -328,7 +325,6 @@ resource "null_resource" "test" {
 			}
 			return nil
 		})
-
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
@@ -368,7 +364,6 @@ resource "null_resource" "test" {
 			}
 			return nil
 		})
-
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
@@ -408,7 +403,6 @@ resource "null_resource" "test" {
 			}
 			return nil
 		})
-
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
@@ -512,7 +506,6 @@ resource "null_resource" "test" {
 			AssertAppError(t, tc.Error, err)
 			return nil
 		})
-
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
@@ -600,7 +593,6 @@ resource "null_resource" "test" {
 			AssertAppError(t, tc.Error, err)
 			return nil
 		})
-
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
@@ -677,7 +669,6 @@ resource "null_resource" "test" {
 			}
 			return nil
 		})
-
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
@@ -772,7 +763,6 @@ resource "null_resource" "test" {
 			AssertAppError(t, tc.Error, err)
 			return nil
 		})
-
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
@@ -934,7 +924,6 @@ resource "null_resource" "test" {
 			}
 			return nil
 		})
-
 		if err != nil {
 			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 		}
@@ -972,7 +961,7 @@ resource "null_resource" "test" {
 }`,
 			EnvVar: map[string]string{"TF_VAR_instance_type": "m4.large"},
 			InputValues: []terraform.InputValues{
-				terraform.InputValues{
+				{
 					"instance_type": &terraform.InputValue{
 						Value:      cty.StringVal("c5.2xlarge"),
 						SourceType: terraform.ValueFromNamedFile,
@@ -990,13 +979,13 @@ resource "null_resource" "test" {
   key = "${var.instance_type}"
 }`,
 			InputValues: []terraform.InputValues{
-				terraform.InputValues{
+				{
 					"instance_type": &terraform.InputValue{
 						Value:      cty.StringVal("c5.2xlarge"),
 						SourceType: terraform.ValueFromNamedFile,
 					},
 				},
-				terraform.InputValues{
+				{
 					"instance_type": &terraform.InputValue{
 						Value:      cty.StringVal("p3.8xlarge"),
 						SourceType: terraform.ValueFromNamedFile,
@@ -1023,7 +1012,6 @@ resource "null_resource" "test" {
 				}
 				return nil
 			})
-
 			if err != nil {
 				t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
 			}

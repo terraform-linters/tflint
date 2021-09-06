@@ -5,6 +5,7 @@ import (
 	"io"
 	"strings"
 
+	//nolint:staticcheck
 	"golang.org/x/crypto/openpgp"
 )
 
