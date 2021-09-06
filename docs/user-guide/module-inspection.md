@@ -1,6 +1,6 @@
 # Module Inspection
 
-By default, TFLint inspects only the root module. It can optionally also inspect [module calls](https://www.terraform.io/docs/configuration/blocks/modules/syntax.html#calling-a-child-module). When this option is enabled, the child module is evaluated with the specified variable inputs. Module inspection is designed to run on both local modules (`./*`) and remotely sourced ones (registry, git, etc.). It attempts to validate module _calls_ (`module`) rather than linting the static content of child modules.
+By default, TFLint inspects only the root module. It can optionally also inspect [module calls](https://www.terraform.io/docs/configuration/blocks/modules/syntax.html#calling-a-child-module). When this option is enabled, TFLint evaluates each call (i.e. `module` block) and emits any issues that result from the specified input variables. Module inspection is designed to run on all module calls, whether the `source` is local (`./*`) or remote (registry, git, etc.). 
 
 ```hcl
 module "aws_instance" {
