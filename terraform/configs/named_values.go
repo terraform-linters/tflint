@@ -7,10 +7,11 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/terraform-linters/tflint/terraform/addrs"
-	"github.com/terraform-linters/tflint/terraform/typeexpr"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
+
+	"github.com/terraform-linters/tflint/terraform/addrs"
+	"github.com/terraform-linters/tflint/terraform/typeexpr"
 )
 
 // A consistent detail message for all "not a valid identifier" diagnostics.

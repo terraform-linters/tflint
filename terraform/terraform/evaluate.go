@@ -8,13 +8,14 @@ import (
 
 	"github.com/agext/levenshtein"
 	"github.com/hashicorp/hcl/v2"
+	"github.com/zclconf/go-cty/cty"
+	"github.com/zclconf/go-cty/cty/convert"
+
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/instances"
 	"github.com/terraform-linters/tflint/terraform/lang"
 	"github.com/terraform-linters/tflint/terraform/tfdiags"
-	"github.com/zclconf/go-cty/cty"
-	"github.com/zclconf/go-cty/cty/convert"
 )
 
 // Evaluator provides the necessary contextual data for evaluating expressions

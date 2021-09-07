@@ -3,9 +3,10 @@ package lang
 import (
 	"sync"
 
+	"github.com/zclconf/go-cty/cty/function"
+
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/experiments"
-	"github.com/zclconf/go-cty/cty/function"
 )
 
 // Scope is the main type in this package, allowing dynamic evaluation of

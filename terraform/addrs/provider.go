@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"strings"
 
+	"golang.org/x/net/idna"
+
 	"github.com/hashicorp/hcl/v2"
 	svchost "github.com/hashicorp/terraform-svchost"
 	"github.com/terraform-linters/tflint/terraform/tfdiags"
-	"golang.org/x/net/idna"
 )
 
 // Provider encapsulates a single provider type. In the future this will be
@@ -204,6 +205,7 @@ func (pt Provider) IsLegacy() bool {
 	}
 
 	return pt.Hostname == DefaultRegistryHost && pt.Namespace == LegacyProviderNamespace
+
 }
 
 // IsDefault returns true if the provider is a default hashicorp provider

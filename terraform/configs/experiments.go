@@ -93,7 +93,7 @@ func decodeExperimentsAttr(attr *hcl.Attribute) (experiments.Set, hcl.Diagnostic
 		return nil, diags
 	}
 
-	ret := experiments.NewSet()
+	var ret = experiments.NewSet()
 	for _, expr := range exprs {
 		kw := hcl.ExprAsKeyword(expr)
 		if kw == "" {

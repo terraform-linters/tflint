@@ -3,8 +3,9 @@ package configs
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/terraform/addrs"
+
+	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
 )

@@ -3,9 +3,10 @@ package terraform
 import (
 	"fmt"
 
+	"github.com/zclconf/go-cty/cty"
+
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/tfdiags"
-	"github.com/zclconf/go-cty/cty"
 )
 
 // InputValue represents a value for a variable in the root module, provided
