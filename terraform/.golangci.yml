@@ -1,0 +1,6 @@
+run:
+  timeout: 5m
+linters:
+  disable-all: true
+  enable:
+    - deadcode

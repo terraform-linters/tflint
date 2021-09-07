@@ -17,7 +17,8 @@ e2e: prepare install
 	go test -timeout 5m ./integrationtest/inspection ./integrationtest/langserver ./integrationtest/bundled ./integrationtest/init
 
 lint:
-	go run golang.org/x/lint/golint --set_exit_status $$(go list ./... | grep -v tflint/terraform)
+	golangci-lint run ./...
+	cd terraform/ && golangci-lint run ./...
 
 clean:
 	rm -rf dist/
