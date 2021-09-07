@@ -4,9 +4,8 @@ import (
 	"encoding/xml"
 	"fmt"
 
-	"github.com/terraform-linters/tflint/tflint"
-
 	"github.com/jstemmer/go-junit-report/formatter"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 func (f *Formatter) junitPrint(issues tflint.Issues, tferr *tflint.Error, sources map[string][]byte) {

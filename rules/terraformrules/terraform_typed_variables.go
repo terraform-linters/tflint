@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/hashicorp/hcl/v2"
-
 	"github.com/terraform-linters/tflint/tflint"
 )
 

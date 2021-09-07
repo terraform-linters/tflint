@@ -12,7 +12,6 @@ import (
 	"github.com/fatih/color"
 	"github.com/hashicorp/logutils"
 	flags "github.com/jessevdk/go-flags"
-
 	"github.com/terraform-linters/tflint/formatter"
 	"github.com/terraform-linters/tflint/tflint"
 )

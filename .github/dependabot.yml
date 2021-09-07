@@ -5,8 +5,6 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
-    ignore:
-      - dependency-name: "github.com/spf13/afero"
 
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"

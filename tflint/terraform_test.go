@@ -49,9 +49,9 @@ func Test_ParseTFVariables(t *testing.T) {
 		{
 			Name: "declared",
 			DeclVars: map[string]*configs.Variable{
-				"foo": &configs.Variable{ParsingMode: configs.VariableParseLiteral},
-				"bar": &configs.Variable{ParsingMode: configs.VariableParseHCL},
-				"baz": &configs.Variable{ParsingMode: configs.VariableParseHCL},
+				"foo": {ParsingMode: configs.VariableParseLiteral},
+				"bar": {ParsingMode: configs.VariableParseHCL},
+				"baz": {ParsingMode: configs.VariableParseHCL},
 			},
 			Vars: []string{
 				"foo=bar",
@@ -103,7 +103,7 @@ func Test_ParseTFVariables_errors(t *testing.T) {
 		{
 			Name: "invalid parsing mode",
 			DeclVars: map[string]*configs.Variable{
-				"foo": &configs.Variable{ParsingMode: configs.VariableParseHCL},
+				"foo": {ParsingMode: configs.VariableParseHCL},
 			},
 			Vars:     []string{"foo=bar"},
 			Expected: "<value for var.foo>:1,1-4: Variables not allowed; Variables may not be used here.",
@@ -111,7 +111,7 @@ func Test_ParseTFVariables_errors(t *testing.T) {
 		{
 			Name: "invalid expression",
 			DeclVars: map[string]*configs.Variable{
-				"foo": &configs.Variable{ParsingMode: configs.VariableParseHCL},
+				"foo": {ParsingMode: configs.VariableParseHCL},
 			},
 			Vars:     []string{"foo="},
 			Expected: "<value for var.foo>:1,1-1: Invalid expression; Expected the start of an expression, but found an invalid expression token.",

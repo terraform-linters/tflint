@@ -31,7 +31,6 @@ func (h *handler) textDocumentDidOpen(ctx context.Context, conn *jsonrpc2.Conn, 
 	}
 
 	openedPath, err := uriToPath(params.TextDocument.URI)
-
 	if err != nil {
 		return nil, err
 	}

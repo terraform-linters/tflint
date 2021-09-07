@@ -73,18 +73,18 @@ func (c *InstallConfig) AssetName() string {
 func (c *InstallConfig) Install() (string, error) {
 	dir, err := getPluginDir()
 	if err != nil {
-		return "", fmt.Errorf("Failed to get plugin dir: %s", err)
+		return "", fmt.Errorf("Failed to get plugin dir: %w", err)
 	}
 
 	path := filepath.Join(dir, c.InstallPath()+fileExt())
 	log.Printf("[DEBUG] Mkdir plugin dir: %s", filepath.Dir(path))
 	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
-		return "", fmt.Errorf("Failed to mkdir to %s: %s", filepath.Dir(path), err)
+		return "", fmt.Errorf("Failed to mkdir to %s: %w", filepath.Dir(path), err)
 	}
 
 	assets, err := c.fetchReleaseAssets()
 	if err != nil {
-		return "", fmt.Errorf("Failed to fetch GitHub releases: %s", err)
+		return "", fmt.Errorf("Failed to fetch GitHub releases: %w", err)
 	}
 
 	log.Printf("[DEBUG] Download checksums.txt")

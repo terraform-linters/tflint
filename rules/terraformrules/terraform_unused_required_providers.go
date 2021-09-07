@@ -36,7 +36,7 @@ func (r *TerraformUnusedRequiredProvidersRule) Link() string {
 	return tflint.ReferenceLink(r.Name())
 }
 
-//Check checks whether required providers are used
+// Check checks whether required providers are used
 func (r *TerraformUnusedRequiredProvidersRule) Check(runner *tflint.Runner) error {
 	if !runner.TFConfig.Path.IsRoot() {
 		// This rule does not evaluate child modules.

@@ -1,5 +1,11 @@
 run:
   timeout: 5m
+  skip-dirs:
+    - terraform/
+linters:
+  enable:
+    - gci
+    - gofmt
 issues:
   exclude-rules:
     - path: terraform/

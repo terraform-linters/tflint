@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/terraform-linters/tflint/terraform/configs"
-
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint/terraform/configs"
 )
 
 func Test_WalkResourceAttributes(t *testing.T) {

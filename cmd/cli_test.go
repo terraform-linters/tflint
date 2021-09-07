@@ -203,6 +203,7 @@ type errorRule struct{}
 func (r *testRule) Name() string {
 	return "test_rule"
 }
+
 func (r *errorRule) Name() string {
 	return "error_rule"
 }
@@ -210,6 +211,7 @@ func (r *errorRule) Name() string {
 func (r *testRule) Enabled() bool {
 	return true
 }
+
 func (r *errorRule) Enabled() bool {
 	return true
 }
@@ -217,6 +219,7 @@ func (r *errorRule) Enabled() bool {
 func (r *testRule) Severity() string {
 	return tflint.ERROR
 }
+
 func (r *errorRule) Severity() string {
 	return tflint.ERROR
 }
@@ -224,6 +227,7 @@ func (r *errorRule) Severity() string {
 func (r *testRule) Link() string {
 	return ""
 }
+
 func (r *errorRule) Link() string {
 	return ""
 }
@@ -244,6 +248,7 @@ func (r *testRule) Check(runner *tflint.Runner) error {
 	)
 	return nil
 }
+
 func (r *errorRule) Check(runner *tflint.Runner) error {
 	return errors.New("Check failed")
 }

@@ -31,7 +31,6 @@ func (h *handler) textDocumentDidChange(ctx context.Context, conn *jsonrpc2.Conn
 	}
 
 	changedPath, err := uriToPath(params.TextDocument.URI)
-
 	if err != nil {
 		return nil, err
 	}
