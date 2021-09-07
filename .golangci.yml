@@ -6,7 +6,6 @@ linters:
   enable:
     - gci
     - gofmt
-    - govet
 issues:
   exclude-rules:
     - path: terraform/
