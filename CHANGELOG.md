@@ -1,3 +1,33 @@
+## 0.32.0 (2021-09-11)
+
+### Breaking Changes
+
+- [#1191](https://github.com/terraform-linters/tflint/pull/1191): cmd: Change exit status ([@wata727](https://github.com/wata727))
+  - Previously, TFLint returned 2 when an internal error occurred and 3 when an issue was found. From this version, it returns 1 in the former case and 2 in the latter case.
+
+### Enhancements
+
+- [#1182](https://github.com/terraform-linters/tflint/pull/1182): add rule: terraform_module_version ([@bendrucker](https://github.com/bendrucker))
+- [#1197](https://github.com/terraform-linters/tflint/pull/1197): terraform_module_pinned_source: detect invalid URLs ([@bendrucker](https://github.com/bendrucker))
+- [#1201](https://github.com/terraform-linters/tflint/pull/1201) [#1212](https://github.com/terraform-linters/tflint/pull/1212): build(deps): Bump github.com/terraform-linters/tflint-ruleset-aws from 0.6.0 to 0.7.1
+
+### Chores
+
+- [#1178](https://github.com/terraform-linters/tflint/pull/1178) [#1200](https://github.com/terraform-linters/tflint/pull/1200): build(deps): Bump alpine from 3.14.0 to 3.14.2
+- [#1183](https://github.com/terraform-linters/tflint/pull/1183) [#1184](https://github.com/terraform-linters/tflint/pull/1184): install: allow passing `$TFLINT_INSTALL_PATH` ([@bendrucker](https://github.com/bendrucker) [@williamboman](https://github.com/williamboman))
+- [#1185](https://github.com/terraform-linters/tflint/pull/1185): install: support arm64 arch ([@williamboman](https://github.com/williamboman))
+- [#1186](https://github.com/terraform-linters/tflint/pull/1186): build(deps): Bump github.com/hashicorp/go-getter from 1.5.6 to 1.5.7
+- [#1187](https://github.com/terraform-linters/tflint/pull/1187): build(deps): Bump golang.org/x/text from 0.3.6 to 0.3.7
+- [#1188](https://github.com/terraform-linters/tflint/pull/1188): build: bump to use go1.17 ([@chenrui333](https://github.com/chenrui333))
+- [#1195](https://github.com/terraform-linters/tflint/pull/1195): build(deps): Bump github.com/zclconf/go-cty from 1.9.0 to 1.9.1
+- [#1199](https://github.com/terraform-linters/tflint/pull/1199): build(deps): Bump actions/setup-go from 2.1.3 to 2.1.4
+- [#1205](https://github.com/terraform-linters/tflint/pull/1205): Remove bundled AWS plugin language from README ([@rjhornsby](https://github.com/rjhornsby))
+- [#1208](https://github.com/terraform-linters/tflint/pull/1208): Tidy up go generate workflow ([@bendrucker](https://github.com/bendrucker) [@chenrui333](https://github.com/chenrui333))
+- [#1209](https://github.com/terraform-linters/tflint/pull/1209): Use golangci-lint for linting ([@bendrucker](https://github.com/bendrucker) [@mmorel-35](https://github.com/mmorel-35))
+- [#1214](https://github.com/terraform-linters/tflint/pull/1214): Enable additional linters ([@bendrucker](https://github.com/bendrucker) [@mmorel-35](https://github.com/mmorel-35))
+- [#1215](https://github.com/terraform-linters/tflint/pull/1215): build: get cache paths from go env ([@bendrucker](https://github.com/bendrucker))
+- [#1216](https://github.com/terraform-linters/tflint/pull/1216): build(deps): Bump github.com/hashicorp/go-plugin from 1.4.2 to 1.4.3
+
 ## 0.31.0 (2021-08-08)
 
 ### Enhancements
