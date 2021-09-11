@@ -18,8 +18,8 @@ import (
 
 // Exit codes are int values that represent an exit code for a particular error.
 const (
-	ExitCodeOK    int = 0
-	ExitCodeError int = 1 + iota
+	ExitCodeOK int = iota
+	ExitCodeError
 	ExitCodeIssuesFound
 )
 
