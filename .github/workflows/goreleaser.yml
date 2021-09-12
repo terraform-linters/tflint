@@ -25,8 +25,3 @@ jobs:
       with:
         version: v0.178.0
         args: check
-    - name: goreleaser build
-      uses: goreleaser/goreleaser-action@v2
-      with:
-        version: v0.178.0
-        args: build --snapshot
