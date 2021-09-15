@@ -14,9 +14,7 @@ rule "terraform_required_version" {
 
 ```hcl
 terraform {
-  required_providers {
-    aws = ">= 2.7.0"
-  }
+  required_version = ">= 1.0" 
 }
 ```
 
