@@ -71,6 +71,14 @@ func (r *TerraformUnusedRequiredProvidersRule) checkProvider(runner *tflint.Runn
 		}
 	}
 
+	for _, module := range runner.TFConfig.Module.ModuleCalls {
+		for _, provider := range module.Providers {
+			if provider.InParent.Name == required.Name {
+				return
+			}
+		}
+	}
+
 	runner.EmitIssue(
 		r,
 		fmt.Sprintf("provider '%s' is declared in required_providers but not used by the module", required.Name),
