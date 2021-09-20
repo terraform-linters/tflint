@@ -1,4 +1,4 @@
-name: Generate
+name: generate
 
 on: pull_request
 
