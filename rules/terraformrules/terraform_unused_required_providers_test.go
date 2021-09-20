@@ -83,6 +83,49 @@ func Test_TerraformUnusedRequiredProvidersRule(t *testing.T) {
 			Expected: tflint.Issues{},
 		},
 		{
+			Name: "used - module provider override",
+			Content: `
+				terraform {
+					required_providers {
+						custom-null = {
+							source = "custom/null"
+						}
+					}
+				}
+
+				module "m" {
+					source = "./m"
+
+					providers = {
+						null = custom-null
+					}
+				}
+			`,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: "used - module provider override with alias",
+			Content: `
+				terraform {
+					required_providers {
+						null = {
+							source = "hashicorp/null"
+							configuration_aliases = [null.a]
+						}
+					}
+				}
+
+				module "m" {
+					source = "./m"
+
+					providers = {
+						null = null.a
+					}
+				}
+			`,
+			Expected: tflint.Issues{},
+		},
+		{
 			Name: "used - provider",
 			Content: `
 				terraform {
@@ -143,6 +186,39 @@ func Test_TerraformUnusedRequiredProvidersRule(t *testing.T) {
 
 				resource "null_resource" "foo" {
 					provider = custom-null
+				}
+			`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformUnusedRequiredProvidersRule(),
+					Message: "provider 'null' is declared in required_providers but not used by the module",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start: hcl.Pos{
+							Line:   4,
+							Column: 14,
+						},
+						End: hcl.Pos{
+							Line:   6,
+							Column: 8,
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "unused - module",
+			Content: `
+				terraform {
+					required_providers {
+						null = {
+							source = "hashicorp/null"
+						}
+					}
+				}
+
+				module "m" {
+					source = "./m"
 				}
 			`,
 			Expected: tflint.Issues{
