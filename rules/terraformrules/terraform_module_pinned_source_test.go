@@ -505,6 +505,15 @@ rule "terraform_module_pinned_source" {
 				},
 			},
 		},
+		{
+			Name: "gitlab registry module",
+			Content: `
+module "m" {
+  source = "gitlab.com/namespace/module_name/module_system"
+	version = "1.0.0"
+}`,
+			Expected: tflint.Issues{},
+		},
 	}
 
 	rule := NewTerraformModulePinnedSourceRule()
