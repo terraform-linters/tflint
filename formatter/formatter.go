@@ -28,6 +28,8 @@ func (f *Formatter) Print(issues tflint.Issues, err *tflint.Error, sources map[s
 		f.junitPrint(issues, err, sources)
 	case "compact":
 		f.compactPrint(issues, err, sources)
+	case "sarif":
+		f.sarifPrint(issues, err, sources)
 	default:
 		f.prettyPrint(issues, err, sources)
 	}

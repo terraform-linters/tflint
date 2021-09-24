@@ -26,6 +26,7 @@ require (
 	github.com/jstemmer/go-junit-report v0.9.1
 	github.com/mattn/go-colorable v0.1.9
 	github.com/mitchellh/go-homedir v1.1.0
+	github.com/owenrumney/go-sarif v1.0.11
 	github.com/sourcegraph/go-lsp v0.0.0-20200429204803-219e11d77f5d
 	github.com/sourcegraph/jsonrpc2 v0.1.0
 	github.com/spf13/afero v1.6.0
