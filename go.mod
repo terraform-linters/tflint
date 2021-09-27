@@ -31,7 +31,7 @@ require (
 	github.com/sourcegraph/jsonrpc2 v0.1.0
 	github.com/spf13/afero v1.6.0
 	github.com/terraform-linters/tflint-plugin-sdk v0.9.1
-	github.com/terraform-linters/tflint-ruleset-aws v0.7.1
+	github.com/terraform-linters/tflint-ruleset-aws v0.7.2
 	github.com/zclconf/go-cty v1.9.1
 	github.com/zclconf/go-cty-yaml v1.0.2
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
