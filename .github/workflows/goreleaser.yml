@@ -20,25 +20,8 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.17
-    - id: cache-paths
-      name: Get cache paths
-      run: |
-        echo "::set-output name=go-cache::$(go env GOCACHE)"
-        echo "::set-output name=go-mod-cache::$(go env GOMODCACHE)"
-    - uses: actions/cache@v2
-      with:
-        path: |
-          ${{ steps.cache-paths.outputs.go-cache }}
-          ${{ steps.cache-paths.outputs.go-mod-cache }}
-        key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-    - name: Install GoReleaser
+    - name: goreleaser check
       uses: goreleaser/goreleaser-action@v2
       with:
         version: v0.178.0
-        install-only: true
-    - name: goreleaser check
-      run: goreleaser check
-    - name: goreleaser build
-      run: goreleaser build --snapshot
+        args: check
