@@ -24,7 +24,7 @@ require (
 	github.com/hashicorp/terraform-svchost v0.0.0-20200729002733-f050f53b9734
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/jstemmer/go-junit-report v0.9.1
-	github.com/mattn/go-colorable v0.1.10
+	github.com/mattn/go-colorable v0.1.11
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/owenrumney/go-sarif v1.0.11
 	github.com/sourcegraph/go-lsp v0.0.0-20200429204803-219e11d77f5d
@@ -67,7 +67,7 @@ require (
 	github.com/vmihailenco/tagparser v0.1.1 // indirect
 	go.opencensus.io v0.22.4 // indirect
 	golang.org/x/mod v0.4.2 // indirect
-	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
+	golang.org/x/sys v0.0.0-20210927094055-39ccf1dd6fa6 // indirect
 	golang.org/x/tools v0.1.1 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/api v0.34.0 // indirect
