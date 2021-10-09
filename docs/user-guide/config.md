@@ -9,6 +9,8 @@ The config file is written in [HCL](https://github.com/hashicorp/hcl). An exampl
 
 ```hcl
 config {
+  plugin_dir = "~/.tflint.d/plugins"
+
   module = true
   force = false
   disabled_by_default = false
@@ -38,6 +40,10 @@ You can also use another file as a config file with the `--config` option:
 ```
 $ tflint --config other_config.hcl
 ```
+
+### `plugin_dir`
+
+Set the plugin directory. The default is `~/.tflint.d/plugins` (or `./.tflint.d/plugins`). See also [Configuring Plugins](plugins.md#advanced-usage)
 
 ### `module`
 

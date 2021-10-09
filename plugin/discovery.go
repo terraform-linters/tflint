@@ -24,12 +24,12 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 	clients := map[string]*plugin.Client{}
 	rulesets := map[string]*tfplugin.Client{}
 
-	for _, cfg := range config.Plugins {
-		installCfg := NewInstallConfig(cfg)
+	for _, pluginCfg := range config.Plugins {
+		installCfg := NewInstallConfig(config, pluginCfg)
 		pluginPath, err := FindPluginPath(installCfg)
 		var cmd *exec.Cmd
 		if os.IsNotExist(err) {
-			if cfg.Name == "aws" && installCfg.ManuallyInstalled() {
+			if pluginCfg.Name == "aws" && installCfg.ManuallyInstalled() {
 				log.Print("[INFO] Plugin `aws` is not installed, but bundled plugins are available.")
 				self, err := os.Executable()
 				if err != nil {
@@ -38,27 +38,27 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 				cmd = exec.Command(self, "--act-as-aws-plugin")
 			} else {
 				if installCfg.ManuallyInstalled() {
-					pluginDir, err := getPluginDir()
+					pluginDir, err := getPluginDir(config)
 					if err != nil {
 						return nil, err
 					}
-					return nil, fmt.Errorf("Plugin `%s` not found in %s", cfg.Name, pluginDir)
+					return nil, fmt.Errorf("Plugin `%s` not found in %s", pluginCfg.Name, pluginDir)
 				}
-				return nil, fmt.Errorf("Plugin `%s` not found. Did you run `tflint --init`?", cfg.Name)
+				return nil, fmt.Errorf("Plugin `%s` not found. Did you run `tflint --init`?", pluginCfg.Name)
 			}
 		} else {
 			cmd = exec.Command(pluginPath)
 		}
 
-		if cfg.Enabled {
-			log.Printf("[INFO] Plugin `%s` found", cfg.Name)
+		if pluginCfg.Enabled {
+			log.Printf("[INFO] Plugin `%s` found", pluginCfg.Name)
 
 			client := tfplugin.NewClient(&tfplugin.ClientOpts{
 				Cmd: cmd,
 			})
 			rpcClient, err := client.Client()
 			if err != nil {
-				return nil, pluginClientError(err, cfg)
+				return nil, pluginClientError(err, pluginCfg)
 			}
 			raw, err := rpcClient.Dispense("ruleset")
 			if err != nil {
@@ -66,10 +66,10 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 			}
 			ruleset := raw.(*tfplugin.Client)
 
-			clients[cfg.Name] = client
-			rulesets[cfg.Name] = ruleset
+			clients[pluginCfg.Name] = client
+			rulesets[pluginCfg.Name] = ruleset
 		} else {
-			log.Printf("[INFO] Plugin `%s` found, but the plugin is disabled", cfg.Name)
+			log.Printf("[INFO] Plugin `%s` found, but the plugin is disabled", pluginCfg.Name)
 		}
 	}
 
@@ -78,7 +78,7 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 
 // FindPluginPath returns the plugin binary path.
 func FindPluginPath(config *InstallConfig) (string, error) {
-	dir, err := getPluginDir()
+	dir, err := getPluginDir(config.globalConfig)
 	if err != nil {
 		return "", err
 	}
@@ -94,13 +94,18 @@ func FindPluginPath(config *InstallConfig) (string, error) {
 // getPluginDir returns the base plugin directory.
 // Adopted with the following priorities:
 //
-//   1. `TFLINT_PLUGIN_DIR` environment variable
-//   2. Current directory (./.tflint.d/plugins)
-//   3. Home directory (~/.tflint.d/plugins)
+//   1. `plugin_dir` in a global config
+//   2. `TFLINT_PLUGIN_DIR` environment variable
+//   3. Current directory (./.tflint.d/plugins)
+//   4. Home directory (~/.tflint.d/plugins)
 //
 // If the environment variable is set, other directories will not be considered,
 // but if the current directory does not exist, it will fallback to the home directory.
-func getPluginDir() (string, error) {
+func getPluginDir(cfg *tflint.Config) (string, error) {
+	if cfg.PluginDir != "" {
+		return homedir.Expand(cfg.PluginDir)
+	}
+
 	if dir := os.Getenv("TFLINT_PLUGIN_DIR"); dir != "" {
 		return dir, nil
 	}

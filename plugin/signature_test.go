@@ -19,22 +19,22 @@ func Test_GetSigningKey(t *testing.T) {
 	}{
 		{
 			Name:     "no signing key",
-			Config:   NewInstallConfig(&tflint.PluginConfig{SigningKey: ""}),
+			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: ""}),
 			Expected: "",
 		},
 		{
 			Name:     "configured singing key",
-			Config:   NewInstallConfig(&tflint.PluginConfig{SigningKey: testSigningKey}),
+			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: testSigningKey}),
 			Expected: testSigningKey,
 		},
 		{
 			Name:     "bulit-in signing key",
-			Config:   NewInstallConfig(&tflint.PluginConfig{SigningKey: "", SourceOwner: "terraform-linters"}),
+			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: "", SourceOwner: "terraform-linters"}),
 			Expected: builtinSigningKey,
 		},
 		{
 			Name:     "bulit-in signing key and configured signing key",
-			Config:   NewInstallConfig(&tflint.PluginConfig{SigningKey: testSigningKey, SourceOwner: "terraform-linters"}),
+			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: testSigningKey, SourceOwner: "terraform-linters"}),
 			Expected: testSigningKey,
 		},
 	}
@@ -57,22 +57,22 @@ func Test_HasSigningKey(t *testing.T) {
 	}{
 		{
 			Name:     "no signing key",
-			Config:   NewInstallConfig(&tflint.PluginConfig{SigningKey: ""}),
+			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: ""}),
 			Expected: false,
 		},
 		{
 			Name:     "configured singing key",
-			Config:   NewInstallConfig(&tflint.PluginConfig{SigningKey: testSigningKey}),
+			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: testSigningKey}),
 			Expected: true,
 		},
 		{
 			Name:     "bulit-in signing key",
-			Config:   NewInstallConfig(&tflint.PluginConfig{SigningKey: "", SourceOwner: "terraform-linters"}),
+			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: "", SourceOwner: "terraform-linters"}),
 			Expected: true,
 		},
 		{
 			Name:     "bulit-in signing key and configured signing key",
-			Config:   NewInstallConfig(&tflint.PluginConfig{SigningKey: testSigningKey, SourceOwner: "terraform-linters"}),
+			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: testSigningKey, SourceOwner: "terraform-linters"}),
 			Expected: true,
 		},
 	}
@@ -116,7 +116,7 @@ dd536fed0ebe4c1115240574c5dd7a31b563d67bfe0d1111750438718f995d43  tflint-ruleset
 `
 	reader := strings.NewReader(target)
 
-	sigchecker := NewSignatureChecker(NewInstallConfig(&tflint.PluginConfig{SigningKey: builtinSigningKey}))
+	sigchecker := NewSignatureChecker(NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: builtinSigningKey}))
 	if err := sigchecker.Verify(reader, signature); err != nil {
 		t.Fatalf("Verify failed: %s", err)
 	}
@@ -160,28 +160,28 @@ dd536fed0ebe4c1115240574c5dd7a31b563d67bfe0d1111750438718f995d43  tflint-ruleset
 	}{
 		{
 			Name:      "invalid signature",
-			Config:    NewInstallConfig(&tflint.PluginConfig{SigningKey: builtinSigningKey}),
+			Config:    NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: builtinSigningKey}),
 			Target:    "broken",
 			Signature: signature,
 			Expected:  fmt.Errorf("openpgp: invalid signature: hash tag doesn't match"),
 		},
 		{
 			Name:      "no signing key",
-			Config:    NewInstallConfig(&tflint.PluginConfig{SigningKey: ""}),
+			Config:    NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: ""}),
 			Target:    target,
 			Signature: signature,
 			Expected:  fmt.Errorf("No signing key configured"),
 		},
 		{
 			Name:      "broken signing key",
-			Config:    NewInstallConfig(&tflint.PluginConfig{SigningKey: "broken"}),
+			Config:    NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: "broken"}),
 			Target:    target,
 			Signature: signature,
 			Expected:  fmt.Errorf("openpgp: invalid argument: no armored data found"),
 		},
 		{
 			Name:      "broken signature",
-			Config:    NewInstallConfig(&tflint.PluginConfig{SigningKey: builtinSigningKey}),
+			Config:    NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: builtinSigningKey}),
 			Target:    target,
 			Signature: brokenSignature,
 			Expected:  fmt.Errorf("openpgp: invalid data: tag byte does not have MSB set"),

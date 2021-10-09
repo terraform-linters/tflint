@@ -20,13 +20,16 @@ import (
 // InstallConfig is a config for plugin installation.
 // This is a wrapper for PluginConfig and manages naming conventions
 // and directory names for installation.
+// Note that need a global config to manage installation directory.
 type InstallConfig struct {
+	globalConfig *tflint.Config
+
 	*tflint.PluginConfig
 }
 
 // NewInstallConfig returns a new InstallConfig from passed PluginConfig.
-func NewInstallConfig(config *tflint.PluginConfig) *InstallConfig {
-	return &InstallConfig{PluginConfig: config}
+func NewInstallConfig(config *tflint.Config, pluginCfg *tflint.PluginConfig) *InstallConfig {
+	return &InstallConfig{globalConfig: config, PluginConfig: pluginCfg}
 }
 
 // ManuallyInstalled returns whether the plugin should be installed manually.
@@ -71,7 +74,7 @@ func (c *InstallConfig) AssetName() string {
 //   - The signature file must be binary OpenPGP format
 //
 func (c *InstallConfig) Install() (string, error) {
-	dir, err := getPluginDir()
+	dir, err := getPluginDir(c.globalConfig)
 	if err != nil {
 		return "", fmt.Errorf("Failed to get plugin dir: %w", err)
 	}
