@@ -31,7 +31,7 @@ require (
 	github.com/sourcegraph/jsonrpc2 v0.1.0
 	github.com/spf13/afero v1.6.0
 	github.com/terraform-linters/tflint-plugin-sdk v0.9.1
-	github.com/terraform-linters/tflint-ruleset-aws v0.7.2
+	github.com/terraform-linters/tflint-ruleset-aws v0.8.0
 	github.com/zclconf/go-cty v1.9.1
 	github.com/zclconf/go-cty-yaml v1.0.2
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
@@ -45,7 +45,7 @@ require (
 	cloud.google.com/go v0.65.0 // indirect
 	cloud.google.com/go/storage v1.10.0 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
-	github.com/aws/aws-sdk-go v1.40.32 // indirect
+	github.com/aws/aws-sdk-go v1.40.54 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
