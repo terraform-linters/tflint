@@ -1,3 +1,31 @@
+## 0.33.0 (2021-10-14)
+
+### Breaking Changes
+
+- [#1220](https://github.com/terraform-linters/tflint/pull/1220): build: Remove some os/arch build targets ([@wata727](https://github.com/wata727))
+  - End of support for pre-built binaries for the following os/arch
+    - All arch for FreeBSD/OpenBSD/NetBSD
+    - windows/arm and windows/arm64
+    - darwin/386
+
+### Enhancements
+
+- [#1228](https://github.com/terraform-linters/tflint/pull/1228): Adds SARIF as a supported output format ([@kadrach](https://github.com/kadrach))
+- [#1229](https://github.com/terraform-linters/tflint/pull/1229) [#1237](https://github.com/terraform-linters/tflint/pull/1237): build(deps): Bump github.com/terraform-linters/tflint-ruleset-aws from 0.7.1 to 0.8.0
+- [#1235](https://github.com/terraform-linters/tflint/pull/1235): config: Add `plugin_dir` config ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#1225](https://github.com/terraform-linters/tflint/pull/1225): terraform_unused_required_providers: handle module provider overrides ([@bendrucker](https://github.com/bendrucker))
+- [#1226](https://github.com/terraform-linters/tflint/pull/1227): terraform_module_pinned_source: do not assume gitlab URLs are git protocol ([@bendrucker](https://github.com/bendrucker))
+
+### Chores
+
+- [#1222](https://github.com/terraform-linters/tflint/pull/1222) [#1236](https://github.com/terraform-linters/tflint/pull/1236): build(deps): Bump github.com/hashicorp/go-getter from 1.5.7 to 1.5.9
+- [#1223](https://github.com/terraform-linters/tflint/pull/1223): fix incorrect documentation ([@darrenjones24](https://github.com/darrenjones24))
+- [#1224](https://github.com/terraform-linters/tflint/pull/1224) [#1230](https://github.com/terraform-linters/tflint/pull/1230) [#1234](https://github.com/terraform-linters/tflint/pull/1234): build(deps): Bump github.com/mattn/go-colorable from 0.1.8 to 0.1.11
+- [#1231](https://github.com/terraform-linters/tflint/pull/1231): build(deps): Bump github.com/fatih/color from 1.12.0 to 1.13.0
+
 ## 0.32.1 (2021-09-12)
 
 ### BugFixes
