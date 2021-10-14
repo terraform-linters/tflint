@@ -33,6 +33,7 @@ type rawConfig struct {
 		Varfile           *[]string        `hcl:"varfile"`
 		Variables         *[]string        `hcl:"variables"`
 		DisabledByDefault *bool            `hcl:"disabled_by_default"`
+		PluginDir         *string          `hcl:"plugin_dir"`
 		// Removed options
 		TerraformVersion *string            `hcl:"terraform_version"`
 		IgnoreRule       *map[string]bool   `hcl:"ignore_rule"`
@@ -51,6 +52,7 @@ type Config struct {
 	Varfiles          []string
 	Variables         []string
 	DisabledByDefault bool
+	PluginDir         string
 	Rules             map[string]*RuleConfig
 	Plugins           map[string]*PluginConfig
 }
@@ -150,6 +152,9 @@ func (c *Config) Merge(other *Config) *Config {
 	}
 	if other.DisabledByDefault {
 		ret.DisabledByDefault = true
+	}
+	if other.PluginDir != "" {
+		ret.PluginDir = other.PluginDir
 	}
 
 	ret.IgnoreModules = mergeBoolMap(ret.IgnoreModules, other.IgnoreModules)
@@ -261,6 +266,7 @@ func (c *Config) copy() *Config {
 		Varfiles:          varfiles,
 		Variables:         variables,
 		DisabledByDefault: c.DisabledByDefault,
+		PluginDir:         c.PluginDir,
 		Rules:             rules,
 		Plugins:           plugins,
 	}
@@ -328,6 +334,7 @@ plugin "aws" {
 	log.Printf("[DEBUG]   Varfiles: %#v", cfg.Varfiles)
 	log.Printf("[DEBUG]   Variables: %#v", cfg.Variables)
 	log.Printf("[DEBUG]   DisabledByDefault: %#v", cfg.DisabledByDefault)
+	log.Printf("[DEBUG]   PluginDir: %s", cfg.PluginDir)
 	log.Printf("[DEBUG]   Rules: %#v", cfg.Rules)
 	log.Printf("[DEBUG]   Plugins: %#v", cfg.Plugins)
 
@@ -403,6 +410,9 @@ func (raw *rawConfig) toConfig() *Config {
 		}
 		if rc.Variables != nil {
 			ret.Variables = *rc.Variables
+		}
+		if rc.PluginDir != nil {
+			ret.PluginDir = *rc.PluginDir
 		}
 	}
 

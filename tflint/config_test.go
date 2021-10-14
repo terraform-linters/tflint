@@ -38,6 +38,7 @@ func Test_LoadConfig(t *testing.T) {
 				Varfiles:          []string{"example1.tfvars", "example2.tfvars"},
 				Variables:         []string{"foo=bar", "bar=['foo']"},
 				DisabledByDefault: false,
+				PluginDir:         "~/.tflint.d/plugins",
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -239,6 +240,7 @@ func Test_Merge(t *testing.T) {
 		Varfiles:          []string{"example1.tfvars", "example2.tfvars"},
 		Variables:         []string{"foo=bar"},
 		DisabledByDefault: false,
+		PluginDir:         "./.tflint.d/plugins",
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
 				Name:    "aws_instance_invalid_type",
@@ -290,6 +292,7 @@ func Test_Merge(t *testing.T) {
 				Varfiles:          []string{"example1.tfvars", "example2.tfvars"},
 				Variables:         []string{"foo=bar"},
 				DisabledByDefault: false,
+				PluginDir:         "./.tflint.d/plugins",
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -323,6 +326,7 @@ func Test_Merge(t *testing.T) {
 				Varfiles:          []string{"example3.tfvars"},
 				Variables:         []string{"bar=baz"},
 				DisabledByDefault: false,
+				PluginDir:         "~/.tflint.d/plugins",
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_ami": {
 						Name:    "aws_instance_invalid_ami",
@@ -357,6 +361,7 @@ func Test_Merge(t *testing.T) {
 				Varfiles:          []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
 				Variables:         []string{"foo=bar", "bar=baz"},
 				DisabledByDefault: false,
+				PluginDir:         "~/.tflint.d/plugins",
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -730,6 +735,7 @@ func Test_copy(t *testing.T) {
 		Varfiles:          []string{"example1.tfvars", "example2.tfvars"},
 		Variables:         []string{},
 		DisabledByDefault: true,
+		PluginDir:         "./.tflint.d/plugins",
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
 				Name:    "aws_instance_invalid_type",
@@ -772,6 +778,12 @@ func Test_copy(t *testing.T) {
 			Name: "DisabledByDefault",
 			SideEffect: func(c *Config) {
 				c.DisabledByDefault = false
+			},
+		},
+		{
+			Name: "PluginDir",
+			SideEffect: func(c *Config) {
+				c.PluginDir = "~/.tflint.d/plugins"
 			},
 		},
 		{

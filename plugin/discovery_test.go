@@ -119,6 +119,38 @@ func Test_Discovery_envVar(t *testing.T) {
 	}
 }
 
+func Test_Discovery_pluginDirConfig(t *testing.T) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	plugin, err := Discovery(&tflint.Config{
+		PluginDir: filepath.Join(cwd, "test-fixtures", "locals", ".tflint.d", "plugins"),
+		Plugins: map[string]*tflint.PluginConfig{
+			"foo": {
+				Name:    "foo",
+				Enabled: true,
+			},
+			"bar": {
+				Name:    "bar",
+				Enabled: false,
+				Source:  "github.com/terraform-linters/tflint-ruleset-bar",
+				Version: "0.1.0",
+			},
+		},
+	})
+	defer plugin.Clean()
+
+	if err != nil {
+		t.Fatalf("Unexpected error occurred %s", err)
+	}
+
+	if len(plugin.RuleSets) != 1 {
+		t.Fatalf("Only one plugin must be enabled, but %d plugins are enabled", len(plugin.RuleSets))
+	}
+}
+
 func Test_Discovery_notFound(t *testing.T) {
 	cwd, err := os.Getwd()
 	if err != nil {
@@ -252,12 +284,12 @@ func Test_FindPluginPath(t *testing.T) {
 	}{
 		{
 			Name:     "manually installed",
-			Input:    NewInstallConfig(&tflint.PluginConfig{Name: "foo", Enabled: true}),
+			Input:    NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{Name: "foo", Enabled: true}),
 			Expected: filepath.Join(PluginRoot, "tflint-ruleset-foo"+fileExt()),
 		},
 		{
 			Name: "auto installed",
-			Input: NewInstallConfig(&tflint.PluginConfig{
+			Input: NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{
 				Name:    "bar",
 				Enabled: true,
 				Source:  "github.com/terraform-linters/tflint-ruleset-bar",
@@ -302,12 +334,12 @@ func Test_FindPluginPath_locals(t *testing.T) {
 	}{
 		{
 			Name:     "manually installed",
-			Input:    NewInstallConfig(&tflint.PluginConfig{Name: "foo", Enabled: true}),
+			Input:    NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{Name: "foo", Enabled: true}),
 			Expected: filepath.Join(localPluginRoot, "tflint-ruleset-foo"+fileExt()),
 		},
 		{
 			Name: "auto installed",
-			Input: NewInstallConfig(&tflint.PluginConfig{
+			Input: NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{
 				Name:    "bar",
 				Enabled: true,
 				Source:  "github.com/terraform-linters/tflint-ruleset-bar",
@@ -345,18 +377,60 @@ func Test_FindPluginPath_envVar(t *testing.T) {
 	}{
 		{
 			Name:     "manually installed",
-			Input:    NewInstallConfig(&tflint.PluginConfig{Name: "foo", Enabled: true}),
+			Input:    NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{Name: "foo", Enabled: true}),
 			Expected: filepath.Join(dir, "tflint-ruleset-foo"+fileExt()),
 		},
 		{
 			Name: "auto installed",
-			Input: NewInstallConfig(&tflint.PluginConfig{
+			Input: NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{
 				Name:    "bar",
 				Enabled: true,
 				Source:  "github.com/terraform-linters/tflint-ruleset-bar",
 				Version: "0.1.0",
 			}),
 			Expected: filepath.Join(dir, "github.com/terraform-linters/tflint-ruleset-bar", "0.1.0", "tflint-ruleset-bar"+fileExt()),
+		},
+	}
+
+	for _, tc := range cases {
+		got, err := FindPluginPath(tc.Input)
+		if err != nil {
+			t.Fatalf("Unexpected error occurred %s", err)
+		}
+		if got != tc.Expected {
+			t.Fatalf("Failed `%s`: want=%s got=%s", tc.Name, tc.Expected, got)
+		}
+	}
+}
+
+func Test_FindPluginPath_pluginDirConfig(t *testing.T) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	globalConfig := tflint.EmptyConfig()
+	globalConfig.PluginDir = filepath.Join(cwd, "test-fixtures", "locals", ".tflint.d", "plugins")
+
+	cases := []struct {
+		Name     string
+		Input    *InstallConfig
+		Expected string
+	}{
+		{
+			Name:     "manually installed",
+			Input:    NewInstallConfig(globalConfig, &tflint.PluginConfig{Name: "foo", Enabled: true}),
+			Expected: filepath.Join(globalConfig.PluginDir, "tflint-ruleset-foo"+fileExt()),
+		},
+		{
+			Name: "auto installed",
+			Input: NewInstallConfig(globalConfig, &tflint.PluginConfig{
+				Name:    "bar",
+				Enabled: true,
+				Source:  "github.com/terraform-linters/tflint-ruleset-bar",
+				Version: "0.1.0",
+			}),
+			Expected: filepath.Join(globalConfig.PluginDir, "github.com/terraform-linters/tflint-ruleset-bar", "0.1.0", "tflint-ruleset-bar"+fileExt()),
 		},
 	}
 
@@ -381,7 +455,7 @@ func Test_FindPluginPath_withoutExtensionInWindows(t *testing.T) {
 	PluginRoot = filepath.Join(cwd, "test-fixtures", "plugins")
 	defer func() { PluginRoot = original }()
 
-	config := NewInstallConfig(&tflint.PluginConfig{Name: "baz", Enabled: true})
+	config := NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{Name: "baz", Enabled: true})
 	expected := filepath.Join(PluginRoot, "tflint-ruleset-baz")
 
 	got, err := FindPluginPath(config)

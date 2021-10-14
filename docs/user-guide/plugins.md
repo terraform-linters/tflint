@@ -54,6 +54,14 @@ Plugin developer's PGP public signing key. When this attribute is set, TFLint wi
 
 Plugins under the terraform-linters organization (AWS/GCP/Azure ruleset plugins) can use the built-in signing key, so this attribute can be omitted.
 
+## Plugin directory
+
+Plugins are usually installed under `~/.tflint.d/plugins`. Exceptionally, if you already have `./.tflint.d/plugins` in your working directory, it will be installed there.
+
+The automatically installed plugins are placed as `[plugin dir]/[source]/[version]/tflint-ruleset-[name]`. (`tflint-ruleset-[name].exe` in Windows).
+
+If you want to change the plugin directory, you can change this with the [`plugin_dir`](config.md#plugin_dir) or `TFLINT_PLUGIN_DIR` environment variable.
+
 ## Avoiding rate limiting
 
 When you install plugins with `tflint --init`, call the GitHub API to get release metadata. This is typically an unauthenticated request with a rate limit of 60 requests per hour.
@@ -64,7 +72,7 @@ This limitation can be a problem if you need to run `--init` frequently, such as
 
 It's also a good idea to cache the plugin directory, as TFLint will only send requests if plugins aren't installed. See also the [setup-tflint's example](https://github.com/terraform-linters/setup-tflint#usage).
 
-## Advanced Usage
+## Manual installation
 
 You can also install the plugin manually. This is mainly useful for plugin development and for plugins that are not published on GitHub. In that case, omit the `source` and `version` attributes.
 
@@ -74,6 +82,4 @@ plugin "foo" {
 }
 ```
 
-When the plugin is enabled, TFLint invokes the `tflint-ruleset-<NAME>` (`tflint-ruleset-<NAME>.exe` on Windows) binary in the `~/.tflint.d/plugins` (or `./.tflint.d/plugins`) directory. So you should move the binary into the directory in advance.
-
-You can also change the plugin directory with the `TFLINT_PLUGIN_DIR` environment variable.
+When the plugin is enabled, TFLint invokes the `tflint-ruleset-[name]` (`tflint-ruleset-[name].exe` on Windows) binary in the plugin directory (For instance, `~/.tflint.d/plugins/tflint-ruleset-[name]`). So you should move the binary into the directory in advance.

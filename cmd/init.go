@@ -17,7 +17,7 @@ func (cli *CLI) init(opts Options) int {
 	}
 
 	for _, pluginCfg := range cfg.Plugins {
-		installCfg := tfplugin.NewInstallConfig(pluginCfg)
+		installCfg := tfplugin.NewInstallConfig(cfg, pluginCfg)
 
 		// If version or source is not set, you need to install it manually
 		if installCfg.ManuallyInstalled() {

@@ -12,7 +12,7 @@ func Test_Install(t *testing.T) {
 	PluginRoot = t.TempDir()
 	defer func() { PluginRoot = original }()
 
-	config := NewInstallConfig(&tflint.PluginConfig{
+	config := NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{
 		Name:        "aws",
 		Enabled:     true,
 		Version:     "0.4.0",
