@@ -61,7 +61,9 @@ func Test_sarifPrint(t *testing.T) {
           "rules": [
             {
               "id": "test_rule",
-              "shortDescription": null,
+              "shortDescription": {
+                "text": ""
+              },
               "helpUri": "https://github.com"
             }
           ]
@@ -85,6 +87,68 @@ func Test_sarifPrint(t *testing.T) {
                   "startColumn": 1,
                   "endLine": 1,
                   "endColumn": 4
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}`,
+		},
+		{
+			Name: "Issues with SARIF-invalid position are output correctly",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRule{},
+					Message: "test",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1},
+						End:      hcl.Pos{Line: 0, Column: 0},
+					},
+				},
+			},
+			Error: &tflint.Error{},
+			Stdout: `{
+  "version": "2.1.0",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint",
+          "informationUri": "https://github.com/terraform-linters/tflint",
+          "rules": [
+            {
+              "id": "test_rule",
+              "shortDescription": {
+                "text": ""
+              },
+              "helpUri": "https://github.com"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "test_rule",
+          "level": "error",
+          "message": {
+            "text": "test"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "test.tf"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
                 }
               }
             }
