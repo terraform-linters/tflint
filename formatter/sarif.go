@@ -17,7 +17,7 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error, source
 	report.AddRun(run)
 
 	for _, issue := range issues {
-		rule := run.AddRule(issue.Rule.Name()).WithHelpURI(issue.Rule.Link())
+		rule := run.AddRule(issue.Rule.Name()).WithHelpURI(issue.Rule.Link()).WithDescription("")
 
 		var level string
 		switch issue.Rule.Severity() {
@@ -31,14 +31,23 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error, source
 			panic(fmt.Errorf("Unexpected lint type: %s", issue.Rule.Severity()))
 		}
 
+		endLine := issue.Range.End.Line
+		if endLine == 0 {
+			endLine = 1
+		}
+		endColumn := issue.Range.End.Column
+		if endColumn == 0 {
+			endColumn = 1
+		}
+
 		location := sarif.NewPhysicalLocation().
 			WithArtifactLocation(sarif.NewSimpleArtifactLocation(issue.Range.Filename)).
 			WithRegion(
 				sarif.NewRegion().
 					WithStartLine(issue.Range.Start.Line).
 					WithStartColumn(issue.Range.Start.Column).
-					WithEndLine(issue.Range.End.Line).
-					WithEndColumn(issue.Range.End.Column),
+					WithEndLine(endLine).
+					WithEndColumn(endColumn),
 			)
 
 		run.AddResult(rule.ID).
