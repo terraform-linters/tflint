@@ -5,7 +5,9 @@ import (
 	"testing"
 
 	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/stretchr/testify/assert"
 	"github.com/terraform-linters/tflint/tflint"
+	"github.com/xeipuuv/gojsonschema"
 )
 
 func Test_sarifPrint(t *testing.T) {
@@ -104,6 +106,14 @@ func Test_sarifPrint(t *testing.T) {
 
 		if stdout.String() != tc.Stdout {
 			t.Fatalf("Failed %s test: expected=%s, stdout=%s", tc.Name, tc.Stdout, stdout.String())
+		}
+
+		schemaLoader := gojsonschema.NewReferenceLoader("http://json.schemastore.org/sarif-2.1.0")
+		result, err := gojsonschema.Validate(schemaLoader, gojsonschema.NewStringLoader(stdout.String()))
+
+		assert.NoError(t, err)
+		for _, err := range result.Errors() {
+			t.Error(err)
 		}
 	}
 }
