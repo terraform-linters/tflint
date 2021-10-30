@@ -359,12 +359,10 @@ func mergeRuleMap(a, b map[string]*RuleConfig) map[string]*RuleConfig {
 	}
 	for k, v := range b {
 		// HACK: If you enable the rule through the CLI instead of the file, its hcl.Body will not contain valid range.
-		// @see https://github.com/hashicorp/hcl/blob/v2.5.0/merged.go#L132-L135
-		if prevConfig, exists := ret[k]; exists && v.Body.MissingItemRange().Filename == "<empty>" {
-			ret[k] = v
-			// Do not override body and file
-			ret[k].Body = prevConfig.Body
-			ret[k].file = prevConfig.file
+		// @see https://github.com/hashicorp/hcl/blob/v2.10.1/merged.go#L132-L135
+		// In this case, only override Enabled flag
+		if _, exists := ret[k]; exists && v.Body.MissingItemRange().Filename == "<empty>" {
+			ret[k].Enabled = v.Enabled
 		} else {
 			ret[k] = v
 		}
@@ -378,11 +376,12 @@ func mergePluginMap(a, b map[string]*PluginConfig) map[string]*PluginConfig {
 		ret[k] = v
 	}
 	for k, v := range b {
-		ret[k] = v
-		if prevConfig, exists := ret[k]; exists && v.Body == nil {
-			// Use the plugin config from the config file when the plugin is enabled via CLI
-			ret[k].Body = prevConfig.Body
-			ret[k].file = prevConfig.file
+		// If you enable the plugin through the CLI instead of the file, its hcl.Body will be nil.
+		// In this case, only override Enabled flag
+		if _, exists := ret[k]; exists && v.Body == nil {
+			ret[k].Enabled = v.Enabled
+		} else {
+			ret[k] = v
 		}
 	}
 	return ret
