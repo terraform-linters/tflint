@@ -1,3 +1,10 @@
+## 0.33.1 (2021-11-01)
+
+### BugFixes
+
+- [#1240](https://github.com/terraform-linters/tflint/pull/1240): formatter: Fix an edge case for SARIF format ([@kadrach](https://github.com/kadrach))
+- [#1243](https://github.com/terraform-linters/tflint/pull/1243): tflint: Inherit config when plugins are enabled from CLI ([@wata727](https://github.com/wata727))
+
 ## 0.33.0 (2021-10-14)
 
 ### Breaking Changes
