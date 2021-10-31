@@ -558,6 +558,66 @@ func Test_Merge(t *testing.T) {
 				Plugins: map[string]*PluginConfig{},
 			},
 		},
+		{
+			Name: "merge plugin config with CLI-based config",
+			Base: &Config{
+				Module:            false,
+				Force:             false,
+				IgnoreModules:     map[string]bool{},
+				Varfiles:          []string{},
+				Variables:         []string{},
+				DisabledByDefault: false,
+				Rules:             map[string]*RuleConfig{},
+				Plugins: map[string]*PluginConfig{
+					"aws": {
+						Name:        "aws",
+						Enabled:     false,
+						Version:     "0.1.0",
+						Source:      "github.com/terraform-linters/tflint-ruleset-aws",
+						SigningKey:  "key",
+						Body:        file1.Body,
+						SourceOwner: "terraform-linters",
+						SourceRepo:  "tflint-ruleset-aws",
+					},
+				},
+			},
+			Other: &Config{
+				Module:            false,
+				Force:             false,
+				IgnoreModules:     map[string]bool{},
+				Varfiles:          []string{},
+				Variables:         []string{},
+				DisabledByDefault: false,
+				Rules:             map[string]*RuleConfig{},
+				Plugins: map[string]*PluginConfig{
+					"aws": {
+						Name:    "aws",
+						Enabled: true,
+					},
+				},
+			},
+			Expected: &Config{
+				Module:            false,
+				Force:             false,
+				IgnoreModules:     map[string]bool{},
+				Varfiles:          []string{},
+				Variables:         []string{},
+				DisabledByDefault: false,
+				Rules:             map[string]*RuleConfig{},
+				Plugins: map[string]*PluginConfig{
+					"aws": {
+						Name:        "aws",
+						Enabled:     true, // overridden
+						Version:     "0.1.0",
+						Source:      "github.com/terraform-linters/tflint-ruleset-aws",
+						SigningKey:  "key",
+						Body:        file1.Body,
+						SourceOwner: "terraform-linters",
+						SourceRepo:  "tflint-ruleset-aws",
+					},
+				},
+			},
+		},
 	}
 
 	for _, tc := range cases {
