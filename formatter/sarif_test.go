@@ -22,7 +22,7 @@ func Test_sarifPrint(t *testing.T) {
 			Issues: tflint.Issues{},
 			Stdout: `{
   "version": "2.1.0",
-  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
   "runs": [
     {
       "tool": {
@@ -51,7 +51,7 @@ func Test_sarifPrint(t *testing.T) {
 			},
 			Stdout: `{
   "version": "2.1.0",
-  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
   "runs": [
     {
       "tool": {
@@ -113,7 +113,7 @@ func Test_sarifPrint(t *testing.T) {
 			Error: &tflint.Error{},
 			Stdout: `{
   "version": "2.1.0",
-  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
   "runs": [
     {
       "tool": {
