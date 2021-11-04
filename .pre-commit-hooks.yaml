@@ -1,6 +1,0 @@
-- id: tflint
-  name: Terraform Lint
-  description: TFLint is a Terraform linter focused on possible errors, best practices, and so on.
-  language: golang
-  entry: tflint
-  types: [terraform]
