@@ -1,7 +1,6 @@
 package terraformrules
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -538,7 +537,7 @@ func loadConfigfromTempFile(t *testing.T, content string) *tflint.Config {
 		return tflint.EmptyConfig()
 	}
 
-	tmpfile, err := ioutil.TempFile("", "terraform_module_pinned_source")
+	tmpfile, err := os.CreateTemp("", "terraform_module_pinned_source")
 	if err != nil {
 		t.Fatal(err)
 	}

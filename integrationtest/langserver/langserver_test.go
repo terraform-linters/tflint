@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -118,7 +117,7 @@ func withinTempDir(t *testing.T, test func(dir string)) {
 		}
 	}()
 
-	dir, err := ioutil.TempDir("", "withinTempDir")
+	dir, err := os.MkdirTemp("", "withinTempDir")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -3,7 +3,6 @@ package tflint
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -136,7 +135,7 @@ func getTFWorkspace() string {
 		return envVar
 	}
 
-	envData, _ := ioutil.ReadFile(filepath.Join(getTFDataDir(), "environment"))
+	envData, _ := os.ReadFile(filepath.Join(getTFDataDir(), "environment"))
 	current := string(bytes.TrimSpace(envData))
 	if current != "" {
 		log.Printf("[INFO] environment file found: %s", current)

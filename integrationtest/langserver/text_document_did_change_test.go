@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -13,7 +13,7 @@ import (
 
 func Test_textDocumentDidChange(t *testing.T) {
 	withinFixtureDir(t, "workdir", func(dir string) {
-		src, err := ioutil.ReadFile(dir + "/main.tf")
+		src, err := os.ReadFile(dir + "/main.tf")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -66,7 +66,7 @@ resource "aws_instance" "foo" {
 		}
 
 		// Assert no changes for actual files
-		changedSrc, err := ioutil.ReadFile(dir + "/main.tf")
+		changedSrc, err := os.ReadFile(dir + "/main.tf")
 		if err != nil {
 			t.Fatal(err)
 		}

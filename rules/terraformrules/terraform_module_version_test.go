@@ -2,7 +2,6 @@ package terraformrules
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -241,7 +240,7 @@ func loadConfigfromModuleVersionTempFile(t *testing.T, content string) *tflint.C
 		return tflint.EmptyConfig()
 	}
 
-	tmpfile, err := ioutil.TempFile("", "terraform_module_version")
+	tmpfile, err := os.CreateTemp("", "terraform_module_version")
 	if err != nil {
 		t.Fatal(err)
 	}
