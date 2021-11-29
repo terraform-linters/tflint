@@ -24,7 +24,7 @@ require (
 	github.com/hashicorp/terraform-svchost v0.0.0-20200729002733-f050f53b9734
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/jstemmer/go-junit-report v0.9.1
-	github.com/mattn/go-colorable v0.1.11
+	github.com/mattn/go-colorable v0.1.12
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/owenrumney/go-sarif v1.0.12
 	github.com/sourcegraph/go-lsp v0.0.0-20200429204803-219e11d77f5d
