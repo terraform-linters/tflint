@@ -6,7 +6,7 @@ WORKDIR /tflint
 COPY . /tflint
 RUN make build
 
-FROM alpine:3.14.2 as prod
+FROM alpine:3.15.0 as prod
 
 LABEL maintainer=terraform-linters
 
