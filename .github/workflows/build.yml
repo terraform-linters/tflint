@@ -31,7 +31,7 @@ jobs:
       run: |
         echo "::set-output name=go-cache::$(go env GOCACHE)"
         echo "::set-output name=go-mod-cache::$(go env GOMODCACHE)"
-    - uses: actions/cache@v2.1.6
+    - uses: actions/cache@v2.1.7
       with:
         path: |
           ${{ steps.cache-paths.outputs.go-cache }}
