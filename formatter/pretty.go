@@ -2,7 +2,6 @@ package formatter
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"log"
 	"strings"
