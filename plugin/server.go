@@ -1,6 +1,8 @@
 package plugin
 
 import (
+	"errors"
+
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	client "github.com/terraform-linters/tflint-plugin-sdk/tflint"
@@ -273,7 +275,8 @@ func configBodyRange(body hcl.Body) hcl.Range {
 }
 
 func wrapError(raw error) error {
-	if appErr, ok := raw.(*tflint.Error); ok {
+	var appErr *tflint.Error
+	if errors.As(raw, &appErr) {
 		err := client.Error(*appErr)
 		if err.Cause != nil {
 			err.Cause = client.Error{Message: err.Cause.Error()}

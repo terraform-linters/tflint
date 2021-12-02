@@ -73,7 +73,8 @@ func (cli *CLI) Run(args []string) int {
 	log.SetFlags(log.Ltime | log.Lshortfile)
 
 	if err != nil {
-		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {
+		var flagsErr *flags.Error
+		if errors.As(err, &flagsErr) && flagsErr.Type == flags.ErrHelp {
 			fmt.Fprintln(cli.outStream, err)
 			return ExitCodeOK
 		}
@@ -114,7 +115,7 @@ func processArgs(args []string) (string, []string, error) {
 			if os.IsNotExist(err) {
 				return dir, filterFiles, fmt.Errorf("Failed to load `%s`: File not found", file)
 			}
-			return dir, filterFiles, fmt.Errorf("Failed to load `%s`: %s", file, err)
+			return dir, filterFiles, fmt.Errorf("Failed to load `%s`: %w", file, err)
 		}
 
 		if fileInfo.IsDir() {

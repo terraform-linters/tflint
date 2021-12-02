@@ -4,6 +4,7 @@ run:
     - terraform/
 linters:
   enable:
+    - errorlint
     - gci
     - gofmt
 issues:

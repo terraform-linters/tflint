@@ -1,6 +1,7 @@
 package tflint
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
@@ -337,7 +338,8 @@ func (r *Runner) willEvaluateResource(resource *configs.Resource) (bool, error) 
 	if err == nil {
 		return true, nil
 	}
-	if appErr, ok := err.(*Error); ok {
+	var appErr *Error
+	if errors.As(err, &appErr) {
 		switch appErr.Level {
 		case WarningLevel:
 			return false, nil

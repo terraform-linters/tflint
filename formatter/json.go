@@ -2,6 +2,7 @@ package formatter
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -76,7 +77,8 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 
 	if tferr != nil {
 		var errs []error
-		if diags, ok := tferr.Cause.(hcl.Diagnostics); ok {
+		var diags *hcl.Diagnostics
+		if errors.As(tferr.Cause, &diags) {
 			errs = diags.Errs()
 		} else {
 			errs = []error{tferr.Cause}

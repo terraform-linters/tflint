@@ -96,7 +96,7 @@ func (c *InstallConfig) Install() (string, error) {
 		defer os.Remove(checksumsFile.Name())
 	}
 	if err != nil {
-		return "", fmt.Errorf("Failed to download checksums.txt: %s", err)
+		return "", fmt.Errorf("Failed to download checksums.txt: %w", err)
 	}
 
 	sigchecker := NewSignatureChecker(c)
@@ -107,14 +107,14 @@ func (c *InstallConfig) Install() (string, error) {
 			defer os.Remove(signatureFile.Name())
 		}
 		if err != nil {
-			return "", fmt.Errorf("Failed to download checksums.txt.sig: %s", err)
+			return "", fmt.Errorf("Failed to download checksums.txt.sig: %w", err)
 		}
 
 		if err := sigchecker.Verify(checksumsFile, signatureFile); err != nil {
-			return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
+			return "", fmt.Errorf("Failed to check checksums.txt signature: %w", err)
 		}
 		if _, err := checksumsFile.Seek(0, 0); err != nil {
-			return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
+			return "", fmt.Errorf("Failed to check checksums.txt signature: %w", err)
 		}
 		log.Printf("[DEBUG] Verified signature successfully")
 	}
@@ -125,20 +125,20 @@ func (c *InstallConfig) Install() (string, error) {
 		defer os.Remove(zipFile.Name())
 	}
 	if err != nil {
-		return "", fmt.Errorf("Failed to download %s: %s", c.AssetName(), err)
+		return "", fmt.Errorf("Failed to download %s: %w", c.AssetName(), err)
 	}
 
 	checksummer, err := NewChecksummer(checksumsFile)
 	if err != nil {
-		return "", fmt.Errorf("Failed to parse checksums file: %s", err)
+		return "", fmt.Errorf("Failed to parse checksums file: %w", err)
 	}
 	if err = checksummer.Verify(c.AssetName(), zipFile); err != nil {
-		return "", fmt.Errorf("Failed to verify checksums: %s", err)
+		return "", fmt.Errorf("Failed to verify checksums: %w", err)
 	}
 	log.Printf("[DEBUG] Matched checksum successfully")
 
 	if err = extractFileFromZipFile(zipFile, path); err != nil {
-		return "", fmt.Errorf("Failed to extract binary from %s: %s", c.AssetName(), err)
+		return "", fmt.Errorf("Failed to extract binary from %s: %w", c.AssetName(), err)
 	}
 
 	log.Printf("[DEBUG] Installed %s successfully", path)

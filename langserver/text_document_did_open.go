@@ -40,7 +40,7 @@ func (h *handler) textDocumentDidOpen(ctx context.Context, conn *jsonrpc2.Conn, 
 	}
 
 	if err := afero.WriteFile(h.fs, filepath.Base(openedPath), []byte(params.TextDocument.Text), os.ModePerm); err != nil {
-		return nil, fmt.Errorf("Failed to synchronize TextDocument.Text: %s", err)
+		return nil, fmt.Errorf("Failed to synchronize TextDocument.Text: %w", err)
 	}
 
 	diagnostics, err := h.inspect()
@@ -59,7 +59,7 @@ func (h *handler) textDocumentDidOpen(ctx context.Context, conn *jsonrpc2.Conn, 
 			},
 		)
 		if err != nil {
-			return nil, fmt.Errorf("Failed to notify `textDocument/publishDiagnostics`: %s", err)
+			return nil, fmt.Errorf("Failed to notify `textDocument/publishDiagnostics`: %w", err)
 		}
 	}
 

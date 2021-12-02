@@ -88,7 +88,7 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 
 	defaultNameValidator, err := config.getNameValidator()
 	if err != nil {
-		return fmt.Errorf("Invalid default configuration: %v", err)
+		return fmt.Errorf("Invalid default configuration: %w", err)
 	}
 
 	var nameValidator *NameValidator
@@ -178,7 +178,7 @@ func (blockFormatConfig *BlockFormatConfig) getNameValidator(defaultValidator *N
 	if blockFormatConfig != nil {
 		nameValidator, err := getNameValidator(blockFormatConfig.Custom, blockFormatConfig.Format, config)
 		if err != nil {
-			return nil, fmt.Errorf("Invalid %s configuration: %v", blockName, err)
+			return nil, fmt.Errorf("Invalid %s configuration: %w", blockName, err)
 		}
 
 		validator = nameValidator

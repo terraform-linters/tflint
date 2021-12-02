@@ -41,7 +41,7 @@ func (h *handler) textDocumentDidChange(ctx context.Context, conn *jsonrpc2.Conn
 
 	for idx, contentChange := range params.ContentChanges {
 		if err := afero.WriteFile(h.fs, filepath.Base(changedPath), []byte(contentChange.Text), os.ModePerm); err != nil {
-			return nil, fmt.Errorf("Failed to synchronize contentChanges[%d].Text: %s", idx, err)
+			return nil, fmt.Errorf("Failed to synchronize contentChanges[%d].Text: %w", idx, err)
 		}
 	}
 
@@ -61,7 +61,7 @@ func (h *handler) textDocumentDidChange(ctx context.Context, conn *jsonrpc2.Conn
 			},
 		)
 		if err != nil {
-			return nil, fmt.Errorf("Failed to notify `textDocument/publishDiagnostics`: %s", err)
+			return nil, fmt.Errorf("Failed to notify `textDocument/publishDiagnostics`: %w", err)
 		}
 	}
 

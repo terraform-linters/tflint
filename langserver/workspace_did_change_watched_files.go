@@ -42,7 +42,7 @@ func (h *handler) workspaceDidChangeWatchedFiles(ctx context.Context, conn *json
 			},
 		)
 		if err != nil {
-			return nil, fmt.Errorf("Failed to notify `textDocument/publishDiagnostics`: %s", err)
+			return nil, fmt.Errorf("Failed to notify `textDocument/publishDiagnostics`: %w", err)
 		}
 	}
 

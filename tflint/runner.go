@@ -237,7 +237,8 @@ func (r *Runner) EnsureNoError(err error, proc func() error) error {
 		return proc()
 	}
 
-	if appErr, ok := err.(*Error); ok {
+	var appErr *Error
+	if errors.As(err, &appErr) {
 		switch appErr.Level {
 		case WarningLevel:
 			return nil

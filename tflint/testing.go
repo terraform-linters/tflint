@@ -1,6 +1,7 @@
 package tflint
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -97,7 +98,8 @@ func AssertIssuesWithoutRange(t *testing.T, expected Issues, actual Issues) {
 
 // AssertAppError is an assertion helper for comparing tflint.Error
 func AssertAppError(t *testing.T, expected Error, got error) {
-	if appErr, ok := got.(*Error); ok {
+	var appErr *Error
+	if errors.As(got, &appErr) {
 		if appErr == nil {
 			t.Fatalf("expected err is `%s`, but nothing occurred", expected.Error())
 		}
