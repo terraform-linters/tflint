@@ -244,6 +244,8 @@ func newGitHubClient(ctx context.Context) *github.Client {
 	if token == "" {
 		return github.NewClient(nil)
 	}
+	
+	log.Printf("[DEBUG] GITHUB_TOKEN set, plugin requests to the GitHub API will be authenticated")
 
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
