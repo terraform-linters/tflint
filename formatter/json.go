@@ -2,7 +2,6 @@ package formatter
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	hcl "github.com/hashicorp/hcl/v2"
