@@ -2,7 +2,6 @@ package terraformrules
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -2899,7 +2898,7 @@ func loadConfigFromNamingConventionTempFile(t *testing.T, content string) *tflin
 		return tflint.EmptyConfig()
 	}
 
-	tmpfile, err := ioutil.TempFile("", "terraform_naming_convention")
+	tmpfile, err := os.CreateTemp("", "terraform_naming_convention")
 	if err != nil {
 		t.Fatal(err)
 	}

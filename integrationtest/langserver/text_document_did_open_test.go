@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -13,7 +13,7 @@ import (
 
 func Test_textDocumentDidOpen(t *testing.T) {
 	withinFixtureDir(t, "workdir", func(dir string) {
-		src, err := ioutil.ReadFile(dir + "/main.tf")
+		src, err := os.ReadFile(dir + "/main.tf")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -89,7 +89,7 @@ func didOpenResponse(uri lsp.DocumentURI, t *testing.T) string {
 
 func Test_textDocumentDidOpen_pathFunctions(t *testing.T) {
 	withinFixtureDir(t, "path_functions", func(dir string) {
-		src, err := ioutil.ReadFile(dir + "/main.tf")
+		src, err := os.ReadFile(dir + "/main.tf")
 		if err != nil {
 			t.Fatal(err)
 		}

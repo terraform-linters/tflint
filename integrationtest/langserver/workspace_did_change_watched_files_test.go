@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 	"time"
@@ -41,10 +40,10 @@ rule "aws_instance_example_type" {
     enabled = false
 }`
 
-		if err := ioutil.WriteFile(dir+"/main.tf", []byte(content), os.ModePerm); err != nil {
+		if err := os.WriteFile(dir+"/main.tf", []byte(content), os.ModePerm); err != nil {
 			t.Fatal(err)
 		}
-		if err := ioutil.WriteFile(dir+"/.tflint.hcl", []byte(config), os.ModePerm); err != nil {
+		if err := os.WriteFile(dir+"/.tflint.hcl", []byte(config), os.ModePerm); err != nil {
 			t.Fatal(err)
 		}
 		uri := pathToURI(dir + "/main.tf")
@@ -73,7 +72,7 @@ rule "aws_instance_example_type" {
 			fmt.Fprint(stdin, initializeRequest())
 			fmt.Fprint(stdin, didOpenRequest(uri, content, t))
 			// Change config file from outside of LSP
-			_ = ioutil.WriteFile(dir+"/.tflint.hcl", []byte(changedConfig), os.ModePerm)
+			_ = os.WriteFile(dir+"/.tflint.hcl", []byte(changedConfig), os.ModePerm)
 			fmt.Fprint(stdin, toJSONRPC2(string(req)))
 			fmt.Fprint(stdin, shutdownRequest())
 			fmt.Fprint(stdin, exitRequest())
@@ -100,7 +99,7 @@ resource "aws_instance" "foo" {
 variable "instance_type" {}
 `
 
-		if err := ioutil.WriteFile(dir+"/main.tf", []byte(content), os.ModePerm); err != nil {
+		if err := os.WriteFile(dir+"/main.tf", []byte(content), os.ModePerm); err != nil {
 			t.Fatal(err)
 		}
 		uri := pathToURI(dir + "/main.tf")
@@ -108,7 +107,7 @@ variable "instance_type" {}
 		valueFile := `
 instance_type = "t1.2xlarge"
 `
-		if err := ioutil.WriteFile(dir+"/terraform.tfvars", []byte(valueFile), os.ModePerm); err != nil {
+		if err := os.WriteFile(dir+"/terraform.tfvars", []byte(valueFile), os.ModePerm); err != nil {
 			t.Fatal(err)
 		}
 
@@ -120,7 +119,7 @@ plugin "testing" {
 plugin "aws" {
     enabled = false
 }`
-		if err := ioutil.WriteFile(dir+"/.tflint.hcl", []byte(config), os.ModePerm); err != nil {
+		if err := os.WriteFile(dir+"/.tflint.hcl", []byte(config), os.ModePerm); err != nil {
 			t.Fatal(err)
 		}
 

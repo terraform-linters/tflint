@@ -2,7 +2,6 @@ package tflint
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -24,7 +23,7 @@ func Test_NewAnnotations(t *testing.T) {
 		}
 	}()
 
-	src, err := ioutil.ReadFile(filepath.Join(currentDir, "test-fixtures", "annotations", "resource.tf"))
+	src, err := os.ReadFile(filepath.Join(currentDir, "test-fixtures", "annotations", "resource.tf"))
 	if err != nil {
 		t.Fatal(err)
 	}

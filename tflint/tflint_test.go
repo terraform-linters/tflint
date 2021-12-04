@@ -1,7 +1,7 @@
 package tflint
 
 import (
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -13,7 +13,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	log.SetOutput(ioutil.Discard)
+	log.SetOutput(io.Discard)
 	os.Exit(m.Run())
 }
 

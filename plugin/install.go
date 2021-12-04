@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -182,7 +181,7 @@ func (c *InstallConfig) downloadToTempFile(asset *github.ReleaseAsset) (*os.File
 		return nil, err
 	}
 
-	file, err := ioutil.TempFile("", "tflint-download-temp-file-*")
+	file, err := os.CreateTemp("", "tflint-download-temp-file-*")
 	if err != nil {
 		return nil, err
 	}

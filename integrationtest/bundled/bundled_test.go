@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -19,7 +19,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	log.SetOutput(ioutil.Discard)
+	log.SetOutput(io.Discard)
 	os.Exit(m.Run())
 }
 
@@ -116,9 +116,9 @@ func TestBundledPlugin(t *testing.T) {
 			var b []byte
 			var err error
 			if runtime.GOOS == "windows" && IsWindowsResultExist() {
-				b, err = ioutil.ReadFile(filepath.Join(testDir, "result_windows.json"))
+				b, err = os.ReadFile(filepath.Join(testDir, "result_windows.json"))
 			} else {
-				b, err = ioutil.ReadFile(filepath.Join(testDir, "result.json"))
+				b, err = os.ReadFile(filepath.Join(testDir, "result.json"))
 			}
 			if err != nil {
 				t.Fatal(err)
