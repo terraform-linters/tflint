@@ -114,7 +114,7 @@ func Test_ParseTFVariables_errors(t *testing.T) {
 				"foo": {ParsingMode: configs.VariableParseHCL},
 			},
 			Vars:     []string{"foo="},
-			Expected: "<value for var.foo>:1,1-1: Invalid expression; Expected the start of an expression, but found an invalid expression token.",
+			Expected: "<value for var.foo>:1,1-1: Missing expression; Expected the start of an expression, but found the end of the file.",
 		},
 	}
 
