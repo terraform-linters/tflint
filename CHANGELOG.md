@@ -1,3 +1,19 @@
+## 0.33.2 (2021-12-07)
+
+### Chores
+
+- [#1244](https://github.com/terraform-linters/tflint/pull/1244): build(deps): Bump github.com/owenrumney/go-sarif from 1.0.11 to 1.0.12
+- [#1247](https://github.com/terraform-linters/tflint/pull/1247): remove precommit hooks ([@bendrucker](https://github.com/bendrucker))
+- [#1251](https://github.com/terraform-linters/tflint/pull/1251) [#1272](https://github.com/terraform-linters/tflint/pull/1272): build(deps): Bump github.com/terraform-linters/tflint-ruleset-aws from 0.8.0 to 0.10.0
+- [#1252](https://github.com/terraform-linters/tflint/pull/1252): build(deps): Bump github.com/zclconf/go-cty from 1.9.1 to 1.10.0
+- [#1253](https://github.com/terraform-linters/tflint/pull/1253): refactor: move from io/ioutil to io and os packages ([@Juneezee](https://github.com/Juneezee))
+- [#1261](https://github.com/terraform-linters/tflint/pull/1261): add missing rule to index, alphabetize ([@nmarchini](https://github.com/nmarchini))
+- [#1264](https://github.com/terraform-linters/tflint/pull/1264): build(deps): Bump actions/cache from 2.1.6 to 2.1.7
+- [#1265](https://github.com/terraform-linters/tflint/pull/1265) [#1273](https://github.com/terraform-linters/tflint/pull/1273): build(deps): Bump alpine from 3.14.2 to 3.15.0
+- [#1266](https://github.com/terraform-linters/tflint/pull/1266): build(deps): Bump github.com/mattn/go-colorable from 0.1.11 to 0.1.12
+- [#1269](https://github.com/terraform-linters/tflint/pull/1269): plugin: log when `GITHUB_TOKEN` is set ([@bendrucker](https://github.com/bendrucker))
+- [#1271](https://github.com/terraform-linters/tflint/pull/1271): build(deps): Bump github.com/hashicorp/hcl/v2 from 2.10.1 to 2.11.1
+
 ## 0.33.1 (2021-11-01)
 
 ### BugFixes
