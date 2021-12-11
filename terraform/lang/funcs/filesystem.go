@@ -3,7 +3,7 @@ package funcs
 import (
 	"encoding/base64"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"unicode/utf8"
@@ -377,8 +377,9 @@ func readFileBytes(baseDir, path string) ([]byte, error) {
 		}
 		return nil, err
 	}
+	defer f.Close()
 
-	src, err := io.ReadAll(f)
+	src, err := ioutil.ReadAll(f)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read %s", path)
 	}
