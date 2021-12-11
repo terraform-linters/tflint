@@ -27,7 +27,7 @@ func (s *Server) encodeConfig(config *tfconfigs.Config) (*tfplugin.Config, error
 		Path:            addrs.Module(config.Path),
 		Module:          module,
 		CallRange:       config.CallRange,
-		SourceAddr:      config.SourceAddr,
+		SourceAddr:      config.SourceAddrRaw,
 		SourceAddrRange: config.SourceAddrRange,
 		Version:         versionStr,
 	}, nil
@@ -214,7 +214,7 @@ func (s *Server) encodeModuleCall(call *tfconfigs.ModuleCall) *tfplugin.ModuleCa
 	return &tfplugin.ModuleCall{
 		Name: call.Name,
 
-		SourceAddr:      call.SourceAddr,
+		SourceAddr:      call.SourceAddrRaw,
 		SourceAddrRange: call.SourceAddrRange,
 		SourceSet:       call.SourceSet,
 

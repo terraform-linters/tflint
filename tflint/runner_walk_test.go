@@ -247,7 +247,7 @@ data "null_dataresource" "test" {
 			Name: "module call",
 			Content: `
 module "m" {
-  source = "."
+  source = "./module"
   key    = "foo"
 }`,
 			Expressions: []hcl.Range{
@@ -258,7 +258,7 @@ module "m" {
 					},
 					End: hcl.Pos{
 						Line:   3,
-						Column: 15,
+						Column: 22,
 					},
 				},
 				{

@@ -1135,7 +1135,7 @@ func testModuleSnakeCase(t *testing.T, testType string, formatName string, confi
 			Name: fmt.Sprintf("module: %s - Invalid snake_case with dash", testType),
 			Content: `
 module "dash-name" {
-  source = ""
+  source = "./module"
 }`,
 			Config: config,
 			Expected: tflint.Issues{
@@ -1154,7 +1154,7 @@ module "dash-name" {
 			Name: fmt.Sprintf("module: %s - Invalid snake_case with camelCase", testType),
 			Content: `
 module "camelCased" {
-  source = ""
+  source = "./module"
 }`,
 			Config: config,
 			Expected: tflint.Issues{
@@ -1173,7 +1173,7 @@ module "camelCased" {
 			Name: fmt.Sprintf("module: %s - Invalid snake_case with double underscore", testType),
 			Content: `
 module "foo__bar" {
-  source = ""
+  source = "./module"
 }`,
 			Config: config,
 			Expected: tflint.Issues{
@@ -1192,7 +1192,7 @@ module "foo__bar" {
 			Name: fmt.Sprintf("module: %s - Invalid snake_case with underscore tail", testType),
 			Content: `
 module "foo_bar_" {
-  source = ""
+  source = "./module"
 }`,
 			Config: config,
 			Expected: tflint.Issues{
@@ -1211,7 +1211,7 @@ module "foo_bar_" {
 			Name: fmt.Sprintf("module: %s - Invalid snake_case with Mixed_Snake_Case", testType),
 			Content: `
 module "Foo_Bar" {
-  source = ""
+  source = "./module"
 }`,
 			Config: config,
 			Expected: tflint.Issues{
@@ -1230,7 +1230,7 @@ module "Foo_Bar" {
 			Name: fmt.Sprintf("module: %s - Valid snake_case", testType),
 			Content: `
 module "foo_bar" {
-  source = ""
+  source = "./module"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},
@@ -1239,7 +1239,7 @@ module "foo_bar" {
 			Name: fmt.Sprintf("module: %s - Valid single word", testType),
 			Content: `
 module "foo" {
-  source = ""
+  source = "./module"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},
@@ -1270,7 +1270,7 @@ func testModuleMixedSnakeCase(t *testing.T, testType string, config string) {
 			Name: fmt.Sprintf("module: %s - Invalid mixed_snake_case with dash", testType),
 			Content: `
 module "dash-name" {
-  source = ""
+  source = "./module"
 }`,
 			Config: config,
 			Expected: tflint.Issues{
@@ -1289,7 +1289,7 @@ module "dash-name" {
 			Name: fmt.Sprintf("module: %s - Invalid mixed_snake_case with double underscore", testType),
 			Content: `
 module "Foo__Bar" {
-  source = ""
+  source = "./module"
 }`,
 			Config: config,
 			Expected: tflint.Issues{
@@ -1308,7 +1308,7 @@ module "Foo__Bar" {
 			Name: fmt.Sprintf("module: %s - Invalid mixed_snake_case with underscore tail", testType),
 			Content: `
 module "Foo_Bar_" {
-  source = ""
+  source = "./module"
 }`,
 			Config: config,
 			Expected: tflint.Issues{
@@ -1327,7 +1327,7 @@ module "Foo_Bar_" {
 			Name: fmt.Sprintf("module: %s - Valid snake_case", testType),
 			Content: `
 module "foo_bar" {
-  source = ""
+  source = "./module"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},
@@ -1336,7 +1336,7 @@ module "foo_bar" {
 			Name: fmt.Sprintf("module: %s - Valid single word", testType),
 			Content: `
 module "foo" {
-  source = ""
+  source = "./module"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},
@@ -1345,7 +1345,7 @@ module "foo" {
 			Name: fmt.Sprintf("module: %s - Valid Mixed_Snake_Case", testType),
 			Content: `
 module "Foo_Bar" {
-  source = ""
+  source = "./module"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},
@@ -1354,7 +1354,7 @@ module "Foo_Bar" {
 			Name: fmt.Sprintf("module: %s - Valid single word with upper characters", testType),
 			Content: `
 module "foo" {
-  source = ""
+  source = "./module"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},
@@ -1363,7 +1363,7 @@ module "foo" {
 			Name: fmt.Sprintf("module: %s - Valid PascalCase", testType),
 			Content: `
 module "PascalCase" {
-  source = ""
+  source = "./module"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},
@@ -1372,7 +1372,7 @@ module "PascalCase" {
 			Name: fmt.Sprintf("module: %s - Valid camelCase", testType),
 			Content: `
 module "camelCase" {
-  source = ""
+  source = "./module"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},
@@ -1403,7 +1403,7 @@ func testModuleDisabled(t *testing.T, testType string, config string) {
 			Name: fmt.Sprintf("module: %s - Valid mixed_snake_case with dash", testType),
 			Content: `
 module "dash-name" {
-  source = ""
+  source = "./module"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},
@@ -1412,7 +1412,7 @@ module "dash-name" {
 			Name: fmt.Sprintf("module: %s - Valid snake_case", testType),
 			Content: `
 module "foo_bar" {
-  source = ""
+  source = "./module"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},
@@ -1421,7 +1421,7 @@ module "foo_bar" {
 			Name: fmt.Sprintf("module: %s - Valid single word", testType),
 			Content: `
 module "foo" {
-  source = ""
+  source = "./module"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},
@@ -1430,7 +1430,7 @@ module "foo" {
 			Name: fmt.Sprintf("module: %s - Valid Mixed_Snake_Case", testType),
 			Content: `
 module "Foo_Bar" {
-  source = ""
+  source = "./module"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},
@@ -1439,7 +1439,7 @@ module "Foo_Bar" {
 			Name: fmt.Sprintf("module: %s - Valid single word upper characters", testType),
 			Content: `
 module "Foo" {
-  source = ""
+  source = "./module"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},
@@ -1448,7 +1448,7 @@ module "Foo" {
 			Name: fmt.Sprintf("module: %s - Valid PascalCase", testType),
 			Content: `
 module "PascalCase" {
-  source = ""
+  source = "./module"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},
@@ -1457,7 +1457,7 @@ module "PascalCase" {
 			Name: fmt.Sprintf("module: %s - Valid camelCase", testType),
 			Content: `
 module "camelCase" {
-  source = ""
+  source = "./module"
 }`,
 			Config:   config,
 			Expected: tflint.Issues{},

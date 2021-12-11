@@ -90,7 +90,7 @@ terraform {
 	backend "remote" {}
 }
 module "a" {
-	source = "."
+	source = "./module"
 	w = terraform.workspace
 }`,
 			Expected: tflint.Issues{

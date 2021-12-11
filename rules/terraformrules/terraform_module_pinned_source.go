@@ -78,7 +78,7 @@ func (r *TerraformModulePinnedSourceRule) Check(runner *tflint.Runner) error {
 func (r *TerraformModulePinnedSourceRule) checkModule(runner *tflint.Runner, module *configs.ModuleCall, config terraformModulePinnedSourceRuleConfig) error {
 	log.Printf("[DEBUG] Walk `%s` attribute", module.Name+".source")
 
-	source, err := getter.Detect(module.SourceAddr, filepath.Dir(module.DeclRange.Filename), []getter.Detector{
+	source, err := getter.Detect(module.SourceAddrRaw, filepath.Dir(module.DeclRange.Filename), []getter.Detector{
 		// https://github.com/hashicorp/terraform/blob/51b0aee36cc2145f45f5b04051a01eb6eb7be8bf/internal/getmodules/getter.go#L30-L52
 		new(getter.GitHubDetector),
 		new(getter.GitDetector),

@@ -93,7 +93,7 @@ resource "null_resource" "n" {
 			Content: `
 variable "used" {}
 module "m" {
-	source = "."
+	source = "./module"
 	u = var.used
 }
 `,
@@ -104,7 +104,7 @@ module "m" {
 			Content: `
 variable "used" {}
 module "m" {
-	source = "."
+	source = "./module"
 	u = var.used
 }
 `,
@@ -115,7 +115,7 @@ module "m" {
 			Content: `
 locals { used = "used" }
 module "m" {
-	source = "."
+	source = "./module"
 	u = local.used
 }
 `,
