@@ -360,7 +360,16 @@ func (r *Runner) listModuleVars(expr hcl.Expression) []*moduleVariable {
 // See https://learn.hashicorp.com/terraform/getting-started/variables.html#assigning-variables
 func prepareVariableValues(config *configs.Config, variables ...terraform.InputValues) map[string]map[string]cty.Value {
 	moduleKey := config.Path.UnkeyedInstanceShim().String()
-	overrideVariables := terraform.DefaultVariableValues(config.Module.Variables).Override(getTFEnvVariables()).Override(variables...)
+	configVars := map[string]*configs.Variable{}
+	for k, v := range config.Module.Variables {
+		configVars[k] = v
+		// If default is not set, Terraform will interactively collect the variable values. Therefore, Evaluator returns the value as it is, even if default is not set.
+		// This means that variables without default will be null in TFLint. This is unintended behavior, so assign an unknown value here.
+		if v.Default == cty.NilVal {
+			configVars[k].Default = cty.UnknownVal(v.Type)
+		}
+	}
+	overrideVariables := terraform.DefaultVariableValues(configVars).Override(getTFEnvVariables()).Override(variables...)
 
 	variableValues := make(map[string]map[string]cty.Value)
 	variableValues[moduleKey] = make(map[string]cty.Value)
