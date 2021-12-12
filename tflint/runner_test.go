@@ -49,6 +49,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Default:     cty.StringVal("foo"),
 					Type:        cty.DynamicPseudoType,
 					ParsingMode: configs.VariableParseLiteral,
+					Nullable:    true,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module.tf"),
 						Start:    hcl.Pos{Line: 1, Column: 1},
@@ -60,6 +61,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Default:     cty.StringVal("bar"),
 					Type:        cty.DynamicPseudoType,
 					ParsingMode: configs.VariableParseLiteral,
+					Nullable:    true,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module.tf"),
 						Start:    hcl.Pos{Line: 4, Column: 1},
@@ -71,6 +73,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Default:     cty.UnknownVal(cty.DynamicPseudoType),
 					Type:        cty.DynamicPseudoType,
 					ParsingMode: configs.VariableParseLiteral,
+					Nullable:    true,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module.tf"),
 						Start:    hcl.Pos{Line: 5, Column: 1},
@@ -84,6 +87,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Default:     cty.StringVal("foo"),
 					Type:        cty.DynamicPseudoType,
 					ParsingMode: configs.VariableParseLiteral,
+					Nullable:    true,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module1", "resource.tf"),
 						Start:    hcl.Pos{Line: 1, Column: 1},
@@ -95,6 +99,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Default:     cty.StringVal("bar"),
 					Type:        cty.DynamicPseudoType,
 					ParsingMode: configs.VariableParseLiteral,
+					Nullable:    true,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module1", "resource.tf"),
 						Start:    hcl.Pos{Line: 4, Column: 1},
@@ -106,6 +111,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Default:     cty.UnknownVal(cty.DynamicPseudoType),
 					Type:        cty.DynamicPseudoType,
 					ParsingMode: configs.VariableParseLiteral,
+					Nullable:    true,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module1", "resource.tf"),
 						Start:    hcl.Pos{Line: 5, Column: 1},
@@ -243,7 +249,7 @@ func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
 		expected := Error{
 			Code:    EvaluationError,
 			Level:   ErrorLevel,
-			Message: "Failed to eval an expression in module.tf:4; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
+			Message: "Failed to eval an expression in module.tf:4; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was renamed to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
 		}
 		AssertAppError(t, expected, err)
 	})
