@@ -15,6 +15,7 @@ import (
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/instances"
 	"github.com/terraform-linters/tflint/terraform/lang"
+	"github.com/terraform-linters/tflint/terraform/lang/marks"
 	"github.com/terraform-linters/tflint/terraform/tfdiags"
 )
 
@@ -115,31 +116,29 @@ func (d *evaluationStateData) GetInputVariable(addr addrs.InputVariable, rng tfd
 		})
 		return cty.DynamicVal, diags
 	}
-
-	wantType := cty.DynamicPseudoType
-	if config.Type != cty.NilType {
-		wantType = config.Type
-	}
-
 	d.Evaluator.VariableValuesLock.Lock()
 	defer d.Evaluator.VariableValuesLock.Unlock()
 
 	moduleAddrStr := d.ModulePath.String()
 	vals := d.Evaluator.VariableValues[moduleAddrStr]
 	if vals == nil {
-		return cty.UnknownVal(wantType), diags
+		return cty.UnknownVal(config.Type), diags
 	}
 
 	val, isSet := vals[addr.Name]
-	if !isSet {
-		if config.Default != cty.NilVal {
-			return config.Default, diags
-		}
-		return cty.UnknownVal(wantType), diags
+	switch {
+	case !isSet:
+		// The config loader will ensure there is a default if the value is not
+		// set at all.
+		val = config.Default
+
+	case val.IsNull() && !config.Nullable && config.Default != cty.NilVal:
+		// If nullable=false a null value will use the configured default.
+		val = config.Default
 	}
 
 	var err error
-	val, err = convert.Convert(val, wantType)
+	val, err = convert.Convert(val, config.ConstraintType)
 	if err != nil {
 		// We should never get here because this problem should've been caught
 		// during earlier validation, but we'll do something reasonable anyway.
@@ -149,14 +148,12 @@ func (d *evaluationStateData) GetInputVariable(addr addrs.InputVariable, rng tfd
 			Detail:   fmt.Sprintf(`The resolved value of variable %q is not appropriate: %s.`, addr.Name, err),
 			Subject:  &config.DeclRange,
 		})
-		// Stub out our return value so that the semantic checker doesn't
-		// produce redundant downstream errors.
-		val = cty.UnknownVal(wantType)
+		val = cty.UnknownVal(config.Type)
 	}
 
-	// Mark if sensitive, and avoid double-marking if this has already been marked
-	if config.Sensitive && !val.HasMark("sensitive") {
-		val = val.Mark("sensitive")
+	// Mark if sensitive
+	if config.Sensitive {
+		val = val.Mark(marks.Sensitive)
 	}
 
 	return val, diags
@@ -246,7 +243,7 @@ func (d *evaluationStateData) GetTerraformAttr(addr addrs.TerraformAttr, rng tfd
 		diags = diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  `Invalid "terraform" attribute`,
-			Detail:   `The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The "state environment" concept was rename to "workspace" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.`,
+			Detail:   `The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The "state environment" concept was renamed to "workspace" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.`,
 			Subject:  rng.ToHCL().Ptr(),
 		})
 		return cty.DynamicVal, diags

@@ -72,6 +72,13 @@ func (p *Parser) loadConfigFile(path string, override bool) (*File, hcl.Diagnost
 						file.Backends = append(file.Backends, backendCfg)
 					}
 
+				case "cloud":
+					cloudCfg, cfgDiags := decodeCloudBlock(innerBlock)
+					diags = append(diags, cfgDiags...)
+					if cloudCfg != nil {
+						file.CloudConfigs = append(file.CloudConfigs, cloudCfg)
+					}
+
 				case "required_providers":
 					reqs, reqsDiags := decodeRequiredProvidersBlock(innerBlock)
 					diags = append(diags, reqsDiags...)
@@ -146,6 +153,13 @@ func (p *Parser) loadConfigFile(path string, override bool) (*File, hcl.Diagnost
 			diags = append(diags, cfgDiags...)
 			if cfg != nil {
 				file.DataResources = append(file.DataResources, cfg)
+			}
+
+		case "moved":
+			cfg, cfgDiags := decodeMovedBlock(block)
+			diags = append(diags, cfgDiags...)
+			if cfg != nil {
+				file.Moved = append(file.Moved, cfg)
 			}
 
 		default:
@@ -235,6 +249,9 @@ var configFileSchema = &hcl.BodySchema{
 			Type:       "data",
 			LabelNames: []string{"type", "name"},
 		},
+		{
+			Type: "moved",
+		},
 	},
 }
 
@@ -250,6 +267,9 @@ var terraformBlockSchema = &hcl.BodySchema{
 		{
 			Type:       "backend",
 			LabelNames: []string{"type"},
+		},
+		{
+			Type: "cloud",
 		},
 		{
 			Type: "required_providers",

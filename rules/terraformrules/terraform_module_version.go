@@ -74,7 +74,7 @@ func (r *TerraformModuleVersionRule) Check(runner *tflint.Runner) error {
 func (r *TerraformModuleVersionRule) checkModule(runner *tflint.Runner, module *configs.ModuleCall, config TerraformModuleVersionRuleConfig) error {
 	log.Printf("[DEBUG] Walk `%s` attribute", module.Name+".source")
 
-	source, err := addrs.ParseModuleSource(module.SourceAddr)
+	source, err := addrs.ParseModuleSource(module.SourceAddrRaw)
 	if err != nil {
 		return err
 	}

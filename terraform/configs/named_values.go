@@ -22,13 +22,25 @@ type Variable struct {
 	Name        string
 	Description string
 	Default     cty.Value
-	Type        cty.Type
+
+	// Type is the concrete type of the variable value.
+	Type cty.Type
+	// ConstraintType is used for decoding and type conversions, and may
+	// contain nested ObjectWithOptionalAttr types.
+	ConstraintType cty.Type
+
 	ParsingMode VariableParsingMode
 	Validations []*VariableValidation
 	Sensitive   bool
 
 	DescriptionSet bool
 	SensitiveSet   bool
+
+	// Nullable indicates that null is a valid value for this variable. Setting
+	// Nullable to false means that the module can expect this variable to
+	// never be null.
+	Nullable    bool
+	NullableSet bool
 
 	DeclRange hcl.Range
 }
@@ -45,6 +57,7 @@ func decodeVariableBlock(block *hcl.Block, override bool) (*Variable, hcl.Diagno
 	// or not they are set when we merge.
 	if !override {
 		v.Type = cty.DynamicPseudoType
+		v.ConstraintType = cty.DynamicPseudoType
 		v.ParsingMode = VariableParseLiteral
 	}
 
@@ -92,7 +105,8 @@ func decodeVariableBlock(block *hcl.Block, override bool) (*Variable, hcl.Diagno
 	if attr, exists := content.Attributes["type"]; exists {
 		ty, parseMode, tyDiags := decodeVariableType(attr.Expr)
 		diags = append(diags, tyDiags...)
-		v.Type = ty
+		v.ConstraintType = ty
+		v.Type = ty.WithoutOptionalAttributesDeep()
 		v.ParsingMode = parseMode
 	}
 
@@ -100,6 +114,16 @@ func decodeVariableBlock(block *hcl.Block, override bool) (*Variable, hcl.Diagno
 		valDiags := gohcl.DecodeExpression(attr.Expr, nil, &v.Sensitive)
 		diags = append(diags, valDiags...)
 		v.SensitiveSet = true
+	}
+
+	if attr, exists := content.Attributes["nullable"]; exists {
+		valDiags := gohcl.DecodeExpression(attr.Expr, nil, &v.Nullable)
+		diags = append(diags, valDiags...)
+		v.NullableSet = true
+	} else {
+		// The current default is true, which is subject to change in a future
+		// language edition.
+		v.Nullable = true
 	}
 
 	if attr, exists := content.Attributes["default"]; exists {
@@ -112,9 +136,9 @@ func decodeVariableBlock(block *hcl.Block, override bool) (*Variable, hcl.Diagno
 		// attribute above.
 		// However, we can't do this if we're in an override file where
 		// the type might not be set; we'll catch that during merge.
-		if v.Type != cty.NilType {
+		if v.ConstraintType != cty.NilType {
 			var err error
-			val, err = convert.Convert(val, v.Type)
+			val, err = convert.Convert(val, v.ConstraintType)
 			if err != nil {
 				diags = append(diags, &hcl.Diagnostic{
 					Severity: hcl.DiagError,
@@ -124,6 +148,15 @@ func decodeVariableBlock(block *hcl.Block, override bool) (*Variable, hcl.Diagno
 				})
 				val = cty.DynamicVal
 			}
+		}
+
+		if !v.Nullable && val.IsNull() {
+			diags = append(diags, &hcl.Diagnostic{
+				Severity: hcl.DiagError,
+				Summary:  "Invalid default value for variable",
+				Detail:   "A null default value is not valid when nullable=false.",
+				Subject:  attr.Expr.Range().Ptr(),
+			})
 		}
 
 		v.Default = val
@@ -547,6 +580,9 @@ var variableBlockSchema = &hcl.BodySchema{
 		},
 		{
 			Name: "sensitive",
+		},
+		{
+			Name: "nullable",
 		},
 	},
 	Blocks: []hcl.BlockHeaderSchema{

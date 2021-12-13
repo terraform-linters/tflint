@@ -467,7 +467,7 @@ resource "null_resource" "test" {
 			Error: Error{
 				Code:    EvaluationError,
 				Level:   ErrorLevel,
-				Message: "Failed to eval an expression in main.tf:3; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was rename to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
+				Message: "Failed to eval an expression in main.tf:3; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was renamed to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
 			},
 		},
 		{

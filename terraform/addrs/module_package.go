@@ -53,6 +53,7 @@ type ModuleRegistryPackage struct {
 }
 
 func (s ModuleRegistryPackage) String() string {
+	var buf strings.Builder
 	// Note: we're using the "display" form of the hostname here because
 	// for our service hostnames "for display" means something different:
 	// it means to render non-ASCII characters directly as Unicode
@@ -60,6 +61,7 @@ func (s ModuleRegistryPackage) String() string {
 	// use for internal processing, and so the "display" representation
 	// is actually what users would write in their configurations.
 	return s.Host.ForDisplay() + "/" + s.ForRegistryProtocol()
+	return buf.String()
 }
 
 func (s ModuleRegistryPackage) ForDisplay() string {
