@@ -32,7 +32,7 @@ require (
 	github.com/spf13/afero v1.6.0
 	github.com/stretchr/testify v1.7.0
 	github.com/terraform-linters/tflint-plugin-sdk v0.9.1
-	github.com/terraform-linters/tflint-ruleset-aws v0.10.0
+	github.com/terraform-linters/tflint-ruleset-aws v0.10.1
 	github.com/xeipuuv/gojsonschema v1.2.0
 	github.com/zclconf/go-cty v1.10.0
 	github.com/zclconf/go-cty-yaml v1.0.2

@@ -188,7 +188,6 @@ github.com/hashicorp/go-version v1.3.0/go.mod h1:fltr4n8CU8Ke44wwGCBoEymUuxUHl09
 github.com/hashicorp/golang-lru v0.5.0/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ4Ao+sR/qLZy8=
 github.com/hashicorp/golang-lru v0.5.1/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ4Ao+sR/qLZy8=
 github.com/hashicorp/hcl/v2 v2.10.0/go.mod h1:FwWsfWEjyV/CMj8s/gqAuiviY72rJ1/oayI9WftqcKg=
-github.com/hashicorp/hcl/v2 v2.10.1/go.mod h1:FwWsfWEjyV/CMj8s/gqAuiviY72rJ1/oayI9WftqcKg=
 github.com/hashicorp/hcl/v2 v2.11.1 h1:yTyWcXcm9XB0TEkyU/JCRU6rYy4K+mgLtzn2wlrJbcc=
 github.com/hashicorp/hcl/v2 v2.11.1/go.mod h1:FwWsfWEjyV/CMj8s/gqAuiviY72rJ1/oayI9WftqcKg=
 github.com/hashicorp/logutils v1.0.0 h1:dLEQVugN8vlakKOUE3ihGLTZJRB4j+M2cdTm/ORI65Y=
@@ -289,8 +288,8 @@ github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5Cc
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/terraform-linters/tflint-plugin-sdk v0.9.1 h1:Q7+QmvkxrINjsxQ9iOR9GDIppS7kT2hXQBHNaZ+01ug=
 github.com/terraform-linters/tflint-plugin-sdk v0.9.1/go.mod h1:2pu+KHPrxfV/Y0inO9c5w4ptL6dNIHu8Em7ZxXBNP4E=
-github.com/terraform-linters/tflint-ruleset-aws v0.10.0 h1:Ii/VxRKsHv6H7gRouh2ncf+1JLpRR3PD6dCgKAeEXYQ=
-github.com/terraform-linters/tflint-ruleset-aws v0.10.0/go.mod h1:mg5/RRy+ET4WBcc1UZ+Cjp6Jt0o3dKrikd0LvqnBjgk=
+github.com/terraform-linters/tflint-ruleset-aws v0.10.1 h1:TNb6TDktpnc/n98mfYsrssYrWlPTEAtRZaZInnVrX+8=
+github.com/terraform-linters/tflint-ruleset-aws v0.10.1/go.mod h1:cNzNvNBmQs2C7GH8Z9cUFuMo4fAiJxHNScO8jcI9HM4=
 github.com/ulikunitz/xz v0.5.8 h1:ERv8V6GKqVi23rgu5cj9pVfVzJbOqAY2Ntl88O6c2nQ=
 github.com/ulikunitz/xz v0.5.8/go.mod h1:nbz6k7qbPmH4IRqmfOplQw/tblSgqTqBwxkY0oWt/14=
 github.com/vmihailenco/msgpack v3.3.3+incompatible h1:wapg9xDUZDzGCNFlwc5SqI1rvcciqcxEHac4CYj89xI=
