@@ -1,3 +1,9 @@
+## 0.34.0 (2021-12-13)
+
+### Breaking Changes
+
+- [#1276](https://github.com/terraform-linters/tflint/pull/1276): terraform: Add support for Terraform v1.1 syntax ([@wata727](https://github.com/wata727))
+
 ## 0.33.2 (2021-12-07)
 
 ### Chores
