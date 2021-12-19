@@ -13,7 +13,6 @@ import (
 	"github.com/hashicorp/hcl/v2/json"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/terraform"
-	"github.com/zclconf/go-cty/cty"
 )
 
 var defaultValuesFile = "terraform.tfvars"
@@ -146,8 +145,10 @@ func getTFWorkspace() string {
 	return current
 }
 
-func getTFEnvVariables() terraform.InputValues {
+func getTFEnvVariables(declVars map[string]*configs.Variable) (terraform.InputValues, hcl.Diagnostics) {
 	envVariables := make(terraform.InputValues)
+	var diags hcl.Diagnostics
+
 	for _, e := range os.Environ() {
 		idx := strings.Index(e, "=")
 		envKey := e[:idx]
@@ -157,12 +158,26 @@ func getTFEnvVariables() terraform.InputValues {
 			log.Printf("[INFO] TF_VAR_* environment variable found: key=%s", envKey)
 			varName := strings.Replace(envKey, "TF_VAR_", "", 1)
 
+			var mode configs.VariableParsingMode
+			declVar, declared := declVars[varName]
+			if declared {
+				mode = declVar.ParsingMode
+			} else {
+				mode = configs.VariableParseLiteral
+			}
+
+			val, parseDiags := mode.Parse(varName, envVal)
+			if parseDiags.HasErrors() {
+				diags = diags.Extend(parseDiags)
+				continue
+			}
+
 			envVariables[varName] = &terraform.InputValue{
-				Value:      cty.StringVal(envVal),
+				Value:      val,
 				SourceType: terraform.ValueFromEnvVar,
 			}
 		}
 	}
 
-	return envVariables
+	return envVariables, diags
 }
