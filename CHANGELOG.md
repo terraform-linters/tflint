@@ -1,3 +1,16 @@
+## 0.34.1 (2021-12-25)
+
+### BugFixes
+
+- [#1282](https://github.com/terraform-linters/tflint/pull/1282): tflint: Parse `TF_VAR_*` env variables as HCL ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1277](https://github.com/terraform-linters/tflint/pull/1277): docs: Update Compatibility guide ([@wata727](https://github.com/wata727))
+- [#1278](https://github.com/terraform-linters/tflint/pull/1278): build(deps): Bump github.com/terraform-linters/tflint-ruleset-aws from 0.10.0 to 0.10.1
+- [#1279](https://github.com/terraform-linters/tflint/pull/1279): build(deps): Bump github.com/owenrumney/go-sarif from 1.0.12 to 1.1.1
+- [#1284](https://github.com/terraform-linters/tflint/pull/1284): docs: linking `terraform_module_version` rule docs ([@PatMyron](https://github.com/PatMyron))
+
 ## 0.34.0 (2021-12-13)
 
 ### Breaking Changes
