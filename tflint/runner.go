@@ -49,13 +49,17 @@ func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotation
 	}
 	log.Printf("[INFO] Initialize new runner for %s", path)
 
+	variableValues, diags := prepareVariableValues(cfg, variables...)
+	if diags.HasErrors() {
+		return nil, diags
+	}
 	ctx := terraform.BuiltinEvalContext{
 		Evaluator: &terraform.Evaluator{
 			Meta: &terraform.ContextMeta{
 				Env: getTFWorkspace(),
 			},
 			Config:             cfg.Root,
-			VariableValues:     prepareVariableValues(cfg, variables...),
+			VariableValues:     variableValues,
 			VariableValuesLock: &sync.Mutex{},
 		},
 	}
@@ -358,8 +362,11 @@ func (r *Runner) listModuleVars(expr hcl.Expression) []*moduleVariable {
 // Therefore, CLI flag input variables must be passed at the end of arguments.
 // This is the responsibility of the caller.
 // See https://learn.hashicorp.com/terraform/getting-started/variables.html#assigning-variables
-func prepareVariableValues(config *configs.Config, variables ...terraform.InputValues) map[string]map[string]cty.Value {
+func prepareVariableValues(config *configs.Config, cliVars ...terraform.InputValues) (map[string]map[string]cty.Value, hcl.Diagnostics) {
 	moduleKey := config.Path.UnkeyedInstanceShim().String()
+	variableValues := make(map[string]map[string]cty.Value)
+	variableValues[moduleKey] = make(map[string]cty.Value)
+
 	configVars := map[string]*configs.Variable{}
 	for k, v := range config.Module.Variables {
 		configVars[k] = v
@@ -369,14 +376,18 @@ func prepareVariableValues(config *configs.Config, variables ...terraform.InputV
 			configVars[k].Default = cty.UnknownVal(v.Type)
 		}
 	}
-	overrideVariables := terraform.DefaultVariableValues(configVars).Override(getTFEnvVariables()).Override(variables...)
 
-	variableValues := make(map[string]map[string]cty.Value)
-	variableValues[moduleKey] = make(map[string]cty.Value)
+	variables := terraform.DefaultVariableValues(configVars)
+	envVars, diags := getTFEnvVariables(configVars)
+	if diags.HasErrors() {
+		return variableValues, diags
+	}
+	overrideVariables := variables.Override(envVars).Override(cliVars...)
+
 	for k, iv := range overrideVariables {
 		variableValues[moduleKey][k] = iv.Value
 	}
-	return variableValues
+	return variableValues, nil
 }
 
 func listVarRefs(expr hcl.Expression) map[string]addrs.InputVariable {

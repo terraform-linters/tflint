@@ -459,14 +459,18 @@ func Test_getTFWorkspace(t *testing.T) {
 func Test_getTFEnvVariables(t *testing.T) {
 	cases := []struct {
 		Name     string
+		DeclVars map[string]*configs.Variable
 		EnvVar   map[string]string
 		Expected terraform.InputValues
 	}{
 		{
-			Name: "environment variable",
+			Name:     "undeclared",
+			DeclVars: map[string]*configs.Variable{},
 			EnvVar: map[string]string{
 				"TF_VAR_instance_type": "t2.micro",
 				"TF_VAR_count":         "5",
+				"TF_VAR_list":          "[\"foo\"]",
+				"TF_VAR_map":           "{foo=\"bar\"}",
 			},
 			Expected: terraform.InputValues{
 				"instance_type": &terraform.InputValue{
@@ -477,28 +481,115 @@ func Test_getTFEnvVariables(t *testing.T) {
 					Value:      cty.StringVal("5"),
 					SourceType: terraform.ValueFromEnvVar,
 				},
+				"list": &terraform.InputValue{
+					Value:      cty.StringVal("[\"foo\"]"),
+					SourceType: terraform.ValueFromEnvVar,
+				},
+				"map": &terraform.InputValue{
+					Value:      cty.StringVal("{foo=\"bar\"}"),
+					SourceType: terraform.ValueFromEnvVar,
+				},
+			},
+		},
+		{
+			Name: "declared",
+			DeclVars: map[string]*configs.Variable{
+				"instance_type": {ParsingMode: configs.VariableParseLiteral},
+				"count":         {ParsingMode: configs.VariableParseHCL},
+				"list":          {ParsingMode: configs.VariableParseHCL},
+				"map":           {ParsingMode: configs.VariableParseHCL},
+			},
+			EnvVar: map[string]string{
+				"TF_VAR_instance_type": "t2.micro",
+				"TF_VAR_count":         "5",
+				"TF_VAR_list":          "[\"foo\"]",
+				"TF_VAR_map":           "{foo=\"bar\"}",
+			},
+			Expected: terraform.InputValues{
+				"instance_type": &terraform.InputValue{
+					Value:      cty.StringVal("t2.micro"),
+					SourceType: terraform.ValueFromEnvVar,
+				},
+				"count": &terraform.InputValue{
+					Value:      cty.NumberIntVal(5),
+					SourceType: terraform.ValueFromEnvVar,
+				},
+				"list": &terraform.InputValue{
+					Value:      cty.TupleVal([]cty.Value{cty.StringVal("foo")}),
+					SourceType: terraform.ValueFromEnvVar,
+				},
+				"map": &terraform.InputValue{
+					Value:      cty.ObjectVal(map[string]cty.Value{"foo": cty.StringVal("bar")}),
+					SourceType: terraform.ValueFromEnvVar,
+				},
 			},
 		},
 	}
 
 	for _, tc := range cases {
-		for key, value := range tc.EnvVar {
-			err := os.Setenv(key, value)
-			if err != nil {
-				t.Fatal(err)
+		t.Run(tc.Name, func(t *testing.T) {
+			for key, value := range tc.EnvVar {
+				t.Setenv(key, value)
 			}
-		}
 
-		ret := getTFEnvVariables()
-		if !reflect.DeepEqual(tc.Expected, ret) {
-			t.Fatalf("Failed `%s` test:\n Expected: %#v\n Actual: %#v", tc.Name, tc.Expected, ret)
-		}
-
-		for key := range tc.EnvVar {
-			err := os.Unsetenv(key)
-			if err != nil {
-				t.Fatal(err)
+			ret, diags := getTFEnvVariables(tc.DeclVars)
+			if diags.HasErrors() {
+				t.Fatal(diags)
 			}
-		}
+
+			opt := cmp.Comparer(func(x, y cty.Value) bool {
+				return x.RawEquals(y)
+			})
+			if diff := cmp.Diff(tc.Expected, ret, opt); diff != "" {
+				t.Error(diff)
+			}
+		})
+	}
+}
+
+func Test_getTFEnvVariables_errors(t *testing.T) {
+	cases := []struct {
+		Name     string
+		DeclVars map[string]*configs.Variable
+		Env      map[string]string
+		Expected string
+	}{
+		{
+			Name: "invalid parsing mode",
+			DeclVars: map[string]*configs.Variable{
+				"foo": {ParsingMode: configs.VariableParseHCL},
+			},
+			Env: map[string]string{
+				"TF_VAR_foo": "bar",
+			},
+			Expected: "<value for var.foo>:1,1-4: Variables not allowed; Variables may not be used here.",
+		},
+		{
+			Name: "invalid expression",
+			DeclVars: map[string]*configs.Variable{
+				"foo": {ParsingMode: configs.VariableParseHCL},
+			},
+			Env: map[string]string{
+				"TF_VAR_foo": `{"bar": "baz"`,
+			},
+			Expected: "<value for var.foo>:1,1-2: Unterminated object constructor expression; There is no corresponding closing brace before the end of the file. This may be caused by incorrect brace nesting elsewhere in this file.",
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.Name, func(t *testing.T) {
+			for k, v := range tc.Env {
+				t.Setenv(k, v)
+			}
+
+			_, diags := getTFEnvVariables(tc.DeclVars)
+			if !diags.HasErrors() {
+				t.Fatal("Expected an error to occur, but it didn't")
+			}
+
+			if diags.Error() != tc.Expected {
+				t.Errorf("Expected `%s`, but got `%s`", tc.Expected, diags.Error())
+			}
+		})
 	}
 }
