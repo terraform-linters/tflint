@@ -21,19 +21,11 @@ func Test_workspaceDidChangeWatchedFiles(t *testing.T) {
 		config := `
 plugin "testing" {
     enabled = true
-}
-
-plugin "aws" {
-    enabled = false
 }`
 
 		changedConfig := `
 plugin "testing" {
     enabled = true
-}
-
-plugin "aws" {
-    enabled = false
 }
 
 rule "aws_instance_example_type" {
@@ -114,10 +106,6 @@ instance_type = "t1.2xlarge"
 		config := `
 plugin "testing" {
     enabled = true
-}
-
-plugin "aws" {
-    enabled = false
 }`
 		if err := os.WriteFile(dir+"/.tflint.hcl", []byte(config), os.ModePerm); err != nil {
 			t.Fatal(err)

@@ -18,8 +18,6 @@ import (
 
 // Discovery searches and launches plugins according the passed configuration.
 // If the plugin is not enabled, skip without starting.
-// The AWS plugin is treated specially. Plugins for which no version is specified will launch the bundled plugin
-// instead of returning an error. This is a process for backward compatibility.
 func Discovery(config *tflint.Config) (*Plugin, error) {
 	clients := map[string]*plugin.Client{}
 	rulesets := map[string]*tfplugin.Client{}
@@ -29,23 +27,14 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 		pluginPath, err := FindPluginPath(installCfg)
 		var cmd *exec.Cmd
 		if os.IsNotExist(err) {
-			if pluginCfg.Name == "aws" && installCfg.ManuallyInstalled() {
-				log.Print("[INFO] Plugin `aws` is not installed, but bundled plugins are available.")
-				self, err := os.Executable()
+			if installCfg.ManuallyInstalled() {
+				pluginDir, err := getPluginDir(config)
 				if err != nil {
 					return nil, err
 				}
-				cmd = exec.Command(self, "--act-as-aws-plugin")
-			} else {
-				if installCfg.ManuallyInstalled() {
-					pluginDir, err := getPluginDir(config)
-					if err != nil {
-						return nil, err
-					}
-					return nil, fmt.Errorf("Plugin `%s` not found in %s", pluginCfg.Name, pluginDir)
-				}
-				return nil, fmt.Errorf("Plugin `%s` not found. Did you run `tflint --init`?", pluginCfg.Name)
+				return nil, fmt.Errorf("Plugin `%s` not found in %s", pluginCfg.Name, pluginDir)
 			}
+			return nil, fmt.Errorf("Plugin `%s` not found. Did you run `tflint --init`?", pluginCfg.Name)
 		} else {
 			cmd = exec.Command(pluginPath)
 		}

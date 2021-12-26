@@ -93,8 +93,6 @@ func (cli *CLI) Run(args []string) int {
 		return cli.init(opts)
 	case opts.Langserver:
 		return cli.startLanguageServer(opts.Config, opts.toConfig())
-	case opts.ActAsAwsPlugin:
-		return cli.actAsAwsPlugin()
 	default:
 		return cli.inspect(opts, dir, filterFiles)
 	}

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/spf13/afero"
 	tfplugin "github.com/terraform-linters/tflint/plugin"
@@ -40,25 +39,6 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 		return ExitCodeError
 	}
 	rootRunner := runners[len(runners)-1]
-
-	// AWS plugin is automatically enabled from your provider requirements, even if the plugin isn't explicitly enabled.
-	if _, exists := cfg.Plugins["aws"]; !exists {
-		reqs, diags := rootRunner.TFConfig.ProviderRequirements()
-		if diags.HasErrors() {
-			cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to get Terraform provider requirements", diags), cli.loader.Sources())
-			return ExitCodeError
-		}
-		for addr := range reqs {
-			if addr.Type == "aws" {
-				log.Print("[INFO] AWS provider requirements found. Enable the plugin `aws` automatically")
-				fmt.Fprintln(cli.errStream, "WARNING: The plugin `aws` is not explicitly enabled. The bundled plugin will be enabled instead, but it is deprecated and will be removed in a future version. Please see https://github.com/terraform-linters/tflint/pull/1160 for details.")
-				cfg.Plugins["aws"] = &tflint.PluginConfig{
-					Name:    "aws",
-					Enabled: true,
-				}
-			}
-		}
-	}
 
 	// Lookup plugins and validation
 	plugin, err := tfplugin.Discovery(cfg)
