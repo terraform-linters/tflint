@@ -7,6 +7,7 @@ linters:
     - gci
     - gofmt
     - misspell
+    - unconvert
     - unparam
 issues:
   exclude-rules:
