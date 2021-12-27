@@ -202,7 +202,7 @@ dd536fed0ebe4c1115240574c5dd7a31b563d67bfe0d1111750438718f995d43  tflint-ruleset
 	}
 }
 
-var testSigningKey string = `
+var testSigningKey = `
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
 mQINBGB9+xkBEACabYZOWKmgZsHTdRDiyPJxhbuUiKX65GUWkyRMJKi/1dviVxOX
