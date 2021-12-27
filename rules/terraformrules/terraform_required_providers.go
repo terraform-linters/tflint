@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -62,28 +63,32 @@ func (r *TerraformRequiredProvidersRule) Check(runner *tflint.Runner) error {
 		}
 	}
 
-	for _, resource := range module.ManagedResources {
-		if _, ok := providers[resource.Provider.Type]; !ok {
-			providers[resource.Provider.Type] = resource.DeclRange
-		}
-	}
-
-	for _, data := range module.DataResources {
-		if _, ok := providers[data.Provider.Type]; !ok {
-			providers[data.Provider.Type] = data.DeclRange
-		}
-	}
+	providers = providerResourceRanges(providers, module.ManagedResources)
+	providers = providerResourceRanges(providers, module.DataResources)
 
 	for name, decl := range providers {
-		// builtin
-		if name == "terraform" {
-			continue
-		}
-
 		if provider, ok := module.ProviderRequirements.RequiredProviders[name]; !ok || provider.Requirement.Required == nil {
 			runner.EmitIssue(r, fmt.Sprintf(`Missing version constraint for provider "%s" in "required_providers"`, name), decl)
 		}
 	}
 
 	return nil
+}
+
+func providerResourceRanges(providers map[string]hcl.Range, resources map[string]*configs.Resource) map[string]hcl.Range {
+	for _, resource := range resources {
+		provider := resource.Provider
+
+		if provider.IsBuiltIn() {
+			continue
+		}
+
+		if _, ok := providers[provider.Type]; ok {
+			continue
+		}
+
+		providers[resource.Provider.Type] = resource.DeclRange
+	}
+
+	return providers
 }

@@ -247,6 +247,21 @@ data "terraform_remote_state" "foo" {}
 `,
 			Expected: tflint.Issues{},
 		},
+		{
+			Name: "builtin provider",
+			Content: `
+terraform {
+	required_providers {
+		test = {
+			source = "terraform.io/builtin/test"
+		}
+	}
+}
+
+resource "test_assertions" "foo" {}
+`,
+			Expected: tflint.Issues{},
+		},
 	}
 
 	rule := NewTerraformRequiredProvidersRule()
