@@ -34,7 +34,7 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	}
 
 	// Setup runners
-	runners, appErr := cli.setupRunners(opts, cfg, dir)
+	runners, appErr := cli.setupRunners(cfg, dir)
 	if appErr != nil {
 		cli.formatter.Print(tflint.Issues{}, appErr, cli.loader.Sources())
 		return ExitCodeError
@@ -118,7 +118,7 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	return ExitCodeOK
 }
 
-func (cli *CLI) setupRunners(opts Options, cfg *tflint.Config, dir string) ([]*tflint.Runner, *tflint.Error) {
+func (cli *CLI) setupRunners(cfg *tflint.Config, dir string) ([]*tflint.Runner, *tflint.Error) {
 	configs, err := cli.loader.LoadConfig(dir)
 	if err != nil {
 		return []*tflint.Runner{}, tflint.NewContextError("Failed to load configurations", err)

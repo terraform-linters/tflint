@@ -7,7 +7,7 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error, sources map[string][]byte) {
+func (f *Formatter) sarifPrint(issues tflint.Issues) {
 	report, err := sarif.New(sarif.Version210)
 	if err != nil {
 		panic(err)

@@ -166,7 +166,7 @@ func Test_sarifPrint(t *testing.T) {
 		stderr := &bytes.Buffer{}
 		formatter := &Formatter{Stdout: stdout, Stderr: stderr}
 
-		formatter.sarifPrint(tc.Issues, tc.Error, map[string][]byte{})
+		formatter.sarifPrint(tc.Issues)
 
 		if stdout.String() != tc.Stdout {
 			t.Fatalf("Failed %s test: expected=%s, stdout=%s", tc.Name, tc.Stdout, stdout.String())

@@ -12,7 +12,7 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-func (h *handler) workspaceDidChangeWatchedFiles(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (result interface{}, err error) {
+func (h *handler) workspaceDidChangeWatchedFiles(ctx context.Context, conn *jsonrpc2.Conn) (result interface{}, err error) {
 	if h.rootDir == "" {
 		return nil, fmt.Errorf("root directory is undefined")
 	}
