@@ -5,6 +5,7 @@ import (
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/configs/configschema"
@@ -107,6 +108,10 @@ func (r *Runner) EvalExpr(expr hcl.Expression, ret interface{}, wantType cty.Typ
 		}
 		log.Printf("[ERROR] %s", err)
 		return cty.NullVal(cty.NilType), err
+	}
+
+	if wantType == cty.DynamicPseudoType {
+		return val, nil
 	}
 
 	err = cty.Walk(val, func(path cty.Path, v cty.Value) (bool, error) {
@@ -325,8 +330,59 @@ func (r *Runner) willEvaluateResource(resource *configs.Resource) (bool, error) 
 		var forEach cty.Value
 		forEach, err = r.EvalExpr(resource.ForEach, nil, cty.DynamicPseudoType)
 		if err == nil {
+			if forEach.IsNull() {
+				return true, nil
+			}
+			if !forEach.IsKnown() {
+				return false, nil
+			}
 			if !forEach.CanIterateElements() {
 				return false, fmt.Errorf("The `for_each` value is not iterable in %s:%d", resource.ForEach.Range().Filename, resource.ForEach.Range().Start.Line)
+			}
+			if forEach.LengthInt() == 0 {
+				return false, nil
+			}
+		}
+	}
+
+	if err == nil {
+		return true, nil
+	}
+	if appErr, ok := err.(*Error); ok {
+		switch appErr.Level {
+		case WarningLevel:
+			return false, nil
+		case ErrorLevel:
+			return false, err
+		default:
+			panic(appErr)
+		}
+	} else {
+		return false, err
+	}
+}
+
+func (r *Runner) willEvaluateResourceBlock(resource *hclext.Block) (bool, error) {
+	var err error
+	if attr, exists := resource.Body.Attributes["count"]; exists {
+		count := 1
+		err = r.EvaluateExpr(attr.Expr, &count)
+		if err == nil && count == 0 {
+			return false, nil
+		}
+	}
+	if attr, exists := resource.Body.Attributes["for_each"]; exists {
+		var forEach cty.Value
+		forEach, err := r.EvalExpr(attr.Expr, nil, cty.DynamicPseudoType)
+		if err == nil {
+			if forEach.IsNull() {
+				return true, nil
+			}
+			if !forEach.IsKnown() {
+				return false, nil
+			}
+			if !forEach.CanIterateElements() {
+				return false, fmt.Errorf("The `for_each` value is not iterable in %s:%d", attr.Expr.Range().Filename, attr.Expr.Range().Start.Line)
 			}
 			if forEach.LengthInt() == 0 {
 				return false, nil

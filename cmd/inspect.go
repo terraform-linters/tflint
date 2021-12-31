@@ -50,11 +50,31 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 
 	rulesets := []tflint.RuleSet{&rules.RuleSet{}}
 	for name, ruleset := range plugin.RuleSets {
-		err = ruleset.ApplyConfig(cfg.ToPluginConfig(name))
+		config, err := cfg.ToPluginConfig(name).Unmarshal()
+		if err != nil {
+			cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to fetch config schema from plugins", err), cli.loader.Sources())
+			return ExitCodeError
+		}
+		if err := ruleset.ApplyGlobalConfig(config); err != nil {
+			cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to fetch config schema from plugins", err), cli.loader.Sources())
+			return ExitCodeError
+		}
+		configSchema, err := ruleset.ConfigSchema()
+		if err != nil {
+			cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to fetch config schema from plugins", err), cli.loader.Sources())
+			return ExitCodeError
+		}
+		content, diags := cfg.PluginContent(name, configSchema)
+		if diags.HasErrors() {
+			cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to parse plugin config schema", diags), cli.loader.Sources())
+			return ExitCodeError
+		}
+		err = ruleset.ApplyConfig(content, cfg.Sources())
 		if err != nil {
 			cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to apply config to plugins", err), cli.loader.Sources())
 			return ExitCodeError
 		}
+
 		rulesets = append(rulesets, ruleset)
 	}
 	if err := cfg.ValidateRules(rulesets...); err != nil {
@@ -75,7 +95,7 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 
 	for _, ruleset := range plugin.RuleSets {
 		for _, runner := range runners {
-			err = ruleset.Check(tfplugin.NewServer(runner, rootRunner, cli.loader.Sources()))
+			err = ruleset.Check(tfplugin.NewGRPCServer(runner, rootRunner, cli.loader.Sources()))
 			if err != nil {
 				cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to check ruleset", err), cli.loader.Sources())
 				return ExitCodeError

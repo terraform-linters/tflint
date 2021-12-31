@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	homedir "github.com/mitchellh/go-homedir"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 )
 
@@ -55,6 +56,9 @@ type Config struct {
 	PluginDir         string
 	Rules             map[string]*RuleConfig
 	Plugins           map[string]*PluginConfig
+
+	file    *hcl.File
+	sources map[string][]byte
 }
 
 // RuleConfig is a TFLint's rule config
@@ -193,6 +197,37 @@ func (c *Config) ToPluginConfig(name string) *tfplugin.MarshalledConfig {
 	return cfg
 }
 
+func (c *Config) PluginContent(name string, schema *hclext.BodySchema) (*hclext.BodyContent, hcl.Diagnostics) {
+	if schema == nil {
+		schema = &hclext.BodySchema{}
+	}
+	if c.file == nil {
+		return &hclext.BodyContent{}, nil
+	}
+
+	plugins, _, diags := c.file.Body.PartialContent(&hcl.BodySchema{
+		Blocks: []hcl.BlockHeaderSchema{
+			{Type: "plugin", LabelNames: []string{"name"}},
+		},
+	})
+	if diags.HasErrors() {
+		return nil, diags
+	}
+
+	schema.Attributes = append(schema.Attributes, hclext.AttributeSchema{Name: "enabled"})
+	for _, plugin := range plugins.Blocks {
+		if plugin.Labels[0] == name {
+			return hclext.Content(plugin.Body, schema)
+		}
+	}
+
+	return &hclext.BodyContent{}, nil
+}
+
+func (c *Config) Sources() map[string][]byte {
+	return c.sources
+}
+
 // RuleSet is an interface to handle plugin's RuleSet and core RuleSet both
 // In the future, when all RuleSets are cut out into plugins, it will no longer be needed.
 type RuleSet interface {
@@ -268,6 +303,9 @@ func (c *Config) copy() *Config {
 		PluginDir:         c.PluginDir,
 		Rules:             rules,
 		Plugins:           plugins,
+
+		file:    c.file,
+		sources: c.sources,
 	}
 }
 
@@ -315,6 +353,8 @@ plugin "aws" {
 	}
 
 	cfg := raw.toConfig()
+	cfg.file = f
+	cfg.sources = parser.Sources()
 	for _, rule := range cfg.Rules {
 		rule.file = f
 	}

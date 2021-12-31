@@ -3,7 +3,7 @@ package custom
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/v2/gohcl"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 )
 
@@ -12,15 +12,16 @@ type RuleSet struct {
 	config *Config
 }
 
-func (r *RuleSet) ApplyConfig(config *tflint.Config) error {
-	r.ApplyCommonConfig(config)
+func (r *RuleSet) ConfigSchema() *hclext.BodySchema {
+	r.config = &Config{}
+	return hclext.ImpliedBodySchema(r.config)
+}
 
-	cfg := Config{}
-	diags := gohcl.DecodeBody(config.Body, nil, &cfg)
+func (r *RuleSet) ApplyConfig(body *hclext.BodyContent) error {
+	diags := hclext.DecodeBody(body, nil, r.config)
 	if diags.HasErrors() {
 		return diags
 	}
-	r.config = &cfg
 
 	return nil
 }

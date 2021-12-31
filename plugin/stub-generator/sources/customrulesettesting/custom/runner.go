@@ -1,7 +1,7 @@
 package custom
 
 import (
-	"github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 )
 
@@ -11,27 +11,46 @@ type Runner struct {
 }
 
 func NewRunner(runner tflint.Runner, config *Config) (*Runner, error) {
-	provider, err := runner.RootProvider("custom")
+	providers, err := runner.GetModuleContent(
+		&hclext.BodySchema{
+			Blocks: []hclext.BlockSchema{
+				{
+					Type:       "provider",
+					LabelNames: []string{"name"},
+					Body: &hclext.BodySchema{
+						Attributes: []hclext.AttributeSchema{
+							{Name: "zone"},
+						},
+						Blocks: []hclext.BlockSchema{
+							{
+								Type: "annotation",
+								Body: &hclext.BodySchema{
+									Attributes: []hclext.AttributeSchema{
+										{Name: "value"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		&tflint.GetModuleContentOption{ModuleCtx: tflint.RootModuleCtxType},
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	if provider != nil {
-		content, _, diags := provider.Config.PartialContent(&hcl.BodySchema{
-			Attributes: []hcl.AttributeSchema{
-				{Name: "zone"},
-			},
-			Blocks: []hcl.BlockHeaderSchema{
-				{Type: "annotation"},
-			},
-		})
-		if diags.HasErrors() {
-			return nil, diags
+	for _, provider := range providers.Blocks {
+		if provider.Labels[0] != "custom" {
+			continue
 		}
 
-		if attr, exists := content.Attributes["zone"]; exists {
+		opts := &tflint.EvaluateExprOption{ModuleCtx: tflint.RootModuleCtxType}
+
+		if attr, exists := provider.Body.Attributes["zone"]; exists {
 			var zone string
-			err := runner.EvaluateExprOnRootCtx(attr.Expr, &zone, nil)
+			err := runner.EvaluateExpr(attr.Expr, &zone, opts)
 			err = runner.EnsureNoError(err, func() error {
 				config.Zone = zone
 				return nil
@@ -41,19 +60,10 @@ func NewRunner(runner tflint.Runner, config *Config) (*Runner, error) {
 			}
 		}
 
-		for _, block := range content.Blocks {
-			content, _, diags := block.Body.PartialContent(&hcl.BodySchema{
-				Attributes: []hcl.AttributeSchema{
-					{Name: "value"},
-				},
-			})
-			if diags.HasErrors() {
-				return nil, diags
-			}
-
-			if attr, exists := content.Attributes["value"]; exists {
+		for _, annotation := range provider.Body.Blocks {
+			if attr, exists := annotation.Body.Attributes["value"]; exists {
 				var val string
-				err := runner.EvaluateExprOnRootCtx(attr.Expr, &val, nil)
+				err := runner.EvaluateExpr(attr.Expr, &val, opts)
 				err = runner.EnsureNoError(err, func() error {
 					config.Annotation = val
 					return nil

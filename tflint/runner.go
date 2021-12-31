@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
+	"sort"
 	"strings"
 	"sync"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/lang"
@@ -30,6 +32,10 @@ type Runner struct {
 	config      *Config
 	currentExpr hcl.Expression
 	modVars     map[string]*moduleVariable
+
+	primaries             []*hcl.File
+	overrides             []*hcl.File
+	earlyDecodedResources map[string]*hclext.Block
 }
 
 // Rule is interface for building the issue
@@ -64,6 +70,24 @@ func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotation
 		},
 	}
 
+	// Classify HCL files
+	primaries := []*hcl.File{}
+	overrides := []*hcl.File{}
+	for name, f := range files {
+		if filepath.Dir(name) != filepath.Clean(cfg.Module.SourceDir) {
+			continue
+		}
+
+		if name == "override.tf" || name == "override.tf.json" || strings.HasSuffix(name, "_override.tf") || strings.HasSuffix(name, "_override.tf.json") {
+			overrides = append(overrides, f)
+		} else {
+			primaries = append(primaries, f)
+		}
+	}
+	sort.Slice(overrides, func(i, j int) bool {
+		return overrides[i].Body.MissingItemRange().Filename < overrides[j].Body.MissingItemRange().Filename
+	})
+
 	runner := &Runner{
 		TFConfig: cfg,
 		Issues:   Issues{},
@@ -74,6 +98,52 @@ func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotation
 		files:       files,
 		annotations: ants,
 		config:      c,
+
+		primaries:             primaries,
+		overrides:             overrides,
+		earlyDecodedResources: map[string]*hclext.Block{},
+	}
+
+	// Decode resource with count/for_each early
+	bodyS := &hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type:       "resource",
+				LabelNames: []string{"type", "name"},
+				Body: &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{
+						{Name: "count"},
+						{Name: "for_each"},
+					},
+				},
+			},
+		},
+	}
+	content := &hclext.BodyContent{}
+	for _, f := range primaries {
+		c, d := hclext.PartialContent(f.Body, bodyS)
+		diags = diags.Extend(d)
+		for name, attr := range c.Attributes {
+			content.Attributes[name] = attr
+		}
+		content.Blocks = append(content.Blocks, c.Blocks...)
+	}
+	for _, f := range overrides {
+		c, d := hclext.PartialContent(f.Body, bodyS)
+		diags = diags.Extend(d)
+		for name, attr := range c.Attributes {
+			content.Attributes[name] = attr
+		}
+		content.Blocks = overrideBlocks(content.Blocks, c.Blocks)
+	}
+	for _, resource := range content.Blocks {
+		ok, err := runner.willEvaluateResourceBlock(resource)
+		if err != nil {
+			return runner, err
+		}
+		if ok {
+			runner.earlyDecodedResources[fmt.Sprintf("%s.%s", resource.Labels[0], resource.Labels[1])] = resource
+		}
 	}
 
 	return runner, nil
@@ -185,6 +255,111 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 	}
 
 	return runners, nil
+}
+
+func (r *Runner) GetModuleContent(bodyS *hclext.BodySchema) (*hclext.BodyContent, hcl.Diagnostics) {
+	// TODO: early return if resource not found
+	bodyS = appendDynamicBlockSchema(bodyS)
+	content := &hclext.BodyContent{}
+	diags := hcl.Diagnostics{}
+
+	for _, f := range r.primaries {
+		c, d := hclext.PartialContent(f.Body, bodyS)
+		diags = diags.Extend(d)
+		for name, attr := range c.Attributes {
+			content.Attributes[name] = attr
+		}
+		content.Blocks = append(content.Blocks, c.Blocks...)
+	}
+	for _, f := range r.overrides {
+		c, d := hclext.PartialContent(f.Body, bodyS)
+		diags = diags.Extend(d)
+		for name, attr := range c.Attributes {
+			content.Attributes[name] = attr
+		}
+		content.Blocks = overrideBlocks(content.Blocks, c.Blocks)
+	}
+
+	content = resolveDynamicBlocks(content)
+
+	out := &hclext.BodyContent{Attributes: content.Attributes}
+	for _, block := range content.Blocks {
+		if block.Type == "resource" {
+			if _, exists := r.earlyDecodedResources[fmt.Sprintf("%s.%s", block.Labels[0], block.Labels[1])]; !exists {
+				log.Printf("[WARN] Skip walking `%s` because it may not be created", block.Labels[0]+"."+block.Labels[1])
+				continue
+			}
+		}
+
+		out.Blocks = append(out.Blocks, block)
+	}
+
+	return out, diags
+}
+
+func appendDynamicBlockSchema(schema *hclext.BodySchema) *hclext.BodySchema {
+	out := &hclext.BodySchema{Attributes: schema.Attributes}
+
+	for _, block := range schema.Blocks {
+		block.Body = appendDynamicBlockSchema(block.Body)
+
+		out.Blocks = append(out.Blocks, block, hclext.BlockSchema{
+			Type:       "dynamic",
+			LabelNames: []string{"name"},
+			Body: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type: "content",
+						Body: block.Body,
+					},
+				},
+			},
+		})
+	}
+
+	return out
+}
+
+func resolveDynamicBlocks(content *hclext.BodyContent) *hclext.BodyContent {
+	out := &hclext.BodyContent{Attributes: content.Attributes}
+
+	for _, block := range content.Blocks {
+		block.Body = resolveDynamicBlocks(block.Body)
+
+		if block.Type != "dynamic" {
+			out.Blocks = append(out.Blocks, block)
+		} else {
+			for _, dynamicContent := range block.Body.Blocks {
+				block.Type = block.Labels[0]
+				out.Blocks = append(out.Blocks, dynamicContent)
+			}
+		}
+	}
+
+	return out
+}
+
+func overrideBlocks(primaries, overrides hclext.Blocks) hclext.Blocks {
+	dict := map[string]*hclext.Block{}
+	for _, primary := range primaries {
+		key := fmt.Sprintf("%s[%s]", primary.Type, strings.Join(primary.Labels, ","))
+		dict[key] = primary
+	}
+
+	for _, override := range overrides {
+		key := fmt.Sprintf("%s[%s]", override.Type, strings.Join(override.Labels, ","))
+		if primary, exists := dict[key]; exists {
+			for name, attr := range override.Body.Attributes {
+				primary.Body.Attributes[name] = attr
+			}
+
+			for _, block := range override.Body.Blocks {
+				primary.Body.Blocks = overrideBlocks(primary.Body.Blocks, block.Body.Blocks)
+			}
+		}
+	}
+
+	return primaries
 }
 
 // TFConfigPath is a wrapper of addrs.Module
@@ -332,6 +507,10 @@ func (r *Runner) DecodeRuleConfig(ruleName string, val interface{}) error {
 // RuleConfig returns the corresponding rule configuration
 func (r *Runner) RuleConfig(ruleName string) *RuleConfig {
 	return r.config.Rules[ruleName]
+}
+
+func (r *Runner) ConfigFile() *hcl.File {
+	return r.config.file
 }
 
 func (r *Runner) emitIssue(issue *Issue) {

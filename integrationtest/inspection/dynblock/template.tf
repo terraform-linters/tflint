@@ -15,7 +15,6 @@ resource "aws_s3_bucket" "dynamic" {
     content {
       enabled = lifecycle_rule.value
 
-      // nested dynamic block does not work because the caller iterates only `transition` blocks
       dynamic "transition" {
         for_each = toset([30])
 

@@ -43,11 +43,6 @@ func TestIntegration(t *testing.T) {
 		t.Fatalf("Expected to contain an installed log, but did not: stdout=%s, stderr=%s", outStream, errStream)
 	}
 
-	cli.Run([]string{"./tflint", "-v"})
-	if !strings.Contains(outStream.String(), "ruleset.aws (0.5.0)") {
-		t.Fatalf("Expected to contain a plugin version output, but did not: stdout=%s, stderr=%s", outStream, errStream)
-	}
-
 	cli.Run([]string{"./tflint", "--init"})
 	if !strings.Contains(outStream.String(), "Plugin `aws` is already installed") {
 		t.Fatalf("Expected to contain an already installed log, but did not: stdout=%s, stderr=%s", outStream, errStream)

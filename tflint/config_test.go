@@ -108,6 +108,7 @@ func Test_LoadConfig(t *testing.T) {
 		opts := []cmp.Option{
 			cmpopts.IgnoreUnexported(RuleConfig{}),
 			cmpopts.IgnoreUnexported(PluginConfig{}),
+			cmpopts.IgnoreUnexported(Config{}),
 			cmpopts.IgnoreFields(PluginConfig{}, "Body"),
 			cmpopts.IgnoreFields(RuleConfig{}, "Body"),
 		}
@@ -626,6 +627,7 @@ func Test_Merge(t *testing.T) {
 		opts := []cmp.Option{
 			cmpopts.IgnoreUnexported(RuleConfig{}),
 			cmpopts.IgnoreUnexported(PluginConfig{}),
+			cmpopts.IgnoreUnexported(Config{}),
 			cmpopts.IgnoreUnexported(hclsyntax.Body{}),
 			cmpopts.IgnoreFields(hclsyntax.Body{}, "Attributes", "Blocks"),
 		}
@@ -881,6 +883,7 @@ func Test_copy(t *testing.T) {
 	opts := []cmp.Option{
 		cmpopts.IgnoreUnexported(RuleConfig{}),
 		cmpopts.IgnoreUnexported(PluginConfig{}),
+		cmpopts.IgnoreUnexported(Config{}),
 	}
 	for _, tc := range cases {
 		ret := cfg.copy()

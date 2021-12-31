@@ -177,12 +177,27 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 	}
 
 	for name, ruleset := range h.plugin.RuleSets {
-		err = ruleset.ApplyConfig(h.config.ToPluginConfig(name))
+		config, err := h.config.ToPluginConfig(name).Unmarshal()
 		if err != nil {
-			return ret, fmt.Errorf("Failed to apply config to plugins: %s", err)
+			return ret, fmt.Errorf("Failed to fetch config schema from plugins")
+		}
+		if err := ruleset.ApplyGlobalConfig(config); err != nil {
+			return ret, fmt.Errorf("Failed to fetch config schema from plugins")
+		}
+		configSchema, err := ruleset.ConfigSchema()
+		if err != nil {
+			return ret, fmt.Errorf("Failed to fetch config schema from plugins")
+		}
+		content, diags := h.config.PluginContent(name, configSchema)
+		if diags.HasErrors() {
+			return ret, fmt.Errorf("Failed to parse plugin config schema")
+		}
+		err = ruleset.ApplyConfig(content, h.config.Sources())
+		if err != nil {
+			return ret, fmt.Errorf("Failed to apply plugin config")
 		}
 		for _, runner := range runners {
-			err = ruleset.Check(tfplugin.NewServer(runner, runners[len(runners)-1], loader.Sources()))
+			err = ruleset.Check(tfplugin.NewGRPCServer(runner, runners[len(runners)-1], loader.Sources()))
 			if err != nil {
 				return ret, fmt.Errorf("Failed to check ruleset: %s", err)
 			}

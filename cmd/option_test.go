@@ -230,6 +230,7 @@ func Test_toConfig(t *testing.T) {
 		eqlopts := []cmp.Option{
 			cmpopts.IgnoreUnexported(tflint.RuleConfig{}),
 			cmpopts.IgnoreUnexported(tflint.PluginConfig{}),
+			cmpopts.IgnoreUnexported(tflint.Config{}),
 		}
 		if !cmp.Equal(tc.Expected, ret, eqlopts...) {
 			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(tc.Expected, ret, eqlopts...))

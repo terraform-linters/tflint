@@ -1,7 +1,6 @@
 package tflint
 
 import (
-	"errors"
 	"os"
 	"path/filepath"
 	"testing"
@@ -1140,47 +1139,6 @@ resource "null_resource" "test" {
 
 		if got != tc.Expected {
 			t.Fatalf("Failed `%s`: expect to get %t, but got %t", tc.Name, tc.Expected, got)
-		}
-	}
-}
-
-func Test_willEvaluateResource_Error(t *testing.T) {
-	cases := []struct {
-		Name    string
-		Content string
-		Error   error
-	}{
-		{
-			Name: "not iterable",
-			Content: `
-resource "null_resource" "test" {
-  for_each = "foo"
-}`,
-			Error: errors.New("The `for_each` value is not iterable in main.tf:3"),
-		},
-		{
-			Name: "eval error",
-			Content: `
-resource "null_resource" "test" {
-  for_each = var.undefined
-}`,
-			Error: &Error{
-				Code:    EvaluationError,
-				Level:   ErrorLevel,
-				Message: "Failed to eval an expression in main.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined\" has not been declared. This variable can be declared with a variable \"undefined\" {} block.",
-			},
-		},
-	}
-
-	for _, tc := range cases {
-		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
-
-		_, err := runner.willEvaluateResource(runner.LookupResourcesByType("null_resource")[0])
-		if err == nil {
-			t.Fatalf("Failed `%s`: expected to get an error, but not", tc.Name)
-		}
-		if err.Error() != tc.Error.Error() {
-			t.Fatalf("Failed `%s`: expected to get '%s', but got '%s'", tc.Name, tc.Error.Error(), err.Error())
 		}
 	}
 }
