@@ -29,7 +29,7 @@ require (
 	github.com/owenrumney/go-sarif v1.1.1
 	github.com/sourcegraph/go-lsp v0.0.0-20200429204803-219e11d77f5d
 	github.com/sourcegraph/jsonrpc2 v0.1.0
-	github.com/spf13/afero v1.7.0
+	github.com/spf13/afero v1.7.1
 	github.com/stretchr/testify v1.7.0
 	github.com/terraform-linters/tflint-plugin-sdk v0.9.1
 	github.com/terraform-linters/tflint-ruleset-aws v0.10.1
@@ -54,7 +54,6 @@ require (
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.0.5 // indirect
-	github.com/googleapis/google-cloud-go-testing v0.0.0-20200911160855-bcd43fbb19e8 // indirect
 	github.com/hashicorp/aws-sdk-go-base v1.0.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-hclog v0.16.2 // indirect
