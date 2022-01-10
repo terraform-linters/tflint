@@ -18,7 +18,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hashicorp/go-plugin v1.4.3
 	github.com/hashicorp/go-uuid v1.0.2
-	github.com/hashicorp/go-version v1.3.0
+	github.com/hashicorp/go-version v1.4.0
 	github.com/hashicorp/hcl/v2 v2.11.1
 	github.com/hashicorp/logutils v1.0.0
 	github.com/hashicorp/terraform-svchost v0.0.0-20200729002733-f050f53b9734
