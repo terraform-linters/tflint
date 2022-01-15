@@ -36,19 +36,14 @@ type JSONPos struct {
 	Column int `json:"column"`
 }
 
-// JSONError is a temporary structure for converting TFLint errors to JSON.
-type JSONError struct {
-	Message string `json:"message"`
-}
-
 // JSONOutput is a temporary structure for converting to JSON.
 type JSONOutput struct {
 	Issues []JSONIssue `json:"issues"`
-	Errors []JSONError `json:"errors"`
+	Errors []JSONIssue `json:"errors"`
 }
 
 func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
-	ret := &JSONOutput{Issues: make([]JSONIssue, len(issues)), Errors: []JSONError{}}
+	ret := &JSONOutput{Issues: make([]JSONIssue, len(issues)), Errors: []JSONIssue{}}
 
 	for idx, issue := range issues.Sort() {
 		ret.Issues[idx] = JSONIssue{
@@ -75,16 +70,34 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 	}
 
 	if tferr != nil {
-		var errs []error
 		if diags, ok := tferr.Cause.(hcl.Diagnostics); ok {
-			errs = diags.Errs()
-		} else {
-			errs = []error{tferr.Cause}
-		}
+			ret.Errors = make([]JSONIssue, len(diags))
+			for idx, diag := range diags {
+				var severity string
+				switch diag.Severity {
+				case hcl.DiagError:
+					severity = "error"
+				case hcl.DiagWarning:
+					severity = "warning"
+				default:
+					panic(fmt.Errorf("Unexpected tflint error severity: %v", diag.Severity))
+				}
 
-		ret.Errors = make([]JSONError, len(errs))
-		for idx, err := range errs {
-			ret.Errors[idx] = JSONError{Message: err.Error()}
+				ret.Errors[idx] = JSONIssue{
+					Rule: JSONRule{
+						Name: diag.Summary,
+						Severity: severity,
+					},
+					Message: diag.Detail,
+					Range: JSONRange{
+						Filename: diag.Subject.Filename,
+						Start: JSONPos{Line: diag.Subject.Start.Line, Column: diag.Subject.Start.Column},
+						End: JSONPos{Line: diag.Subject.End.Line, Column: diag.Subject.End.Column},
+					},
+				}
+			}
+		} else {
+			ret.Errors = []JSONIssue{ JSONIssue { Message: tferr.Error() } }
 		}
 	}
 
