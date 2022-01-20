@@ -105,7 +105,7 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 				}
 			}
 		} else {
-			ret.Errors = []JSONError{JSONError{
+			ret.Errors = []JSONError{{
 				Severity: toSeverity(tflint.ERROR),
 				Message:  tferr.Error(),
 			}}
