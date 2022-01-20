@@ -43,7 +43,7 @@ func Test_jsonPrint(t *testing.T) {
 					},
 				},
 			),
-			Stdout: `{"issues":[],"errors":[{"summary":"summary","message":"detail","severity":"warning","range":{"filename":"filename","start":{"line":1,"column":1},"end":{"line":5,"column":5}}}]}`,
+			Stdout: `{"issues":[],"errors":[{"summary":"summary","message":"detail","severity":"warning","range":{"filename":"filename","start":{"line":1,"column":1},"end":{"line":5,"column":1}}}]}`,
 		},
 	}
 
