@@ -2,6 +2,7 @@ package tflint
 
 import (
 	"fmt"
+
 	hcl "github.com/hashicorp/hcl/v2"
 )
 
