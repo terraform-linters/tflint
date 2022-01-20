@@ -35,11 +35,15 @@ func Test_jsonPrint(t *testing.T) {
 						Severity: hcl.DiagWarning,
 						Summary:  "summary",
 						Detail:   "detail",
-						Subject:  &hcl.Range{Filename: "filename", Start: hcl.Pos{0, 0, 0}, End: hcl.Pos{5, 5, 5}},
+						Subject: &hcl.Range{
+							Filename: "filename",
+							Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+							End:      hcl.Pos{Line: 5, Column: 1, Byte: 4},
+						},
 					},
 				},
 			),
-			Stdout: `{"issues":[],"errors":[{"summary":"summary","message":"detail","severity":"warning","range":{"filename":"filename","start":{"line":0,"column":0},"end":{"line":5,"column":5}}}]}`,
+			Stdout: `{"issues":[],"errors":[{"summary":"summary","message":"detail","severity":"warning","range":{"filename":"filename","start":{"line":1,"column":1},"end":{"line":5,"column":5}}}]}`,
 		},
 	}
 

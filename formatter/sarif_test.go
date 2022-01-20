@@ -204,7 +204,11 @@ func Test_sarifPrint(t *testing.T) {
 						Severity: hcl.DiagWarning,
 						Summary:  "summary",
 						Detail:   "detail",
-						Subject:  &hcl.Range{Filename: "filename", Start: hcl.Pos{1, 1, 0}, End: hcl.Pos{5, 1, 4}},
+						Subject: &hcl.Range{
+							Filename: "filename",
+							Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+							End:      hcl.Pos{Line: 5, Column: 1, Byte: 4},
+						},
 					},
 				},
 			),
