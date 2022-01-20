@@ -25,6 +25,6 @@ func (f *Formatter) compactPrint(issues tflint.Issues, tferr *tflint.Error, sour
 	}
 
 	if tferr != nil {
-		f.printErrors(tferr, sources)
+		f.prettyPrintErrors(tferr, sources)
 	}
 }

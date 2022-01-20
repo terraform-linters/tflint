@@ -4,11 +4,10 @@ import (
 	"fmt"
 
 	"github.com/owenrumney/go-sarif/sarif"
-	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error, sources map[string][]byte) {
+func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error) {
 	report, err := sarif.New(sarif.Version210)
 	if err != nil {
 		panic(err)
@@ -60,18 +59,10 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error, source
 	errRun := sarif.NewRun("tflint-errors", "https://github.com/terraform-linters/tflint")
 	report.AddRun(errRun)
 	if tferr != nil {
-		if diags, ok := tferr.Cause.(hcl.Diagnostics); ok {
-			for _, diag := range diags {
-				var level string
-				switch diag.Severity {
-				case hcl.DiagError:
-					level = "error"
-				case hcl.DiagWarning:
-					level = "warning"
-				default:
-					panic(fmt.Errorf("Unexpected tflint error severity: %v", diag.Severity))
-				}
+		if parseError, ok := tferr.Cause.(tflint.ConfigParseError); ok {
+			diags := *parseError.Detail
 
+			for _, diag := range diags {
 				location := sarif.NewPhysicalLocation().
 					WithArtifactLocation(sarif.NewSimpleArtifactLocation(diag.Subject.Filename)).
 					WithRegion(
@@ -85,7 +76,7 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error, source
 					)
 
 				errRun.AddResult(diag.Summary).
-					WithLevel(level).
+					WithLevel(fromHclSeverity(diag.Severity)).
 					WithLocation(sarif.NewLocationWithPhysicalLocation(location)).
 					WithMessage(sarif.NewTextMessage(diag.Detail))
 			}

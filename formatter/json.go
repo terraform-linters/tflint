@@ -36,14 +36,22 @@ type JSONPos struct {
 	Column int `json:"column"`
 }
 
+// JSONError is a temporary structure for converting errors to JSON.
+type JSONError struct {
+	Summary string `json:"summary,omitempty"`
+	Detail string `json:"detail"`
+	Severity string `json:"severity"`
+	Range JSONRange `json:"range,omitempty"`
+}
+
 // JSONOutput is a temporary structure for converting to JSON.
 type JSONOutput struct {
 	Issues []JSONIssue `json:"issues"`
-	Errors []JSONIssue `json:"errors"`
+	Errors []JSONError `json:"errors"`
 }
 
 func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
-	ret := &JSONOutput{Issues: make([]JSONIssue, len(issues)), Errors: []JSONIssue{}}
+	ret := &JSONOutput{Issues: make([]JSONIssue, len(issues)), Errors: []JSONError{}}
 
 	for idx, issue := range issues.Sort() {
 		ret.Issues[idx] = JSONIssue{
@@ -70,8 +78,10 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 	}
 
 	if tferr != nil {
-		if diags, ok := tferr.Cause.(hcl.Diagnostics); ok {
-			ret.Errors = make([]JSONIssue, len(diags))
+		if parseError, ok := tferr.Cause.(tflint.ConfigParseError); ok {
+			diags := *parseError.Detail
+
+			ret.Errors = make([]JSONError, len(diags))
 			for idx, diag := range diags {
 				var severity string
 				switch diag.Severity {
@@ -83,12 +93,10 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 					panic(fmt.Errorf("Unexpected tflint error severity: %v", diag.Severity))
 				}
 
-				ret.Errors[idx] = JSONIssue{
-					Rule: JSONRule{
-						Name: diag.Summary,
-						Severity: severity,
-					},
-					Message: diag.Detail,
+				ret.Errors[idx] = JSONError{
+					Severity: severity,
+					Summary: diag.Summary,
+					Detail: diag.Detail,
 					Range: JSONRange{
 						Filename: diag.Subject.Filename,
 						Start: JSONPos{Line: diag.Subject.Start.Line, Column: diag.Subject.Start.Column},
@@ -97,7 +105,10 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 				}
 			}
 		} else {
-			ret.Errors = []JSONIssue{ JSONIssue { Message: tferr.Error() } }
+			ret.Errors = []JSONError{ JSONError { 
+				Severity: toSeverity(tflint.ERROR),
+				Detail: tferr.Error(),
+			} }
 		}
 	}
 

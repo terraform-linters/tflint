@@ -1,6 +1,9 @@
 package tflint
 
-import "fmt"
+import (
+	"fmt"
+	hcl "github.com/hashicorp/hcl/v2"
+)
 
 const (
 	// EvaluationError is an error when interpolation failed (unexpected)
@@ -22,7 +25,7 @@ const (
 	// ContextError is pseudo error code for propagating runtime context.
 	ContextError string = "I:Context"
 
-	// FatalLevel is a recorverable error, it cause panic
+	// FatalLevel is an unrecoverable error, it causes a panic
 	FatalLevel string = "Fatal"
 	// ErrorLevel is a user-level error, it display and feedback error information
 	ErrorLevel string = "Error"
@@ -50,6 +53,14 @@ func (e *Error) Error() string {
 	}
 
 	return e.Message
+}
+
+type ConfigParseError struct {
+	Detail *hcl.Diagnostics
+}
+
+func (e ConfigParseError) Error() string {
+	return (*e.Detail).Error()
 }
 
 // NewContextError makes a new context error
