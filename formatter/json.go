@@ -39,7 +39,7 @@ type JSONPos struct {
 // JSONError is a temporary structure for converting errors to JSON.
 type JSONError struct {
 	Summary  string     `json:"summary,omitempty"`
-	Detail   string     `json:"detail"`
+	Message  string     `json:"message"`
 	Severity string     `json:"severity"`
 	Range    *JSONRange `json:"range,omitempty"` // pointer so omitempty works
 }
@@ -96,7 +96,7 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 				ret.Errors[idx] = JSONError{
 					Severity: severity,
 					Summary:  diag.Summary,
-					Detail:   diag.Detail,
+					Message:  diag.Detail,
 					Range: &JSONRange{
 						Filename: diag.Subject.Filename,
 						Start:    JSONPos{Line: diag.Subject.Start.Line, Column: diag.Subject.Start.Column},
@@ -107,7 +107,7 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 		} else {
 			ret.Errors = []JSONError{JSONError{
 				Severity: toSeverity(tflint.ERROR),
-				Detail:   tferr.Error(),
+				Message:  tferr.Error(),
 			}}
 		}
 	}

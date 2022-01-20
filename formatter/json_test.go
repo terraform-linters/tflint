@@ -24,7 +24,7 @@ func Test_jsonPrint(t *testing.T) {
 		{
 			Name:   "error",
 			Error:  tflint.NewContextError("Failed to work", errors.New("I don't feel like working")),
-			Stdout: `{"issues":[],"errors":[{"detail":"Failed to work; I don't feel like working","severity":"error"}]}`,
+			Stdout: `{"issues":[],"errors":[{"message":"Failed to work; I don't feel like working","severity":"error"}]}`,
 		},
 		{
 			Name: "error",
@@ -39,7 +39,7 @@ func Test_jsonPrint(t *testing.T) {
 					},
 				},
 			),
-			Stdout: `{"issues":[],"errors":[{"summary":"summary","detail":"detail","severity":"warning","range":{"filename":"filename","start":{"line":0,"column":0},"end":{"line":5,"column":5}}}]}`,
+			Stdout: `{"issues":[],"errors":[{"summary":"summary","message":"detail","severity":"warning","range":{"filename":"filename","start":{"line":0,"column":0},"end":{"line":5,"column":5}}}]}`,
 		},
 	}
 
