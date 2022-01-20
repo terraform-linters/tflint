@@ -83,7 +83,7 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error) {
 		} else {
 			errRun.AddResult("application_error").
 				WithLevel("error").
-				WithMessage(sarif.NewTextMessage(tferr.Message))
+				WithMessage(sarif.NewTextMessage(tferr.Error()))
 		}
 	}
 

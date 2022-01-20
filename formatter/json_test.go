@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 
+	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -23,16 +24,31 @@ func Test_jsonPrint(t *testing.T) {
 		{
 			Name:   "error",
 			Error:  tflint.NewContextError("Failed to work", errors.New("I don't feel like working")),
-			Stdout: `{"issues":[],"errors":[{"message":"I don't feel like working"}]}`,
+			Stdout: `{"issues":[],"errors":[{"detail":"Failed to work; I don't feel like working","severity":"error"}]}`,
+		},
+		{
+			Name: "error",
+			Error: tflint.NewContextError(
+				"babel fish confused",
+				hcl.Diagnostics{
+					&hcl.Diagnostic{
+						Severity: hcl.DiagWarning,
+						Summary:  "summary",
+						Detail:   "detail",
+						Subject:  &hcl.Range{Filename: "filename", Start: hcl.Pos{0, 0, 0}, End: hcl.Pos{5, 5, 5}},
+					},
+				},
+			),
+			Stdout: `{"issues":[],"errors":[{"summary":"summary","detail":"detail","severity":"warning","range":{"filename":"filename","start":{"line":0,"column":0},"end":{"line":5,"column":5}}}]}`,
 		},
 	}
 
 	for _, tc := range cases {
 		stdout := &bytes.Buffer{}
 		stderr := &bytes.Buffer{}
-		formatter := &Formatter{Stdout: stdout, Stderr: stderr}
+		formatter := &Formatter{Stdout: stdout, Stderr: stderr, Format: "json"}
 
-		formatter.jsonPrint(tc.Issues, tc.Error)
+		formatter.Print(tc.Issues, tc.Error, map[string][]byte{})
 
 		if stdout.String() != tc.Stdout {
 			t.Fatalf("Failed %s test: expected=%s, stdout=%s", tc.Name, tc.Stdout, stdout.String())
