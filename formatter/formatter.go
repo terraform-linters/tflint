@@ -31,7 +31,7 @@ func (f *Formatter) Print(issues tflint.Issues, tferr *tflint.Error, sources map
 	case "json":
 		f.jsonPrint(issues, tferr)
 	case "checkstyle":
-		f.checkstylePrint(issues, tferr)
+		f.checkstylePrint(issues, tferr, sources)
 	case "junit":
 		f.junitPrint(issues, tferr, sources)
 	case "compact":
