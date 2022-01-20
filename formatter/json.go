@@ -38,10 +38,10 @@ type JSONPos struct {
 
 // JSONError is a temporary structure for converting errors to JSON.
 type JSONError struct {
-	Summary string `json:"summary,omitempty"`
-	Detail string `json:"detail"`
-	Severity string `json:"severity"`
-	Range JSONRange `json:"range,omitempty"`
+	Summary  string    `json:"summary,omitempty"`
+	Detail   string    `json:"detail"`
+	Severity string    `json:"severity"`
+	Range    JSONRange `json:"range,omitempty"`
 }
 
 // JSONOutput is a temporary structure for converting to JSON.
@@ -95,20 +95,20 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 
 				ret.Errors[idx] = JSONError{
 					Severity: severity,
-					Summary: diag.Summary,
-					Detail: diag.Detail,
+					Summary:  diag.Summary,
+					Detail:   diag.Detail,
 					Range: JSONRange{
 						Filename: diag.Subject.Filename,
-						Start: JSONPos{Line: diag.Subject.Start.Line, Column: diag.Subject.Start.Column},
-						End: JSONPos{Line: diag.Subject.End.Line, Column: diag.Subject.End.Column},
+						Start:    JSONPos{Line: diag.Subject.Start.Line, Column: diag.Subject.Start.Column},
+						End:      JSONPos{Line: diag.Subject.End.Line, Column: diag.Subject.End.Column},
 					},
 				}
 			}
 		} else {
-			ret.Errors = []JSONError{ JSONError { 
+			ret.Errors = []JSONError{JSONError{
 				Severity: toSeverity(tflint.ERROR),
-				Detail: tferr.Error(),
-			} }
+				Detail:   tferr.Error(),
+			}}
 		}
 	}
 
