@@ -57,11 +57,11 @@ func (e *Error) Error() string {
 }
 
 type ConfigParseError struct {
-	Detail *hcl.Diagnostics
+	Detail hcl.Diagnostics
 }
 
 func (e ConfigParseError) Error() string {
-	return (*e.Detail).Error()
+	return e.Detail.Error()
 }
 
 // NewContextError makes a new context error

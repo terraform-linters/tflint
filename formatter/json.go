@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -79,22 +78,10 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 
 	if tferr != nil {
 		if parseError, ok := tferr.Cause.(tflint.ConfigParseError); ok {
-			diags := *parseError.Detail
-
-			ret.Errors = make([]JSONError, len(diags))
-			for idx, diag := range diags {
-				var severity string
-				switch diag.Severity {
-				case hcl.DiagError:
-					severity = "error"
-				case hcl.DiagWarning:
-					severity = "warning"
-				default:
-					panic(fmt.Errorf("Unexpected tflint error severity: %v", diag.Severity))
-				}
-
+			ret.Errors = make([]JSONError, len(parseError.Detail))
+			for idx, diag := range parseError.Detail {
 				ret.Errors[idx] = JSONError{
-					Severity: severity,
+					Severity: fromHclSeverity(diag.Severity),
 					Summary:  diag.Summary,
 					Message:  diag.Detail,
 					Range: &JSONRange{

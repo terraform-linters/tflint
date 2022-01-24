@@ -60,9 +60,7 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error) {
 	report.AddRun(errRun)
 	if tferr != nil {
 		if parseError, ok := tferr.Cause.(tflint.ConfigParseError); ok {
-			diags := *parseError.Detail
-
-			for _, diag := range diags {
+			for _, diag := range parseError.Detail {
 				location := sarif.NewPhysicalLocation().
 					WithArtifactLocation(sarif.NewSimpleArtifactLocation(diag.Subject.Filename)).
 					WithRegion(
