@@ -1,13 +1,15 @@
 package formatter
 
 import (
+	"errors"
 	"fmt"
 
+	"github.com/hashicorp/hcl/v2"
 	"github.com/owenrumney/go-sarif/sarif"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error, sources map[string][]byte) {
+func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error) {
 	report, err := sarif.New(sarif.Version210)
 	if err != nil {
 		panic(err)
@@ -56,8 +58,38 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error, source
 			WithMessage(sarif.NewTextMessage(issue.Message))
 	}
 
-	err = report.PrettyWrite(f.Stdout)
-	if err != nil {
-		panic(err)
+	errRun := sarif.NewRun("tflint-errors", "https://github.com/terraform-linters/tflint")
+	report.AddRun(errRun)
+	if tferr != nil {
+		var diags hcl.Diagnostics
+		if errors.As(tferr, &diags) {
+			for _, diag := range diags {
+				location := sarif.NewPhysicalLocation().
+					WithArtifactLocation(sarif.NewSimpleArtifactLocation(diag.Subject.Filename)).
+					WithRegion(
+						sarif.NewRegion().
+							WithByteOffset(diag.Subject.Start.Byte).
+							WithByteLength(diag.Subject.End.Byte - diag.Subject.Start.Byte).
+							WithStartLine(diag.Subject.Start.Line).
+							WithStartColumn(diag.Subject.Start.Column).
+							WithEndLine(diag.Subject.End.Line).
+							WithEndColumn(diag.Subject.End.Column),
+					)
+
+				errRun.AddResult(diag.Summary).
+					WithLevel(fromHclSeverity(diag.Severity)).
+					WithLocation(sarif.NewLocationWithPhysicalLocation(location)).
+					WithMessage(sarif.NewTextMessage(diag.Detail))
+			}
+		} else {
+			errRun.AddResult("application_error").
+				WithLevel("error").
+				WithMessage(sarif.NewTextMessage(tferr.Error()))
+		}
+	}
+
+	stdoutErr := report.PrettyWrite(f.Stdout)
+	if stdoutErr != nil {
+		panic(stdoutErr)
 	}
 }

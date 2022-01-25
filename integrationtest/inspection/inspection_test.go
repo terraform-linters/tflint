@@ -97,6 +97,11 @@ func TestIntegration(t *testing.T) {
 			Command: "./tflint --format json",
 			Dir:     "heredoc",
 		},
+		{
+			Name:    "config parse error with HCL metadata",
+			Command: "./tflint --format json",
+			Dir:     "bad-config",
+		},
 	}
 
 	dir, _ := os.Getwd()

@@ -49,6 +49,6 @@ func (f *Formatter) junitPrint(issues tflint.Issues, tferr *tflint.Error, source
 	fmt.Fprint(f.Stdout, string(out))
 
 	if tferr != nil {
-		f.printErrors(tferr, sources)
+		f.prettyPrintErrors(tferr, sources)
 	}
 }

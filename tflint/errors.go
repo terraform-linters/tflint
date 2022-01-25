@@ -1,6 +1,9 @@
 package tflint
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 const (
 	// EvaluationError is an error when interpolation failed (unexpected)
@@ -22,7 +25,7 @@ const (
 	// ContextError is pseudo error code for propagating runtime context.
 	ContextError string = "I:Context"
 
-	// FatalLevel is a recorverable error, it cause panic
+	// FatalLevel is an unrecoverable error, it causes a panic
 	FatalLevel string = "Fatal"
 	// ErrorLevel is a user-level error, it display and feedback error information
 	ErrorLevel string = "Error"
@@ -50,6 +53,11 @@ func (e *Error) Error() string {
 	}
 
 	return e.Message
+}
+
+// As allows the error to be used with errors.As, detecting whether the underlying Cause has an error of the given type in its chain.
+func (e *Error) As(target interface{}) bool {
+	return errors.As(e.Cause, target)
 }
 
 // NewContextError makes a new context error

@@ -2,6 +2,7 @@ package formatter
 
 import (
 	"bytes"
+	"errors"
 	"testing"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -28,6 +29,15 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint",
+          "informationUri": "https://github.com/terraform-linters/tflint"
+        }
+      },
+      "results": []
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint-errors",
           "informationUri": "https://github.com/terraform-linters/tflint"
         }
       },
@@ -93,6 +103,15 @@ func Test_sarifPrint(t *testing.T) {
           ]
         }
       ]
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint-errors",
+          "informationUri": "https://github.com/terraform-linters/tflint"
+        }
+      },
+      "results": []
     }
   ]
 }`,
@@ -110,7 +129,7 @@ func Test_sarifPrint(t *testing.T) {
 					},
 				},
 			},
-			Error: &tflint.Error{},
+			Error: tflint.NewContextError("Failed to work", errors.New("I don't feel like working")),
 			Stdout: `{
   "version": "2.1.0",
   "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
@@ -155,6 +174,90 @@ func Test_sarifPrint(t *testing.T) {
           ]
         }
       ]
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint-errors",
+          "informationUri": "https://github.com/terraform-linters/tflint"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "application_error",
+          "level": "error",
+          "message": {
+            "text": "Failed to work; I don't feel like working"
+          }
+        }
+      ]
+    }
+  ]
+}`,
+		},
+		{
+			Name: "HCL diagnostics are surfaced as tflint-errors",
+			Error: tflint.NewContextError(
+				"babel fish confused",
+				hcl.Diagnostics{
+					&hcl.Diagnostic{
+						Severity: hcl.DiagWarning,
+						Summary:  "summary",
+						Detail:   "detail",
+						Subject: &hcl.Range{
+							Filename: "filename",
+							Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+							End:      hcl.Pos{Line: 5, Column: 1, Byte: 4},
+						},
+					},
+				},
+			),
+			Stdout: `{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint",
+          "informationUri": "https://github.com/terraform-linters/tflint"
+        }
+      },
+      "results": []
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint-errors",
+          "informationUri": "https://github.com/terraform-linters/tflint"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "summary",
+          "level": "warning",
+          "message": {
+            "text": "detail"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "filename"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 1,
+                  "byteOffset": 0,
+                  "byteLength": 4
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }`,
@@ -164,9 +267,9 @@ func Test_sarifPrint(t *testing.T) {
 	for _, tc := range cases {
 		stdout := &bytes.Buffer{}
 		stderr := &bytes.Buffer{}
-		formatter := &Formatter{Stdout: stdout, Stderr: stderr}
+		formatter := &Formatter{Stdout: stdout, Stderr: stderr, Format: "sarif"}
 
-		formatter.sarifPrint(tc.Issues, tc.Error, map[string][]byte{})
+		formatter.Print(tc.Issues, tc.Error, map[string][]byte{})
 
 		if stdout.String() != tc.Stdout {
 			t.Fatalf("Failed %s test: expected=%s, stdout=%s", tc.Name, tc.Stdout, stdout.String())

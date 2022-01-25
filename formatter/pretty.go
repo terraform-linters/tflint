@@ -2,6 +2,7 @@ package formatter
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"log"
 	"strings"
@@ -23,16 +24,16 @@ func (f *Formatter) prettyPrint(issues tflint.Issues, err *tflint.Error, sources
 		fmt.Fprintf(f.Stdout, "%d issue(s) found:\n\n", len(issues))
 
 		for _, issue := range issues.Sort() {
-			f.printIssueWithSource(issue, sources)
+			f.prettyPrintIssueWithSource(issue, sources)
 		}
 	}
 
 	if err != nil {
-		f.printErrors(err, sources)
+		f.prettyPrintErrors(err, sources)
 	}
 }
 
-func (f *Formatter) printIssueWithSource(issue *tflint.Issue, sources map[string][]byte) {
+func (f *Formatter) prettyPrintIssueWithSource(issue *tflint.Issue, sources map[string][]byte) {
 	fmt.Fprintf(
 		f.Stdout,
 		"%s: %s (%s)\n\n",
@@ -86,8 +87,9 @@ func (f *Formatter) printIssueWithSource(issue *tflint.Issue, sources map[string
 	fmt.Fprint(f.Stdout, "\n")
 }
 
-func (f *Formatter) printErrors(err *tflint.Error, sources map[string][]byte) {
-	if diags, ok := err.Cause.(hcl.Diagnostics); ok {
+func (f *Formatter) prettyPrintErrors(err *tflint.Error, sources map[string][]byte) {
+	var diags hcl.Diagnostics
+	if errors.As(err, &diags) {
 		fmt.Fprintf(f.Stderr, "%s. %d error(s) occurred:\n\n", err.Message, len(diags.Errs()))
 
 		writer := hcl.NewDiagnosticTextWriter(f.Stderr, parseSources(sources), 0, !f.NoColor)

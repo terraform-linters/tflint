@@ -1,0 +1,15 @@
+{
+  "issues": [],
+  "errors": [
+    {
+      "summary": "Invalid quoted type constraints",
+      "message": "Terraform 0.11 and earlier required type constraints to be given in quotes, but that form is now deprecated and will be removed in a future version of Terraform. Remove the quotes around \"map\" and write map(string) instead to explicitly indicate that the map elements are strings.",
+      "severity": "error",
+      "range": {
+        "filename": "template.tf",
+        "start": { "line": 2, "column": 10 },
+        "end": { "line": 2, "column": 15 }
+      }
+    }
+  ]
+}

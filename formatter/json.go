@@ -2,9 +2,10 @@ package formatter
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
-	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -36,9 +37,12 @@ type JSONPos struct {
 	Column int `json:"column"`
 }
 
-// JSONError is a temporary structure for converting TFLint errors to JSON.
+// JSONError is a temporary structure for converting errors to JSON.
 type JSONError struct {
-	Message string `json:"message"`
+	Summary  string     `json:"summary,omitempty"`
+	Message  string     `json:"message"`
+	Severity string     `json:"severity"`
+	Range    *JSONRange `json:"range,omitempty"` // pointer so omitempty works
 }
 
 // JSONOutput is a temporary structure for converting to JSON.
@@ -75,16 +79,26 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 	}
 
 	if tferr != nil {
-		var errs []error
-		if diags, ok := tferr.Cause.(hcl.Diagnostics); ok {
-			errs = diags.Errs()
+		var diags hcl.Diagnostics
+		if errors.As(tferr, &diags) {
+			ret.Errors = make([]JSONError, len(diags))
+			for idx, diag := range diags {
+				ret.Errors[idx] = JSONError{
+					Severity: fromHclSeverity(diag.Severity),
+					Summary:  diag.Summary,
+					Message:  diag.Detail,
+					Range: &JSONRange{
+						Filename: diag.Subject.Filename,
+						Start:    JSONPos{Line: diag.Subject.Start.Line, Column: diag.Subject.Start.Column},
+						End:      JSONPos{Line: diag.Subject.End.Line, Column: diag.Subject.End.Column},
+					},
+				}
+			}
 		} else {
-			errs = []error{tferr.Cause}
-		}
-
-		ret.Errors = make([]JSONError, len(errs))
-		for idx, err := range errs {
-			ret.Errors[idx] = JSONError{Message: err.Error()}
+			ret.Errors = []JSONError{{
+				Severity: toSeverity(tflint.ERROR),
+				Message:  tferr.Error(),
+			}}
 		}
 	}
 
