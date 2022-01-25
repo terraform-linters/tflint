@@ -21,7 +21,7 @@ func (f *Formatter) Print(issues tflint.Issues, tferr *tflint.Error, sources map
 
 	if tferr != nil {
 		if diags, ok := tferr.Cause.(hcl.Diagnostics); ok {
-			tferr.Cause = tflint.ConfigParseError{Detail: diags}
+			tferr.Cause = tflint.TerraformConfigParseError{Diags: diags}
 		}
 	}
 

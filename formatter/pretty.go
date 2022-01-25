@@ -87,11 +87,11 @@ func (f *Formatter) prettyPrintIssueWithSource(issue *tflint.Issue, sources map[
 }
 
 func (f *Formatter) prettyPrintErrors(err *tflint.Error, sources map[string][]byte) {
-	if parseError, ok := err.Cause.(tflint.ConfigParseError); ok {
-		fmt.Fprintf(f.Stderr, "%s. %d error(s) occurred:\n\n", err.Message, len(parseError.Detail.Errs()))
+	if parseError, ok := err.Cause.(tflint.TerraformConfigParseError); ok {
+		fmt.Fprintf(f.Stderr, "%s. %d error(s) occurred:\n\n", err.Message, len(parseError.Diags.Errs()))
 
 		writer := hcl.NewDiagnosticTextWriter(f.Stderr, parseSources(sources), 0, !f.NoColor)
-		_ = writer.WriteDiagnostics(parseError.Detail)
+		_ = writer.WriteDiagnostics(parseError.Diags)
 	} else {
 		fmt.Fprintf(f.Stderr, "%s. An error occurred:\n\n", err.Message)
 		fmt.Fprintf(f.Stderr, "%s: %s\n\n", colorError("Error"), err.Cause.Error())

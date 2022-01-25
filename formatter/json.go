@@ -77,9 +77,9 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 	}
 
 	if tferr != nil {
-		if parseError, ok := tferr.Cause.(tflint.ConfigParseError); ok {
-			ret.Errors = make([]JSONError, len(parseError.Detail))
-			for idx, diag := range parseError.Detail {
+		if parseError, ok := tferr.Cause.(tflint.TerraformConfigParseError); ok {
+			ret.Errors = make([]JSONError, len(parseError.Diags))
+			for idx, diag := range parseError.Diags {
 				ret.Errors[idx] = JSONError{
 					Severity: fromHclSeverity(diag.Severity),
 					Summary:  diag.Summary,

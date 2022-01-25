@@ -56,12 +56,13 @@ func (e *Error) Error() string {
 	return e.Message
 }
 
-type ConfigParseError struct {
-	Detail hcl.Diagnostics
+// TerraformConfigParseError is an error encountered by TFLint when parsing the user's Terraform configuration.
+type TerraformConfigParseError struct {
+	Diags hcl.Diagnostics
 }
 
-func (e ConfigParseError) Error() string {
-	return e.Detail.Error()
+func (e TerraformConfigParseError) Error() string {
+	return e.Diags.Error()
 }
 
 // NewContextError makes a new context error

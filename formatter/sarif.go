@@ -59,8 +59,8 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error) {
 	errRun := sarif.NewRun("tflint-errors", "https://github.com/terraform-linters/tflint")
 	report.AddRun(errRun)
 	if tferr != nil {
-		if parseError, ok := tferr.Cause.(tflint.ConfigParseError); ok {
-			for _, diag := range parseError.Detail {
+		if parseError, ok := tferr.Cause.(tflint.TerraformConfigParseError); ok {
+			for _, diag := range parseError.Diags {
 				location := sarif.NewPhysicalLocation().
 					WithArtifactLocation(sarif.NewSimpleArtifactLocation(diag.Subject.Filename)).
 					WithRegion(
