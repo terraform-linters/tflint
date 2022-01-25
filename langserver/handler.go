@@ -101,7 +101,7 @@ func (h *handler) handle(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2
 
 	switch req.Method {
 	case "initialize":
-		return initialize(ctx, conn, req)
+		return initialize()
 	case "initialized":
 		return nil, nil
 	case "shutdown":
@@ -116,7 +116,7 @@ func (h *handler) handle(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2
 	case "textDocument/didChange":
 		return h.textDocumentDidChange(ctx, conn, req)
 	case "workspace/didChangeWatchedFiles":
-		return h.workspaceDidChangeWatchedFiles(ctx, conn, req)
+		return h.workspaceDidChangeWatchedFiles(ctx, conn)
 	}
 
 	return nil, &jsonrpc2.Error{

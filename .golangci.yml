@@ -6,6 +6,10 @@ linters:
   enable:
     - gci
     - gofmt
+    - misspell
+    - revive
+    - unconvert
+    - unparam
 issues:
   exclude-rules:
     - path: terraform/

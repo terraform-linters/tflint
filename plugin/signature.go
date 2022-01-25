@@ -61,7 +61,7 @@ func (c *SignatureChecker) Verify(target, signature io.Reader) error {
 
 // builtinSigningKey is the default signing key that applies only to plugins under the terraform-linters organization.
 // This makes it possible for the plugins we distribute to be used safely without having to set signing key.
-var builtinSigningKey string = `
+var builtinSigningKey = `
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
 mQINBFzpPOMBEADOat4P4z0jvXaYdhfy+UcGivb2XYgGSPQycTgeW1YuGLYdfrwz

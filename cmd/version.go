@@ -31,7 +31,7 @@ func (cli *CLI) printVersion(opts Options) int {
 		return ExitCodeOK
 	}
 
-	runners, appErr := cli.setupRunners(opts, cfg, ".")
+	runners, appErr := cli.setupRunners(cfg, ".")
 	if appErr != nil {
 		log.Printf("[ERROR] Failed to setup runners: %s", appErr)
 		return ExitCodeOK
