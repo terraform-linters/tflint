@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -77,9 +78,9 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 	}
 
 	if tferr != nil {
-		if parseError, ok := tferr.Cause.(tflint.TerraformConfigParseError); ok {
-			ret.Errors = make([]JSONError, len(parseError.Diags))
-			for idx, diag := range parseError.Diags {
+		if diags, ok := tferr.Cause.(hcl.Diagnostics); ok {
+			ret.Errors = make([]JSONError, len(diags))
+			for idx, diag := range diags {
 				ret.Errors[idx] = JSONError{
 					Severity: fromHclSeverity(diag.Severity),
 					Summary:  diag.Summary,

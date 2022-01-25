@@ -2,8 +2,6 @@ package tflint
 
 import (
 	"fmt"
-
-	hcl "github.com/hashicorp/hcl/v2"
 )
 
 const (
@@ -54,15 +52,6 @@ func (e *Error) Error() string {
 	}
 
 	return e.Message
-}
-
-// TerraformConfigParseError is an error encountered by TFLint when parsing the user's Terraform configuration.
-type TerraformConfigParseError struct {
-	Diags hcl.Diagnostics
-}
-
-func (e TerraformConfigParseError) Error() string {
-	return e.Diags.Error()
 }
 
 // NewContextError makes a new context error

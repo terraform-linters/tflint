@@ -18,13 +18,6 @@ type Formatter struct {
 
 // Print outputs the given issues and errors according to configured format
 func (f *Formatter) Print(issues tflint.Issues, tferr *tflint.Error, sources map[string][]byte) {
-
-	if tferr != nil {
-		if diags, ok := tferr.Cause.(hcl.Diagnostics); ok {
-			tferr.Cause = tflint.TerraformConfigParseError{Diags: diags}
-		}
-	}
-
 	switch f.Format {
 	case "default":
 		f.prettyPrint(issues, tferr, sources)
