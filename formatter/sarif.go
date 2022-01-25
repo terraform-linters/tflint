@@ -1,6 +1,7 @@
 package formatter
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/hashicorp/hcl/v2"
@@ -60,7 +61,8 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error) {
 	errRun := sarif.NewRun("tflint-errors", "https://github.com/terraform-linters/tflint")
 	report.AddRun(errRun)
 	if tferr != nil {
-		if diags, ok := tferr.Cause.(hcl.Diagnostics); ok {
+		var diags hcl.Diagnostics
+		if errors.As(tferr, &diags) {
 			for _, diag := range diags {
 				location := sarif.NewPhysicalLocation().
 					WithArtifactLocation(sarif.NewSimpleArtifactLocation(diag.Subject.Filename)).

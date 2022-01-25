@@ -1,6 +1,7 @@
 package tflint
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -52,6 +53,11 @@ func (e *Error) Error() string {
 	}
 
 	return e.Message
+}
+
+// As allows the error to be used with errors.As, detecting whether the underlying Cause has an error of the given type in its chain.
+func (e *Error) As(target interface{}) bool {
+	return errors.As(e.Cause, target)
 }
 
 // NewContextError makes a new context error

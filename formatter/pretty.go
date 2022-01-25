@@ -2,6 +2,7 @@ package formatter
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"log"
 	"strings"
@@ -87,7 +88,8 @@ func (f *Formatter) prettyPrintIssueWithSource(issue *tflint.Issue, sources map[
 }
 
 func (f *Formatter) prettyPrintErrors(err *tflint.Error, sources map[string][]byte) {
-	if diags, ok := err.Cause.(hcl.Diagnostics); ok {
+	var diags hcl.Diagnostics
+	if errors.As(err, &diags) {
 		fmt.Fprintf(f.Stderr, "%s. %d error(s) occurred:\n\n", err.Message, len(diags.Errs()))
 
 		writer := hcl.NewDiagnosticTextWriter(f.Stderr, parseSources(sources), 0, !f.NoColor)
