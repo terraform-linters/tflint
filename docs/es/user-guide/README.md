@@ -10,4 +10,4 @@ Esta guía describe varias de las características de TFLINT para los usuarios f
 - [Inspección de módulos](module-inspection.md)
 - [Anotaciones](annotations.md)
 - [Compatibilidad con Terraform](compatibility.md)
-- [Integración con los editores](editor-integration.md)
+- [Integración con los editores de código](editor-integration.md)
