@@ -4,7 +4,7 @@ Esta guía describe varias de las características de TFLINT para los usuarios f
 
 ## Tabla de contenido
 
-- [Introducción](../../README.md) (README)
+- [Introducción](../README.md) (README)
 - [Configurar TFLint](config.md)
 - [Configurar los plugins](plugins.md)
 - [Inspección de módulos](module-inspection.md)
