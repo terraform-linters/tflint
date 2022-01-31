@@ -32,13 +32,13 @@ require (
 	github.com/spf13/afero v1.8.0
 	github.com/stretchr/testify v1.7.0
 	github.com/terraform-linters/tflint-plugin-sdk v0.9.1
-	github.com/terraform-linters/tflint-ruleset-aws v0.11.0
+	github.com/terraform-linters/tflint-ruleset-aws v0.12.0
 	github.com/xeipuuv/gojsonschema v1.2.0
 	github.com/zclconf/go-cty v1.10.0
 	github.com/zclconf/go-cty-yaml v1.0.2
 	golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
-	golang.org/x/net v0.0.0-20211209124913-491a49abca63
+	golang.org/x/net v0.0.0-20211216030914-fe4d6282115f
 	golang.org/x/oauth2 v0.0.0-20210819190943-2bc19b11175f
 	golang.org/x/text v0.3.7
 )
@@ -47,7 +47,7 @@ require (
 	cloud.google.com/go v0.75.0 // indirect
 	cloud.google.com/go/storage v1.14.0 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
-	github.com/aws/aws-sdk-go v1.42.25 // indirect
+	github.com/aws/aws-sdk-go v1.42.43 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
