@@ -29,7 +29,7 @@ require (
 	github.com/owenrumney/go-sarif v1.1.1
 	github.com/sourcegraph/go-lsp v0.0.0-20200429204803-219e11d77f5d
 	github.com/sourcegraph/jsonrpc2 v0.1.0
-	github.com/spf13/afero v1.8.0
+	github.com/spf13/afero v1.8.1
 	github.com/stretchr/testify v1.7.0
 	github.com/terraform-linters/tflint-plugin-sdk v0.9.1
 	github.com/terraform-linters/tflint-ruleset-aws v0.12.0
