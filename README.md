@@ -48,7 +48,7 @@ Instead of installing directly, you can use the Docker images:
 Example:
 
 ```console
-docker run --rm -v $(pwd):/data -t ghcr.io/terraform-linters/tflint
+docker run --rm  -v $HOME/.tflint.d:/root/.tflint.d -v $(pwd):/data -t ghcr.io/terraform-linters/tflint
 ```
 
 ### GitHub Actions
