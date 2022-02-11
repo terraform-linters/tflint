@@ -18,6 +18,7 @@ type Options struct {
 	IgnoreModules  []string `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE"`
 	EnableRules    []string `long:"enable-rule" description:"Enable rules from the command line" value-name:"RULE_NAME"`
 	DisableRules   []string `long:"disable-rule" description:"Disable rules from the command line" value-name:"RULE_NAME"`
+	EnableAllRules bool     `long:"enable-all" description:"Enable all rules" value-name:"ENABLE_ALL"`
 	Only           []string `long:"only" description:"Enable only this rule, disabling all other defaults. Can be specified multiple times" value-name:"RULE_NAME"`
 	EnablePlugins  []string `long:"enable-plugin" description:"Enable plugins from the command line" value-name:"PLUGIN_NAME"`
 	Varfiles       []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
@@ -104,6 +105,7 @@ func (opts *Options) toConfig() *tflint.Config {
 		Varfiles:          varfiles,
 		Variables:         opts.Variables,
 		DisabledByDefault: len(opts.Only) > 0,
+		EnableAllRules:    opts.EnableAllRules,
 		Rules:             rules,
 		Plugins:           plugins,
 	}

@@ -52,6 +52,7 @@ type Config struct {
 	Varfiles          []string
 	Variables         []string
 	DisabledByDefault bool
+	EnableAllRules    bool
 	PluginDir         string
 	Rules             map[string]*RuleConfig
 	Plugins           map[string]*PluginConfig
@@ -152,6 +153,9 @@ func (c *Config) Merge(other *Config) *Config {
 	}
 	if other.DisabledByDefault {
 		ret.DisabledByDefault = true
+	}
+	if other.EnableAllRules {
+		ret.EnableAllRules = true
 	}
 	if other.PluginDir != "" {
 		ret.PluginDir = other.PluginDir

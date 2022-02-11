@@ -70,6 +70,9 @@ func NewRules(c *tflint.Config) []Rule {
 
 	for _, rule := range DefaultRules {
 		enabled := rule.Enabled()
+		if c.EnableAllRules {
+			enabled = true
+		}
 		if r := c.Rules[rule.Name()]; r != nil {
 			if r.Enabled {
 				log.Printf("[DEBUG] `%s` is enabled", rule.Name())
