@@ -205,17 +205,16 @@ type RuleSet interface {
 func (c *Config) ValidateRules(rulesets ...RuleSet) error {
 	rulesMap := map[string]string{}
 	for _, ruleset := range rulesets {
+		rulesetName, err := ruleset.RuleSetName()
+		if err != nil {
+			return err
+		}
 		ruleNames, err := ruleset.RuleNames()
 		if err != nil {
 			return err
 		}
 
 		for _, rule := range ruleNames {
-			rulesetName, err := ruleset.RuleSetName()
-			if err != nil {
-				return err
-			}
-
 			if existsName, exists := rulesMap[rule]; exists {
 				return fmt.Errorf("`%s` is duplicated in %s and %s", rule, existsName, rulesetName)
 			}
