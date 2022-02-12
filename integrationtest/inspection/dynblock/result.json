@@ -1,0 +1,105 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`lifecycle_rule` block found",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 2,
+          "column": 3
+        },
+        "end": {
+          "line": 2,
+          "column": 17
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`enabled` attribute found",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 3,
+          "column": 15
+        },
+        "end": {
+          "line": 3,
+          "column": 20
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`transition` block found",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 4,
+          "column": 5
+        },
+        "end": {
+          "line": 4,
+          "column": 15
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`lifecycle_rule` block found",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 15,
+          "column": 5
+        },
+        "end": {
+          "line": 15,
+          "column": 12
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`enabled` attribute found",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 16,
+          "column": 17
+        },
+        "end": {
+          "line": 16,
+          "column": 37
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}

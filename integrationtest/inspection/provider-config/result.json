@@ -1,0 +1,25 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "deep_check=true, token=SECRET_TOKEN, zone=asia, annotation=activate/beta1",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 13,
+          "column": 19
+        },
+        "end": {
+          "line": 13,
+          "column": 29
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}

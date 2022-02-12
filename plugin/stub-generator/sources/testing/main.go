@@ -14,6 +14,7 @@ func main() {
 			Rules: []tflint.Rule{
 				rules.NewAwsInstanceExampleTypeRule(),
 				rules.NewRequredConfigRule(),
+				rules.NewAwsS3BucketExampleLifecycleRuleRule(),
 			},
 		},
 	})
