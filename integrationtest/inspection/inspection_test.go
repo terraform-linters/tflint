@@ -102,6 +102,21 @@ func TestIntegration(t *testing.T) {
 			Command: "./tflint --format json",
 			Dir:     "bad-config",
 		},
+		{
+			Name:    "conditional resources",
+			Command: "./tflint --format json",
+			Dir:     "conditional",
+		},
+		{
+			Name:    "dynamic blocks",
+			Command: "./tflint --format json",
+			Dir:     "dynblock",
+		},
+		{
+			Name:    "provider config",
+			Command: "./tflint --format json",
+			Dir:     "provider-config",
+		},
 	}
 
 	dir, _ := os.Getwd()

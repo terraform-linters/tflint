@@ -35,6 +35,7 @@ func main() {
 	// E2E testing
 	execCommand("mkdir", "-p", pluginDir)
 	execCommand("go", "build", "-o", pluginDir+"/tflint-ruleset-testing"+fileExt(), "./sources/testing/main.go")
+	execCommand("go", "build", "-o", pluginDir+"/tflint-ruleset-customrulesettesting"+fileExt(), "./sources/customrulesettesting/main.go")
 	execCommand("go", "build", "-o", "../../integrationtest/inspection/plugin/.tflint.d/plugins/tflint-ruleset-example"+fileExt(), "./sources/example/main.go")
 }
 
