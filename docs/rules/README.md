@@ -1,6 +1,8 @@
 # Rules
 
-Rules are usually provided by ruleset plugins, but the rules for the Terraform Language are built into the TFLint binary. Below is a list of available rules.
+Rules are usually provided by ruleset plugins, but the rules for the Terraform Language are built into the TFLint binary. Terraform language rules implement recommendations from the [Terraform language documentation](https://www.terraform.io/language). If you want to enforce additional usage and style conventions in your configuration, you can author your own ruleset plugin.
+
+Below is a list of available rules.
 
 |Rule|Description|Enabled|
 | --- | --- | --- |
