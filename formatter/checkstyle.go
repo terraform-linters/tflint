@@ -26,7 +26,7 @@ type checkstyle struct {
 	Files   []*checkstyleFile `xml:"file"`
 }
 
-func (f *Formatter) checkstylePrint(issues tflint.Issues, tferr *tflint.Error, sources map[string][]byte) {
+func (f *Formatter) checkstylePrint(issues tflint.Issues, err error, sources map[string][]byte) {
 	files := map[string]*checkstyleFile{}
 	for _, issue := range issues {
 		cherr := &checkstyleError{
@@ -60,7 +60,7 @@ func (f *Formatter) checkstylePrint(issues tflint.Issues, tferr *tflint.Error, s
 	fmt.Fprint(f.Stdout, xml.Header)
 	fmt.Fprint(f.Stdout, string(out))
 
-	if tferr != nil {
-		f.prettyPrintErrors(tferr, sources)
+	if err != nil {
+		f.prettyPrintErrors(err, sources)
 	}
 }

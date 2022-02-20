@@ -9,6 +9,7 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/zclconf/go-cty/cty"
@@ -246,12 +247,13 @@ func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
 
 		_, err := NewModuleRunners(runner)
 
-		expected := Error{
-			Code:    EvaluationError,
-			Level:   ErrorLevel,
-			Message: "Failed to eval an expression in module.tf:4; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was renamed to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
+		expected := errors.New("failed to eval an expression in module.tf:4; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was renamed to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.")
+		if err == nil {
+			t.Fatal("an error was expected to occur, but it did not")
 		}
-		AssertAppError(t, expected, err)
+		if expected.Error() != err.Error() {
+			t.Fatalf("expected error is `%s`, but get `%s`", expected, err)
+		}
 	})
 }
 
@@ -261,12 +263,13 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 
 		_, err := NewModuleRunners(runner)
 
-		expected := Error{
-			Code:    UnexpectedAttributeError,
-			Level:   ErrorLevel,
-			Message: "Attribute of module not allowed was found in module.tf:1; module.tf:4,3-10: Unexpected \"invalid\" block; Blocks are not allowed here.",
+		expected := errors.New("attribute of module not allowed was found in module.tf:1; module.tf:4,3-10: Unexpected \"invalid\" block; Blocks are not allowed here.")
+		if err == nil {
+			t.Fatal("an error was expected to occur, but it did not")
 		}
-		AssertAppError(t, expected, err)
+		if expected.Error() != err.Error() {
+			t.Fatalf("expected error is `%s`, but get `%s`", expected, err)
+		}
 	})
 }
 
@@ -379,21 +382,16 @@ func Test_EnsureNoError(t *testing.T) {
 			ErrorText: "Error occurred",
 		},
 		{
-			Name: "warning error",
-			Error: &Error{
-				Code:    UnknownValueError,
-				Level:   WarningLevel,
-				Message: "Warning error",
-			},
+			Name:  "unknown value error",
+			Error: sdk.ErrUnknownValue,
 		},
 		{
-			Name: "app error",
-			Error: &Error{
-				Code:    TypeMismatchError,
-				Level:   ErrorLevel,
-				Message: "App error",
-			},
-			ErrorText: "App error",
+			Name:  "null value error",
+			Error: sdk.ErrNullValue,
+		},
+		{
+			Name:  "unevaluable error",
+			Error: sdk.ErrUnevaluable,
 		},
 	}
 

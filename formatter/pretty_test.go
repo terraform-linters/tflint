@@ -3,6 +3,7 @@ package formatter
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/fatih/color"
@@ -17,7 +18,7 @@ func Test_prettyPrint(t *testing.T) {
 	cases := []struct {
 		Name    string
 		Issues  tflint.Issues
-		Error   *tflint.Error
+		Error   error
 		Sources map[string][]byte
 		Stdout  string
 		Stderr  string
@@ -97,27 +98,25 @@ Reference: https://github.com
 		{
 			Name:   "error",
 			Issues: tflint.Issues{},
-			Error:  tflint.NewContextError("Failed to work", errors.New("I don't feel like working")),
-			Stderr: `Failed to work. An error occurred:
-
-Error: I don't feel like working
-
-`,
+			Error:  fmt.Errorf("Failed to work; %w", errors.New("I don't feel like working")),
+			Stderr: "Failed to work; I don't feel like working\n",
 		},
 	}
 
 	for _, tc := range cases {
-		stdout := &bytes.Buffer{}
-		stderr := &bytes.Buffer{}
-		formatter := &Formatter{Stdout: stdout, Stderr: stderr}
+		t.Run(tc.Name, func(t *testing.T) {
+			stdout := &bytes.Buffer{}
+			stderr := &bytes.Buffer{}
+			formatter := &Formatter{Stdout: stdout, Stderr: stderr}
 
-		formatter.prettyPrint(tc.Issues, tc.Error, tc.Sources)
+			formatter.prettyPrint(tc.Issues, tc.Error, tc.Sources)
 
-		if stdout.String() != tc.Stdout {
-			t.Fatalf("Failed %s test: expected=%s, stdout=%s", tc.Name, tc.Stdout, stdout.String())
-		}
-		if stderr.String() != tc.Stderr {
-			t.Fatalf("Failed %s test: expected=%s, stderr=%s", tc.Name, tc.Stderr, stderr.String())
-		}
+			if stdout.String() != tc.Stdout {
+				t.Fatalf("expected=%s, stdout=%s", tc.Stdout, stdout.String())
+			}
+			if stderr.String() != tc.Stderr {
+				t.Fatalf("expected=%s, stderr=%s", tc.Stderr, stderr.String())
+			}
+		})
 	}
 }

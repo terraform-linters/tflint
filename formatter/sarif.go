@@ -9,10 +9,10 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error) {
-	report, err := sarif.New(sarif.Version210)
-	if err != nil {
-		panic(err)
+func (f *Formatter) sarifPrint(issues tflint.Issues, err error) {
+	report, initErr := sarif.New(sarif.Version210)
+	if initErr != nil {
+		panic(initErr)
 	}
 
 	run := sarif.NewRun("tflint", "https://github.com/terraform-linters/tflint")
@@ -60,9 +60,9 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error) {
 
 	errRun := sarif.NewRun("tflint-errors", "https://github.com/terraform-linters/tflint")
 	report.AddRun(errRun)
-	if tferr != nil {
+	if err != nil {
 		var diags hcl.Diagnostics
-		if errors.As(tferr, &diags) {
+		if errors.As(err, &diags) {
 			for _, diag := range diags {
 				location := sarif.NewPhysicalLocation().
 					WithArtifactLocation(sarif.NewSimpleArtifactLocation(diag.Subject.Filename)).
@@ -84,7 +84,7 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, tferr *tflint.Error) {
 		} else {
 			errRun.AddResult("application_error").
 				WithLevel("error").
-				WithMessage(sarif.NewTextMessage(tferr.Error()))
+				WithMessage(sarif.NewTextMessage(err.Error()))
 		}
 	}
 

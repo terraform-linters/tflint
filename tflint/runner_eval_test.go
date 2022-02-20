@@ -1,12 +1,14 @@
 package tflint
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	hcl "github.com/hashicorp/hcl/v2"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/terraform/configs/configschema"
 	"github.com/terraform-linters/tflint/terraform/terraform"
 	"github.com/zclconf/go-cty/cty"
@@ -412,7 +414,8 @@ func Test_EvaluateExpr_interpolationError(t *testing.T) {
 	cases := []struct {
 		Name    string
 		Content string
-		Error   Error
+		Error   error
+		Contain error
 	}{
 		{
 			Name: "undefined variable",
@@ -420,11 +423,7 @@ func Test_EvaluateExpr_interpolationError(t *testing.T) {
 resource "null_resource" "test" {
   key = "${var.undefined_var}"
 }`,
-			Error: Error{
-				Code:    EvaluationError,
-				Level:   ErrorLevel,
-				Message: "Failed to eval an expression in main.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
-			},
+			Error: errors.New("failed to eval an expression in main.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block."),
 		},
 		{
 			Name: "no default value",
@@ -434,11 +433,8 @@ variable "no_value_var" {}
 resource "null_resource" "test" {
   key = "${var.no_value_var}"
 }`,
-			Error: Error{
-				Code:    UnknownValueError,
-				Level:   WarningLevel,
-				Message: "Unknown value found in main.tf:5",
-			},
+			Error:   errors.New("unknown value found in main.tf:5"),
+			Contain: sdk.ErrUnknownValue,
 		},
 		{
 			Name: "null value",
@@ -451,11 +447,8 @@ variable "null_var" {
 resource "null_resource" "test" {
   key = var.null_var
 }`,
-			Error: Error{
-				Code:    NullValueError,
-				Level:   WarningLevel,
-				Message: "Null value found in main.tf:8",
-			},
+			Error:   errors.New("null value found in main.tf:8"),
+			Contain: sdk.ErrNullValue,
 		},
 		{
 			Name: "terraform env",
@@ -463,11 +456,7 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = "${terraform.env}"
 }`,
-			Error: Error{
-				Code:    EvaluationError,
-				Level:   ErrorLevel,
-				Message: "Failed to eval an expression in main.tf:3; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was renamed to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
-			},
+			Error: errors.New("failed to eval an expression in main.tf:3; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was renamed to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute."),
 		},
 		{
 			Name: "type mismatch",
@@ -475,11 +464,7 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = ["one", "two", "three"]
 }`,
-			Error: Error{
-				Code:    EvaluationError,
-				Level:   ErrorLevel,
-				Message: "Failed to eval an expression in main.tf:3; Incorrect value type: Invalid expression value: string required.",
-			},
+			Error: errors.New("failed to eval an expression in main.tf:3; Incorrect value type: Invalid expression value: string required."),
 		},
 		{
 			Name: "unevalauble",
@@ -487,27 +472,34 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = "${module.text}"
 }`,
-			Error: Error{
-				Code:    UnevaluableError,
-				Level:   WarningLevel,
-				Message: "Unevaluable expression found in main.tf:3",
-			},
+			Error:   errors.New("unevaluable expression found in main.tf:3"),
+			Contain: sdk.ErrUnevaluable,
 		},
 	}
 
 	for _, tc := range cases {
-		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
+		t.Run(tc.Name, func(t *testing.T) {
+			runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-			var ret string
-			err := runner.EvaluateExpr(attribute.Expr, &ret)
+			err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
+				var ret string
+				err := runner.EvaluateExpr(attribute.Expr, &ret)
 
-			AssertAppError(t, tc.Error, err)
-			return nil
+				if err == nil {
+					t.Fatal("an error was expected to occur, but it did not")
+				}
+				if tc.Error.Error() != err.Error() {
+					t.Fatalf("expected error is `%s`, but get `%s`", tc.Error, err)
+				}
+				if tc.Contain != nil && !errors.Is(err, tc.Contain) {
+					t.Fatalf("err `%s` should contain `%s`, but not", err, tc.Contain)
+				}
+				return nil
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
 		})
-		if err != nil {
-			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
 	}
 }
 
@@ -515,7 +507,8 @@ func Test_EvaluateExpr_mapWithInterpolationError(t *testing.T) {
 	cases := []struct {
 		Name    string
 		Content string
-		Error   Error
+		Error   error
+		Contain error
 	}{
 		{
 			Name: "undefined variable",
@@ -525,11 +518,7 @@ resource "null_resource" "test" {
 		value = var.undefined_var
 	}
 }`,
-			Error: Error{
-				Code:    EvaluationError,
-				Level:   ErrorLevel,
-				Message: "Failed to eval an expression in main.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
-			},
+			Error: errors.New("failed to eval an expression in main.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block."),
 		},
 		{
 			Name: "no default value",
@@ -541,11 +530,8 @@ resource "null_resource" "test" {
 		value = var.no_value_var
 	}
 }`,
-			Error: Error{
-				Code:    UnknownValueError,
-				Level:   WarningLevel,
-				Message: "Unknown value found in main.tf:5",
-			},
+			Error:   errors.New("unknown value found in main.tf:5"),
+			Contain: sdk.ErrUnknownValue,
 		},
 		{
 			Name: "null value",
@@ -560,11 +546,8 @@ resource "null_resource" "test" {
 		value = var.null_var
 	}
 }`,
-			Error: Error{
-				Code:    NullValueError,
-				Level:   WarningLevel,
-				Message: "Null value found in main.tf:8",
-			},
+			Error:   errors.New("null value found in main.tf:8"),
+			Contain: sdk.ErrNullValue,
 		},
 		{
 			Name: "unevalauble",
@@ -574,27 +557,34 @@ resource "null_resource" "test" {
 		value = module.text
 	}
 }`,
-			Error: Error{
-				Code:    UnevaluableError,
-				Level:   WarningLevel,
-				Message: "Unevaluable expression found in main.tf:3",
-			},
+			Error:   errors.New("unevaluable expression found in main.tf:3"),
+			Contain: sdk.ErrUnevaluable,
 		},
 	}
 
 	for _, tc := range cases {
-		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
+		t.Run(tc.Name, func(t *testing.T) {
+			runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-			var ret map[string]string
-			err := runner.EvaluateExpr(attribute.Expr, &ret)
+			err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
+				var ret map[string]string
+				err := runner.EvaluateExpr(attribute.Expr, &ret)
 
-			AssertAppError(t, tc.Error, err)
-			return nil
+				if err == nil {
+					t.Fatal("an error was expected to occur, but it did not")
+				}
+				if tc.Error.Error() != err.Error() {
+					t.Fatalf("expected error is `%s`, but get `%s`", tc.Error, err)
+				}
+				if tc.Contain != nil && !errors.Is(err, tc.Contain) {
+					t.Fatalf("err `%s` should contain `%s`, but not", err, tc.Contain)
+				}
+				return nil
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
 		})
-		if err != nil {
-			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
 	}
 }
 
@@ -678,7 +668,8 @@ func Test_EvaluateBlock_error(t *testing.T) {
 	cases := []struct {
 		Name    string
 		Content string
-		Error   Error
+		Error   error
+		Contain error
 	}{
 		{
 			Name: "undefined variable",
@@ -689,11 +680,7 @@ resource "null_resource" "test" {
 	two = var.undefined_var
   }
 }`,
-			Error: Error{
-				Code:    EvaluationError,
-				Level:   ErrorLevel,
-				Message: "Failed to eval a block in main.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block.",
-			},
+			Error: errors.New("failed to eval a block in main.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block."),
 		},
 		{
 			Name: "no default value",
@@ -706,11 +693,8 @@ resource "null_resource" "test" {
     two = var.no_value_var
   }
 }`,
-			Error: Error{
-				Code:    UnknownValueError,
-				Level:   WarningLevel,
-				Message: "Unknown value found in main.tf:5",
-			},
+			Error:   errors.New("unknown value found in main.tf:5"),
+			Contain: sdk.ErrUnknownValue,
 		},
 		{
 			Name: "type mismatch",
@@ -723,11 +707,7 @@ resource "null_resource" "test" {
     }
   }
 }`,
-			Error: Error{
-				Code:    EvaluationError,
-				Level:   ErrorLevel,
-				Message: "Failed to eval a block in main.tf:3; Incorrect attribute value type: Inappropriate value for attribute \"two\": string required.",
-			},
+			Error: errors.New("failed to eval a block in main.tf:3; Incorrect attribute value type: Inappropriate value for attribute \"two\": string required."),
 		},
 		{
 			Name: "unevalauble",
@@ -738,33 +718,40 @@ resource "null_resource" "test" {
 	two = module.text
   }
 }`,
-			Error: Error{
-				Code:    UnevaluableError,
-				Level:   WarningLevel,
-				Message: "Unevaluable block found in main.tf:3",
-			},
+			Error:   errors.New("unevaluable block found in main.tf:3"),
+			Contain: sdk.ErrUnevaluable,
 		},
 	}
 
 	for _, tc := range cases {
-		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
+		t.Run(tc.Name, func(t *testing.T) {
+			runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		err := runner.WalkResourceBlocks("null_resource", "key", func(block *hcl.Block) error {
-			var ret map[string]string
-			schema := &configschema.Block{
-				Attributes: map[string]*configschema.Attribute{
-					"one": {Type: cty.String},
-					"two": {Type: cty.String},
-				},
+			err := runner.WalkResourceBlocks("null_resource", "key", func(block *hcl.Block) error {
+				var ret map[string]string
+				schema := &configschema.Block{
+					Attributes: map[string]*configschema.Attribute{
+						"one": {Type: cty.String},
+						"two": {Type: cty.String},
+					},
+				}
+				err := runner.EvaluateBlock(block, schema, &ret)
+
+				if err == nil {
+					t.Fatal("an error was expected to occur, but it did not")
+				}
+				if tc.Error.Error() != err.Error() {
+					t.Fatalf("expected error is `%s`, but get `%s`", tc.Error, err)
+				}
+				if tc.Contain != nil && !errors.Is(err, tc.Contain) {
+					t.Fatalf("err `%s` should contain `%s`, but not", err, tc.Contain)
+				}
+				return nil
+			})
+			if err != nil {
+				t.Fatal(err)
 			}
-			err := runner.EvaluateBlock(block, schema, &ret)
-
-			AssertAppError(t, tc.Error, err)
-			return nil
 		})
-		if err != nil {
-			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
 	}
 }
 
@@ -1130,15 +1117,17 @@ resource "null_resource" "test" {
 	}
 
 	for _, tc := range cases {
-		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
+		t.Run(tc.Name, func(t *testing.T) {
+			runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		got, err := runner.willEvaluateResource(runner.LookupResourcesByType("null_resource")[0])
-		if err != nil {
-			t.Fatalf("Failed `%s`: %s", tc.Name, err)
-		}
+			got, err := runner.willEvaluateResource(runner.LookupResourcesByType("null_resource")[0])
+			if err != nil {
+				t.Fatal(err)
+			}
 
-		if got != tc.Expected {
-			t.Fatalf("Failed `%s`: expect to get %t, but got %t", tc.Name, tc.Expected, got)
-		}
+			if got != tc.Expected {
+				t.Fatalf("expect to get %t, but got %t", tc.Expected, got)
+			}
+		})
 	}
 }

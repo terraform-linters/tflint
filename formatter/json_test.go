@@ -3,6 +3,7 @@ package formatter
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"testing"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -13,7 +14,7 @@ func Test_jsonPrint(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Issues tflint.Issues
-		Error  *tflint.Error
+		Error  error
 		Stdout string
 	}{
 		{
@@ -23,13 +24,13 @@ func Test_jsonPrint(t *testing.T) {
 		},
 		{
 			Name:   "error",
-			Error:  tflint.NewContextError("Failed to work", errors.New("I don't feel like working")),
+			Error:  fmt.Errorf("Failed to work; %w", errors.New("I don't feel like working")),
 			Stdout: `{"issues":[],"errors":[{"message":"Failed to work; I don't feel like working","severity":"error"}]}`,
 		},
 		{
 			Name: "error",
-			Error: tflint.NewContextError(
-				"babel fish confused",
+			Error: fmt.Errorf(
+				"babel fish confused; %w",
 				hcl.Diagnostics{
 					&hcl.Diagnostic{
 						Severity: hcl.DiagWarning,

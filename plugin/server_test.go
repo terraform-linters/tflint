@@ -9,7 +9,7 @@ import (
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/addrs"
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/configs"
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/experiments"
-	client "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint/client"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
@@ -280,44 +280,12 @@ variable "instance_type" {
 	}
 }
 
-func Test_EvalExpr_errors(t *testing.T) {
-	source := `variable "instance_type" {}`
-
-	runner := tflint.TestRunner(t, map[string]string{"main.tf": source})
-	server := NewServer(runner, runner, map[string][]byte{"main.tf": []byte(source)})
-	req := &tfplugin.EvalExprRequest{
-		Expr: []byte(`var.instance_type`),
-		ExprRange: hcl.Range{
-			Filename: "template.tf",
-			Start:    hcl.Pos{Line: 1, Column: 1},
-			End:      hcl.Pos{Line: 1, Column: 1},
-		},
-		Ret: "", // string value
-	}
-	var resp tfplugin.EvalExprResponse
-
-	err := server.EvalExpr(req, &resp)
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-
-	expected := client.Error{
-		Code:    client.UnknownValueError,
-		Level:   client.WarningLevel,
-		Message: "Unknown value found in template.tf:1",
-		Cause:   nil,
-	}
-	if !cmp.Equal(expected, resp.Err) {
-		t.Fatalf("Error it not matched: %s", cmp.Diff(expected, resp.Err))
-	}
-}
-
 func Test_EmitIssue(t *testing.T) {
 	runner := tflint.TestRunner(t, map[string]string{})
 	rule := &tfplugin.Rule{
 		Data: &tfplugin.RuleObject{
 			Name:     "test_rule",
-			Severity: client.ERROR,
+			Severity: sdk.ERROR,
 		},
 	}
 

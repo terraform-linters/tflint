@@ -12,6 +12,7 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/lang"
@@ -175,16 +176,12 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 			} else {
 				causeErr = diags
 			}
-			err := &Error{
-				Code:  UnexpectedAttributeError,
-				Level: ErrorLevel,
-				Message: fmt.Sprintf(
-					"Attribute of module not allowed was found in %s:%d",
-					moduleCall.DeclRange.Filename,
-					moduleCall.DeclRange.Start.Line,
-				),
-				Cause: causeErr,
-			}
+			err := fmt.Errorf(
+				"attribute of module not allowed was found in %s:%d; %w",
+				moduleCall.DeclRange.Filename,
+				moduleCall.DeclRange.Start.Line,
+				causeErr,
+			)
 			log.Printf("[ERROR] %s", err)
 			return runners, err
 		}
@@ -200,16 +197,12 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 				if evalauble {
 					val, diags := parent.ctx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType, nil)
 					if diags.HasErrors() {
-						err := &Error{
-							Code:  EvaluationError,
-							Level: ErrorLevel,
-							Message: fmt.Sprintf(
-								"Failed to eval an expression in %s:%d",
-								attribute.Expr.Range().Filename,
-								attribute.Expr.Range().Start.Line,
-							),
-							Cause: diags.Err(),
-						}
+						err := fmt.Errorf(
+							"failed to eval an expression in %s:%d; %w",
+							attribute.Expr.Range().Filename,
+							attribute.Expr.Range().Start.Line,
+							diags.Err(),
+						)
 						log.Printf("[ERROR] %s", err)
 						return runners, err
 					}
@@ -416,18 +409,10 @@ func (r *Runner) EnsureNoError(err error, proc func() error) error {
 		return proc()
 	}
 
-	if appErr, ok := err.(*Error); ok {
-		switch appErr.Level {
-		case WarningLevel:
-			return nil
-		case ErrorLevel:
-			return appErr
-		default:
-			panic(appErr)
-		}
-	} else {
-		return err
+	if errors.Is(err, sdk.ErrNullValue) || errors.Is(err, sdk.ErrUnevaluable) || errors.Is(err, sdk.ErrUnknownValue) {
+		return nil
 	}
+	return err
 }
 
 // IsNullExpr check the passed expression is null

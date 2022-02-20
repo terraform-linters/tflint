@@ -12,7 +12,7 @@ import (
 func (cli *CLI) init(opts Options) int {
 	cfg, err := tflint.LoadConfig(opts.Config)
 	if err != nil {
-		cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to load TFLint config", err), map[string][]byte{})
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to load TFLint config; %w", err), map[string][]byte{})
 		return ExitCodeError
 	}
 
@@ -35,7 +35,7 @@ func (cli *CLI) init(opts Options) int {
 
 			_, err = installCfg.Install()
 			if err != nil {
-				cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to install a plugin", err), map[string][]byte{})
+				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to install a plugin; %w", err), map[string][]byte{})
 				return ExitCodeError
 			}
 
@@ -44,7 +44,7 @@ func (cli *CLI) init(opts Options) int {
 		}
 
 		if err != nil {
-			cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to find a plugin", err), map[string][]byte{})
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to find a plugin; %w", err), map[string][]byte{})
 			return ExitCodeError
 		}
 

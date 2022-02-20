@@ -1,11 +1,13 @@
 package tflint
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/configs/configschema"
@@ -25,16 +27,12 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 
 	err = gocty.FromCtyValue(val, ret)
 	if err != nil {
-		err := &Error{
-			Code:  TypeMismatchError,
-			Level: ErrorLevel,
-			Message: fmt.Sprintf(
-				"Invalid type expression in %s:%d",
-				expr.Range().Filename,
-				expr.Range().Start.Line,
-			),
-			Cause: err,
-		}
+		err := fmt.Errorf(
+			"invalid type expression in %s:%d; %w",
+			expr.Range().Filename,
+			expr.Range().Start.Line,
+			err,
+		)
 		log.Printf("[ERROR] %s", err)
 		return err
 	}
@@ -47,30 +45,23 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, ret interface{}) error {
 func (r *Runner) EvalExpr(expr hcl.Expression, ret interface{}, wantType cty.Type) (cty.Value, error) {
 	evaluable, err := isEvaluableExpr(expr)
 	if err != nil {
-		err := &Error{
-			Code:  EvaluationError,
-			Level: ErrorLevel,
-			Message: fmt.Sprintf(
-				"Failed to parse an expression in %s:%d",
-				expr.Range().Filename,
-				expr.Range().Start.Line,
-			),
-			Cause: err,
-		}
+		err := fmt.Errorf(
+			"failed to parse an expression in %s:%d; %w",
+			expr.Range().Filename,
+			expr.Range().Start.Line,
+			err,
+		)
 		log.Printf("[ERROR] %s", err)
 		return cty.NullVal(cty.NilType), err
 	}
 
 	if !evaluable {
-		err := &Error{
-			Code:  UnevaluableError,
-			Level: WarningLevel,
-			Message: fmt.Sprintf(
-				"Unevaluable expression found in %s:%d",
-				expr.Range().Filename,
-				expr.Range().Start.Line,
-			),
-		}
+		err := fmt.Errorf(
+			"unevaluable expression found in %s:%d%w",
+			expr.Range().Filename,
+			expr.Range().Start.Line,
+			sdk.ErrUnevaluable,
+		)
 		log.Printf("[INFO] %s. TFLint ignores unevaluable expressions.", err)
 		return cty.NullVal(cty.NilType), err
 	}
@@ -96,16 +87,12 @@ func (r *Runner) EvalExpr(expr hcl.Expression, ret interface{}, wantType cty.Typ
 
 	val, diags := r.ctx.EvaluateExpr(expr, wantType, nil)
 	if diags.HasErrors() {
-		err := &Error{
-			Code:  EvaluationError,
-			Level: ErrorLevel,
-			Message: fmt.Sprintf(
-				"Failed to eval an expression in %s:%d",
-				expr.Range().Filename,
-				expr.Range().Start.Line,
-			),
-			Cause: diags.Err(),
-		}
+		err := fmt.Errorf(
+			"failed to eval an expression in %s:%d; %w",
+			expr.Range().Filename,
+			expr.Range().Start.Line,
+			diags.Err(),
+		)
 		log.Printf("[ERROR] %s", err)
 		return cty.NullVal(cty.NilType), err
 	}
@@ -116,29 +103,23 @@ func (r *Runner) EvalExpr(expr hcl.Expression, ret interface{}, wantType cty.Typ
 
 	err = cty.Walk(val, func(path cty.Path, v cty.Value) (bool, error) {
 		if !v.IsKnown() {
-			err := &Error{
-				Code:  UnknownValueError,
-				Level: WarningLevel,
-				Message: fmt.Sprintf(
-					"Unknown value found in %s:%d",
-					expr.Range().Filename,
-					expr.Range().Start.Line,
-				),
-			}
+			err := fmt.Errorf(
+				"unknown value found in %s:%d%w",
+				expr.Range().Filename,
+				expr.Range().Start.Line,
+				sdk.ErrUnknownValue,
+			)
 			log.Printf("[INFO] %s. TFLint can only evaluate provided variables and skips dynamic values.", err)
 			return false, err
 		}
 
 		if v.IsNull() {
-			err := &Error{
-				Code:  NullValueError,
-				Level: WarningLevel,
-				Message: fmt.Sprintf(
-					"Null value found in %s:%d",
-					expr.Range().Filename,
-					expr.Range().Start.Line,
-				),
-			}
+			err := fmt.Errorf(
+				"null value found in %s:%d%w",
+				expr.Range().Filename,
+				expr.Range().Start.Line,
+				sdk.ErrNullValue,
+			)
 			log.Printf("[INFO] %s. TFLint ignores expressions with null values.", err)
 			return false, err
 		}
@@ -157,61 +138,47 @@ func (r *Runner) EvalExpr(expr hcl.Expression, ret interface{}, wantType cty.Typ
 func (r *Runner) EvaluateBlock(block *hcl.Block, schema *configschema.Block, ret interface{}) error {
 	evaluable, err := isEvaluableBlock(block.Body, schema)
 	if err != nil {
-		err := &Error{
-			Code:  EvaluationError,
-			Level: ErrorLevel,
-			Message: fmt.Sprintf(
-				"Failed to parse a block in %s:%d",
-				block.DefRange.Filename,
-				block.DefRange.Start.Line,
-			),
-			Cause: err,
-		}
+		err := fmt.Errorf(
+			"failed to parse a block in %s:%d; %w",
+			block.DefRange.Filename,
+			block.DefRange.Start.Line,
+			err,
+		)
 		log.Printf("[ERROR] %s", err)
 		return err
 	}
 
 	if !evaluable {
-		err := &Error{
-			Code:  UnevaluableError,
-			Level: WarningLevel,
-			Message: fmt.Sprintf(
-				"Unevaluable block found in %s:%d",
-				block.DefRange.Filename,
-				block.DefRange.Start.Line,
-			),
-		}
+		err := fmt.Errorf(
+			"unevaluable block found in %s:%d%w",
+			block.DefRange.Filename,
+			block.DefRange.Start.Line,
+			sdk.ErrUnevaluable,
+		)
 		log.Printf("[INFO] %s. TFLint ignores unevaluable blocks.", err)
 		return err
 	}
 
 	val, _, diags := r.ctx.EvaluateBlock(block.Body, schema, nil, terraform.EvalDataForNoInstanceKey)
 	if diags.HasErrors() {
-		err := &Error{
-			Code:  EvaluationError,
-			Level: ErrorLevel,
-			Message: fmt.Sprintf(
-				"Failed to eval a block in %s:%d",
-				block.DefRange.Filename,
-				block.DefRange.Start.Line,
-			),
-			Cause: diags.Err(),
-		}
+		err := fmt.Errorf(
+			"failed to eval a block in %s:%d; %w",
+			block.DefRange.Filename,
+			block.DefRange.Start.Line,
+			diags.Err(),
+		)
 		log.Printf("[ERROR] %s", err)
 		return err
 	}
 
 	err = cty.Walk(val, func(path cty.Path, v cty.Value) (bool, error) {
 		if !v.IsKnown() {
-			err := &Error{
-				Code:  UnknownValueError,
-				Level: WarningLevel,
-				Message: fmt.Sprintf(
-					"Unknown value found in %s:%d",
-					block.DefRange.Filename,
-					block.DefRange.Start.Line,
-				),
-			}
+			err := fmt.Errorf(
+				"unknown value found in %s:%d%w",
+				block.DefRange.Filename,
+				block.DefRange.Start.Line,
+				sdk.ErrUnknownValue,
+			)
 			log.Printf("[INFO] %s. TFLint can only evaluate provided variables and skips blocks with unknown values.", err)
 			return false, err
 		}
@@ -245,32 +212,24 @@ func (r *Runner) EvaluateBlock(block *hcl.Block, schema *configschema.Block, ret
 	}
 
 	if err != nil {
-		err := &Error{
-			Code:  TypeConversionError,
-			Level: ErrorLevel,
-			Message: fmt.Sprintf(
-				"Invalid type block in %s:%d",
-				block.DefRange.Filename,
-				block.DefRange.Start.Line,
-			),
-			Cause: err,
-		}
+		err := fmt.Errorf(
+			"invalid type block in %s:%d; %w",
+			block.DefRange.Filename,
+			block.DefRange.Start.Line,
+			err,
+		)
 		log.Printf("[ERROR] %s", err)
 		return err
 	}
 
 	err = gocty.FromCtyValue(val, ret)
 	if err != nil {
-		err := &Error{
-			Code:  TypeMismatchError,
-			Level: ErrorLevel,
-			Message: fmt.Sprintf(
-				"Invalid type block in %s:%d",
-				block.DefRange.Filename,
-				block.DefRange.Start.Line,
-			),
-			Cause: err,
-		}
+		err := fmt.Errorf(
+			"invalid type block in %s:%d; %w",
+			block.DefRange.Filename,
+			block.DefRange.Start.Line,
+			err,
+		)
 		log.Printf("[ERROR] %s", err)
 		return err
 	}
@@ -345,21 +304,14 @@ func (r *Runner) willEvaluateResource(resource *configs.Resource) (bool, error) 
 		}
 	}
 
-	if err == nil {
-		return true, nil
-	}
-	if appErr, ok := err.(*Error); ok {
-		switch appErr.Level {
-		case WarningLevel:
+	if err != nil {
+		if errors.Is(err, sdk.ErrNullValue) || errors.Is(err, sdk.ErrUnevaluable) || errors.Is(err, sdk.ErrUnknownValue) {
 			return false, nil
-		case ErrorLevel:
-			return false, err
-		default:
-			panic(appErr)
 		}
-	} else {
 		return false, err
 	}
+
+	return true, nil
 }
 
 func (r *Runner) willEvaluateResourceBlock(resource *hclext.Block) (bool, error) {
@@ -390,19 +342,12 @@ func (r *Runner) willEvaluateResourceBlock(resource *hclext.Block) (bool, error)
 		}
 	}
 
-	if err == nil {
-		return true, nil
-	}
-	if appErr, ok := err.(*Error); ok {
-		switch appErr.Level {
-		case WarningLevel:
+	if err != nil {
+		if errors.Is(err, sdk.ErrNullValue) || errors.Is(err, sdk.ErrUnevaluable) || errors.Is(err, sdk.ErrUnknownValue) {
 			return false, nil
-		case ErrorLevel:
-			return false, err
-		default:
-			panic(appErr)
 		}
-	} else {
 		return false, err
 	}
+
+	return true, nil
 }

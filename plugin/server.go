@@ -85,7 +85,7 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts client.EvaluateExprO
 		runner = s.rootRunner
 	}
 	val, err := runner.EvalExpr(expr, nil, *opts.WantType)
-	return val, wrapError(err)
+	return val, err
 }
 
 // TODO: Why rule needs to implement Check()?
@@ -124,9 +124,6 @@ func (s *Server) Attributes(req *tfplugin.AttributesRequest, resp *tfplugin.Attr
 		})
 		return nil
 	})
-	if err != nil {
-		err = wrapError(err)
-	}
 	*resp = tfplugin.AttributesResponse{Attributes: ret, Err: err}
 	return nil
 }
@@ -147,9 +144,6 @@ func (s *Server) Blocks(req *tfplugin.BlocksRequest, resp *tfplugin.BlocksRespon
 		})
 		return nil
 	})
-	if err != nil {
-		err = wrapError(err)
-	}
 	*resp = tfplugin.BlocksResponse{Blocks: ret, Err: err}
 	return nil
 }
@@ -161,9 +155,6 @@ func (s *Server) Resources(req *tfplugin.ResourcesRequest, resp *tfplugin.Resour
 		ret = append(ret, s.encodeResource(resource))
 		return nil
 	})
-	if err != nil {
-		err = wrapError(err)
-	}
 	*resp = tfplugin.ResourcesResponse{Resources: ret, Err: err}
 	return nil
 }
@@ -175,9 +166,6 @@ func (s *Server) ModuleCalls(req *tfplugin.ModuleCallsRequest, resp *tfplugin.Mo
 		ret = append(ret, s.encodeModuleCall(call))
 		return nil
 	})
-	if err != nil {
-		err = wrapError(err)
-	}
 	*resp = tfplugin.ModuleCallsResponse{ModuleCalls: ret, Err: err}
 	return nil
 }
@@ -283,9 +271,6 @@ func (s *Server) EvalExpr(req *tfplugin.EvalExprRequest, resp *tfplugin.EvalExpr
 	}
 
 	val, err := s.runner.EvalExpr(expr, req.Ret, req.Type)
-	if err != nil {
-		err = wrapError(err)
-	}
 	*resp = tfplugin.EvalExprResponse{Val: val, Err: err}
 	return nil
 }
@@ -298,9 +283,6 @@ func (s *Server) EvalExprOnRootCtx(req *tfplugin.EvalExprRequest, resp *tfplugin
 	}
 
 	val, err := s.rootRunner.EvalExpr(expr, req.Ret, req.Type)
-	if err != nil {
-		err = wrapError(err)
-	}
 	*resp = tfplugin.EvalExprResponse{Val: val, Err: err}
 	return nil
 }
@@ -313,9 +295,6 @@ func (s *Server) IsNullExpr(req *tfplugin.IsNullExprRequest, resp *tfplugin.IsNu
 	}
 
 	ret, err := s.runner.IsNullExpr(expr)
-	if err != nil {
-		err = wrapError(err)
-	}
 	*resp = tfplugin.IsNullExprResponse{Ret: ret, Err: err}
 	return nil
 }
@@ -360,15 +339,4 @@ func configBodyRange(body hcl.Body) hcl.Range {
 		}
 	}
 	return bodyRange
-}
-
-func wrapError(raw error) error {
-	if appErr, ok := raw.(*tflint.Error); ok {
-		err := client.Error(*appErr)
-		if err.Cause != nil {
-			err.Cause = client.Error{Message: err.Cause.Error()}
-		}
-		return err
-	}
-	return raw
 }

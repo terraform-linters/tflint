@@ -19,7 +19,7 @@ var colorError = color.New(color.FgRed).SprintFunc()
 var colorWarning = color.New(color.FgYellow).SprintFunc()
 var colorNotice = color.New(color.FgHiWhite).SprintFunc()
 
-func (f *Formatter) prettyPrint(issues tflint.Issues, err *tflint.Error, sources map[string][]byte) {
+func (f *Formatter) prettyPrint(issues tflint.Issues, err error, sources map[string][]byte) {
 	if len(issues) > 0 {
 		fmt.Fprintf(f.Stdout, "%d issue(s) found:\n\n", len(issues))
 
@@ -87,16 +87,15 @@ func (f *Formatter) prettyPrintIssueWithSource(issue *tflint.Issue, sources map[
 	fmt.Fprint(f.Stdout, "\n")
 }
 
-func (f *Formatter) prettyPrintErrors(err *tflint.Error, sources map[string][]byte) {
+func (f *Formatter) prettyPrintErrors(err error, sources map[string][]byte) {
 	var diags hcl.Diagnostics
 	if errors.As(err, &diags) {
-		fmt.Fprintf(f.Stderr, "%s. %d error(s) occurred:\n\n", err.Message, len(diags.Errs()))
+		fmt.Fprintf(f.Stderr, "%s:\n\n", err)
 
 		writer := hcl.NewDiagnosticTextWriter(f.Stderr, parseSources(sources), 0, !f.NoColor)
 		_ = writer.WriteDiagnostics(diags)
 	} else {
-		fmt.Fprintf(f.Stderr, "%s. An error occurred:\n\n", err.Message)
-		fmt.Fprintf(f.Stderr, "%s: %s\n\n", colorError("Error"), err.Cause.Error())
+		fmt.Fprintf(f.Stderr, "%s\n", err)
 	}
 }
 

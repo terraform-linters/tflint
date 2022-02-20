@@ -12,7 +12,7 @@ func Test_checkstylePrint(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Issues tflint.Issues
-		Error  *tflint.Error
+		Error  error
 		Stdout string
 	}{
 		{

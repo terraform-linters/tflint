@@ -51,7 +51,7 @@ type JSONOutput struct {
 	Errors []JSONError `json:"errors"`
 }
 
-func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
+func (f *Formatter) jsonPrint(issues tflint.Issues, err error) {
 	ret := &JSONOutput{Issues: make([]JSONIssue, len(issues)), Errors: []JSONError{}}
 
 	for idx, issue := range issues.Sort() {
@@ -78,9 +78,9 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 		}
 	}
 
-	if tferr != nil {
+	if err != nil {
 		var diags hcl.Diagnostics
-		if errors.As(tferr, &diags) {
+		if errors.As(err, &diags) {
 			ret.Errors = make([]JSONError, len(diags))
 			for idx, diag := range diags {
 				ret.Errors[idx] = JSONError{
@@ -97,7 +97,7 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, tferr *tflint.Error) {
 		} else {
 			ret.Errors = []JSONError{{
 				Severity: toSeverity(tflint.ERROR),
-				Message:  tferr.Error(),
+				Message:  err.Error(),
 			}}
 		}
 	}
