@@ -265,7 +265,7 @@ func pathToURI(path string) lsp.DocumentURI {
 	return lsp.DocumentURI("file://" + head + rest)
 }
 
-func toLSPSeverity(severity string) lsp.DiagnosticSeverity {
+func toLSPSeverity(severity tflint.Severity) lsp.DiagnosticSeverity {
 	switch severity {
 	case tflint.ERROR:
 		return lsp.Error

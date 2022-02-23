@@ -527,7 +527,7 @@ type testRule struct{}
 func (r *testRule) Name() string {
 	return "test_rule"
 }
-func (r *testRule) Severity() string {
+func (r *testRule) Severity() Severity {
 	return ERROR
 }
 func (r *testRule) Link() string {

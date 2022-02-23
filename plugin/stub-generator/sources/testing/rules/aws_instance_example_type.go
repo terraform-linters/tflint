@@ -28,7 +28,7 @@ func (r *AwsInstanceExampleTypeRule) Enabled() bool {
 }
 
 // Severity returns the rule severity
-func (r *AwsInstanceExampleTypeRule) Severity() string {
+func (r *AwsInstanceExampleTypeRule) Severity() tflint.Severity {
 	return tflint.ERROR
 }
 

@@ -28,7 +28,7 @@ func (r *TerraformCommentSyntaxRule) Enabled() bool {
 }
 
 // Severity returns the rule severity
-func (r *TerraformCommentSyntaxRule) Severity() string {
+func (r *TerraformCommentSyntaxRule) Severity() tflint.Severity {
 	return tflint.WARNING
 }
 

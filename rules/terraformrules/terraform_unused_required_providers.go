@@ -27,7 +27,7 @@ func (r *TerraformUnusedRequiredProvidersRule) Enabled() bool {
 }
 
 // Severity returns the rule severity
-func (r *TerraformUnusedRequiredProvidersRule) Severity() string {
+func (r *TerraformUnusedRequiredProvidersRule) Severity() tflint.Severity {
 	return tflint.WARNING
 }
 

@@ -27,7 +27,7 @@ func (r *TerraformDeprecatedInterpolationRule) Enabled() bool {
 }
 
 // Severity returns the rule severity
-func (r *TerraformDeprecatedInterpolationRule) Severity() string {
+func (r *TerraformDeprecatedInterpolationRule) Severity() tflint.Severity {
 	return tflint.WARNING
 }
 

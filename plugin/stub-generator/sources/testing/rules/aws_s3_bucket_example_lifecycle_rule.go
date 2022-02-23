@@ -26,7 +26,7 @@ func (r *AwsS3BucketExampleLifecycleRuleRule) Enabled() bool {
 }
 
 // Severity returns the rule severity
-func (r *AwsS3BucketExampleLifecycleRuleRule) Severity() string {
+func (r *AwsS3BucketExampleLifecycleRuleRule) Severity() tflint.Severity {
 	return tflint.ERROR
 }
 

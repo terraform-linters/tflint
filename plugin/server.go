@@ -301,21 +301,6 @@ func (s *Server) IsNullExpr(req *tfplugin.IsNullExprRequest, resp *tfplugin.IsNu
 
 // EmitIssue reflects a issue to the Runner
 func (s *Server) EmitIssue(req *tfplugin.EmitIssueRequest, resp *interface{}) error {
-	if req.Expr != nil {
-		expr, diags := tflint.ParseExpression(req.Expr, req.ExprRange.Filename, req.ExprRange.Start)
-		if diags.HasErrors() {
-			return diags
-		}
-
-		_ = s.runner.WithExpressionContext(expr, func() error {
-			s.runner.EmitIssue(req.Rule, req.Message, req.Location)
-			return nil
-		})
-
-	} else {
-		s.runner.EmitIssue(req.Rule, req.Message, req.Location)
-		return nil
-	}
 	return nil
 }
 

@@ -36,7 +36,7 @@ func (f *Formatter) Print(issues tflint.Issues, err error, sources map[string][]
 	}
 }
 
-func toSeverity(lintType string) string {
+func toSeverity(lintType tflint.Severity) string {
 	switch lintType {
 	case tflint.ERROR:
 		return "error"

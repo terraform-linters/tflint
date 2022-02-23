@@ -27,7 +27,7 @@ func (r *TerraformDeprecatedIndexRule) Enabled() bool {
 }
 
 // Severity returns the rule severity
-func (r *TerraformDeprecatedIndexRule) Severity() string {
+func (r *TerraformDeprecatedIndexRule) Severity() tflint.Severity {
 	return tflint.WARNING
 }
 

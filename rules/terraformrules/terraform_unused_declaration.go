@@ -36,7 +36,7 @@ func (r *TerraformUnusedDeclarationsRule) Enabled() bool {
 }
 
 // Severity returns the rule severity
-func (r *TerraformUnusedDeclarationsRule) Severity() string {
+func (r *TerraformUnusedDeclarationsRule) Severity() tflint.Severity {
 	return tflint.WARNING
 }
 

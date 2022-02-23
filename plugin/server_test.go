@@ -9,7 +9,6 @@ import (
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/addrs"
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/configs"
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/experiments"
-	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint/client"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
@@ -277,54 +276,6 @@ variable "instance_type" {
 	}
 	if !cmp.Equal(expected, resp.Val, opts...) {
 		t.Fatalf("Value is not matched: %s", cmp.Diff(expected, resp.Val, opts...))
-	}
-}
-
-func Test_EmitIssue(t *testing.T) {
-	runner := tflint.TestRunner(t, map[string]string{})
-	rule := &tfplugin.Rule{
-		Data: &tfplugin.RuleObject{
-			Name:     "test_rule",
-			Severity: sdk.ERROR,
-		},
-	}
-
-	server := NewServer(runner, runner, map[string][]byte{})
-	req := &tfplugin.EmitIssueRequest{
-		Rule:    rule,
-		Message: "This is test rule",
-		Location: hcl.Range{
-			Filename: "main.tf",
-			Start:    hcl.Pos{Line: 3, Column: 3},
-			End:      hcl.Pos{Line: 3, Column: 30},
-		},
-		Expr: []byte("1"),
-		ExprRange: hcl.Range{
-			Filename: "template.tf",
-			Start:    hcl.Pos{Line: 1, Column: 1},
-			End:      hcl.Pos{Line: 1, Column: 1},
-		},
-	}
-	var resp interface{}
-
-	err := server.EmitIssue(req, &resp)
-	if err != nil {
-		t.Fatalf("Unexpected error occurred: %s", err)
-	}
-
-	expected := tflint.Issues{
-		{
-			Rule:    rule,
-			Message: "This is test rule",
-			Range: hcl.Range{
-				Filename: "main.tf",
-				Start:    hcl.Pos{Line: 3, Column: 3},
-				End:      hcl.Pos{Line: 3, Column: 30},
-			},
-		},
-	}
-	if !cmp.Equal(expected, runner.Issues) {
-		t.Fatalf("Issue are not matched: %s", cmp.Diff(expected, runner.Issues))
 	}
 }
 

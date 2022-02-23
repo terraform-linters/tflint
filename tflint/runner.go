@@ -42,7 +42,7 @@ type Runner struct {
 // Rule is interface for building the issue
 type Rule interface {
 	Name() string
-	Severity() string
+	Severity() Severity
 	Link() string
 }
 

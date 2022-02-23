@@ -121,7 +121,7 @@ func parseSources(sources map[string][]byte) map[string]*hcl.File {
 	return ret
 }
 
-func colorSeverity(severity string) string {
+func colorSeverity(severity tflint.Severity) string {
 	switch severity {
 	case tflint.ERROR:
 		return colorError(severity)

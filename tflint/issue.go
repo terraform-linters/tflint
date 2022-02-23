@@ -4,6 +4,7 @@ import (
 	"sort"
 
 	hcl "github.com/hashicorp/hcl/v2"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 )
 
 // Issue represents a problem in configurations
@@ -17,13 +18,16 @@ type Issue struct {
 // Issues is an alias for the map of Issue
 type Issues []*Issue
 
+// Severity indicates the severity of the issue
+type Severity = sdk.Severity
+
 const (
 	// ERROR is possible errors
-	ERROR = "Error"
+	ERROR Severity = iota
 	// WARNING doesn't cause problem immediately, but not good
-	WARNING = "Warning"
+	WARNING
 	// NOTICE is not important, it's mentioned
-	NOTICE = "Notice"
+	NOTICE
 )
 
 // Sort returns the sorted receiver
