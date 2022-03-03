@@ -1,14 +1,18 @@
 #!/bin/bash -e
 
-processor=$(uname -m)
+get_machine_arch () {
+    machine_arch=""
+    case $(uname -m) in
+        i386)     machine_arch="386" ;;
+        i686)     machine_arch="386" ;;
+        x86_64)   machine_arch="amd64" ;;
+        aarch64)  dpkg --print-architecture | grep -q "arm64" && machine_arch="arm64" || machine_arch="arm" ;;
+    esac
+    echo $machine_arch
+}
+arch=$(get_machine_arch)
 
-if [ "$processor" == "x86_64" ]; then
-  arch="amd64"
-elif [ "$processor" == "arm64" ]; then
-  arch="arm64"
-else
-  arch="386"
-fi
+echo "arch=$arch"
 
 case "$(uname -s)" in
   Darwin*)
