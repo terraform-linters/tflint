@@ -42,9 +42,14 @@ jobs:
         TFLINT_INSTALL_PATH: ${{ github.workspace }}/install-path
       shell: bash
   container:
+    strategy:
+      matrix:
+        image:
+          - hashicorp/terraform
+          - arm64v8/alpine
     runs-on: ubuntu-latest
     container:
-      image: hashicorp/terraform
+      image: ${{ matrix.image }}
       options: --user 0
     steps:
     - name: Checkout
