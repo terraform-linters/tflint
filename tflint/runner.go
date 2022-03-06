@@ -250,8 +250,19 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 	return runners, nil
 }
 
+// GetModuleContent extracts body content from Terraform configurations based on the passed schema.
+// Basically, this function is a wrapper for hclext.PartialContent, but in some ways it reproduces
+// Terraform language semantics.
+//
+//   1. The block schema implicitly adds dynamic blocks to the target
+//      https://www.terraform.io/language/expressions/dynamic-blocks
+//   2. Supports overriding files
+//      https://www.terraform.io/language/files/override
+//   3. Resources not created by count or for_each will be ignored
+//      https://www.terraform.io/language/meta-arguments/count
+//      https://www.terraform.io/language/meta-arguments/for_each
+//
 func (r *Runner) GetModuleContent(bodyS *hclext.BodySchema) (*hclext.BodyContent, hcl.Diagnostics) {
-	// TODO: early return if resource not found
 	bodyS = appendDynamicBlockSchema(bodyS)
 	content := &hclext.BodyContent{}
 	diags := hcl.Diagnostics{}
@@ -290,6 +301,8 @@ func (r *Runner) GetModuleContent(bodyS *hclext.BodySchema) (*hclext.BodyContent
 	return out, diags
 }
 
+// appendDynamicBlockSchema appends a dynamic block schema to block schemes recursively.
+// The content retrieved by the added schema is formatted by resolveDynamicBlocks in the same way as regular blocks.
 func appendDynamicBlockSchema(schema *hclext.BodySchema) *hclext.BodySchema {
 	out := &hclext.BodySchema{Attributes: schema.Attributes}
 
@@ -313,6 +326,8 @@ func appendDynamicBlockSchema(schema *hclext.BodySchema) *hclext.BodySchema {
 	return out
 }
 
+// resolveDynamicBlocks formats the passed content based on the block schema added by appendDynamicBlockSchema.
+// This allows you to get all named blocks without being aware of the difference in the structure of the dynamic block.
 func resolveDynamicBlocks(content *hclext.BodyContent) *hclext.BodyContent {
 	out := &hclext.BodyContent{Attributes: content.Attributes}
 
@@ -323,7 +338,7 @@ func resolveDynamicBlocks(content *hclext.BodyContent) *hclext.BodyContent {
 			out.Blocks = append(out.Blocks, block)
 		} else {
 			for _, dynamicContent := range block.Body.Blocks {
-				block.Type = block.Labels[0]
+				dynamicContent.Type = block.Labels[0]
 				out.Blocks = append(out.Blocks, dynamicContent)
 			}
 		}
@@ -332,6 +347,7 @@ func resolveDynamicBlocks(content *hclext.BodyContent) *hclext.BodyContent {
 	return out
 }
 
+// overrideBlocks changes the attributes in the passed primary blocks by override blocks recursively.
 func overrideBlocks(primaries, overrides hclext.Blocks) hclext.Blocks {
 	dict := map[string]*hclext.Block{}
 	for _, primary := range primaries {
@@ -345,10 +361,7 @@ func overrideBlocks(primaries, overrides hclext.Blocks) hclext.Blocks {
 			for name, attr := range override.Body.Attributes {
 				primary.Body.Attributes[name] = attr
 			}
-
-			for _, block := range override.Body.Blocks {
-				primary.Body.Blocks = overrideBlocks(primary.Body.Blocks, block.Body.Blocks)
-			}
+			primary.Body.Blocks = overrideBlocks(primary.Body.Blocks, override.Body.Blocks)
 		}
 	}
 

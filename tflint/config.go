@@ -197,6 +197,7 @@ func (c *Config) ToPluginConfig(name string) *tfplugin.MarshalledConfig {
 	return cfg
 }
 
+// PluginContent returns config content of the passed rule based on the schema.
 func (c *Config) PluginContent(name string, schema *hclext.BodySchema) (*hclext.BodyContent, hcl.Diagnostics) {
 	if schema == nil {
 		schema = &hclext.BodySchema{}
@@ -214,7 +215,12 @@ func (c *Config) PluginContent(name string, schema *hclext.BodySchema) (*hclext.
 		return nil, diags
 	}
 
-	schema.Attributes = append(schema.Attributes, hclext.AttributeSchema{Name: "enabled"})
+	schema.Attributes = append(schema.Attributes,
+		hclext.AttributeSchema{Name: "enabled"},
+		hclext.AttributeSchema{Name: "source"},
+		hclext.AttributeSchema{Name: "version"},
+		hclext.AttributeSchema{Name: "signing_key"},
+	)
 	for _, plugin := range plugins.Blocks {
 		if plugin.Labels[0] == name {
 			return hclext.Content(plugin.Body, schema)
@@ -224,6 +230,8 @@ func (c *Config) PluginContent(name string, schema *hclext.BodySchema) (*hclext.
 	return &hclext.BodyContent{}, nil
 }
 
+// Sources returns parsed config file sources.
+// Normally, there is only one file, but it is represented by map to retain the file name.
 func (c *Config) Sources() map[string][]byte {
 	return c.sources
 }

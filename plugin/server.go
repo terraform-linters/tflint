@@ -21,16 +21,19 @@ type Server struct {
 	sources    map[string][]byte
 }
 
+// GRPCServer is a gRPC server for responding to requests from plugins.
 type GRPCServer struct {
 	runner     *tflint.Runner
 	rootRunner *tflint.Runner
 	sources    map[string][]byte
 }
 
+// NewGRPCServer initializes a gRPC server for plugins.
 func NewGRPCServer(runner *tflint.Runner, rootRunner *tflint.Runner, sources map[string][]byte) *GRPCServer {
 	return &GRPCServer{runner: runner, rootRunner: rootRunner, sources: sources}
 }
 
+// GetModuleContent returns module content based on the passed schema and options.
 func (s *GRPCServer) GetModuleContent(bodyS *hclext.BodySchema, opts client.GetModuleContentOption) (*hclext.BodyContent, hcl.Diagnostics) {
 	switch opts.ModuleCtx {
 	case client.SelfModuleCtxType:
@@ -42,10 +45,12 @@ func (s *GRPCServer) GetModuleContent(bodyS *hclext.BodySchema, opts client.GetM
 	}
 }
 
+// GetFile returns the hcl.File based on passed the file name.
 func (s *GRPCServer) GetFile(name string) (*hcl.File, error) {
 	return s.runner.File(name), nil
 }
 
+// GetFiles returns all hcl.File in the module.
 func (s *GRPCServer) GetFiles(ty client.ModuleCtxType) map[string]*hcl.File {
 	switch ty {
 	case client.SelfModuleCtxType:
@@ -57,6 +62,10 @@ func (s *GRPCServer) GetFiles(ty client.ModuleCtxType) map[string]*hcl.File {
 	}
 }
 
+// GetRuleConfigContent extracts the rule config based on the schema.
+// It returns an extracted body content and hcl.File representation of the config file.
+// The reason for returning hcl.File is to refer to the source code information
+// to encode the expression, and there is room for improvement here.
 func (s *GRPCServer) GetRuleConfigContent(name string, bodyS *hclext.BodySchema) (*hclext.BodyContent, *hcl.File, error) {
 	file := s.runner.ConfigFile()
 	config := s.runner.RuleConfig(name)
@@ -76,6 +85,7 @@ func (s *GRPCServer) GetRuleConfigContent(name string, bodyS *hclext.BodySchema)
 	return body, file, nil
 }
 
+// EvaluateExpr returns the value of the passed expression.
 func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts client.EvaluateExprOption) (cty.Value, error) {
 	var runner *tflint.Runner
 	switch opts.ModuleCtx {
@@ -88,7 +98,10 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts client.EvaluateExprO
 	return val, err
 }
 
-// TODO: Why rule needs to implement Check()?
+// EmitIssue stores an issue in the server based on passed rule, message, and location.
+// If the range associated with the issue is an expression, it propagates to the runner
+// that the issue found in that expression. This allows you to determine if the issue was caused
+// by a module argument in the case of module inspection.
 func (s *GRPCServer) EmitIssue(rule client.Rule, message string, location hcl.Range) error {
 	file := s.runner.File(location.Filename)
 	if file == nil {
