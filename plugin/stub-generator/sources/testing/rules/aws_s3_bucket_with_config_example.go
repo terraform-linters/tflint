@@ -3,17 +3,17 @@ package rules
 import (
 	"fmt"
 
-	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 )
 
 // AwsS3BucketWithConfigExampleRule checks whether ...
-type AwsS3BucketWithConfigExampleRule struct{}
+type AwsS3BucketWithConfigExampleRule struct {
+	tflint.DefaultRule
+}
 
 type awsS3BucketWithConfigExampleRuleConfig struct {
-	Name string `hcl:"name"`
-
-	Remain hcl.Body `hcl:",remain"`
+	Name string `hclext:"name"`
 }
 
 // NewAwsS3BucketWithConfigExampleRule returns a new rule
@@ -32,7 +32,7 @@ func (r *AwsS3BucketWithConfigExampleRule) Enabled() bool {
 }
 
 // Severity returns the rule severity
-func (r *AwsS3BucketWithConfigExampleRule) Severity() string {
+func (r *AwsS3BucketWithConfigExampleRule) Severity() tflint.Severity {
 	return tflint.WARNING
 }
 
@@ -48,16 +48,33 @@ func (r *AwsS3BucketWithConfigExampleRule) Check(runner tflint.Runner) error {
 		return err
 	}
 
-	return runner.WalkResourceAttributes("aws_s3_bucket", "bucket", func(attribute *hcl.Attribute) error {
+	resources, err := runner.GetResourceContent("aws_s3_bucket", &hclext.BodySchema{
+		Attributes: []hclext.AttributeSchema{{Name: "bucket"}},
+	}, nil)
+	if err != nil {
+		return err
+	}
+
+	for _, resource := range resources.Blocks {
+		attribute, exists := resource.Body.Attributes["bucket"]
+		if !exists {
+			continue
+		}
+
 		var bucket string
 		err := runner.EvaluateExpr(attribute.Expr, &bucket, nil)
 
-		return runner.EnsureNoError(err, func() error {
-			return runner.EmitIssueOnExpr(
+		err = runner.EnsureNoError(err, func() error {
+			return runner.EmitIssue(
 				r,
 				fmt.Sprintf("bucket name is %s, config=%s", bucket, config.Name),
-				attribute.Expr,
+				attribute.Expr.Range(),
 			)
 		})
-	})
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
