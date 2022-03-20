@@ -12,9 +12,11 @@ func main() {
 			Name:    "testing",
 			Version: "0.1.0",
 			Rules: []tflint.Rule{
+				rules.NewAwsAutoscalingGroupCtyEvalExampleRule(),
 				rules.NewAwsInstanceExampleTypeRule(),
-				rules.NewRequredConfigRule(),
 				rules.NewAwsS3BucketExampleLifecycleRuleRule(),
+				rules.NewAwsInstanceMapEvalExampleRule(),
+				rules.NewAwsS3BucketWithConfigExampleRule(),
 			},
 		},
 	})

@@ -10,23 +10,22 @@ import (
 
 // Options is an option specified by arguments.
 type Options struct {
-	Version        bool     `short:"v" long:"version" description:"Print TFLint version"`
-	Init           bool     `long:"init" description:"Install plugins"`
-	Langserver     bool     `long:"langserver" description:"Start language server"`
-	Format         string   `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" choice:"junit" choice:"compact" choice:"sarif" default:"default"`
-	Config         string   `short:"c" long:"config" description:"Config file name" value-name:"FILE" default:".tflint.hcl"`
-	IgnoreModules  []string `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE"`
-	EnableRules    []string `long:"enable-rule" description:"Enable rules from the command line" value-name:"RULE_NAME"`
-	DisableRules   []string `long:"disable-rule" description:"Disable rules from the command line" value-name:"RULE_NAME"`
-	Only           []string `long:"only" description:"Enable only this rule, disabling all other defaults. Can be specified multiple times" value-name:"RULE_NAME"`
-	EnablePlugins  []string `long:"enable-plugin" description:"Enable plugins from the command line" value-name:"PLUGIN_NAME"`
-	Varfiles       []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
-	Variables      []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
-	Module         bool     `long:"module" description:"Inspect modules"`
-	Force          bool     `long:"force" description:"Return zero exit status even if issues found"`
-	NoColor        bool     `long:"no-color" description:"Disable colorized output"`
-	LogLevel       string   `long:"loglevel" description:"Change the loglevel" choice:"trace" choice:"debug" choice:"info" choice:"warn" choice:"error"`
-	ActAsAwsPlugin bool     `long:"act-as-aws-plugin" hidden:"true"`
+	Version       bool     `short:"v" long:"version" description:"Print TFLint version"`
+	Init          bool     `long:"init" description:"Install plugins"`
+	Langserver    bool     `long:"langserver" description:"Start language server"`
+	Format        string   `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" choice:"junit" choice:"compact" choice:"sarif" default:"default"`
+	Config        string   `short:"c" long:"config" description:"Config file name" value-name:"FILE" default:".tflint.hcl"`
+	IgnoreModules []string `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE"`
+	EnableRules   []string `long:"enable-rule" description:"Enable rules from the command line" value-name:"RULE_NAME"`
+	DisableRules  []string `long:"disable-rule" description:"Disable rules from the command line" value-name:"RULE_NAME"`
+	Only          []string `long:"only" description:"Enable only this rule, disabling all other defaults. Can be specified multiple times" value-name:"RULE_NAME"`
+	EnablePlugins []string `long:"enable-plugin" description:"Enable plugins from the command line" value-name:"PLUGIN_NAME"`
+	Varfiles      []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
+	Variables     []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
+	Module        bool     `long:"module" description:"Inspect modules"`
+	Force         bool     `long:"force" description:"Return zero exit status even if issues found"`
+	NoColor       bool     `long:"no-color" description:"Disable colorized output"`
+	LogLevel      string   `long:"loglevel" description:"Change the loglevel" choice:"trace" choice:"debug" choice:"info" choice:"warn" choice:"error"`
 }
 
 func (opts *Options) toConfig() *tflint.Config {

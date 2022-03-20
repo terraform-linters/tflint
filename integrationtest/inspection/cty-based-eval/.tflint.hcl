@@ -1,3 +1,3 @@
-plugin "aws" {
+plugin "testing" {
   enabled = true
 }

@@ -6,7 +6,3 @@ plugin "customrulesettesting" {
     token = "SECRET_TOKEN"
   }
 }
-
-plugin "aws" {
-  enabled = false
-}
