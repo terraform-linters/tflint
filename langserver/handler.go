@@ -14,13 +14,13 @@ import (
 	lsp "github.com/sourcegraph/go-lsp"
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/spf13/afero"
-	tfplugin "github.com/terraform-linters/tflint/plugin"
+	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/rules"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
 // NewHandler returns a new JSON-RPC handler
-func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, *tfplugin.Plugin, error) {
+func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, *plugin.Plugin, error) {
 	cfg, err := tflint.LoadConfig(configPath)
 	if err != nil {
 		return nil, nil, err
@@ -32,13 +32,13 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 	}
 	cfg = cfg.Merge(cliConfig)
 
-	plugin, err := tfplugin.Discovery(cfg)
+	rulsetPlugin, err := plugin.Discovery(cfg)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	rulesets := []tflint.RuleSet{&rules.RuleSet{}}
-	for _, ruleset := range plugin.RuleSets {
+	for _, ruleset := range rulsetPlugin.RuleSets {
 		rulesets = append(rulesets, ruleset)
 	}
 	if err := cliConfig.ValidateRules(rulesets...); err != nil {
@@ -51,9 +51,9 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 		config:     cfg,
 		fs:         afero.NewCopyOnWriteFs(afero.NewOsFs(), afero.NewMemMapFs()),
 		rules:      rules.NewRules(cfg),
-		plugin:     plugin,
+		plugin:     rulsetPlugin,
 		diagsPaths: []string{},
-	}).handle), plugin, nil
+	}).handle), rulsetPlugin, nil
 }
 
 type handler struct {
@@ -63,7 +63,7 @@ type handler struct {
 	fs         afero.Fs
 	rootDir    string
 	rules      []rules.Rule
-	plugin     *tfplugin.Plugin
+	plugin     *plugin.Plugin
 	shutdown   bool
 	diagsPaths []string
 }
@@ -176,28 +176,25 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 		}
 	}
 
+	config := h.config.ToPluginConfig()
 	for name, ruleset := range h.plugin.RuleSets {
-		config, err := h.config.ToPluginConfig(name).Unmarshal()
-		if err != nil {
-			return ret, fmt.Errorf("Failed to fetch config schema from plugins")
-		}
 		if err := ruleset.ApplyGlobalConfig(config); err != nil {
-			return ret, fmt.Errorf("Failed to fetch config schema from plugins")
+			return ret, fmt.Errorf("Failed to apply global config to `%s` plugin", name)
 		}
 		configSchema, err := ruleset.ConfigSchema()
 		if err != nil {
-			return ret, fmt.Errorf("Failed to fetch config schema from plugins")
+			return ret, fmt.Errorf("Failed to fetch config schema from `%s` plugin", name)
 		}
 		content, diags := h.config.PluginContent(name, configSchema)
 		if diags.HasErrors() {
-			return ret, fmt.Errorf("Failed to parse plugin config schema")
+			return ret, fmt.Errorf("Failed to parse `%s` plugin config", name)
 		}
 		err = ruleset.ApplyConfig(content, h.config.Sources())
 		if err != nil {
-			return ret, fmt.Errorf("Failed to apply plugin config")
+			return ret, fmt.Errorf("Failed to apply config to `%s` plugin", name)
 		}
 		for _, runner := range runners {
-			err = ruleset.Check(tfplugin.NewGRPCServer(runner, runners[len(runners)-1], loader.Sources()))
+			err = ruleset.Check(plugin.NewGRPCServer(runner, runners[len(runners)-1], loader.Sources()))
 			if err != nil {
 				return ret, fmt.Errorf("Failed to check ruleset: %w", err)
 			}

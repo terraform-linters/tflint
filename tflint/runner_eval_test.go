@@ -2,31 +2,37 @@ package tflint
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
-	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
-	"github.com/terraform-linters/tflint/terraform/configs/configschema"
 	"github.com/terraform-linters/tflint/terraform/terraform"
 	"github.com/zclconf/go-cty/cty"
 )
 
-func Test_EvaluateExpr_string(t *testing.T) {
-	cases := []struct {
+func Test_EvaluateExpr(t *testing.T) {
+	// default error check helper
+	neverHappend := func(err error) bool { return err != nil }
+
+	tests := []struct {
 		Name     string
 		Content  string
-		Expected string
+		Type     cty.Type
+		Want     string
+		ErrCheck func(error) bool
 	}{
 		{
-			Name: "literal",
+			Name: "string literal",
 			Content: `
 resource "null_resource" "test" {
   key = "literal_val"
 }`,
-			Expected: "literal_val",
+			Type:     cty.String,
+			Want:     `cty.StringVal("literal_val")`,
+			ErrCheck: neverHappend,
 		},
 		{
 			Name: "string interpolation",
@@ -38,7 +44,9 @@ variable "string_var" {
 resource "null_resource" "test" {
   key = "${var.string_var}"
 }`,
-			Expected: "string_val",
+			Type:     cty.String,
+			Want:     `cty.StringVal("string_val")`,
+			ErrCheck: neverHappend,
 		},
 		{
 			Name: "new style interpolation",
@@ -50,7 +58,9 @@ variable "string_var" {
 resource "null_resource" "test" {
   key = var.string_var
 }`,
-			Expected: "string_val",
+			Type:     cty.String,
+			Want:     `cty.StringVal("string_val")`,
+			ErrCheck: neverHappend,
 		},
 		{
 			Name: "list element",
@@ -62,7 +72,9 @@ variable "list_var" {
 resource "null_resource" "test" {
   key = "${var.list_var[0]}"
 }`,
-			Expected: "one",
+			Type:     cty.String,
+			Want:     `cty.StringVal("one")`,
+			ErrCheck: neverHappend,
 		},
 		{
 			Name: "map element",
@@ -77,7 +89,9 @@ variable "map_var" {
 resource "null_resource" "test" {
   key = "${var.map_var["one"]}"
 }`,
-			Expected: "one",
+			Type:     cty.String,
+			Want:     `cty.StringVal("one")`,
+			ErrCheck: neverHappend,
 		},
 		{
 			Name: "object item",
@@ -90,10 +104,12 @@ variable "object" {
 resource "null_resource" "test" {
   key = var.object.foo
 }`,
-			Expected: "bar",
+			Type:     cty.String,
+			Want:     `cty.StringVal("bar")`,
+			ErrCheck: neverHappend,
 		},
 		{
-			Name: "convert from integer",
+			Name: "convert to string from integer",
 			Content: `
 variable "string_var" {
   default = 10
@@ -102,7 +118,9 @@ variable "string_var" {
 resource "null_resource" "test" {
   key = "${var.string_var}"
 }`,
-			Expected: "10",
+			Type:     cty.String,
+			Want:     `cty.StringVal("10")`,
+			ErrCheck: neverHappend,
 		},
 		{
 			Name: "conditional",
@@ -110,7 +128,9 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = "${true ? "production" : "development"}"
 }`,
-			Expected: "production",
+			Type:     cty.String,
+			Want:     `cty.StringVal("production")`,
+			ErrCheck: neverHappend,
 		},
 		{
 			Name: "bulit-in function",
@@ -118,7 +138,9 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = "${md5("foo")}"
 }`,
-			Expected: "acbd18db4cc2f85cedef654fccc4a4d8",
+			Type:     cty.String,
+			Want:     `cty.StringVal("acbd18db4cc2f85cedef654fccc4a4d8")`,
+			ErrCheck: neverHappend,
 		},
 		{
 			Name: "terraform workspace",
@@ -126,7 +148,9 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = "${terraform.workspace}"
 }`,
-			Expected: "default",
+			Type:     cty.String,
+			Want:     `cty.StringVal("default")`,
+			ErrCheck: neverHappend,
 		},
 		{
 			Name: "inside interpolation",
@@ -138,7 +162,9 @@ variable "string_var" {
 resource "null_resource" "test" {
   key = "Hello ${var.string_var}"
 }`,
-			Expected: "Hello World",
+			Type:     cty.String,
+			Want:     `cty.StringVal("Hello World")`,
+			ErrCheck: neverHappend,
 		},
 		{
 			Name: "path.root",
@@ -146,7 +172,9 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = path.root
 }`,
-			Expected: ".",
+			Type:     cty.String,
+			Want:     `cty.StringVal(".")`,
+			ErrCheck: neverHappend,
 		},
 		{
 			Name: "path.module",
@@ -154,66 +182,10 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   key = path.module
 }`,
-			Expected: ".",
+			Type:     cty.String,
+			Want:     `cty.StringVal(".")`,
+			ErrCheck: neverHappend,
 		},
-	}
-
-	for _, tc := range cases {
-		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
-
-		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-			var ret string
-			if err := runner.EvaluateExpr(attribute.Expr, &ret); err != nil {
-				return err
-			}
-
-			if tc.Expected != ret {
-				t.Fatalf("Failed `%s` test: expected value is `%s`, but get `%s`", tc.Name, tc.Expected, ret)
-			}
-			return nil
-		})
-		if err != nil {
-			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
-	}
-}
-
-func Test_EvaluateExpr_pathCwd(t *testing.T) {
-	cwd, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-	expected := filepath.ToSlash(cwd)
-
-	content := `
-resource "null_resource" "test" {
-  key = path.cwd
-}`
-	runner := TestRunner(t, map[string]string{"main.tf": content})
-
-	err = runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-		var ret string
-		if err := runner.EvaluateExpr(attribute.Expr, &ret); err != nil {
-			return err
-		}
-
-		if expected != ret {
-			t.Fatalf("expected value is `%s`, but get `%s`", expected, ret)
-		}
-		return nil
-	})
-
-	if err != nil {
-		t.Fatalf("Failed: `%s` occurred", err)
-	}
-}
-
-func Test_EvaluateExpr_integer(t *testing.T) {
-	cases := []struct {
-		Name     string
-		Content  string
-		Expected int
-	}{
 		{
 			Name: "integer interpolation",
 			Content: `
@@ -224,10 +196,12 @@ variable "integer_var" {
 resource "null_resource" "test" {
   key = "${var.integer_var}"
 }`,
-			Expected: 3,
+			Type:     cty.Number,
+			Want:     `cty.NumberIntVal(3)`,
+			ErrCheck: neverHappend,
 		},
 		{
-			Name: "convert from string",
+			Name: "convert to integer from string",
 			Content: `
 variable "integer_var" {
   default = "3"
@@ -236,110 +210,32 @@ variable "integer_var" {
 resource "null_resource" "test" {
   key = "${var.integer_var}"
 }`,
-			Expected: 3,
+			Type:     cty.Number,
+			Want:     `cty.NumberIntVal(3)`,
+			ErrCheck: neverHappend,
 		},
-	}
-
-	for _, tc := range cases {
-		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
-
-		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-			var ret int
-			if err := runner.EvaluateExpr(attribute.Expr, &ret); err != nil {
-				return err
-			}
-
-			if tc.Expected != ret {
-				t.Fatalf("Failed `%s` test: expected value is `%d`, but get `%d`", tc.Name, tc.Expected, ret)
-			}
-			return nil
-		})
-		if err != nil {
-			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
-	}
-}
-
-func Test_EvaluateExpr_stringList(t *testing.T) {
-	cases := []struct {
-		Name     string
-		Content  string
-		Expected []string
-	}{
 		{
-			Name: "list literal",
+			Name: "string list literal",
 			Content: `
 resource "null_resource" "test" {
   key = ["one", "two", "three"]
 }`,
-			Expected: []string{"one", "two", "three"},
+			Type:     cty.List(cty.String),
+			Want:     `cty.ListVal([]cty.Value{cty.StringVal("one"), cty.StringVal("two"), cty.StringVal("three")})`,
+			ErrCheck: neverHappend,
 		},
-	}
-
-	for _, tc := range cases {
-		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
-
-		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-			var ret []string
-			if err := runner.EvaluateExpr(attribute.Expr, &ret); err != nil {
-				return err
-			}
-
-			if !cmp.Equal(tc.Expected, ret) {
-				t.Fatalf("Failed `%s` test: diff: %s", tc.Name, cmp.Diff(tc.Expected, ret))
-			}
-			return nil
-		})
-		if err != nil {
-			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
-	}
-}
-
-func Test_EvaluateExpr_numberList(t *testing.T) {
-	cases := []struct {
-		Name     string
-		Content  string
-		Expected []int
-	}{
 		{
-			Name: "list literal",
+			Name: "number list literal",
 			Content: `
 resource "null_resource" "test" {
   key = [1, 2, 3]
 }`,
-			Expected: []int{1, 2, 3},
+			Type:     cty.List(cty.Number),
+			Want:     `cty.ListVal([]cty.Value{cty.NumberIntVal(1), cty.NumberIntVal(2), cty.NumberIntVal(3)})`,
+			ErrCheck: neverHappend,
 		},
-	}
-
-	for _, tc := range cases {
-		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
-
-		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-			var ret []int
-			if err := runner.EvaluateExpr(attribute.Expr, &ret); err != nil {
-				return err
-			}
-
-			if !cmp.Equal(tc.Expected, ret) {
-				t.Fatalf("Failed `%s` test: diff: %s", tc.Name, cmp.Diff(tc.Expected, ret))
-			}
-			return nil
-		})
-		if err != nil {
-			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
-	}
-}
-
-func Test_EvaluateExpr_stringMap(t *testing.T) {
-	cases := []struct {
-		Name     string
-		Content  string
-		Expected map[string]string
-	}{
 		{
-			Name: "map literal",
+			Name: "string map literal",
 			Content: `
 resource "null_resource" "test" {
   key = {
@@ -347,38 +243,12 @@ resource "null_resource" "test" {
     two = "2"
   }
 }`,
-			Expected: map[string]string{"one": "1", "two": "2"},
+			Type:     cty.Map(cty.String),
+			Want:     `cty.MapVal(map[string]cty.Value{"one":cty.StringVal("1"), "two":cty.StringVal("2")})`,
+			ErrCheck: neverHappend,
 		},
-	}
-
-	for _, tc := range cases {
-		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
-
-		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-			var ret map[string]string
-			if err := runner.EvaluateExpr(attribute.Expr, &ret); err != nil {
-				return err
-			}
-
-			if !cmp.Equal(tc.Expected, ret) {
-				t.Fatalf("Failed `%s` test: diff: %s", tc.Name, cmp.Diff(tc.Expected, ret))
-			}
-			return nil
-		})
-		if err != nil {
-			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
-	}
-}
-
-func Test_EvaluateExpr_numberMap(t *testing.T) {
-	cases := []struct {
-		Name     string
-		Content  string
-		Expected map[string]int
-	}{
 		{
-			Name: "map literal",
+			Name: "number map literal",
 			Content: `
 resource "null_resource" "test" {
   key = {
@@ -386,44 +256,34 @@ resource "null_resource" "test" {
     two = "2"
   }
 }`,
-			Expected: map[string]int{"one": 1, "two": 2},
+			Type:     cty.Map(cty.Number),
+			Want:     `cty.MapVal(map[string]cty.Value{"one":cty.NumberIntVal(1), "two":cty.NumberIntVal(2)})`,
+			ErrCheck: neverHappend,
 		},
-	}
-
-	for _, tc := range cases {
-		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
-
-		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-			var ret map[string]int
-			if err := runner.EvaluateExpr(attribute.Expr, &ret); err != nil {
-				return err
-			}
-
-			if !cmp.Equal(tc.Expected, ret) {
-				t.Fatalf("Failed `%s` test: diff: %s", tc.Name, cmp.Diff(tc.Expected, ret))
-			}
-			return nil
-		})
-		if err != nil {
-			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
-	}
-}
-
-func Test_EvaluateExpr_interpolationError(t *testing.T) {
-	cases := []struct {
-		Name    string
-		Content string
-		Error   error
-		Contain error
-	}{
+		{
+			Name: "map object literal",
+			Content: `
+resource "null_resource" "test" {
+  key = {
+    one = 1
+    two = "2"
+  }
+}`,
+			Type:     cty.DynamicPseudoType,
+			Want:     `cty.ObjectVal(map[string]cty.Value{"one":cty.NumberIntVal(1), "two":cty.StringVal("2")})`,
+			ErrCheck: neverHappend,
+		},
 		{
 			Name: "undefined variable",
 			Content: `
 resource "null_resource" "test" {
   key = "${var.undefined_var}"
 }`,
-			Error: errors.New("failed to eval an expression in main.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block."),
+			Type: cty.String,
+			Want: `cty.NilVal`,
+			ErrCheck: func(err error) bool {
+				return err == nil || err.Error() != `failed to eval an expression in main.tf:3; Reference to undeclared input variable: An input variable with the name "undefined_var" has not been declared. This variable can be declared with a variable "undefined_var" {} block.`
+			},
 		},
 		{
 			Name: "no default value",
@@ -433,8 +293,23 @@ variable "no_value_var" {}
 resource "null_resource" "test" {
   key = "${var.no_value_var}"
 }`,
-			Error:   errors.New("unknown value found in main.tf:5"),
-			Contain: sdk.ErrUnknownValue,
+			Type: cty.String,
+			Want: `cty.NilVal`,
+			ErrCheck: func(err error) bool {
+				return err == nil || err.Error() != "unknown value found in main.tf:5" || !errors.Is(err, sdk.ErrUnknownValue)
+			},
+		},
+		{
+			Name: "no default value as cty.Value",
+			Content: `
+variable "no_value_var" {}
+
+resource "null_resource" "test" {
+  key = "${var.no_value_var}"
+}`,
+			Type:     cty.DynamicPseudoType,
+			Want:     `cty.DynamicVal`,
+			ErrCheck: neverHappend,
 		},
 		{
 			Name: "null value",
@@ -447,181 +322,14 @@ variable "null_var" {
 resource "null_resource" "test" {
   key = var.null_var
 }`,
-			Error:   errors.New("null value found in main.tf:8"),
-			Contain: sdk.ErrNullValue,
+			Type: cty.String,
+			Want: `cty.NilVal`,
+			ErrCheck: func(err error) bool {
+				return err == nil || err.Error() != "null value found in main.tf:8" || !errors.Is(err, sdk.ErrNullValue)
+			},
 		},
 		{
-			Name: "terraform env",
-			Content: `
-resource "null_resource" "test" {
-  key = "${terraform.env}"
-}`,
-			Error: errors.New("failed to eval an expression in main.tf:3; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was renamed to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute."),
-		},
-		{
-			Name: "type mismatch",
-			Content: `
-resource "null_resource" "test" {
-  key = ["one", "two", "three"]
-}`,
-			Error: errors.New("failed to eval an expression in main.tf:3; Incorrect value type: Invalid expression value: string required."),
-		},
-		{
-			Name: "unevalauble",
-			Content: `
-resource "null_resource" "test" {
-  key = "${module.text}"
-}`,
-			Error:   errors.New("unevaluable expression found in main.tf:3"),
-			Contain: sdk.ErrUnevaluable,
-		},
-	}
-
-	for _, tc := range cases {
-		t.Run(tc.Name, func(t *testing.T) {
-			runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
-
-			err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-				var ret string
-				err := runner.EvaluateExpr(attribute.Expr, &ret)
-
-				if err == nil {
-					t.Fatal("an error was expected to occur, but it did not")
-				}
-				if tc.Error.Error() != err.Error() {
-					t.Fatalf("expected error is `%s`, but get `%s`", tc.Error, err)
-				}
-				if tc.Contain != nil && !errors.Is(err, tc.Contain) {
-					t.Fatalf("err `%s` should contain `%s`, but not", err, tc.Contain)
-				}
-				return nil
-			})
-			if err != nil {
-				t.Fatal(err)
-			}
-		})
-	}
-}
-
-func Test_EvaluateExpr_mapWithInterpolationError(t *testing.T) {
-	cases := []struct {
-		Name    string
-		Content string
-		Error   error
-		Contain error
-	}{
-		{
-			Name: "undefined variable",
-			Content: `
-resource "null_resource" "test" {
-  key = {
-		value = var.undefined_var
-	}
-}`,
-			Error: errors.New("failed to eval an expression in main.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block."),
-		},
-		{
-			Name: "no default value",
-			Content: `
-variable "no_value_var" {}
-
-resource "null_resource" "test" {
-	key = {
-		value = var.no_value_var
-	}
-}`,
-			Error:   errors.New("unknown value found in main.tf:5"),
-			Contain: sdk.ErrUnknownValue,
-		},
-		{
-			Name: "null value",
-			Content: `
-variable "null_var" {
-	type    = string
-	default = null
-}
-
-resource "null_resource" "test" {
-	key = {
-		value = var.null_var
-	}
-}`,
-			Error:   errors.New("null value found in main.tf:8"),
-			Contain: sdk.ErrNullValue,
-		},
-		{
-			Name: "unevalauble",
-			Content: `
-resource "null_resource" "test" {
-	key = {
-		value = module.text
-	}
-}`,
-			Error:   errors.New("unevaluable expression found in main.tf:3"),
-			Contain: sdk.ErrUnevaluable,
-		},
-	}
-
-	for _, tc := range cases {
-		t.Run(tc.Name, func(t *testing.T) {
-			runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
-
-			err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-				var ret map[string]string
-				err := runner.EvaluateExpr(attribute.Expr, &ret)
-
-				if err == nil {
-					t.Fatal("an error was expected to occur, but it did not")
-				}
-				if tc.Error.Error() != err.Error() {
-					t.Fatalf("expected error is `%s`, but get `%s`", tc.Error, err)
-				}
-				if tc.Contain != nil && !errors.Is(err, tc.Contain) {
-					t.Fatalf("err `%s` should contain `%s`, but not", err, tc.Contain)
-				}
-				return nil
-			})
-			if err != nil {
-				t.Fatal(err)
-			}
-		})
-	}
-}
-
-func Test_EvaluateBlock(t *testing.T) {
-	cases := []struct {
-		Name     string
-		Content  string
-		Expected map[string]string
-	}{
-		{
-			Name: "map literal",
-			Content: `
-resource "null_resource" "test" {
-  key {
-    one = 1
-    two = "2"
-  }
-}`,
-			Expected: map[string]string{"one": "1", "two": "2"},
-		},
-		{
-			Name: "variable",
-			Content: `
-variable "one" {
-  default = 1
-}
-
-resource "null_resource" "test" {
-  key {
-    one = var.one
-    two = "2"
-  }
-}`,
-			Expected: map[string]string{"one": "1", "two": "2"},
-		},
-		{
-			Name: "null value",
+			Name: "null value as cty.Value",
 			Content: `
 variable "null_var" {
   type    = string
@@ -629,129 +337,185 @@ variable "null_var" {
 }
 
 resource "null_resource" "test" {
-  key {
-	one = "1"
-	two = var.null_var
-  }
+  key = var.null_var
 }`,
-			Expected: map[string]string{"one": "1", "two": ""},
-		},
-	}
-
-	for _, tc := range cases {
-		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
-
-		err := runner.WalkResourceBlocks("null_resource", "key", func(block *hcl.Block) error {
-			var ret map[string]string
-			schema := &configschema.Block{
-				Attributes: map[string]*configschema.Attribute{
-					"one": {Type: cty.String},
-					"two": {Type: cty.String},
-				},
-			}
-			if err := runner.EvaluateBlock(block, schema, &ret); err != nil {
-				return err
-			}
-
-			if !cmp.Equal(tc.Expected, ret) {
-				t.Fatalf("Failed `%s` test: diff: %s", tc.Name, cmp.Diff(tc.Expected, ret))
-			}
-			return nil
-		})
-		if err != nil {
-			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
-	}
-}
-
-func Test_EvaluateBlock_error(t *testing.T) {
-	cases := []struct {
-		Name    string
-		Content string
-		Error   error
-		Contain error
-	}{
-		{
-			Name: "undefined variable",
-			Content: `
-resource "null_resource" "test" {
-  key {
-	one = "1"
-	two = var.undefined_var
-  }
-}`,
-			Error: errors.New("failed to eval a block in main.tf:3; Reference to undeclared input variable: An input variable with the name \"undefined_var\" has not been declared. This variable can be declared with a variable \"undefined_var\" {} block."),
+			Type:     cty.DynamicPseudoType,
+			Want:     `cty.NullVal(cty.String)`,
+			ErrCheck: neverHappend,
 		},
 		{
-			Name: "no default value",
+			Name: "terraform env",
 			Content: `
-variable "no_value_var" {}
-
 resource "null_resource" "test" {
-  key {
-    one = "1"
-    two = var.no_value_var
-  }
+  key = "${terraform.env}"
 }`,
-			Error:   errors.New("unknown value found in main.tf:5"),
-			Contain: sdk.ErrUnknownValue,
+			Type: cty.String,
+			Want: `cty.NilVal`,
+			ErrCheck: func(err error) bool {
+				return err == nil || err.Error() != `failed to eval an expression in main.tf:3; Invalid "terraform" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The "state environment" concept was renamed to "workspace" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.`
+			},
 		},
 		{
 			Name: "type mismatch",
 			Content: `
 resource "null_resource" "test" {
-  key {
-    one = "1"
-    two = {
-      three = 3
-    }
-  }
+  key = ["one", "two", "three"]
 }`,
-			Error: errors.New("failed to eval a block in main.tf:3; Incorrect attribute value type: Inappropriate value for attribute \"two\": string required."),
+			Type: cty.String,
+			Want: `cty.NilVal`,
+			ErrCheck: func(err error) bool {
+				return err == nil || err.Error() != "failed to eval an expression in main.tf:3; Incorrect value type: Invalid expression value: string required."
+			},
 		},
 		{
 			Name: "unevalauble",
 			Content: `
 resource "null_resource" "test" {
-  key {
-	one = "1"
-	two = module.text
+  key = "${module.text}"
+}`,
+			Type: cty.String,
+			Want: `cty.NilVal`,
+			ErrCheck: func(err error) bool {
+				return err == nil || err.Error() != "unevaluable expression found in main.tf:3" || !errors.Is(err, sdk.ErrUnevaluable)
+			},
+		},
+		{
+			Name: "undefined variable in map",
+			Content: `
+resource "null_resource" "test" {
+  key = {
+    value = var.undefined_var
   }
 }`,
-			Error:   errors.New("unevaluable block found in main.tf:3"),
-			Contain: sdk.ErrUnevaluable,
+			Type: cty.Map(cty.String),
+			Want: `cty.NilVal`,
+			ErrCheck: func(err error) bool {
+				return err == nil || err.Error() != `failed to eval an expression in main.tf:3; Reference to undeclared input variable: An input variable with the name "undefined_var" has not been declared. This variable can be declared with a variable "undefined_var" {} block.`
+			},
+		},
+		{
+			Name: "no default value in map",
+			Content: `
+variable "no_value_var" {}
+
+resource "null_resource" "test" {
+  key = {
+    value = var.no_value_var
+  }
+}`,
+			Type: cty.Map(cty.String),
+			Want: `cty.NilVal`,
+			ErrCheck: func(err error) bool {
+				return err == nil || err.Error() != "unknown value found in main.tf:5" || !errors.Is(err, sdk.ErrUnknownValue)
+			},
+		},
+		{
+			Name: "null value in map",
+			Content: `
+variable "null_var" {
+  type    = string
+  default = null
+}
+
+resource "null_resource" "test" {
+  key = {
+    value = var.null_var
+  }
+}`,
+			Type: cty.Map(cty.String),
+			Want: `cty.NilVal`,
+			ErrCheck: func(err error) bool {
+				return err == nil || err.Error() != "null value found in main.tf:8" || !errors.Is(err, sdk.ErrNullValue)
+			},
+		},
+		{
+			Name: "unevalauble in map",
+			Content: `
+resource "null_resource" "test" {
+  key = {
+    value = module.text
+  }
+}`,
+			Type: cty.Map(cty.String),
+			Want: `cty.NilVal`,
+			ErrCheck: func(err error) bool {
+				return err == nil || err.Error() != "unevaluable expression found in main.tf:3" || !errors.Is(err, sdk.ErrUnevaluable)
+			},
 		},
 	}
 
-	for _, tc := range cases {
-		t.Run(tc.Name, func(t *testing.T) {
-			runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
+	for _, test := range tests {
+		t.Run(test.Name, func(t *testing.T) {
+			runner := TestRunner(t, map[string]string{"main.tf": test.Content})
 
-			err := runner.WalkResourceBlocks("null_resource", "key", func(block *hcl.Block) error {
-				var ret map[string]string
-				schema := &configschema.Block{
-					Attributes: map[string]*configschema.Attribute{
-						"one": {Type: cty.String},
-						"two": {Type: cty.String},
+			body, diags := runner.GetModuleContent(&hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Attributes: []hclext.AttributeSchema{{Name: "key"}},
+						},
 					},
-				}
-				err := runner.EvaluateBlock(block, schema, &ret)
-
-				if err == nil {
-					t.Fatal("an error was expected to occur, but it did not")
-				}
-				if tc.Error.Error() != err.Error() {
-					t.Fatalf("expected error is `%s`, but get `%s`", tc.Error, err)
-				}
-				if tc.Contain != nil && !errors.Is(err, tc.Contain) {
-					t.Fatalf("err `%s` should contain `%s`, but not", err, tc.Contain)
-				}
-				return nil
+				},
 			})
-			if err != nil {
-				t.Fatal(err)
+			if diags.HasErrors() {
+				t.Fatalf("failed to parse: %s", diags)
+			}
+
+			resource := body.Blocks[0]
+			attribute := resource.Body.Attributes["key"]
+
+			val, err := runner.EvaluateExpr(attribute.Expr, test.Type)
+			if test.ErrCheck(err) {
+				t.Fatalf("failed to eval: %s", err)
+			}
+
+			if test.Want != val.GoString() {
+				t.Errorf("`%s` is expected, but got `%s`", test.Want, val.GoString())
 			}
 		})
+	}
+}
+
+func Test_EvaluateExpr_pathCwd(t *testing.T) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := fmt.Sprintf(`cty.StringVal("%s")`, filepath.ToSlash(cwd))
+
+	content := `
+resource "null_resource" "test" {
+  key = path.cwd
+}`
+	runner := TestRunner(t, map[string]string{"main.tf": content})
+
+	body, diags := runner.GetModuleContent(&hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type:       "resource",
+				LabelNames: []string{"type", "name"},
+				Body: &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "key"}},
+				},
+			},
+		},
+	})
+	if diags.HasErrors() {
+		t.Fatalf("failed to parse: %s", diags)
+	}
+
+	resource := body.Blocks[0]
+	attribute := resource.Body.Attributes["key"]
+
+	val, err := runner.EvaluateExpr(attribute.Expr, cty.String)
+	if err != nil {
+		t.Fatalf("failed to eval: %s", err)
+	}
+
+	if expected != val.GoString() {
+		t.Errorf("`%s` is expected, but got `%s`", expected, val.GoString())
 	}
 }
 
@@ -892,27 +656,41 @@ resource "null_resource" "test" {
 	}
 
 	for _, tc := range cases {
-		runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
+		t.Run(tc.Name, func(t *testing.T) {
+			runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-		err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
+			body, diags := runner.GetModuleContent(&hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Attributes: []hclext.AttributeSchema{{Name: "key"}},
+						},
+					},
+				},
+			})
+			if diags.HasErrors() {
+				t.Fatalf("failed to parse: %s", diags)
+			}
+
+			resource := body.Blocks[0]
+			attribute := resource.Body.Attributes["key"]
+
 			ret, err := isEvaluableExpr(attribute.Expr)
 			if err != nil && tc.Error == "" {
-				t.Fatalf("Failed `%s` test: unexpected error occurred: %s", tc.Name, err)
+				t.Fatalf("unexpected error occurred: %s", err)
 			}
 			if err == nil && tc.Error != "" {
-				t.Fatalf("Failed `%s` test: expected error is %s, but no errors", tc.Name, tc.Error)
+				t.Fatalf("expected error is %s, but no errors", tc.Error)
 			}
 			if err != nil && tc.Error != "" && err.Error() != tc.Error {
-				t.Fatalf("Failed `%s` test: expected error is %s, but got %s", tc.Name, tc.Error, err)
+				t.Fatalf("expected error is %s, but got %s", tc.Error, err)
 			}
 			if ret != tc.Expected {
-				t.Fatalf("Failed `%s` test: expected value is %t, but get %t", tc.Name, tc.Expected, ret)
+				t.Fatalf("expected value is %t, but get %t", tc.Expected, ret)
 			}
-			return nil
 		})
-		if err != nil {
-			t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-		}
 	}
 }
 
@@ -935,7 +713,7 @@ resource "null_resource" "test" {
   key = "${var.instance_type}"
 }`,
 			EnvVar:   map[string]string{"TF_VAR_instance_type": "m4.large"},
-			Expected: "m4.large",
+			Expected: `cty.StringVal("m4.large")`,
 		},
 		{
 			Name: "override environment variables by passed variables",
@@ -954,7 +732,7 @@ resource "null_resource" "test" {
 					},
 				},
 			},
-			Expected: "c5.2xlarge",
+			Expected: `cty.StringVal("c5.2xlarge")`,
 		},
 		{
 			Name: "override variables by variables passed later",
@@ -978,29 +756,42 @@ resource "null_resource" "test" {
 					},
 				},
 			},
-			Expected: "p3.8xlarge",
+			Expected: `cty.StringVal("p3.8xlarge")`,
 		},
 	}
 
 	for _, tc := range cases {
 		withEnvVars(t, tc.EnvVar, func() {
-			runner := testRunnerWithInputVariables(t, map[string]string{"main.tf": tc.Content}, tc.InputValues...)
+			t.Run(tc.Name, func(t *testing.T) {
+				runner := testRunnerWithInputVariables(t, map[string]string{"main.tf": tc.Content}, tc.InputValues...)
 
-			err := runner.WalkResourceAttributes("null_resource", "key", func(attribute *hcl.Attribute) error {
-				var ret string
-				err := runner.EvaluateExpr(attribute.Expr, &ret)
+				body, diags := runner.GetModuleContent(&hclext.BodySchema{
+					Blocks: []hclext.BlockSchema{
+						{
+							Type:       "resource",
+							LabelNames: []string{"type", "name"},
+							Body: &hclext.BodySchema{
+								Attributes: []hclext.AttributeSchema{{Name: "key"}},
+							},
+						},
+					},
+				})
+				if diags.HasErrors() {
+					t.Fatalf("failed to parse: %s", diags)
+				}
+
+				resource := body.Blocks[0]
+				attribute := resource.Body.Attributes["key"]
+
+				val, err := runner.EvaluateExpr(attribute.Expr, cty.String)
 				if err != nil {
-					return err
+					t.Fatalf("failed to eval: %s", err)
 				}
 
-				if tc.Expected != ret {
-					t.Fatalf("Failed `%s` test: expected value is %s, but get %s", tc.Name, tc.Expected, ret)
+				if tc.Expected != val.GoString() {
+					t.Errorf("%s is expected, but got %s", tc.Expected, val.GoString())
 				}
-				return nil
 			})
-			if err != nil {
-				t.Fatalf("Failed `%s` test: `%s` occurred", tc.Name, err)
-			}
 		})
 	}
 }
@@ -1009,14 +800,14 @@ func Test_willEvaluateResource(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
-		Expected bool
+		Expected int
 	}{
 		{
 			Name: "no meta-arguments",
 			Content: `
 resource "null_resource" "test" {
 }`,
-			Expected: true,
+			Expected: 1,
 		},
 		{
 			Name: "count is not zero (literal)",
@@ -1024,7 +815,7 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   count = 1
 }`,
-			Expected: true,
+			Expected: 1,
 		},
 		{
 			Name: "count is not zero (variable)",
@@ -1036,17 +827,25 @@ variable "foo" {
 resource "null_resource" "test" {
   count = var.foo
 }`,
-			Expected: true,
+			Expected: 1,
 		},
 		{
-			Name: "count is unevaluable",
+			Name: "count is unknown",
 			Content: `
 variable "foo" {}
 
 resource "null_resource" "test" {
   count = var.foo
 }`,
-			Expected: false,
+			Expected: 0,
+		},
+		{
+			Name: "count is unevaluable",
+			Content: `
+resource "null_resource" "test" {
+  count = local.foo
+}`,
+			Expected: 0,
 		},
 		{
 			Name: "count is zero",
@@ -1054,7 +853,16 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   count = 0
 }`,
-			Expected: false,
+			Expected: 0,
+		},
+		{
+			// HINT: Terraform does not allow null as `count`
+			Name: "count is null",
+			Content: `
+resource "null_resource" "test" {
+  count = null
+}`,
+			Expected: 1,
 		},
 		{
 			Name: "for_each is not empty (literal)",
@@ -1064,7 +872,7 @@ resource "null_resource" "test" {
     foo = "bar"
   }
 }`,
-			Expected: true,
+			Expected: 1,
 		},
 		{
 			Name: "for_each is not empty (variable)",
@@ -1078,17 +886,25 @@ variable "object" {
 resource "null_resource" "test" {
   for_each = var.object
 }`,
-			Expected: true,
+			Expected: 1,
 		},
 		{
-			Name: "for_each is unevaluable",
+			Name: "for_each is unknown",
 			Content: `
 variable "foo" {}
 
 resource "null_resource" "test" {
   for_each = var.foo
 }`,
-			Expected: false,
+			Expected: 0,
+		},
+		{
+			Name: "for_each is unevaluable",
+			Content: `
+resource "null_resource" "test" {
+  for_each = local.foo
+}`,
+			Expected: 0,
 		},
 		{
 			Name: "for_each is empty",
@@ -1096,7 +912,7 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   for_each = {}
 }`,
-			Expected: false,
+			Expected: 0,
 		},
 		{
 			Name: "for_each is not empty set",
@@ -1104,7 +920,7 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   for_each = toset(["foo", "bar"])
 }`,
-			Expected: true,
+			Expected: 1,
 		},
 		{
 			Name: "for_each is empty set",
@@ -1112,7 +928,16 @@ resource "null_resource" "test" {
 resource "null_resource" "test" {
   for_each = toset([])
 }`,
-			Expected: false,
+			Expected: 0,
+		},
+		{
+			// HINT: Terraform does not allow null as `for_each`
+			Name: "for_each is null",
+			Content: `
+resource "null_resource" "test" {
+  for_each = null
+}`,
+			Expected: 1,
 		},
 	}
 
@@ -1120,13 +945,20 @@ resource "null_resource" "test" {
 		t.Run(tc.Name, func(t *testing.T) {
 			runner := TestRunner(t, map[string]string{"main.tf": tc.Content})
 
-			got, err := runner.willEvaluateResource(runner.LookupResourcesByType("null_resource")[0])
-			if err != nil {
-				t.Fatal(err)
+			resources, diags := runner.GetModuleContent(&hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body:       &hclext.BodySchema{},
+					},
+				},
+			})
+			if diags.HasErrors() {
+				t.Fatalf("failed to parse: %s", diags)
 			}
-
-			if got != tc.Expected {
-				t.Fatalf("expect to get %t, but got %t", tc.Expected, got)
+			if len(resources.Blocks) != tc.Expected {
+				t.Fatalf("%d resources expected, but got %d resources", tc.Expected, len(resources.Blocks))
 			}
 		})
 	}

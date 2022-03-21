@@ -10,10 +10,9 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
-	"github.com/hashicorp/hcl/v2/hclsyntax"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
-	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 )
 
 var defaultConfigFile = ".tflint.hcl"
@@ -172,24 +171,13 @@ func (c *Config) Merge(other *Config) *Config {
 }
 
 // ToPluginConfig converts self into the plugin configuration format
-func (c *Config) ToPluginConfig(name string) *tfplugin.MarshalledConfig {
-	pluginCfg := c.Plugins[name]
-
-	var bodyBytes []byte
-	var cfgRange hcl.Range
-	if pluginCfg.Body != nil {
-		cfgRange = configBodyRange(pluginCfg.Body)
-		bodyBytes = cfgRange.SliceBytes(pluginCfg.file.Bytes)
-	}
-
-	cfg := &tfplugin.MarshalledConfig{
-		Rules:             map[string]*tfplugin.RuleConfig{},
+func (c *Config) ToPluginConfig() *sdk.Config {
+	cfg := &sdk.Config{
+		Rules:             map[string]*sdk.RuleConfig{},
 		DisabledByDefault: c.DisabledByDefault,
-		BodyBytes:         bodyBytes,
-		BodyRange:         cfgRange,
 	}
 	for _, rule := range c.Rules {
-		cfg.Rules[rule.Name] = &tfplugin.RuleConfig{
+		cfg.Rules[rule.Name] = &sdk.RuleConfig{
 			Name:    rule.Name,
 			Enabled: rule.Enabled,
 		}
@@ -478,28 +466,6 @@ func (raw *rawConfig) toConfig() *Config {
 // Bytes returns the bytes of the configuration file declared in the rule.
 func (r *RuleConfig) Bytes() []byte {
 	return r.file.Bytes
-}
-
-func configBodyRange(body hcl.Body) hcl.Range {
-	var bodyRange hcl.Range
-
-	// Estimate the range of the body from the range of all attributes and blocks.
-	hclBody := body.(*hclsyntax.Body)
-	for _, attr := range hclBody.Attributes {
-		if bodyRange.Empty() {
-			bodyRange = attr.Range()
-		} else {
-			bodyRange = hcl.RangeOver(bodyRange, attr.Range())
-		}
-	}
-	for _, block := range hclBody.Blocks {
-		if bodyRange.Empty() {
-			bodyRange = block.Range()
-		} else {
-			bodyRange = hcl.RangeOver(bodyRange, block.Range())
-		}
-	}
-	return bodyRange
 }
 
 func (c *PluginConfig) validate() error {
