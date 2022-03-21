@@ -3,6 +3,7 @@ package formatter
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"testing"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -15,7 +16,7 @@ func Test_sarifPrint(t *testing.T) {
 	cases := []struct {
 		Name   string
 		Issues tflint.Issues
-		Error  *tflint.Error
+		Error  error
 		Stdout string
 	}{
 		{
@@ -129,7 +130,7 @@ func Test_sarifPrint(t *testing.T) {
 					},
 				},
 			},
-			Error: tflint.NewContextError("Failed to work", errors.New("I don't feel like working")),
+			Error: fmt.Errorf("Failed to work; %w", errors.New("I don't feel like working")),
 			Stdout: `{
   "version": "2.1.0",
   "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
@@ -197,8 +198,8 @@ func Test_sarifPrint(t *testing.T) {
 		},
 		{
 			Name: "HCL diagnostics are surfaced as tflint-errors",
-			Error: tflint.NewContextError(
-				"babel fish confused",
+			Error: fmt.Errorf(
+				"babel fish confused; %w",
 				hcl.Diagnostics{
 					&hcl.Diagnostic{
 						Severity: hcl.DiagWarning,

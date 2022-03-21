@@ -6,7 +6,7 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-func (f *Formatter) compactPrint(issues tflint.Issues, tferr *tflint.Error, sources map[string][]byte) {
+func (f *Formatter) compactPrint(issues tflint.Issues, appErr error, sources map[string][]byte) {
 	if len(issues) > 0 {
 		fmt.Fprintf(f.Stdout, "%d issue(s) found:\n\n", len(issues))
 	}
@@ -24,7 +24,7 @@ func (f *Formatter) compactPrint(issues tflint.Issues, tferr *tflint.Error, sour
 		)
 	}
 
-	if tferr != nil {
-		f.prettyPrintErrors(tferr, sources)
+	if appErr != nil {
+		f.prettyPrintErrors(appErr, sources)
 	}
 }

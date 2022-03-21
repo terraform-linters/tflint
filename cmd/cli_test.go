@@ -216,11 +216,11 @@ func (r *errorRule) Enabled() bool {
 	return true
 }
 
-func (r *testRule) Severity() string {
+func (r *testRule) Severity() tflint.Severity {
 	return tflint.ERROR
 }
 
-func (r *errorRule) Severity() string {
+func (r *errorRule) Severity() tflint.Severity {
 	return tflint.ERROR
 }
 

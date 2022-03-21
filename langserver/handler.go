@@ -132,38 +132,38 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 
 	loader, err := tflint.NewLoader(afero.Afero{Fs: h.fs}, h.config)
 	if err != nil {
-		return ret, fmt.Errorf("Failed to prepare loading: %s", err)
+		return ret, fmt.Errorf("Failed to prepare loading: %w", err)
 	}
 
 	configs, err := loader.LoadConfig(".")
 	if err != nil {
-		return ret, fmt.Errorf("Failed to load configurations: %s", err)
+		return ret, fmt.Errorf("Failed to load configurations: %w", err)
 	}
 	files, err := loader.Files()
 	if err != nil {
-		return ret, tflint.NewContextError("Failed to parse files", err)
+		return ret, fmt.Errorf("Failed to parse files; %w", err)
 	}
 	annotations, err := loader.LoadAnnotations(".")
 	if err != nil {
-		return ret, fmt.Errorf("Failed to load configuration tokens: %s", err)
+		return ret, fmt.Errorf("Failed to load configuration tokens: %w", err)
 	}
 	variables, err := loader.LoadValuesFiles(h.config.Varfiles...)
 	if err != nil {
-		return ret, fmt.Errorf("Failed to load values files: %s", err)
+		return ret, fmt.Errorf("Failed to load values files: %w", err)
 	}
 	cliVars, err := tflint.ParseTFVariables(h.config.Variables, configs.Module.Variables)
 	if err != nil {
-		return ret, fmt.Errorf("Failed to parse variables: %s", err)
+		return ret, fmt.Errorf("Failed to parse variables: %w", err)
 	}
 	variables = append(variables, cliVars)
 
 	runner, err := tflint.NewRunner(h.config, files, annotations, configs, variables...)
 	if err != nil {
-		return ret, fmt.Errorf("Failed to initialize a runner: %s", err)
+		return ret, fmt.Errorf("Failed to initialize a runner: %w", err)
 	}
 	runners, err := tflint.NewModuleRunners(runner)
 	if err != nil {
-		return ret, fmt.Errorf("Failed to prepare rule checking: %s", err)
+		return ret, fmt.Errorf("Failed to prepare rule checking: %w", err)
 	}
 	runners = append(runners, runner)
 
@@ -171,20 +171,35 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 		for _, runner := range runners {
 			err := rule.Check(runner)
 			if err != nil {
-				return ret, fmt.Errorf("Failed to check `%s` rule: %s", rule.Name(), err)
+				return ret, fmt.Errorf("Failed to check `%s` rule: %w", rule.Name(), err)
 			}
 		}
 	}
 
 	for name, ruleset := range h.plugin.RuleSets {
-		err = ruleset.ApplyConfig(h.config.ToPluginConfig(name))
+		config, err := h.config.ToPluginConfig(name).Unmarshal()
 		if err != nil {
-			return ret, fmt.Errorf("Failed to apply config to plugins: %s", err)
+			return ret, fmt.Errorf("Failed to fetch config schema from plugins")
+		}
+		if err := ruleset.ApplyGlobalConfig(config); err != nil {
+			return ret, fmt.Errorf("Failed to fetch config schema from plugins")
+		}
+		configSchema, err := ruleset.ConfigSchema()
+		if err != nil {
+			return ret, fmt.Errorf("Failed to fetch config schema from plugins")
+		}
+		content, diags := h.config.PluginContent(name, configSchema)
+		if diags.HasErrors() {
+			return ret, fmt.Errorf("Failed to parse plugin config schema")
+		}
+		err = ruleset.ApplyConfig(content, h.config.Sources())
+		if err != nil {
+			return ret, fmt.Errorf("Failed to apply plugin config")
 		}
 		for _, runner := range runners {
-			err = ruleset.Check(tfplugin.NewServer(runner, runners[len(runners)-1], loader.Sources()))
+			err = ruleset.Check(tfplugin.NewGRPCServer(runner, runners[len(runners)-1], loader.Sources()))
 			if err != nil {
-				return ret, fmt.Errorf("Failed to check ruleset: %s", err)
+				return ret, fmt.Errorf("Failed to check ruleset: %w", err)
 			}
 		}
 	}
@@ -250,7 +265,7 @@ func pathToURI(path string) lsp.DocumentURI {
 	return lsp.DocumentURI("file://" + head + rest)
 }
 
-func toLSPSeverity(severity string) lsp.DiagnosticSeverity {
+func toLSPSeverity(severity tflint.Severity) lsp.DiagnosticSeverity {
 	switch severity {
 	case tflint.ERROR:
 		return lsp.Error

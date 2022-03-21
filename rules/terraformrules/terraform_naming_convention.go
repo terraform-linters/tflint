@@ -62,7 +62,7 @@ func (r *TerraformNamingConventionRule) Enabled() bool {
 }
 
 // Severity returns the rule severity
-func (r *TerraformNamingConventionRule) Severity() string {
+func (r *TerraformNamingConventionRule) Severity() tflint.Severity {
 	return tflint.NOTICE
 }
 

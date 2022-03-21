@@ -38,7 +38,7 @@ func (r *TerraformModuleVersionRule) Enabled() bool {
 }
 
 // Severity returns the rule severity
-func (r *TerraformModuleVersionRule) Severity() string {
+func (r *TerraformModuleVersionRule) Severity() tflint.Severity {
 	return tflint.WARNING
 }
 

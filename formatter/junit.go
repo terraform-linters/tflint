@@ -8,7 +8,7 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-func (f *Formatter) junitPrint(issues tflint.Issues, tferr *tflint.Error, sources map[string][]byte) {
+func (f *Formatter) junitPrint(issues tflint.Issues, appErr error, sources map[string][]byte) {
 	cases := make([]formatter.JUnitTestCase, len(issues))
 
 	for i, issue := range issues.Sort() {
@@ -48,7 +48,7 @@ func (f *Formatter) junitPrint(issues tflint.Issues, tferr *tflint.Error, source
 	fmt.Fprint(f.Stdout, xml.Header)
 	fmt.Fprint(f.Stdout, string(out))
 
-	if tferr != nil {
-		f.prettyPrintErrors(tferr, sources)
+	if appErr != nil {
+		f.prettyPrintErrors(appErr, sources)
 	}
 }

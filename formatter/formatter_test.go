@@ -12,7 +12,7 @@ func (r *testRule) Enabled() bool {
 	return true
 }
 
-func (r *testRule) Severity() string {
+func (r *testRule) Severity() tflint.Severity {
 	return tflint.ERROR
 }
 

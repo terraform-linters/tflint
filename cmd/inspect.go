@@ -13,7 +13,7 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	// Setup config
 	cfg, err := tflint.LoadConfig(opts.Config)
 	if err != nil {
-		cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to load TFLint config", err), map[string][]byte{})
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to load TFLint config; %w", err), map[string][]byte{})
 		return ExitCodeError
 	}
 	if len(opts.Only) > 0 {
@@ -27,7 +27,7 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	if !cli.testMode {
 		cli.loader, err = tflint.NewLoader(afero.Afero{Fs: afero.NewOsFs()}, cfg)
 		if err != nil {
-			cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to prepare loading", err), map[string][]byte{})
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to prepare loading; %w", err), map[string][]byte{})
 			return ExitCodeError
 		}
 	}
@@ -43,22 +43,42 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	// Lookup plugins and validation
 	plugin, err := tfplugin.Discovery(cfg)
 	if err != nil {
-		cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to initialize plugins", err), cli.loader.Sources())
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to initialize plugins; %w", err), cli.loader.Sources())
 		return ExitCodeError
 	}
 	defer plugin.Clean()
 
 	rulesets := []tflint.RuleSet{&rules.RuleSet{}}
 	for name, ruleset := range plugin.RuleSets {
-		err = ruleset.ApplyConfig(cfg.ToPluginConfig(name))
+		config, err := cfg.ToPluginConfig(name).Unmarshal()
 		if err != nil {
-			cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to apply config to plugins", err), cli.loader.Sources())
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to fetch config schema from plugins; %w", err), cli.loader.Sources())
 			return ExitCodeError
 		}
+		if err := ruleset.ApplyGlobalConfig(config); err != nil {
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to fetch config schema from plugins; %w", err), cli.loader.Sources())
+			return ExitCodeError
+		}
+		configSchema, err := ruleset.ConfigSchema()
+		if err != nil {
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to fetch config schema from plugins; %w", err), cli.loader.Sources())
+			return ExitCodeError
+		}
+		content, diags := cfg.PluginContent(name, configSchema)
+		if diags.HasErrors() {
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse plugin config schema; %w", diags), cli.loader.Sources())
+			return ExitCodeError
+		}
+		err = ruleset.ApplyConfig(content, cfg.Sources())
+		if err != nil {
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to apply config to plugins; %w", err), cli.loader.Sources())
+			return ExitCodeError
+		}
+
 		rulesets = append(rulesets, ruleset)
 	}
 	if err := cfg.ValidateRules(rulesets...); err != nil {
-		cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to check rule config", err), cli.loader.Sources())
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to check rule config; %w", err), cli.loader.Sources())
 		return ExitCodeError
 	}
 
@@ -67,7 +87,7 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 		for _, runner := range runners {
 			err := rule.Check(runner)
 			if err != nil {
-				cli.formatter.Print(tflint.Issues{}, tflint.NewContextError(fmt.Sprintf("Failed to check `%s` rule", rule.Name()), err), cli.loader.Sources())
+				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to check `%s` rule; %w", rule.Name(), err), cli.loader.Sources())
 				return ExitCodeError
 			}
 		}
@@ -75,9 +95,9 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 
 	for _, ruleset := range plugin.RuleSets {
 		for _, runner := range runners {
-			err = ruleset.Check(tfplugin.NewServer(runner, rootRunner, cli.loader.Sources()))
+			err = ruleset.Check(tfplugin.NewGRPCServer(runner, rootRunner, cli.loader.Sources()))
 			if err != nil {
-				cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to check ruleset", err), cli.loader.Sources())
+				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to check ruleset; %w", err), cli.loader.Sources())
 				return ExitCodeError
 			}
 		}
@@ -98,37 +118,37 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	return ExitCodeOK
 }
 
-func (cli *CLI) setupRunners(opts Options, cfg *tflint.Config, dir string) ([]*tflint.Runner, *tflint.Error) {
+func (cli *CLI) setupRunners(opts Options, cfg *tflint.Config, dir string) ([]*tflint.Runner, error) {
 	configs, err := cli.loader.LoadConfig(dir)
 	if err != nil {
-		return []*tflint.Runner{}, tflint.NewContextError("Failed to load configurations", err)
+		return []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", err)
 	}
 	files, err := cli.loader.Files()
 	if err != nil {
-		return []*tflint.Runner{}, tflint.NewContextError("Failed to parse files", err)
+		return []*tflint.Runner{}, fmt.Errorf("Failed to parse files; %w", err)
 	}
 	annotations, err := cli.loader.LoadAnnotations(dir)
 	if err != nil {
-		return []*tflint.Runner{}, tflint.NewContextError("Failed to load configuration tokens", err)
+		return []*tflint.Runner{}, fmt.Errorf("Failed to load configuration tokens; %w", err)
 	}
 	variables, err := cli.loader.LoadValuesFiles(cfg.Varfiles...)
 	if err != nil {
-		return []*tflint.Runner{}, tflint.NewContextError("Failed to load values files", err)
+		return []*tflint.Runner{}, fmt.Errorf("Failed to load values files; %w", err)
 	}
 	cliVars, err := tflint.ParseTFVariables(cfg.Variables, configs.Module.Variables)
 	if err != nil {
-		return []*tflint.Runner{}, tflint.NewContextError("Failed to parse variables", err)
+		return []*tflint.Runner{}, fmt.Errorf("Failed to parse variables; %w", err)
 	}
 	variables = append(variables, cliVars)
 
 	runner, err := tflint.NewRunner(cfg, files, annotations, configs, variables...)
 	if err != nil {
-		return []*tflint.Runner{}, tflint.NewContextError("Failed to initialize a runner", err)
+		return []*tflint.Runner{}, fmt.Errorf("Failed to initialize a runner; %w", err)
 	}
 
 	runners, err := tflint.NewModuleRunners(runner)
 	if err != nil {
-		return []*tflint.Runner{}, tflint.NewContextError("Failed to prepare rule checking", err)
+		return []*tflint.Runner{}, fmt.Errorf("Failed to prepare rule checking; %w", err)
 	}
 
 	return append(runners, runner), nil

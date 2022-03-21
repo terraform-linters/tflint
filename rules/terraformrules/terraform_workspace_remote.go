@@ -28,7 +28,7 @@ func (r *TerraformWorkspaceRemoteRule) Enabled() bool {
 }
 
 // Severity returns the rule severity
-func (r *TerraformWorkspaceRemoteRule) Severity() string {
+func (r *TerraformWorkspaceRemoteRule) Severity() tflint.Severity {
 	return tflint.WARNING
 }
 

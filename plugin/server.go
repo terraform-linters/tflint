@@ -1,12 +1,17 @@
 package plugin
 
 import (
+	"errors"
+	"fmt"
+
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	client "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint/client"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/tflint"
+	"github.com/zclconf/go-cty/cty"
 )
 
 // Server is a RPC server for responding to requests from plugins
@@ -14,6 +19,104 @@ type Server struct {
 	runner     *tflint.Runner
 	rootRunner *tflint.Runner
 	sources    map[string][]byte
+}
+
+// GRPCServer is a gRPC server for responding to requests from plugins.
+type GRPCServer struct {
+	runner     *tflint.Runner
+	rootRunner *tflint.Runner
+	sources    map[string][]byte
+}
+
+// NewGRPCServer initializes a gRPC server for plugins.
+func NewGRPCServer(runner *tflint.Runner, rootRunner *tflint.Runner, sources map[string][]byte) *GRPCServer {
+	return &GRPCServer{runner: runner, rootRunner: rootRunner, sources: sources}
+}
+
+// GetModuleContent returns module content based on the passed schema and options.
+func (s *GRPCServer) GetModuleContent(bodyS *hclext.BodySchema, opts client.GetModuleContentOption) (*hclext.BodyContent, hcl.Diagnostics) {
+	switch opts.ModuleCtx {
+	case client.SelfModuleCtxType:
+		return s.runner.GetModuleContent(bodyS)
+	case client.RootModuleCtxType:
+		return s.rootRunner.GetModuleContent(bodyS)
+	default:
+		panic(fmt.Sprintf("unknown module ctx: %s", opts.ModuleCtx))
+	}
+}
+
+// GetFile returns the hcl.File based on passed the file name.
+func (s *GRPCServer) GetFile(name string) (*hcl.File, error) {
+	return s.runner.File(name), nil
+}
+
+// GetFiles returns all hcl.File in the module.
+func (s *GRPCServer) GetFiles(ty client.ModuleCtxType) map[string]*hcl.File {
+	switch ty {
+	case client.SelfModuleCtxType:
+		return s.runner.Files()
+	case client.RootModuleCtxType:
+		return s.rootRunner.Files()
+	default:
+		panic(fmt.Sprintf("invalid ModuleCtxType: %s", ty))
+	}
+}
+
+// GetRuleConfigContent extracts the rule config based on the schema.
+// It returns an extracted body content and hcl.File representation of the config file.
+// The reason for returning hcl.File is to refer to the source code information
+// to encode the expression, and there is room for improvement here.
+func (s *GRPCServer) GetRuleConfigContent(name string, bodyS *hclext.BodySchema) (*hclext.BodyContent, *hcl.File, error) {
+	file := s.runner.ConfigFile()
+	config := s.runner.RuleConfig(name)
+	if config == nil {
+		return nil, file, fmt.Errorf("rule `%s` is not found in config", name)
+	}
+	// HACK: If you enable the rule through the CLI instead of the file, its hcl.Body will not contain valid range.
+	// @see https://github.com/hashicorp/hcl/blob/v2.8.0/merged.go#L132-L135
+	if config.Body.MissingItemRange().Filename == "<empty>" {
+		return nil, file, errors.New("This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration")
+	}
+
+	body, diags := hclext.Content(config.Body, bodyS)
+	if diags.HasErrors() {
+		return body, file, diags
+	}
+	return body, file, nil
+}
+
+// EvaluateExpr returns the value of the passed expression.
+func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts client.EvaluateExprOption) (cty.Value, error) {
+	var runner *tflint.Runner
+	switch opts.ModuleCtx {
+	case client.SelfModuleCtxType:
+		runner = s.runner
+	case client.RootModuleCtxType:
+		runner = s.rootRunner
+	}
+	val, err := runner.EvalExpr(expr, nil, *opts.WantType)
+	return val, err
+}
+
+// EmitIssue stores an issue in the server based on passed rule, message, and location.
+// If the range associated with the issue is an expression, it propagates to the runner
+// that the issue found in that expression. This allows you to determine if the issue was caused
+// by a module argument in the case of module inspection.
+func (s *GRPCServer) EmitIssue(rule client.Rule, message string, location hcl.Range) error {
+	file := s.runner.File(location.Filename)
+	if file == nil {
+		s.runner.EmitIssue(rule, message, location)
+		return nil
+	}
+	expr, diags := hclext.ParseExpression(location.SliceBytes(file.Bytes), location.Filename, location.Start)
+	if diags.HasErrors() {
+		s.runner.EmitIssue(rule, message, location)
+		return nil
+	}
+	return s.runner.WithExpressionContext(expr, func() error {
+		s.runner.EmitIssue(rule, message, location)
+		return nil
+	})
 }
 
 // NewServer initializes a RPC server for plugins
@@ -34,9 +137,6 @@ func (s *Server) Attributes(req *tfplugin.AttributesRequest, resp *tfplugin.Attr
 		})
 		return nil
 	})
-	if err != nil {
-		err = wrapError(err)
-	}
 	*resp = tfplugin.AttributesResponse{Attributes: ret, Err: err}
 	return nil
 }
@@ -57,9 +157,6 @@ func (s *Server) Blocks(req *tfplugin.BlocksRequest, resp *tfplugin.BlocksRespon
 		})
 		return nil
 	})
-	if err != nil {
-		err = wrapError(err)
-	}
 	*resp = tfplugin.BlocksResponse{Blocks: ret, Err: err}
 	return nil
 }
@@ -71,9 +168,6 @@ func (s *Server) Resources(req *tfplugin.ResourcesRequest, resp *tfplugin.Resour
 		ret = append(ret, s.encodeResource(resource))
 		return nil
 	})
-	if err != nil {
-		err = wrapError(err)
-	}
 	*resp = tfplugin.ResourcesResponse{Resources: ret, Err: err}
 	return nil
 }
@@ -85,9 +179,6 @@ func (s *Server) ModuleCalls(req *tfplugin.ModuleCallsRequest, resp *tfplugin.Mo
 		ret = append(ret, s.encodeModuleCall(call))
 		return nil
 	})
-	if err != nil {
-		err = wrapError(err)
-	}
 	*resp = tfplugin.ModuleCallsResponse{ModuleCalls: ret, Err: err}
 	return nil
 }
@@ -193,9 +284,6 @@ func (s *Server) EvalExpr(req *tfplugin.EvalExprRequest, resp *tfplugin.EvalExpr
 	}
 
 	val, err := s.runner.EvalExpr(expr, req.Ret, req.Type)
-	if err != nil {
-		err = wrapError(err)
-	}
 	*resp = tfplugin.EvalExprResponse{Val: val, Err: err}
 	return nil
 }
@@ -208,9 +296,6 @@ func (s *Server) EvalExprOnRootCtx(req *tfplugin.EvalExprRequest, resp *tfplugin
 	}
 
 	val, err := s.rootRunner.EvalExpr(expr, req.Ret, req.Type)
-	if err != nil {
-		err = wrapError(err)
-	}
 	*resp = tfplugin.EvalExprResponse{Val: val, Err: err}
 	return nil
 }
@@ -223,30 +308,12 @@ func (s *Server) IsNullExpr(req *tfplugin.IsNullExprRequest, resp *tfplugin.IsNu
 	}
 
 	ret, err := s.runner.IsNullExpr(expr)
-	if err != nil {
-		err = wrapError(err)
-	}
 	*resp = tfplugin.IsNullExprResponse{Ret: ret, Err: err}
 	return nil
 }
 
 // EmitIssue reflects a issue to the Runner
 func (s *Server) EmitIssue(req *tfplugin.EmitIssueRequest, resp *interface{}) error {
-	if req.Expr != nil {
-		expr, diags := tflint.ParseExpression(req.Expr, req.ExprRange.Filename, req.ExprRange.Start)
-		if diags.HasErrors() {
-			return diags
-		}
-
-		_ = s.runner.WithExpressionContext(expr, func() error {
-			s.runner.EmitIssue(req.Rule, req.Message, req.Location)
-			return nil
-		})
-
-	} else {
-		s.runner.EmitIssue(req.Rule, req.Message, req.Location)
-		return nil
-	}
 	return nil
 }
 
@@ -270,15 +337,4 @@ func configBodyRange(body hcl.Body) hcl.Range {
 		}
 	}
 	return bodyRange
-}
-
-func wrapError(raw error) error {
-	if appErr, ok := raw.(*tflint.Error); ok {
-		err := client.Error(*appErr)
-		if err.Cause != nil {
-			err.Cause = client.Error{Message: err.Cause.Error()}
-		}
-		return err
-	}
-	return raw
 }

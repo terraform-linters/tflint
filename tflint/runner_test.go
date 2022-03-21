@@ -9,6 +9,8 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/zclconf/go-cty/cty"
@@ -246,12 +248,13 @@ func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
 
 		_, err := NewModuleRunners(runner)
 
-		expected := Error{
-			Code:    EvaluationError,
-			Level:   ErrorLevel,
-			Message: "Failed to eval an expression in module.tf:4; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was renamed to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.",
+		expected := errors.New("failed to eval an expression in module.tf:4; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was renamed to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.")
+		if err == nil {
+			t.Fatal("an error was expected to occur, but it did not")
 		}
-		AssertAppError(t, expected, err)
+		if expected.Error() != err.Error() {
+			t.Fatalf("expected error is `%s`, but get `%s`", expected, err)
+		}
 	})
 }
 
@@ -261,13 +264,733 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 
 		_, err := NewModuleRunners(runner)
 
-		expected := Error{
-			Code:    UnexpectedAttributeError,
-			Level:   ErrorLevel,
-			Message: "Attribute of module not allowed was found in module.tf:1; module.tf:4,3-10: Unexpected \"invalid\" block; Blocks are not allowed here.",
+		expected := errors.New("attribute of module not allowed was found in module.tf:1; module.tf:4,3-10: Unexpected \"invalid\" block; Blocks are not allowed here.")
+		if err == nil {
+			t.Fatal("an error was expected to occur, but it did not")
 		}
-		AssertAppError(t, expected, err)
+		if expected.Error() != err.Error() {
+			t.Fatalf("expected error is `%s`, but get `%s`", expected, err)
+		}
 	})
+}
+
+func TestGetModuleContent(t *testing.T) {
+	tests := []struct {
+		Name   string
+		Files  map[string]string
+		Schema *hclext.BodySchema
+		Want   *hclext.BodyContent
+	}{
+		{
+			Name:  "empty files",
+			Files: map[string]string{},
+			Schema: &hclext.BodySchema{
+				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+					},
+				},
+			},
+			Want: &hclext.BodyContent{},
+		},
+		{
+			Name: "primaries",
+			Files: map[string]string{
+				"main1.tf": `
+resource "aws_instance" "foo" {
+	instance_type = "t2.micro"
+}`,
+				"main2.tf": `
+resource "aws_instance" "bar" {
+	instance_type = "m5.2xlarge"
+}`,
+			},
+			Schema: &hclext.BodySchema{
+				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+					},
+				},
+			},
+			Want: &hclext.BodyContent{
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "foo"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main1.tf"}}},
+						},
+						DefRange: hcl.Range{Filename: "main1.tf"},
+					},
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "bar"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main2.tf"}}},
+						},
+						DefRange: hcl.Range{Filename: "main2.tf"},
+					},
+				},
+			},
+		},
+		{
+			Name: "overrides",
+			Files: map[string]string{
+				"main.tf": `
+resource "aws_instance" "foo" {
+	instance_type = "t2.micro"
+}`,
+				"main_override.tf": `
+resource "aws_instance" "foo" {
+	instance_type = "m5.2xlarge"
+}`,
+			},
+			Schema: &hclext.BodySchema{
+				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+					},
+				},
+			},
+			Want: &hclext.BodyContent{
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "foo"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main_override.tf"}}},
+						},
+						DefRange: hcl.Range{Filename: "main.tf"},
+					},
+				},
+			},
+		},
+		{
+			Name: "contains not created resource",
+			Files: map[string]string{
+				"main.tf": `
+resource "aws_instance" "foo" {
+	count = 0
+	instance_type = "t2.micro"
+}
+
+resource "aws_instance" "bar" {
+	count = 1
+	instance_type = "m5.2xlarge"
+}`,
+			},
+			Schema: &hclext.BodySchema{
+				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+					},
+				},
+			},
+			Want: &hclext.BodyContent{
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "bar"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf"}}},
+						},
+						DefRange: hcl.Range{Filename: "main.tf"},
+					},
+				},
+			},
+		},
+		{
+			Name: "dynamic blocks",
+			Files: map[string]string{
+				"main.tf": `
+resource "aws_instance" "foo" {
+	ebs_block_device {
+		volume_size = "10"
+	}
+}
+
+resource "aws_instance" "bar" {
+	dynamic "ebs_block_device" {
+		for_each = toset([20, 30])
+		content {
+			volume_size = ebs_block_device.value
+		}
+	}
+}`,
+			},
+			Schema: &hclext.BodySchema{
+				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Attributes: []hclext.AttributeSchema{{Name: "instance_type"}},
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "volume_size"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: &hclext.BodyContent{
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "foo"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{
+										Attributes: hclext.Attributes{"volume_size": &hclext.Attribute{Name: "volume_size", Range: hcl.Range{Filename: "main.tf"}}},
+									},
+									DefRange: hcl.Range{Filename: "main.tf"},
+								},
+							},
+						},
+						DefRange: hcl.Range{Filename: "main.tf"},
+					},
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "bar"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{
+										Attributes: hclext.Attributes{"volume_size": &hclext.Attribute{Name: "volume_size", Range: hcl.Range{Filename: "main.tf"}}},
+									},
+									DefRange: hcl.Range{Filename: "main.tf"},
+								},
+							},
+						},
+						DefRange: hcl.Range{Filename: "main.tf"},
+					},
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Name, func(t *testing.T) {
+			runner := TestRunner(t, test.Files)
+
+			got, diags := runner.GetModuleContent(test.Schema)
+			if diags.HasErrors() {
+				t.Fatal(diags)
+			}
+
+			opts := cmp.Options{
+				cmpopts.IgnoreFields(hclext.Block{}, "TypeRange", "LabelRanges"),
+				cmpopts.IgnoreFields(hclext.Attribute{}, "Expr", "NameRange"),
+				cmpopts.IgnoreFields(hcl.Range{}, "Start", "End"),
+				cmpopts.SortSlices(func(i, j *hclext.Block) bool {
+					return i.DefRange.String() < j.DefRange.String()
+				}),
+			}
+			if diff := cmp.Diff(got, test.Want, opts); diff != "" {
+				t.Errorf("diff: %s", diff)
+			}
+		})
+	}
+}
+
+func Test_appendDynamicBlockSchema(t *testing.T) {
+	tests := []struct {
+		Name string
+		In   *hclext.BodySchema
+		Want *hclext.BodySchema
+	}{
+		{
+			Name: "empty schema",
+			In:   &hclext.BodySchema{},
+			Want: &hclext.BodySchema{},
+		},
+		{
+			Name: "attribute schemas",
+			In: &hclext.BodySchema{
+				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+			},
+			Want: &hclext.BodySchema{
+				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+			},
+		},
+		{
+			Name: "block schemas",
+			In: &hclext.BodySchema{
+				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				Blocks: []hclext.BlockSchema{
+					{
+						Type: "toplevel",
+						Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "bar"}}},
+					},
+				},
+			},
+			Want: &hclext.BodySchema{
+				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				Blocks: []hclext.BlockSchema{
+					{
+						Type: "toplevel",
+						Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "bar"}}},
+					},
+					{
+						Type:       "dynamic",
+						LabelNames: []string{"name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "content",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "bar"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "nested block schemas",
+			In: &hclext.BodySchema{
+				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				Blocks: []hclext.BlockSchema{
+					{
+						Type: "toplevel",
+						Body: &hclext.BodySchema{
+							Attributes: []hclext.AttributeSchema{{Name: "bar"}},
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "nested",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "bar"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: &hclext.BodySchema{
+				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				Blocks: []hclext.BlockSchema{
+					{
+						Type: "toplevel",
+						Body: &hclext.BodySchema{
+							Attributes: []hclext.AttributeSchema{{Name: "bar"}},
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "nested",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "bar"}}},
+								},
+								{
+									Type:       "dynamic",
+									LabelNames: []string{"name"},
+									Body: &hclext.BodySchema{
+										Blocks: []hclext.BlockSchema{
+											{
+												Type: "content",
+												Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "bar"}}},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					{
+						Type:       "dynamic",
+						LabelNames: []string{"name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "content",
+									Body: &hclext.BodySchema{
+										Attributes: []hclext.AttributeSchema{{Name: "bar"}},
+										Blocks: []hclext.BlockSchema{
+											{
+												Type: "nested",
+												Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "bar"}}},
+											},
+											{
+												Type:       "dynamic",
+												LabelNames: []string{"name"},
+												Body: &hclext.BodySchema{
+													Blocks: []hclext.BlockSchema{
+														{
+															Type: "content",
+															Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "bar"}}},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Name, func(t *testing.T) {
+			got := appendDynamicBlockSchema(test.In)
+
+			if diff := cmp.Diff(got, test.Want); diff != "" {
+				t.Errorf("diff: %s", diff)
+			}
+		})
+	}
+}
+
+func Test_resolveDynamicBlocks(t *testing.T) {
+	tests := []struct {
+		Name string
+		In   *hclext.BodyContent
+		Want *hclext.BodyContent
+	}{
+		{
+			Name: "empty body",
+			In:   &hclext.BodyContent{},
+			Want: &hclext.BodyContent{},
+		},
+		{
+			Name: "only attributes",
+			In: &hclext.BodyContent{
+				Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+			},
+			Want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+			},
+		},
+		{
+			Name: "regular blocks",
+			In: &hclext.BodyContent{
+				Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+				Blocks: hclext.Blocks{
+					{
+						Type: "toplevel",
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"bar": &hclext.Attribute{Name: "bar"}},
+						},
+					},
+				},
+			},
+			Want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+				Blocks: hclext.Blocks{
+					{
+						Type: "toplevel",
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"bar": &hclext.Attribute{Name: "bar"}},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "dynamic blocks",
+			In: &hclext.BodyContent{
+				Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "dynamic",
+						Labels: []string{"toplevel"},
+						Body: &hclext.BodyContent{
+							Blocks: hclext.Blocks{
+								{
+									Type: "content",
+									Body: &hclext.BodyContent{
+										Attributes: hclext.Attributes{"bar": &hclext.Attribute{Name: "bar"}},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+				Blocks: hclext.Blocks{
+					{
+						Type: "toplevel",
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"bar": &hclext.Attribute{Name: "bar"}},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "dynamic nested blocks in regular blocks",
+			In: &hclext.BodyContent{
+				Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+				Blocks: hclext.Blocks{
+					{
+						Type: "toplevel",
+						Body: &hclext.BodyContent{
+							Blocks: hclext.Blocks{
+								{
+									Type:   "dynamic",
+									Labels: []string{"nested"},
+									Body: &hclext.BodyContent{
+										Blocks: hclext.Blocks{
+											{
+												Type: "content",
+												Body: &hclext.BodyContent{
+													Attributes: hclext.Attributes{"bar": &hclext.Attribute{Name: "bar"}},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+				Blocks: hclext.Blocks{
+					{
+						Type: "toplevel",
+						Body: &hclext.BodyContent{
+							Blocks: hclext.Blocks{
+								{
+									Type: "nested",
+									Body: &hclext.BodyContent{
+										Attributes: hclext.Attributes{"bar": &hclext.Attribute{Name: "bar"}},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "dynamic nested blocks in dynamic blocks",
+			In: &hclext.BodyContent{
+				Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "dynamic",
+						Labels: []string{"toplevel"},
+						Body: &hclext.BodyContent{
+							Blocks: hclext.Blocks{
+								{
+									Type: "content",
+									Body: &hclext.BodyContent{
+										Blocks: hclext.Blocks{
+											{
+												Type:   "dynamic",
+												Labels: []string{"nested"},
+												Body: &hclext.BodyContent{
+													Blocks: hclext.Blocks{
+														{
+															Type: "content",
+															Body: &hclext.BodyContent{
+																Attributes: hclext.Attributes{"bar": &hclext.Attribute{Name: "bar"}},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+				Blocks: hclext.Blocks{
+					{
+						Type: "toplevel",
+						Body: &hclext.BodyContent{
+							Blocks: hclext.Blocks{
+								{
+									Type: "nested",
+									Body: &hclext.BodyContent{
+										Attributes: hclext.Attributes{"bar": &hclext.Attribute{Name: "bar"}},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Name, func(t *testing.T) {
+			got := resolveDynamicBlocks(test.In)
+
+			if diff := cmp.Diff(got, test.Want); diff != "" {
+				t.Errorf("diff: %s", diff)
+			}
+		})
+	}
+}
+
+func Test_overrideBlocks(t *testing.T) {
+	tests := []struct {
+		Name      string
+		Primaries hclext.Blocks
+		Overrides hclext.Blocks
+		Want      hclext.Blocks
+	}{
+		{
+			Name:      "empty blocks",
+			Primaries: hclext.Blocks{},
+			Overrides: hclext.Blocks{},
+			Want:      hclext.Blocks{},
+		},
+		{
+			Name: "no override",
+			Primaries: hclext.Blocks{
+				{
+					Type: "resource",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{},
+			Want: hclext.Blocks{
+				{
+					Type: "resource",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+					},
+				},
+			},
+		},
+		{
+			Name: "override",
+			Primaries: hclext.Blocks{
+				{
+					Type: "resource",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{
+							"foo": &hclext.Attribute{Name: "foo"},
+							"bar": &hclext.Attribute{Name: "bar"},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "resource",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{
+							"foo": &hclext.Attribute{Name: "bar"},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "resource",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{
+							"foo": &hclext.Attribute{Name: "bar"},
+							"bar": &hclext.Attribute{Name: "bar"},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override nested blocks",
+			Primaries: hclext.Blocks{
+				{
+					Type: "resource",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+						Blocks: hclext.Blocks{
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"baz": &hclext.Attribute{Name: "baz"},
+										"qux": &hclext.Attribute{Name: "qux"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "resource",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "bar"}},
+						Blocks: hclext.Blocks{
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"baz": &hclext.Attribute{Name: "qux"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "resource",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "bar"}},
+						Blocks: hclext.Blocks{
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"baz": &hclext.Attribute{Name: "qux"},
+										"qux": &hclext.Attribute{Name: "qux"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Name, func(t *testing.T) {
+			got := overrideBlocks(test.Primaries, test.Overrides)
+
+			if diff := cmp.Diff(got, test.Want); diff != "" {
+				t.Errorf("diff: %s", diff)
+			}
+		})
+	}
 }
 
 func Test_RunnerFiles(t *testing.T) {
@@ -379,21 +1102,16 @@ func Test_EnsureNoError(t *testing.T) {
 			ErrorText: "Error occurred",
 		},
 		{
-			Name: "warning error",
-			Error: &Error{
-				Code:    UnknownValueError,
-				Level:   WarningLevel,
-				Message: "Warning error",
-			},
+			Name:  "unknown value error",
+			Error: sdk.ErrUnknownValue,
 		},
 		{
-			Name: "app error",
-			Error: &Error{
-				Code:    TypeMismatchError,
-				Level:   ErrorLevel,
-				Message: "App error",
-			},
-			ErrorText: "App error",
+			Name:  "null value error",
+			Error: sdk.ErrNullValue,
+		},
+		{
+			Name:  "unevaluable error",
+			Error: sdk.ErrUnevaluable,
 		},
 	}
 
@@ -529,7 +1247,7 @@ type testRule struct{}
 func (r *testRule) Name() string {
 	return "test_rule"
 }
-func (r *testRule) Severity() string {
+func (r *testRule) Severity() Severity {
 	return ERROR
 }
 func (r *testRule) Link() string {

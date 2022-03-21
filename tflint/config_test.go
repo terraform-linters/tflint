@@ -11,6 +11,7 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 )
 
@@ -108,6 +109,7 @@ func Test_LoadConfig(t *testing.T) {
 		opts := []cmp.Option{
 			cmpopts.IgnoreUnexported(RuleConfig{}),
 			cmpopts.IgnoreUnexported(PluginConfig{}),
+			cmpopts.IgnoreUnexported(Config{}),
 			cmpopts.IgnoreFields(PluginConfig{}, "Body"),
 			cmpopts.IgnoreFields(RuleConfig{}, "Body"),
 		}
@@ -626,6 +628,7 @@ func Test_Merge(t *testing.T) {
 		opts := []cmp.Option{
 			cmpopts.IgnoreUnexported(RuleConfig{}),
 			cmpopts.IgnoreUnexported(PluginConfig{}),
+			cmpopts.IgnoreUnexported(Config{}),
 			cmpopts.IgnoreUnexported(hclsyntax.Body{}),
 			cmpopts.IgnoreFields(hclsyntax.Body{}, "Attributes", "Blocks"),
 		}
@@ -686,6 +689,196 @@ func Test_ToPluginConfig_noPluginConfig(t *testing.T) {
 	}
 	if !cmp.Equal(expected, ret, opts...) {
 		t.Fatalf("Failed to match: %s", cmp.Diff(expected, ret, opts...))
+	}
+}
+
+func TestPluginContent(t *testing.T) {
+	var fileIdx int
+	loadConfig := func(src string) *Config {
+		file := filepath.Join(t.TempDir(), fmt.Sprintf(".tflint%d.hcl", fileIdx))
+		fileIdx += 1
+		if err := os.WriteFile(file, []byte(src), 0755); err != nil {
+			t.Fatalf("failed to create config file: %s", err)
+		}
+		config, err := LoadConfig(file)
+		if err != nil {
+			t.Fatalf("failed to load test config: %s", err)
+		}
+		return config
+	}
+
+	tests := []struct {
+		Name      string
+		Config    *Config
+		Args      func() (string, *hclext.BodySchema)
+		Want      *hclext.BodyContent
+		DiagCount int
+	}{
+		{
+			Name:   "schema is nil",
+			Config: EmptyConfig(),
+			Args: func() (string, *hclext.BodySchema) {
+				return "test", nil
+			},
+			Want:      &hclext.BodyContent{},
+			DiagCount: 0,
+		},
+		{
+			Name:   "config is not loaded from file",
+			Config: EmptyConfig(),
+			Args: func() (string, *hclext.BodySchema) {
+				return "test", &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				}
+			},
+			Want:      &hclext.BodyContent{},
+			DiagCount: 0,
+		},
+		{
+			Name: "manually installed plugin",
+			Config: loadConfig(`
+plugin "test" {
+	enabled = true
+	foo = "bar"
+}`),
+			Args: func() (string, *hclext.BodySchema) {
+				return "test", &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				}
+			},
+			Want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{
+					"enabled": &hclext.Attribute{Name: "enabled"},
+					"foo":     &hclext.Attribute{Name: "foo"},
+				},
+				Blocks: hclext.Blocks{},
+			},
+			DiagCount: 0,
+		},
+		{
+			Name: "auto installed plugin",
+			Config: loadConfig(`
+plugin "test" {
+	enabled = true
+	version = "0.1.0"
+	source  = "github.com/example/example"
+
+	signing_key = "PUBLIC_KEY"
+
+	foo = "bar"
+}`),
+			Args: func() (string, *hclext.BodySchema) {
+				return "test", &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				}
+			},
+			Want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{
+					"enabled":     &hclext.Attribute{Name: "enabled"},
+					"version":     &hclext.Attribute{Name: "version"},
+					"source":      &hclext.Attribute{Name: "source"},
+					"signing_key": &hclext.Attribute{Name: "signing_key"},
+					"foo":         &hclext.Attribute{Name: "foo"},
+				},
+				Blocks: hclext.Blocks{},
+			},
+			DiagCount: 0,
+		},
+		{
+			Name: "multiple plugins",
+			Config: loadConfig(`
+plugin "manual_installed" {
+	enabled = true
+	foo = "bar"
+}
+
+plugin "auto_installed" {
+	enabled = true
+	version = "0.1.0"
+	source  = "github.com/example/example"
+
+	signing_key = "PUBLIC_KEY"
+
+	baz = "qux"
+}`),
+			Args: func() (string, *hclext.BodySchema) {
+				return "manual_installed", &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				}
+			},
+			Want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{
+					"enabled": &hclext.Attribute{Name: "enabled"},
+					"foo":     &hclext.Attribute{Name: "foo"},
+				},
+				Blocks: hclext.Blocks{},
+			},
+			DiagCount: 0,
+		},
+		{
+			Name: "plugin not found",
+			Config: loadConfig(`
+plugin "test" {
+	enabled = true
+	foo = "bar"
+}`),
+			Args: func() (string, *hclext.BodySchema) {
+				return "example", &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				}
+			},
+			Want:      &hclext.BodyContent{},
+			DiagCount: 0,
+		},
+		{
+			Name: "required attribute is not found",
+			Config: loadConfig(`
+plugin "test" {
+	enabled = true
+}`),
+			Args: func() (string, *hclext.BodySchema) {
+				return "test", &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "foo", Required: true}},
+				}
+			},
+			DiagCount: 1, // The argument "foo" is required
+		},
+		{
+			Name: "unsupported attribute is found",
+			Config: loadConfig(`
+plugin "test" {
+	enabled = true
+	bar = "baz"
+}`),
+			Args: func() (string, *hclext.BodySchema) {
+				return "test", &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				}
+			},
+			DiagCount: 1, // An argument named "bar" is not expected here
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Name, func(t *testing.T) {
+			content, diags := test.Config.PluginContent(test.Args())
+			if len(diags) != test.DiagCount {
+				t.Errorf("wrong number of diagnostics %d; want %d", len(diags), test.DiagCount)
+				for _, diag := range diags {
+					t.Logf(" - %s", diag.Error())
+				}
+			}
+			if diags.HasErrors() {
+				return
+			}
+
+			opts := cmp.Options{
+				cmpopts.IgnoreFields(hclext.Attribute{}, "Expr", "Range", "NameRange"),
+			}
+			if diff := cmp.Diff(content, test.Want, opts); diff != "" {
+				t.Errorf("diff: %s", diff)
+			}
+		})
 	}
 }
 
@@ -881,6 +1074,7 @@ func Test_copy(t *testing.T) {
 	opts := []cmp.Option{
 		cmpopts.IgnoreUnexported(RuleConfig{}),
 		cmpopts.IgnoreUnexported(PluginConfig{}),
+		cmpopts.IgnoreUnexported(Config{}),
 	}
 	for _, tc := range cases {
 		ret := cfg.copy()

@@ -2,7 +2,7 @@ package plugin
 
 import (
 	plugin "github.com/hashicorp/go-plugin"
-	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/plugin"
+	"github.com/terraform-linters/tflint-plugin-sdk/plugin/host2plugin"
 )
 
 // PluginRoot is the root directory of the plugins
@@ -15,7 +15,7 @@ var (
 // Plugin is an object handling plugins
 // Basically, it is a wrapper for go-plugin and provides an API to handle them collectively.
 type Plugin struct {
-	RuleSets map[string]*tfplugin.Client
+	RuleSets map[string]*host2plugin.GRPCClient
 
 	clients map[string]*plugin.Client
 }

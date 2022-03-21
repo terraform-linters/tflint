@@ -41,7 +41,7 @@ func (r *TerraformModulePinnedSourceRule) Enabled() bool {
 }
 
 // Severity returns the rule severity
-func (r *TerraformModulePinnedSourceRule) Severity() string {
+func (r *TerraformModulePinnedSourceRule) Severity() tflint.Severity {
 	return tflint.WARNING
 }
 

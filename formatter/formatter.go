@@ -17,26 +17,26 @@ type Formatter struct {
 }
 
 // Print outputs the given issues and errors according to configured format
-func (f *Formatter) Print(issues tflint.Issues, tferr *tflint.Error, sources map[string][]byte) {
+func (f *Formatter) Print(issues tflint.Issues, err error, sources map[string][]byte) {
 	switch f.Format {
 	case "default":
-		f.prettyPrint(issues, tferr, sources)
+		f.prettyPrint(issues, err, sources)
 	case "json":
-		f.jsonPrint(issues, tferr)
+		f.jsonPrint(issues, err)
 	case "checkstyle":
-		f.checkstylePrint(issues, tferr, sources)
+		f.checkstylePrint(issues, err, sources)
 	case "junit":
-		f.junitPrint(issues, tferr, sources)
+		f.junitPrint(issues, err, sources)
 	case "compact":
-		f.compactPrint(issues, tferr, sources)
+		f.compactPrint(issues, err, sources)
 	case "sarif":
-		f.sarifPrint(issues, tferr)
+		f.sarifPrint(issues, err)
 	default:
-		f.prettyPrint(issues, tferr, sources)
+		f.prettyPrint(issues, err, sources)
 	}
 }
 
-func toSeverity(lintType string) string {
+func toSeverity(lintType tflint.Severity) string {
 	switch lintType {
 	case tflint.ERROR:
 		return "error"

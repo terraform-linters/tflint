@@ -99,6 +99,26 @@
         }
       },
       "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`transition` block found",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 21,
+          "column": 9
+        },
+        "end": {
+          "line": 21,
+          "column": 16
+        }
+      },
+      "callers": []
     }
   ],
   "errors": []

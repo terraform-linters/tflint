@@ -95,26 +95,6 @@ func AssertIssuesWithoutRange(t *testing.T, expected Issues, actual Issues) {
 	}
 }
 
-// AssertAppError is an assertion helper for comparing tflint.Error
-func AssertAppError(t *testing.T, expected Error, got error) {
-	if appErr, ok := got.(*Error); ok {
-		if appErr == nil {
-			t.Fatalf("expected err is `%s`, but nothing occurred", expected.Error())
-		}
-		if appErr.Code != expected.Code {
-			t.Fatalf("expected error code is `%s`, but get `%s`", expected.Code, appErr.Code)
-		}
-		if appErr.Level != expected.Level {
-			t.Fatalf("expected error level is `%s`, but get `%s`", expected.Level, appErr.Level)
-		}
-		if appErr.Error() != expected.Error() {
-			t.Fatalf("expected error is `%s`, but get `%s`", expected.Error(), appErr.Error())
-		}
-	} else {
-		t.Fatalf("unexpected error occurred: %s", got)
-	}
-}
-
 // ruleComparer returns a Comparer func that checks that two rule interfaces
 // have the same underlying type. It does not compare struct fields.
 func ruleComparer() cmp.Option {

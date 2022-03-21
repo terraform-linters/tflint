@@ -77,12 +77,12 @@ func (cli *CLI) Run(args []string) int {
 			fmt.Fprintln(cli.outStream, err)
 			return ExitCodeOK
 		}
-		cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to parse CLI options", err), map[string][]byte{})
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse CLI options; %w", err), map[string][]byte{})
 		return ExitCodeError
 	}
 	dir, filterFiles, err := processArgs(args[1:])
 	if err != nil {
-		cli.formatter.Print(tflint.Issues{}, tflint.NewContextError("Failed to parse CLI arguments", err), map[string][]byte{})
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse CLI arguments; %w", err), map[string][]byte{})
 		return ExitCodeError
 	}
 

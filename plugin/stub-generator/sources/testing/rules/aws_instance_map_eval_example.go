@@ -3,13 +3,15 @@ package rules
 import (
 	"fmt"
 
-	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/zclconf/go-cty/cty"
 )
 
 // AwsInstanceMapEvalExampleRule checks whether ...
-type AwsInstanceMapEvalExampleRule struct{}
+type AwsInstanceMapEvalExampleRule struct {
+	tflint.DefaultRule
+}
 
 // NewAwsInstanceMapEvalExampleRule returns a new rule
 func NewAwsInstanceMapEvalExampleRule() *AwsInstanceMapEvalExampleRule {
@@ -27,7 +29,7 @@ func (r *AwsInstanceMapEvalExampleRule) Enabled() bool {
 }
 
 // Severity returns the rule severity
-func (r *AwsInstanceMapEvalExampleRule) Severity() string {
+func (r *AwsInstanceMapEvalExampleRule) Severity() tflint.Severity {
 	return tflint.ERROR
 }
 
@@ -38,17 +40,34 @@ func (r *AwsInstanceMapEvalExampleRule) Link() string {
 
 // Check checks whether ...
 func (r *AwsInstanceMapEvalExampleRule) Check(runner tflint.Runner) error {
-	return runner.WalkResourceAttributes("aws_instance", "tags", func(attribute *hcl.Attribute) error {
+	resources, err := runner.GetResourceContent("aws_instance", &hclext.BodySchema{
+		Attributes: []hclext.AttributeSchema{{Name: "tags"}},
+	}, nil)
+	if err != nil {
+		return err
+	}
+
+	for _, resource := range resources.Blocks {
+		attribute, exists := resource.Body.Attributes["tags"]
+		if !exists {
+			continue
+		}
+
 		wantType := cty.Map(cty.String)
 		tags := map[string]string{}
-		err := runner.EvaluateExpr(attribute.Expr, &tags, &wantType)
+		err := runner.EvaluateExpr(attribute.Expr, &tags, &tflint.EvaluateExprOption{WantType: &wantType})
 
-		return runner.EnsureNoError(err, func() error {
-			return runner.EmitIssueOnExpr(
+		err = runner.EnsureNoError(err, func() error {
+			return runner.EmitIssue(
 				r,
 				fmt.Sprintf("instance tags: %#v", tags),
-				attribute.Expr,
+				attribute.Expr.Range(),
 			)
 		})
-	})
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

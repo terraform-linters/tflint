@@ -12,7 +12,7 @@ import (
 
 	plugin "github.com/hashicorp/go-plugin"
 	"github.com/mitchellh/go-homedir"
-	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/plugin"
+	"github.com/terraform-linters/tflint-plugin-sdk/plugin/host2plugin"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -20,7 +20,7 @@ import (
 // If the plugin is not enabled, skip without starting.
 func Discovery(config *tflint.Config) (*Plugin, error) {
 	clients := map[string]*plugin.Client{}
-	rulesets := map[string]*tfplugin.Client{}
+	rulesets := map[string]*host2plugin.GRPCClient{}
 
 	for _, pluginCfg := range config.Plugins {
 		installCfg := NewInstallConfig(config, pluginCfg)
@@ -42,7 +42,7 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 		if pluginCfg.Enabled {
 			log.Printf("[INFO] Plugin `%s` found", pluginCfg.Name)
 
-			client := tfplugin.NewClient(&tfplugin.ClientOpts{
+			client := host2plugin.NewClient(&host2plugin.ClientOpts{
 				Cmd: cmd,
 			})
 			rpcClient, err := client.Client()
@@ -53,7 +53,7 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 			if err != nil {
 				return nil, err
 			}
-			ruleset := raw.(*tfplugin.Client)
+			ruleset := raw.(*host2plugin.GRPCClient)
 
 			clients[pluginCfg.Name] = client
 			rulesets[pluginCfg.Name] = ruleset
