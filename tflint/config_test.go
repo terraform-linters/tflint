@@ -12,7 +12,7 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
-	tfplugin "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 )
 
 func Test_LoadConfig(t *testing.T) {
@@ -649,9 +649,9 @@ func Test_ToPluginConfig(t *testing.T) {
 		t.Fatalf("Failed: Unexpected error occurred: %s", err)
 	}
 
-	ret := config.ToPluginConfig("foo")
-	expected := &tfplugin.MarshalledConfig{
-		Rules: map[string]*tfplugin.RuleConfig{
+	ret := config.ToPluginConfig()
+	expected := &sdk.Config{
+		Rules: map[string]*sdk.RuleConfig{
 			"aws_instance_invalid_type": {
 				Name:    "aws_instance_invalid_type",
 				Enabled: false,
@@ -662,30 +662,11 @@ func Test_ToPluginConfig(t *testing.T) {
 			},
 		},
 		DisabledByDefault: true,
-		BodyRange:         hcl.Range{Start: hcl.Pos{Line: 14, Column: 3}, End: hcl.Pos{Line: 16, Column: 17}},
 	}
 	opts := cmp.Options{
 		cmpopts.IgnoreUnexported(PluginConfig{}),
 		cmpopts.IgnoreFields(hcl.Range{}, "Filename"),
 		cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
-		cmpopts.IgnoreFields(tfplugin.MarshalledConfig{}, "BodyBytes"),
-	}
-	if !cmp.Equal(expected, ret, opts...) {
-		t.Fatalf("Failed to match: %s", cmp.Diff(expected, ret, opts...))
-	}
-}
-
-func Test_ToPluginConfig_noPluginConfig(t *testing.T) {
-	config := EmptyConfig()
-	config.Plugins["foo"] = &PluginConfig{Name: "foo", Enabled: true}
-
-	ret := config.ToPluginConfig("foo")
-	expected := &tfplugin.MarshalledConfig{
-		Rules: map[string]*tfplugin.RuleConfig{},
-	}
-
-	opts := cmp.Options{
-		cmpopts.IgnoreUnexported(PluginConfig{}),
 	}
 	if !cmp.Equal(expected, ret, opts...) {
 		t.Fatalf("Failed to match: %s", cmp.Diff(expected, ret, opts...))

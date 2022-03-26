@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	tfplugin "github.com/terraform-linters/tflint/plugin"
+	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -24,14 +24,14 @@ func (cli *CLI) printVersion(opts Options) int {
 	}
 	cfg = cfg.Merge(opts.toConfig())
 
-	plugin, err := tfplugin.Discovery(cfg)
+	rulesetPlugin, err := plugin.Discovery(cfg)
 	if err != nil {
 		log.Printf("[ERROR] Failed to initialize plugins: %s", err)
 		return ExitCodeOK
 	}
-	defer plugin.Clean()
+	defer rulesetPlugin.Clean()
 
-	for _, ruleset := range plugin.RuleSets {
+	for _, ruleset := range rulesetPlugin.RuleSets {
 		name, err := ruleset.RuleSetName()
 		if err != nil {
 			log.Printf("[ERROR] Failed to get ruleset name: %s", err)

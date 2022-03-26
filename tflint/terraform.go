@@ -9,8 +9,6 @@ import (
 	"strings"
 
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/hashicorp/hcl/v2/json"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/terraform"
 )
@@ -48,65 +46,6 @@ func ParseTFVariables(vars []string, declVars map[string]*configs.Variable) (ter
 	}
 
 	return variables, nil
-}
-
-// ParseExpression is a wrapper for a function that parses JSON and HCL expressions
-func ParseExpression(src []byte, filename string, start hcl.Pos) (hcl.Expression, hcl.Diagnostics) {
-	if strings.HasSuffix(filename, ".tf") {
-		// HACK: Always add a newline to avoid heredoc parse errors.
-		// @see https://github.com/hashicorp/hcl/issues/441
-		src = []byte(string(src) + "\n")
-		return hclsyntax.ParseExpression(src, filename, start)
-	}
-
-	if strings.HasSuffix(filename, ".tf.json") {
-		return json.ParseExpressionWithStartPos(src, filename, start)
-	}
-
-	panic(fmt.Sprintf("Unexpected file: %s", filename))
-}
-
-// HCLBodyRange attempts to find a range of the passed body
-func HCLBodyRange(body hcl.Body, defRange hcl.Range) hcl.Range {
-	if strings.HasSuffix(defRange.Filename, ".tf") {
-		var bodyRange hcl.Range
-		bodyRange.Filename = defRange.Filename
-
-		// Estimate the range of the body from the range of all attributes and blocks.
-		hclBody, ok := body.(*hclsyntax.Body)
-		if !ok {
-			// BUG: If the body is overridden, the structure that satisfies hcl.Body interface may be configs.mergeBody.
-			// In that case, the definition range of the body cannot be acquired by this way because the range of the body spans multiple files.
-			// To avoid panic, here we return an empty range with only the filename set.
-			// As a result, plugins that use this range to get hcl.Body may have incorrect results.
-			// This issue will be fixed by changing the way of transffering the hcl.Body.
-			// See also https://github.com/terraform-linters/tflint-plugin-sdk/issues/89.
-			return bodyRange
-		}
-
-		for _, attr := range hclBody.Attributes {
-			if bodyRange.Empty() {
-				bodyRange = attr.Range()
-			} else {
-				bodyRange = hcl.RangeOver(bodyRange, attr.Range())
-			}
-		}
-		for _, block := range hclBody.Blocks {
-			if bodyRange.Empty() {
-				bodyRange = block.Range()
-			} else {
-				bodyRange = hcl.RangeOver(bodyRange, block.Range())
-			}
-		}
-		return bodyRange
-	}
-
-	if strings.HasSuffix(defRange.Filename, ".tf.json") {
-		// HACK: In JSON syntax, DefRange corresponds to open brace and MissingItemRange corresponds to close brace.
-		return hcl.RangeOver(defRange, body.MissingItemRange())
-	}
-
-	panic(fmt.Sprintf("Unexpected file: %s", defRange.Filename))
 }
 
 func getTFDataDir() string {

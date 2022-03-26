@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/afero"
-	tfplugin "github.com/terraform-linters/tflint/plugin"
+	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/rules"
 	"github.com/terraform-linters/tflint/tflint"
 )
@@ -41,37 +41,33 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	rootRunner := runners[len(runners)-1]
 
 	// Lookup plugins and validation
-	plugin, err := tfplugin.Discovery(cfg)
+	rulesetPlugin, err := plugin.Discovery(cfg)
 	if err != nil {
 		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to initialize plugins; %w", err), cli.loader.Sources())
 		return ExitCodeError
 	}
-	defer plugin.Clean()
+	defer rulesetPlugin.Clean()
 
 	rulesets := []tflint.RuleSet{&rules.RuleSet{}}
-	for name, ruleset := range plugin.RuleSets {
-		config, err := cfg.ToPluginConfig(name).Unmarshal()
-		if err != nil {
-			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to fetch config schema from plugins; %w", err), cli.loader.Sources())
-			return ExitCodeError
-		}
+	config := cfg.ToPluginConfig()
+	for name, ruleset := range rulesetPlugin.RuleSets {
 		if err := ruleset.ApplyGlobalConfig(config); err != nil {
-			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to fetch config schema from plugins; %w", err), cli.loader.Sources())
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to apply global config to `%s` plugin; %w", name, err), cli.loader.Sources())
 			return ExitCodeError
 		}
 		configSchema, err := ruleset.ConfigSchema()
 		if err != nil {
-			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to fetch config schema from plugins; %w", err), cli.loader.Sources())
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to fetch config schema from `%s` plugin; %w", name, err), cli.loader.Sources())
 			return ExitCodeError
 		}
 		content, diags := cfg.PluginContent(name, configSchema)
 		if diags.HasErrors() {
-			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse plugin config schema; %w", diags), cli.loader.Sources())
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse `%s` plugin config; %w", name, diags), cli.loader.Sources())
 			return ExitCodeError
 		}
 		err = ruleset.ApplyConfig(content, cfg.Sources())
 		if err != nil {
-			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to apply config to plugins; %w", err), cli.loader.Sources())
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to apply config to `%s` plugin; %w", name, err), cli.loader.Sources())
 			return ExitCodeError
 		}
 
@@ -93,9 +89,9 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 		}
 	}
 
-	for _, ruleset := range plugin.RuleSets {
+	for _, ruleset := range rulesetPlugin.RuleSets {
 		for _, runner := range runners {
-			err = ruleset.Check(tfplugin.NewGRPCServer(runner, rootRunner, cli.loader.Sources()))
+			err = ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Sources()))
 			if err != nil {
 				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to check ruleset; %w", err), cli.loader.Sources())
 				return ExitCodeError

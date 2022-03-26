@@ -12,7 +12,6 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
-	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/lang"
@@ -138,7 +137,7 @@ func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotation
 		content.Blocks = overrideBlocks(content.Blocks, c.Blocks)
 	}
 	for _, resource := range content.Blocks {
-		ok, err := runner.willEvaluateResourceBlock(resource)
+		ok, err := runner.willEvaluateResource(resource)
 		if err != nil {
 			return runner, err
 		}
@@ -408,54 +407,6 @@ func (r *Runner) Files() map[string]*hcl.File {
 		}
 	}
 	return result
-}
-
-// Backend returns the backend configuration.
-func (r *Runner) Backend() *configs.Backend {
-	return r.TFConfig.Module.Backend
-}
-
-// EnsureNoError is a helper for processing when no error occurs
-// This function skips processing without returning an error to the caller when the error is warning
-func (r *Runner) EnsureNoError(err error, proc func() error) error {
-	if err == nil {
-		return proc()
-	}
-
-	if errors.Is(err, sdk.ErrNullValue) || errors.Is(err, sdk.ErrUnevaluable) || errors.Is(err, sdk.ErrUnknownValue) {
-		return nil
-	}
-	return err
-}
-
-// IsNullExpr check the passed expression is null
-func (r *Runner) IsNullExpr(expr hcl.Expression) (bool, error) {
-	evaluable, err := isEvaluableExpr(expr)
-	if err != nil {
-		return false, err
-	}
-
-	if !evaluable {
-		return false, nil
-	}
-	val, diags := r.ctx.EvaluateExpr(expr, cty.DynamicPseudoType, nil)
-	if diags.HasErrors() {
-		return false, diags.Err()
-	}
-	return val.IsNull(), nil
-}
-
-// LookupResourcesByType returns `configs.Resource` list according to the resource type
-func (r *Runner) LookupResourcesByType(resourceType string) []*configs.Resource {
-	ret := []*configs.Resource{}
-
-	for _, resource := range r.TFConfig.Module.ManagedResources {
-		if resource.Type == resourceType {
-			ret = append(ret, resource)
-		}
-	}
-
-	return ret
 }
 
 // EmitIssue builds an issue and accumulates it
