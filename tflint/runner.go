@@ -12,6 +12,7 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/lang"
@@ -33,9 +34,10 @@ type Runner struct {
 	currentExpr hcl.Expression
 	modVars     map[string]*moduleVariable
 
+	moduleSources         map[string][]byte
 	primaries             []*hcl.File
 	overrides             []*hcl.File
-	earlyDecodedResources map[string]*hclext.Block
+	earlyDecodedResources map[string]map[string]*hclext.Block
 }
 
 // Rule is interface for building the issue
@@ -70,6 +72,7 @@ func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotation
 		},
 	}
 
+	sources := map[string][]byte{}
 	// Classify HCL files
 	primaries := []*hcl.File{}
 	overrides := []*hcl.File{}
@@ -78,6 +81,7 @@ func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotation
 			continue
 		}
 
+		sources[name] = f.Bytes
 		if name == "override.tf" || name == "override.tf.json" || strings.HasSuffix(name, "_override.tf") || strings.HasSuffix(name, "_override.tf.json") {
 			overrides = append(overrides, f)
 		} else {
@@ -99,9 +103,10 @@ func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotation
 		annotations: ants,
 		config:      c,
 
+		moduleSources:         sources,
 		primaries:             primaries,
 		overrides:             overrides,
-		earlyDecodedResources: map[string]*hclext.Block{},
+		earlyDecodedResources: map[string]map[string]*hclext.Block{},
 	}
 
 	// Decode resource with count/for_each early
@@ -142,7 +147,13 @@ func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotation
 			return runner, err
 		}
 		if ok {
-			runner.earlyDecodedResources[fmt.Sprintf("%s.%s", resource.Labels[0], resource.Labels[1])] = resource
+			resourceType := resource.Labels[0]
+			resourceName := resource.Labels[1]
+
+			if _, exists := runner.earlyDecodedResources[resourceType]; !exists {
+				runner.earlyDecodedResources[resourceType] = map[string]*hclext.Block{}
+			}
+			runner.earlyDecodedResources[resourceType][resourceName] = resource
 		}
 	}
 
@@ -261,7 +272,14 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 //      https://www.terraform.io/language/meta-arguments/count
 //      https://www.terraform.io/language/meta-arguments/for_each
 //
-func (r *Runner) GetModuleContent(bodyS *hclext.BodySchema) (*hclext.BodyContent, hcl.Diagnostics) {
+func (r *Runner) GetModuleContent(bodyS *hclext.BodySchema, opts sdk.GetModuleContentOption) (*hclext.BodyContent, hcl.Diagnostics) {
+	// For performance, determine in advance whether the target resource exists.
+	if opts.Hint.ResourceType != "" {
+		if _, exists := r.earlyDecodedResources[opts.Hint.ResourceType]; !exists {
+			return &hclext.BodyContent{}, nil
+		}
+	}
+
 	bodyS = appendDynamicBlockSchema(bodyS)
 	content := &hclext.BodyContent{}
 	diags := hcl.Diagnostics{}
@@ -288,8 +306,15 @@ func (r *Runner) GetModuleContent(bodyS *hclext.BodySchema) (*hclext.BodyContent
 	out := &hclext.BodyContent{Attributes: content.Attributes}
 	for _, block := range content.Blocks {
 		if block.Type == "resource" {
-			if _, exists := r.earlyDecodedResources[fmt.Sprintf("%s.%s", block.Labels[0], block.Labels[1])]; !exists {
-				log.Printf("[WARN] Skip walking `%s` because it may not be created", block.Labels[0]+"."+block.Labels[1])
+			resourceType := block.Labels[0]
+			resourceName := block.Labels[1]
+
+			if _, exists := r.earlyDecodedResources[resourceType]; !exists {
+				log.Printf("[WARN] Skip walking `%s` because it may not be created", resourceType+"."+resourceName)
+				continue
+			}
+			if _, exists := r.earlyDecodedResources[resourceType][resourceName]; !exists {
+				log.Printf("[WARN] Skip walking `%s` because it may not be created", resourceType+"."+resourceName)
 				continue
 			}
 		}
@@ -407,6 +432,11 @@ func (r *Runner) Files() map[string]*hcl.File {
 		}
 	}
 	return result
+}
+
+// Sources returns the sources in the module directory.
+func (r *Runner) Sources() map[string][]byte {
+	return r.moduleSources
 }
 
 // EmitIssue builds an issue and accumulates it
