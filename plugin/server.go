@@ -27,9 +27,9 @@ func NewGRPCServer(runner *tflint.Runner, rootRunner *tflint.Runner, sources map
 func (s *GRPCServer) GetModuleContent(bodyS *hclext.BodySchema, opts sdk.GetModuleContentOption) (*hclext.BodyContent, hcl.Diagnostics) {
 	switch opts.ModuleCtx {
 	case sdk.SelfModuleCtxType:
-		return s.runner.GetModuleContent(bodyS)
+		return s.runner.GetModuleContent(bodyS, opts)
 	case sdk.RootModuleCtxType:
-		return s.rootRunner.GetModuleContent(bodyS)
+		return s.rootRunner.GetModuleContent(bodyS, opts)
 	default:
 		panic(fmt.Sprintf("unknown module ctx: %s", opts.ModuleCtx))
 	}
@@ -41,12 +41,12 @@ func (s *GRPCServer) GetFile(name string) (*hcl.File, error) {
 }
 
 // GetFiles returns all hcl.File in the module.
-func (s *GRPCServer) GetFiles(ty sdk.ModuleCtxType) map[string]*hcl.File {
+func (s *GRPCServer) GetFiles(ty sdk.ModuleCtxType) map[string][]byte {
 	switch ty {
 	case sdk.SelfModuleCtxType:
-		return s.runner.Files()
+		return s.runner.Sources()
 	case sdk.RootModuleCtxType:
-		return s.rootRunner.Files()
+		return s.rootRunner.Sources()
 	default:
 		panic(fmt.Sprintf("invalid ModuleCtxType: %s", ty))
 	}

@@ -59,7 +59,7 @@ resource "aws_instance" "bar" {
 							},
 						},
 					},
-				})
+				}, sdk.GetModuleContentOption{})
 			},
 		},
 		{
@@ -88,7 +88,7 @@ resource "aws_instance" "bar" {
 							},
 						},
 					},
-				})
+				}, sdk.GetModuleContentOption{})
 			},
 		},
 	}
@@ -219,7 +219,7 @@ resource "aws_instance" "bar" {
 
 			got := map[string]string{}
 			for name, file := range files {
-				got[name] = string(file.Bytes)
+				got[name] = string(file)
 			}
 
 			if diff := cmp.Diff(got, test.Want); diff != "" {

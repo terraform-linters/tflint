@@ -10,6 +10,7 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/zclconf/go-cty/cty"
@@ -275,23 +276,25 @@ func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
 
 func TestGetModuleContent(t *testing.T) {
 	tests := []struct {
-		Name   string
-		Files  map[string]string
-		Schema *hclext.BodySchema
-		Want   *hclext.BodyContent
+		Name  string
+		Files map[string]string
+		Args  func() (*hclext.BodySchema, sdk.GetModuleContentOption)
+		Want  *hclext.BodyContent
 	}{
 		{
 			Name:  "empty files",
 			Files: map[string]string{},
-			Schema: &hclext.BodySchema{
-				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
-				Blocks: []hclext.BlockSchema{
-					{
-						Type:       "resource",
-						LabelNames: []string{"type", "name"},
-						Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+			Args: func() (*hclext.BodySchema, sdk.GetModuleContentOption) {
+				return &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+					Blocks: []hclext.BlockSchema{
+						{
+							Type:       "resource",
+							LabelNames: []string{"type", "name"},
+							Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+						},
 					},
-				},
+				}, sdk.GetModuleContentOption{Hint: sdk.GetModuleContentHint{ResourceType: "aws_instance"}}
 			},
 			Want: &hclext.BodyContent{},
 		},
@@ -307,15 +310,17 @@ resource "aws_instance" "bar" {
 	instance_type = "m5.2xlarge"
 }`,
 			},
-			Schema: &hclext.BodySchema{
-				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
-				Blocks: []hclext.BlockSchema{
-					{
-						Type:       "resource",
-						LabelNames: []string{"type", "name"},
-						Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+			Args: func() (*hclext.BodySchema, sdk.GetModuleContentOption) {
+				return &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+					Blocks: []hclext.BlockSchema{
+						{
+							Type:       "resource",
+							LabelNames: []string{"type", "name"},
+							Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+						},
 					},
-				},
+				}, sdk.GetModuleContentOption{Hint: sdk.GetModuleContentHint{ResourceType: "aws_instance"}}
 			},
 			Want: &hclext.BodyContent{
 				Blocks: hclext.Blocks{
@@ -350,15 +355,17 @@ resource "aws_instance" "foo" {
 	instance_type = "m5.2xlarge"
 }`,
 			},
-			Schema: &hclext.BodySchema{
-				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
-				Blocks: []hclext.BlockSchema{
-					{
-						Type:       "resource",
-						LabelNames: []string{"type", "name"},
-						Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+			Args: func() (*hclext.BodySchema, sdk.GetModuleContentOption) {
+				return &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+					Blocks: []hclext.BlockSchema{
+						{
+							Type:       "resource",
+							LabelNames: []string{"type", "name"},
+							Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+						},
 					},
-				},
+				}, sdk.GetModuleContentOption{Hint: sdk.GetModuleContentHint{ResourceType: "aws_instance"}}
 			},
 			Want: &hclext.BodyContent{
 				Blocks: hclext.Blocks{
@@ -387,15 +394,17 @@ resource "aws_instance" "bar" {
 	instance_type = "m5.2xlarge"
 }`,
 			},
-			Schema: &hclext.BodySchema{
-				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
-				Blocks: []hclext.BlockSchema{
-					{
-						Type:       "resource",
-						LabelNames: []string{"type", "name"},
-						Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+			Args: func() (*hclext.BodySchema, sdk.GetModuleContentOption) {
+				return &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+					Blocks: []hclext.BlockSchema{
+						{
+							Type:       "resource",
+							LabelNames: []string{"type", "name"},
+							Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+						},
 					},
-				},
+				}, sdk.GetModuleContentOption{Hint: sdk.GetModuleContentHint{ResourceType: "aws_instance"}}
 			},
 			Want: &hclext.BodyContent{
 				Blocks: hclext.Blocks{
@@ -429,23 +438,25 @@ resource "aws_instance" "bar" {
 	}
 }`,
 			},
-			Schema: &hclext.BodySchema{
-				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
-				Blocks: []hclext.BlockSchema{
-					{
-						Type:       "resource",
-						LabelNames: []string{"type", "name"},
-						Body: &hclext.BodySchema{
-							Attributes: []hclext.AttributeSchema{{Name: "instance_type"}},
-							Blocks: []hclext.BlockSchema{
-								{
-									Type: "ebs_block_device",
-									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "volume_size"}}},
+			Args: func() (*hclext.BodySchema, sdk.GetModuleContentOption) {
+				return &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+					Blocks: []hclext.BlockSchema{
+						{
+							Type:       "resource",
+							LabelNames: []string{"type", "name"},
+							Body: &hclext.BodySchema{
+								Attributes: []hclext.AttributeSchema{{Name: "instance_type"}},
+								Blocks: []hclext.BlockSchema{
+									{
+										Type: "ebs_block_device",
+										Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "volume_size"}}},
+									},
 								},
 							},
 						},
 					},
-				},
+				}, sdk.GetModuleContentOption{Hint: sdk.GetModuleContentHint{ResourceType: "aws_instance"}}
 			},
 			Want: &hclext.BodyContent{
 				Blocks: hclext.Blocks{
@@ -492,7 +503,7 @@ resource "aws_instance" "bar" {
 		t.Run(test.Name, func(t *testing.T) {
 			runner := TestRunner(t, test.Files)
 
-			got, diags := runner.GetModuleContent(test.Schema)
+			got, diags := runner.GetModuleContent(test.Args())
 			if diags.HasErrors() {
 				t.Fatal(diags)
 			}

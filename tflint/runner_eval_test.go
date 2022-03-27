@@ -458,7 +458,7 @@ resource "null_resource" "test" {
 						},
 					},
 				},
-			})
+			}, sdk.GetModuleContentOption{})
 			if diags.HasErrors() {
 				t.Fatalf("failed to parse: %s", diags)
 			}
@@ -501,7 +501,7 @@ resource "null_resource" "test" {
 				},
 			},
 		},
-	})
+	}, sdk.GetModuleContentOption{})
 	if diags.HasErrors() {
 		t.Fatalf("failed to parse: %s", diags)
 	}
@@ -669,7 +669,7 @@ resource "null_resource" "test" {
 						},
 					},
 				},
-			})
+			}, sdk.GetModuleContentOption{})
 			if diags.HasErrors() {
 				t.Fatalf("failed to parse: %s", diags)
 			}
@@ -775,7 +775,7 @@ resource "null_resource" "test" {
 							},
 						},
 					},
-				})
+				}, sdk.GetModuleContentOption{})
 				if diags.HasErrors() {
 					t.Fatalf("failed to parse: %s", diags)
 				}
@@ -953,7 +953,7 @@ resource "null_resource" "test" {
 						Body:       &hclext.BodySchema{},
 					},
 				},
-			})
+			}, sdk.GetModuleContentOption{})
 			if diags.HasErrors() {
 				t.Fatalf("failed to parse: %s", diags)
 			}
