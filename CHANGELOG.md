@@ -1,3 +1,48 @@
+## 0.35.0 (2022-03-27)
+
+This release contains major changes to the plugin system. All plugins must be built with tflint-plugin-sdk v0.10.0+ to support this version. See also https://github.com/terraform-linters/tflint-plugin-sdk/releases/tag/v0.10.0
+
+Another important change is the end support of bundled plugins. Users who use the AWS provider should follow this change.
+
+### Breaking Changes
+
+- [#1286](https://github.com/terraform-linters/tflint/pull/1286): plugin: Drop support for bundled plugins ([@wata727](https://github.com/wata727))
+  - Previously, you have been able to use rules for AWS resources, including `aws_instance_invalid_type`, without installing tflint-ruleset-aws explicitly. However, after this release, you will need to explicitly install the plugin.
+  - Please note that even if you are affected by this change, you will not see any warnings in this release. Before updating, it is recommended to check if there is a warning that bundled plugin is enabled in the previous version (v0.31.0+). See also https://github.com/terraform-linters/tflint/pull/1160
+- [#1292](https://github.com/terraform-linters/tflint/pull/1292) [#1312](https://github.com/terraform-linters/tflint/pull/1312) [#1333](https://github.com/terraform-linters/tflint/pull/1333) [#1334](https://github.com/terraform-linters/tflint/pull/1334) [#1335](https://github.com/terraform-linters/tflint/pull/1335): Add support for gRPC server for the new plugin system ([@wata727](https://github.com/wata727))
+  - This change is not important to end-users, but it is important to plugin developers. See the tflint-plugin-sdk's CHANGELOG for detailed changes.
+
+### Enhancements
+
+- [#1297](https://github.com/terraform-linters/tflint/pull/1297): formatter(json,sarif): print structured error data ([@sxlijin](https://github.com/sxlijin))
+  - Add `summary`, `severity`, and `range` fields to errors in JSON formatter
+  - Add `tflint-errors` driver in SARIF formatter
+
+### BugFixes
+
+- [#1290](https://github.com/terraform-linters/tflint/pull/1290): terraform_required_providers: ignore builtin providers ([@bendrucker](https://github.com/bendrucker))
+
+### Chores
+
+- [#1206](https://github.com/terraform-linters/tflint/pull/1206): Build Docker image for linux/aarch64 ([@ivy](https://github.com/ivy))
+- [#1287](https://github.com/terraform-linters/tflint/pull/1287) [#1316](https://github.com/terraform-linters/tflint/pull/1316) [#1320](https://github.com/terraform-linters/tflint/pull/1320): build(deps): Bump actions/setup-go from 2.1.4 to 3
+- [#1288](https://github.com/terraform-linters/tflint/pull/1288) [#1293](https://github.com/terraform-linters/tflint/pull/1293) [#1295](https://github.com/terraform-linters/tflint/pull/1295) [#1308](https://github.com/terraform-linters/tflint/pull/1308) [#1327](https://github.com/terraform-linters/tflint/pull/1327): build(deps): Bump github.com/spf13/afero from 1.6.0 to 1.8.2
+- [#1289](https://github.com/terraform-linters/tflint/pull/1289): build(deps): Bump github.com/hashicorp/go-getter from 1.5.9 to 1.5.10
+- [#1294](https://github.com/terraform-linters/tflint/pull/1294) [#1305](https://github.com/terraform-linters/tflint/pull/1305): build(deps): Bump github.com/terraform-linters/tflint-ruleset-aws from 0.10.1 to 0.12.0
+  - But this dependency was removed in this release finally.
+- [#1296](https://github.com/terraform-linters/tflint/pull/1296): build(deps): Bump github.com/hashicorp/go-version from 1.3.0 to 1.4.0
+- [#1298](https://github.com/terraform-linters/tflint/pull/1298): build(deps): Bump github.com/hashicorp/go-getter from 1.5.10 to 1.5.11
+- [#1301](https://github.com/terraform-linters/tflint/pull/1301): build(deps): Bump github.com/google/go-cmp from 0.5.6 to 0.5.7
+- [#1313](https://github.com/terraform-linters/tflint/pull/1313): Add missing E2E test cases ([@wata727](https://github.com/wata727))
+- [#1318](https://github.com/terraform-linters/tflint/pull/1318): build(deps): Bump github.com/jstemmer/go-junit-report from 0.9.1 to 1.0.0
+- [#1319](https://github.com/terraform-linters/tflint/pull/1319): build(deps): Bump golangci/golangci-lint-action from 2 to 3.1.0
+- [#1321](https://github.com/terraform-linters/tflint/pull/1321): feat: get architecture for install ([@techsolx](https://github.com/techsolx))
+- [#1324](https://github.com/terraform-linters/tflint/pull/1324): build(deps): Bump actions/checkout from 2 to 3
+- [#1329](https://github.com/terraform-linters/tflint/pull/1329): build(deps): Bump github.com/stretchr/testify from 1.7.0 to 1.7.1
+- [#1330](https://github.com/terraform-linters/tflint/pull/1330): build(deps): Bump actions/cache from 2.1.7 to 3
+- [#1331](https://github.com/terraform-linters/tflint/pull/1331): build(deps): Bump golang from 1.17-alpine3.15 to 1.18.0-alpine3.15
+- [#1332](https://github.com/terraform-linters/tflint/pull/1332): build(deps): Bump alpine from 3.15.0 to 3.15.1
+
 ## 0.34.1 (2021-12-25)
 
 ### BugFixes
