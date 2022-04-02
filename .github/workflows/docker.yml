@@ -14,7 +14,8 @@ jobs:
     env:
       # Comma-delimited list of platforms to build for.
       # See https://github.com/docker-library/official-images#multiple-architectures
-      DOCKER_PLATFORMS: linux/amd64,linux/arm64/v8
+      # Only linux/amd64 is supported except for releases as it will take longer in CI
+      DOCKER_PLATFORMS: ${{ github.event_name != 'pull_request' && 'linux/amd64,linux/arm64/v8' || 'linux/amd64' }}
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -50,6 +51,7 @@ jobs:
       # necessary to "re-run" the build (everything's already cached) to load
       # each individual platform. When "docker manifest" is production-ready
       # this will no longer be necessary.
+      # https://github.com/docker/build-push-action/issues/321
       run: |
         platforms=(${DOCKER_PLATFORMS//,/ })
         for p in "${platforms[@]}"; do
