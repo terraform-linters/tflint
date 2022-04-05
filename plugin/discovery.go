@@ -142,7 +142,7 @@ func pluginClientError(err error, config *tflint.PluginConfig) error {
 	message := err.Error()
 	search := "Incompatible API version with plugin."
 
-	if strings.Contains(message, "Incompatible API version") {
+	if strings.Contains(message, search) {
 		message = strings.Replace(
 			message,
 			search,
