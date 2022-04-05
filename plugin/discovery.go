@@ -138,16 +138,17 @@ func pluginClientError(err error, config *tflint.PluginConfig) error {
 	if err == nil {
 		return nil
 	}
+	
+	message := err.Error()
+	search := "Incompatible API version with plugin."
 
-	if strings.Contains(err.Error(), "Incompatible API version") {
-		message := err.Error()
+	if strings.Contains(message, "Incompatible API version") {
 		message = strings.Replace(
 			message,
-			"Incompatible API version with plugin.",
-			fmt.Sprintf(`Incompatible API version with plugin "%s".`, config.Name),
+			search,
+			fmt.Sprintf(`TFLint is not compatible with this version of the %q plugin. A newer TFLint or plugin version may be required.`, config.Name),
 			-1,
 		)
-		message = strings.Replace(message, "Client versions:", "TFLint versions:", -1)
 
 		return errors.New(message)
 	}
