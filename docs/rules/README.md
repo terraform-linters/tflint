@@ -11,6 +11,7 @@ Below is a list of available rules.
 |[terraform_deprecated_interpolation](terraform_deprecated_interpolation.md)|Disallow deprecated (0.11-style) interpolation|✔|
 |[terraform_documented_outputs](terraform_documented_outputs.md)|Disallow `output` declarations without description||
 |[terraform_documented_variables](terraform_documented_variables.md)|Disallow `variable` declarations without description||
+|[terraform_empty_list_check](terraform_empty_list_check.md)|Disallow comparisons with `[]` when checking if a list is empty||
 |[terraform_module_pinned_source](terraform_module_pinned_source.md)|Disallow specifying a git or mercurial repository as a module source without pinning to a version|✔|
 |[terraform_module_version](terraform_module_version.md)|Checks that Terraform modules sourced from a registry specify a version|✔|
 |[terraform_naming_convention](terraform_naming_convention.md)|Enforces naming conventions for resources, data sources, etc||
