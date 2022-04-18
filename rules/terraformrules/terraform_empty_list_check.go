@@ -81,7 +81,7 @@ func checkEmptyList(tupleConsExpr *hclsyntax.TupleConsExpr, runner *tflint.Runne
 	if len(tupleConsExpr.Exprs) == 0 {
 		runner.EmitIssue(
 			r,
-			"List is compared with [] instead of checking if length is 0.",
+			"Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
 			binaryOpExpr.Range(),
 		)
 	}
