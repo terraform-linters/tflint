@@ -7,7 +7,7 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-func Test_TerraformEmptyListCheckRule(t *testing.T) {
+func Test_TerraformEmptyListEqualityRule(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
@@ -16,21 +16,27 @@ func Test_TerraformEmptyListCheckRule(t *testing.T) {
 		{
 			Name: "comparing with [] is not recommended",
 			Content: `
-variable "my_list" {
-	type = list(string)
-}
 resource "aws_db_instance" "mysql" {
-	count = var.my_list == [] ? 0 : 1
+	count = [] == [] ? 0 : 1
     instance_class = "m4.2xlarge"
 }`,
 			Expected: tflint.Issues{
 				{
-					Rule:    NewTerraformEmptyListCheckRule(),
-					Message: "List is compared with [] instead of checking if length is 0.",
+					Rule:    NewTerraformEmptyListEqualityRule(),
+					Message: "Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
 					Range: hcl.Range{
 						Filename: "resource.tf",
-						Start:    hcl.Pos{Line: 6, Column: 10},
-						End:      hcl.Pos{Line: 6, Column: 27},
+						Start:    hcl.Pos{Line: 3, Column: 10},
+						End:      hcl.Pos{Line: 3, Column: 18},
+					},
+				},
+				{
+					Rule:    NewTerraformEmptyListEqualityRule(),
+					Message: "Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 3, Column: 10},
+						End:      hcl.Pos{Line: 3, Column: 18},
 					},
 				},
 			},
@@ -47,8 +53,8 @@ resource "aws_db_instance" "mysql" {
 }`,
 			Expected: tflint.Issues{
 				{
-					Rule:    NewTerraformEmptyListCheckRule(),
-					Message: "List is compared with [] instead of checking if length is 0.",
+					Rule:    NewTerraformEmptyListEqualityRule(),
+					Message: "Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
 					Range: hcl.Range{
 						Filename: "resource.tf",
 						Start:    hcl.Pos{Line: 6, Column: 10},
@@ -71,7 +77,7 @@ resource "aws_db_instance" "mysql" {
 		},
 	}
 
-	rule := NewTerraformEmptyListCheckRule()
+	rule := NewTerraformEmptyListEqualityRule()
 
 	for _, tc := range cases {
 		runner := tflint.TestRunner(t, map[string]string{"resource.tf": tc.Content})

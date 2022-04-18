@@ -8,36 +8,36 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-// TerraformEmptyListCheckRule checks whether is there a comparison with an empty list
-type TerraformEmptyListCheckRule struct{}
+// TerraformEmptyListEqualityRule checks whether is there a comparison with an empty list
+type TerraformEmptyListEqualityRule struct{}
 
 // NewTerraformCommentSyntaxRule returns a new rule
-func NewTerraformEmptyListCheckRule() *TerraformEmptyListCheckRule {
-	return &TerraformEmptyListCheckRule{}
+func NewTerraformEmptyListEqualityRule() *TerraformEmptyListEqualityRule {
+	return &TerraformEmptyListEqualityRule{}
 }
 
 // Name returns the rule name
-func (r *TerraformEmptyListCheckRule) Name() string {
-	return "terraform_empty_list_check"
+func (r *TerraformEmptyListEqualityRule) Name() string {
+	return "terraform_empty_list_equality"
 }
 
 // Enabled returns whether the rule is enabled by default
-func (r *TerraformEmptyListCheckRule) Enabled() bool {
+func (r *TerraformEmptyListEqualityRule) Enabled() bool {
 	return true
 }
 
 // Severity returns the rule severity
-func (r *TerraformEmptyListCheckRule) Severity() tflint.Severity {
+func (r *TerraformEmptyListEqualityRule) Severity() tflint.Severity {
 	return tflint.WARNING
 }
 
 // Link returns the rule reference link
-func (r *TerraformEmptyListCheckRule) Link() string {
+func (r *TerraformEmptyListEqualityRule) Link() string {
 	return tflint.ReferenceLink(r.Name())
 }
 
 // Check checks whether the list is being compared with static empty list
-func (r *TerraformEmptyListCheckRule) Check(runner *tflint.Runner) error {
+func (r *TerraformEmptyListEqualityRule) Check(runner *tflint.Runner) error {
 	if !runner.TFConfig.Path.IsRoot() {
 		// This rule does not evaluate child modules.
 		return nil
@@ -45,21 +45,14 @@ func (r *TerraformEmptyListCheckRule) Check(runner *tflint.Runner) error {
 
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
-	files := make(map[string]*struct{})
-	for _, variable := range runner.TFConfig.Module.Variables {
-		files[variable.DeclRange.Filename] = nil
-	}
-
-	for filename := range files {
-		if err := r.checkEmptyList(runner, filename); err != nil {
-			return err
-		}
+	if err := r.checkEmptyList(runner); err != nil {
+		return err
 	}
 
 	return nil
 }
 
-func (r *TerraformEmptyListCheckRule) checkEmptyList(runner *tflint.Runner, filename string) error {
+func (r *TerraformEmptyListEqualityRule) checkEmptyList(runner *tflint.Runner) error {
 	return runner.WalkExpressions(func(expr hcl.Expression) error {
 		if conditionalExpr, ok := expr.(*hclsyntax.ConditionalExpr); ok {
 			if binaryOpExpr, ok := conditionalExpr.Condition.(*hclsyntax.BinaryOpExpr); ok {
@@ -77,7 +70,7 @@ func (r *TerraformEmptyListCheckRule) checkEmptyList(runner *tflint.Runner, file
 	})
 }
 
-func checkEmptyList(tupleConsExpr *hclsyntax.TupleConsExpr, runner *tflint.Runner, r *TerraformEmptyListCheckRule, binaryOpExpr *hclsyntax.BinaryOpExpr) {
+func checkEmptyList(tupleConsExpr *hclsyntax.TupleConsExpr, runner *tflint.Runner, r *TerraformEmptyListEqualityRule, binaryOpExpr *hclsyntax.BinaryOpExpr) {
 	if len(tupleConsExpr.Exprs) == 0 {
 		runner.EmitIssue(
 			r,
