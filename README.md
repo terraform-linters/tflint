@@ -36,6 +36,25 @@ Chocolatey (Windows):
 choco install tflint
 ```
 
+### Verification
+
+GnuPG
+
+```
+gpg --import 8CE69160EB3F2FE9.key
+gpg --verify checksum.txt.sig checksum.txt
+sha256sum --ignore-missing -c checksums.txt
+```
+
+Cosign (experimental)
+
+```
+COSIGN_EXPERIMENTAL=1 cosign verify-blob --signature checksums.txt.keyless.sig checksums.txt
+sha256sum --ignore-missing -c checksums.txt
+```
+
+**IMPORTANT:** Keyless Signing is in development and you should not completely trust this way. For instance, you have not validated the OIDC subject claim, so it is not guaranteed to be the public key issued by the maintainers.
+
 ### Docker
 
 Instead of installing directly, you can use the Docker images:
