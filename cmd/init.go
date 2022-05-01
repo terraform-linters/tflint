@@ -5,12 +5,13 @@ import (
 	"os"
 
 	"github.com/fatih/color"
+	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
 func (cli *CLI) init(opts Options) int {
-	cfg, err := tflint.LoadConfig(opts.Config)
+	cfg, err := tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, opts.Config)
 	if err != nil {
 		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to load TFLint config; %w", err), map[string][]byte{})
 		return ExitCodeError

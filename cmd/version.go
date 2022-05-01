@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/tflint"
 )
@@ -12,7 +13,7 @@ func (cli *CLI) printVersion(opts Options) int {
 	fmt.Fprintf(cli.outStream, "TFLint version %s\n", tflint.Version)
 
 	// Load configuration files to print plugin versions
-	cfg, err := tflint.LoadConfig(opts.Config)
+	cfg, err := tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, opts.Config)
 	if err != nil {
 		log.Printf("[ERROR] Failed to load TFLint config: %s", err)
 		return ExitCodeOK
@@ -22,7 +23,7 @@ func (cli *CLI) printVersion(opts Options) int {
 			rule.Enabled = false
 		}
 	}
-	cfg = cfg.Merge(opts.toConfig())
+	cfg.Merge(opts.toConfig())
 
 	rulesetPlugin, err := plugin.Discovery(cfg)
 	if err != nil {

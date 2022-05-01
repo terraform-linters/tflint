@@ -4,7 +4,6 @@ import (
 	"log"
 	"strings"
 
-	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -49,13 +48,16 @@ func (opts *Options) toConfig() *tflint.Config {
 	log.Printf("[DEBUG] CLI Options")
 	log.Printf("[DEBUG]   Module: %t", opts.Module)
 	log.Printf("[DEBUG]   Force: %t", opts.Force)
-	log.Printf("[DEBUG]   IgnoreModules: %#v", ignoreModules)
-	log.Printf("[DEBUG]   EnableRules: %#v", opts.EnableRules)
-	log.Printf("[DEBUG]   DisableRules: %#v", opts.DisableRules)
-	log.Printf("[DEBUG]   Only: %#v", opts.Only)
-	log.Printf("[DEBUG]   EnablePlugins: %#v", opts.EnablePlugins)
-	log.Printf("[DEBUG]   Varfiles: %#v", varfiles)
-	log.Printf("[DEBUG]   Variables: %#v", opts.Variables)
+	log.Printf("[DEBUG]   IgnoreModules:")
+	for name, ignore := range ignoreModules {
+		log.Printf("[DEBUG]     %s: %t", name, ignore)
+	}
+	log.Printf("[DEBUG]   EnableRules: %s", strings.Join(opts.EnableRules, ", "))
+	log.Printf("[DEBUG]   DisableRules: %s", strings.Join(opts.DisableRules, ", "))
+	log.Printf("[DEBUG]   Only: %s", strings.Join(opts.Only, ", "))
+	log.Printf("[DEBUG]   EnablePlugins: %s", strings.Join(opts.EnablePlugins, ", "))
+	log.Printf("[DEBUG]   Varfiles: %s", strings.Join(opts.Varfiles, ", "))
+	log.Printf("[DEBUG]   Variables: %s", strings.Join(opts.Variables, ", "))
 
 	rules := map[string]*tflint.RuleConfig{}
 	if len(opts.Only) > 0 {
@@ -63,7 +65,7 @@ func (opts *Options) toConfig() *tflint.Config {
 			rules[rule] = &tflint.RuleConfig{
 				Name:    rule,
 				Enabled: true,
-				Body:    hcl.EmptyBody(),
+				Body:    nil,
 			}
 		}
 	} else {
@@ -71,14 +73,14 @@ func (opts *Options) toConfig() *tflint.Config {
 			rules[rule] = &tflint.RuleConfig{
 				Name:    rule,
 				Enabled: true,
-				Body:    hcl.EmptyBody(),
+				Body:    nil,
 			}
 		}
 		for _, rule := range opts.DisableRules {
 			rules[rule] = &tflint.RuleConfig{
 				Name:    rule,
 				Enabled: false,
-				Body:    hcl.EmptyBody(),
+				Body:    nil,
 			}
 		}
 	}

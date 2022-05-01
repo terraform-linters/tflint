@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -537,7 +538,7 @@ func loadConfigfromTempFile(t *testing.T, content string) *tflint.Config {
 	if _, err := tmpfile.Write([]byte(content)); err != nil {
 		t.Fatal(err)
 	}
-	config, err := tflint.LoadConfig(tmpfile.Name())
+	config, err := tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, tmpfile.Name())
 	if err != nil {
 		t.Fatal(err)
 	}

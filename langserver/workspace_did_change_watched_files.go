@@ -17,11 +17,12 @@ func (h *handler) workspaceDidChangeWatchedFiles(ctx context.Context, conn *json
 		return nil, fmt.Errorf("root directory is undefined")
 	}
 
-	newConfig, err := tflint.LoadConfig(h.configPath)
+	newConfig, err := tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, h.configPath)
 	if err != nil {
 		return nil, err
 	}
-	h.config = newConfig.Merge(h.cliConfig)
+	newConfig.Merge(h.cliConfig)
+	h.config = newConfig
 	h.rules = rules.NewRules(h.config)
 
 	h.fs = afero.NewCopyOnWriteFs(afero.NewOsFs(), afero.NewMemMapFs())

@@ -11,9 +11,11 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/hashicorp/hcl/v2"
 	lsp "github.com/sourcegraph/go-lsp"
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/spf13/afero"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/rules"
 	"github.com/terraform-linters/tflint/tflint"
@@ -21,7 +23,7 @@ import (
 
 // NewHandler returns a new JSON-RPC handler
 func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, *plugin.Plugin, error) {
-	cfg, err := tflint.LoadConfig(configPath)
+	cfg, err := tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, configPath)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -30,7 +32,7 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 			rule.Enabled = false
 		}
 	}
-	cfg = cfg.Merge(cliConfig)
+	cfg.Merge(cliConfig)
 
 	rulsetPlugin, err := plugin.Discovery(cfg)
 	if err != nil {
@@ -185,9 +187,13 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 		if err != nil {
 			return ret, fmt.Errorf("Failed to fetch config schema from `%s` plugin", name)
 		}
-		content, diags := h.config.PluginContent(name, configSchema)
-		if diags.HasErrors() {
-			return ret, fmt.Errorf("Failed to parse `%s` plugin config", name)
+		content := &hclext.BodyContent{}
+		if plugin, exists := h.config.Plugins[name]; exists {
+			var diags hcl.Diagnostics
+			content, diags = plugin.Content(configSchema)
+			if diags.HasErrors() {
+				return ret, fmt.Errorf("Failed to parse `%s` plugin config", name)
+			}
 		}
 		err = ruleset.ApplyConfig(content, h.config.Sources())
 		if err != nil {

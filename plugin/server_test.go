@@ -3,13 +3,13 @@ package plugin
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
@@ -231,25 +231,26 @@ resource "aws_instance" "bar" {
 
 func TestGetRuleConfigContent(t *testing.T) {
 	// config from file
-	config := `
+	config := []byte(`
 rule "test_in_file" {
 	enabled = true
 	foo = "bar"
-}`
-	configFile := filepath.Join(t.TempDir(), ".tflint.hcl")
-	if err := os.WriteFile(configFile, []byte(config), 0755); err != nil {
-		t.Fatalf("failed to create config file: %s", err)
+}`)
+	fs := afero.Afero{Fs: afero.NewMemMapFs()}
+	if err := fs.WriteFile(".tflint.hcl", config, os.ModePerm); err != nil {
+		t.Fatal(err)
 	}
-	fileConfig, err := tflint.LoadConfig(configFile)
+	fileConfig, err := tflint.LoadConfig(fs, ".tflint.hcl")
 	if err != nil {
 		t.Fatalf("failed to load test config: %s", err)
 	}
 
 	// config from CLI
 	cliConfig := tflint.EmptyConfig()
-	cliConfig.Rules["test_in_cli"] = &tflint.RuleConfig{Name: "test_in_cli", Enabled: true, Body: hcl.EmptyBody()}
+	cliConfig.Rules["test_in_cli"] = &tflint.RuleConfig{Name: "test_in_cli", Enabled: true, Body: nil}
 
-	runner := tflint.TestRunnerWithConfig(t, map[string]string{}, fileConfig.Merge(cliConfig))
+	fileConfig.Merge(cliConfig)
+	runner := tflint.TestRunnerWithConfig(t, map[string]string{}, fileConfig)
 
 	server := NewGRPCServer(runner, nil, map[string][]byte{})
 
@@ -305,17 +306,13 @@ rule "test_in_file" {
 
 	for _, test := range tests {
 		t.Run(test.Name, func(t *testing.T) {
-			content, file, err := server.GetRuleConfigContent(test.Args())
+			content, sources, err := server.GetRuleConfigContent(test.Args())
 			if test.ErrCheck(err) {
 				t.Fatalf("failed to call GetRuleConfigContent: %s", err)
 			}
 
-			var gotFile string
-			if file != nil {
-				gotFile = string(file.Bytes)
-			}
-			if gotFile != config {
-				t.Fatalf("failed to match returned file: %s", gotFile)
+			if string(sources[".tflint.hcl"]) != string(config) {
+				t.Fatalf("failed to match returned file: %s", sources[".tflint.hcl"])
 			}
 
 			opts := cmp.Options{
