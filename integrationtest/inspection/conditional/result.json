@@ -59,6 +59,66 @@
         }
       },
       "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_iam_policy_example",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "name is zero",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 71,
+          "column": 10
+        },
+        "end": {
+          "line": 71,
+          "column": 16
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_iam_policy_example",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "name is one",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 76,
+          "column": 10
+        },
+        "end": {
+          "line": 76,
+          "column": 15
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_iam_policy_example",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "name is unknown_count",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 81,
+          "column": 10
+        },
+        "end": {
+          "line": 81,
+          "column": 25
+        }
+      },
+      "callers": []
     }
   ],
   "errors": []

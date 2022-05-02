@@ -65,3 +65,18 @@ resource "aws_instance" "unknown_for_each" {
   for_each = var.unknown
   instance_type = "t2.micro"
 }
+
+resource "aws_iam_policy" "zero" {
+  count = var.zero
+  name = "zero"
+}
+
+resource "aws_iam_policy" "one" {
+  count = var.one
+  name = "one"
+}
+
+resource "aws_iam_policy" "unknown_count" {
+  count = var.unknown
+  name = "unknown_count"
+}
