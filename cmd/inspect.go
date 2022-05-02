@@ -3,7 +3,9 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/hashicorp/hcl/v2"
 	"github.com/spf13/afero"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/rules"
 	"github.com/terraform-linters/tflint/tflint"
@@ -11,7 +13,7 @@ import (
 
 func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	// Setup config
-	cfg, err := tflint.LoadConfig(opts.Config)
+	cfg, err := tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, opts.Config)
 	if err != nil {
 		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to load TFLint config; %w", err), map[string][]byte{})
 		return ExitCodeError
@@ -21,7 +23,7 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 			rule.Enabled = false
 		}
 	}
-	cfg = cfg.Merge(opts.toConfig())
+	cfg.Merge(opts.toConfig())
 
 	// Setup loader
 	if !cli.testMode {
@@ -60,10 +62,14 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to fetch config schema from `%s` plugin; %w", name, err), cli.loader.Sources())
 			return ExitCodeError
 		}
-		content, diags := cfg.PluginContent(name, configSchema)
-		if diags.HasErrors() {
-			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse `%s` plugin config; %w", name, diags), cli.loader.Sources())
-			return ExitCodeError
+		content := &hclext.BodyContent{}
+		if plugin, exists := cfg.Plugins[name]; exists {
+			var diags hcl.Diagnostics
+			content, diags = plugin.Content(configSchema)
+			if diags.HasErrors() {
+				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse `%s` plugin config; %w", name, diags), cli.loader.Sources())
+				return ExitCodeError
+			}
 		}
 		err = ruleset.ApplyConfig(content, cfg.Sources())
 		if err != nil {

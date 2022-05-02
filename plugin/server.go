@@ -53,26 +53,23 @@ func (s *GRPCServer) GetFiles(ty sdk.ModuleCtxType) map[string][]byte {
 }
 
 // GetRuleConfigContent extracts the rule config based on the schema.
-// It returns an extracted body content and hcl.File representation of the config file.
-// The reason for returning hcl.File is to refer to the source code information
-// to encode the expression, and there is room for improvement here.
-func (s *GRPCServer) GetRuleConfigContent(name string, bodyS *hclext.BodySchema) (*hclext.BodyContent, *hcl.File, error) {
-	file := s.runner.ConfigFile()
+// It returns an extracted body content and sources.
+// The reason for returning sources is to encode the expression, and there is room for improvement here.
+func (s *GRPCServer) GetRuleConfigContent(name string, bodyS *hclext.BodySchema) (*hclext.BodyContent, map[string][]byte, error) {
 	config := s.runner.RuleConfig(name)
 	if config == nil {
-		return nil, file, fmt.Errorf("rule `%s` is not found in config", name)
+		return nil, s.runner.ConfigSources(), fmt.Errorf("rule `%s` is not found in config", name)
 	}
-	// HACK: If you enable the rule through the CLI instead of the file, its hcl.Body will not contain valid range.
-	// @see https://github.com/hashicorp/hcl/blob/v2.8.0/merged.go#L132-L135
-	if config.Body.MissingItemRange().Filename == "<empty>" {
-		return nil, file, errors.New("This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration")
+	// If you enable the rule through the CLI instead of the file, its hcl.Body will be nil.
+	if config.Body == nil {
+		return nil, s.runner.ConfigSources(), errors.New("This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration")
 	}
 
 	body, diags := hclext.Content(config.Body, bodyS)
 	if diags.HasErrors() {
-		return body, file, diags
+		return body, s.runner.ConfigSources(), diags
 	}
-	return body, file, nil
+	return body, s.runner.ConfigSources(), nil
 }
 
 // EvaluateExpr returns the value of the passed expression.

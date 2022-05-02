@@ -6,7 +6,6 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	hcl "github.com/hashicorp/hcl/v2"
 	flags "github.com/jessevdk/go-flags"
 	"github.com/terraform-linters/tflint/tflint"
 )
@@ -134,12 +133,12 @@ func Test_toConfig(t *testing.T) {
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
 						Enabled: true,
-						Body:    hcl.EmptyBody(),
+						Body:    nil,
 					},
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
 						Enabled: true,
-						Body:    hcl.EmptyBody(),
+						Body:    nil,
 					},
 				},
 				Plugins: map[string]*tflint.PluginConfig{},
@@ -159,12 +158,12 @@ func Test_toConfig(t *testing.T) {
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
 						Enabled: false,
-						Body:    hcl.EmptyBody(),
+						Body:    nil,
 					},
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
 						Enabled: false,
-						Body:    hcl.EmptyBody(),
+						Body:    nil,
 					},
 				},
 				Plugins: map[string]*tflint.PluginConfig{},
@@ -184,7 +183,7 @@ func Test_toConfig(t *testing.T) {
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
 						Enabled: true,
-						Body:    hcl.EmptyBody(),
+						Body:    nil,
 					},
 				},
 				Plugins: map[string]*tflint.PluginConfig{},
@@ -218,22 +217,24 @@ func Test_toConfig(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		var opts Options
-		parser := flags.NewParser(&opts, flags.HelpFlag)
+		t.Run(tc.Name, func(t *testing.T) {
+			var opts Options
+			parser := flags.NewParser(&opts, flags.HelpFlag)
 
-		_, err := parser.ParseArgs(strings.Split(tc.Command, " "))
-		if err != nil {
-			t.Fatalf("Failed `%s` test: %s", tc.Name, err)
-		}
+			_, err := parser.ParseArgs(strings.Split(tc.Command, " "))
+			if err != nil {
+				t.Fatal(err)
+			}
 
-		ret := opts.toConfig()
-		eqlopts := []cmp.Option{
-			cmpopts.IgnoreUnexported(tflint.RuleConfig{}),
-			cmpopts.IgnoreUnexported(tflint.PluginConfig{}),
-			cmpopts.IgnoreUnexported(tflint.Config{}),
-		}
-		if !cmp.Equal(tc.Expected, ret, eqlopts...) {
-			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(tc.Expected, ret, eqlopts...))
-		}
+			ret := opts.toConfig()
+			eqlopts := []cmp.Option{
+				cmpopts.IgnoreUnexported(tflint.RuleConfig{}),
+				cmpopts.IgnoreUnexported(tflint.PluginConfig{}),
+				cmpopts.IgnoreUnexported(tflint.Config{}),
+			}
+			if diff := cmp.Diff(tc.Expected, ret, eqlopts...); diff != "" {
+				t.Fatal(diff)
+			}
+		})
 	}
 }

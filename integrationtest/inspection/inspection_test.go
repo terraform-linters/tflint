@@ -151,59 +151,55 @@ func TestIntegration(t *testing.T) {
 
 	dir, _ := os.Getwd()
 	for _, tc := range cases {
-		testDir := filepath.Join(dir, tc.Dir)
+		t.Run(tc.Name, func(t *testing.T) {
+			testDir := filepath.Join(dir, tc.Dir)
 
-		defer func() {
-			if err := os.Chdir(dir); err != nil {
+			defer func() {
+				if err := os.Chdir(dir); err != nil {
+					t.Fatal(err)
+				}
+			}()
+			if err := os.Chdir(testDir); err != nil {
 				t.Fatal(err)
 			}
-		}()
-		if err := os.Chdir(testDir); err != nil {
-			t.Fatal(err)
-		}
 
-		if tc.Env != nil {
-			for k, v := range tc.Env {
-				os.Setenv(k, v)
+			if tc.Env != nil {
+				for k, v := range tc.Env {
+					t.Setenv(k, v)
+				}
 			}
-		}
 
-		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
-		cli := cmd.NewCLI(outStream, errStream)
-		args := strings.Split(tc.Command, " ")
+			outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
+			cli := cmd.NewCLI(outStream, errStream)
+			args := strings.Split(tc.Command, " ")
 
-		cli.Run(args)
+			cli.Run(args)
 
-		var b []byte
-		var err error
-		if runtime.GOOS == "windows" && IsWindowsResultExist() {
-			b, err = os.ReadFile(filepath.Join(testDir, "result_windows.json"))
-		} else {
-			b, err = os.ReadFile(filepath.Join(testDir, "result.json"))
-		}
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		var expected *formatter.JSONOutput
-		if err := json.Unmarshal(b, &expected); err != nil {
-			t.Fatal(err)
-		}
-
-		var got *formatter.JSONOutput
-		if err := json.Unmarshal(outStream.Bytes(), &got); err != nil {
-			t.Fatal(err)
-		}
-
-		if !cmp.Equal(got, expected) {
-			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(expected, got))
-		}
-
-		if tc.Env != nil {
-			for k := range tc.Env {
-				os.Unsetenv(k)
+			var b []byte
+			var err error
+			if runtime.GOOS == "windows" && IsWindowsResultExist() {
+				b, err = os.ReadFile(filepath.Join(testDir, "result_windows.json"))
+			} else {
+				b, err = os.ReadFile(filepath.Join(testDir, "result.json"))
 			}
-		}
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			var expected *formatter.JSONOutput
+			if err := json.Unmarshal(b, &expected); err != nil {
+				t.Fatal(err)
+			}
+
+			var got *formatter.JSONOutput
+			if err := json.Unmarshal(outStream.Bytes(), &got); err != nil {
+				t.Fatal(err)
+			}
+
+			if diff := cmp.Diff(got, expected); diff != "" {
+				t.Fatal(diff)
+			}
+		})
 	}
 }
 

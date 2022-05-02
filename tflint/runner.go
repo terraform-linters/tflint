@@ -488,8 +488,9 @@ func (r *Runner) RuleConfig(ruleName string) *RuleConfig {
 	return r.config.Rules[ruleName]
 }
 
-func (r *Runner) ConfigFile() *hcl.File {
-	return r.config.file
+// ConfigSources returns the sources of TFLint config files
+func (r *Runner) ConfigSources() map[string][]byte {
+	return r.config.Sources()
 }
 
 func (r *Runner) emitIssue(issue *Issue) {
