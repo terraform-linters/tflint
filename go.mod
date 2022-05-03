@@ -31,7 +31,7 @@ require (
 	github.com/sourcegraph/jsonrpc2 v0.1.0
 	github.com/spf13/afero v1.8.2
 	github.com/stretchr/testify v1.7.1
-	github.com/terraform-linters/tflint-plugin-sdk v0.10.2-0.20220501165639-4304281d4b8d
+	github.com/terraform-linters/tflint-plugin-sdk v0.10.2-0.20220502173159-77d30f16c48e
 	github.com/xeipuuv/gojsonschema v1.2.0
 	github.com/zclconf/go-cty v1.10.0
 	github.com/zclconf/go-cty-yaml v1.0.2

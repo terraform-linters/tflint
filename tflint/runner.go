@@ -272,6 +272,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 //      https://www.terraform.io/language/meta-arguments/count
 //      https://www.terraform.io/language/meta-arguments/for_each
 //
+// However, this behavior is controlled by options. The above is the default.
 func (r *Runner) GetModuleContent(bodyS *hclext.BodySchema, opts sdk.GetModuleContentOption) (*hclext.BodyContent, hcl.Diagnostics) {
 	// For performance, determine in advance whether the target resource exists.
 	if opts.Hint.ResourceType != "" {
@@ -302,6 +303,10 @@ func (r *Runner) GetModuleContent(bodyS *hclext.BodySchema, opts sdk.GetModuleCo
 	}
 
 	content = resolveDynamicBlocks(content)
+
+	if opts.IncludeNotCreated {
+		return content, diags
+	}
 
 	out := &hclext.BodyContent{Attributes: content.Attributes}
 	for _, block := range content.Blocks {
