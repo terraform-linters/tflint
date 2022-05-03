@@ -31,6 +31,7 @@ func TestLoadConfig(t *testing.T) {
 			files: map[string]string{
 				"config.hcl": `
 config {
+	format = "compact"
 	plugin_dir = "~/.tflint.d/plugins"
 
 	module = true
@@ -80,6 +81,7 @@ plugin "baz" {
 				Variables:         []string{"foo=bar", "bar=['foo']"},
 				DisabledByDefault: false,
 				PluginDir:         "~/.tflint.d/plugins",
+				Format:            "compact",
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -175,6 +177,19 @@ rule "aws_instance_invalid_type" "myrule" {
 			},
 			errCheck: func(err error) bool {
 				return err == nil || err.Error() != "invalid.hcl:2,34-42: Extraneous label for rule; Only 1 labels (name) are expected for rule blocks."
+			},
+		},
+		{
+			name: "invalid format",
+			file: "invalid_format.hcl",
+			files: map[string]string{
+				"invalid_format.hcl": `
+config {
+	format = "invalid"
+}`,
+			},
+			errCheck: func(err error) bool {
+				return err == nil || err.Error() != "invalid is invalid format. Allowed formats are: default, json, checkstyle, junit, compact, sarif"
 			},
 		},
 		{
@@ -289,6 +304,7 @@ func TestMerge(t *testing.T) {
 		Variables:         []string{"foo=bar"},
 		DisabledByDefault: false,
 		PluginDir:         "./.tflint.d/plugins",
+		Format:            "compact",
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
 				Name:    "aws_instance_invalid_type",
@@ -341,6 +357,7 @@ func TestMerge(t *testing.T) {
 				Variables:         []string{"foo=bar"},
 				DisabledByDefault: false,
 				PluginDir:         "./.tflint.d/plugins",
+				Format:            "compact",
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -375,6 +392,7 @@ func TestMerge(t *testing.T) {
 				Variables:         []string{"bar=baz"},
 				DisabledByDefault: false,
 				PluginDir:         "~/.tflint.d/plugins",
+				Format:            "json",
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_ami": {
 						Name:    "aws_instance_invalid_ami",
@@ -410,6 +428,7 @@ func TestMerge(t *testing.T) {
 				Variables:         []string{"foo=bar", "bar=baz"},
 				DisabledByDefault: false,
 				PluginDir:         "~/.tflint.d/plugins",
+				Format:            "json",
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",

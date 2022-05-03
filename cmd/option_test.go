@@ -214,6 +214,21 @@ func Test_toConfig(t *testing.T) {
 				},
 			},
 		},
+		{
+			Name:    "--format",
+			Command: "./tflint --format compact",
+			Expected: &tflint.Config{
+				Module:            false,
+				Force:             false,
+				IgnoreModules:     map[string]bool{},
+				Varfiles:          []string{},
+				Variables:         []string{},
+				DisabledByDefault: false,
+				Format:            "compact",
+				Rules:             map[string]*tflint.RuleConfig{},
+				Plugins:           map[string]*tflint.PluginConfig{},
+			},
+		},
 	}
 
 	for _, tc := range cases {

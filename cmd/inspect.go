@@ -24,6 +24,7 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 		}
 	}
 	cfg.Merge(opts.toConfig())
+	cli.formatter.Format = cfg.Format
 
 	// Setup loader
 	if !cli.testMode {
