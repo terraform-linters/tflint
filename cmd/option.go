@@ -23,6 +23,7 @@ type Options struct {
 	Variables     []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
 	Module        bool     `long:"module" description:"Inspect modules"`
 	Force         bool     `long:"force" description:"Return zero exit status even if issues found"`
+	Color         bool     `long:"color" description:"Enable colorized output"`
 	NoColor       bool     `long:"no-color" description:"Disable colorized output"`
 	LogLevel      string   `long:"loglevel" description:"Change the loglevel" choice:"trace" choice:"debug" choice:"info" choice:"warn" choice:"error"`
 }
