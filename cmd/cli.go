@@ -55,6 +55,10 @@ func (cli *CLI) Run(args []string) int {
 		Stderr: cli.errStream,
 		Format: opts.Format,
 	}
+	if opts.Color {
+		color.NoColor = false
+		cli.formatter.NoColor = false
+	}
 	if opts.NoColor {
 		color.NoColor = true
 		cli.formatter.NoColor = true
