@@ -1,3 +1,9 @@
+## 0.36.1 (2022-05-05)
+
+### BugFixes
+
+- [#1373](https://github.com/terraform-linters/tflint/pull/1373): Fix panic when enabling Terraform rules by CLI ([@wata727](https://github.com/wata727))
+
 ## 0.36.0 (2022-05-05)
 
 ### Enhancements
