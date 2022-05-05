@@ -9,6 +9,7 @@ The config file is written in [HCL](https://github.com/hashicorp/hcl). An exampl
 
 ```hcl
 config {
+  format = "compact"
   plugin_dir = "~/.tflint.d/plugins"
 
   module = true
@@ -40,6 +41,12 @@ You can also use another file as a config file with the `--config` option:
 ```
 $ tflint --config other_config.hcl
 ```
+
+### `format`
+
+CLI flag: `--format`
+
+Change the output format.
 
 ### `plugin_dir`
 

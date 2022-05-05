@@ -42,7 +42,17 @@ var innerConfigSchema = &hcl.BodySchema{
 		{Name: "variables"},
 		{Name: "disabled_by_default"},
 		{Name: "plugin_dir"},
+		{Name: "format"},
 	},
+}
+
+var validFormats = []string{
+	"default",
+	"json",
+	"checkstyle",
+	"junit",
+	"compact",
+	"sarif",
 }
 
 // Config describes the behavior of TFLint
@@ -54,6 +64,7 @@ type Config struct {
 	Variables         []string
 	DisabledByDefault bool
 	PluginDir         string
+	Format            string
 	Rules             map[string]*RuleConfig
 	Plugins           map[string]*PluginConfig
 
@@ -190,6 +201,20 @@ func loadConfig(file afero.File) (*Config, error) {
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.PluginDir); err != nil {
 						return config, err
 					}
+				case "format":
+					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.Format); err != nil {
+						return config, err
+					}
+					formatValid := false
+					for _, f := range validFormats {
+						if config.Format == "" || config.Format == f {
+							formatValid = true
+							break
+						}
+					}
+					if !formatValid {
+						return config, fmt.Errorf("%s is invalid format. Allowed formats are: %s", config.Format, strings.Join(validFormats, ", "))
+					}
 				default:
 					panic("never happened")
 				}
@@ -225,6 +250,7 @@ func loadConfig(file afero.File) (*Config, error) {
 	log.Printf("[DEBUG]   Variables: %s", strings.Join(config.Variables, ", "))
 	log.Printf("[DEBUG]   DisabledByDefault: %t", config.DisabledByDefault)
 	log.Printf("[DEBUG]   PluginDir: %s", config.PluginDir)
+	log.Printf("[DEBUG]   Format: %s", config.Format)
 	log.Printf("[DEBUG]   Rules:")
 	for name, rule := range config.Rules {
 		log.Printf("[DEBUG]     %s: %t", name, rule.Enabled)
@@ -257,6 +283,9 @@ func (c *Config) Merge(other *Config) {
 	}
 	if other.PluginDir != "" {
 		c.PluginDir = other.PluginDir
+	}
+	if other.Format != "" {
+		c.Format = other.Format
 	}
 
 	for name, ignore := range other.IgnoreModules {

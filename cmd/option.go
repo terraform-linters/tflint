@@ -12,7 +12,7 @@ type Options struct {
 	Version       bool     `short:"v" long:"version" description:"Print TFLint version"`
 	Init          bool     `long:"init" description:"Install plugins"`
 	Langserver    bool     `long:"langserver" description:"Start language server"`
-	Format        string   `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" choice:"junit" choice:"compact" choice:"sarif" default:"default"`
+	Format        string   `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" choice:"junit" choice:"compact" choice:"sarif"`
 	Config        string   `short:"c" long:"config" description:"Config file name" value-name:"FILE" default:".tflint.hcl"`
 	IgnoreModules []string `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE"`
 	EnableRules   []string `long:"enable-rule" description:"Enable rules from the command line" value-name:"RULE_NAME"`
@@ -58,6 +58,7 @@ func (opts *Options) toConfig() *tflint.Config {
 	log.Printf("[DEBUG]   EnablePlugins: %s", strings.Join(opts.EnablePlugins, ", "))
 	log.Printf("[DEBUG]   Varfiles: %s", strings.Join(opts.Varfiles, ", "))
 	log.Printf("[DEBUG]   Variables: %s", strings.Join(opts.Variables, ", "))
+	log.Printf("[DEBUG]   Format: %s", opts.Format)
 
 	rules := map[string]*tflint.RuleConfig{}
 	if len(opts.Only) > 0 {
@@ -105,6 +106,7 @@ func (opts *Options) toConfig() *tflint.Config {
 		Varfiles:          varfiles,
 		Variables:         opts.Variables,
 		DisabledByDefault: len(opts.Only) > 0,
+		Format:            opts.Format,
 		Rules:             rules,
 		Plugins:           plugins,
 	}
