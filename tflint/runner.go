@@ -475,13 +475,12 @@ func (r *Runner) WithExpressionContext(expr hcl.Expression, proc func() error) e
 // DecodeRuleConfig extracts the rule's configuration into the given value
 func (r *Runner) DecodeRuleConfig(ruleName string, val interface{}) error {
 	if rule, exists := r.config.Rules[ruleName]; exists {
+		// If you enable the rule through the CLI instead of the file, its hcl.Body will be nil.
+		if rule.Body == nil {
+			return errors.New("This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration")
+		}
 		diags := gohcl.DecodeBody(rule.Body, nil, val)
 		if diags.HasErrors() {
-			// HACK: If you enable the rule through the CLI instead of the file, its hcl.Body will not contain valid range.
-			// @see https://github.com/hashicorp/hcl/blob/v2.5.0/merged.go#L132-L135
-			if rule.Body.MissingItemRange().Filename == "<empty>" {
-				return errors.New("This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration")
-			}
 			return diags
 		}
 	}

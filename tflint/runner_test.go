@@ -1179,7 +1179,7 @@ func Test_DecodeRuleConfig_emptyBody(t *testing.T) {
 	cfg.Rules["test"] = &RuleConfig{
 		Name:    "test",
 		Enabled: true,
-		Body:    hcl.EmptyBody(),
+		Body:    nil,
 	}
 
 	runner := TestRunnerWithConfig(t, map[string]string{}, cfg)
