@@ -1,3 +1,31 @@
+## 0.36.0 (2022-05-05)
+
+### Enhancements
+
+- [#1369](https://github.com/terraform-linters/tflint/pull/1369): tflint: Add format option to the config file ([@wata727](https://github.com/wata727))
+- [#1370](https://github.com/terraform-linters/tflint/pull/1370): cmd: Add `--color` option ([@wata727](https://github.com/wata727))
+
+### Plugin API Changes
+
+- [#1365](https://github.com/terraform-linters/tflint/pull/1365): Refactor tflint.LoadConfig ([@wata727](https://github.com/wata727))
+  - Previously, `GetRuleConfigContent` always returned reserved attributes (e.g. `enabled`), regardless of the passed schema, but new gRPC server will not return them.
+- [#1368](https://github.com/terraform-linters/tflint/pull/1368): plugin: Allow accepting IncludeNotCreated option ([@wata727](https://github.com/wata727))
+  - See https://github.com/terraform-linters/tflint-plugin-sdk/pull/160
+
+### Chores
+
+- [#1336](https://github.com/terraform-linters/tflint/pull/1336): build: Go 1.18 ([@wata727](https://github.com/wata727))
+- [#1339](https://github.com/terraform-linters/tflint/pull/1339) [#1347](https://github.com/terraform-linters/tflint/pull/1347) [#1350](https://github.com/terraform-linters/tflint/pull/1350): build(deps): Bump alpine from 3.15.1 to 3.15.4
+- [#1344](https://github.com/terraform-linters/tflint/pull/1344): build: CI only checks docker build for linux/amd64 ([@wata727](https://github.com/wata727))
+- [#1346](https://github.com/terraform-linters/tflint/pull/1346) [#1371](https://github.com/terraform-linters/tflint/pull/1371): build(deps): Bump github.com/terraform-linters/tflint-plugin-sdk from 0.10.0 to 0.11.0
+- [#1348](https://github.com/terraform-linters/tflint/pull/1348): discovery: reword message on protocol version err ([@bendrucker](https://github.com/bendrucker))
+- [#1349](https://github.com/terraform-linters/tflint/pull/1349): build(deps): Bump github.com/hashicorp/go-uuid from 1.0.2 to 1.0.3
+- [#1360](https://github.com/terraform-linters/tflint/pull/1360): build(deps): Bump golang from 1.18.0-alpine3.15 to 1.18.1-alpine3.15
+- [#1361](https://github.com/terraform-linters/tflint/pull/1361): Add signatures for keyless signing ([@wata727](https://github.com/wata727))
+- [#1364](https://github.com/terraform-linters/tflint/pull/1364): build(deps): Bump github.com/hashicorp/hcl/v2 from 2.11.1 to 2.12.0
+- [#1366](https://github.com/terraform-linters/tflint/pull/1366): build(deps): Bump github.com/google/go-cmp from 0.5.7 to 0.5.8
+- [#1367](https://github.com/terraform-linters/tflint/pull/1367): build(deps): Bump sigstore/cosign-installer from 2.2.1 to 2.3.0
+
 ## 0.35.0 (2022-03-27)
 
 This release contains major changes to the plugin system. All plugins must be built with tflint-plugin-sdk v0.10.0+ to support this version. See also https://github.com/terraform-linters/tflint-plugin-sdk/releases/tag/v0.10.0
