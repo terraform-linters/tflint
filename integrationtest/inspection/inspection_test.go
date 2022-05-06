@@ -147,6 +147,11 @@ func TestIntegration(t *testing.T) {
 			Command: "tflint --only aws_s3_bucket_with_config_example --format json",
 			Dir:     "rule-config",
 		},
+		{
+			Name:    "enable plugin by CLI",
+			Command: "tflint --enable-plugin testing --format json",
+			Dir:     "enable-plugin-by-cli",
+		},
 	}
 
 	dir, _ := os.Getwd()
