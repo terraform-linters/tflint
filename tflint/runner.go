@@ -477,11 +477,15 @@ func (r *Runner) DecodeRuleConfig(ruleName string, val interface{}) error {
 	if rule, exists := r.config.Rules[ruleName]; exists {
 		// If you enable the rule through the CLI instead of the file, its hcl.Body will be nil.
 		if rule.Body == nil {
-			return errors.New("This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration")
-		}
-		diags := gohcl.DecodeBody(rule.Body, nil, val)
-		if diags.HasErrors() {
-			return diags
+			diags := gohcl.DecodeBody(hcl.EmptyBody(), nil, val)
+			if diags.HasErrors() {
+				return errors.New("This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration")
+			}
+		} else {
+			diags := gohcl.DecodeBody(rule.Body, nil, val)
+			if diags.HasErrors() {
+				return diags
+			}
 		}
 	}
 	return nil
