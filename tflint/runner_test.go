@@ -1194,6 +1194,30 @@ func Test_DecodeRuleConfig_emptyBody(t *testing.T) {
 	}
 }
 
+func Test_DecodeRuleConfig_emptyBodyWithOptional(t *testing.T) {
+	type ruleSchema struct {
+		Foo string `hcl:"foo,optional"`
+	}
+	options := ruleSchema{}
+
+	cfg := EmptyConfig()
+	cfg.Rules["test"] = &RuleConfig{
+		Name:    "test",
+		Enabled: true,
+		Body:    nil,
+	}
+
+	runner := TestRunnerWithConfig(t, map[string]string{}, cfg)
+	if err := runner.DecodeRuleConfig("test", &options); err != nil {
+		t.Fatalf("Failed to decode rule config: %s", err)
+	}
+
+	expected := ruleSchema{Foo: ""}
+	if diff := cmp.Diff(options, expected); diff != "" {
+		t.Fatalf("Failed to decode rule config: diff=%s", diff)
+	}
+}
+
 func Test_listVarRefs(t *testing.T) {
 	cases := []struct {
 		Name     string
