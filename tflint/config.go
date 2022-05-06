@@ -335,6 +335,9 @@ func (c *PluginConfig) Content(schema *hclext.BodySchema) (*hclext.BodyContent, 
 	if schema == nil {
 		schema = &hclext.BodySchema{}
 	}
+	if c.Body == nil {
+		return &hclext.BodyContent{}, hcl.Diagnostics{}
+	}
 	return hclext.Content(c.Body, schema)
 }
 

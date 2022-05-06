@@ -764,6 +764,7 @@ func TestPluginContent(t *testing.T) {
 	tests := []struct {
 		Name      string
 		Config    string
+		CLI       bool
 		Arg       *hclext.BodySchema
 		Want      *hclext.BodyContent
 		DiagCount int
@@ -823,6 +824,15 @@ plugin "test" {
 			DiagCount: 0,
 		},
 		{
+			Name: "enabled by CLI",
+			CLI:  true,
+			Arg: &hclext.BodySchema{
+				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+			},
+			Want:      &hclext.BodyContent{},
+			DiagCount: 0,
+		},
+		{
 			Name: "required attribute is not found",
 			Config: `
 plugin "test" {
@@ -857,9 +867,15 @@ plugin "test" {
 			if err != nil {
 				t.Fatal(err)
 			}
-			plugin, exists := config.Plugins["test"]
-			if !exists {
-				t.Fatal("plugin `test` should be declared")
+			var plugin *PluginConfig
+			if test.CLI {
+				plugin = &PluginConfig{Name: "test", Body: nil}
+			} else {
+				var exists bool
+				plugin, exists = config.Plugins["test"]
+				if !exists {
+					t.Fatal("plugin `test` should be declared")
+				}
 			}
 
 			content, diags := plugin.Content(test.Arg)
