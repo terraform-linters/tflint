@@ -1,3 +1,10 @@
+## 0.36.2 (2022-05-06)
+
+### BugFixes
+
+- [#1376](https://github.com/terraform-linters/tflint/pull/1376): Fix unintended errors when enabling Terraform rules by CLI ([@wata727](https://github.com/wata727))
+- [#1377](https://github.com/terraform-linters/tflint/pull/1377): Fix panic when enabling plugins by CLI ([@wata727](https://github.com/wata727))
+
 ## 0.36.1 (2022-05-05)
 
 ### BugFixes
