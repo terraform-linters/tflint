@@ -26,7 +26,7 @@ jobs:
       with:
         platforms: ${{ env.DOCKER_PLATFORMS }}
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2
     - name: Docker meta
       id: meta
       uses: docker/metadata-action@v3
