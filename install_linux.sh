@@ -86,8 +86,6 @@ else
   if [ $retVal -ne 0 ]; then
     echo "Failed to install tflint"
     exit $retVal
-  else
-    echo "tflint installed at ${dest} successfully"
   fi
 fi
 
