@@ -28,7 +28,7 @@ jobs:
       with:
         cosign-release: 'v1.7.2'
     - name: Run GoReleaser
-      uses: goreleaser/goreleaser-action@v2
+      uses: goreleaser/goreleaser-action@v3
       with:
         version: v1.7.0
         args: release --rm-dist
