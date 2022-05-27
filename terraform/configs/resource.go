@@ -42,6 +42,7 @@ type ManagedResource struct {
 	PreventDestroy      bool
 	IgnoreChanges       []hcl.Traversal
 	IgnoreAllChanges    bool
+	ReplaceTriggeredBy  []hcl.Traversal
 
 	CreateBeforeDestroySet bool
 	PreventDestroySet      bool
@@ -235,6 +236,32 @@ func decodeResourceBlock(block *hcl.Block) (*Resource, hcl.Diagnostics) {
 
 				}
 
+			}
+			if attr, exists := lcContent.Attributes["replace_triggered_by"]; exists {
+
+				// ignore_changes can either be a list of relative traversals
+				// or it can be just the keyword "all" to ignore changes to this
+				// resource entirely.
+				//   ignore_changes = [ami, instance_type]
+				//   ignore_changes = all
+				// We also allow two legacy forms for compatibility with earlier
+				// versions:
+				//   ignore_changes = ["ami", "instance_type"]
+				//   ignore_changes = ["*"]
+
+				exprs, listDiags := hcl.ExprList(attr.Expr)
+				diags = append(diags, listDiags...)
+
+				for _, expr := range exprs {
+					expr, shimDiags := shimTraversalInString(expr, false)
+					diags = append(diags, shimDiags...)
+
+					traversal, travDiags := hcl.RelTraversalForExpr(expr)
+					diags = append(diags, travDiags...)
+					if len(traversal) != 0 {
+						r.Managed.ReplaceTriggeredBy = append(r.Managed.ReplaceTriggeredBy, traversal)
+					}
+				}
 			}
 
 		case "connection":
@@ -567,6 +594,9 @@ var resourceLifecycleBlockSchema = &hcl.BodySchema{
 		},
 		{
 			Name: "ignore_changes",
+		},
+		{
+			Name: "replace_triggered_by",
 		},
 	},
 }
