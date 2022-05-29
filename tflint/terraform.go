@@ -11,9 +11,28 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/terraform"
+	"github.com/terraform-linters/tflint/terraform/tfdiags"
+	"github.com/zclconf/go-cty/cty"
 )
 
 var defaultValuesFile = "terraform.tfvars"
+
+// DefaultVariableValues returns an InputValues map representing the default
+// values specified for variables in the given configuration map.
+func DefaultVariableValues(configs map[string]*configs.Variable) terraform.InputValues {
+	ret := make(terraform.InputValues)
+	for k, c := range configs {
+		if c.Default == cty.NilVal {
+			continue
+		}
+		ret[k] = &terraform.InputValue{
+			Value:       c.Default,
+			SourceType:  terraform.ValueFromConfig,
+			SourceRange: tfdiags.SourceRangeFromHCL(c.DeclRange),
+		}
+	}
+	return ret
+}
 
 // ParseTFVariables parses the passed Terraform variable CLI arguments, and returns terraform.InputValues
 func ParseTFVariables(vars []string, declVars map[string]*configs.Variable) (terraform.InputValues, error) {
