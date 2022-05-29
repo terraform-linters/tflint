@@ -27,8 +27,8 @@ Example:
 
 ```console
 $ tflint -v
-TFLint version 0.36.2
+TFLint version 0.37.0
 $ terraform -v
-Terraform v1.1.9
+Terraform v1.2.1
 ```
 -->

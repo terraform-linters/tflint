@@ -1,3 +1,25 @@
+## 0.37.0 (2022-05-30)
+
+### Enhancements
+
+- [#1401](https://github.com/terraform-linters/tflint/pull/1401) [#1403](https://github.com/terraform-linters/tflint/pull/1403): terraform: Add support for Terraform v1.2 syntax ([@lonegunmanb](https://github.com/lonegunmanb) [@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1378](https://github.com/terraform-linters/tflint/pull/1378): build(deps): Bump github.com/hashicorp/go-plugin from 1.4.3 to 1.4.4
+- [#1379](https://github.com/terraform-linters/tflint/pull/1379): build(deps): Bump docker/metadata-action from 3 to 4
+- [#1380](https://github.com/terraform-linters/tflint/pull/1380): build(deps): Bump docker/login-action from 1 to 2
+- [#1381](https://github.com/terraform-linters/tflint/pull/1381): build(deps): Bump docker/setup-buildx-action from 1 to 2
+- [#1382](https://github.com/terraform-linters/tflint/pull/1382): build(deps): Bump docker/build-push-action from 2 to 3
+- [#1383](https://github.com/terraform-linters/tflint/pull/1383): build(deps): Bump docker/setup-qemu-action from 1 to 2
+- [#1385](https://github.com/terraform-linters/tflint/pull/1385): Remove a redundant log message ([@alexjurkiewicz](https://github.com/alexjurkiewicz))
+- [#1386](https://github.com/terraform-linters/tflint/pull/1386): build(deps): Bump golangci/golangci-lint-action from 3.1.0 to 3.2.0
+- [#1387](https://github.com/terraform-linters/tflint/pull/1387): build(deps): Bump golang from 1.18.1-alpine3.15 to 1.18.2-alpine3.15
+- [#1389](https://github.com/terraform-linters/tflint/pull/1389): build(deps): Bump github.com/hashicorp/go-version from 1.4.0 to 1.5.0
+- [#1390](https://github.com/terraform-linters/tflint/pull/1390): build(deps): Bump github.com/hashicorp/go-getter from 1.5.11 to 1.6.1
+- [#1391](https://github.com/terraform-linters/tflint/pull/1391): build(deps): Bump goreleaser/goreleaser-action from 2 to 3
+- [#1404](https://github.com/terraform-linters/tflint/pull/1404): Remove testify ([@wata727](https://github.com/wata727))
+
 ## 0.36.2 (2022-05-06)
 
 ### BugFixes
