@@ -544,7 +544,7 @@ func prepareVariableValues(config *configs.Config, cliVars ...terraform.InputVal
 		}
 	}
 
-	variables := terraform.DefaultVariableValues(configVars)
+	variables := DefaultVariableValues(configVars)
 	envVars, diags := getTFEnvVariables(configVars)
 	if diags.HasErrors() {
 		return variableValues, diags

@@ -5,19 +5,57 @@ import (
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/tfdiags"
 )
 
-// InputValue represents a value for a variable in the root module, provided
-// as part of the definition of an operation.
+// InputValue represents a raw value for a root module input variable as
+// provided by the external caller into a function like terraform.Context.Plan.
+//
+// InputValue should represent as directly as possible what the user set the
+// variable to, without any attempt to convert the value to the variable's
+// type constraint or substitute the configured default values for variables
+// that wasn't set. Those adjustments will be handled by Terraform Core itself
+// as part of performing the requested operation.
+//
+// A Terraform Core caller must provide an InputValue object for each of the
+// variables declared in the root module, even if the end user didn't provide
+// an explicit value for some of them. See the Value field documentation for
+// how to handle that situation.
+//
+// Terraform Core also internally uses InputValue to represent the raw value
+// provided for a variable in a child module call, following the same
+// conventions. However, that's an implementation detail not visible to
+// outside callers.
 type InputValue struct {
-	Value      cty.Value
+	// Value is the raw value as provided by the user as part of the plan
+	// options, or a corresponding similar data structure for non-plan
+	// operations.
+	//
+	// If a particular variable declared in the root module is _not_ set by
+	// the user then the caller must still provide an InputValue for it but
+	// must set Value to cty.NilVal to represent the absense of a value.
+	// This requirement is to help detect situations where the caller isn't
+	// correctly detecting and handling all of the declared variables.
+	//
+	// For historical reasons it's important that callers distinguish the
+	// situation of the value not being set at all (cty.NilVal) from the
+	// situation of it being explicitly set to null (a cty.NullVal result):
+	// for "nullable" input variables that distinction unfortunately decides
+	// whether the final value will be the variable's default or will be
+	// explicitly null.
+	Value cty.Value
+
+	// SourceType is a high-level category for where the value of Value
+	// came from, which Terraform Core uses to tailor some of its error
+	// messages to be more helpful to the user.
+	//
+	// Some SourceType values should be accompanied by a populated SourceRange
+	// value. See that field's documentation below for more information.
 	SourceType ValueSourceType
 
-	// SourceRange provides source location information for values whose
-	// SourceType is either ValueFromConfig or ValueFromFile. It is not
-	// populated for other source types, and so should not be used.
+	// SourceType is either ValueFromConfig, ValueFromNamedFile, or
+	// ValueForNormalFile. It is not populated for other source types, and so
+	// should not be used.
 	SourceRange tfdiags.SourceRange
 }
 
@@ -72,6 +110,24 @@ func (v *InputValue) GoString() string {
 	}
 }
 
+// HasSourceRange returns true if the reciever has a source type for which
+// we expect the SourceRange field to be populated with a valid range.
+func (v *InputValue) HasSourceRange() bool {
+	return v.SourceType.HasSourceRange()
+}
+
+// HasSourceRange returns true if the reciever is one of the source types
+// that is used along with a valid SourceRange field when appearing inside an
+// InputValue object.
+func (v ValueSourceType) HasSourceRange() bool {
+	switch v {
+	case ValueFromConfig, ValueFromAutoFile, ValueFromNamedFile:
+		return true
+	default:
+		return false
+	}
+}
+
 func (v ValueSourceType) GoString() string {
 	return fmt.Sprintf("terraform.%s", v)
 }
@@ -123,23 +179,6 @@ func (vv InputValues) JustValues() map[string]cty.Value {
 	ret := make(map[string]cty.Value, len(vv))
 	for k, v := range vv {
 		ret[k] = v.Value
-	}
-	return ret
-}
-
-// DefaultVariableValues returns an InputValues map representing the default
-// values specified for variables in the given configuration map.
-func DefaultVariableValues(configs map[string]*configs.Variable) InputValues {
-	ret := make(InputValues)
-	for k, c := range configs {
-		if c.Default == cty.NilVal {
-			continue
-		}
-		ret[k] = &InputValue{
-			Value:       c.Default,
-			SourceType:  ValueFromConfig,
-			SourceRange: tfdiags.SourceRangeFromHCL(c.DeclRange),
-		}
 	}
 	return ret
 }
