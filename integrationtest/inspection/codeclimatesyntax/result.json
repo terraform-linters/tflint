@@ -1,0 +1,25 @@
+[
+  {
+    "type": "issue",
+    "check_name": "aws_instance_example_type",
+    "description": "instance type is t1.xmicro",
+    "categories": [
+      "Style"
+    ],
+    "location": {
+      "path": "template.tf.json",
+      "positions": {
+        "begin": {
+          "line": 5,
+          "column": 26
+        },
+        "end": {
+          "line": 5,
+          "column": 37
+        }
+      }
+    },
+    "fingerprint": "7850528045e0ba17c9d68992f3352abd",
+    "severity": "critical"
+  }
+]

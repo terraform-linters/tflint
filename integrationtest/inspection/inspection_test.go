@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"reflect"
 	"runtime"
 	"strings"
 	"testing"
@@ -71,6 +72,11 @@ func TestIntegration(t *testing.T) {
 			Name:    "jsonsyntax",
 			Command: "./tflint --format json",
 			Dir:     "jsonsyntax",
+		},
+		{
+			Name:    "codeclimatesyntax",
+			Command: "./tflint --format codeclimate",
+			Dir:     "codeclimatesyntax",
 		},
 		{
 			Name:    "path",
@@ -191,12 +197,21 @@ func TestIntegration(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			var expected *formatter.JSONOutput
+			// JSON is not the only testable format so we should be able to unmarshal into other formats as well
+			var expected interface{}
+			var got interface{}
+			if tc.Dir == "codeclimatesyntax" {
+				expected = reflect.Zero(reflect.TypeOf(make([]formatter.CodeClimateIssue, 0))).Interface()
+				got = reflect.Zero(reflect.TypeOf(make([]formatter.CodeClimateIssue, 0))).Interface()
+			} else {
+				expected = reflect.Zero(reflect.TypeOf(formatter.JSONOutput{})).Interface()
+				got = reflect.Zero(reflect.TypeOf(formatter.JSONOutput{})).Interface()
+			}
+
 			if err := json.Unmarshal(b, &expected); err != nil {
 				t.Fatal(err)
 			}
 
-			var got *formatter.JSONOutput
 			if err := json.Unmarshal(outStream.Bytes(), &got); err != nil {
 				t.Fatal(err)
 			}

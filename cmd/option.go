@@ -12,7 +12,7 @@ type Options struct {
 	Version       bool     `short:"v" long:"version" description:"Print TFLint version"`
 	Init          bool     `long:"init" description:"Install plugins"`
 	Langserver    bool     `long:"langserver" description:"Start language server"`
-	Format        string   `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" choice:"junit" choice:"compact" choice:"sarif"`
+	Format        string   `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" choice:"junit" choice:"compact" choice:"sarif" choice:"codeclimate"`
 	Config        string   `short:"c" long:"config" description:"Config file name" value-name:"FILE" default:".tflint.hcl"`
 	IgnoreModules []string `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE"`
 	EnableRules   []string `long:"enable-rule" description:"Enable rules from the command line" value-name:"RULE_NAME"`
