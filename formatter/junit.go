@@ -17,14 +17,14 @@ func (f *Formatter) junitPrint(issues tflint.Issues, appErr error, sources map[s
 			Classname: issue.Range.Filename,
 			Time:      "0",
 			Failure: &formatter.JUnitFailure{
-				Message: issue.Message,
+				Message: fmt.Sprintf("%s: %s", issue.Range, issue.Message),
+				Type:    issue.Rule.Severity().String(),
 				Contents: fmt.Sprintf(
-					"line %d, col %d, %s - %s (%s)",
-					issue.Range.Start.Line,
-					issue.Range.Start.Column,
+					"%s: %s\nRule: %s\nRange: %s",
 					issue.Rule.Severity(),
 					issue.Message,
 					issue.Rule.Name(),
+					issue.Range,
 				),
 			},
 		}
