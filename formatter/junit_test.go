@@ -31,7 +31,7 @@ func Test_junitPrint(t *testing.T) {
 			Issues: tflint.Issues{
 				{
 					Rule:    &testRule{},
-					Message: "test",
+					Message: "issue message",
 					Range: hcl.Range{
 						Filename: "test.tf",
 						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
@@ -44,7 +44,7 @@ func Test_junitPrint(t *testing.T) {
   <testsuite tests="1" failures="1" time="0" name="">
     <properties></properties>
     <testcase classname="test.tf" name="test_rule" time="0">
-      <failure message="test" type="">line 1, col 1, Error - test (test_rule)</failure>
+      <failure message="test.tf:1,1-4: issue message" type="Error">Error: issue message&#xA;Rule: test_rule&#xA;Range: test.tf:1,1-4</failure>
     </testcase>
   </testsuite>
 </testsuites>`,

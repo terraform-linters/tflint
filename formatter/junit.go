@@ -8,6 +8,8 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
+// https://www.ibm.com/docs/en/developer-for-zos/14.1.0?topic=formats-junit-xml-format
+
 func (f *Formatter) junitPrint(issues tflint.Issues, appErr error, sources map[string][]byte) {
 	cases := make([]formatter.JUnitTestCase, len(issues))
 
@@ -17,14 +19,14 @@ func (f *Formatter) junitPrint(issues tflint.Issues, appErr error, sources map[s
 			Classname: issue.Range.Filename,
 			Time:      "0",
 			Failure: &formatter.JUnitFailure{
-				Message: issue.Message,
+				Message: fmt.Sprintf("%s: %s", issue.Range, issue.Message),
+				Type:    issue.Rule.Severity().String(),
 				Contents: fmt.Sprintf(
-					"line %d, col %d, %s - %s (%s)",
-					issue.Range.Start.Line,
-					issue.Range.Start.Column,
+					"%s: %s\nRule: %s\nRange: %s",
 					issue.Rule.Severity(),
 					issue.Message,
 					issue.Rule.Name(),
+					issue.Range,
 				),
 			},
 		}
