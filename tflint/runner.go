@@ -142,11 +142,11 @@ func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotation
 		content.Blocks = overrideBlocks(content.Blocks, c.Blocks)
 	}
 	for _, resource := range content.Blocks {
-		ok, err := runner.willEvaluateResource(resource)
+		evaluable, err := runner.isEvaluableResource(resource)
 		if err != nil {
 			return runner, err
 		}
-		if ok {
+		if evaluable {
 			resourceType := resource.Labels[0]
 			resourceName := resource.Labels[1]
 
@@ -164,6 +164,7 @@ func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotation
 // Recursively search modules and generate Runners
 // In order to propagate attributes of moduleCall as variables to the module,
 // evaluate the variables. If it cannot be evaluated, treat it as unknown
+// Modules that are not evaluated (`count` is 0 or `for_each` is empty) are ignored.
 func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 	runners := []*Runner{}
 
@@ -174,6 +175,18 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 		}
 		if parent.TFConfig.Path.IsRoot() && parent.config.IgnoreModules[moduleCall.SourceAddrRaw] {
 			log.Printf("[INFO] Ignore `%s` module", moduleCall.Name)
+			continue
+		}
+		evaluable, err := parent.isEvaluableModuleCall(moduleCall)
+		if err != nil {
+			return runners, fmt.Errorf(
+				"failed to eval count/for_each meta-arguments in %s:%d; %w",
+				moduleCall.DeclRange.Filename,
+				moduleCall.DeclRange.Start.Line,
+				err,
+			)
+		}
+		if !evaluable {
 			continue
 		}
 

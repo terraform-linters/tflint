@@ -796,7 +796,7 @@ resource "null_resource" "test" {
 	}
 }
 
-func Test_willEvaluateResource(t *testing.T) {
+func Test_isEvaluableResource(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Content  string
