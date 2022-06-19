@@ -414,7 +414,7 @@ func (r *Runner) LookupIssues(files ...string) Issues {
 	issues := Issues{}
 	for _, issue := range r.Issues {
 		for _, file := range files {
-			if file == issue.Range.Filename {
+			if filepath.Clean(file) == filepath.Clean(issue.Range.Filename) {
 				issues = append(issues, issue)
 			}
 		}
