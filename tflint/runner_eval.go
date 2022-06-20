@@ -9,6 +9,7 @@ import (
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/terraform/addrs"
+	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/lang"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
@@ -116,60 +117,88 @@ func isEvaluableRef(ref *addrs.Reference) bool {
 	}
 }
 
-// willEvaluateResource checks whether the passed resource will be evaluated.
-// If `count` is 0 or `for_each` is empty, Terraform will not evaluate the attributes of that resource.
+// isEvaluableMetaArguments checks whether the passed resource meta-arguments (count/for_each)
+// indicate the resource will be evaluated.
+// If `count` is 0 or `for_each` is empty, Terraform will not evaluate the attributes of
+// that resource.
 // Terraform doesn't expect to pass null for these attributes (it will cause an error),
 // but we'll treat them as if they were undefined.
-func (r *Runner) willEvaluateResource(resource *hclext.Block) (bool, error) {
-	if attr, exists := resource.Body.Attributes["count"]; exists {
-		val, err := r.EvaluateExpr(attr.Expr, cty.Number)
-		if err != nil {
-			return willEvaluateResourceOnError(err)
-		}
-
-		count := 1
-		if err := gocty.FromCtyValue(val, &count); err != nil {
-			return false, err
-		}
-		if count == 0 {
-			// `count = 0` is not evaluated
-			return false, nil
-		}
-		// `count > 1` is evaluated`
-		return true, nil
+func (r *Runner) isEvaluableResource(resource *hclext.Block) (bool, error) {
+	if count, exists := resource.Body.Attributes["count"]; exists {
+		return r.isEvaluableCountArgument(count.Expr)
 	}
 
-	if attr, exists := resource.Body.Attributes["for_each"]; exists {
-		forEach, err := r.EvaluateExpr(attr.Expr, cty.DynamicPseudoType)
-		if err != nil {
-			return willEvaluateResourceOnError(err)
-		}
-
-		if forEach.IsNull() {
-			// null value means that attribute is not set
-			return true, nil
-		}
-		if !forEach.IsKnown() {
-			// unknown value is non-deterministic
-			return false, nil
-		}
-		if !forEach.CanIterateElements() {
-			// uniteratable values (string, number, etc.) are invalid
-			return false, fmt.Errorf("The `for_each` value is not iterable in %s:%d", attr.Expr.Range().Filename, attr.Expr.Range().Start.Line)
-		}
-		if forEach.LengthInt() == 0 {
-			// empty `for_each` is not evaluated
-			return false, nil
-		}
-		// `for_each` with non-empty elements is evaluated
-		return true, nil
+	if forEach, exists := resource.Body.Attributes["for_each"]; exists {
+		return r.isEvaluableForEachArgument(forEach.Expr)
 	}
 
 	// If `count` or `for_each` is not defined, it will be evaluated by default
 	return true, nil
 }
 
-func willEvaluateResourceOnError(err error) (bool, error) {
+// isEvaluableModuleCall checks whether the passed module-call meta-arguments (count/for_each)
+// indicate the module-call will be evaluated.
+// If `count` is 0 or `for_each` is empty, Terraform will not evaluate the attributes of that module.
+// Terraform doesn't expect to pass null for these attributes (it will cause an error),
+// but we'll treat them as if they were undefined.
+func (r *Runner) isEvaluableModuleCall(moduleCall *configs.ModuleCall) (bool, error) {
+	if moduleCall.Count != nil {
+		return r.isEvaluableCountArgument(moduleCall.Count)
+	}
+
+	if moduleCall.ForEach != nil {
+		return r.isEvaluableForEachArgument(moduleCall.ForEach)
+	}
+
+	// If `count` or `for_each` is not defined, it will be evaluated by default
+	return true, nil
+}
+
+func (r *Runner) isEvaluableCountArgument(expr hcl.Expression) (bool, error) {
+	val, err := r.EvaluateExpr(expr, cty.Number)
+	if err != nil {
+		return isEvaluableMetaArgumentsOnError(err)
+	}
+
+	count := 1
+	if err := gocty.FromCtyValue(val, &count); err != nil {
+		return false, err
+	}
+	if count == 0 {
+		// `count = 0` is not evaluated
+		return false, nil
+	}
+	// `count > 1` is evaluated`
+	return true, nil
+}
+
+func (r *Runner) isEvaluableForEachArgument(expr hcl.Expression) (bool, error) {
+	val, err := r.EvaluateExpr(expr, cty.DynamicPseudoType)
+	if err != nil {
+		return isEvaluableMetaArgumentsOnError(err)
+	}
+
+	if val.IsNull() {
+		// null value means that attribute is not set
+		return true, nil
+	}
+	if !val.IsKnown() {
+		// unknown value is non-deterministic
+		return false, nil
+	}
+	if !val.CanIterateElements() {
+		// uniteratable values (string, number, etc.) are invalid
+		return false, fmt.Errorf("The `for_each` value is not iterable in %s:%d", expr.Range().Filename, expr.Range().Start.Line)
+	}
+	if val.LengthInt() == 0 {
+		// empty `for_each` is not evaluated
+		return false, nil
+	}
+	// `for_each` with non-empty elements is evaluated
+	return true, nil
+}
+
+func isEvaluableMetaArgumentsOnError(err error) (bool, error) {
 	if errors.Is(err, sdk.ErrNullValue) {
 		// null value means that attribute is not set
 		return true, nil

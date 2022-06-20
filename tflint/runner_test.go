@@ -140,6 +140,31 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 	})
 }
 
+func Test_NewModuleRunners_withZeroCount(t *testing.T) {
+	withinFixtureDir(t, "module_with_count_for_each", func() {
+		runner := testRunnerWithOsFs(t, moduleConfig())
+
+		runners, err := NewModuleRunners(runner)
+		if err != nil {
+			t.Fatalf("Unexpected error occurred: %s", err)
+		}
+
+		if len(runners) != 2 {
+			t.Fatalf("This function must return 2 runners, but returned %d", len(runners))
+		}
+
+		moduleNames := make([]string, 2)
+		for idx, r := range runners {
+			moduleNames[idx] = r.TFConfig.Path.String()
+		}
+		expected := []string{"module.count_is_one", "module.for_each_is_not_empty"}
+		less := func(a, b string) bool { return a < b }
+		if diff := cmp.Diff(moduleNames, expected, cmpopts.SortSlices(less)); diff != "" {
+			t.Fatal(diff)
+		}
+	})
+}
+
 func Test_NewModuleRunners_modVars(t *testing.T) {
 	withinFixtureDir(t, "nested_module_vars", func() {
 		runner := testRunnerWithOsFs(t, moduleConfig())
