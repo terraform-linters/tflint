@@ -1,3 +1,22 @@
+## 0.38.0 (2022-06-21)
+
+### Enhancements
+
+- [#1359](https://github.com/terraform-linters/tflint/pull/1359): feat: add new rule to check comparisons with empty list ([@bmbferreira](https://github.com/bmbferreira))
+- [#1409](https://github.com/terraform-linters/tflint/pull/1409): formatter(junit): use standard range string in failure message ([@bendrucker](https://github.com/bendrucker))
+
+### BugFixes
+
+- [#1415](https://github.com/terraform-linters/tflint/pull/1415): tflint: Skip evaluation of module arguments if the module call is not evaluated ([@wata727](https://github.com/wata727))
+- [#1416](https://github.com/terraform-linters/tflint/pull/1416): cmd: Lookup issues by normalized path ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1405](https://github.com/terraform-linters/tflint/pull/1405): build(deps): Bump alpine from 3.15.4 to 3.16.0
+- [#1410](https://github.com/terraform-linters/tflint/pull/1410): build(deps): Bump golang from 1.18.2-alpine3.15 to 1.18.3-alpine3.15
+- [#1414](https://github.com/terraform-linters/tflint/pull/1414): build(deps): Bump sigstore/cosign-installer from 2.3.0 to 2.4.0
+- [#1419](https://github.com/terraform-linters/tflint/pull/1419): Tweak issue templates ([@wata727](https://github.com/wata727))
+
 ## 0.37.0 (2022-05-30)
 
 ### Enhancements
