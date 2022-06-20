@@ -21,6 +21,7 @@ var DefaultRules = []Rule{
 	terraformrules.NewTerraformDeprecatedInterpolationRule(),
 	terraformrules.NewTerraformDocumentedOutputsRule(),
 	terraformrules.NewTerraformDocumentedVariablesRule(),
+	terraformrules.NewTerraformEmptyListEqualityRule(),
 	terraformrules.NewTerraformModulePinnedSourceRule(),
 	terraformrules.NewTerraformModuleVersionRule(),
 	terraformrules.NewTerraformNamingConventionRule(),
