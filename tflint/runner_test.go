@@ -1050,40 +1050,81 @@ func Test_RunnerFiles(t *testing.T) {
 }
 
 func Test_LookupIssues(t *testing.T) {
+	tests := []struct {
+		name     string
+		in       string
+		issues   Issues
+		expected Issues
+	}{
+		{
+			name: "multiple files",
+			in:   "template.tf",
+			issues: Issues{
+				{
+					Rule:    &testRule{},
+					Message: "This is test rule",
+					Range: hcl.Range{
+						Filename: "template.tf",
+						Start:    hcl.Pos{Line: 1},
+					},
+				},
+				{
+					Rule:    &testRule{},
+					Message: "This is test rule",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 1},
+					},
+				},
+			},
+			expected: Issues{
+				{
+					Rule:    &testRule{},
+					Message: "This is test rule",
+					Range: hcl.Range{
+						Filename: "template.tf",
+						Start:    hcl.Pos{Line: 1},
+					},
+				},
+			},
+		},
+		{
+			name: "path normalization",
+			in:   "./template.tf",
+			issues: Issues{
+				{
+					Rule:    &testRule{},
+					Message: "This is test rule",
+					Range: hcl.Range{
+						Filename: "template.tf",
+						Start:    hcl.Pos{Line: 1},
+					},
+				},
+			},
+			expected: Issues{
+				{
+					Rule:    &testRule{},
+					Message: "This is test rule",
+					Range: hcl.Range{
+						Filename: "template.tf",
+						Start:    hcl.Pos{Line: 1},
+					},
+				},
+			},
+		},
+	}
+
 	runner := TestRunner(t, map[string]string{})
-	runner.Issues = Issues{
-		{
-			Rule:    &testRule{},
-			Message: "This is test rule",
-			Range: hcl.Range{
-				Filename: "template.tf",
-				Start:    hcl.Pos{Line: 1},
-			},
-		},
-		{
-			Rule:    &testRule{},
-			Message: "This is test rule",
-			Range: hcl.Range{
-				Filename: "resource.tf",
-				Start:    hcl.Pos{Line: 1},
-			},
-		},
-	}
 
-	ret := runner.LookupIssues("template.tf")
-	expected := Issues{
-		{
-			Rule:    &testRule{},
-			Message: "This is test rule",
-			Range: hcl.Range{
-				Filename: "template.tf",
-				Start:    hcl.Pos{Line: 1},
-			},
-		},
-	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			runner.Issues = test.issues
 
-	if !cmp.Equal(expected, ret) {
-		t.Fatalf("Failed test: diff: %s", cmp.Diff(expected, ret))
+			got := runner.LookupIssues(test.in)
+			if diff := cmp.Diff(test.expected, got); diff != "" {
+				t.Fatal(diff)
+			}
+		})
 	}
 }
 
