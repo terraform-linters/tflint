@@ -1,3 +1,7 @@
+## 0.38.1 (2022-06-21)
+
+- [#1420](https://github.com/terraform-linters/tflint/pull/1420): Use latest Cosign ([@wata727](https://github.com/wata727))
+
 ## 0.38.0 (2022-06-21)
 
 ### Enhancements
