@@ -7,18 +7,48 @@ assignees: ''
 
 ---
 
+## Introduction
+
 <!--
-Thank you for reporting bugs. It will definitely improve our project.
-Please write bug details here. If you have reproducible code, writing it together makes it easier to investigate.
+Thank you for reporting a bug. It will definitely improve our project.
+Please share the bug summary and assumptions first.
 
 ```hcl
 // Write code here
 ```
-
-Also please share any additional context if you have, such as running in VS Code.
 -->
 
-## Version
+## Expected Behavior
+
+<!--
+Under the above assumptions, please explain what you expect and what you do.
+
+```console
+// Write output or debug log
+```
+-->
+
+## Actual behavior
+
+<!--
+Please explain the problem you are facing and the current situation for the expected behavior.
+
+```console
+// Write output or debug log
+```
+-->
+
+## Step to Reproduce
+
+<!--
+Please explain how we can reproduce the problem.
+
+```hcl
+// Write code here
+```
+-->
+
+## Additional Context
 
 <!--
 It is a good practice to list the versions where the bug occurred.
