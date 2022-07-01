@@ -42,6 +42,34 @@ resource "aws_db_instance" "mysql" {
 			},
 		},
 		{
+			Name: "comparing with [] is not recommended (mixed with other conditions)",
+			Content: `
+resource "aws_db_instance" "mysql" {
+	count = true == true || false != true && (false == false || [] == []) ? 1 : 0
+	instance_class = "m4.2xlarge"
+}`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformEmptyListEqualityRule(),
+					Message: "Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 3, Column: 62},
+						End:      hcl.Pos{Line: 3, Column: 70},
+					},
+				},
+				{
+					Rule:    NewTerraformEmptyListEqualityRule(),
+					Message: "Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 3, Column: 62},
+						End:      hcl.Pos{Line: 3, Column: 70},
+					},
+				},
+			},
+		},
+		{
 			Name: "negatively comparing with [] is not recommended",
 			Content: `
 variable "my_list" {
