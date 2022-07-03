@@ -9,7 +9,7 @@ import (
 
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
-	"github.com/terraform-linters/tflint/terraform/terraform"
+	"github.com/terraform-linters/tflint/terraform"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -282,7 +282,7 @@ resource "null_resource" "test" {
 			Type: cty.String,
 			Want: `cty.NilVal`,
 			ErrCheck: func(err error) bool {
-				return err == nil || err.Error() != `failed to eval an expression in main.tf:3; Reference to undeclared input variable: An input variable with the name "undefined_var" has not been declared. This variable can be declared with a variable "undefined_var" {} block.`
+				return err == nil || err.Error() != `failed to eval an expression in main.tf:3; main.tf:3,12-29: Reference to undeclared input variable; An input variable with the name "undefined_var" has not been declared. This variable can be declared with a variable "undefined_var" {} block.`
 			},
 		},
 		{
@@ -352,7 +352,7 @@ resource "null_resource" "test" {
 			Type: cty.String,
 			Want: `cty.NilVal`,
 			ErrCheck: func(err error) bool {
-				return err == nil || err.Error() != `failed to eval an expression in main.tf:3; Invalid "terraform" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The "state environment" concept was renamed to "workspace" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.`
+				return err == nil || err.Error() != `failed to eval an expression in main.tf:3; main.tf:3,12-25: Invalid "terraform" attribute; The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The "state environment" concept was renamed to "workspace" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.`
 			},
 		},
 		{
@@ -364,7 +364,7 @@ resource "null_resource" "test" {
 			Type: cty.String,
 			Want: `cty.NilVal`,
 			ErrCheck: func(err error) bool {
-				return err == nil || err.Error() != "failed to eval an expression in main.tf:3; Incorrect value type: Invalid expression value: string required."
+				return err == nil || err.Error() != "failed to eval an expression in main.tf:3; main.tf:3,9-32: Incorrect value type; Invalid expression value: string required."
 			},
 		},
 		{
@@ -390,7 +390,7 @@ resource "null_resource" "test" {
 			Type: cty.Map(cty.String),
 			Want: `cty.NilVal`,
 			ErrCheck: func(err error) bool {
-				return err == nil || err.Error() != `failed to eval an expression in main.tf:3; Reference to undeclared input variable: An input variable with the name "undefined_var" has not been declared. This variable can be declared with a variable "undefined_var" {} block.`
+				return err == nil || err.Error() != `failed to eval an expression in main.tf:3; main.tf:4,13-30: Reference to undeclared input variable; An input variable with the name "undefined_var" has not been declared. This variable can be declared with a variable "undefined_var" {} block.`
 			},
 		},
 		{
@@ -651,7 +651,7 @@ resource "null_resource" "test" {
 	key = invalid
 }`,
 			Expected: false,
-			Error:    "Invalid reference: A reference to a resource type must be followed by at least one attribute access, specifying the resource name.",
+			Error:    "main.tf:3,8-15: Invalid reference; A reference to a resource type must be followed by at least one attribute access, specifying the resource name.",
 		},
 	}
 
@@ -727,8 +727,7 @@ resource "null_resource" "test" {
 			InputValues: []terraform.InputValues{
 				{
 					"instance_type": &terraform.InputValue{
-						Value:      cty.StringVal("c5.2xlarge"),
-						SourceType: terraform.ValueFromNamedFile,
+						Value: cty.StringVal("c5.2xlarge"),
 					},
 				},
 			},
@@ -745,14 +744,12 @@ resource "null_resource" "test" {
 			InputValues: []terraform.InputValues{
 				{
 					"instance_type": &terraform.InputValue{
-						Value:      cty.StringVal("c5.2xlarge"),
-						SourceType: terraform.ValueFromNamedFile,
+						Value: cty.StringVal("c5.2xlarge"),
 					},
 				},
 				{
 					"instance_type": &terraform.InputValue{
-						Value:      cty.StringVal("p3.8xlarge"),
-						SourceType: terraform.ValueFromNamedFile,
+						Value: cty.StringVal("p3.8xlarge"),
 					},
 				},
 			},

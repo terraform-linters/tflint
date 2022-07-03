@@ -10,9 +10,3 @@ type TerraformAttr struct {
 func (ta TerraformAttr) String() string {
 	return "terraform." + ta.Name
 }
-
-func (ta TerraformAttr) UniqueKey() UniqueKey {
-	return ta // A TerraformAttr is its own UniqueKey
-}
-
-func (ta TerraformAttr) uniqueKeySigil() {}

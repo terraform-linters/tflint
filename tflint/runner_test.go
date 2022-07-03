@@ -11,8 +11,8 @@ import (
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/terraform/addrs"
-	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -44,14 +44,13 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 			t.Fatal("This function must return 2 runners because the config has 2 modules")
 		}
 
-		expectedVars := map[string]map[string]*configs.Variable{
+		expectedVars := map[string]map[string]*terraform.Variable{
 			"module.root": {
 				"override": {
 					Name:        "override",
 					Default:     cty.StringVal("foo"),
 					Type:        cty.DynamicPseudoType,
-					ParsingMode: configs.VariableParseLiteral,
-					Nullable:    true,
+					ParsingMode: terraform.VariableParseLiteral,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module.tf"),
 						Start:    hcl.Pos{Line: 1, Column: 1},
@@ -62,8 +61,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Name:        "no_default",
 					Default:     cty.StringVal("bar"),
 					Type:        cty.DynamicPseudoType,
-					ParsingMode: configs.VariableParseLiteral,
-					Nullable:    true,
+					ParsingMode: terraform.VariableParseLiteral,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module.tf"),
 						Start:    hcl.Pos{Line: 4, Column: 1},
@@ -74,8 +72,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Name:        "unknown",
 					Default:     cty.UnknownVal(cty.DynamicPseudoType),
 					Type:        cty.DynamicPseudoType,
-					ParsingMode: configs.VariableParseLiteral,
-					Nullable:    true,
+					ParsingMode: terraform.VariableParseLiteral,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module.tf"),
 						Start:    hcl.Pos{Line: 5, Column: 1},
@@ -88,8 +85,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Name:        "override",
 					Default:     cty.StringVal("foo"),
 					Type:        cty.DynamicPseudoType,
-					ParsingMode: configs.VariableParseLiteral,
-					Nullable:    true,
+					ParsingMode: terraform.VariableParseLiteral,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module1", "resource.tf"),
 						Start:    hcl.Pos{Line: 1, Column: 1},
@@ -100,8 +96,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Name:        "no_default",
 					Default:     cty.StringVal("bar"),
 					Type:        cty.DynamicPseudoType,
-					ParsingMode: configs.VariableParseLiteral,
-					Nullable:    true,
+					ParsingMode: terraform.VariableParseLiteral,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module1", "resource.tf"),
 						Start:    hcl.Pos{Line: 4, Column: 1},
@@ -112,8 +107,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Name:        "unknown",
 					Default:     cty.UnknownVal(cty.DynamicPseudoType),
 					Type:        cty.DynamicPseudoType,
-					ParsingMode: configs.VariableParseLiteral,
-					Nullable:    true,
+					ParsingMode: terraform.VariableParseLiteral,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module1", "resource.tf"),
 						Start:    hcl.Pos{Line: 5, Column: 1},
@@ -273,23 +267,7 @@ func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
 
 		_, err := NewModuleRunners(runner)
 
-		expected := errors.New("failed to eval an expression in module.tf:4; Invalid \"terraform\" attribute: The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The \"state environment\" concept was renamed to \"workspace\" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.")
-		if err == nil {
-			t.Fatal("an error was expected to occur, but it did not")
-		}
-		if expected.Error() != err.Error() {
-			t.Fatalf("expected error is `%s`, but get `%s`", expected, err)
-		}
-	})
-}
-
-func Test_NewModuleRunners_withNotAllowedAttributes(t *testing.T) {
-	withinFixtureDir(t, "not_allowed_module_attribute", func() {
-		runner := testRunnerWithOsFs(t, moduleConfig())
-
-		_, err := NewModuleRunners(runner)
-
-		expected := errors.New("attribute of module not allowed was found in module.tf:1; module.tf:4,3-10: Unexpected \"invalid\" block; Blocks are not allowed here.")
+		expected := errors.New(`failed to eval an expression in module.tf:4; module.tf:4,16-29: Invalid "terraform" attribute; The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The "state environment" concept was renamed to "workspace" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.`)
 		if err == nil {
 			t.Fatal("an error was expected to occur, but it did not")
 		}
@@ -888,151 +866,11 @@ func Test_resolveDynamicBlocks(t *testing.T) {
 	}
 }
 
-func Test_overrideBlocks(t *testing.T) {
-	tests := []struct {
-		Name      string
-		Primaries hclext.Blocks
-		Overrides hclext.Blocks
-		Want      hclext.Blocks
-	}{
-		{
-			Name:      "empty blocks",
-			Primaries: hclext.Blocks{},
-			Overrides: hclext.Blocks{},
-			Want:      hclext.Blocks{},
-		},
-		{
-			Name: "no override",
-			Primaries: hclext.Blocks{
-				{
-					Type: "resource",
-					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
-					},
-				},
-			},
-			Overrides: hclext.Blocks{},
-			Want: hclext.Blocks{
-				{
-					Type: "resource",
-					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
-					},
-				},
-			},
-		},
-		{
-			Name: "override",
-			Primaries: hclext.Blocks{
-				{
-					Type: "resource",
-					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{
-							"foo": &hclext.Attribute{Name: "foo"},
-							"bar": &hclext.Attribute{Name: "bar"},
-						},
-					},
-				},
-			},
-			Overrides: hclext.Blocks{
-				{
-					Type: "resource",
-					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{
-							"foo": &hclext.Attribute{Name: "bar"},
-						},
-					},
-				},
-			},
-			Want: hclext.Blocks{
-				{
-					Type: "resource",
-					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{
-							"foo": &hclext.Attribute{Name: "bar"},
-							"bar": &hclext.Attribute{Name: "bar"},
-						},
-					},
-				},
-			},
-		},
-		{
-			Name: "override nested blocks",
-			Primaries: hclext.Blocks{
-				{
-					Type: "resource",
-					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
-						Blocks: hclext.Blocks{
-							{
-								Type: "nested",
-								Body: &hclext.BodyContent{
-									Attributes: hclext.Attributes{
-										"baz": &hclext.Attribute{Name: "baz"},
-										"qux": &hclext.Attribute{Name: "qux"},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-			Overrides: hclext.Blocks{
-				{
-					Type: "resource",
-					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "bar"}},
-						Blocks: hclext.Blocks{
-							{
-								Type: "nested",
-								Body: &hclext.BodyContent{
-									Attributes: hclext.Attributes{
-										"baz": &hclext.Attribute{Name: "qux"},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-			Want: hclext.Blocks{
-				{
-					Type: "resource",
-					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "bar"}},
-						Blocks: hclext.Blocks{
-							{
-								Type: "nested",
-								Body: &hclext.BodyContent{
-									Attributes: hclext.Attributes{
-										"baz": &hclext.Attribute{Name: "qux"},
-										"qux": &hclext.Attribute{Name: "qux"},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(test.Name, func(t *testing.T) {
-			got := overrideBlocks(test.Primaries, test.Overrides)
-
-			if diff := cmp.Diff(got, test.Want); diff != "" {
-				t.Errorf("diff: %s", diff)
-			}
-		})
-	}
-}
-
 func Test_RunnerFiles(t *testing.T) {
 	runner := TestRunner(t, map[string]string{
 		"main.tf": "",
 	})
-	runner.files["child/main.tf"] = &hcl.File{}
+	runner.TFConfig.Module.Files["child/main.tf"] = &hcl.File{}
 
 	expected := map[string]*hcl.File{
 		"main.tf": {

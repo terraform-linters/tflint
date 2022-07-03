@@ -141,10 +141,6 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 	if err != nil {
 		return ret, fmt.Errorf("Failed to load configurations: %w", err)
 	}
-	files, err := loader.Files()
-	if err != nil {
-		return ret, fmt.Errorf("Failed to parse files; %w", err)
-	}
 	annotations, err := loader.LoadAnnotations(".")
 	if err != nil {
 		return ret, fmt.Errorf("Failed to load configuration tokens: %w", err)
@@ -159,7 +155,7 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 	}
 	variables = append(variables, cliVars)
 
-	runner, err := tflint.NewRunner(h.config, files, annotations, configs, variables...)
+	runner, err := tflint.NewRunner(h.config, annotations, configs, variables...)
 	if err != nil {
 		return ret, fmt.Errorf("Failed to initialize a runner: %w", err)
 	}

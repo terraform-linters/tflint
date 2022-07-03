@@ -5,14 +5,13 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/terraform-linters/tflint/terraform/tfdiags"
 )
 
 // Reference describes a reference to an address with source location
 // information.
 type Reference struct {
 	Subject     Referenceable
-	SourceRange tfdiags.SourceRange
+	SourceRange hcl.Range
 	Remaining   hcl.Traversal
 }
 
@@ -27,7 +26,7 @@ type Reference struct {
 //
 // If error diagnostics are returned then the Reference value is invalid and
 // must not be used.
-func ParseRef(traversal hcl.Traversal) (*Reference, tfdiags.Diagnostics) {
+func ParseRef(traversal hcl.Traversal) (*Reference, hcl.Diagnostics) {
 	ref, diags := parseRef(traversal)
 
 	// Normalize a little to make life easier for callers.
@@ -55,22 +54,22 @@ func ParseRef(traversal hcl.Traversal) (*Reference, tfdiags.Diagnostics) {
 // of the traversal fails. There is no way for the caller to distinguish the
 // two kinds of diagnostics programmatically. If error diagnostics are returned
 // the returned reference may be nil or incomplete.
-func ParseRefStr(str string) (*Reference, tfdiags.Diagnostics) {
-	var diags tfdiags.Diagnostics
+func ParseRefStr(str string) (*Reference, hcl.Diagnostics) {
+	var diags hcl.Diagnostics
 
 	traversal, parseDiags := hclsyntax.ParseTraversalAbs([]byte(str), "", hcl.Pos{Line: 1, Column: 1})
-	diags = diags.Append(parseDiags)
+	diags = diags.Extend(parseDiags)
 	if parseDiags.HasErrors() {
 		return nil, diags
 	}
 
 	ref, targetDiags := ParseRef(traversal)
-	diags = diags.Append(targetDiags)
+	diags = diags.Extend(targetDiags)
 	return ref, diags
 }
 
-func parseRef(traversal hcl.Traversal) (*Reference, tfdiags.Diagnostics) {
-	var diags tfdiags.Diagnostics
+func parseRef(traversal hcl.Traversal) (*Reference, hcl.Diagnostics) {
+	var diags hcl.Diagnostics
 
 	root := traversal.RootName()
 	rootRange := traversal[0].SourceRange()
@@ -81,7 +80,7 @@ func parseRef(traversal hcl.Traversal) (*Reference, tfdiags.Diagnostics) {
 		name, rng, remain, diags := parseSingleAttrRef(traversal)
 		return &Reference{
 			Subject:     CountAttr{Name: name},
-			SourceRange: tfdiags.SourceRangeFromHCL(rng),
+			SourceRange: rng,
 			Remaining:   remain,
 		}, diags
 
@@ -89,7 +88,7 @@ func parseRef(traversal hcl.Traversal) (*Reference, tfdiags.Diagnostics) {
 		name, rng, remain, diags := parseSingleAttrRef(traversal)
 		return &Reference{
 			Subject:     ForEachAttr{Name: name},
-			SourceRange: tfdiags.SourceRangeFromHCL(rng),
+			SourceRange: rng,
 			Remaining:   remain,
 		}, diags
 
@@ -131,7 +130,7 @@ func parseRef(traversal hcl.Traversal) (*Reference, tfdiags.Diagnostics) {
 		name, rng, remain, diags := parseSingleAttrRef(traversal)
 		return &Reference{
 			Subject:     LocalValue{Name: name},
-			SourceRange: tfdiags.SourceRangeFromHCL(rng),
+			SourceRange: rng,
 			Remaining:   remain,
 		}, diags
 
@@ -158,7 +157,7 @@ func parseRef(traversal hcl.Traversal) (*Reference, tfdiags.Diagnostics) {
 			// enough context here.
 			return &Reference{
 				Subject:     callInstance.Call,
-				SourceRange: tfdiags.SourceRangeFromHCL(callRange),
+				SourceRange: callRange,
 				Remaining:   remain,
 			}, diags
 		}
@@ -182,7 +181,7 @@ func parseRef(traversal hcl.Traversal) (*Reference, tfdiags.Diagnostics) {
 				// now.
 				return &Reference{
 					Subject:     callInstance,
-					SourceRange: tfdiags.SourceRangeFromHCL(hcl.RangeBetween(callRange, idxTrav.SrcRange)),
+					SourceRange: hcl.RangeBetween(callRange, idxTrav.SrcRange),
 					Remaining:   remain,
 				}, diags
 			}
@@ -195,7 +194,7 @@ func parseRef(traversal hcl.Traversal) (*Reference, tfdiags.Diagnostics) {
 					Name: attrTrav.Name,
 					Call: callInstance,
 				},
-				SourceRange: tfdiags.SourceRangeFromHCL(hcl.RangeBetween(callRange, attrTrav.SrcRange)),
+				SourceRange: hcl.RangeBetween(callRange, attrTrav.SrcRange),
 				Remaining:   remain,
 			}, diags
 		}
@@ -212,14 +211,14 @@ func parseRef(traversal hcl.Traversal) (*Reference, tfdiags.Diagnostics) {
 		name, rng, remain, diags := parseSingleAttrRef(traversal)
 		return &Reference{
 			Subject:     PathAttr{Name: name},
-			SourceRange: tfdiags.SourceRangeFromHCL(rng),
+			SourceRange: rng,
 			Remaining:   remain,
 		}, diags
 
 	case "self":
 		return &Reference{
 			Subject:     Self,
-			SourceRange: tfdiags.SourceRangeFromHCL(rootRange),
+			SourceRange: rootRange,
 			Remaining:   traversal[1:],
 		}, diags
 
@@ -227,7 +226,7 @@ func parseRef(traversal hcl.Traversal) (*Reference, tfdiags.Diagnostics) {
 		name, rng, remain, diags := parseSingleAttrRef(traversal)
 		return &Reference{
 			Subject:     TerraformAttr{Name: name},
-			SourceRange: tfdiags.SourceRangeFromHCL(rng),
+			SourceRange: rng,
 			Remaining:   remain,
 		}, diags
 
@@ -235,7 +234,7 @@ func parseRef(traversal hcl.Traversal) (*Reference, tfdiags.Diagnostics) {
 		name, rng, remain, diags := parseSingleAttrRef(traversal)
 		return &Reference{
 			Subject:     InputVariable{Name: name},
-			SourceRange: tfdiags.SourceRangeFromHCL(rng),
+			SourceRange: rng,
 			Remaining:   remain,
 		}, diags
 
@@ -256,8 +255,8 @@ func parseRef(traversal hcl.Traversal) (*Reference, tfdiags.Diagnostics) {
 	}
 }
 
-func parseResourceRef(mode ResourceMode, startRange hcl.Range, traversal hcl.Traversal) (*Reference, tfdiags.Diagnostics) {
-	var diags tfdiags.Diagnostics
+func parseResourceRef(mode ResourceMode, startRange hcl.Range, traversal hcl.Traversal) (*Reference, hcl.Diagnostics) {
+	var diags hcl.Diagnostics
 
 	if len(traversal) < 2 {
 		diags = diags.Append(&hcl.Diagnostic{
@@ -323,7 +322,7 @@ func parseResourceRef(mode ResourceMode, startRange hcl.Range, traversal hcl.Tra
 		// so we'll let the caller resolve that ambiguity.
 		return &Reference{
 			Subject:     resourceAddr,
-			SourceRange: tfdiags.SourceRangeFromHCL(rng),
+			SourceRange: rng,
 		}, diags
 	}
 
@@ -345,13 +344,13 @@ func parseResourceRef(mode ResourceMode, startRange hcl.Range, traversal hcl.Tra
 
 	return &Reference{
 		Subject:     resourceInstAddr,
-		SourceRange: tfdiags.SourceRangeFromHCL(rng),
+		SourceRange: rng,
 		Remaining:   remain,
 	}, diags
 }
 
-func parseSingleAttrRef(traversal hcl.Traversal) (string, hcl.Range, hcl.Traversal, tfdiags.Diagnostics) {
-	var diags tfdiags.Diagnostics
+func parseSingleAttrRef(traversal hcl.Traversal) (string, hcl.Range, hcl.Traversal, hcl.Diagnostics) {
+	var diags hcl.Diagnostics
 
 	root := traversal.RootName()
 	rootRange := traversal[0].SourceRange()

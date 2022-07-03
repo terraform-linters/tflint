@@ -10,9 +10,3 @@ type CountAttr struct {
 func (ca CountAttr) String() string {
 	return "count." + ca.Name
 }
-
-func (ca CountAttr) UniqueKey() UniqueKey {
-	return ca // A CountAttr is its own UniqueKey
-}
-
-func (ca CountAttr) uniqueKeySigil() {}

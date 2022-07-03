@@ -9,9 +9,7 @@ import (
 	"strings"
 
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/terraform-linters/tflint/terraform/configs"
-	"github.com/terraform-linters/tflint/terraform/terraform"
-	"github.com/terraform-linters/tflint/terraform/tfdiags"
+	"github.com/terraform-linters/tflint/terraform"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -19,23 +17,21 @@ var defaultValuesFile = "terraform.tfvars"
 
 // DefaultVariableValues returns an InputValues map representing the default
 // values specified for variables in the given configuration map.
-func DefaultVariableValues(configs map[string]*configs.Variable) terraform.InputValues {
+func DefaultVariableValues(configs map[string]*terraform.Variable) terraform.InputValues {
 	ret := make(terraform.InputValues)
 	for k, c := range configs {
 		if c.Default == cty.NilVal {
 			continue
 		}
 		ret[k] = &terraform.InputValue{
-			Value:       c.Default,
-			SourceType:  terraform.ValueFromConfig,
-			SourceRange: tfdiags.SourceRangeFromHCL(c.DeclRange),
+			Value: c.Default,
 		}
 	}
 	return ret
 }
 
 // ParseTFVariables parses the passed Terraform variable CLI arguments, and returns terraform.InputValues
-func ParseTFVariables(vars []string, declVars map[string]*configs.Variable) (terraform.InputValues, error) {
+func ParseTFVariables(vars []string, declVars map[string]*terraform.Variable) (terraform.InputValues, error) {
 	variables := make(terraform.InputValues)
 	for _, raw := range vars {
 		idx := strings.Index(raw, "=")
@@ -45,12 +41,12 @@ func ParseTFVariables(vars []string, declVars map[string]*configs.Variable) (ter
 		name := raw[:idx]
 		rawVal := raw[idx+1:]
 
-		var mode configs.VariableParsingMode
+		var mode terraform.VariableParsingMode
 		declVar, declared := declVars[name]
 		if declared {
 			mode = declVar.ParsingMode
 		} else {
-			mode = configs.VariableParseLiteral
+			mode = terraform.VariableParseLiteral
 		}
 
 		val, diags := mode.Parse(name, rawVal)
@@ -59,8 +55,7 @@ func ParseTFVariables(vars []string, declVars map[string]*configs.Variable) (ter
 		}
 
 		variables[name] = &terraform.InputValue{
-			Value:      val,
-			SourceType: terraform.ValueFromCLIArg,
+			Value: val,
 		}
 	}
 
@@ -103,7 +98,7 @@ func getTFWorkspace() string {
 	return current
 }
 
-func getTFEnvVariables(declVars map[string]*configs.Variable) (terraform.InputValues, hcl.Diagnostics) {
+func getTFEnvVariables(declVars map[string]*terraform.Variable) (terraform.InputValues, hcl.Diagnostics) {
 	envVariables := make(terraform.InputValues)
 	var diags hcl.Diagnostics
 
@@ -116,12 +111,12 @@ func getTFEnvVariables(declVars map[string]*configs.Variable) (terraform.InputVa
 			log.Printf("[INFO] TF_VAR_* environment variable found: key=%s", envKey)
 			varName := strings.Replace(envKey, "TF_VAR_", "", 1)
 
-			var mode configs.VariableParsingMode
+			var mode terraform.VariableParsingMode
 			declVar, declared := declVars[varName]
 			if declared {
 				mode = declVar.ParsingMode
 			} else {
-				mode = configs.VariableParseLiteral
+				mode = terraform.VariableParseLiteral
 			}
 
 			val, parseDiags := mode.Parse(varName, envVal)
@@ -131,8 +126,7 @@ func getTFEnvVariables(declVars map[string]*configs.Variable) (terraform.InputVa
 			}
 
 			envVariables[varName] = &terraform.InputValue{
-				Value:      val,
-				SourceType: terraform.ValueFromEnvVar,
+				Value: val,
 			}
 		}
 	}

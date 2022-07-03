@@ -126,10 +126,6 @@ func (cli *CLI) setupRunners(opts Options, cfg *tflint.Config, dir string) ([]*t
 	if err != nil {
 		return []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", err)
 	}
-	files, err := cli.loader.Files()
-	if err != nil {
-		return []*tflint.Runner{}, fmt.Errorf("Failed to parse files; %w", err)
-	}
 	annotations, err := cli.loader.LoadAnnotations(dir)
 	if err != nil {
 		return []*tflint.Runner{}, fmt.Errorf("Failed to load configuration tokens; %w", err)
@@ -144,7 +140,7 @@ func (cli *CLI) setupRunners(opts Options, cfg *tflint.Config, dir string) ([]*t
 	}
 	variables = append(variables, cliVars)
 
-	runner, err := tflint.NewRunner(cfg, files, annotations, configs, variables...)
+	runner, err := tflint.NewRunner(cfg, annotations, configs, variables...)
 	if err != nil {
 		return []*tflint.Runner{}, fmt.Errorf("Failed to initialize a runner; %w", err)
 	}

@@ -10,9 +10,3 @@ type ForEachAttr struct {
 func (f ForEachAttr) String() string {
 	return "each." + f.Name
 }
-
-func (f ForEachAttr) UniqueKey() UniqueKey {
-	return f // A ForEachAttr is its own UniqueKey
-}
-
-func (f ForEachAttr) uniqueKeySigil() {}

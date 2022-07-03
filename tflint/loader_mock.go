@@ -8,9 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	v2 "github.com/hashicorp/hcl/v2"
-	configs "github.com/terraform-linters/tflint/terraform/configs"
-	terraform "github.com/terraform-linters/tflint/terraform/terraform"
+	terraform "github.com/terraform-linters/tflint/terraform"
 )
 
 // MockAbstractLoader is a mock of AbstractLoader interface.
@@ -36,21 +34,6 @@ func (m *MockAbstractLoader) EXPECT() *MockAbstractLoaderMockRecorder {
 	return m.recorder
 }
 
-// Files mocks base method.
-func (m *MockAbstractLoader) Files() (map[string]*v2.File, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Files")
-	ret0, _ := ret[0].(map[string]*v2.File)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Files indicates an expected call of Files.
-func (mr *MockAbstractLoaderMockRecorder) Files() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Files", reflect.TypeOf((*MockAbstractLoader)(nil).Files))
-}
-
 // LoadAnnotations mocks base method.
 func (m *MockAbstractLoader) LoadAnnotations(arg0 string) (map[string]Annotations, error) {
 	m.ctrl.T.Helper()
@@ -67,10 +50,10 @@ func (mr *MockAbstractLoaderMockRecorder) LoadAnnotations(arg0 interface{}) *gom
 }
 
 // LoadConfig mocks base method.
-func (m *MockAbstractLoader) LoadConfig(arg0 string) (*configs.Config, error) {
+func (m *MockAbstractLoader) LoadConfig(arg0 string) (*terraform.Config, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "LoadConfig", arg0)
-	ret0, _ := ret[0].(*configs.Config)
+	ret0, _ := ret[0].(*terraform.Config)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

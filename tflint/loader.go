@@ -11,30 +11,26 @@ import (
 
 	version "github.com/hashicorp/go-version"
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/spf13/afero"
+	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/terraform/addrs"
-	"github.com/terraform-linters/tflint/terraform/configs"
-	"github.com/terraform-linters/tflint/terraform/terraform"
 )
 
 //go:generate go run github.com/golang/mock/mockgen -source loader.go -destination loader_mock.go -package tflint -self_package github.com/terraform-linters/tflint/tflint
 
 // AbstractLoader is a loader interface for mock
 type AbstractLoader interface {
-	LoadConfig(string) (*configs.Config, error)
+	LoadConfig(string) (*terraform.Config, error)
 	LoadAnnotations(string) (map[string]Annotations, error)
 	LoadValuesFiles(...string) ([]terraform.InputValues, error)
-	Files() (map[string]*hcl.File, error)
 	Sources() map[string][]byte
 }
 
 // Loader is a wrapper of Terraform's configload.Loader
 type Loader struct {
-	parser               *configs.Parser
+	tfparser             *terraform.Parser
 	fs                   afero.Afero
-	currentDir           string
 	config               *Config
 	moduleSourceVersions map[string][]*version.Version
 	moduleManifest       map[string]*moduleManifest
@@ -57,7 +53,7 @@ func NewLoader(fs afero.Afero, cfg *Config) (*Loader, error) {
 	log.Print("[INFO] Initialize new loader")
 
 	l := &Loader{
-		parser:               configs.NewParser(fs),
+		tfparser:             terraform.NewParser(fs),
 		fs:                   fs,
 		config:               cfg,
 		moduleSourceVersions: map[string][]*version.Version{},
@@ -75,20 +71,15 @@ func NewLoader(fs afero.Afero, cfg *Config) (*Loader, error) {
 	return l, nil
 }
 
-// LoadConfig loads Terraform's configurations
-// TODO: Can we use configload.LoadConfig instead?
-func (l *Loader) LoadConfig(dir string) (*configs.Config, error) {
-	l.currentDir = dir
-	log.Printf("[INFO] Load configurations under %s", dir)
-	rootMod, diags := l.parser.LoadConfigDir(dir)
+func (l *Loader) LoadConfig(dir string) (*terraform.Config, error) {
+	mod, diags := l.tfparser.LoadConfigDir(dir)
 	if diags.HasErrors() {
-		log.Printf("[ERROR] %s", diags)
 		return nil, diags
 	}
 
 	if !l.config.Module {
 		log.Print("[INFO] Module inspection is disabled. Building a root module without children...")
-		cfg, diags := configs.BuildConfig(rootMod, l.ignoreModuleWalker())
+		cfg, diags := terraform.BuildConfig(mod, l.ignoreModuleWalker())
 		if diags.HasErrors() {
 			return nil, diags
 		}
@@ -96,46 +87,16 @@ func (l *Loader) LoadConfig(dir string) (*configs.Config, error) {
 	}
 	log.Print("[INFO] Module inspection is enabled. Building a root module with children...")
 
-	cfg, diags := configs.BuildConfig(rootMod, l.moduleWalker())
-	if !diags.HasErrors() {
-		return cfg, nil
+	cfg, diags := terraform.BuildConfig(mod, l.moduleWalker())
+	if diags.HasErrors() {
+		return nil, diags
 	}
-
-	log.Printf("[ERROR] Failed to load modules: %s", diags)
-	return nil, diags
-}
-
-// Files returns a map of hcl.File pointers for every file that has been read by the loader.
-// It uses the source cache to avoid re-loading the files from disk. These files can be used
-// to do low level decoding of Terraform configuration.
-func (l *Loader) Files() (map[string]*hcl.File, error) {
-	sources := l.parser.Sources()
-	result := make(map[string]*hcl.File, len(sources))
-	parser := hclparse.NewParser()
-
-	for path, src := range sources {
-		var file *hcl.File
-		var diags hcl.Diagnostics
-		switch {
-		case strings.HasSuffix(path, ".json"):
-			file, diags = parser.ParseJSON(src, path)
-		default:
-			file, diags = parser.ParseHCL(src, path)
-		}
-
-		if diags.HasErrors() {
-			return nil, diags
-		}
-
-		result[path] = file
-	}
-
-	return result, nil
+	return cfg, nil
 }
 
 // LoadAnnotations load TFLint annotation comments as HCL tokens.
 func (l *Loader) LoadAnnotations(dir string) (map[string]Annotations, error) {
-	primary, override, diags := l.parser.ConfigDirFiles(dir)
+	primary, override, diags := l.tfparser.ConfigDirFiles(dir)
 	if diags != nil {
 		log.Printf("[ERROR] %s", diags)
 		return nil, diags
@@ -187,14 +148,14 @@ func (l *Loader) LoadValuesFiles(files ...string) ([]terraform.InputValues, erro
 	}
 
 	for _, file := range autoLoadFiles {
-		vals, err := l.loadValuesFile(file, terraform.ValueFromAutoFile)
+		vals, err := l.loadValuesFile(file)
 		if err != nil {
 			return nil, err
 		}
 		values = append(values, vals)
 	}
 	for _, file := range files {
-		vals, err := l.loadValuesFile(file, terraform.ValueFromNamedFile)
+		vals, err := l.loadValuesFile(file)
 		if err != nil {
 			return nil, err
 		}
@@ -204,9 +165,8 @@ func (l *Loader) LoadValuesFiles(files ...string) ([]terraform.InputValues, erro
 	return values, nil
 }
 
-// Sources returns the source code cache for the underlying parser of this loader
 func (l *Loader) Sources() map[string][]byte {
-	return l.parser.Sources()
+	return l.tfparser.Sources()
 }
 
 // autoLoadValuesFiles returns all files which match *.auto.tfvars present in the current directory
@@ -233,9 +193,9 @@ func (l *Loader) autoLoadValuesFiles() ([]string, error) {
 	return ret, nil
 }
 
-func (l *Loader) loadValuesFile(file string, sourceType terraform.ValueSourceType) (terraform.InputValues, error) {
+func (l *Loader) loadValuesFile(file string) (terraform.InputValues, error) {
 	log.Printf("[INFO] Load `%s`", file)
-	vals, diags := l.parser.LoadValuesFile(file)
+	vals, diags := l.tfparser.LoadValuesFile(file)
 	if diags.HasErrors() {
 		log.Printf("[ERROR] %s", diags)
 		if diags[0].Subject == nil {
@@ -248,15 +208,14 @@ func (l *Loader) loadValuesFile(file string, sourceType terraform.ValueSourceTyp
 	ret := make(terraform.InputValues)
 	for k, v := range vals {
 		ret[k] = &terraform.InputValue{
-			Value:      v,
-			SourceType: sourceType,
+			Value: v,
 		}
 	}
 	return ret, nil
 }
 
-func (l *Loader) moduleWalker() configs.ModuleWalker {
-	return configs.ModuleWalkerFunc(func(req *configs.ModuleRequest) (*configs.Module, *version.Version, hcl.Diagnostics) {
+func (l *Loader) moduleWalker() terraform.ModuleWalker {
+	return terraform.ModuleWalkerFunc(func(req *terraform.ModuleRequest) (*terraform.Module, *version.Version, hcl.Diagnostics) {
 		key := req.Path.String()
 		record, ok := l.moduleManifest[key]
 		if !ok {
@@ -272,13 +231,13 @@ func (l *Loader) moduleWalker() configs.ModuleWalker {
 
 		log.Printf("[DEBUG] Trying to load the module: key=%s, version=%s, dir=%s", key, record.VersionStr, record.Dir)
 
-		mod, diags := l.parser.LoadConfigDir(record.Dir)
+		mod, diags := l.tfparser.LoadConfigDir(record.Dir)
 		return mod, record.Version, diags
 	})
 }
 
-func (l *Loader) ignoreModuleWalker() configs.ModuleWalker {
-	return configs.ModuleWalkerFunc(func(req *configs.ModuleRequest) (*configs.Module, *version.Version, hcl.Diagnostics) {
+func (l *Loader) ignoreModuleWalker() terraform.ModuleWalker {
+	return terraform.ModuleWalkerFunc(func(req *terraform.ModuleRequest) (*terraform.Module, *version.Version, hcl.Diagnostics) {
 		return nil, nil, nil
 	})
 }

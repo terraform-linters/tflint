@@ -4,70 +4,11 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/ext/dynblock"
-	"github.com/hashicorp/hcl/v2/hcldec"
 	"github.com/terraform-linters/tflint/terraform/addrs"
-	"github.com/terraform-linters/tflint/terraform/configs/configschema"
-	"github.com/terraform-linters/tflint/terraform/lang/blocktoattr"
 	"github.com/terraform-linters/tflint/terraform/tfdiags"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
 )
-
-// ExpandBlock expands any "dynamic" blocks present in the given body. The
-// result is a body with those blocks expanded, ready to be evaluated with
-// EvalBlock.
-//
-// If the returned diagnostics contains errors then the result may be
-// incomplete or invalid.
-func (s *Scope) ExpandBlock(body hcl.Body, schema *configschema.Block) (hcl.Body, tfdiags.Diagnostics) {
-	spec := schema.DecoderSpec()
-
-	traversals := dynblock.ExpandVariablesHCLDec(body, spec)
-	refs, diags := References(traversals)
-
-	ctx, ctxDiags := s.EvalContext(refs)
-	diags = diags.Append(ctxDiags)
-
-	return dynblock.Expand(body, ctx), diags
-}
-
-// EvalBlock evaluates the given body using the given block schema and returns
-// a cty object value representing its contents. The type of the result conforms
-// to the implied type of the given schema.
-//
-// This function does not automatically expand "dynamic" blocks within the
-// body. If that is desired, first call the ExpandBlock method to obtain
-// an expanded body to pass to this method.
-//
-// If the returned diagnostics contains errors then the result may be
-// incomplete or invalid.
-func (s *Scope) EvalBlock(body hcl.Body, schema *configschema.Block) (cty.Value, tfdiags.Diagnostics) {
-	spec := schema.DecoderSpec()
-
-	refs, diags := ReferencesInBlock(body, schema)
-
-	ctx, ctxDiags := s.EvalContext(refs)
-	diags = diags.Append(ctxDiags)
-	if diags.HasErrors() {
-		// We'll stop early if we found problems in the references, because
-		// it's likely evaluation will produce redundant copies of the same errors.
-		return cty.UnknownVal(schema.ImpliedType()), diags
-	}
-
-	// HACK: In order to remain compatible with some assumptions made in
-	// Terraform v0.11 and earlier about the approximate equivalence of
-	// attribute vs. block syntax, we do a just-in-time fixup here to allow
-	// any attribute in the schema that has a list-of-objects or set-of-objects
-	// kind to potentially be populated instead by one or more nested blocks
-	// whose type is the attribute name.
-	body = blocktoattr.FixUpBlockAttrs(body, schema)
-
-	val, evalDiags := hcldec.Decode(body, spec, ctx)
-	diags = diags.Append(evalDiags)
-
-	return val, diags
-}
 
 // EvalExpr evaluates a single expression in the receiving context and returns
 // the resulting value. The value will be converted to the given type before
@@ -79,11 +20,11 @@ func (s *Scope) EvalBlock(body hcl.Body, schema *configschema.Block) (cty.Value,
 //
 // If the returned diagnostics contains errors then the result may be
 // incomplete, but will always be of the requested type.
-func (s *Scope) EvalExpr(expr hcl.Expression, wantType cty.Type) (cty.Value, tfdiags.Diagnostics) {
+func (s *Scope) EvalExpr(expr hcl.Expression, wantType cty.Type) (cty.Value, hcl.Diagnostics) {
 	refs, diags := ReferencesInExpr(expr)
 
 	ctx, ctxDiags := s.EvalContext(refs)
-	diags = diags.Append(ctxDiags)
+	diags = diags.Extend(ctxDiags)
 	if diags.HasErrors() {
 		// We'll stop early if we found problems in the references, because
 		// it's likely evaluation will produce redundant copies of the same errors.
@@ -91,7 +32,7 @@ func (s *Scope) EvalExpr(expr hcl.Expression, wantType cty.Type) (cty.Value, tfd
 	}
 
 	val, evalDiags := expr.Value(ctx)
-	diags = diags.Append(evalDiags)
+	diags = diags.Extend(evalDiags)
 
 	if wantType != cty.DynamicPseudoType {
 		var convErr error
@@ -118,16 +59,16 @@ func (s *Scope) EvalExpr(expr hcl.Expression, wantType cty.Type) (cty.Value, tfd
 // Most callers should prefer to use the evaluation helper methods that
 // this type offers, but this is here for less common situations where the
 // caller will handle the evaluation calls itself.
-func (s *Scope) EvalContext(refs []*addrs.Reference) (*hcl.EvalContext, tfdiags.Diagnostics) {
+func (s *Scope) EvalContext(refs []*addrs.Reference) (*hcl.EvalContext, hcl.Diagnostics) {
 	return s.evalContext(refs, s.SelfAddr)
 }
 
-func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceable) (*hcl.EvalContext, tfdiags.Diagnostics) {
+func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceable) (*hcl.EvalContext, hcl.Diagnostics) {
 	if s == nil {
 		panic("attempt to construct EvalContext for nil Scope")
 	}
 
-	var diags tfdiags.Diagnostics
+	var diags hcl.Diagnostics
 	vals := make(map[string]cty.Value)
 	funcs := s.Functions()
 	ctx := &hcl.EvalContext{
@@ -160,17 +101,17 @@ func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceabl
 		switch subj := rawSubj.(type) {
 		case addrs.InputVariable:
 			val, valDiags := normalizeRefValue(s.Data.GetInputVariable(subj, rng))
-			diags = diags.Append(valDiags)
+			diags = diags.Extend(valDiags)
 			inputVariables[subj.Name] = val
 
 		case addrs.PathAttr:
 			val, valDiags := normalizeRefValue(s.Data.GetPathAttr(subj, rng))
-			diags = diags.Append(valDiags)
+			diags = diags.Extend(valDiags)
 			pathAttrs[subj.Name] = val
 
 		case addrs.TerraformAttr:
 			val, valDiags := normalizeRefValue(s.Data.GetTerraformAttr(subj, rng))
-			diags = diags.Append(valDiags)
+			diags = diags.Extend(valDiags)
 			terraformAttrs[subj.Name] = val
 
 		default:
@@ -186,7 +127,7 @@ func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceabl
 	return ctx, diags
 }
 
-func normalizeRefValue(val cty.Value, diags tfdiags.Diagnostics) (cty.Value, tfdiags.Diagnostics) {
+func normalizeRefValue(val cty.Value, diags hcl.Diagnostics) (cty.Value, hcl.Diagnostics) {
 	if diags.HasErrors() {
 		// If there are errors then we will force an unknown result so that
 		// we can still evaluate and catch type errors but we'll avoid
