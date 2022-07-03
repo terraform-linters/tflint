@@ -30,6 +30,25 @@ resource "aws_db_instance" "mysql" {
 						End:      hcl.Pos{Line: 3, Column: 18},
 					},
 				},
+			},
+		},
+		{
+			Name: "comparing with [] multiple times in the same statement is not recommended",
+			Content: `
+resource "aws_db_instance" "mysql" {
+	count = [] == [] || [] == [] ? 1 : 0
+	instance_class = "m4.2xlarge"
+}`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformEmptyListEqualityRule(),
+					Message: "Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 3, Column: 22},
+						End:      hcl.Pos{Line: 3, Column: 30},
+					},
+				},
 				{
 					Rule:    NewTerraformEmptyListEqualityRule(),
 					Message: "Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
@@ -42,10 +61,10 @@ resource "aws_db_instance" "mysql" {
 			},
 		},
 		{
-			Name: "comparing with [] is not recommended (mixed with other conditions)",
+			Name: "comparing with [] inside parenthesis is not recommended",
 			Content: `
 resource "aws_db_instance" "mysql" {
-	count = true == true || false != true && (false == false || [] == []) ? 1 : 0
+	count = ([] == []) ? 1 : 0
 	instance_class = "m4.2xlarge"
 }`,
 			Expected: tflint.Issues{
@@ -54,17 +73,8 @@ resource "aws_db_instance" "mysql" {
 					Message: "Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
 					Range: hcl.Range{
 						Filename: "resource.tf",
-						Start:    hcl.Pos{Line: 3, Column: 62},
-						End:      hcl.Pos{Line: 3, Column: 70},
-					},
-				},
-				{
-					Rule:    NewTerraformEmptyListEqualityRule(),
-					Message: "Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
-					Range: hcl.Range{
-						Filename: "resource.tf",
-						Start:    hcl.Pos{Line: 3, Column: 62},
-						End:      hcl.Pos{Line: 3, Column: 70},
+						Start:    hcl.Pos{Line: 3, Column: 11},
+						End:      hcl.Pos{Line: 3, Column: 19},
 					},
 				},
 			},
