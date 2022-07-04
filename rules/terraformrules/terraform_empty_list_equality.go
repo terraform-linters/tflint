@@ -64,16 +64,16 @@ func (r *TerraformEmptyListEqualityRule) checkEmptyList(runner *tflint.Runner) e
 	})
 }
 
-func searchEmptyList(expr hcl.Expression, runner *tflint.Runner, r *TerraformEmptyListEqualityRule, exprRange hcl.Range, issuesRangeSet map[hcl.Range]void) {
+func searchEmptyList(expr hcl.Expression, runner *tflint.Runner, rule *TerraformEmptyListEqualityRule, exprRange hcl.Range, issuesRangeSet map[hcl.Range]void) {
 	if binaryOpExpr, ok := expr.(*hclsyntax.BinaryOpExpr); ok {
 		if binaryOpExpr.Op.Type.FriendlyName() == "bool" {
-			searchEmptyList(binaryOpExpr.RHS, runner, r, binaryOpExpr.Range(), issuesRangeSet)
-			searchEmptyList(binaryOpExpr.LHS, runner, r, binaryOpExpr.Range(), issuesRangeSet)
+			searchEmptyList(binaryOpExpr.RHS, runner, rule, binaryOpExpr.Range(), issuesRangeSet)
+			searchEmptyList(binaryOpExpr.LHS, runner, rule, binaryOpExpr.Range(), issuesRangeSet)
 		}
 	} else if binaryOpExpr, ok := expr.(*hclsyntax.BinaryOpExpr); ok {
-		searchEmptyList(binaryOpExpr, runner, r, binaryOpExpr.Range(), issuesRangeSet)
+		searchEmptyList(binaryOpExpr, runner, rule, binaryOpExpr.Range(), issuesRangeSet)
 	} else if parenthesesExpr, ok := expr.(*hclsyntax.ParenthesesExpr); ok {
-		searchEmptyList(parenthesesExpr.Expression, runner, r, parenthesesExpr.Range(), issuesRangeSet)
+		searchEmptyList(parenthesesExpr.Expression, runner, rule, parenthesesExpr.Range(), issuesRangeSet)
 	} else if tupleConsExpr, ok := expr.(*hclsyntax.TupleConsExpr); ok {
 		if len(tupleConsExpr.Exprs) == 0 {
 			issuesRangeSet[exprRange] = void{}
@@ -81,10 +81,10 @@ func searchEmptyList(expr hcl.Expression, runner *tflint.Runner, r *TerraformEmp
 	}
 }
 
-func emitEmptyListEqualityIssues(exprRanges map[hcl.Range]void, runner *tflint.Runner, r *TerraformEmptyListEqualityRule) {
+func emitEmptyListEqualityIssues(exprRanges map[hcl.Range]void, runner *tflint.Runner, rule *TerraformEmptyListEqualityRule) {
 	for exprRange := range exprRanges {
 		runner.EmitIssue(
-			r,
+			rule,
 			"Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
 			exprRange,
 		)
