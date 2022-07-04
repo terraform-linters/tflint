@@ -10,7 +10,6 @@ import (
 
 // TerraformEmptyListEqualityRule checks whether is there a comparison with an empty list
 type TerraformEmptyListEqualityRule struct{}
-type void struct{}
 
 // NewTerraformCommentSyntaxRule returns a new rule
 func NewTerraformEmptyListEqualityRule() *TerraformEmptyListEqualityRule {
@@ -53,38 +52,41 @@ func (r *TerraformEmptyListEqualityRule) Check(runner *tflint.Runner) error {
 	return nil
 }
 
+// checkEmptyList visits all blocks that can contain expressions and checks for comparisons with static empty list
 func (r *TerraformEmptyListEqualityRule) checkEmptyList(runner *tflint.Runner) error {
 	return runner.WalkExpressions(func(expr hcl.Expression) error {
 		if conditionalExpr, ok := expr.(*hclsyntax.ConditionalExpr); ok {
-			var issuesRangeSet = make(map[hcl.Range]void)
-			searchEmptyList(conditionalExpr.Condition, runner, r, conditionalExpr.Range(), issuesRangeSet)
-			emitEmptyListEqualityIssues(issuesRangeSet, runner, r)
+			var issuesRangeSet = make(map[hcl.Range]struct{})
+			r.searchEmptyList(conditionalExpr.Condition, runner, conditionalExpr.Range(), issuesRangeSet)
+			r.emitEmptyListEqualityIssues(issuesRangeSet, runner)
 		}
 		return nil
 	})
 }
 
-func searchEmptyList(expr hcl.Expression, runner *tflint.Runner, rule *TerraformEmptyListEqualityRule, exprRange hcl.Range, issuesRangeSet map[hcl.Range]void) {
+// searchEmptyList Searches for comparisons with static empty list in the given expression
+func (r *TerraformEmptyListEqualityRule) searchEmptyList(expr hcl.Expression, runner *tflint.Runner, exprRange hcl.Range, issuesRangeSet map[hcl.Range]struct{}) {
 	if binaryOpExpr, ok := expr.(*hclsyntax.BinaryOpExpr); ok {
 		if binaryOpExpr.Op.Type.FriendlyName() == "bool" {
-			searchEmptyList(binaryOpExpr.RHS, runner, rule, binaryOpExpr.Range(), issuesRangeSet)
-			searchEmptyList(binaryOpExpr.LHS, runner, rule, binaryOpExpr.Range(), issuesRangeSet)
+			r.searchEmptyList(binaryOpExpr.RHS, runner, binaryOpExpr.Range(), issuesRangeSet)
+			r.searchEmptyList(binaryOpExpr.LHS, runner, binaryOpExpr.Range(), issuesRangeSet)
 		}
 	} else if binaryOpExpr, ok := expr.(*hclsyntax.BinaryOpExpr); ok {
-		searchEmptyList(binaryOpExpr, runner, rule, binaryOpExpr.Range(), issuesRangeSet)
+		r.searchEmptyList(binaryOpExpr, runner, binaryOpExpr.Range(), issuesRangeSet)
 	} else if parenthesesExpr, ok := expr.(*hclsyntax.ParenthesesExpr); ok {
-		searchEmptyList(parenthesesExpr.Expression, runner, rule, parenthesesExpr.Range(), issuesRangeSet)
+		r.searchEmptyList(parenthesesExpr.Expression, runner, parenthesesExpr.Range(), issuesRangeSet)
 	} else if tupleConsExpr, ok := expr.(*hclsyntax.TupleConsExpr); ok {
 		if len(tupleConsExpr.Exprs) == 0 {
-			issuesRangeSet[exprRange] = void{}
+			issuesRangeSet[exprRange] = struct{}{}
 		}
 	}
 }
 
-func emitEmptyListEqualityIssues(exprRanges map[hcl.Range]void, runner *tflint.Runner, rule *TerraformEmptyListEqualityRule) {
+// emitEmptyListEqualityIssues emits issues for each found comparison with static empty list
+func (r *TerraformEmptyListEqualityRule) emitEmptyListEqualityIssues(exprRanges map[hcl.Range]struct{}, runner *tflint.Runner) {
 	for exprRange := range exprRanges {
 		runner.EmitIssue(
-			rule,
+			r,
 			"Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
 			exprRange,
 		)

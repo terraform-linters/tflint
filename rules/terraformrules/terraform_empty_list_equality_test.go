@@ -33,7 +33,7 @@ resource "aws_db_instance" "mysql" {
 			},
 		},
 		{
-			Name: "comparing with [] multiple times in the same statement is not recommended",
+			Name: "multiple comparisons with [] are not recommended",
 			Content: `
 resource "aws_db_instance" "mysql" {
 	count = [] == [] || [] == [] ? 1 : 0
