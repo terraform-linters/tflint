@@ -1,99 +1,51 @@
 package tflint
 
 import (
-	"log"
-
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 )
 
-// WalkExpressions visits all blocks that can contain expressions:
-// resource, data, module, provider, locals, and output. It calls the walker
-// function with every expression it encounters and halts if the walker
-// returns an error.
+// WalkExpressions visits all expressions, including those in the file before merging.
+// Note that it behaves differently in native HCL syntax and JSON syntax.
+// In the HCL syntax, expressions in expressions, such as list and object are passed to
+// the walker function. The walker should check the type of the expression.
+// In the JSON syntax, only an expression of an attribute seen from the top level of the file
+// is passed, not expressions in expressions to the walker. This is an API limitation of JSON syntax.
 func (r *Runner) WalkExpressions(walker func(hcl.Expression) error) error {
-	visit := func(expr hcl.Expression) error {
-		return r.WithExpressionContext(expr, func() error {
-			return walker(expr)
-		})
+	visit := func(node hclsyntax.Node) hcl.Diagnostics {
+		if expr, ok := node.(hcl.Expression); ok {
+			if err := walker(expr); err != nil {
+				// FIXME: walker should returns hcl.Diagnostics directly
+				return hcl.Diagnostics{
+					{
+						Severity: hcl.DiagError,
+						Summary:  err.Error(),
+					},
+				}
+			}
+		}
+		return hcl.Diagnostics{}
 	}
 
-	for _, resource := range r.TFConfig.Module.ManagedResources {
-		if err := r.walkBody(resource.Config, visit); err != nil {
-			return err
+	for _, file := range r.Files() {
+		if body, ok := file.Body.(*hclsyntax.Body); ok {
+			diags := hclsyntax.VisitAll(body, visit)
+			if diags.HasErrors() {
+				return diags
+			}
+			continue
 		}
-	}
-	for _, resource := range r.TFConfig.Module.DataResources {
-		if err := r.walkBody(resource.Config, visit); err != nil {
-			return err
-		}
-	}
-	for _, module := range r.TFConfig.Module.ModuleCalls {
-		if err := r.walkBody(module.Config, visit); err != nil {
-			return err
-		}
-	}
-	for _, provider := range r.TFConfig.Module.ProviderConfigs {
-		if err := r.walkBody(provider.Config, visit); err != nil {
-			return err
-		}
-	}
-	for _, local := range r.TFConfig.Module.Locals {
-		if err := visit(local.Expr); err != nil {
-			return err
-		}
-	}
-	for _, output := range r.TFConfig.Module.Outputs {
-		if err := visit(output.Expr); err != nil {
-			return err
-		}
-	}
 
-	return nil
-}
-
-// walkBody visits all attributes and passes their expressions to the walker function.
-// It recurses on nested blocks.
-func (r *Runner) walkBody(b hcl.Body, walker func(hcl.Expression) error) error {
-	body, ok := b.(*hclsyntax.Body)
-	if !ok {
-		// HACK: Other than hclsyntax.Body, there are json.body and configs.mergeBody structs that satisfy hcl.Body,
-		// but since both are private structs, there is no reliable way to determine them.
-		// Here, it is judged by whether it can process `body.JustAttributes`. See also `walkAttributes`.
-		if _, diags := b.JustAttributes(); diags.HasErrors() {
-			log.Printf("[WARN] Ignore attributes of `%T` because we can only handle hclsyntax.Body or json.body", b)
-			return nil
+		// In JSON syntax, everything can be walked as an attribute.
+		attrs, diags := file.Body.JustAttributes()
+		if diags.HasErrors() {
+			return diags
 		}
-		return r.walkAttributes(b, walker)
-	}
 
-	for _, attr := range body.Attributes {
-		if err := walker(attr.Expr); err != nil {
-			return err
-		}
-	}
-
-	for _, block := range body.Blocks {
-		if err := r.walkBody(block.Body, walker); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-// walkAttributes visits all attributes and passes their expressions to the walker function.
-// It should be used only for non-HCL bodies (JSON) when distinguishing a block from an attribute
-// is not possible without a schema.
-func (r *Runner) walkAttributes(b hcl.Body, walker func(hcl.Expression) error) error {
-	attrs, diags := b.JustAttributes()
-	if diags.HasErrors() {
-		return diags
-	}
-
-	for _, attr := range attrs {
-		if err := walker(attr.Expr); err != nil {
-			return err
+		for _, attr := range attrs {
+			if err := walker(attr.Expr); err != nil {
+				return err
+			}
 		}
 	}
 

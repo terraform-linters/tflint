@@ -4,6 +4,8 @@ import (
 	"log"
 
 	"github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/hashicorp/hcl/v2/json"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/lang"
 	"github.com/terraform-linters/tflint/tflint"
@@ -58,6 +60,11 @@ func (r *TerraformWorkspaceRemoteRule) Check(runner *tflint.Runner) error {
 }
 
 func (r *TerraformWorkspaceRemoteRule) checkForTerraformWorkspaceInExpr(runner *tflint.Runner, expr hcl.Expression) error {
+	_, isScopeTraversalExpr := expr.(*hclsyntax.ScopeTraversalExpr)
+	if !isScopeTraversalExpr && !json.IsJSONExpression(expr) {
+		return nil
+	}
+
 	refs, diags := lang.ReferencesInExpr(expr)
 	if diags.HasErrors() {
 		log.Printf("[DEBUG] Cannot find references in expression, ignoring: %v", diags.Err())

@@ -10,6 +10,7 @@ import (
 func Test_TerraformWorkspaceRemoteRule(t *testing.T) {
 	cases := []struct {
 		Name     string
+		JSON     bool
 		Content  string
 		Expected tflint.Issues
 	}{
@@ -30,8 +31,8 @@ resource "null_resource" "a" {
 					Message: "terraform.workspace should not be used with a 'remote' backend",
 					Range: hcl.Range{
 						Filename: "config.tf",
-						Start:    hcl.Pos{Line: 6, Column: 13},
-						End:      hcl.Pos{Line: 8, Column: 3},
+						Start:    hcl.Pos{Line: 7, Column: 7},
+						End:      hcl.Pos{Line: 7, Column: 26},
 					},
 				},
 			},
@@ -77,8 +78,8 @@ data "null_data_source" "a" {
 					Message: "terraform.workspace should not be used with a 'remote' backend",
 					Range: hcl.Range{
 						Filename: "config.tf",
-						Start:    hcl.Pos{Line: 6, Column: 11},
-						End:      hcl.Pos{Line: 8, Column: 3},
+						Start:    hcl.Pos{Line: 7, Column: 7},
+						End:      hcl.Pos{Line: 7, Column: 26},
 					},
 				},
 			},
@@ -203,13 +204,49 @@ resource "aws_instance" "foo" {
 }`,
 			Expected: tflint.Issues{},
 		},
+		{
+			Name: "terraform.workspace in JSON syntax",
+			JSON: true,
+			Content: `
+{
+  "terraform": {
+    "backend": {
+      "remote": {}
+	}
+  },
+  "resource": {
+    "null_resource": {
+      "a": {
+        "triggers": {
+          "w": "${terraform.workspace}"
+        }
+      }
+    }
+  }
+}`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformWorkspaceRemoteRule(),
+					Message: "terraform.workspace should not be used with a 'remote' backend",
+					Range: hcl.Range{
+						Filename: "config.tf.json",
+						Start:    hcl.Pos{Line: 8, Column: 15},
+						End:      hcl.Pos{Line: 16, Column: 4},
+					},
+				},
+			},
+		},
 	}
 
 	rule := NewTerraformWorkspaceRemoteRule()
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := tflint.TestRunner(t, map[string]string{"config.tf": tc.Content})
+			filename := "config.tf"
+			if tc.JSON {
+				filename = "config.tf.json"
+			}
+			runner := tflint.TestRunner(t, map[string]string{filename: tc.Content})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
