@@ -6,6 +6,7 @@ get_machine_arch () {
         i386)     machine_arch="386" ;;
         i686)     machine_arch="386" ;;
         x86_64)   machine_arch="amd64" ;;
+        arm64)    machine_arch="arm64" ;;
         aarch64)  dpkg --print-architecture | grep -q "arm64" && machine_arch="arm64" || machine_arch="arm" ;;
     esac
     echo $machine_arch
