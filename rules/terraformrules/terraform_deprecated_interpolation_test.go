@@ -101,7 +101,17 @@ resource "null_resource" "a" {
 resource "null_resource" "a" {
 	triggers = ["${var.triggers}"]
 }`,
-			Expected: tflint.Issues{},
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformDeprecatedInterpolationRule(),
+					Message: "Interpolation-only expressions are deprecated in Terraform v0.12.14",
+					Range: hcl.Range{
+						Filename: "config.tf",
+						Start:    hcl.Pos{Line: 3, Column: 14},
+						End:      hcl.Pos{Line: 3, Column: 31},
+					},
+				},
+			},
 		},
 		{
 			Name: "new interpolation syntax",
@@ -116,12 +126,14 @@ resource "null_resource" "a" {
 	rule := NewTerraformDeprecatedInterpolationRule()
 
 	for _, tc := range cases {
-		runner := tflint.TestRunner(t, map[string]string{"config.tf": tc.Content})
+		t.Run(tc.Name, func(t *testing.T) {
+			runner := tflint.TestRunner(t, map[string]string{"config.tf": tc.Content})
 
-		if err := rule.Check(runner); err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
-		}
+			if err := rule.Check(runner); err != nil {
+				t.Fatalf("Unexpected error occurred: %s", err)
+			}
 
-		tflint.AssertIssues(t, tc.Expected, runner.Issues)
+			tflint.AssertIssues(t, tc.Expected, runner.Issues)
+		})
 	}
 }
