@@ -6,8 +6,8 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/hashicorp/hcl/v2/json"
-	"github.com/terraform-linters/tflint/terraform/addrs"
-	"github.com/terraform-linters/tflint/terraform/lang"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -49,8 +49,35 @@ func (r *TerraformWorkspaceRemoteRule) Check(runner *tflint.Runner) error {
 
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
-	backend := runner.TFConfig.Root.Module.Backend
-	if backend == nil || backend.Type != "remote" {
+	body, diags := runner.GetModuleContent(&hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type: "terraform",
+				Body: &hclext.BodySchema{
+					Blocks: []hclext.BlockSchema{
+						{
+							Type:       "backend",
+							LabelNames: []string{"type"},
+							Body:       &hclext.BodySchema{},
+						},
+					},
+				},
+			},
+		},
+	}, sdk.GetModuleContentOption{})
+	if diags.HasErrors() {
+		return diags
+	}
+
+	var remoteBackend bool
+	for _, terraform := range body.Blocks {
+		for _, backend := range terraform.Body.Blocks {
+			if backend.Labels[0] == "remote" {
+				remoteBackend = true
+			}
+		}
+	}
+	if !remoteBackend {
 		return nil
 	}
 
@@ -65,16 +92,15 @@ func (r *TerraformWorkspaceRemoteRule) checkForTerraformWorkspaceInExpr(runner *
 		return nil
 	}
 
-	refs, diags := lang.ReferencesInExpr(expr)
+	refs, diags := referencesInExpr(expr)
 	if diags.HasErrors() {
-		log.Printf("[DEBUG] Cannot find references in expression, ignoring: %v", diags.Err())
-		return nil
+		return diags
 	}
 
 	for _, ref := range refs {
-		switch sub := ref.Subject.(type) {
-		case addrs.TerraformAttr:
-			if sub.Name == "workspace" {
+		switch sub := ref.subject.(type) {
+		case terraformReference:
+			if sub.name == "workspace" {
 				runner.EmitIssue(
 					r,
 					"terraform.workspace should not be used with a 'remote' backend",

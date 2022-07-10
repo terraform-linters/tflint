@@ -4,6 +4,8 @@ import (
 	"log"
 
 	"github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -44,15 +46,28 @@ func (r *TerraformRequiredVersionRule) Check(runner *tflint.Runner) error {
 
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
-	module := runner.TFConfig.Module
-	versionConstraints := module.CoreVersionConstraints
-	if len(versionConstraints) == 0 {
-		runner.EmitIssue(
-			r,
-			`terraform "required_version" attribute is required`,
-			hcl.Range{},
-		)
-		return nil
+	body, diags := runner.GetModuleContent(&hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type: "terraform",
+				Body: &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "required_version"}},
+				},
+			},
+		},
+	}, sdk.GetModuleContentOption{})
+	if diags.HasErrors() {
+		return diags
+	}
+
+	for _, block := range body.Blocks {
+		if _, exists := block.Body.Attributes["required_version"]; !exists {
+			runner.EmitIssue(
+				r,
+				`terraform "required_version" attribute is required`,
+				hcl.Range{},
+			)
+		}
 	}
 
 	return nil

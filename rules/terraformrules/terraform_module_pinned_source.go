@@ -9,7 +9,7 @@ import (
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/hashicorp/go-getter"
-	"github.com/terraform-linters/tflint/terraform/configs"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -66,7 +66,17 @@ func (r *TerraformModulePinnedSourceRule) Check(runner *tflint.Runner) error {
 		return err
 	}
 
-	for _, module := range runner.TFConfig.Module.ModuleCalls {
+	body, diags := runner.GetModuleContent(moduleCallSchema, sdk.GetModuleContentOption{})
+	if diags.HasErrors() {
+		return diags
+	}
+
+	for _, block := range body.Blocks {
+		module, diags := decodeModuleCall(block)
+		if diags.HasErrors() {
+			return diags
+		}
+
 		if err := r.checkModule(runner, module, config); err != nil {
 			return err
 		}
@@ -75,10 +85,10 @@ func (r *TerraformModulePinnedSourceRule) Check(runner *tflint.Runner) error {
 	return nil
 }
 
-func (r *TerraformModulePinnedSourceRule) checkModule(runner *tflint.Runner, module *configs.ModuleCall, config terraformModulePinnedSourceRuleConfig) error {
-	log.Printf("[DEBUG] Walk `%s` attribute", module.Name+".source")
+func (r *TerraformModulePinnedSourceRule) checkModule(runner *tflint.Runner, module *moduleCall, config terraformModulePinnedSourceRuleConfig) error {
+	log.Printf("[DEBUG] Walk `%s` attribute", module.name+".source")
 
-	source, err := getter.Detect(module.SourceAddrRaw, filepath.Dir(module.DeclRange.Filename), []getter.Detector{
+	source, err := getter.Detect(module.source, filepath.Dir(module.defRange.Filename), []getter.Detector{
 		// https://github.com/hashicorp/terraform/blob/51b0aee36cc2145f45f5b04051a01eb6eb7be8bf/internal/getmodules/getter.go#L30-L52
 		new(getter.GitHubDetector),
 		new(getter.GitDetector),
@@ -116,8 +126,8 @@ func (r *TerraformModulePinnedSourceRule) checkModule(runner *tflint.Runner, mod
 	if u.Hostname() == "" {
 		runner.EmitIssue(
 			r,
-			fmt.Sprintf("Module source %q is not a valid URL", module.SourceAddr),
-			module.SourceAddrRange,
+			fmt.Sprintf("Module source %q is not a valid URL", module.source),
+			module.sourceAttr.Expr.Range(),
 		)
 
 		return nil
@@ -135,14 +145,14 @@ func (r *TerraformModulePinnedSourceRule) checkModule(runner *tflint.Runner, mod
 
 	runner.EmitIssue(
 		r,
-		fmt.Sprintf(`Module source "%s" is not pinned`, module.SourceAddr),
-		module.SourceAddrRange,
+		fmt.Sprintf(`Module source "%s" is not pinned`, module.source),
+		module.sourceAttr.Expr.Range(),
 	)
 
 	return nil
 }
 
-func (r *TerraformModulePinnedSourceRule) checkRevision(runner *tflint.Runner, module *configs.ModuleCall, config terraformModulePinnedSourceRuleConfig, key string, value string) error {
+func (r *TerraformModulePinnedSourceRule) checkRevision(runner *tflint.Runner, module *moduleCall, config terraformModulePinnedSourceRuleConfig, key string, value string) error {
 	switch config.Style {
 	// The "flexible" style requires a revision that is not a default branch
 	case "flexible":
@@ -150,8 +160,8 @@ func (r *TerraformModulePinnedSourceRule) checkRevision(runner *tflint.Runner, m
 			if value == branch {
 				runner.EmitIssue(
 					r,
-					fmt.Sprintf("Module source \"%s\" uses a default branch as %s (%s)", module.SourceAddr, key, branch),
-					module.SourceAddrRange,
+					fmt.Sprintf("Module source \"%s\" uses a default branch as %s (%s)", module.source, key, branch),
+					module.sourceAttr.Expr.Range(),
 				)
 
 				return nil
@@ -163,8 +173,8 @@ func (r *TerraformModulePinnedSourceRule) checkRevision(runner *tflint.Runner, m
 		if err != nil {
 			runner.EmitIssue(
 				r,
-				fmt.Sprintf("Module source \"%s\" uses a %s which is not a semantic version string", module.SourceAddr, key),
-				module.SourceAddrRange,
+				fmt.Sprintf("Module source \"%s\" uses a %s which is not a semantic version string", module.source, key),
+				module.sourceAttr.Expr.Range(),
 			)
 		}
 	default:

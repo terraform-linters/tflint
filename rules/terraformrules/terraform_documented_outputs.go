@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/hashicorp/hcl/v2/gohcl"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -44,12 +47,43 @@ func (r *TerraformDocumentedOutputsRule) Check(runner *tflint.Runner) error {
 
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
-	for _, output := range runner.TFConfig.Module.Outputs {
-		if output.Description == "" {
+	body, diags := runner.GetModuleContent(&hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type:       "output",
+				LabelNames: []string{"name"},
+				Body: &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "description"}},
+				},
+			},
+		},
+	}, sdk.GetModuleContentOption{})
+	if diags.HasErrors() {
+		return diags
+	}
+
+	for _, output := range body.Blocks {
+		attr, exists := output.Body.Attributes["description"]
+		if !exists {
 			runner.EmitIssue(
 				r,
-				fmt.Sprintf("`%s` output has no description", output.Name),
-				output.DeclRange,
+				fmt.Sprintf("`%s` output has no description", output.Labels[0]),
+				output.DefRange,
+			)
+			continue
+		}
+
+		var description string
+		diags = gohcl.DecodeExpression(attr.Expr, nil, &description)
+		if diags.HasErrors() {
+			return diags
+		}
+
+		if description == "" {
+			runner.EmitIssue(
+				r,
+				fmt.Sprintf("`%s` output has no description", output.Labels[0]),
+				output.DefRange,
 			)
 		}
 	}

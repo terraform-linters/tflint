@@ -159,7 +159,7 @@ func Test_TerraformUnusedRequiredProvidersRule(t *testing.T) {
 						Filename: "module.tf",
 						Start: hcl.Pos{
 							Line:   4,
-							Column: 14,
+							Column: 7,
 						},
 						End: hcl.Pos{
 							Line:   6,
@@ -196,7 +196,7 @@ func Test_TerraformUnusedRequiredProvidersRule(t *testing.T) {
 						Filename: "module.tf",
 						Start: hcl.Pos{
 							Line:   4,
-							Column: 14,
+							Column: 7,
 						},
 						End: hcl.Pos{
 							Line:   6,
@@ -229,7 +229,7 @@ func Test_TerraformUnusedRequiredProvidersRule(t *testing.T) {
 						Filename: "module.tf",
 						Start: hcl.Pos{
 							Line:   4,
-							Column: 14,
+							Column: 7,
 						},
 						End: hcl.Pos{
 							Line:   6,

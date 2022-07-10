@@ -5,9 +5,8 @@ import (
 	"log"
 
 	"github.com/hashicorp/hcl/v2"
-	"github.com/terraform-linters/tflint/terraform/addrs"
-	"github.com/terraform-linters/tflint/terraform/configs"
-	"github.com/terraform-linters/tflint/terraform/lang"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -15,9 +14,9 @@ import (
 type TerraformUnusedDeclarationsRule struct{}
 
 type declarations struct {
-	Variables     map[string]*configs.Variable
-	DataResources map[string]*configs.Resource
-	Locals        map[string]*configs.Local
+	Variables     map[string]*hclext.Block
+	DataResources map[string]*hclext.Block
+	Locals        map[string]*local
 }
 
 // NewTerraformUnusedDeclarationsRule returns a new rule
@@ -54,8 +53,11 @@ func (r *TerraformUnusedDeclarationsRule) Check(runner *tflint.Runner) error {
 
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
-	decl := r.declarations(runner.TFConfig.Module)
-	err := runner.WalkExpressions(func(expr hcl.Expression) error {
+	decl, err := r.declarations(runner)
+	if err != nil {
+		return err
+	}
+	err = runner.WalkExpressions(func(expr hcl.Expression) error {
 		return r.checkForRefsInExpr(expr, decl)
 	})
 	if err != nil {
@@ -65,65 +67,85 @@ func (r *TerraformUnusedDeclarationsRule) Check(runner *tflint.Runner) error {
 	for _, variable := range decl.Variables {
 		runner.EmitIssue(
 			r,
-			fmt.Sprintf(`variable "%s" is declared but not used`, variable.Name),
-			variable.DeclRange,
+			fmt.Sprintf(`variable "%s" is declared but not used`, variable.Labels[0]),
+			variable.DefRange,
 		)
 	}
 	for _, data := range decl.DataResources {
 		runner.EmitIssue(
 			r,
-			fmt.Sprintf(`data "%s" "%s" is declared but not used`, data.Type, data.Name),
-			data.DeclRange,
+			fmt.Sprintf(`data "%s" "%s" is declared but not used`, data.Labels[0], data.Labels[1]),
+			data.DefRange,
 		)
 	}
 	for _, local := range decl.Locals {
 		runner.EmitIssue(
 			r,
-			fmt.Sprintf(`local.%s is declared but not used`, local.Name),
-			local.DeclRange,
+			fmt.Sprintf(`local.%s is declared but not used`, local.name),
+			local.defRange,
 		)
 	}
 
 	return nil
 }
 
-func (r *TerraformUnusedDeclarationsRule) declarations(module *configs.Module) *declarations {
+func (r *TerraformUnusedDeclarationsRule) declarations(runner *tflint.Runner) (*declarations, error) {
 	decl := &declarations{
-		Variables:     make(map[string]*configs.Variable, len(module.Variables)),
-		DataResources: make(map[string]*configs.Resource, len(module.DataResources)),
-		Locals:        make(map[string]*configs.Local, len(module.Locals)),
+		Variables:     map[string]*hclext.Block{},
+		DataResources: map[string]*hclext.Block{},
+		Locals:        map[string]*local{},
 	}
 
-	for k, v := range module.Variables {
-		decl.Variables[k] = v
-	}
-	for k, v := range module.DataResources {
-		decl.DataResources[k] = v
-	}
-	for k, v := range module.Locals {
-		decl.Locals[k] = v
+	body, diags := runner.GetModuleContent(&hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type:       "variable",
+				LabelNames: []string{"name"},
+				Body:       &hclext.BodySchema{},
+			},
+			{
+				Type:       "data",
+				LabelNames: []string{"type", "name"},
+				Body:       &hclext.BodySchema{},
+			},
+		},
+	}, sdk.GetModuleContentOption{})
+	if diags.HasErrors() {
+		return decl, diags
 	}
 
-	return decl
+	for _, block := range body.Blocks {
+		if block.Type == "variable" {
+			decl.Variables[block.Labels[0]] = block
+		} else {
+			decl.DataResources[fmt.Sprintf("data.%s.%s", block.Labels[0], block.Labels[1])] = block
+		}
+	}
+
+	locals, diags := getLocals(runner)
+	if diags.HasErrors() {
+		return decl, diags
+	}
+	decl.Locals = locals
+
+	return decl, nil
 }
 
 func (r *TerraformUnusedDeclarationsRule) checkForRefsInExpr(expr hcl.Expression, decl *declarations) error {
-	refs, diags := lang.ReferencesInExpr(expr)
+	refs, diags := referencesInExpr(expr)
 	if diags.HasErrors() {
-		log.Printf("[DEBUG] Cannot find references in expression, ignoring: %v", diags.Err())
+		log.Printf("[DEBUG] Cannot find references in expression, ignoring: %v", diags)
 		return nil
 	}
 
 	for _, ref := range refs {
-		switch sub := ref.Subject.(type) {
-		case addrs.InputVariable:
-			delete(decl.Variables, sub.Name)
-		case addrs.LocalValue:
-			delete(decl.Locals, sub.Name)
-		case addrs.Resource:
+		switch sub := ref.subject.(type) {
+		case inputVariableReference:
+			delete(decl.Variables, sub.name)
+		case localValueReference:
+			delete(decl.Locals, sub.name)
+		case dataResourceReference:
 			delete(decl.DataResources, sub.String())
-		case addrs.ResourceInstance:
-			delete(decl.DataResources, sub.Resource.String())
 		}
 	}
 

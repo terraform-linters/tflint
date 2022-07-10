@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/terraform-linters/tflint/terraform/configs"
+	"github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -45,51 +45,53 @@ func (r *TerraformUnusedRequiredProvidersRule) Check(runner *tflint.Runner) erro
 
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
-	for _, required := range runner.TFConfig.Module.ProviderRequirements.RequiredProviders {
-		r.checkProvider(runner, required)
+	providerRefs, diags := getProviderRefs(runner)
+	if diags.HasErrors() {
+		return diags
 	}
 
-	return nil
-}
-
-func (r *TerraformUnusedRequiredProvidersRule) checkProvider(runner *tflint.Runner, required *configs.RequiredProvider) {
-	for _, resource := range runner.TFConfig.Module.ManagedResources {
-		if r.usesProvider(resource, required) {
-			return
+	requiredProviders := hcl.Attributes{}
+	for _, file := range runner.Files() {
+		content, _, schemaDiags := file.Body.PartialContent(&hcl.BodySchema{
+			Blocks: []hcl.BlockHeaderSchema{{Type: "terraform"}},
+		})
+		diags = diags.Extend(schemaDiags)
+		if diags.HasErrors() {
+			continue
 		}
-	}
 
-	for _, resource := range runner.TFConfig.Module.DataResources {
-		if r.usesProvider(resource, required) {
-			return
-		}
-	}
+		for _, block := range content.Blocks {
+			content, _, schemaDiags = block.Body.PartialContent(&hcl.BodySchema{
+				Blocks: []hcl.BlockHeaderSchema{{Type: "required_providers"}},
+			})
+			diags = diags.Extend(schemaDiags)
+			if diags.HasErrors() {
+				continue
+			}
 
-	for _, provider := range runner.TFConfig.Module.ProviderConfigs {
-		if required.Name == provider.Name {
-			return
-		}
-	}
-
-	for _, module := range runner.TFConfig.Module.ModuleCalls {
-		for _, provider := range module.Providers {
-			if provider.InParent.Name == required.Name {
-				return
+			for _, block := range content.Blocks {
+				var attrDiags hcl.Diagnostics
+				requiredProviders, attrDiags = block.Body.JustAttributes()
+				diags = diags.Extend(attrDiags)
+				if diags.HasErrors() {
+					continue
+				}
 			}
 		}
 	}
-
-	runner.EmitIssue(
-		r,
-		fmt.Sprintf("provider '%s' is declared in required_providers but not used by the module", required.Name),
-		required.DeclRange,
-	)
-}
-
-func (r *TerraformUnusedRequiredProvidersRule) usesProvider(resource *configs.Resource, required *configs.RequiredProvider) bool {
-	if resource.ProviderConfigRef != nil {
-		return resource.ProviderConfigRef.Name == required.Name
+	if diags.HasErrors() {
+		return diags
 	}
 
-	return resource.Provider.Type == required.Name
+	for _, required := range requiredProviders {
+		if _, exists := providerRefs[required.Name]; !exists {
+			runner.EmitIssue(
+				r,
+				fmt.Sprintf("provider '%s' is declared in required_providers but not used by the module", required.Name),
+				required.Range,
+			)
+		}
+	}
+
+	return nil
 }

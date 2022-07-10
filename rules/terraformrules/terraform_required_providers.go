@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/hashicorp/hcl/v2"
-	"github.com/terraform-linters/tflint/terraform/configs"
+	tfaddr "github.com/hashicorp/terraform-registry-address"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
+	"github.com/zclconf/go-cty/cty"
 )
 
 // TerraformRequiredProvidersRule checks whether Terraform sets version constraints for all configured providers
@@ -46,49 +48,109 @@ func (r *TerraformRequiredProvidersRule) Check(runner *tflint.Runner) error {
 
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
-	providers := make(map[string]hcl.Range)
-	module := runner.TFConfig.Module
+	body, diags := runner.GetModuleContent(&hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type:       "provider",
+				LabelNames: []string{"name"},
+				Body: &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{
+						{Name: "version"},
+					},
+				},
+			},
+		},
+	}, sdk.GetModuleContentOption{})
+	if diags.HasErrors() {
+		return diags
+	}
 
-	for _, provider := range module.ProviderConfigs {
-		if _, ok := providers[provider.Name]; !ok {
-			providers[provider.Name] = provider.DeclRange
-		}
-
-		if provider.Version.Required != nil {
+	for _, provider := range body.Blocks {
+		if _, exists := provider.Body.Attributes["version"]; exists {
 			runner.EmitIssue(
 				r,
-				fmt.Sprintf(`%s: version constraint should be specified via "required_providers"`, provider.Addr().String()),
-				provider.DeclRange,
+				`provider version constraint should be specified via "required_providers"`,
+				provider.DefRange,
 			)
 		}
 	}
 
-	providers = providerResourceRanges(providers, module.ManagedResources)
-	providers = providerResourceRanges(providers, module.DataResources)
+	providerRefs, diags := getProviderRefs(runner)
+	if diags.HasErrors() {
+		return diags
+	}
 
-	for name, decl := range providers {
-		if provider, ok := module.ProviderRequirements.RequiredProviders[name]; !ok || provider.Requirement.Required == nil {
-			runner.EmitIssue(r, fmt.Sprintf(`Missing version constraint for provider "%s" in "required_providers"`, name), decl)
+	requiredProvidersSchema := []hclext.AttributeSchema{}
+	for name := range providerRefs {
+		requiredProvidersSchema = append(requiredProvidersSchema, hclext.AttributeSchema{Name: name})
+	}
+
+	body, diags = runner.GetModuleContent(&hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type: "terraform",
+				Body: &hclext.BodySchema{
+					Blocks: []hclext.BlockSchema{
+						{
+							Type: "required_providers",
+							Body: &hclext.BodySchema{
+								Attributes: requiredProvidersSchema,
+							},
+						},
+					},
+				},
+			},
+		},
+	}, sdk.GetModuleContentOption{})
+	if diags.HasErrors() {
+		return diags
+	}
+
+	requiredProviders := hclext.Attributes{}
+	for _, terraform := range body.Blocks {
+		for _, requiredProvidersBlock := range terraform.Body.Blocks {
+			requiredProviders = requiredProvidersBlock.Body.Attributes
+		}
+	}
+
+	for name, ref := range providerRefs {
+		if name == "terraform" {
+			// "terraform" provider is a builtin provider
+			// @see https://github.com/hashicorp/terraform/blob/v1.2.5/internal/addrs/provider.go#L106-L112
+			continue
+		}
+
+		provider, exists := requiredProviders[name]
+		if !exists {
+			runner.EmitIssue(r, fmt.Sprintf(`Missing version constraint for provider "%s" in "required_providers"`, name), ref.defRange)
+			continue
+		}
+
+		val, diags := provider.Expr.Value(nil)
+		if diags.HasErrors() {
+			return diags
+		}
+		// Look for a single static string, in case we have the legacy version-only
+		// format in the configuration.
+		if val.Type() == cty.String {
+			continue
+		}
+
+		vm := val.AsValueMap()
+		if _, exists := vm["version"]; !exists {
+			if source, exists := vm["source"]; exists {
+				p, err := tfaddr.ParseProviderSource(source.AsString())
+				if err != nil {
+					return err
+				}
+
+				if p.IsBuiltIn() {
+					continue
+				}
+			}
+			runner.EmitIssue(r, fmt.Sprintf(`Missing version constraint for provider "%s" in "required_providers"`, name), ref.defRange)
 		}
 	}
 
 	return nil
-}
-
-func providerResourceRanges(providers map[string]hcl.Range, resources map[string]*configs.Resource) map[string]hcl.Range {
-	for _, resource := range resources {
-		provider := resource.Provider
-
-		if provider.IsBuiltIn() {
-			continue
-		}
-
-		if _, ok := providers[provider.Type]; ok {
-			continue
-		}
-
-		providers[resource.Provider.Type] = resource.DeclRange
-	}
-
-	return providers
 }
