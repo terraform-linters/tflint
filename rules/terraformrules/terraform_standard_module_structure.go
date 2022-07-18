@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 
 	"github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -52,21 +54,43 @@ func (r *TerraformStandardModuleStructureRule) Check(runner *tflint.Runner) erro
 
 	log.Printf("[TRACE] Check `%s` rule for `%s` runner", r.Name(), runner.TFConfigPath())
 
-	r.checkFiles(runner)
-	r.checkVariables(runner)
-	r.checkOutputs(runner)
+	body, diags := runner.GetModuleContent(&hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type:       "variable",
+				LabelNames: []string{"name"},
+				Body:       &hclext.BodySchema{},
+			},
+			{
+				Type:       "output",
+				LabelNames: []string{"name"},
+				Body:       &hclext.BodySchema{},
+			},
+		},
+	}, sdk.GetModuleContentOption{})
+	if diags.HasErrors() {
+		return diags
+	}
+
+	blocks := body.Blocks.ByType()
+
+	r.checkFiles(runner, body.Blocks)
+	r.checkVariables(runner, blocks["variable"])
+	r.checkOutputs(runner, blocks["output"])
 
 	return nil
 }
 
-func (r *TerraformStandardModuleStructureRule) checkFiles(runner *tflint.Runner) {
+func (r *TerraformStandardModuleStructureRule) checkFiles(runner *tflint.Runner, blocks hclext.Blocks) {
 	if r.onlyJSON(runner) {
 		return
 	}
 
 	f := runner.Files()
+	var dir string
 	files := make(map[string]*hcl.File, len(f))
 	for name, file := range f {
+		dir = filepath.Dir(name)
 		files[filepath.Base(name)] = file
 	}
 
@@ -77,54 +101,54 @@ func (r *TerraformStandardModuleStructureRule) checkFiles(runner *tflint.Runner)
 			r,
 			fmt.Sprintf("Module should include a %s file as the primary entrypoint", filenameMain),
 			hcl.Range{
-				Filename: filepath.Join(runner.TFConfig.Module.SourceDir, filenameMain),
+				Filename: filepath.Join(dir, filenameMain),
 				Start:    hcl.InitialPos,
 			},
 		)
 	}
 
-	if files[filenameVariables] == nil && len(runner.TFConfig.Module.Variables) == 0 {
+	if files[filenameVariables] == nil && len(blocks.ByType()["variable"]) == 0 {
 		runner.EmitIssue(
 			r,
 			fmt.Sprintf("Module should include an empty %s file", filenameVariables),
 			hcl.Range{
-				Filename: filepath.Join(runner.TFConfig.Module.SourceDir, filenameVariables),
+				Filename: filepath.Join(dir, filenameVariables),
 				Start:    hcl.InitialPos,
 			},
 		)
 	}
 
-	if files[filenameOutputs] == nil && len(runner.TFConfig.Module.Outputs) == 0 {
+	if files[filenameOutputs] == nil && len(blocks.ByType()["output"]) == 0 {
 		runner.EmitIssue(
 			r,
 			fmt.Sprintf("Module should include an empty %s file", filenameOutputs),
 			hcl.Range{
-				Filename: filepath.Join(runner.TFConfig.Module.SourceDir, filenameOutputs),
+				Filename: filepath.Join(dir, filenameOutputs),
 				Start:    hcl.InitialPos,
 			},
 		)
 	}
 }
 
-func (r *TerraformStandardModuleStructureRule) checkVariables(runner *tflint.Runner) {
-	for _, variable := range runner.TFConfig.Module.Variables {
-		if filename := variable.DeclRange.Filename; r.shouldMove(filename, filenameVariables) {
+func (r *TerraformStandardModuleStructureRule) checkVariables(runner *tflint.Runner, variables hclext.Blocks) {
+	for _, variable := range variables {
+		if filename := variable.DefRange.Filename; r.shouldMove(filename, filenameVariables) {
 			runner.EmitIssue(
 				r,
-				fmt.Sprintf("variable %q should be moved from %s to %s", variable.Name, filename, filenameVariables),
-				variable.DeclRange,
+				fmt.Sprintf("variable %q should be moved from %s to %s", variable.Labels[0], filename, filenameVariables),
+				variable.DefRange,
 			)
 		}
 	}
 }
 
-func (r *TerraformStandardModuleStructureRule) checkOutputs(runner *tflint.Runner) {
-	for _, variable := range runner.TFConfig.Module.Outputs {
-		if filename := variable.DeclRange.Filename; r.shouldMove(filename, filenameOutputs) {
+func (r *TerraformStandardModuleStructureRule) checkOutputs(runner *tflint.Runner, outputs hclext.Blocks) {
+	for _, output := range outputs {
+		if filename := output.DefRange.Filename; r.shouldMove(filename, filenameOutputs) {
 			runner.EmitIssue(
 				r,
-				fmt.Sprintf("output %q should be moved from %s to %s", variable.Name, filename, filenameOutputs),
-				variable.DeclRange,
+				fmt.Sprintf("output %q should be moved from %s to %s", output.Labels[0], filename, filenameOutputs),
+				output.DefRange,
 			)
 		}
 	}

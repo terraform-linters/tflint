@@ -190,7 +190,7 @@ provider "template" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewTerraformRequiredProvidersRule(),
-					Message: `provider.template: version constraint should be specified via "required_providers"`,
+					Message: `provider version constraint should be specified via "required_providers"`,
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start: hcl.Pos{
@@ -225,7 +225,7 @@ provider "template" {
 			Expected: tflint.Issues{
 				{
 					Rule:    NewTerraformRequiredProvidersRule(),
-					Message: `provider.template.foo: version constraint should be specified via "required_providers"`,
+					Message: `provider version constraint should be specified via "required_providers"`,
 					Range: hcl.Range{
 						Filename: "module.tf",
 						Start: hcl.Pos{
@@ -261,6 +261,70 @@ terraform {
 resource "test_assertions" "foo" {}
 `,
 			Expected: tflint.Issues{},
+		},
+		{
+			Name: "resource provider ref",
+			Content: `
+terraform {
+  required_providers {
+    google = {
+      version = "~> 4.27.0"
+	}
+  }
+}
+
+resource "google_compute_instance" "foo" {
+  provider = google-beta
+}`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformRequiredProvidersRule(),
+					Message: `Missing version constraint for provider "google-beta" in "required_providers"`,
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start: hcl.Pos{
+							Line:   10,
+							Column: 1,
+						},
+						End: hcl.Pos{
+							Line:   10,
+							Column: 41,
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "resource provider ref as string",
+			Content: `
+terraform {
+  required_providers {
+    google = {
+      version = "~> 4.27.0"
+    }
+  }
+}
+
+resource "google_compute_instance" "foo" {
+  provider = "google-beta"
+}`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformRequiredProvidersRule(),
+					Message: `Missing version constraint for provider "google-beta" in "required_providers"`,
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start: hcl.Pos{
+							Line:   10,
+							Column: 1,
+						},
+						End: hcl.Pos{
+							Line:   10,
+							Column: 41,
+						},
+					},
+				},
+			},
 		},
 	}
 

@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -93,24 +95,48 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 
 	var nameValidator *NameValidator
 
+	body, diags := runner.GetModuleContent(&hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type:       "data",
+				LabelNames: []string{"type", "name"},
+				Body:       &hclext.BodySchema{},
+			},
+			{
+				Type:       "module",
+				LabelNames: []string{"name"},
+				Body:       &hclext.BodySchema{},
+			},
+			{
+				Type:       "output",
+				LabelNames: []string{"name"},
+				Body:       &hclext.BodySchema{},
+			},
+			{
+				Type:       "resource",
+				LabelNames: []string{"type", "name"},
+				Body:       &hclext.BodySchema{},
+			},
+			{
+				Type:       "variable",
+				LabelNames: []string{"name"},
+				Body:       &hclext.BodySchema{},
+			},
+		},
+	}, sdk.GetModuleContentOption{})
+	if diags.HasErrors() {
+		return diags
+	}
+	blocks := body.Blocks.ByType()
+
 	// data
 	dataBlockName := "data"
 	nameValidator, err = config.Data.getNameValidator(defaultNameValidator, &config, dataBlockName)
 	if err != nil {
 		return err
 	}
-	for _, target := range runner.TFConfig.Module.DataResources {
-		nameValidator.checkBlock(runner, r, dataBlockName, target.Name, &target.DeclRange)
-	}
-
-	// locals
-	localBlockName := "local value"
-	nameValidator, err = config.Locals.getNameValidator(defaultNameValidator, &config, localBlockName)
-	if err != nil {
-		return err
-	}
-	for _, target := range runner.TFConfig.Module.Locals {
-		nameValidator.checkBlock(runner, r, localBlockName, target.Name, &target.DeclRange)
+	for _, block := range blocks[dataBlockName] {
+		nameValidator.checkBlock(runner, r, dataBlockName, block.Labels[1], &block.DefRange)
 	}
 
 	// modules
@@ -119,8 +145,8 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 	if err != nil {
 		return err
 	}
-	for _, target := range runner.TFConfig.Module.ModuleCalls {
-		nameValidator.checkBlock(runner, r, moduleBlockName, target.Name, &target.DeclRange)
+	for _, block := range blocks[moduleBlockName] {
+		nameValidator.checkBlock(runner, r, moduleBlockName, block.Labels[0], &block.DefRange)
 	}
 
 	// outputs
@@ -129,8 +155,8 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 	if err != nil {
 		return err
 	}
-	for _, target := range runner.TFConfig.Module.Outputs {
-		nameValidator.checkBlock(runner, r, outputBlockName, target.Name, &target.DeclRange)
+	for _, block := range blocks[outputBlockName] {
+		nameValidator.checkBlock(runner, r, outputBlockName, block.Labels[0], &block.DefRange)
 	}
 
 	// resources
@@ -139,8 +165,8 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 	if err != nil {
 		return err
 	}
-	for _, target := range runner.TFConfig.Module.ManagedResources {
-		nameValidator.checkBlock(runner, r, resourceBlockName, target.Name, &target.DeclRange)
+	for _, block := range blocks[resourceBlockName] {
+		nameValidator.checkBlock(runner, r, resourceBlockName, block.Labels[1], &block.DefRange)
 	}
 
 	// variables
@@ -149,8 +175,22 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 	if err != nil {
 		return err
 	}
-	for _, target := range runner.TFConfig.Module.Variables {
-		nameValidator.checkBlock(runner, r, variableBlockName, target.Name, &target.DeclRange)
+	for _, block := range blocks[variableBlockName] {
+		nameValidator.checkBlock(runner, r, variableBlockName, block.Labels[0], &block.DefRange)
+	}
+
+	// locals
+	localBlockName := "local value"
+	nameValidator, err = config.Locals.getNameValidator(defaultNameValidator, &config, localBlockName)
+	if err != nil {
+		return err
+	}
+	locals, diags := getLocals(runner)
+	if diags.HasErrors() {
+		return diags
+	}
+	for name, local := range locals {
+		nameValidator.checkBlock(runner, r, localBlockName, name, &local.defRange)
 	}
 
 	return nil
