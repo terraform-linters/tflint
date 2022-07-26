@@ -10,7 +10,7 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/spf13/afero"
-	"github.com/terraform-linters/tflint/terraform/terraform"
+	"github.com/terraform-linters/tflint/terraform"
 )
 
 // TestRunner returns a runner for testing.
@@ -55,16 +55,12 @@ func TestRunnerWithConfig(t *testing.T, files map[string]string, config *Config)
 		dir = dirs[0]
 	}
 
-	cfg, err := loader.LoadConfig(dir)
-	if err != nil {
-		t.Fatal(err)
-	}
-	f, err := loader.Files()
+	configs, err := loader.LoadConfig(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	runner, err := NewRunner(config, f, map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	runner, err := NewRunner(config, map[string]Annotations{}, configs, map[string]*terraform.InputValue{})
 	if err != nil {
 		t.Fatal(err)
 	}

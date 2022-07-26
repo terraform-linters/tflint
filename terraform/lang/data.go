@@ -1,8 +1,8 @@
 package lang
 
 import (
+	"github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/terraform/addrs"
-	"github.com/terraform-linters/tflint/terraform/tfdiags"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -20,7 +20,7 @@ import (
 // cases where it's not possible to even determine a suitable result type,
 // cty.DynamicVal is returned along with errors describing the problem.
 type Data interface {
-	GetPathAttr(addrs.PathAttr, tfdiags.SourceRange) (cty.Value, tfdiags.Diagnostics)
-	GetTerraformAttr(addrs.TerraformAttr, tfdiags.SourceRange) (cty.Value, tfdiags.Diagnostics)
-	GetInputVariable(addrs.InputVariable, tfdiags.SourceRange) (cty.Value, tfdiags.Diagnostics)
+	GetPathAttr(addrs.PathAttr, hcl.Range) (cty.Value, hcl.Diagnostics)
+	GetTerraformAttr(addrs.TerraformAttr, hcl.Range) (cty.Value, hcl.Diagnostics)
+	GetInputVariable(addrs.InputVariable, hcl.Range) (cty.Value, hcl.Diagnostics)
 }

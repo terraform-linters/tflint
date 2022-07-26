@@ -8,8 +8,8 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/terraform/addrs"
-	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/lang"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
@@ -42,13 +42,13 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, wantType cty.Type) (cty.Value
 		return cty.NullVal(cty.NilType), err
 	}
 
-	val, diags := r.ctx.EvaluateExpr(expr, wantType, nil)
+	val, diags := r.ctx.EvaluateExpr(expr, wantType)
 	if diags.HasErrors() {
 		err := fmt.Errorf(
 			"failed to eval an expression in %s:%d; %w",
 			expr.Range().Filename,
 			expr.Range().Start.Line,
-			diags.Err(),
+			diags,
 		)
 		log.Printf("[ERROR] %s", err)
 		return cty.NullVal(cty.NilType), err
@@ -94,7 +94,7 @@ func (r *Runner) EvaluateExpr(expr hcl.Expression, wantType cty.Type) (cty.Value
 func isEvaluableExpr(expr hcl.Expression) (bool, error) {
 	refs, diags := lang.ReferencesInExpr(expr)
 	if diags.HasErrors() {
-		return false, diags.Err()
+		return false, diags
 	}
 	for _, ref := range refs {
 		if !isEvaluableRef(ref) {
@@ -141,7 +141,7 @@ func (r *Runner) isEvaluableResource(resource *hclext.Block) (bool, error) {
 // If `count` is 0 or `for_each` is empty, Terraform will not evaluate the attributes of that module.
 // Terraform doesn't expect to pass null for these attributes (it will cause an error),
 // but we'll treat them as if they were undefined.
-func (r *Runner) isEvaluableModuleCall(moduleCall *configs.ModuleCall) (bool, error) {
+func (r *Runner) isEvaluableModuleCall(moduleCall *terraform.ModuleCall) (bool, error) {
 	if moduleCall.Count != nil {
 		return r.isEvaluableCountArgument(moduleCall.Count)
 	}

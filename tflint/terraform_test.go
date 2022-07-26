@@ -7,21 +7,20 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/terraform-linters/tflint/terraform/configs"
-	"github.com/terraform-linters/tflint/terraform/terraform"
+	"github.com/terraform-linters/tflint/terraform"
 	"github.com/zclconf/go-cty/cty"
 )
 
 func Test_ParseTFVariables(t *testing.T) {
 	cases := []struct {
 		Name     string
-		DeclVars map[string]*configs.Variable
+		DeclVars map[string]*terraform.Variable
 		Vars     []string
 		Expected terraform.InputValues
 	}{
 		{
 			Name:     "undeclared",
-			DeclVars: map[string]*configs.Variable{},
+			DeclVars: map[string]*terraform.Variable{},
 			Vars: []string{
 				"foo=bar",
 				"bar=[\"foo\"]",
@@ -29,25 +28,22 @@ func Test_ParseTFVariables(t *testing.T) {
 			},
 			Expected: terraform.InputValues{
 				"foo": &terraform.InputValue{
-					Value:      cty.StringVal("bar"),
-					SourceType: terraform.ValueFromCLIArg,
+					Value: cty.StringVal("bar"),
 				},
 				"bar": &terraform.InputValue{
-					Value:      cty.StringVal("[\"foo\"]"),
-					SourceType: terraform.ValueFromCLIArg,
+					Value: cty.StringVal("[\"foo\"]"),
 				},
 				"baz": &terraform.InputValue{
-					Value:      cty.StringVal("{ foo=\"bar\" }"),
-					SourceType: terraform.ValueFromCLIArg,
+					Value: cty.StringVal("{ foo=\"bar\" }"),
 				},
 			},
 		},
 		{
 			Name: "declared",
-			DeclVars: map[string]*configs.Variable{
-				"foo": {ParsingMode: configs.VariableParseLiteral},
-				"bar": {ParsingMode: configs.VariableParseHCL},
-				"baz": {ParsingMode: configs.VariableParseHCL},
+			DeclVars: map[string]*terraform.Variable{
+				"foo": {ParsingMode: terraform.VariableParseLiteral},
+				"bar": {ParsingMode: terraform.VariableParseHCL},
+				"baz": {ParsingMode: terraform.VariableParseHCL},
 			},
 			Vars: []string{
 				"foo=bar",
@@ -56,16 +52,13 @@ func Test_ParseTFVariables(t *testing.T) {
 			},
 			Expected: terraform.InputValues{
 				"foo": &terraform.InputValue{
-					Value:      cty.StringVal("bar"),
-					SourceType: terraform.ValueFromCLIArg,
+					Value: cty.StringVal("bar"),
 				},
 				"bar": &terraform.InputValue{
-					Value:      cty.TupleVal([]cty.Value{cty.StringVal("foo")}),
-					SourceType: terraform.ValueFromCLIArg,
+					Value: cty.TupleVal([]cty.Value{cty.StringVal("foo")}),
 				},
 				"baz": &terraform.InputValue{
-					Value:      cty.ObjectVal(map[string]cty.Value{"foo": cty.StringVal("bar")}),
-					SourceType: terraform.ValueFromCLIArg,
+					Value: cty.ObjectVal(map[string]cty.Value{"foo": cty.StringVal("bar")}),
 				},
 			},
 		},
@@ -86,28 +79,28 @@ func Test_ParseTFVariables(t *testing.T) {
 func Test_ParseTFVariables_errors(t *testing.T) {
 	cases := []struct {
 		Name     string
-		DeclVars map[string]*configs.Variable
+		DeclVars map[string]*terraform.Variable
 		Vars     []string
 		Expected string
 	}{
 		{
 			Name:     "invalid format",
-			DeclVars: map[string]*configs.Variable{},
+			DeclVars: map[string]*terraform.Variable{},
 			Vars:     []string{"foo"},
 			Expected: "`foo` is invalid. Variables must be `key=value` format",
 		},
 		{
 			Name: "invalid parsing mode",
-			DeclVars: map[string]*configs.Variable{
-				"foo": {ParsingMode: configs.VariableParseHCL},
+			DeclVars: map[string]*terraform.Variable{
+				"foo": {ParsingMode: terraform.VariableParseHCL},
 			},
 			Vars:     []string{"foo=bar"},
 			Expected: "<value for var.foo>:1,1-4: Variables not allowed; Variables may not be used here.",
 		},
 		{
 			Name: "invalid expression",
-			DeclVars: map[string]*configs.Variable{
-				"foo": {ParsingMode: configs.VariableParseHCL},
+			DeclVars: map[string]*terraform.Variable{
+				"foo": {ParsingMode: terraform.VariableParseHCL},
 			},
 			Vars:     []string{"foo="},
 			Expected: "<value for var.foo>:1,1-1: Missing expression; Expected the start of an expression, but found the end of the file.",
@@ -316,13 +309,13 @@ func Test_getTFWorkspace(t *testing.T) {
 func Test_getTFEnvVariables(t *testing.T) {
 	cases := []struct {
 		Name     string
-		DeclVars map[string]*configs.Variable
+		DeclVars map[string]*terraform.Variable
 		EnvVar   map[string]string
 		Expected terraform.InputValues
 	}{
 		{
 			Name:     "undeclared",
-			DeclVars: map[string]*configs.Variable{},
+			DeclVars: map[string]*terraform.Variable{},
 			EnvVar: map[string]string{
 				"TF_VAR_instance_type": "t2.micro",
 				"TF_VAR_count":         "5",
@@ -331,30 +324,26 @@ func Test_getTFEnvVariables(t *testing.T) {
 			},
 			Expected: terraform.InputValues{
 				"instance_type": &terraform.InputValue{
-					Value:      cty.StringVal("t2.micro"),
-					SourceType: terraform.ValueFromEnvVar,
+					Value: cty.StringVal("t2.micro"),
 				},
 				"count": &terraform.InputValue{
-					Value:      cty.StringVal("5"),
-					SourceType: terraform.ValueFromEnvVar,
+					Value: cty.StringVal("5"),
 				},
 				"list": &terraform.InputValue{
-					Value:      cty.StringVal("[\"foo\"]"),
-					SourceType: terraform.ValueFromEnvVar,
+					Value: cty.StringVal("[\"foo\"]"),
 				},
 				"map": &terraform.InputValue{
-					Value:      cty.StringVal("{foo=\"bar\"}"),
-					SourceType: terraform.ValueFromEnvVar,
+					Value: cty.StringVal("{foo=\"bar\"}"),
 				},
 			},
 		},
 		{
 			Name: "declared",
-			DeclVars: map[string]*configs.Variable{
-				"instance_type": {ParsingMode: configs.VariableParseLiteral},
-				"count":         {ParsingMode: configs.VariableParseHCL},
-				"list":          {ParsingMode: configs.VariableParseHCL},
-				"map":           {ParsingMode: configs.VariableParseHCL},
+			DeclVars: map[string]*terraform.Variable{
+				"instance_type": {ParsingMode: terraform.VariableParseLiteral},
+				"count":         {ParsingMode: terraform.VariableParseHCL},
+				"list":          {ParsingMode: terraform.VariableParseHCL},
+				"map":           {ParsingMode: terraform.VariableParseHCL},
 			},
 			EnvVar: map[string]string{
 				"TF_VAR_instance_type": "t2.micro",
@@ -364,20 +353,16 @@ func Test_getTFEnvVariables(t *testing.T) {
 			},
 			Expected: terraform.InputValues{
 				"instance_type": &terraform.InputValue{
-					Value:      cty.StringVal("t2.micro"),
-					SourceType: terraform.ValueFromEnvVar,
+					Value: cty.StringVal("t2.micro"),
 				},
 				"count": &terraform.InputValue{
-					Value:      cty.NumberIntVal(5),
-					SourceType: terraform.ValueFromEnvVar,
+					Value: cty.NumberIntVal(5),
 				},
 				"list": &terraform.InputValue{
-					Value:      cty.TupleVal([]cty.Value{cty.StringVal("foo")}),
-					SourceType: terraform.ValueFromEnvVar,
+					Value: cty.TupleVal([]cty.Value{cty.StringVal("foo")}),
 				},
 				"map": &terraform.InputValue{
-					Value:      cty.ObjectVal(map[string]cty.Value{"foo": cty.StringVal("bar")}),
-					SourceType: terraform.ValueFromEnvVar,
+					Value: cty.ObjectVal(map[string]cty.Value{"foo": cty.StringVal("bar")}),
 				},
 			},
 		},
@@ -407,14 +392,14 @@ func Test_getTFEnvVariables(t *testing.T) {
 func Test_getTFEnvVariables_errors(t *testing.T) {
 	cases := []struct {
 		Name     string
-		DeclVars map[string]*configs.Variable
+		DeclVars map[string]*terraform.Variable
 		Env      map[string]string
 		Expected string
 	}{
 		{
 			Name: "invalid parsing mode",
-			DeclVars: map[string]*configs.Variable{
-				"foo": {ParsingMode: configs.VariableParseHCL},
+			DeclVars: map[string]*terraform.Variable{
+				"foo": {ParsingMode: terraform.VariableParseHCL},
 			},
 			Env: map[string]string{
 				"TF_VAR_foo": "bar",
@@ -423,8 +408,8 @@ func Test_getTFEnvVariables_errors(t *testing.T) {
 		},
 		{
 			Name: "invalid expression",
-			DeclVars: map[string]*configs.Variable{
-				"foo": {ParsingMode: configs.VariableParseHCL},
+			DeclVars: map[string]*terraform.Variable{
+				"foo": {ParsingMode: terraform.VariableParseHCL},
 			},
 			Env: map[string]string{
 				"TF_VAR_foo": `{"bar": "baz"`,

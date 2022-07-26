@@ -1,15 +1,12 @@
 package lang
 
 import (
-	"fmt"
-
 	"github.com/hashicorp/hcl/v2/ext/tryfunc"
 	ctyyaml "github.com/zclconf/go-cty-yaml"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/function"
 	"github.com/zclconf/go-cty/cty/function/stdlib"
 
-	"github.com/terraform-linters/tflint/terraform/experiments"
 	"github.com/terraform-linters/tflint/terraform/lang/funcs"
 )
 
@@ -56,7 +53,7 @@ func (s *Scope) Functions() map[string]function.Function {
 			"concat":           stdlib.ConcatFunc,
 			"contains":         stdlib.ContainsFunc,
 			"csvdecode":        stdlib.CSVDecodeFunc,
-			"defaults":         s.experimentalFunction(experiments.ModuleVariableOptionalAttrs, funcs.DefaultsFunc),
+			"defaults":         funcs.DefaultsFunc,
 			"dirname":          funcs.DirnameFunc,
 			"distinct":         stdlib.DistinctFunc,
 			"element":          stdlib.ElementFunc,
@@ -163,33 +160,4 @@ func (s *Scope) Functions() map[string]function.Function {
 	s.funcsLock.Unlock()
 
 	return s.funcs
-}
-
-// experimentalFunction checks whether the given experiment is enabled for
-// the recieving scope. If so, it will return the given function verbatim.
-// If not, it will return a placeholder function that just returns an
-// error explaining that the function requires the experiment to be enabled.
-func (s *Scope) experimentalFunction(experiment experiments.Experiment, fn function.Function) function.Function {
-	if s.activeExperiments.Has(experiment) {
-		return fn
-	}
-
-	err := fmt.Errorf(
-		"this function is experimental and available only when the experiment keyword %s is enabled for the current module",
-		experiment.Keyword(),
-	)
-
-	return function.New(&function.Spec{
-		Params:   fn.Params(),
-		VarParam: fn.VarParam(),
-		Type: func(args []cty.Value) (cty.Type, error) {
-			return cty.DynamicPseudoType, err
-		},
-		Impl: func(args []cty.Value, retType cty.Type) (cty.Value, error) {
-			// It would be weird to get here because the Type function always
-			// fails, but we'll return an error here too anyway just to be
-			// robust.
-			return cty.DynamicVal, err
-		},
-	})
 }

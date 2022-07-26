@@ -5,18 +5,14 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
-	"sort"
-	"strings"
-	"sync"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/terraform/addrs"
-	"github.com/terraform-linters/tflint/terraform/configs"
 	"github.com/terraform-linters/tflint/terraform/lang"
-	"github.com/terraform-linters/tflint/terraform/terraform"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -24,19 +20,15 @@ import (
 // For variables interplation, it has Terraform eval context.
 // After checking, it accumulates results as issues.
 type Runner struct {
-	TFConfig *configs.Config
+	TFConfig *terraform.Config
 	Issues   Issues
 
-	ctx         terraform.EvalContext
-	files       map[string]*hcl.File
+	ctx         *terraform.Evaluator
 	annotations map[string]Annotations
 	config      *Config
 	currentExpr hcl.Expression
 	modVars     map[string]*moduleVariable
 
-	moduleSources         map[string][]byte
-	primaries             []*hcl.File
-	overrides             []*hcl.File
 	earlyDecodedResources map[string]map[string]*hclext.Block
 }
 
@@ -50,7 +42,7 @@ type Rule interface {
 // NewRunner returns new TFLint runner
 // It prepares built-in context (workpace metadata, variables) from
 // received `configs.Config` and `terraform.InputValues`
-func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotations, cfg *configs.Config, variables ...terraform.InputValues) (*Runner, error) {
+func NewRunner(c *Config, ants map[string]Annotations, cfg *terraform.Config, variables ...terraform.InputValues) (*Runner, error) {
 	path := "root"
 	if !cfg.Path.IsRoot() {
 		path = cfg.Path.String()
@@ -61,87 +53,25 @@ func NewRunner(c *Config, files map[string]*hcl.File, ants map[string]Annotation
 	if diags.HasErrors() {
 		return nil, diags
 	}
-	ctx := terraform.BuiltinEvalContext{
-		Evaluator: &terraform.Evaluator{
-			Meta: &terraform.ContextMeta{
-				Env: getTFWorkspace(),
-			},
-			Config:             cfg.Root,
-			VariableValues:     variableValues,
-			VariableValuesLock: &sync.Mutex{},
-		},
+	ctx := &terraform.Evaluator{
+		Meta:           &terraform.ContextMeta{Env: getTFWorkspace()},
+		ModulePath:     cfg.Path.UnkeyedInstanceShim(),
+		Config:         cfg.Root,
+		VariableValues: variableValues,
 	}
-
-	sources := map[string][]byte{}
-	// Classify HCL files
-	primaries := []*hcl.File{}
-	overrides := []*hcl.File{}
-	for name, f := range files {
-		if filepath.Dir(name) != filepath.Clean(cfg.Module.SourceDir) {
-			continue
-		}
-
-		sources[name] = f.Bytes
-		if name == "override.tf" || name == "override.tf.json" || strings.HasSuffix(name, "_override.tf") || strings.HasSuffix(name, "_override.tf.json") {
-			overrides = append(overrides, f)
-		} else {
-			primaries = append(primaries, f)
-		}
-	}
-	sort.Slice(overrides, func(i, j int) bool {
-		return overrides[i].Body.MissingItemRange().Filename < overrides[j].Body.MissingItemRange().Filename
-	})
 
 	runner := &Runner{
 		TFConfig: cfg,
 		Issues:   Issues{},
 
-		// TODO: As described in the godoc for UnkeyedInstanceShim,
-		// it will need to be replaced now that module.for_each is supported
-		ctx:         ctx.WithPath(cfg.Path.UnkeyedInstanceShim()),
-		files:       files,
+		ctx:         ctx,
 		annotations: ants,
 		config:      c,
 
-		moduleSources:         sources,
-		primaries:             primaries,
-		overrides:             overrides,
 		earlyDecodedResources: map[string]map[string]*hclext.Block{},
 	}
 
-	// Decode resource with count/for_each early
-	bodyS := &hclext.BodySchema{
-		Blocks: []hclext.BlockSchema{
-			{
-				Type:       "resource",
-				LabelNames: []string{"type", "name"},
-				Body: &hclext.BodySchema{
-					Attributes: []hclext.AttributeSchema{
-						{Name: "count"},
-						{Name: "for_each"},
-					},
-				},
-			},
-		},
-	}
-	content := &hclext.BodyContent{}
-	for _, f := range primaries {
-		c, d := hclext.PartialContent(f.Body, bodyS)
-		diags = diags.Extend(d)
-		for name, attr := range c.Attributes {
-			content.Attributes[name] = attr
-		}
-		content.Blocks = append(content.Blocks, c.Blocks...)
-	}
-	for _, f := range overrides {
-		c, d := hclext.PartialContent(f.Body, bodyS)
-		diags = diags.Extend(d)
-		for name, attr := range c.Attributes {
-			content.Attributes[name] = attr
-		}
-		content.Blocks = overrideBlocks(content.Blocks, c.Blocks)
-	}
-	for _, resource := range content.Blocks {
+	for _, resource := range runner.TFConfig.Module.Resources {
 		evaluable, err := runner.isEvaluableResource(resource)
 		if err != nil {
 			return runner, err
@@ -190,41 +120,49 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 			continue
 		}
 
-		attributes, diags := moduleCall.Config.JustAttributes()
+		moduleCallSchema := &hclext.BodySchema{
+			Blocks: []hclext.BlockSchema{
+				{
+					Type:       "module",
+					LabelNames: []string{"name"},
+					Body: &hclext.BodySchema{
+						Attributes: []hclext.AttributeSchema{},
+					},
+				},
+			},
+		}
+		for _, v := range cfg.Module.Variables {
+			attr := hclext.AttributeSchema{Name: v.Name}
+			moduleCallSchema.Blocks[0].Body.Attributes = append(moduleCallSchema.Blocks[0].Body.Attributes, attr)
+		}
+
+		moduleCalls, diags := parent.TFConfig.Module.PartialContent(moduleCallSchema)
 		if diags.HasErrors() {
-			var causeErr error
-			if diags[0].Subject == nil {
-				// HACK: When Subject is nil, it outputs unintended message, so it replaces with actual file.
-				causeErr = errors.New(strings.Replace(diags.Error(), "<nil>: ", "", 1))
-			} else {
-				causeErr = diags
+			return runners, diags
+		}
+		var moduleCallBody *hclext.BodyContent
+		for _, block := range moduleCalls.Blocks {
+			if moduleCall.Name == block.Labels[0] {
+				moduleCallBody = block.Body
 			}
-			err := fmt.Errorf(
-				"attribute of module not allowed was found in %s:%d; %w",
-				moduleCall.DeclRange.Filename,
-				moduleCall.DeclRange.Start.Line,
-				causeErr,
-			)
-			log.Printf("[ERROR] %s", err)
-			return runners, err
 		}
 
 		modVars := map[string]*moduleVariable{}
-		for varName, rawVar := range cfg.Module.Variables {
-			if attribute, exists := attributes[varName]; exists {
+		for varName, attribute := range moduleCallBody.Attributes {
+			if rawVar, exists := cfg.Module.Variables[varName]; exists {
 				evalauble, err := isEvaluableExpr(attribute.Expr)
 				if err != nil {
 					return runners, err
 				}
 
 				if evalauble {
-					val, diags := parent.ctx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType, nil)
+					val, diags := parent.ctx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType)
 					if diags.HasErrors() {
 						err := fmt.Errorf(
 							"failed to eval an expression in %s:%d; %w",
 							attribute.Expr.Range().Filename,
 							attribute.Expr.Range().Start.Line,
-							diags.Err(),
+							diags,
 						)
 						log.Printf("[ERROR] %s", err)
 						return runners, err
@@ -257,7 +195,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 			}
 		}
 
-		runner, err := NewRunner(parent.config, parent.files, parent.annotations, cfg)
+		runner, err := NewRunner(parent.config, parent.annotations, cfg)
 		if err != nil {
 			return runners, err
 		}
@@ -295,24 +233,10 @@ func (r *Runner) GetModuleContent(bodyS *hclext.BodySchema, opts sdk.GetModuleCo
 	}
 
 	bodyS = appendDynamicBlockSchema(bodyS)
-	content := &hclext.BodyContent{}
-	diags := hcl.Diagnostics{}
 
-	for _, f := range r.primaries {
-		c, d := hclext.PartialContent(f.Body, bodyS)
-		diags = diags.Extend(d)
-		for name, attr := range c.Attributes {
-			content.Attributes[name] = attr
-		}
-		content.Blocks = append(content.Blocks, c.Blocks...)
-	}
-	for _, f := range r.overrides {
-		c, d := hclext.PartialContent(f.Body, bodyS)
-		diags = diags.Extend(d)
-		for name, attr := range c.Attributes {
-			content.Attributes[name] = attr
-		}
-		content.Blocks = overrideBlocks(content.Blocks, c.Blocks)
+	content, diags := r.TFConfig.Module.PartialContent(bodyS)
+	if diags.HasErrors() {
+		return content, diags
 	}
 
 	content = resolveDynamicBlocks(content)
@@ -389,27 +313,6 @@ func resolveDynamicBlocks(content *hclext.BodyContent) *hclext.BodyContent {
 	return out
 }
 
-// overrideBlocks changes the attributes in the passed primary blocks by override blocks recursively.
-func overrideBlocks(primaries, overrides hclext.Blocks) hclext.Blocks {
-	dict := map[string]*hclext.Block{}
-	for _, primary := range primaries {
-		key := fmt.Sprintf("%s[%s]", primary.Type, strings.Join(primary.Labels, ","))
-		dict[key] = primary
-	}
-
-	for _, override := range overrides {
-		key := fmt.Sprintf("%s[%s]", override.Type, strings.Join(override.Labels, ","))
-		if primary, exists := dict[key]; exists {
-			for name, attr := range override.Body.Attributes {
-				primary.Body.Attributes[name] = attr
-			}
-			primary.Body.Blocks = overrideBlocks(primary.Body.Blocks, override.Body.Blocks)
-		}
-	}
-
-	return primaries
-}
-
 // TFConfigPath is a wrapper of addrs.Module
 func (r *Runner) TFConfigPath() string {
 	if r.TFConfig.Path.IsRoot() {
@@ -438,13 +341,13 @@ func (r *Runner) LookupIssues(files ...string) Issues {
 // File returns the raw *hcl.File representation of a Terraform configuration at the specified path,
 // or nil if there path does not match any configuration.
 func (r *Runner) File(path string) *hcl.File {
-	return r.files[path]
+	return r.TFConfig.Module.Files[path]
 }
 
 // Files returns the raw *hcl.File representation of all Terraform configuration in the module directory.
 func (r *Runner) Files() map[string]*hcl.File {
 	result := make(map[string]*hcl.File)
-	for name, file := range r.files {
+	for name, file := range r.TFConfig.Module.Files {
 		if filepath.Dir(name) == filepath.Clean(r.TFConfig.Module.SourceDir) {
 			result[name] = file
 		}
@@ -454,7 +357,7 @@ func (r *Runner) Files() map[string]*hcl.File {
 
 // Sources returns the sources in the module directory.
 func (r *Runner) Sources() map[string][]byte {
-	return r.moduleSources
+	return r.TFConfig.Module.Sources
 }
 
 // EmitIssue builds an issue and accumulates it
@@ -542,12 +445,12 @@ func (r *Runner) listModuleVars(expr hcl.Expression) []*moduleVariable {
 // Therefore, CLI flag input variables must be passed at the end of arguments.
 // This is the responsibility of the caller.
 // See https://learn.hashicorp.com/terraform/getting-started/variables.html#assigning-variables
-func prepareVariableValues(config *configs.Config, cliVars ...terraform.InputValues) (map[string]map[string]cty.Value, hcl.Diagnostics) {
+func prepareVariableValues(config *terraform.Config, cliVars ...terraform.InputValues) (map[string]map[string]cty.Value, hcl.Diagnostics) {
 	moduleKey := config.Path.UnkeyedInstanceShim().String()
 	variableValues := make(map[string]map[string]cty.Value)
 	variableValues[moduleKey] = make(map[string]cty.Value)
 
-	configVars := map[string]*configs.Variable{}
+	configVars := map[string]*terraform.Variable{}
 	for k, v := range config.Module.Variables {
 		configVars[k] = v
 		// If default is not set, Terraform will interactively collect the variable values. Therefore, Evaluator returns the value as it is, even if default is not set.
@@ -574,7 +477,7 @@ func listVarRefs(expr hcl.Expression) map[string]addrs.InputVariable {
 	refs, diags := lang.ReferencesInExpr(expr)
 	if diags.HasErrors() {
 		// Maybe this is bug
-		panic(diags.Err())
+		panic(diags)
 	}
 
 	ret := map[string]addrs.InputVariable{}

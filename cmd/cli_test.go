@@ -13,8 +13,7 @@ import (
 	"github.com/golang/mock/gomock"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/rules"
-	"github.com/terraform-linters/tflint/terraform/configs"
-	"github.com/terraform-linters/tflint/terraform/terraform"
+	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -168,8 +167,7 @@ func TestCLIRun__noIssuesFound(t *testing.T) {
 		}
 
 		loader := tflint.NewMockAbstractLoader(ctrl)
-		loader.EXPECT().LoadConfig(".").Return(configs.NewEmptyConfig(), tc.LoadErr).AnyTimes()
-		loader.EXPECT().Files().Return(map[string]*hcl.File{}, tc.LoadErr).AnyTimes()
+		loader.EXPECT().LoadConfig(".").Return(terraform.NewEmptyConfig(), tc.LoadErr).AnyTimes()
 		loader.EXPECT().LoadAnnotations(".").Return(map[string]tflint.Annotations{}, tc.LoadErr).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, tc.LoadErr).AnyTimes()
 		loader.EXPECT().Sources().Return(map[string][]byte{}).AnyTimes()
@@ -311,8 +309,7 @@ func TestCLIRun__issuesFound(t *testing.T) {
 		}
 
 		loader := tflint.NewMockAbstractLoader(ctrl)
-		loader.EXPECT().LoadConfig(".").Return(configs.NewEmptyConfig(), nil).AnyTimes()
-		loader.EXPECT().Files().Return(map[string]*hcl.File{}, nil).AnyTimes()
+		loader.EXPECT().LoadConfig(".").Return(terraform.NewEmptyConfig(), nil).AnyTimes()
 		loader.EXPECT().LoadAnnotations(".").Return(map[string]tflint.Annotations{}, nil).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, nil).AnyTimes()
 		loader.EXPECT().Sources().Return(map[string][]byte{}).AnyTimes()
@@ -451,8 +448,7 @@ func TestCLIRun__withArguments(t *testing.T) {
 		}
 
 		loader := tflint.NewMockAbstractLoader(ctrl)
-		loader.EXPECT().LoadConfig(tc.Dir).Return(configs.NewEmptyConfig(), nil).AnyTimes()
-		loader.EXPECT().Files().Return(map[string]*hcl.File{}, nil).AnyTimes()
+		loader.EXPECT().LoadConfig(tc.Dir).Return(terraform.NewEmptyConfig(), nil).AnyTimes()
 		loader.EXPECT().LoadAnnotations(tc.Dir).Return(map[string]tflint.Annotations{}, nil).AnyTimes()
 		loader.EXPECT().LoadValuesFiles().Return([]terraform.InputValues{}, nil).AnyTimes()
 		loader.EXPECT().Sources().Return(map[string][]byte{}).AnyTimes()

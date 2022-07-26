@@ -81,46 +81,6 @@ func (k StringKey) Value() cty.Value {
 	return cty.StringVal(string(k))
 }
 
-// InstanceKeyLess returns true if the first given instance key i should sort
-// before the second key j, and false otherwise.
-func InstanceKeyLess(i, j InstanceKey) bool {
-	iTy := instanceKeyType(i)
-	jTy := instanceKeyType(j)
-
-	switch {
-	case i == j:
-		return false
-	case i == NoKey:
-		return true
-	case j == NoKey:
-		return false
-	case iTy != jTy:
-		// The ordering here is arbitrary except that we want NoKeyType
-		// to sort before the others, so we'll just use the enum values
-		// of InstanceKeyType here (where NoKey is zero, sorting before
-		// any other).
-		return uint32(iTy) < uint32(jTy)
-	case iTy == IntKeyType:
-		return int(i.(IntKey)) < int(j.(IntKey))
-	case iTy == StringKeyType:
-		return string(i.(StringKey)) < string(j.(StringKey))
-	default:
-		// Shouldn't be possible to get down here in practice, since the
-		// above is exhaustive.
-		return false
-	}
-}
-
-func instanceKeyType(k InstanceKey) InstanceKeyType {
-	if _, ok := k.(StringKey); ok {
-		return StringKeyType
-	}
-	if _, ok := k.(IntKey); ok {
-		return IntKeyType
-	}
-	return NoKeyType
-}
-
 // InstanceKeyType represents the different types of instance key that are
 // supported. Usually it is sufficient to simply type-assert an InstanceKey
 // value to either IntKey or StringKey, but this type and its values can be
