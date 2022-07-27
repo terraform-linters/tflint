@@ -13,7 +13,7 @@ func Test_TerraformRequiredVersionRule(t *testing.T) {
 		Expected tflint.Issues
 	}{
 		{
-			Name: "no version",
+			Name: "unset",
 			Content: `
 terraform {}
 `,
@@ -25,8 +25,25 @@ terraform {}
 			},
 		},
 		{
-			Name: "version exists",
+			Name: "set",
 			Content: `
+terraform {
+  required_version = "~> 0.12"
+}
+`,
+			Expected: tflint.Issues{},
+		},
+		{
+			Name: "multiple blocks",
+			Content: `
+terraform {
+	cloud {
+		workspaces {
+			name = "foo"
+		}
+	}
+}
+
 terraform {
   required_version = "~> 0.12"
 }
@@ -38,12 +55,16 @@ terraform {
 	rule := NewTerraformRequiredVersionRule()
 
 	for _, tc := range cases {
-		runner := tflint.TestRunner(t, map[string]string{"module.tf": tc.Content})
+		tc := tc
 
-		if err := rule.Check(runner); err != nil {
-			t.Fatalf("Unexpected error occurred: %s", err)
-		}
+		t.Run(tc.Name, func(t *testing.T) {
+			runner := tflint.TestRunner(t, map[string]string{"module.tf": tc.Content})
 
-		tflint.AssertIssues(t, tc.Expected, runner.Issues)
+			if err := rule.Check(runner); err != nil {
+				t.Fatal(err)
+			}
+
+			tflint.AssertIssues(t, tc.Expected, runner.Issues)
+		})
 	}
 }

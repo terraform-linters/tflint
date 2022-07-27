@@ -60,14 +60,19 @@ func (r *TerraformRequiredVersionRule) Check(runner *tflint.Runner) error {
 		return diags
 	}
 
+	var exists bool
+
 	for _, block := range body.Blocks {
-		if _, exists := block.Body.Attributes["required_version"]; !exists {
-			runner.EmitIssue(
-				r,
-				`terraform "required_version" attribute is required`,
-				hcl.Range{},
-			)
-		}
+		_, ok := block.Body.Attributes["required_version"]
+		exists = exists || ok
+	}
+
+	if !exists {
+		runner.EmitIssue(
+			r,
+			`terraform "required_version" attribute is required`,
+			hcl.Range{},
+		)
 	}
 
 	return nil
