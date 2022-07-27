@@ -50,6 +50,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Name:        "override",
 					Default:     cty.StringVal("foo"),
 					Type:        cty.DynamicPseudoType,
+					Nullable:    true,
 					ParsingMode: terraform.VariableParseLiteral,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module.tf"),
@@ -61,6 +62,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Name:        "no_default",
 					Default:     cty.StringVal("bar"),
 					Type:        cty.DynamicPseudoType,
+					Nullable:    true,
 					ParsingMode: terraform.VariableParseLiteral,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module.tf"),
@@ -72,6 +74,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Name:        "unknown",
 					Default:     cty.UnknownVal(cty.DynamicPseudoType),
 					Type:        cty.DynamicPseudoType,
+					Nullable:    true,
 					ParsingMode: terraform.VariableParseLiteral,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module.tf"),
@@ -85,6 +88,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Name:        "override",
 					Default:     cty.StringVal("foo"),
 					Type:        cty.DynamicPseudoType,
+					Nullable:    true,
 					ParsingMode: terraform.VariableParseLiteral,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module1", "resource.tf"),
@@ -96,6 +100,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Name:        "no_default",
 					Default:     cty.StringVal("bar"),
 					Type:        cty.DynamicPseudoType,
+					Nullable:    true,
 					ParsingMode: terraform.VariableParseLiteral,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module1", "resource.tf"),
@@ -107,6 +112,7 @@ func Test_NewModuleRunners_nestedModules(t *testing.T) {
 					Name:        "unknown",
 					Default:     cty.UnknownVal(cty.DynamicPseudoType),
 					Type:        cty.DynamicPseudoType,
+					Nullable:    true,
 					ParsingMode: terraform.VariableParseLiteral,
 					DeclRange: hcl.Range{
 						Filename: filepath.Join("module", "module1", "resource.tf"),

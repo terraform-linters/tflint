@@ -11,6 +11,7 @@ import (
 	"github.com/terraform-linters/tflint/terraform/lang"
 	"github.com/terraform-linters/tflint/terraform/lang/marks"
 	"github.com/zclconf/go-cty/cty"
+	"github.com/zclconf/go-cty/cty/convert"
 )
 
 type ContextMeta struct {
@@ -80,24 +81,33 @@ func (d *evaluationData) GetInputVariable(addr addrs.InputVariable, rng hcl.Rang
 		return cty.UnknownVal(config.Type), diags
 	}
 
-	// d.Evaluator.VariableValues should always contain valid "final values"
-	// for variables, which is to say that they have already had type
-	// conversions, validations, and default value handling applied to them.
-	// Those are the responsibility of the graph notes representing the
-	// variable declarations. Therefore here we just trust that we already
-	// have a correct value.
-
+	// In Terraform, it is the responsibility of the VariableTransformer
+	// to convert the variable to the "final value", including the type conversion.
+	// However, since TFLint does not preprocess variables by Graph Builder,
+	// type conversion and default value are applied by Evaluator as in Terraform v1.1.
+	//
+	// This has some restrictions on the representation of dynamic variables compared
+	// to Terraform, but since TFLint is intended for static analysis, this is often enough.
 	val, isSet := vals[addr.Name]
-	if !isSet {
-		// We should not be able to get here without having a valid value
-		// for every variable, so this always indicates a bug in either
-		// the graph builder (not including all the needed nodes) or in
-		// the graph nodes representing variables.
+	switch {
+	case !isSet:
+		// The config loader will ensure there is a default if the value is not
+		// set at all.
+		val = config.Default
+
+	case val.IsNull() && !config.Nullable && config.Default != cty.NilVal:
+		// If nullable=false a null value will use the configured default.
+		val = config.Default
+	}
+
+	var err error
+	val, err = convert.Convert(val, config.ConstraintType)
+	if err != nil {
 		diags = diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
-			Summary:  `Reference to unresolved input variable`,
-			Detail:   `The final value is missing in Terraform's evaluation context. This is a bug in Terraform; please report it!`,
-			Subject:  rng.Ptr(),
+			Summary:  `Incorrect variable type`,
+			Detail:   fmt.Sprintf(`The resolved value of variable %q is not appropriate: %s.`, addr.Name, err),
+			Subject:  &config.DeclRange,
 		})
 		val = cty.UnknownVal(config.Type)
 	}

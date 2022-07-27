@@ -755,6 +755,67 @@ resource "null_resource" "test" {
 			},
 			Expected: `cty.StringVal("p3.8xlarge")`,
 		},
+		{
+			Name: "optional object attributes",
+			Content: `
+variable "optional_object" {
+  type = object({
+    a = optional(string)
+    b = optional(string)
+  })
+}
+
+resource "null_resource" "test" {
+  key = coalesce(var.optional_object.b, "baz")
+}`,
+			InputValues: []terraform.InputValues{
+				{
+					"optional_object": &terraform.InputValue{
+						Value: cty.ObjectVal(map[string]cty.Value{"a": cty.StringVal("foo")}),
+					},
+				},
+			},
+			Expected: `cty.StringVal("baz")`,
+		},
+		{
+			Name: "nullable value",
+			Content: `
+variable "foo" {
+  default  = "bar"
+}
+
+resource "null_resource" "test" {
+  key = coalesce(var.foo, "baz")
+}`,
+			InputValues: []terraform.InputValues{
+				{
+					"foo": &terraform.InputValue{
+						Value: cty.NullVal(cty.String),
+					},
+				},
+			},
+			Expected: `cty.StringVal("baz")`,
+		},
+		{
+			Name: "non-nullable value",
+			Content: `
+variable "foo" {
+  nullable = false
+  default  = "bar"
+}
+
+resource "null_resource" "test" {
+  key = coalesce(var.foo, "baz")
+}`,
+			InputValues: []terraform.InputValues{
+				{
+					"foo": &terraform.InputValue{
+						Value: cty.NullVal(cty.String),
+					},
+				},
+			},
+			Expected: `cty.StringVal("bar")`,
+		},
 	}
 
 	for _, tc := range cases {

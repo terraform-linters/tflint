@@ -23,6 +23,7 @@ type Variable struct {
 
 	ParsingMode VariableParsingMode
 	Sensitive   bool
+	Nullable    bool
 }
 
 func decodeVairableBlock(block *hclext.Block) (*Variable, hcl.Diagnostics) {
@@ -46,6 +47,15 @@ func decodeVairableBlock(block *hclext.Block) (*Variable, hcl.Diagnostics) {
 	if attr, exists := block.Body.Attributes["sensitive"]; exists {
 		valDiags := gohcl.DecodeExpression(attr.Expr, nil, &v.Sensitive)
 		diags = diags.Extend(valDiags)
+	}
+
+	if attr, exists := block.Body.Attributes["nullable"]; exists {
+		valDiags := gohcl.DecodeExpression(attr.Expr, nil, &v.Nullable)
+		diags = append(diags, valDiags...)
+	} else {
+		// The current default is true, which is subject to change in a future
+		// language edition.
+		v.Nullable = true
 	}
 
 	if attr, exists := block.Body.Attributes["default"]; exists {
@@ -209,6 +219,9 @@ var variableBlockSchema = &hclext.BodySchema{
 		},
 		{
 			Name: "sensitive",
+		},
+		{
+			Name: "nullable",
 		},
 	},
 }
