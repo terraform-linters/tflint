@@ -1,3 +1,32 @@
+## 0.39.0 (2022-07-28)
+
+In this release, the dependencies on Terraform's internal API have been significantly changed. Normally, you should be unlikely to be directly affected by this change, but you may get different results in small details, such as error messages. See the Changes section for more details.
+
+### Changes
+
+- [#1428](https://github.com/terraform-linters/tflint/pull/1428): Replace config loader with a new loader ([@wata727](https://github.com/wata727))
+- [#1433](https://github.com/terraform-linters/tflint/pull/1433): terraformrules: Remove dependencies on Terraform internal packages from rules ([@wata727](https://github.com/wata727))
+
+### Enhancements
+
+- [#1432](https://github.com/terraform-linters/tflint/pull/1432): terraformrules: Walk map/list expressions deeply ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#1445](https://github.com/terraform-linters/tflint/pull/1445): terraform: Finalize variable values in Evaluator ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1421](https://github.com/terraform-linters/tflint/pull/1421): build(deps): Bump github.com/hashicorp/go-getter from 1.6.1 to 1.6.2
+- [#1425](https://github.com/terraform-linters/tflint/pull/1425): build(deps): Bump github.com/hashicorp/hcl/v2 from 2.12.0 to 2.13.0
+- [#1429](https://github.com/terraform-linters/tflint/pull/1429): build(deps): Bump github.com/hashicorp/go-version from 1.5.0 to 1.6.0
+- [#1430](https://github.com/terraform-linters/tflint/pull/1430) [#1433](https://github.com/terraform-linters/tflint/pull/1443): build(deps): Bump sigstore/cosign-installer from 2.4.0 to 2.5.0
+- [#1431](https://github.com/terraform-linters/tflint/pull/1431): Installing on mac m1 ([@caruccio](https://github.com/caruccio))
+- [#1438](https://github.com/terraform-linters/tflint/pull/1438) [#1442](https://github.com/terraform-linters/tflint/pull/1442): build(deps): Bump github.com/spf13/afero from 1.8.2 to 1.9.2
+- [#1439](https://github.com/terraform-linters/tflint/pull/1439): build(deps): Bump golang from 1.18.3-alpine3.15 to 1.18.4-alpine3.15
+- [#1444](https://github.com/terraform-linters/tflint/pull/1444): build(deps): Bump alpine from 3.16.0 to 3.16.1
+- [#1446](https://github.com/terraform-linters/tflint/pull/1446): Bump cosign to v1.10.0  ([@wata727](https://github.com/wata727))
+
 ## 0.38.1 (2022-06-21)
 
 - [#1420](https://github.com/terraform-linters/tflint/pull/1420): Use latest Cosign ([@wata727](https://github.com/wata727))
