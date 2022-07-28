@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/hashicorp/hcl/v2"
 	tfaddr "github.com/hashicorp/terraform-registry-address"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
@@ -126,7 +127,14 @@ func (r *TerraformRequiredProvidersRule) Check(runner *tflint.Runner) error {
 			continue
 		}
 
-		val, diags := provider.Expr.Value(nil)
+		val, diags := provider.Expr.Value(&hcl.EvalContext{
+			Variables: map[string]cty.Value{
+				// configuration_aliases can declare additional provider instances
+				// required provider "foo" could have: configuration_aliases = [foo.a, foo.b]
+				// @see https://www.terraform.io/language/modules/develop/providers#provider-aliases-within-modules
+				name: cty.DynamicVal,
+			},
+		})
 		if diags.HasErrors() {
 			return diags
 		}
