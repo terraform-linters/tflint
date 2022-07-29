@@ -206,6 +206,26 @@ provider "template" {
 			},
 		},
 		{
+			Name: "version set with configuration_aliases",
+			Content: `
+terraform {
+  required_providers {
+    template = {
+			source = "hashicorp/template"
+			version = "~> 2"
+
+			configuration_aliases = [template.alias]
+		}
+  }
+}
+
+data "template_file" "foo" {
+	provider = template.alias
+}
+`,
+			Expected: tflint.Issues{},
+		},
+		{
 			Name: "version set with alias",
 			Content: `
 terraform {
