@@ -1,3 +1,16 @@
+## 0.39.1 (2022-07-29)
+
+### BugFixes
+
+- [#1452](https://github.com/terraform-linters/tflint/pull/1452): terraform_required_version: fix regression with multiple blocks ([@bendrucker](https://github.com/bendrucker))
+- [#1454](https://github.com/terraform-linters/tflint/pull/1454): terraform_required_providers: fix regression with configuration_aliases ([@bendrucker](https://github.com/bendrucker))
+- [#1456](https://github.com/terraform-linters/tflint/pull/1456): Fix panic that occurs when using sensitive count ([@wata727](https://github.com/wata727))
+- [#1458](https://github.com/terraform-linters/tflint/pull/1458): terraformrules: Get module contents with `IncludeNotCreated: true` ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1449](https://github.com/terraform-linters/tflint/pull/1449): Update verification steps for the latest Cosign ([@wata727](https://github.com/wata727))
+
 ## 0.39.0 (2022-07-28)
 
 In this release, the dependencies on Terraform's internal API have been significantly changed. Normally, you should be unlikely to be directly affected by this change, but you may get different results in small details, such as error messages. See the Changes section for more details.
