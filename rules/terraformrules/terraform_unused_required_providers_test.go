@@ -239,6 +239,25 @@ func Test_TerraformUnusedRequiredProvidersRule(t *testing.T) {
 				},
 			},
 		},
+		{
+			Name: "used - unevaluated resource",
+			Content: `
+				terraform {
+					required_providers {
+						null = {
+							source = "hashicorp/null"
+						}
+					}
+				}
+
+				variable "foo" {}
+
+				resource "null_resource" "foo" {
+					count = var.foo
+				}
+			`,
+			Expected: tflint.Issues{},
+		},
 	}
 
 	rule := NewTerraformUnusedRequiredProvidersRule()

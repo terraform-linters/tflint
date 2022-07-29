@@ -56,7 +56,7 @@ func (r *TerraformTypedVariablesRule) Check(runner *tflint.Runner) error {
 				},
 			},
 		},
-	}, sdk.GetModuleContentOption{})
+	}, sdk.GetModuleContentOption{IncludeNotCreated: true})
 	if diags.HasErrors() {
 		return diags
 	}

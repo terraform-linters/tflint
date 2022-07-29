@@ -67,7 +67,7 @@ func (r *TerraformStandardModuleStructureRule) Check(runner *tflint.Runner) erro
 				Body:       &hclext.BodySchema{},
 			},
 		},
-	}, sdk.GetModuleContentOption{})
+	}, sdk.GetModuleContentOption{IncludeNotCreated: true})
 	if diags.HasErrors() {
 		return diags
 	}
