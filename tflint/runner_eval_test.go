@@ -898,6 +898,19 @@ resource "null_resource" "test" {
 			Expected: 0,
 		},
 		{
+			Name: "count is sensitive",
+			Content: `
+variable "foo" {
+  default = 1
+  sensitive = true
+}
+
+resource "null_resource" "test" {
+  count = var.foo
+}`,
+			Expected: 1,
+		},
+		{
 			Name: "count is unevaluable",
 			Content: `
 resource "null_resource" "test" {
