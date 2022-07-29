@@ -109,7 +109,7 @@ func (r *TerraformUnusedDeclarationsRule) declarations(runner *tflint.Runner) (*
 				Body:       &hclext.BodySchema{},
 			},
 		},
-	}, sdk.GetModuleContentOption{})
+	}, sdk.GetModuleContentOption{IncludeNotCreated: true})
 	if diags.HasErrors() {
 		return decl, diags
 	}

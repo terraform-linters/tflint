@@ -123,7 +123,7 @@ func (r *TerraformNamingConventionRule) Check(runner *tflint.Runner) error {
 				Body:       &hclext.BodySchema{},
 			},
 		},
-	}, sdk.GetModuleContentOption{})
+	}, sdk.GetModuleContentOption{IncludeNotCreated: true})
 	if diags.HasErrors() {
 		return diags
 	}

@@ -155,7 +155,7 @@ func getProviderRefs(runner *tflint.Runner) (map[string]*providerRef, hcl.Diagno
 				},
 			},
 		},
-	}, sdk.GetModuleContentOption{})
+	}, sdk.GetModuleContentOption{IncludeNotCreated: true})
 	if diags.HasErrors() {
 		return providerRefs, diags
 	}

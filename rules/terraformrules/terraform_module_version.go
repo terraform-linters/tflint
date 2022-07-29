@@ -62,7 +62,7 @@ func (r *TerraformModuleVersionRule) Check(runner *tflint.Runner) error {
 		return err
 	}
 
-	body, diags := runner.GetModuleContent(moduleCallSchema, sdk.GetModuleContentOption{})
+	body, diags := runner.GetModuleContent(moduleCallSchema, sdk.GetModuleContentOption{IncludeNotCreated: true})
 	if diags.HasErrors() {
 		return diags
 	}
