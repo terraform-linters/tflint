@@ -159,6 +159,7 @@ func (r *Runner) isEvaluableCountArgument(expr hcl.Expression) (bool, error) {
 	if err != nil {
 		return isEvaluableMetaArgumentsOnError(err)
 	}
+	val, _ = val.Unmark()
 
 	count := 1
 	if err := gocty.FromCtyValue(val, &count); err != nil {
