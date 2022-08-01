@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/semver/v3 v3.1.1
 	github.com/agext/levenshtein v1.2.3
 	github.com/apparentlymart/go-cidr v1.1.0
-	github.com/bmatcuk/doublestar v1.1.5
+	github.com/bmatcuk/doublestar v1.3.4
 	github.com/fatih/color v1.13.0
 	github.com/go-test/deep v1.0.8
 	github.com/golang/mock v1.6.0
