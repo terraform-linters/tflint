@@ -98,7 +98,7 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 
 	for _, ruleset := range rulesetPlugin.RuleSets {
 		for _, runner := range runners {
-			err = ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Sources()))
+			err = ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files()))
 			if err != nil {
 				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to check ruleset; %w", err), cli.loader.Sources())
 				return ExitCodeError

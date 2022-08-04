@@ -160,6 +160,13 @@ func (p *Parser) Sources() map[string][]byte {
 	return p.p.Sources()
 }
 
+// Files returns a map of the cached HCL file objects for all files that
+// have been loaded through this parser, with source filenames (as requested
+// when each file was opened) as the keys.
+func (p *Parser) Files() map[string]*hcl.File {
+	return p.p.Files()
+}
+
 // ConfigDirFiles returns lists of the primary and override files configuration
 // files in the given directory.
 //

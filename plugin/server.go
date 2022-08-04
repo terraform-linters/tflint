@@ -15,12 +15,12 @@ import (
 type GRPCServer struct {
 	runner     *tflint.Runner
 	rootRunner *tflint.Runner
-	sources    map[string][]byte
+	files      map[string]*hcl.File
 }
 
 // NewGRPCServer initializes a gRPC server for plugins.
-func NewGRPCServer(runner *tflint.Runner, rootRunner *tflint.Runner, sources map[string][]byte) *GRPCServer {
-	return &GRPCServer{runner: runner, rootRunner: rootRunner, sources: sources}
+func NewGRPCServer(runner *tflint.Runner, rootRunner *tflint.Runner, files map[string]*hcl.File) *GRPCServer {
+	return &GRPCServer{runner: runner, rootRunner: rootRunner, files: files}
 }
 
 // GetModuleContent returns module content based on the passed schema and options.
@@ -37,7 +37,7 @@ func (s *GRPCServer) GetModuleContent(bodyS *hclext.BodySchema, opts sdk.GetModu
 
 // GetFile returns the hcl.File based on passed the file name.
 func (s *GRPCServer) GetFile(name string) (*hcl.File, error) {
-	return s.runner.File(name), nil
+	return s.files[name], nil
 }
 
 // GetFiles returns all hcl.File in the module.
