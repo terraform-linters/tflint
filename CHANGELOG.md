@@ -1,3 +1,13 @@
+## 0.39.2 (2022-08-05)
+
+### BugFixes
+
+- [#1469](https://github.com/terraform-linters/tflint/pull/1469): plugin: Return a file from other modules ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1466](https://github.com/terraform-linters/tflint/pull/1466): workflow(homebrew): update to use personal fork ([@chenrui333](https://github.com/chenrui333))
+
 ## 0.39.1 (2022-07-29)
 
 ### BugFixes
