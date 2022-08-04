@@ -64,11 +64,6 @@ func (cli *CLI) Run(args []string) int {
 		cli.formatter.NoColor = true
 	}
 	level := os.Getenv("TFLINT_LOG")
-	if opts.LogLevel != "" {
-		level = opts.LogLevel
-		// Pass log level to plugin processes
-		os.Setenv("TFLINT_LOG", level)
-	}
 	log.SetOutput(&logutils.LevelFilter{
 		Levels:   []logutils.LogLevel{"TRACE", "DEBUG", "INFO", "WARN", "ERROR"},
 		MinLevel: logutils.LogLevel(strings.ToUpper(level)),
@@ -168,6 +163,9 @@ func unknownOptionHandler(option string, arg flags.SplitArgument, args []string)
 	}
 	if option == "aws-access-key" || option == "aws-secret-key" || option == "aws-profile" || option == "aws-creds-file" || option == "aws-region" {
 		return []string{}, fmt.Errorf("`%s` option was removed in v0.23.0. AWS rules are provided by the AWS plugin, so please configure the plugin instead", option)
+	}
+	if option == "loglevel" {
+		return []string{}, errors.New("`loglevel` option was removed in v0.40.0. Please set `TFLINT_LOG` environment variables instead")
 	}
 	return []string{}, fmt.Errorf("`%s` is unknown option. Please run `tflint --help`", option)
 }

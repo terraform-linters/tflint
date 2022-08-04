@@ -155,6 +155,13 @@ func TestIntegration(t *testing.T) {
 			stderr:  "`aws-region` option was removed in v0.23.0. AWS rules are provided by the AWS plugin, so please configure the plugin instead",
 		},
 		{
+			name:    "removed `--loglevel` option",
+			command: "./tflint --loglevel debug",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "`loglevel` option was removed in v0.40.0. Please set `TFLINT_LOG` environment variables instead",
+		},
+		{
 			name:    "invalid options",
 			command: "./tflint --unknown",
 			dir:     "no_issues",

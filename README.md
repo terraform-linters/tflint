@@ -140,7 +140,6 @@ Application Options:
       --force                                                   Return zero exit status even if issues found
       --color                                                   Enable colorized output
       --no-color                                                Disable colorized output
-      --loglevel=[trace|debug|info|warn|error]                  Change the loglevel
 
 Help Options:
   -h, --help                                                    Show this help message
