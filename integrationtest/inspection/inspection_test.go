@@ -152,6 +152,11 @@ func TestIntegration(t *testing.T) {
 			Command: "tflint --enable-plugin testing --format json",
 			Dir:     "enable-plugin-by-cli",
 		},
+		{
+			Name:    "eval on root context",
+			Command: "tflint --module --format json",
+			Dir:     "eval-on-root-context",
+		},
 	}
 
 	dir, _ := os.Getwd()

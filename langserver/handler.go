@@ -196,7 +196,7 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 			return ret, fmt.Errorf("Failed to apply config to `%s` plugin", name)
 		}
 		for _, runner := range runners {
-			err = ruleset.Check(plugin.NewGRPCServer(runner, runners[len(runners)-1], loader.Sources()))
+			err = ruleset.Check(plugin.NewGRPCServer(runner, runners[len(runners)-1], loader.Files()))
 			if err != nil {
 				return ret, fmt.Errorf("Failed to check ruleset: %w", err)
 			}

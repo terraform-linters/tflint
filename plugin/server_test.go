@@ -26,7 +26,7 @@ resource "aws_instance" "bar" {
 	instance_type = "m5.2xlarge"
 }`})
 
-	server := NewGRPCServer(runner, rootRunner, map[string][]byte{})
+	server := NewGRPCServer(runner, rootRunner, runner.Files())
 
 	tests := []struct {
 		Name string
@@ -128,8 +128,18 @@ resource "aws_instance" "bar" {
 	instance_type = "m5.2xlarge"
 }`,
 	})
+	rootRunner := tflint.TestRunner(t, map[string]string{
+		"test_on_root1.tf": `
+resource "aws_instance" "foo" {
+	instance_type = "t2.nano"
+}`,
+	})
+	files := runner.Files()
+	for name, file := range rootRunner.Files() {
+		files[name] = file
+	}
 
-	server := NewGRPCServer(runner, nil, map[string][]byte{})
+	server := NewGRPCServer(runner, rootRunner, files)
 
 	tests := []struct {
 		Name string
@@ -156,6 +166,14 @@ resource "aws_instance" "bar" {
 			Name: "file not found",
 			Arg:  "test3.tf",
 			Want: "",
+		},
+		{
+			Name: "get file from root module",
+			Arg:  "test_on_root1.tf",
+			Want: `
+resource "aws_instance" "foo" {
+	instance_type = "t2.nano"
+}`,
 		},
 	}
 
@@ -188,7 +206,7 @@ resource "aws_instance" "bar" {
 	instance_type = "m5.2xlarge"
 }`})
 
-	server := NewGRPCServer(runner, rootRunner, map[string][]byte{})
+	server := NewGRPCServer(runner, rootRunner, runner.Files())
 
 	tests := []struct {
 		Name string
@@ -252,7 +270,7 @@ rule "test_in_file" {
 	fileConfig.Merge(cliConfig)
 	runner := tflint.TestRunnerWithConfig(t, map[string]string{}, fileConfig)
 
-	server := NewGRPCServer(runner, nil, map[string][]byte{})
+	server := NewGRPCServer(runner, nil, runner.Files())
 
 	// default error check helper
 	neverHappend := func(err error) bool { return err != nil }
@@ -335,7 +353,7 @@ variable "foo" {
 	default = "baz"
 }`})
 
-	server := NewGRPCServer(runner, rootRunner, map[string][]byte{})
+	server := NewGRPCServer(runner, rootRunner, runner.Files())
 
 	// test util functions
 	hclExpr := func(expr string) hcl.Expression {
@@ -451,7 +469,7 @@ resource "aws_instance" "foo" {
 		t.Run(test.Name, func(t *testing.T) {
 			runner := tflint.TestRunner(t, map[string]string{"main.tf": config})
 
-			server := NewGRPCServer(runner, nil, map[string][]byte{})
+			server := NewGRPCServer(runner, nil, runner.Files())
 
 			err := server.EmitIssue(test.Args())
 			if err != nil {

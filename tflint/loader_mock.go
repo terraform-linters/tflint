@@ -8,6 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	v2 "github.com/hashicorp/hcl/v2"
 	terraform "github.com/terraform-linters/tflint/terraform"
 )
 
@@ -32,6 +33,20 @@ func NewMockAbstractLoader(ctrl *gomock.Controller) *MockAbstractLoader {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockAbstractLoader) EXPECT() *MockAbstractLoaderMockRecorder {
 	return m.recorder
+}
+
+// Files mocks base method.
+func (m *MockAbstractLoader) Files() map[string]*v2.File {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Files")
+	ret0, _ := ret[0].(map[string]*v2.File)
+	return ret0
+}
+
+// Files indicates an expected call of Files.
+func (mr *MockAbstractLoaderMockRecorder) Files() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Files", reflect.TypeOf((*MockAbstractLoader)(nil).Files))
 }
 
 // LoadAnnotations mocks base method.
