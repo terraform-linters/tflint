@@ -83,10 +83,10 @@ func FindPluginPath(config *InstallConfig) (string, error) {
 // getPluginDir returns the base plugin directory.
 // Adopted with the following priorities:
 //
-//   1. `plugin_dir` in a global config
-//   2. `TFLINT_PLUGIN_DIR` environment variable
-//   3. Current directory (./.tflint.d/plugins)
-//   4. Home directory (~/.tflint.d/plugins)
+//  1. `plugin_dir` in a global config
+//  2. `TFLINT_PLUGIN_DIR` environment variable
+//  3. Current directory (./.tflint.d/plugins)
+//  4. Home directory (~/.tflint.d/plugins)
 //
 // If the environment variable is set, other directories will not be considered,
 // but if the current directory does not exist, it will fallback to the home directory.

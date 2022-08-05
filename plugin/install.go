@@ -71,7 +71,6 @@ func (c *InstallConfig) AssetName() string {
 //
 //   - The release must contain a signature file for the checksum file with the name checksums.txt.sig
 //   - The signature file must be binary OpenPGP format
-//
 func (c *InstallConfig) Install() (string, error) {
 	dir, err := getPluginDir(c.globalConfig)
 	if err != nil {

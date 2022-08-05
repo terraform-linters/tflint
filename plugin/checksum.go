@@ -22,7 +22,6 @@ type Checksummer struct {
 // 3a61fff3689f27c89bce22893219919c629d2e10b96e7eadd5fef9f0e90bb353  tflint-ruleset-aws_darwin_amd64.zip
 // 482419fdeed00692304e59558b5b0d915d4727868b88a5adbbbb76f5ed1b537a  tflint-ruleset-aws_linux_amd64.zip
 // db4eed4c0abcfb0b851da5bbfe8d0c71e1c2b6afe4fd627638a462c655045902  tflint-ruleset-aws_windows_amd64.zip
-//
 func NewChecksummer(f io.Reader) (*Checksummer, error) {
 	scanner := bufio.NewScanner(f)
 
