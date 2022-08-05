@@ -32,7 +32,7 @@ func (h *handler) workspaceDidChangeWatchedFiles(ctx context.Context, conn *json
 		return nil, err
 	}
 
-	log.Println(fmt.Sprintf("Notify `textDocument/publishDiagnostics` with `%#v`", diagnostics))
+	log.Printf("Notify `textDocument/publishDiagnostics` with `%#v`", diagnostics)
 	for path, diags := range diagnostics {
 		err = conn.Notify(
 			ctx,

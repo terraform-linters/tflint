@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 
@@ -16,7 +15,7 @@ func (cli *CLI) startLanguageServer(configPath string, cliConfig *tflint.Config)
 
 	handler, plugin, err := langserver.NewHandler(configPath, cliConfig)
 	if err != nil {
-		log.Println(fmt.Sprintf("Failed to start language server: %s", err))
+		log.Printf("Failed to start language server: %s", err)
 		return ExitCodeError
 	}
 	if plugin != nil {
