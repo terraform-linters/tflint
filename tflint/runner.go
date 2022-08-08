@@ -215,13 +215,13 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 // Basically, this function is a wrapper for hclext.PartialContent, but in some ways it reproduces
 // Terraform language semantics.
 //
-//   1. The block schema implicitly adds dynamic blocks to the target
-//      https://www.terraform.io/language/expressions/dynamic-blocks
-//   2. Supports overriding files
-//      https://www.terraform.io/language/files/override
-//   3. Resources not created by count or for_each will be ignored
-//      https://www.terraform.io/language/meta-arguments/count
-//      https://www.terraform.io/language/meta-arguments/for_each
+//  1. The block schema implicitly adds dynamic blocks to the target
+//     https://www.terraform.io/language/expressions/dynamic-blocks
+//  2. Supports overriding files
+//     https://www.terraform.io/language/files/override
+//  3. Resources not created by count or for_each will be ignored
+//     https://www.terraform.io/language/meta-arguments/count
+//     https://www.terraform.io/language/meta-arguments/for_each
 //
 // However, this behavior is controlled by options. The above is the default.
 func (r *Runner) GetModuleContent(bodyS *hclext.BodySchema, opts sdk.GetModuleContentOption) (*hclext.BodyContent, hcl.Diagnostics) {

@@ -80,9 +80,9 @@ func (h *handler) handle(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2
 				Data:    req.Params,
 			}
 		}
-		log.Println(fmt.Sprintf("Received `%s` with `%s`", req.Method, string(params)))
+		log.Printf("Received `%s` with `%s`", req.Method, string(params))
 	} else {
-		log.Println(fmt.Sprintf("Received `%s`", req.Method))
+		log.Printf("Received `%s`", req.Method)
 	}
 
 	if h.shutdown && req.Method != "exit" {
@@ -120,7 +120,7 @@ func (h *handler) handle(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2
 
 func (h *handler) chdir(dir string) error {
 	if h.rootDir != dir {
-		log.Println(fmt.Sprintf("Changing directory: %s", dir))
+		log.Printf("Changing directory: %s", dir)
 		if err := os.Chdir(dir); err != nil {
 			return fmt.Errorf("Failed to chdir to %s: %s", dir, err)
 		}

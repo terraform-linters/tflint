@@ -48,7 +48,7 @@ func (h *handler) textDocumentDidOpen(ctx context.Context, conn *jsonrpc2.Conn, 
 		return nil, err
 	}
 
-	log.Println(fmt.Sprintf("Notify `textDocument/publishDiagnostics` with `%#v`", diagnostics))
+	log.Printf("Notify `textDocument/publishDiagnostics` with `%#v`", diagnostics)
 	for path, diags := range diagnostics {
 		err = conn.Notify(
 			ctx,

@@ -235,12 +235,6 @@ type referencable interface {
 	referenceableSigil()
 }
 
-type referenceable struct {
-}
-
-func (r referenceable) referenceableSigil() {
-}
-
 type inputVariableReference struct {
 	referencable
 	name string
