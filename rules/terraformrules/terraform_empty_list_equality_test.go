@@ -45,8 +45,8 @@ resource "aws_db_instance" "mysql" {
 					Message: "Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
 					Range: hcl.Range{
 						Filename: "resource.tf",
-						Start:    hcl.Pos{Line: 3, Column: 22},
-						End:      hcl.Pos{Line: 3, Column: 30},
+						Start:    hcl.Pos{Line: 3, Column: 10},
+						End:      hcl.Pos{Line: 3, Column: 18},
 					},
 				},
 				{
@@ -54,8 +54,8 @@ resource "aws_db_instance" "mysql" {
 					Message: "Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
 					Range: hcl.Range{
 						Filename: "resource.tf",
-						Start:    hcl.Pos{Line: 3, Column: 10},
-						End:      hcl.Pos{Line: 3, Column: 18},
+						Start:    hcl.Pos{Line: 3, Column: 22},
+						End:      hcl.Pos{Line: 3, Column: 30},
 					},
 				},
 			},
