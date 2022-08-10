@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/terraform-linters/tflint/tflint"
+	"github.com/zclconf/go-cty/cty"
 )
 
 // TerraformEmptyListEqualityRule checks whether is there a comparison with an empty list
@@ -52,30 +53,25 @@ func (r *TerraformEmptyListEqualityRule) Check(runner *tflint.Runner) error {
 	return nil
 }
 
+// checkEmptyList visits all blocks that can contain expressions and checks for comparisons with static empty list
 func (r *TerraformEmptyListEqualityRule) checkEmptyList(runner *tflint.Runner) error {
 	return runner.WalkExpressions(func(expr hcl.Expression) error {
-		if conditionalExpr, ok := expr.(*hclsyntax.ConditionalExpr); ok {
-			if binaryOpExpr, ok := conditionalExpr.Condition.(*hclsyntax.BinaryOpExpr); ok {
-				if binaryOpExpr.Op.Type.FriendlyName() == "bool" {
-					if right, ok := binaryOpExpr.RHS.(*hclsyntax.TupleConsExpr); ok {
-						checkEmptyList(right, runner, r, binaryOpExpr)
-					}
-					if left, ok := binaryOpExpr.LHS.(*hclsyntax.TupleConsExpr); ok {
-						checkEmptyList(left, runner, r, binaryOpExpr)
-					}
-				}
+		if binaryOpExpr, ok := expr.(*hclsyntax.BinaryOpExpr); ok && binaryOpExpr.Op.Type == cty.Bool {
+			if tupleConsExpr, ok := binaryOpExpr.LHS.(*hclsyntax.TupleConsExpr); ok && len(tupleConsExpr.Exprs) == 0 {
+				r.emitIssue(binaryOpExpr.Range(), runner)
+			} else if tupleConsExpr, ok := binaryOpExpr.RHS.(*hclsyntax.TupleConsExpr); ok && len(tupleConsExpr.Exprs) == 0 {
+				r.emitIssue(binaryOpExpr.Range(), runner)
 			}
 		}
 		return nil
 	})
 }
 
-func checkEmptyList(tupleConsExpr *hclsyntax.TupleConsExpr, runner *tflint.Runner, r *TerraformEmptyListEqualityRule, binaryOpExpr *hclsyntax.BinaryOpExpr) {
-	if len(tupleConsExpr.Exprs) == 0 {
-		runner.EmitIssue(
-			r,
-			"Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
-			binaryOpExpr.Range(),
-		)
-	}
+// emitIssue emits issue for comparison with static empty list
+func (r *TerraformEmptyListEqualityRule) emitIssue(exprRange hcl.Range, runner *tflint.Runner) {
+	runner.EmitIssue(
+		r,
+		"Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
+		exprRange,
+	)
 }

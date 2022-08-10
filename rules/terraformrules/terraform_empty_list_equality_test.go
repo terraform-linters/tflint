@@ -30,6 +30,16 @@ resource "aws_db_instance" "mysql" {
 						End:      hcl.Pos{Line: 3, Column: 18},
 					},
 				},
+			},
+		},
+		{
+			Name: "multiple comparisons with [] are not recommended",
+			Content: `
+resource "aws_db_instance" "mysql" {
+	count = [] == [] || [] == [] ? 1 : 0
+	instance_class = "m4.2xlarge"
+}`,
+			Expected: tflint.Issues{
 				{
 					Rule:    NewTerraformEmptyListEqualityRule(),
 					Message: "Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
@@ -37,6 +47,34 @@ resource "aws_db_instance" "mysql" {
 						Filename: "resource.tf",
 						Start:    hcl.Pos{Line: 3, Column: 10},
 						End:      hcl.Pos{Line: 3, Column: 18},
+					},
+				},
+				{
+					Rule:    NewTerraformEmptyListEqualityRule(),
+					Message: "Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 3, Column: 22},
+						End:      hcl.Pos{Line: 3, Column: 30},
+					},
+				},
+			},
+		},
+		{
+			Name: "comparing with [] inside parenthesis is not recommended",
+			Content: `
+resource "aws_db_instance" "mysql" {
+	count = ([] == []) ? 1 : 0
+	instance_class = "m4.2xlarge"
+}`,
+			Expected: tflint.Issues{
+				{
+					Rule:    NewTerraformEmptyListEqualityRule(),
+					Message: "Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 3, Column: 11},
+						End:      hcl.Pos{Line: 3, Column: 19},
 					},
 				},
 			},
