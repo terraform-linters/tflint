@@ -201,11 +201,11 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 		}
 		runner.modVars = modVars
 		runners = append(runners, runner)
-		moudleRunners, err := NewModuleRunners(runner)
+		moduleRunners, err := NewModuleRunners(runner)
 		if err != nil {
 			return runners, err
 		}
-		runners = append(runners, moudleRunners...)
+		runners = append(runners, moduleRunners...)
 	}
 
 	return runners, nil
