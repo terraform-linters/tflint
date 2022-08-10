@@ -58,17 +58,17 @@ func (r *TerraformEmptyListEqualityRule) checkEmptyList(runner *tflint.Runner) e
 	return runner.WalkExpressions(func(expr hcl.Expression) error {
 		if binaryOpExpr, ok := expr.(*hclsyntax.BinaryOpExpr); ok && binaryOpExpr.Op.Type == cty.Bool {
 			if tupleConsExpr, ok := binaryOpExpr.LHS.(*hclsyntax.TupleConsExpr); ok && len(tupleConsExpr.Exprs) == 0 {
-				r.emitEmptyListEqualityIssue(binaryOpExpr.Range(), runner)
+				r.emitIssue(binaryOpExpr.Range(), runner)
 			} else if tupleConsExpr, ok := binaryOpExpr.RHS.(*hclsyntax.TupleConsExpr); ok && len(tupleConsExpr.Exprs) == 0 {
-				r.emitEmptyListEqualityIssue(binaryOpExpr.Range(), runner)
+				r.emitIssue(binaryOpExpr.Range(), runner)
 			}
 		}
 		return nil
 	})
 }
 
-// emitEmptyListEqualityIssue emits issue for comparison with static empty list
-func (r *TerraformEmptyListEqualityRule) emitEmptyListEqualityIssue(exprRange hcl.Range, runner *tflint.Runner) {
+// emitIssue emits issue for comparison with static empty list
+func (r *TerraformEmptyListEqualityRule) emitIssue(exprRange hcl.Range, runner *tflint.Runner) {
 	runner.EmitIssue(
 		r,
 		"Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
