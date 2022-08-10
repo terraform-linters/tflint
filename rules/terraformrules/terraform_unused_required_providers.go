@@ -50,7 +50,45 @@ func (r *TerraformUnusedRequiredProvidersRule) Check(runner *tflint.Runner) erro
 		return diags
 	}
 
+	moduleRunners, err := tflint.NewModuleRunners(runner)
+	if err != nil {
+		return err
+	}
+
+	requiredProviders, diags := getRequiredProviders(runner)
+	if diags.HasErrors() {
+		return diags
+	}
+
+RequiredProvidersLoop:
+	for key, required := range requiredProviders {
+		if _, exists := providerRefs[required.Name]; !exists {
+			for _, runner := range moduleRunners {
+				moduleRequiredProviders, diags := getRequiredProviders(runner)
+				if diags.HasErrors() {
+					return diags
+				}
+
+				if _, exists := moduleRequiredProviders[key]; exists {
+					continue RequiredProvidersLoop
+				}
+			}
+
+			runner.EmitIssue(
+				r,
+				fmt.Sprintf("provider '%s' is declared in required_providers but not used by the module", required.Name),
+				required.Range,
+			)
+		}
+	}
+
+	return nil
+}
+
+func getRequiredProviders(runner *tflint.Runner) (hcl.Attributes, hcl.Diagnostics) {
 	requiredProviders := hcl.Attributes{}
+	diags := hcl.Diagnostics{}
+
 	for _, file := range runner.Files() {
 		content, _, schemaDiags := file.Body.PartialContent(&hcl.BodySchema{
 			Blocks: []hcl.BlockHeaderSchema{{Type: "terraform"}},
@@ -80,18 +118,8 @@ func (r *TerraformUnusedRequiredProvidersRule) Check(runner *tflint.Runner) erro
 		}
 	}
 	if diags.HasErrors() {
-		return diags
+		return nil, diags
 	}
 
-	for _, required := range requiredProviders {
-		if _, exists := providerRefs[required.Name]; !exists {
-			runner.EmitIssue(
-				r,
-				fmt.Sprintf("provider '%s' is declared in required_providers but not used by the module", required.Name),
-				required.Range,
-			)
-		}
-	}
-
-	return nil
+	return requiredProviders, nil
 }
