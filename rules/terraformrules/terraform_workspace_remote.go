@@ -92,12 +92,7 @@ func (r *TerraformWorkspaceRemoteRule) checkForTerraformWorkspaceInExpr(runner *
 		return nil
 	}
 
-	refs, diags := referencesInExpr(expr)
-	if diags.HasErrors() {
-		return diags
-	}
-
-	for _, ref := range refs {
+	for _, ref := range referencesInExpr(expr) {
 		switch sub := ref.subject.(type) {
 		case terraformReference:
 			if sub.name == "workspace" {

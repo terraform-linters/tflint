@@ -260,35 +260,41 @@ func (d *dataResourceReference) String() string {
 	return fmt.Sprintf("data.%s.%s", d.typeName, d.name)
 }
 
+// referencesInExpr extracts and returns references from hcl.Expression.
+// This is roughly equivalent to ReferencesInExpr in Terraform interlan API,
+// but simply ignores invalid references without returing diagnostics.
+// This is because it is not the responsibility of this method to detect invalid references.
+// Invalid references should be caught by terraform validate.
+//
 // @see https://github.com/hashicorp/terraform/blob/v1.2.5/internal/lang/references.go#L75
-func referencesInExpr(expr hcl.Expression) ([]*reference, hcl.Diagnostics) {
+func referencesInExpr(expr hcl.Expression) []*reference {
 	references := []*reference{}
-	diags := hcl.Diagnostics{}
 
 	for _, traversal := range expr.Variables() {
 		name := traversal.RootName()
 
 		switch name {
 		case "var":
-			name, parseDiags := parseSingleAttrRef(traversal)
-			diags = diags.Extend(parseDiags)
+			name, diags := parseSingleAttrRef(traversal)
+			if diags.HasErrors() {
+				continue
+			}
 			references = append(references, &reference{subject: inputVariableReference{name: name}})
 		case "local":
-			name, parseDiags := parseSingleAttrRef(traversal)
-			diags = diags.Extend(parseDiags)
+			name, diags := parseSingleAttrRef(traversal)
+			if diags.HasErrors() {
+				continue
+			}
 			references = append(references, &reference{subject: localValueReference{name: name}})
 		case "terraform":
-			name, parseDiags := parseSingleAttrRef(traversal)
-			diags = diags.Extend(parseDiags)
+			name, diags := parseSingleAttrRef(traversal)
+			if diags.HasErrors() {
+				continue
+			}
 			references = append(references, &reference{subject: terraformReference{name: name}})
 		case "data":
 			if len(traversal) < 3 {
-				diags = diags.Append(&hcl.Diagnostic{
-					Severity: hcl.DiagError,
-					Summary:  "Invalid reference",
-					Detail:   `The "data" object must be followed by two attribute names: the data source type and the resource name.`,
-					Subject:  traversal.SourceRange().Ptr(),
-				})
+				// The "data" object must be followed by two attribute names: the data source type and the resource name.
 				continue
 			}
 
@@ -299,24 +305,13 @@ func referencesInExpr(expr hcl.Expression) ([]*reference, hcl.Diagnostics) {
 			case hcl.TraverseAttr:
 				typeName = tt.Name
 			default:
-				// If it isn't a TraverseRoot then it must be a "data" reference.
-				diags = diags.Append(&hcl.Diagnostic{
-					Severity: hcl.DiagError,
-					Summary:  "Invalid reference",
-					Detail:   `The "data" object does not support this operation.`,
-					Subject:  traversal[1].SourceRange().Ptr(),
-				})
+				// The "data" object does not support this operation.
 				continue
 			}
 
 			attrTrav, ok := traversal[2].(hcl.TraverseAttr)
 			if !ok {
-				diags = diags.Append(&hcl.Diagnostic{
-					Severity: hcl.DiagError,
-					Summary:  "Invalid reference",
-					Detail:   `A reference to a data source must be followed by at least one attribute access, specifying the resource name.`,
-					Subject:  traversal[1].SourceRange().Ptr(),
-				})
+				// A reference to a data source must be followed by at least one attribute access, specifying the resource name.
 				continue
 			}
 
@@ -324,7 +319,7 @@ func referencesInExpr(expr hcl.Expression) ([]*reference, hcl.Diagnostics) {
 		}
 	}
 
-	return references, diags
+	return references
 }
 
 // @see https://github.com/hashicorp/terraform/blob/v1.2.5/internal/addrs/parse_ref.go#L392
