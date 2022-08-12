@@ -32,12 +32,13 @@ func (f *Formatter) compactPrint(issues tflint.Issues, appErr error, sources map
 			for _, diag := range diags {
 				fmt.Fprintf(
 					f.Stdout,
-					"%s:%d:%d: %s - %s\n",
+					"%s:%d:%d: %s - %s. %s\n",
 					diag.Subject.Filename,
 					diag.Subject.Start.Line,
 					diag.Subject.Start.Column,
 					fromHclSeverity(diag.Severity),
 					diag.Summary,
+					diag.Detail,
 				)
 			}
 

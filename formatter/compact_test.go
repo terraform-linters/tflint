@@ -49,7 +49,7 @@ test.tf:1:1: Error - test (test_rule)
 		{
 			Name:   "diagnostics",
 			Error:  hclDiags(`resource "foo" "bar" {`),
-			Stdout: "main.tf:1:22: error - Unclosed configuration block\n",
+			Stdout: "main.tf:1:22: error - Unclosed configuration block. There is no closing brace for this block before the end of the file. This may be caused by incorrect brace nesting elsewhere in this file.\n",
 		},
 	}
 
@@ -61,11 +61,11 @@ test.tf:1:1: Error - test (test_rule)
 		formatter.compactPrint(tc.Issues, tc.Error, map[string][]byte{})
 
 		if stdout.String() != tc.Stdout {
-			t.Fatalf("Failed %s test: expected=%s, stdout=%s", tc.Name, tc.Stdout, stdout.String())
+			t.Errorf("Failed %s test: expected=%s, stdout=%s", tc.Name, tc.Stdout, stdout.String())
 		}
 
 		if stderr.String() != tc.Stderr {
-			t.Fatalf("Failed %s test: expected=%s, stderr=%s", tc.Name, tc.Stderr, stderr.String())
+			t.Errorf("Failed %s test: expected=%s, stderr=%s", tc.Name, tc.Stderr, stderr.String())
 		}
 	}
 }
