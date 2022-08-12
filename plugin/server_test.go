@@ -303,16 +303,24 @@ rule "test_in_file" {
 					Attributes: []hclext.AttributeSchema{{Name: "foo"}},
 				}
 			},
-			Want: nil,
-			ErrCheck: func(err error) bool {
-				return err == nil || err.Error() != "rule `not_found` is not found in config"
-			},
+			Want:     &hclext.BodyContent{},
+			ErrCheck: neverHappend,
 		},
 		{
-			Name: "get rule enabled by CLI",
+			Name: "get rule enabled by CLI without required attribute",
 			Args: func() (string, *hclext.BodySchema) {
 				return "test_in_cli", &hclext.BodySchema{
 					Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				}
+			},
+			Want:     &hclext.BodyContent{Blocks: hclext.Blocks{}, Attributes: hclext.Attributes{}},
+			ErrCheck: neverHappend,
+		},
+		{
+			Name: "get rule enabled by CLI with required attribute",
+			Args: func() (string, *hclext.BodySchema) {
+				return "test_in_cli", &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{{Name: "foo", Required: true}},
 				}
 			},
 			Want: nil,

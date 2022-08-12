@@ -93,6 +93,11 @@ func TestIntegration(t *testing.T) {
 			Dir:     "enable-required-config-rule-by-cli",
 		},
 		{
+			Name:    "enable rule which does not have required configuration by CLI options",
+			Command: "./tflint --format json --enable-rule aws_db_instance_with_default_config_example",
+			Dir:     "enable-config-rule-by-cli",
+		},
+		{
 			Name:    "heredoc",
 			Command: "./tflint --format json",
 			Dir:     "heredoc",
@@ -146,6 +151,16 @@ func TestIntegration(t *testing.T) {
 			Name:    "rule config with --only",
 			Command: "tflint --only aws_s3_bucket_with_config_example --format json",
 			Dir:     "rule-config",
+		},
+		{
+			Name:    "rule config without required attributes",
+			Command: "tflint --format json",
+			Dir:     "rule-required-config",
+		},
+		{
+			Name:    "rule config without optional attributes",
+			Command: "tflint --format json",
+			Dir:     "rule-optional-config",
 		},
 		{
 			Name:    "enable plugin by CLI",

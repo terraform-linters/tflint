@@ -63,15 +63,22 @@ func (s *GRPCServer) GetFiles(ty sdk.ModuleCtxType) map[string][]byte {
 func (s *GRPCServer) GetRuleConfigContent(name string, bodyS *hclext.BodySchema) (*hclext.BodyContent, map[string][]byte, error) {
 	config := s.runner.RuleConfig(name)
 	if config == nil {
-		return nil, s.runner.ConfigSources(), fmt.Errorf("rule `%s` is not found in config", name)
-	}
-	// If you enable the rule through the CLI instead of the file, its hcl.Body will be nil.
-	if config.Body == nil {
-		return nil, s.runner.ConfigSources(), errors.New("This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration")
+		return &hclext.BodyContent{}, s.runner.ConfigSources(), nil
 	}
 
-	body, diags := hclext.Content(config.Body, bodyS)
+	enabledByCLI := false
+	configBody := config.Body
+	// If you enable the rule through the CLI instead of the file, its hcl.Body will be nil.
+	if config.Body == nil {
+		enabledByCLI = true
+		configBody = hcl.EmptyBody()
+	}
+
+	body, diags := hclext.Content(configBody, bodyS)
 	if diags.HasErrors() {
+		if enabledByCLI {
+			return nil, s.runner.ConfigSources(), errors.New("This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration")
+		}
 		return body, s.runner.ConfigSources(), diags
 	}
 	return body, s.runner.ConfigSources(), nil

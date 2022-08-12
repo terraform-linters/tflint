@@ -1,0 +1,25 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_db_instance_with_default_config_example",
+        "severity": "warning",
+        "link": ""
+      },
+      "message": "DB name is staging, config=default",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 2,
+          "column": 10
+        },
+        "end": {
+          "line": 2,
+          "column": 19
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}
