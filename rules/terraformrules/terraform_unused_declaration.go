@@ -132,13 +132,7 @@ func (r *TerraformUnusedDeclarationsRule) declarations(runner *tflint.Runner) (*
 }
 
 func (r *TerraformUnusedDeclarationsRule) checkForRefsInExpr(expr hcl.Expression, decl *declarations) error {
-	refs, diags := referencesInExpr(expr)
-	if diags.HasErrors() {
-		log.Printf("[DEBUG] Cannot find references in expression, ignoring: %v", diags)
-		return nil
-	}
-
-	for _, ref := range refs {
+	for _, ref := range referencesInExpr(expr) {
 		switch sub := ref.subject.(type) {
 		case inputVariableReference:
 			delete(decl.Variables, sub.name)

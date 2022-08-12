@@ -236,6 +236,24 @@ resource "aws_instance" "foo" {
 				},
 			},
 		},
+		{
+			Name: "with ignore_changes",
+			Content: `
+terraform {
+  backend "remote" {}
+}
+
+resource "kubernetes_secret" "my_secret" {
+  data = {}
+
+  lifecycle {
+    ignore_changes = [
+      data
+    ]
+  }
+}`,
+			Expected: tflint.Issues{},
+		},
 	}
 
 	rule := NewTerraformWorkspaceRemoteRule()
