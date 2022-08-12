@@ -1,3 +1,19 @@
+## 0.39.3 (2022-08-12)
+
+### Enhancements
+
+- [#1426](https://github.com/terraform-linters/tflint/pull/1426): terraform_empty_list_equality: improve expression detection ([@bmbferreira](https://github.com/bmbferreira))
+
+### BugFixes
+
+- [#1478](https://github.com/terraform-linters/tflint/pull/1478): terraformrules: Ignore invalid references in referencesInExpr ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1467](https://github.com/terraform-linters/tflint/pull/1467) [#1475](https://github.com/terraform-linters/tflint/pull/1475): deps: update to use go1.19 ([@chenrui333](https://github.com/chenrui333))
+- [#1472](https://github.com/terraform-linters/tflint/pull/1472): Add a notice about verification of keyless signing ([@wata727](https://github.com/wata727))
+- [#1476](https://github.com/terraform-linters/tflint/pull/1476): runner: fix typo ([@bendrucker](https://github.com/bendrucker))
+
 ## 0.39.2 (2022-08-05)
 
 ### BugFixes
