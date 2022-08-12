@@ -2,9 +2,11 @@ package formatter
 
 import (
 	"bytes"
+	"errors"
 	"testing"
 
 	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -14,6 +16,7 @@ func Test_compactPrint(t *testing.T) {
 		Issues tflint.Issues
 		Error  error
 		Stdout string
+		Stderr string
 	}{
 		{
 			Name:   "no issues",
@@ -38,6 +41,16 @@ func Test_compactPrint(t *testing.T) {
 test.tf:1:1: Error - test (test_rule)
 `,
 		},
+		{
+			Name:   "error",
+			Error:  errors.New("an error occurred"),
+			Stderr: "an error occurred\n",
+		},
+		{
+			Name:   "diagnostics",
+			Error:  hclDiags(`resource "foo" "bar" {`),
+			Stdout: "main.tf:1:22: error - Unclosed configuration block\n",
+		},
 	}
 
 	for _, tc := range cases {
@@ -50,5 +63,15 @@ test.tf:1:1: Error - test (test_rule)
 		if stdout.String() != tc.Stdout {
 			t.Fatalf("Failed %s test: expected=%s, stdout=%s", tc.Name, tc.Stdout, stdout.String())
 		}
+
+		if stderr.String() != tc.Stderr {
+			t.Fatalf("Failed %s test: expected=%s, stderr=%s", tc.Name, tc.Stderr, stderr.String())
+		}
 	}
+}
+
+func hclDiags(src string) hcl.Diagnostics {
+	parser := hclparse.NewParser()
+	_, diags := parser.ParseHCL([]byte(src), "main.tf")
+	return diags
 }

@@ -1,8 +1,10 @@
 package formatter
 
 import (
+	"errors"
 	"fmt"
 
+	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -25,6 +27,23 @@ func (f *Formatter) compactPrint(issues tflint.Issues, appErr error, sources map
 	}
 
 	if appErr != nil {
+		var diags hcl.Diagnostics
+		if errors.As(appErr, &diags) {
+			for _, diag := range diags {
+				fmt.Fprintf(
+					f.Stdout,
+					"%s:%d:%d: %s - %s\n",
+					diag.Subject.Filename,
+					diag.Subject.Start.Line,
+					diag.Subject.Start.Column,
+					fromHclSeverity(diag.Severity),
+					diag.Summary,
+				)
+			}
+
+			return
+		}
+
 		f.prettyPrintErrors(appErr, sources)
 	}
 }
