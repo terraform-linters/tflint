@@ -23,6 +23,11 @@ func NewGRPCServer(runner *tflint.Runner, rootRunner *tflint.Runner, files map[s
 	return &GRPCServer{runner: runner, rootRunner: rootRunner, files: files}
 }
 
+// GetModulePath returns the current module path.
+func (s *GRPCServer) GetModulePath() []string {
+	return s.runner.TFConfig.Path
+}
+
 // GetModuleContent returns module content based on the passed schema and options.
 func (s *GRPCServer) GetModuleContent(bodyS *hclext.BodySchema, opts sdk.GetModuleContentOption) (*hclext.BodyContent, hcl.Diagnostics) {
 	switch opts.ModuleCtx {
