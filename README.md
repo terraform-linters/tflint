@@ -1,42 +1,40 @@
-# TFLint Ruleset Template
-[![Build Status](https://github.com/terraform-linters/tflint-ruleset-template/workflows/build/badge.svg?branch=main)](https://github.com/terraform-linters/tflint-ruleset-template/actions)
+# TFLint Ruleset for Terraform Language
+[![Build Status](https://github.com/terraform-linters/tflint-ruleset-terraform/workflows/build/badge.svg?branch=main)](https://github.com/terraform-linters/tflint-ruleset-terraform/actions)
+[![GitHub release](https://img.shields.io/github/release/terraform-linters/tflint-ruleset-terraform.svg)](https://github.com/terraform-linters/tflint-ruleset-terraform/releases/latest)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-blue.svg)](LICENSE)
 
-This is a template repository for building a custom ruleset. You can create a plugin repository from "Use this template". See also [Writing Plugins](https://github.com/terraform-linters/tflint/blob/master/docs/developer-guide/plugins.md).
+TFLint ruleset plugin for Terraform Language
+
+This ruleset focus on possible errors and best practices about Terraform Language.
 
 ## Requirements
 
-- TFLint v0.35+
+- TFLint v0.40+
 - Go v1.18
 
 ## Installation
 
-You can install the plugin with `tflint --init`. Declare a config in `.tflint.hcl` as follows:
+This ruleset is built into TFLint, so you usually don't need to worry about how to install it. You can check the built-in version with `tflint -v`:
+
+```
+$ tflint -v
+TFLint version 0.40.0
++ ruleset.terraform (0.1.0-bundled)
+```
+
+If you want to use a version different from the built-in version, you can declare `plugin` in `.tflint.hcl` as follows and install it with `tflint --init`:
 
 ```hcl
-plugin "template" {
-  enabled = true
-
-  version = "0.1.0"
-  source  = "github.com/terraform-linters/tflint-ruleset-template"
-
-  signing_key = <<-KEY
-  -----BEGIN PGP PUBLIC KEY BLOCK-----
-  mQINBGCqS2YBEADJ7gHktSV5NgUe08hD/uWWPwY07d5WZ1+F9I9SoiK/mtcNGz4P
-  JLrYAIUTMBvrxk3I+kuwhp7MCk7CD/tRVkPRIklONgtKsp8jCke7FB3PuFlP/ptL
-  SlbaXx53FCZSOzCJo9puZajVWydoGfnZi5apddd11Zw1FuJma3YElHZ1A1D2YvrF
-  ...
-  KEY
+plugin "terraform" {
+    enabled = true
+    version = "0.1.0"
+    source  = "github.com/terraform-linters/tflint-ruleset-terraform"
 }
 ```
 
 ## Rules
 
-|Name|Description|Severity|Enabled|Link|
-| --- | --- | --- | --- | --- |
-|aws_instance_example_type|Example rule for accessing and evaluating top-level attributes|ERROR|✔||
-|aws_s3_bucket_example_lifecycle_rule|Example rule for accessing top-level/nested blocks and attributes under the blocks|ERROR|✔||
-|google_compute_ssl_policy|Example rule with a custom rule config|WARNING|✔||
-|terraform_backend_type|Example rule for accessing other than resources|ERROR|✔||
+See [Rules](docs/rules/README.md).
 
 ## Building the plugin
 
@@ -50,4 +48,12 @@ You can easily install the built plugin with the following:
 
 ```
 $ make install
+```
+
+Note that if you install the plugin with `make install`, you must omit the `version` and `source` attributes in` .tflint.hcl`:
+
+```hcl
+plugin "terraform" {
+    enabled = true
+}
 ```
