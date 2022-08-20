@@ -5,6 +5,8 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/addrs"
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint-ruleset-terraform/project"
 )
@@ -141,14 +143,16 @@ func (r *TerraformUnusedDeclarationsRule) declarations(runner tflint.Runner) (*d
 }
 
 func (r *TerraformUnusedDeclarationsRule) checkForRefsInExpr(expr hcl.Expression, decl *declarations) error {
-	for _, ref := range referencesInExpr(expr) {
-		switch sub := ref.subject.(type) {
-		case inputVariableReference:
-			delete(decl.Variables, sub.name)
-		case localValueReference:
-			delete(decl.Locals, sub.name)
-		case dataResourceReference:
+	for _, ref := range lang.ReferencesInExpr(expr) {
+		switch sub := ref.Subject.(type) {
+		case addrs.InputVariable:
+			delete(decl.Variables, sub.Name)
+		case addrs.LocalValue:
+			delete(decl.Locals, sub.Name)
+		case addrs.Resource:
 			delete(decl.DataResources, sub.String())
+		case addrs.ResourceInstance:
+			delete(decl.DataResources, sub.Resource.String())
 		}
 	}
 

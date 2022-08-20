@@ -1,7 +1,6 @@
 package rules
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/hashicorp/go-version"
@@ -294,129 +293,6 @@ func decodeProviderRef(expr hcl.Expression, defRange hcl.Range) (*providerRef, h
 		name:     traversal.RootName(),
 		defRange: defRange,
 	}, nil
-}
-
-type reference struct {
-	subject referencable
-}
-
-type referencable interface {
-	referenceableSigil()
-}
-
-type inputVariableReference struct {
-	referencable
-	name string
-}
-
-type localValueReference struct {
-	referencable
-	name string
-}
-
-type terraformReference struct {
-	referencable
-	name string
-}
-
-type dataResourceReference struct {
-	referencable
-	typeName string
-	name     string
-}
-
-func (d *dataResourceReference) String() string {
-	return fmt.Sprintf("data.%s.%s", d.typeName, d.name)
-}
-
-// referencesInExpr extracts and returns references from hcl.Expression.
-// This is roughly equivalent to ReferencesInExpr in Terraform interlan API,
-// but simply ignores invalid references without returing diagnostics.
-// This is because it is not the responsibility of this method to detect invalid references.
-// Invalid references should be caught by terraform validate.
-//
-// @see https://github.com/hashicorp/terraform/blob/v1.2.5/internal/lang/references.go#L75
-func referencesInExpr(expr hcl.Expression) []*reference {
-	references := []*reference{}
-
-	for _, traversal := range expr.Variables() {
-		name := traversal.RootName()
-
-		switch name {
-		case "var":
-			name, diags := parseSingleAttrRef(traversal)
-			if diags.HasErrors() {
-				continue
-			}
-			references = append(references, &reference{subject: inputVariableReference{name: name}})
-		case "local":
-			name, diags := parseSingleAttrRef(traversal)
-			if diags.HasErrors() {
-				continue
-			}
-			references = append(references, &reference{subject: localValueReference{name: name}})
-		case "terraform":
-			name, diags := parseSingleAttrRef(traversal)
-			if diags.HasErrors() {
-				continue
-			}
-			references = append(references, &reference{subject: terraformReference{name: name}})
-		case "data":
-			if len(traversal) < 3 {
-				// The "data" object must be followed by two attribute names: the data source type and the resource name.
-				continue
-			}
-
-			var typeName string
-			switch tt := traversal[1].(type) {
-			case hcl.TraverseRoot:
-				typeName = tt.Name
-			case hcl.TraverseAttr:
-				typeName = tt.Name
-			default:
-				// The "data" object does not support this operation.
-				continue
-			}
-
-			attrTrav, ok := traversal[2].(hcl.TraverseAttr)
-			if !ok {
-				// A reference to a data source must be followed by at least one attribute access, specifying the resource name.
-				continue
-			}
-
-			references = append(references, &reference{subject: dataResourceReference{typeName: typeName, name: attrTrav.Name}})
-		}
-	}
-
-	return references
-}
-
-// @see https://github.com/hashicorp/terraform/blob/v1.2.5/internal/addrs/parse_ref.go#L392
-func parseSingleAttrRef(traversal hcl.Traversal) (string, hcl.Diagnostics) {
-	var diags hcl.Diagnostics
-
-	root := traversal.RootName()
-	rootRange := traversal[0].SourceRange()
-
-	if len(traversal) < 2 {
-		diags = diags.Append(&hcl.Diagnostic{
-			Severity: hcl.DiagError,
-			Summary:  "Invalid reference",
-			Detail:   fmt.Sprintf("The %q object cannot be accessed directly. Instead, access one of its attributes.", root),
-			Subject:  &rootRange,
-		})
-		return "", diags
-	}
-	if attrTrav, ok := traversal[1].(hcl.TraverseAttr); ok {
-		return attrTrav.Name, diags
-	}
-	diags = diags.Append(&hcl.Diagnostic{
-		Severity: hcl.DiagError,
-		Summary:  "Invalid reference",
-		Detail:   fmt.Sprintf("The %q object does not support this operation.", root),
-		Subject:  traversal[1].SourceRange().Ptr(),
-	})
-	return "", diags
 }
 
 // @see https://github.com/hashicorp/terraform/blob/v1.2.5/internal/configs/compat_shim.go#L34

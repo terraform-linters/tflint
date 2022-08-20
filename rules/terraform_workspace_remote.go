@@ -5,6 +5,8 @@ import (
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/hashicorp/hcl/v2/json"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/addrs"
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint-ruleset-terraform/project"
 )
@@ -94,10 +96,10 @@ func (r *TerraformWorkspaceRemoteRule) checkForTerraformWorkspaceInExpr(runner t
 		return nil
 	}
 
-	for _, ref := range referencesInExpr(expr) {
-		switch sub := ref.subject.(type) {
-		case terraformReference:
-			if sub.name == "workspace" {
+	for _, ref := range lang.ReferencesInExpr(expr) {
+		switch sub := ref.Subject.(type) {
+		case addrs.TerraformAttr:
+			if sub.Name == "workspace" {
 				return runner.EmitIssue(
 					r,
 					"terraform.workspace should not be used with a 'remote' backend",
