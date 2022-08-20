@@ -46,14 +46,12 @@ gpg --verify checksum.txt.sig checksum.txt
 sha256sum --ignore-missing -c checksums.txt
 ```
 
-Cosign (experimental)
+Cosign
 
 ```
 cosign verify-blob --cert checksums.txt.pem --signature checksums.txt.keyless.sig --certificate-github-workflow-repository=terraform-linters/tflint checksums.txt
 sha256sum --ignore-missing -c checksums.txt
 ```
-
-**IMPORTANT:** Keyless Signing is in development and you should not completely trust this way. For instance, you have not validated the certificate chain against the Fulcio root trust, so it is not guaranteed to be the public key issued by the maintainers.
 
 ### Docker
 
