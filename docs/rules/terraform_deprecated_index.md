@@ -2,6 +2,8 @@
 
 Disallow legacy dot index syntax.
 
+> This rule is enabled by "recommended" preset.
+
 ## Example
 
 ```hcl

@@ -28,7 +28,7 @@ func (r *TerraformRequiredProvidersRule) Name() string {
 
 // Enabled returns whether the rule is enabled by default
 func (r *TerraformRequiredProvidersRule) Enabled() bool {
-	return false
+	return true
 }
 
 // Severity returns the rule severity

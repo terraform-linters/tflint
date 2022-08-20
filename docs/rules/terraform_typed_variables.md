@@ -2,6 +2,8 @@
 
 Disallow `variable` declarations without type.
 
+> This rule is enabled by "recommended" preset.
+
 ## Example
 
 ```hcl

@@ -2,6 +2,8 @@
 
 Disallow comparisons with `[]` when checking if a collection is empty.
 
+> This rule is enabled by "recommended" preset.
+
 ## Example
 
 ```hcl

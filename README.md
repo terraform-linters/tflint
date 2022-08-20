@@ -32,6 +32,8 @@ plugin "terraform" {
 }
 ```
 
+For more configuration about the plugin, see [Plugin Configuration](docs/configuration.md).
+
 ## Rules
 
 See [Rules](docs/rules/README.md).

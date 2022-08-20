@@ -24,7 +24,7 @@ func (r *TerraformDeprecatedIndexRule) Name() string {
 
 // Enabled returns whether the rule is enabled by default
 func (r *TerraformDeprecatedIndexRule) Enabled() bool {
-	return false
+	return true
 }
 
 // Severity returns the rule severity

@@ -2,6 +2,8 @@
 
 Disallow variables, data sources, and locals that are declared but never used.
 
+> This rule is enabled by "recommended" preset.
+
 ## Example
 
 ```hcl

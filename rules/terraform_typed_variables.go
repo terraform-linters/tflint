@@ -25,7 +25,7 @@ func (r *TerraformTypedVariablesRule) Name() string {
 
 // Enabled returns whether the rule is enabled by default
 func (r *TerraformTypedVariablesRule) Enabled() bool {
-	return false
+	return true
 }
 
 // Severity returns the rule severity

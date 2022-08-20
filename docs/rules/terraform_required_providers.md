@@ -2,6 +2,8 @@
 
 Require that all providers have version constraints through `required_providers`.
 
+> This rule is enabled by "recommended" preset.
+
 ## Configuration
 
 ```hcl

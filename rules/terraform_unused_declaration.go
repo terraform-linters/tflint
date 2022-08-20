@@ -32,7 +32,7 @@ func (r *TerraformUnusedDeclarationsRule) Name() string {
 
 // Enabled returns whether the rule is enabled by default
 func (r *TerraformUnusedDeclarationsRule) Enabled() bool {
-	return false
+	return true
 }
 
 // Severity returns the rule severity

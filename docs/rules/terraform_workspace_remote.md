@@ -10,6 +10,8 @@ rule "terraform_workspace_remote" {
 }
 ```
 
+> This rule is enabled by "recommended" preset.
+
 ## Example
 
 ```hcl

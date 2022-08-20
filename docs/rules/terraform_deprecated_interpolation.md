@@ -2,6 +2,8 @@
 
 Disallow deprecated (0.11-style) interpolation
 
+> This rule is enabled by "recommended" preset.
+
 ## Example
 
 ```hcl

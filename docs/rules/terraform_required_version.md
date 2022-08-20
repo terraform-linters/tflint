@@ -2,6 +2,8 @@
 
 Disallow `terraform` declarations without `required_version`.
 
+> This rule is enabled by "recommended" preset.
+
 ## Configuration
 
 ```hcl

@@ -2,6 +2,8 @@
 
 Disallow specifying a git or mercurial repository as a module source without pinning to a version.
 
+> This rule is enabled by "recommended" preset.
+
 ## Configuration
 
 Name | Default | Value

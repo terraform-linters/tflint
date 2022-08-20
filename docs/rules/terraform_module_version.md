@@ -2,6 +2,8 @@
 
 Ensure that all modules sourced from a [Terraform Registry](https://www.terraform.io/docs/language/modules/sources.html#terraform-registry) specify a `version`.
 
+> This rule is enabled by "recommended" preset.
+
 ## Configuration
 
 Name | Description | Default | Type
