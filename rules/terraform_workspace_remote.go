@@ -85,12 +85,16 @@ func (r *TerraformWorkspaceRemoteRule) Check(runner tflint.Runner) error {
 		return nil
 	}
 
-	return WalkExpressions(runner, func(expr hcl.Expression) error {
+	diags := runner.WalkExpressions(tflint.ExprWalkFunc(func(expr hcl.Expression) hcl.Diagnostics {
 		return r.checkForTerraformWorkspaceInExpr(runner, expr)
-	})
+	}))
+	if diags.HasErrors() {
+		return diags
+	}
+	return nil
 }
 
-func (r *TerraformWorkspaceRemoteRule) checkForTerraformWorkspaceInExpr(runner tflint.Runner, expr hcl.Expression) error {
+func (r *TerraformWorkspaceRemoteRule) checkForTerraformWorkspaceInExpr(runner tflint.Runner, expr hcl.Expression) hcl.Diagnostics {
 	_, isScopeTraversalExpr := expr.(*hclsyntax.ScopeTraversalExpr)
 	if !isScopeTraversalExpr && !json.IsJSONExpression(expr) {
 		return nil
@@ -100,11 +104,20 @@ func (r *TerraformWorkspaceRemoteRule) checkForTerraformWorkspaceInExpr(runner t
 		switch sub := ref.Subject.(type) {
 		case addrs.TerraformAttr:
 			if sub.Name == "workspace" {
-				return runner.EmitIssue(
+				err := runner.EmitIssue(
 					r,
 					"terraform.workspace should not be used with a 'remote' backend",
 					expr.Range(),
 				)
+				if err != nil {
+					return hcl.Diagnostics{
+						{
+							Severity: hcl.DiagError,
+							Summary:  "failed to call EmitIssue()",
+							Detail:   err.Error(),
+						},
+					}
+				}
 			}
 		}
 	}

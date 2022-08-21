@@ -62,11 +62,12 @@ func (r *TerraformUnusedDeclarationsRule) Check(runner tflint.Runner) error {
 	if err != nil {
 		return err
 	}
-	err = WalkExpressions(runner, func(expr hcl.Expression) error {
-		return r.checkForRefsInExpr(expr, decl)
-	})
-	if err != nil {
-		return err
+	diags := runner.WalkExpressions(tflint.ExprWalkFunc(func(expr hcl.Expression) hcl.Diagnostics {
+		r.checkForRefsInExpr(expr, decl)
+		return nil
+	}))
+	if diags.HasErrors() {
+		return diags
 	}
 
 	for _, variable := range decl.Variables {
@@ -142,7 +143,7 @@ func (r *TerraformUnusedDeclarationsRule) declarations(runner tflint.Runner) (*d
 	return decl, nil
 }
 
-func (r *TerraformUnusedDeclarationsRule) checkForRefsInExpr(expr hcl.Expression, decl *declarations) error {
+func (r *TerraformUnusedDeclarationsRule) checkForRefsInExpr(expr hcl.Expression, decl *declarations) {
 	for _, ref := range lang.ReferencesInExpr(expr) {
 		switch sub := ref.Subject.(type) {
 		case addrs.InputVariable:
@@ -155,6 +156,4 @@ func (r *TerraformUnusedDeclarationsRule) checkForRefsInExpr(expr hcl.Expression
 			delete(decl.DataResources, sub.Resource.String())
 		}
 	}
-
-	return nil
 }

@@ -50,19 +50,33 @@ func (r *TerraformDeprecatedInterpolationRule) Check(runner tflint.Runner) error
 		return nil
 	}
 
-	return WalkExpressions(runner, func(expr hcl.Expression) error {
+	diags := runner.WalkExpressions(tflint.ExprWalkFunc(func(expr hcl.Expression) hcl.Diagnostics {
 		return r.checkForDeprecatedInterpolationsInExpr(runner, expr)
-	})
+	}))
+	if diags.HasErrors() {
+		return diags
+	}
+	return nil
 }
 
-func (r *TerraformDeprecatedInterpolationRule) checkForDeprecatedInterpolationsInExpr(runner tflint.Runner, expr hcl.Expression) error {
+func (r *TerraformDeprecatedInterpolationRule) checkForDeprecatedInterpolationsInExpr(runner tflint.Runner, expr hcl.Expression) hcl.Diagnostics {
 	if _, ok := expr.(*hclsyntax.TemplateWrapExpr); !ok {
 		return nil
 	}
 
-	return runner.EmitIssue(
+	err := runner.EmitIssue(
 		r,
 		"Interpolation-only expressions are deprecated in Terraform v0.12.14",
 		expr.Range(),
 	)
+	if err != nil {
+		return hcl.Diagnostics{
+			{
+				Severity: hcl.DiagError,
+				Summary:  "failed to call EmitIssue()",
+				Detail:   err.Error(),
+			},
+		}
+	}
+	return nil
 }

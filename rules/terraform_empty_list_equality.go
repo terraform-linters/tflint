@@ -49,29 +49,41 @@ func (r *TerraformEmptyListEqualityRule) Check(runner tflint.Runner) error {
 		return nil
 	}
 
-	if err := r.checkEmptyList(runner); err != nil {
-		return err
+	if diags := r.checkEmptyList(runner); diags.HasErrors() {
+		return diags
 	}
 
 	return nil
 }
 
 // checkEmptyList visits all blocks that can contain expressions and checks for comparisons with static empty list
-func (r *TerraformEmptyListEqualityRule) checkEmptyList(runner tflint.Runner) error {
-	return WalkExpressions(runner, func(expr hcl.Expression) error {
+func (r *TerraformEmptyListEqualityRule) checkEmptyList(runner tflint.Runner) hcl.Diagnostics {
+	return runner.WalkExpressions(tflint.ExprWalkFunc(func(expr hcl.Expression) hcl.Diagnostics {
 		if binaryOpExpr, ok := expr.(*hclsyntax.BinaryOpExpr); ok && binaryOpExpr.Op.Type == cty.Bool {
 			if tupleConsExpr, ok := binaryOpExpr.LHS.(*hclsyntax.TupleConsExpr); ok && len(tupleConsExpr.Exprs) == 0 {
 				if err := r.emitIssue(binaryOpExpr.Range(), runner); err != nil {
-					return err
+					return hcl.Diagnostics{
+						{
+							Severity: hcl.DiagError,
+							Summary:  "failed to call EmitIssue()",
+							Detail:   err.Error(),
+						},
+					}
 				}
 			} else if tupleConsExpr, ok := binaryOpExpr.RHS.(*hclsyntax.TupleConsExpr); ok && len(tupleConsExpr.Exprs) == 0 {
 				if err := r.emitIssue(binaryOpExpr.Range(), runner); err != nil {
-					return err
+					return hcl.Diagnostics{
+						{
+							Severity: hcl.DiagError,
+							Summary:  "failed to call EmitIssue()",
+							Detail:   err.Error(),
+						},
+					}
 				}
 			}
 		}
 		return nil
-	})
+	}))
 }
 
 // emitIssue emits issue for comparison with static empty list

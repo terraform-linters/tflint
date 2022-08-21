@@ -48,14 +48,20 @@ func (r *TerraformDeprecatedIndexRule) Check(runner tflint.Runner) error {
 		return nil
 	}
 
-	return WalkExpressions(runner, func(expr hcl.Expression) error {
+	diags := runner.WalkExpressions(tflint.ExprWalkFunc(func(expr hcl.Expression) hcl.Diagnostics {
 		for _, variable := range expr.Variables() {
 			for _, traversal := range variable.SimpleSplit().Rel {
 				if traversal, ok := traversal.(hcl.TraverseIndex); ok {
 					filename := traversal.SrcRange.Filename
 					file, err := runner.GetFile(filename)
 					if err != nil {
-						return err
+						return hcl.Diagnostics{
+							{
+								Severity: hcl.DiagError,
+								Summary:  "failed to call GetFile()",
+								Detail:   err.Error(),
+							},
+						}
 					}
 					bytes := traversal.SrcRange.SliceBytes(file.Bytes)
 
@@ -70,7 +76,13 @@ func (r *TerraformDeprecatedIndexRule) Check(runner tflint.Runner) error {
 							"List items should be accessed using square brackets",
 							expr.Range(),
 						); err != nil {
-							return err
+							return hcl.Diagnostics{
+								{
+									Severity: hcl.DiagError,
+									Summary:  "failed to call EmitIssue()",
+									Detail:   err.Error(),
+								},
+							}
 						}
 					}
 				}
@@ -78,5 +90,10 @@ func (r *TerraformDeprecatedIndexRule) Check(runner tflint.Runner) error {
 		}
 
 		return nil
-	})
+	}))
+	if diags.HasErrors() {
+		return diags
+	}
+
+	return nil
 }
