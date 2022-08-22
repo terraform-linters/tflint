@@ -122,6 +122,34 @@ func Test_IsAffected(t *testing.T) {
 			Expected: true,
 		},
 		{
+			Name: "affected (multiple rules)",
+			Annotation: Annotation{
+				Content: "other_rule, test_rule",
+				Token: hclsyntax.Token{
+					Type: hclsyntax.TokenComment,
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 2},
+					},
+				},
+			},
+			Expected: true,
+		},
+		{
+			Name: "not affected (multiple rules)",
+			Annotation: Annotation{
+				Content: "other_rule_a, other_rule_b",
+				Token: hclsyntax.Token{
+					Type: hclsyntax.TokenComment,
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 2},
+					},
+				},
+			},
+			Expected: false,
+		},
+		{
 			Name: "not affected (under line)",
 			Annotation: Annotation{
 				Content: "test_rule",
