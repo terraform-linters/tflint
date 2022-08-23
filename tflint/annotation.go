@@ -3,8 +3,10 @@ package tflint
 import (
 	"fmt"
 	"regexp"
+	"strings"
 
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"golang.org/x/exp/slices"
 )
 
 var annotationPattern = regexp.MustCompile(`tflint-ignore: (\S+)`)
@@ -45,7 +47,13 @@ func (a *Annotation) IsAffected(issue *Issue) bool {
 	if a.Token.Range.Filename != issue.Range.Filename {
 		return false
 	}
-	if a.Content == issue.Rule.Name() || a.Content == "all" {
+
+	rules := strings.Split(a.Content, ",")
+	for i, rule := range rules {
+		rules[i] = strings.TrimSpace(rule)
+	}
+
+	if slices.Contains(rules, issue.Rule.Name()) || slices.Contains(rules, "all") {
 		if a.Token.Range.Start.Line == issue.Range.Start.Line {
 			return true
 		}
