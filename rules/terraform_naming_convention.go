@@ -9,6 +9,7 @@ import (
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint-ruleset-terraform/project"
+	"github.com/terraform-linters/tflint-ruleset-terraform/terraform"
 )
 
 // TerraformNamingConventionRule checks whether blocks follow naming convention
@@ -75,7 +76,9 @@ func (r *TerraformNamingConventionRule) Link() string {
 }
 
 // Check checks whether blocks follow naming convention
-func (r *TerraformNamingConventionRule) Check(runner tflint.Runner) error {
+func (r *TerraformNamingConventionRule) Check(rr tflint.Runner) error {
+	runner := rr.(*terraform.Runner)
+
 	path, err := runner.GetModulePath()
 	if err != nil {
 		return err
@@ -198,12 +201,12 @@ func (r *TerraformNamingConventionRule) Check(runner tflint.Runner) error {
 	if err != nil {
 		return err
 	}
-	locals, diags := getLocals(runner)
+	locals, diags := runner.GetLocals()
 	if diags.HasErrors() {
 		return diags
 	}
 	for name, local := range locals {
-		if err := nameValidator.checkBlock(runner, r, localBlockName, name, &local.defRange); err != nil {
+		if err := nameValidator.checkBlock(runner, r, localBlockName, name, &local.DefRange); err != nil {
 			return err
 		}
 	}

@@ -84,3 +84,15 @@ func (r *RuleSet) ApplyConfig(body *hclext.BodyContent) error {
 
 	return nil
 }
+
+// Check runs inspection for each rule by applying Runner.
+func (r *RuleSet) Check(rr tflint.Runner) error {
+	runner := NewRunner(rr)
+
+	for _, rule := range r.EnabledRules {
+		if err := rule.Check(runner); err != nil {
+			return fmt.Errorf("Failed to check `%s` rule: %s", rule.Name(), err)
+		}
+	}
+	return nil
+}

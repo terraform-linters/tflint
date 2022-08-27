@@ -8,6 +8,7 @@ import (
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint-ruleset-terraform/project"
+	"github.com/terraform-linters/tflint-ruleset-terraform/terraform"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -42,7 +43,9 @@ func (r *TerraformRequiredProvidersRule) Link() string {
 }
 
 // Check Checks whether provider required version is set
-func (r *TerraformRequiredProvidersRule) Check(runner tflint.Runner) error {
+func (r *TerraformRequiredProvidersRule) Check(rr tflint.Runner) error {
+	runner := rr.(*terraform.Runner)
+
 	path, err := runner.GetModulePath()
 	if err != nil {
 		return err
@@ -81,7 +84,7 @@ func (r *TerraformRequiredProvidersRule) Check(runner tflint.Runner) error {
 		}
 	}
 
-	providerRefs, diags := getProviderRefs(runner)
+	providerRefs, diags := runner.GetProviderRefs()
 	if diags.HasErrors() {
 		return diags
 	}
@@ -128,7 +131,7 @@ func (r *TerraformRequiredProvidersRule) Check(runner tflint.Runner) error {
 
 		provider, exists := requiredProviders[name]
 		if !exists {
-			if err := runner.EmitIssue(r, fmt.Sprintf(`Missing version constraint for provider "%s" in "required_providers"`, name), ref.defRange); err != nil {
+			if err := runner.EmitIssue(r, fmt.Sprintf(`Missing version constraint for provider "%s" in "required_providers"`, name), ref.DefRange); err != nil {
 				return err
 			}
 			continue
@@ -163,7 +166,7 @@ func (r *TerraformRequiredProvidersRule) Check(runner tflint.Runner) error {
 					continue
 				}
 			}
-			if err := runner.EmitIssue(r, fmt.Sprintf(`Missing version constraint for provider "%s" in "required_providers"`, name), ref.defRange); err != nil {
+			if err := runner.EmitIssue(r, fmt.Sprintf(`Missing version constraint for provider "%s" in "required_providers"`, name), ref.DefRange); err != nil {
 				return err
 			}
 		}

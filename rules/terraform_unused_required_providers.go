@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint-ruleset-terraform/project"
+	"github.com/terraform-linters/tflint-ruleset-terraform/terraform"
 )
 
 // TerraformUnusedRequiredProvidersRule checks whether required providers are used in the module
@@ -39,7 +40,9 @@ func (r *TerraformUnusedRequiredProvidersRule) Link() string {
 }
 
 // Check checks whether required providers are used
-func (r *TerraformUnusedRequiredProvidersRule) Check(runner tflint.Runner) error {
+func (r *TerraformUnusedRequiredProvidersRule) Check(rr tflint.Runner) error {
+	runner := rr.(*terraform.Runner)
+
 	path, err := runner.GetModulePath()
 	if err != nil {
 		return err
@@ -49,7 +52,7 @@ func (r *TerraformUnusedRequiredProvidersRule) Check(runner tflint.Runner) error
 		return nil
 	}
 
-	providerRefs, diags := getProviderRefs(runner)
+	providerRefs, diags := runner.GetProviderRefs()
 	if diags.HasErrors() {
 		return diags
 	}

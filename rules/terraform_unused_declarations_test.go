@@ -195,13 +195,13 @@ output "d" {
 		}
 
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{filename: tc.Content})
+			runner := testRunner(t, map[string]string{filename: tc.Content})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/go-getter"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint-ruleset-terraform/project"
+	"github.com/terraform-linters/tflint-ruleset-terraform/terraform"
 )
 
 // TerraformModulePinnedSourceRule checks unpinned or default version module source
@@ -53,7 +54,9 @@ func (r *TerraformModulePinnedSourceRule) Link() string {
 
 // Check checks if module source version is pinned
 // Note that this rule is valid only for Git or Mercurial source
-func (r *TerraformModulePinnedSourceRule) Check(runner tflint.Runner) error {
+func (r *TerraformModulePinnedSourceRule) Check(rr tflint.Runner) error {
+	runner := rr.(*terraform.Runner)
+
 	path, err := runner.GetModulePath()
 	if err != nil {
 		return err
@@ -69,18 +72,13 @@ func (r *TerraformModulePinnedSourceRule) Check(runner tflint.Runner) error {
 		return err
 	}
 
-	body, err := runner.GetModuleContent(moduleCallSchema, &tflint.GetModuleContentOption{IncludeNotCreated: true})
-	if err != nil {
-		return err
+	calls, diags := runner.GetModuleCalls()
+	if diags.HasErrors() {
+		return diags
 	}
 
-	for _, block := range body.Blocks {
-		module, diags := decodeModuleCall(block)
-		if diags.HasErrors() {
-			return diags
-		}
-
-		if err := r.checkModule(runner, module, config); err != nil {
+	for _, call := range calls {
+		if err := r.checkModule(runner, call, config); err != nil {
 			return err
 		}
 	}
@@ -88,8 +86,8 @@ func (r *TerraformModulePinnedSourceRule) Check(runner tflint.Runner) error {
 	return nil
 }
 
-func (r *TerraformModulePinnedSourceRule) checkModule(runner tflint.Runner, module *moduleCall, config terraformModulePinnedSourceRuleConfig) error {
-	source, err := getter.Detect(module.source, filepath.Dir(module.defRange.Filename), []getter.Detector{
+func (r *TerraformModulePinnedSourceRule) checkModule(runner tflint.Runner, module *terraform.ModuleCall, config terraformModulePinnedSourceRuleConfig) error {
+	source, err := getter.Detect(module.Source, filepath.Dir(module.DefRange.Filename), []getter.Detector{
 		// https://github.com/hashicorp/terraform/blob/51b0aee36cc2145f45f5b04051a01eb6eb7be8bf/internal/getmodules/getter.go#L30-L52
 		new(getter.GitHubDetector),
 		new(getter.GitDetector),
@@ -127,8 +125,8 @@ func (r *TerraformModulePinnedSourceRule) checkModule(runner tflint.Runner, modu
 	if u.Hostname() == "" {
 		return runner.EmitIssue(
 			r,
-			fmt.Sprintf("Module source %q is not a valid URL", module.source),
-			module.sourceAttr.Expr.Range(),
+			fmt.Sprintf("Module source %q is not a valid URL", module.Source),
+			module.SourceAttr.Expr.Range(),
 		)
 	}
 
@@ -144,12 +142,12 @@ func (r *TerraformModulePinnedSourceRule) checkModule(runner tflint.Runner, modu
 
 	return runner.EmitIssue(
 		r,
-		fmt.Sprintf(`Module source "%s" is not pinned`, module.source),
-		module.sourceAttr.Expr.Range(),
+		fmt.Sprintf(`Module source "%s" is not pinned`, module.Source),
+		module.SourceAttr.Expr.Range(),
 	)
 }
 
-func (r *TerraformModulePinnedSourceRule) checkRevision(runner tflint.Runner, module *moduleCall, config terraformModulePinnedSourceRuleConfig, key string, value string) error {
+func (r *TerraformModulePinnedSourceRule) checkRevision(runner tflint.Runner, module *terraform.ModuleCall, config terraformModulePinnedSourceRuleConfig, key string, value string) error {
 	switch config.Style {
 	// The "flexible" style requires a revision that is not a default branch
 	case "flexible":
@@ -157,8 +155,8 @@ func (r *TerraformModulePinnedSourceRule) checkRevision(runner tflint.Runner, mo
 			if value == branch {
 				return runner.EmitIssue(
 					r,
-					fmt.Sprintf("Module source \"%s\" uses a default branch as %s (%s)", module.source, key, branch),
-					module.sourceAttr.Expr.Range(),
+					fmt.Sprintf("Module source \"%s\" uses a default branch as %s (%s)", module.Source, key, branch),
+					module.SourceAttr.Expr.Range(),
 				)
 			}
 		}
@@ -168,8 +166,8 @@ func (r *TerraformModulePinnedSourceRule) checkRevision(runner tflint.Runner, mo
 		if err != nil {
 			return runner.EmitIssue(
 				r,
-				fmt.Sprintf("Module source \"%s\" uses a %s which is not a semantic version string", module.source, key),
-				module.sourceAttr.Expr.Range(),
+				fmt.Sprintf("Module source \"%s\" uses a %s which is not a semantic version string", module.Source, key),
+				module.SourceAttr.Expr.Range(),
 			)
 		}
 	default:

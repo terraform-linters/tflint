@@ -303,13 +303,13 @@ data "aws_eip" "foo" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -429,13 +429,13 @@ data "aws_eip" "camelCase" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -509,13 +509,13 @@ data "aws_eip" "camelCase" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -773,13 +773,13 @@ locals {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -908,13 +908,13 @@ locals {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -995,13 +995,13 @@ locals {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -1259,13 +1259,13 @@ module "foo" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -1394,13 +1394,13 @@ module "camelCase" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -1481,13 +1481,13 @@ module "camelCase" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -1745,13 +1745,13 @@ output "foo" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -1880,13 +1880,13 @@ output "camelCase" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -1967,13 +1967,13 @@ output "camelCase" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -2224,13 +2224,13 @@ resource "aws_eip" "foo" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -2350,13 +2350,13 @@ resource "aws_eip" "camelCase" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -2430,13 +2430,13 @@ resource "aws_eip" "camelCase" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -2694,13 +2694,13 @@ variable "foo" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -2829,13 +2829,13 @@ variable "camelCase" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -2916,13 +2916,13 @@ variable "camelCase" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"tests.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }

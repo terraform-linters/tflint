@@ -250,13 +250,13 @@ func Test_TerraformUnusedRequiredProvidersRule(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"module.tf": tc.Content})
+			runner := testRunner(t, map[string]string{"module.tf": tc.Content})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }

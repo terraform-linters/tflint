@@ -181,13 +181,13 @@ module "m" {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"module.tf": tc.Content, ".tflint.hcl": tc.Config})
+			runner := testRunner(t, map[string]string{"module.tf": tc.Content, ".tflint.hcl": tc.Config})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, tc.Expected, runner.Issues)
+			helper.AssertIssues(t, tc.Expected, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }
@@ -220,13 +220,13 @@ func TestTerraformModuleVersion_NonRegistry(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
 			content := fmt.Sprintf(testTerraformModuleVersionNonRegistrySource, tc.Source)
-			runner := helper.TestRunner(t, map[string]string{"module.tf": content})
+			runner := testRunner(t, map[string]string{"module.tf": content})
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatalf("Unexpected error occurred: %s", err)
 			}
 
-			helper.AssertIssues(t, helper.Issues{}, runner.Issues)
+			helper.AssertIssues(t, helper.Issues{}, runner.Runner.(*helper.Runner).Issues)
 		})
 	}
 }

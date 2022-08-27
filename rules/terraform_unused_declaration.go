@@ -9,6 +9,7 @@ import (
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint-ruleset-terraform/project"
+	"github.com/terraform-linters/tflint-ruleset-terraform/terraform"
 )
 
 // TerraformUnusedDeclarationsRule checks whether variables, data sources, or locals are declared but unused
@@ -19,7 +20,7 @@ type TerraformUnusedDeclarationsRule struct {
 type declarations struct {
 	Variables     map[string]*hclext.Block
 	DataResources map[string]*hclext.Block
-	Locals        map[string]*local
+	Locals        map[string]*terraform.Local
 }
 
 // NewTerraformUnusedDeclarationsRule returns a new rule
@@ -48,7 +49,9 @@ func (r *TerraformUnusedDeclarationsRule) Link() string {
 }
 
 // Check emits issues for any variables, locals, and data sources that are declared but not used
-func (r *TerraformUnusedDeclarationsRule) Check(runner tflint.Runner) error {
+func (r *TerraformUnusedDeclarationsRule) Check(rr tflint.Runner) error {
+	runner := rr.(*terraform.Runner)
+
 	path, err := runner.GetModulePath()
 	if err != nil {
 		return err
@@ -91,8 +94,8 @@ func (r *TerraformUnusedDeclarationsRule) Check(runner tflint.Runner) error {
 	for _, local := range decl.Locals {
 		if err := runner.EmitIssue(
 			r,
-			fmt.Sprintf(`local.%s is declared but not used`, local.name),
-			local.defRange,
+			fmt.Sprintf(`local.%s is declared but not used`, local.Name),
+			local.DefRange,
 		); err != nil {
 			return err
 		}
@@ -101,11 +104,11 @@ func (r *TerraformUnusedDeclarationsRule) Check(runner tflint.Runner) error {
 	return nil
 }
 
-func (r *TerraformUnusedDeclarationsRule) declarations(runner tflint.Runner) (*declarations, error) {
+func (r *TerraformUnusedDeclarationsRule) declarations(runner *terraform.Runner) (*declarations, error) {
 	decl := &declarations{
 		Variables:     map[string]*hclext.Block{},
 		DataResources: map[string]*hclext.Block{},
-		Locals:        map[string]*local{},
+		Locals:        map[string]*terraform.Local{},
 	}
 
 	body, err := runner.GetModuleContent(&hclext.BodySchema{
@@ -134,7 +137,7 @@ func (r *TerraformUnusedDeclarationsRule) declarations(runner tflint.Runner) (*d
 		}
 	}
 
-	locals, diags := getLocals(runner)
+	locals, diags := runner.GetLocals()
 	if diags.HasErrors() {
 		return decl, diags
 	}

@@ -8,8 +8,29 @@ import (
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
-	"github.com/terraform-linters/tflint-ruleset-terraform/rules"
 )
+
+type testRule struct {
+	tflint.DefaultRule
+	name string
+}
+
+func (r *testRule) Name() string              { return r.name }
+func (r *testRule) Enabled() bool             { return true }
+func (r *testRule) Severity() tflint.Severity { return tflint.ERROR }
+func (r *testRule) Check(tflint.Runner) error { return nil }
+
+type terraformCommentSyntaxRule struct {
+	testRule
+}
+
+type terraformDeprecatedIndexRule struct {
+	testRule
+}
+
+type terraformDeprecatedInterpolationRule struct {
+	testRule
+}
 
 func TestApplyConfig(t *testing.T) {
 	mustParseExpr := func(input string) hcl.Expression {
@@ -146,13 +167,13 @@ func TestApplyConfig(t *testing.T) {
 			ruleset := &RuleSet{
 				PresetRules: map[string][]tflint.Rule{
 					"all": {
-						rules.NewTerraformCommentSyntaxRule(),
-						rules.NewTerraformDeprecatedIndexRule(),
-						rules.NewTerraformDeprecatedInterpolationRule(),
+						&terraformCommentSyntaxRule{testRule: testRule{name: "terraform_comment_syntax"}},
+						&terraformDeprecatedIndexRule{testRule: testRule{name: "terraform_deprecated_index"}},
+						&terraformDeprecatedInterpolationRule{testRule: testRule{name: "terraform_deprecated_interpolation"}},
 					},
 					"recommended": {
-						rules.NewTerraformCommentSyntaxRule(),
-						rules.NewTerraformDeprecatedIndexRule(),
+						&terraformCommentSyntaxRule{testRule: testRule{name: "terraform_comment_syntax"}},
+						&terraformDeprecatedIndexRule{testRule: testRule{name: "terraform_deprecated_index"}},
 					},
 				},
 				rulesetConfig: &Config{},
