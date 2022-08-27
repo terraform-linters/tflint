@@ -28,7 +28,7 @@ func (r *AwsS3BucketWithConfigExampleRule) Name() string {
 
 // Enabled returns whether the rule is enabled by default
 func (r *AwsS3BucketWithConfigExampleRule) Enabled() bool {
-	return false
+	return true
 }
 
 // Severity returns the rule severity

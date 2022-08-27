@@ -19,6 +19,7 @@ func main() {
 				rules.NewAwsInstanceMapEvalExampleRule(),
 				rules.NewAwsS3BucketWithConfigExampleRule(),
 				rules.NewAwsRoute53RecordEvalOnRootCtxExampleRule(),
+				rules.NewAwsDBInstanceWithDefaultConfigExampleRule(),
 			},
 		},
 	})
