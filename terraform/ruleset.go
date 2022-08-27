@@ -19,6 +19,14 @@ type RuleSet struct {
 	rulesetConfig *Config
 }
 
+func (r *RuleSet) RuleNames() []string {
+	names := make([]string, len(r.PresetRules["all"]))
+	for idx, rule := range r.PresetRules["all"] {
+		names[idx] = rule.Name()
+	}
+	return names
+}
+
 func (r *RuleSet) ConfigSchema() *hclext.BodySchema {
 	r.rulesetConfig = &Config{}
 	return hclext.ImpliedBodySchema(r.rulesetConfig)
