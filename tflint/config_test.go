@@ -110,6 +110,10 @@ plugin "baz" {
 						Name:    "baz",
 						Enabled: true,
 					},
+					"terraform": {
+						Name:    "terraform",
+						Enabled: true,
+					},
 				},
 			},
 			errCheck: neverHappend,
@@ -118,7 +122,7 @@ plugin "baz" {
 			name:     "empty file",
 			file:     "empty.hcl",
 			files:    map[string]string{"empty.hcl": ""},
-			want:     EmptyConfig(),
+			want:     EmptyConfig().enableBundledPlugin(),
 			errCheck: neverHappend,
 		},
 		{
@@ -139,14 +143,45 @@ config {
 				Variables:         []string{},
 				DisabledByDefault: true,
 				Rules:             map[string]*RuleConfig{},
-				Plugins:           map[string]*PluginConfig{},
+				Plugins: map[string]*PluginConfig{
+					"terraform": {
+						Name:    "terraform",
+						Enabled: true,
+					},
+				},
 			},
 			errCheck: neverHappend,
 		},
 		{
 			name:     "no config",
 			file:     ".tflint.hcl",
-			want:     EmptyConfig(),
+			want:     EmptyConfig().enableBundledPlugin(),
+			errCheck: neverHappend,
+		},
+		{
+			name: "terraform plugin",
+			file: "config.hcl",
+			files: map[string]string{
+				"config.hcl": `
+plugin "terraform" {
+  enabled = false
+}`,
+			},
+			want: &Config{
+				Module:            false,
+				Force:             false,
+				IgnoreModules:     map[string]bool{},
+				Varfiles:          []string{},
+				Variables:         []string{},
+				DisabledByDefault: false,
+				Rules:             map[string]*RuleConfig{},
+				Plugins: map[string]*PluginConfig{
+					"terraform": {
+						Name:    "terraform",
+						Enabled: false,
+					},
+				},
+			},
 			errCheck: neverHappend,
 		},
 		{

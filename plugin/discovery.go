@@ -18,6 +18,8 @@ import (
 
 // Discovery searches and launches plugins according the passed configuration.
 // If the plugin is not enabled, skip without starting.
+// The Terraform Language plugin is treated specially. Plugins for which no version
+// is specified will launch the bundled plugin instead of returning an error.
 func Discovery(config *tflint.Config) (*Plugin, error) {
 	clients := map[string]*plugin.Client{}
 	rulesets := map[string]*host2plugin.GRPCClient{}
@@ -27,14 +29,23 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 		pluginPath, err := FindPluginPath(installCfg)
 		var cmd *exec.Cmd
 		if os.IsNotExist(err) {
-			if installCfg.ManuallyInstalled() {
-				pluginDir, err := getPluginDir(config)
+			if pluginCfg.Name == "terraform" && installCfg.ManuallyInstalled() {
+				log.Print("[INFO] Plugin `terraform` is not installed, but the bundled plugin is available.")
+				self, err := os.Executable()
 				if err != nil {
 					return nil, err
 				}
-				return nil, fmt.Errorf("Plugin `%s` not found in %s", pluginCfg.Name, pluginDir)
+				cmd = exec.Command(self, "--act-as-bundled-plugin")
+			} else {
+				if installCfg.ManuallyInstalled() {
+					pluginDir, err := getPluginDir(config)
+					if err != nil {
+						return nil, err
+					}
+					return nil, fmt.Errorf("Plugin `%s` not found in %s", pluginCfg.Name, pluginDir)
+				}
+				return nil, fmt.Errorf("Plugin `%s` not found. Did you run `tflint --init`?", pluginCfg.Name)
 			}
-			return nil, fmt.Errorf("Plugin `%s` not found. Did you run `tflint --init`?", pluginCfg.Name)
 		} else {
 			cmd = exec.Command(pluginPath)
 		}

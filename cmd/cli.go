@@ -97,6 +97,8 @@ func (cli *CLI) Run(args []string) int {
 		return cli.init(opts)
 	case opts.Langserver:
 		return cli.startLanguageServer(opts.Config, opts.toConfig())
+	case opts.ActAsBundledPlugin:
+		return cli.actAsBundledPlugin()
 	default:
 		return cli.inspect(opts, dir, filterFiles)
 	}

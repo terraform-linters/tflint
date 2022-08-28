@@ -7,7 +7,6 @@ import (
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint/plugin"
-	"github.com/terraform-linters/tflint/rules"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -51,7 +50,7 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	}
 	defer rulesetPlugin.Clean()
 
-	rulesets := []tflint.RuleSet{&rules.RuleSet{}}
+	rulesets := []tflint.RuleSet{}
 	config := cfg.ToPluginConfig()
 	for name, ruleset := range rulesetPlugin.RuleSets {
 		if err := ruleset.ApplyGlobalConfig(config); err != nil {
@@ -86,16 +85,6 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	}
 
 	// Run inspection
-	for _, rule := range rules.NewRules(cfg) {
-		for _, runner := range runners {
-			err := rule.Check(runner)
-			if err != nil {
-				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to check `%s` rule; %w", rule.Name(), err), cli.loader.Sources())
-				return ExitCodeError
-			}
-		}
-	}
-
 	for _, ruleset := range rulesetPlugin.RuleSets {
 		for _, runner := range runners {
 			err = ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files()))

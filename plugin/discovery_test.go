@@ -33,7 +33,9 @@ func Test_Discovery(t *testing.T) {
 			},
 		},
 	})
-	defer plugin.Clean()
+	if plugin != nil {
+		defer plugin.Clean()
+	}
 
 	if err != nil {
 		t.Fatalf("Unexpected error occurred %s", err)
@@ -74,7 +76,9 @@ func Test_Discovery_local(t *testing.T) {
 			},
 		},
 	})
-	defer plugin.Clean()
+	if plugin != nil {
+		defer plugin.Clean()
+	}
 
 	if err != nil {
 		t.Fatalf("Unexpected error occurred %s", err)
@@ -108,7 +112,9 @@ func Test_Discovery_envVar(t *testing.T) {
 			},
 		},
 	})
-	defer plugin.Clean()
+	if plugin != nil {
+		defer plugin.Clean()
+	}
 
 	if err != nil {
 		t.Fatalf("Unexpected error occurred %s", err)
@@ -140,7 +146,9 @@ func Test_Discovery_pluginDirConfig(t *testing.T) {
 			},
 		},
 	})
-	defer plugin.Clean()
+	if plugin != nil {
+		defer plugin.Clean()
+	}
 
 	if err != nil {
 		t.Fatalf("Unexpected error occurred %s", err)
@@ -262,6 +270,46 @@ func Test_Discovery_notFoundForAutoInstallation(t *testing.T) {
 		t.Fatal("An error should have occurred, but it did not occur")
 	}
 	expected := "Plugin `foo` not found. Did you run `tflint --init`?"
+	if err.Error() != expected {
+		t.Fatalf("Error message not matched: want=%s, got=%s", expected, err.Error())
+	}
+}
+
+func Test_Discovery_bundledPluginWithVersion(t *testing.T) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		if err = os.Chdir(cwd); err != nil {
+			t.Fatal(err)
+		}
+	}()
+
+	err = os.Chdir(filepath.Join(cwd, "test-fixtures", "no_plugins"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	original := PluginRoot
+	PluginRoot = filepath.Join(cwd, "test-fixtures", "no_plugins")
+	defer func() { PluginRoot = original }()
+
+	_, err = Discovery(&tflint.Config{
+		Plugins: map[string]*tflint.PluginConfig{
+			"terraform": {
+				Name:    "terraform",
+				Enabled: true,
+				Source:  "github.com/terraform-linters/tflint-ruleset-terraform",
+				Version: "0.1.0",
+			},
+		},
+	})
+
+	if err == nil {
+		t.Fatal("An error should have occurred, but it did not occur")
+	}
+	expected := "Plugin `terraform` not found. Did you run `tflint --init`?"
 	if err.Error() != expected {
 		t.Fatalf("Error message not matched: want=%s, got=%s", expected, err.Error())
 	}

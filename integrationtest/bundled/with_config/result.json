@@ -1,0 +1,65 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "terraform_required_version",
+        "severity": "warning",
+        "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.0/docs/rules/terraform_required_version.md"
+      },
+      "message": "terraform \"required_version\" attribute is required",
+      "range": {
+        "filename": "",
+        "start": {
+          "line": 0,
+          "column": 0
+        },
+        "end": {
+          "line": 0,
+          "column": 0
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "terraform_documented_variables",
+        "severity": "info",
+        "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.0/docs/rules/terraform_documented_variables.md"
+      },
+      "message": "`instance_type` variable has no description",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 1,
+          "column": 1
+        },
+        "end": {
+          "line": 1,
+          "column": 25
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "terraform_unused_declarations",
+        "severity": "warning",
+        "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.0/docs/rules/terraform_unused_declarations.md"
+      },
+      "message": "variable \"instance_type\" is declared but not used",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 1,
+          "column": 1
+        },
+        "end": {
+          "line": 1,
+          "column": 25
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}
