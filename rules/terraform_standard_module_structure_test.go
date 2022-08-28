@@ -15,8 +15,15 @@ func Test_TerraformStandardModuleStructureRule(t *testing.T) {
 		Expected helper.Issues
 	}{
 		{
-			Name:    "empty module",
-			Content: map[string]string{},
+			Name:     "empty module",
+			Content:  map[string]string{},
+			Expected: helper.Issues{},
+		},
+		{
+			Name: "non-standard module",
+			Content: map[string]string{
+				"foo.tf": "",
+			},
 			Expected: helper.Issues{
 				{
 					Rule:    NewTerraformStandardModuleStructureRule(),

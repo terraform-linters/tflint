@@ -48,6 +48,15 @@ func (r *TerraformRequiredVersionRule) Check(runner tflint.Runner) error {
 		return nil
 	}
 
+	files, err := runner.GetFiles()
+	if err != nil {
+		return err
+	}
+	if len(files) == 0 {
+		// This rule does not run on non-Terraform directory.
+		return nil
+	}
+
 	body, err := runner.GetModuleContent(&hclext.BodySchema{
 		Blocks: []hclext.BlockSchema{
 			{

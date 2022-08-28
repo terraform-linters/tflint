@@ -13,6 +13,10 @@ func Test_TerraformRequiredVersionRule(t *testing.T) {
 		Expected helper.Issues
 	}{
 		{
+			Name:     "empty module",
+			Expected: helper.Issues{},
+		},
+		{
 			Name: "unset",
 			Content: `
 terraform {}
@@ -55,7 +59,11 @@ terraform {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			runner := helper.TestRunner(t, map[string]string{"module.tf": tc.Content})
+			files := map[string]string{}
+			if tc.Content != "" {
+				files = map[string]string{"module.tf": tc.Content}
+			}
+			runner := helper.TestRunner(t, files)
 
 			if err := rule.Check(runner); err != nil {
 				t.Fatal(err)
