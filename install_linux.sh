@@ -40,6 +40,10 @@ get_latest_release() {
     sed -E 's/.*"([^"]+)".*/\1/'                                                          # Pluck JSON value
 }
 
+download_path=$(mktemp -d -t tflint.XXXXXXXXXX)
+download_zip="${download_path}/tflint.zip"
+download_executable="${download_path}/tflint"
+
 if [ -z "${TFLINT_VERSION}" ] || [ "${TFLINT_VERSION}" == "latest" ]; then
   echo "Looking up the latest version ..."
   version=$(get_latest_release)
@@ -48,7 +52,7 @@ else
 fi
 
 echo "Downloading TFLint $version"
-curl --fail --silent -L -o /tmp/tflint.zip "https://github.com/terraform-linters/tflint/releases/download/${version}/tflint_${os}.zip"
+curl --fail --silent -L -o "${download_zip}" "https://github.com/terraform-linters/tflint/releases/download/${version}/tflint_${os}.zip"
 retVal=$?
 if [ $retVal -ne 0 ]; then
   echo "Failed to download tflint_${os}.zip"
@@ -58,12 +62,12 @@ else
 fi
 
 echo -e "\n\n===================================================="
-echo "Unpacking /tmp/tflint.zip ..."
-unzip -u /tmp/tflint.zip -d /tmp/
+echo "Unpacking ${download_zip} ..."
+unzip -u "${download_zip}" -d "${download_path}"
 if [[ $os == "windows"* ]]; then
   dest="${TFLINT_INSTALL_PATH:-/bin}/"
-  echo "Installing /tmp/tflint to ${dest}..."
-  mv /tmp/tflint "$dest"
+  echo "Installing ${download_executable} to ${dest} ..."
+  mv "${download_executable}" "$dest"
   retVal=$?
   if [ $retVal -ne 0 ]; then
     echo "Failed to install tflint"
@@ -73,16 +77,15 @@ if [[ $os == "windows"* ]]; then
   fi
 else
   dest="${TFLINT_INSTALL_PATH:-/usr/local/bin}/"
-  echo "Installing /tmp/tflint to ${dest}..."
-  
+  echo "Installing ${download_executable} to ${dest} ..."
+
   if [[ -w "$dest" ]]; then SUDO=""; else
     # current user does not have write access to install directory
     SUDO="sudo";
   fi
 
-  
   $SUDO mkdir -p "$dest"
-  $SUDO install -c -v /tmp/tflint "$dest"
+  $SUDO install -c -v "${download_executable}" "$dest"
   retVal=$?
   if [ $retVal -ne 0 ]; then
     echo "Failed to install tflint"
@@ -90,8 +93,8 @@ else
   fi
 fi
 
-echo "Cleaning /tmp/tflint.zip and /tmp/tflint ..."
-rm -f /tmp/tflint.zip /tmp/tflint
+echo "Cleaning temporary downloaded files directory ${download_path} ..."
+rm -rf "${download_path}"
 
 echo -e "\n\n===================================================="
 echo "Current tflint version"
