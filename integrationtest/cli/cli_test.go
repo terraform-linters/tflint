@@ -1,0 +1,300 @@
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+
+	"github.com/fatih/color"
+	"github.com/terraform-linters/tflint/cmd"
+	"github.com/terraform-linters/tflint/tflint"
+)
+
+func TestIntegration(t *testing.T) {
+	tests := []struct {
+		name    string
+		command string
+		dir     string
+		status  int
+		stdout  string
+		stderr  string
+	}{
+		{
+			name:    "print version",
+			command: "./tflint --version",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeOK,
+			stdout:  fmt.Sprintf("TFLint version %s", tflint.Version),
+		},
+		{
+			name:    "print help",
+			command: "./tflint --help",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeOK,
+			stdout:  "Application Options:",
+		},
+		{
+			name:    "no options",
+			command: "./tflint",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeOK,
+			stdout:  "",
+		},
+		{
+			name:    "specify format",
+			command: "./tflint --format json",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeOK,
+			stdout:  "[]",
+		},
+		{
+			name:    "`--force` option with no issues",
+			command: "./tflint --force",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeOK,
+			stdout:  "",
+		},
+		{
+			name:    "`--only` option",
+			command: "./tflint --only aws_instance_example_type",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeOK,
+			stdout:  "",
+		},
+		{
+			name:    "loading errors are occurred",
+			command: "./tflint",
+			dir:     "load_errors",
+			status:  cmd.ExitCodeError,
+			stderr:  "Failed to load configurations;",
+		},
+		{
+			name:    "removed `debug` options",
+			command: "./tflint --debug",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "`debug` option was removed in v0.8.0. Please set `TFLINT_LOG` environment variables instead",
+		},
+		{
+			name:    "removed `fast` option",
+			command: "./tflint --fast",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "`fast` option was removed in v0.9.0. The `aws_instance_invalid_ami` rule is already fast enough",
+		},
+		{
+			name:    "removed `--error-with-issues` option",
+			command: "./tflint --error-with-issues",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "`error-with-issues` option was removed in v0.9.0. The behavior is now default",
+		},
+		{
+			name:    "removed `--quiet` option",
+			command: "./tflint --quiet",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "`quiet` option was removed in v0.11.0. The behavior is now default",
+		},
+		{
+			name:    "removed `--ignore-rule` option",
+			command: "./tflint --ignore-rule aws_instance_example_type",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "`ignore-rule` option was removed in v0.12.0. Please use `--disable-rule` instead",
+		},
+		{
+			name:    "removed `--deep` option",
+			command: "./tflint --deep",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "`deep` option was removed in v0.23.0. Deep checking is now a feature of the AWS plugin, so please configure the plugin instead",
+		},
+		{
+			name:    "removed `--aws-access-key` option",
+			command: "./tflint --aws-access-key AWS_ACCESS_KEY_ID",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "`aws-access-key` option was removed in v0.23.0. AWS rules are provided by the AWS plugin, so please configure the plugin instead",
+		},
+		{
+			name:    "removed `--aws-secret-key` option",
+			command: "./tflint --aws-secret-key AWS_SECRET_ACCESS_KEY",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "`aws-secret-key` option was removed in v0.23.0. AWS rules are provided by the AWS plugin, so please configure the plugin instead",
+		},
+		{
+			name:    "removed `--aws-profile` option",
+			command: "./tflint --aws-profile AWS_PROFILE",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "`aws-profile` option was removed in v0.23.0. AWS rules are provided by the AWS plugin, so please configure the plugin instead",
+		},
+		{
+			name:    "removed `--aws-creds-file` option",
+			command: "./tflint --aws-creds-file FILE",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "`aws-creds-file` option was removed in v0.23.0. AWS rules are provided by the AWS plugin, so please configure the plugin instead",
+		},
+		{
+			name:    "removed `--aws-region` option",
+			command: "./tflint --aws-region us-east-1",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "`aws-region` option was removed in v0.23.0. AWS rules are provided by the AWS plugin, so please configure the plugin instead",
+		},
+		{
+			name:    "invalid options",
+			command: "./tflint --unknown",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "`unknown` is unknown option. Please run `tflint --help`",
+		},
+		{
+			name:    "invalid format",
+			command: "./tflint --format awesome",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "Invalid value `awesome' for option",
+		},
+		{
+			name:    "invalid rule name",
+			command: "./tflint --enable-rule nosuchrule",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "Rule not found: nosuchrule",
+		},
+		{
+			name:    "issues found",
+			command: "./tflint",
+			dir:     "issues_found",
+			status:  cmd.ExitCodeIssuesFound,
+			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is t2.micro")),
+		},
+		{
+			name:    "`--force` option with issues",
+			command: "./tflint --force",
+			dir:     "issues_found",
+			status:  cmd.ExitCodeOK,
+			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is t2.micro")),
+		},
+		{
+			name:    "`--no-color` option",
+			command: "./tflint --no-color",
+			dir:     "issues_found",
+			status:  cmd.ExitCodeIssuesFound,
+			stdout:  "instance type is t2.micro (aws_instance_example_type)",
+		},
+		{
+			name:    "checking errors are occurred",
+			command: "./tflint",
+			dir:     "check_errors",
+			status:  cmd.ExitCodeError,
+			stderr:  "Failed to check `aws_cloudformation_stack_error` rule: an error occurred in Check",
+		},
+		{
+			name:    "files arguments",
+			command: "./tflint empty.tf",
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeOK,
+			stdout:  "", // main.tf is ignored
+		},
+		{
+			name:    "file not found",
+			command: "./tflint not_found.tf",
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeError,
+			stderr:  "Failed to load `not_found.tf`: File not found",
+		},
+		{
+			name:    "not Terraform configuration",
+			command: "./tflint README.md",
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeError,
+			stderr:  "Failed to load `README.md`: File is not a target of Terraform",
+		},
+		{
+			name:    "multiple files",
+			command: "./tflint empty.tf main.tf",
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeIssuesFound,
+			// main.tf is not ignored
+			stdout: fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is t2.micro")),
+		},
+		{
+			name:    "directory argument",
+			command: "./tflint subdir",
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeIssuesFound,
+			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is m5.2xlarge")),
+		},
+		{
+			name:    "file under the directory",
+			command: fmt.Sprintf("./tflint %s", filepath.Join("subdir", "main.tf")),
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeIssuesFound,
+			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is m5.2xlarge")),
+		},
+		{
+			name:    "multiple directories",
+			command: "./tflint subdir ./",
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeError,
+			stderr:  "Failed to load `subdir`: Multiple arguments are not allowed when passing a directory",
+		},
+		{
+			name:    "file and directory",
+			command: "./tflint main.tf subdir",
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeError,
+			stderr:  "Failed to load `subdir`: Multiple arguments are not allowed when passing a directory",
+		},
+		{
+			name:    "multiple files in different directories",
+			command: fmt.Sprintf("./tflint main.tf %s", filepath.Join("subdir", "main.tf")),
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeError,
+			stderr:  fmt.Sprintf("Failed to load `%s`: Multiple files in different directories are not allowed", filepath.Join("subdir", "main.tf")),
+		},
+	}
+
+	dir, _ := os.Getwd()
+	defaultNoColor := color.NoColor
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			testDir := filepath.Join(dir, test.dir)
+			defer func() {
+				if err := os.Chdir(dir); err != nil {
+					t.Fatal(err)
+				}
+				// Reset global color option
+				color.NoColor = defaultNoColor
+			}()
+			if err := os.Chdir(testDir); err != nil {
+				t.Fatal(err)
+			}
+
+			outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
+			cli := cmd.NewCLI(outStream, errStream)
+			args := strings.Split(test.command, " ")
+
+			got := cli.Run(args)
+
+			if got != test.status {
+				t.Errorf("expected status is %d, but got %d", test.status, got)
+			}
+			if !strings.Contains(outStream.String(), test.stdout) || (test.stdout == "" && outStream.String() != "") {
+				t.Errorf("stdout did not contain expected\n\texpected: %s\n\tgot: %s", test.stdout, outStream.String())
+			}
+			if !strings.Contains(errStream.String(), test.stderr) || (test.stderr == "" && errStream.String() != "") {
+				t.Errorf("stderr did not contain expected\n\texpected: %s\n\tgot: %s", test.stderr, errStream.String())
+			}
+		})
+	}
+}

@@ -28,7 +28,7 @@ type CLI struct {
 	// outStream and errStream are the stdout and stderr
 	// to write message from the CLI.
 	outStream, errStream io.Writer
-	loader               tflint.AbstractLoader
+	loader               *tflint.Loader
 	formatter            *formatter.Formatter
 	testMode             bool
 }

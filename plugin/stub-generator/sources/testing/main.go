@@ -20,6 +20,7 @@ func main() {
 				rules.NewAwsS3BucketWithConfigExampleRule(),
 				rules.NewAwsRoute53RecordEvalOnRootCtxExampleRule(),
 				rules.NewAwsDBInstanceWithDefaultConfigExampleRule(),
+				rules.NewAwsCloudFormationStackErrorRule(),
 			},
 		},
 	})

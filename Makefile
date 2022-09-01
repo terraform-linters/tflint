@@ -14,7 +14,7 @@ install:
 	go install
 
 e2e: prepare
-	go test -timeout 5m ./integrationtest/inspection ./integrationtest/langserver ./integrationtest/init
+	go test -timeout 5m ./integrationtest/inspection ./integrationtest/langserver ./integrationtest/init ./integrationtest/cli
 
 lint:
 	golangci-lint run ./...

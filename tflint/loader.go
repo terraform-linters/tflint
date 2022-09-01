@@ -17,17 +17,6 @@ import (
 	"github.com/terraform-linters/tflint/terraform/addrs"
 )
 
-//go:generate go run github.com/golang/mock/mockgen -source loader.go -destination loader_mock.go -package tflint -self_package github.com/terraform-linters/tflint/tflint
-
-// AbstractLoader is a loader interface for mock
-type AbstractLoader interface {
-	LoadConfig(string) (*terraform.Config, error)
-	LoadAnnotations(string) (map[string]Annotations, error)
-	LoadValuesFiles(...string) ([]terraform.InputValues, error)
-	Sources() map[string][]byte
-	Files() map[string]*hcl.File
-}
-
 // Loader is a wrapper of Terraform's configload.Loader
 type Loader struct {
 	tfparser             *terraform.Parser
