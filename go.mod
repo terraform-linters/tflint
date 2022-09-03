@@ -9,7 +9,6 @@ require (
 	github.com/bmatcuk/doublestar v1.1.5
 	github.com/fatih/color v1.13.0
 	github.com/go-test/deep v1.0.8
-	github.com/golang/mock v1.6.0
 	github.com/google/go-cmp v0.5.8
 	github.com/google/go-github/v35 v35.3.0
 	github.com/google/uuid v1.3.0
