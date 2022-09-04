@@ -3,10 +3,12 @@ package plugin
 import (
 	"errors"
 	"fmt"
+	"log"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	"github.com/terraform-linters/tflint/terraform/lang/marks"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
 )
@@ -93,7 +95,22 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts sdk.EvaluateExprOpti
 	case sdk.RootModuleCtxType:
 		runner = s.rootRunner
 	}
+
 	val, err := runner.EvaluateExpr(expr, *opts.WantType)
+	if err != nil {
+		return val, err
+	}
+
+	if val.HasMark(marks.Sensitive) {
+		err := fmt.Errorf(
+			"sensitive value found in %s:%d%w",
+			expr.Range().Filename,
+			expr.Range().Start.Line,
+			sdk.ErrSensitive,
+		)
+		log.Printf("[INFO] %s. TFLint ignores expressions with sensitive values.", err)
+		return cty.NullVal(cty.NilType), err
+	}
 	return val, err
 }
 

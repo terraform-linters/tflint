@@ -16,8 +16,18 @@ import (
 )
 
 // EvaluateExpr is a wrapper of terraform.BultinEvalContext.EvaluateExpr
-// In addition, it returns an error if expr cannot be evaluated, if it contains an unknown value,
-// or if it contains null. However, it allows null and unknown only for DynamicPseudoType.
+// However, unlike the original implementation, it returns an error instead of
+// returning the values below:
+//
+// - Unevaluable values (e.g. `module.<MODULE_NAME>`, `data.<DATA TYPE>.<NAME>`, `each.key`)
+// - Unknown values
+// - Null values
+//
+// An error is returned if these values are contained. This ensures that
+// the caller can get the value via `gocty.FromCtyValue` unless an error occurs.
+//
+// As an exception, only unknown and null values can be returned as values by specifying
+// `cty.DynamicPseudoType` for the type.
 func (r *Runner) EvaluateExpr(expr hcl.Expression, wantType cty.Type) (cty.Value, error) {
 	evaluable, err := isEvaluableExpr(expr)
 	if err != nil {

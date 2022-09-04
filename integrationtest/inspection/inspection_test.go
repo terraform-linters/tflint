@@ -172,6 +172,11 @@ func TestIntegration(t *testing.T) {
 			Command: "tflint --module --format json",
 			Dir:     "eval-on-root-context",
 		},
+		{
+			Name:    "sensitve variable",
+			Command: "tflint --format json",
+			Dir:     "sensitive",
+		},
 	}
 
 	dir, _ := os.Getwd()
