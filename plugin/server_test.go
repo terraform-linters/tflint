@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"testing"
@@ -355,6 +356,10 @@ func TestEvaluateExpr(t *testing.T) {
 	runner := tflint.TestRunner(t, map[string]string{"main.tf": `
 variable "foo" {
 	default = "bar"
+}
+variable "sensitive" {
+	sensitive = true
+	default   = "foo"
 }`})
 	rootRunner := tflint.TestRunner(t, map[string]string{"main.tf": `
 variable "foo" {
@@ -375,32 +380,47 @@ variable "foo" {
 		}
 		return attributes["expr"].Expr
 	}
+	// default error check helper
+	neverHappend := func(err error) bool { return err != nil }
 
 	tests := []struct {
-		Name string
-		Args func() (hcl.Expression, sdk.EvaluateExprOption)
-		Want cty.Value
+		Name     string
+		Args     func() (hcl.Expression, sdk.EvaluateExprOption)
+		Want     cty.Value
+		ErrCheck func(error) bool
 	}{
 		{
 			Name: "self module context",
 			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
 				return hclExpr(`var.foo`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
 			},
-			Want: cty.StringVal("bar"),
+			Want:     cty.StringVal("bar"),
+			ErrCheck: neverHappend,
 		},
 		{
 			Name: "root module context",
 			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
 				return hclExpr(`var.foo`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.RootModuleCtxType}
 			},
-			Want: cty.StringVal("baz"),
+			Want:     cty.StringVal("baz"),
+			ErrCheck: neverHappend,
+		},
+		{
+			Name: "sensitive value",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				return hclExpr(`var.sensitive`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want: cty.NullVal(cty.NilType),
+			ErrCheck: func(err error) bool {
+				return err == nil || !errors.Is(err, sdk.ErrSensitive)
+			},
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.Name, func(t *testing.T) {
 			got, err := server.EvaluateExpr(test.Args())
-			if err != nil {
+			if test.ErrCheck(err) {
 				t.Fatalf("failed to call EvaluateExpr: %s", err)
 			}
 
