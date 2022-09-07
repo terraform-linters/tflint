@@ -18,8 +18,14 @@ archives:
     format: zip
     files:
       - none*
+changelog:
+  skip: true
 checksum:
   name_template: 'checksums.txt'
-signs:
-  - artifacts: checksum
-    args: ["--batch", "-u", "{{ .Env.GPG_FINGERPRINT }}", "--output", "${signature}", "--detach-sign", "${artifact}"]
+release:
+  github:
+    owner: terraform-linters
+    name: tflint-ruleset-terraform
+  draft: true
+snapshot:
+  name_template: "{{ .Tag }}-dev"
