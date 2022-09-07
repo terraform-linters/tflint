@@ -85,7 +85,7 @@ plugin "terraform" {
 }
 ```
 
-See the [tflint-ruleset-terraform documentation](https://github.com/terraform-linters/tflint-ruleset-terraform/blob/main/docs/configuration.md) for more information.
+See the [tflint-ruleset-terraform documentation](https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.0/docs/configuration.md) for more information.
 
 Next, If you are using an AWS/Azure/GCP provider, it is a good idea to install the plugin and try it according to each usage:
 

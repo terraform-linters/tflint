@@ -1,3 +1,46 @@
+## 0.40.0 (2022-09-08)
+
+This release contains major changes to the plugin system. All plugins must be built with tflint-plugin-sdk v0.12.0+ to support this version. See also https://github.com/terraform-linters/tflint-plugin-sdk/releases/tag/v0.12.0
+
+Starting with this version, the built-in rules for the Terraform Language have been cut out into the [tflint-ruleset-terraform](https://github.com/terraform-linters/tflint-ruleset-terraform) plugin. Since the plugin is bundled with the TFLint binary, you will still be able to use the rules as before. However, be aware that some default behavior has changed.
+
+### Breaking Changes
+
+- [#1470](https://github.com/terraform-linters/tflint/pull/1470): Remove `--loglevel` CLI flag ([@wata727](https://github.com/wata727))
+- [#1496](https://github.com/terraform-linters/tflint/pull/1496): plugin: Switch internal Terraform rules to the bundled plugin ([@wata727](https://github.com/wata727))
+  - Rules for the Terraform Language have been cut out into a plugin, allowing you to enable or disable rules in bulk. Just declare the plugin block in `.tflint.hcl` like any other plugin.
+  - The following rules are newly enabled by default. To keep the same behavior as before, these rules should be disabled.
+    - `terraform_deprecated_index`
+    - `terraform_required_providers`
+    - `terraform_required_version`
+    - `terraform_typed_variables`
+    - `terraform_unused_declarations`
+  - See also [tflint-ruleset-terraform documentation](https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.0/docs/configuration.md) for plugin configuration.
+
+### Enhancements
+
+- [#1480](https://github.com/terraform-linters/tflint/pull/1480): plugin: Add support for GetModulePath API ([@wata727](https://github.com/wata727))
+- [#1481](https://github.com/terraform-linters/tflint/pull/1481): plugin: Make GetRuleConfigContent doesn't return an error even if config not found ([@wata727](https://github.com/wata727))
+- [#1482](https://github.com/terraform-linters/tflint/pull/1482): formatter(compact): print `hcl.Diagnostics` errors in compact format ([@bendrucker](https://github.com/bendrucker))
+- [#1492](https://github.com/terraform-linters/tflint/pull/1492): annotations: allow ignoring multiple rules ([@bendrucker](https://github.com/bendrucker))
+
+### BugFixes
+
+- [#1501](https://github.com/terraform-linters/tflint/pull/1501): plugin: Fix an error when evaluating sensitive values ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1483](https://github.com/terraform-linters/tflint/pull/1483): build(deps): Bump github.com/mattn/go-colorable from 0.1.12 to 0.1.13
+- [#1484](https://github.com/terraform-linters/tflint/pull/1484): build(deps): Bump alpine from 3.16.1 to 3.16.2
+- [#1485](https://github.com/terraform-linters/tflint/pull/1485): build: Improve Go workflows ([@wata727](https://github.com/wata727))
+- [#1487](https://github.com/terraform-linters/tflint/pull/1487): Revert "Add a notice about verification of keyless signing" ([@wata727](https://github.com/wata727))
+- [#1489](https://github.com/terraform-linters/tflint/pull/1489): build(deps): Bump github.com/zclconf/go-cty from 1.10.0 to 1.11.0
+- [#1490](https://github.com/terraform-linters/tflint/pull/1490): build(deps): Bump github.com/hashicorp/go-plugin from 1.4.4 to 1.4.5
+- [#1491](https://github.com/terraform-linters/tflint/pull/1491): build(deps): Bump sigstore/cosign-installer from 2.5.0 to 2.5.1
+- [#1499](https://github.com/terraform-linters/tflint/pull/1499): use mktemp when installing tflint ([@dawez](https://github.com/dawez))
+- [#1500](https://github.com/terraform-linters/tflint/pull/1500): Move cli_test.go to integration test ([@wata727](https://github.com/wata727))
+- [#1504](https://github.com/terraform-linters/tflint/pull/1504): build: Use default cosign version ([@wata727](https://github.com/wata727))
+
 ## 0.39.3 (2022-08-12)
 
 ### Enhancements
