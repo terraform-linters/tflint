@@ -83,3 +83,32 @@ plugin "foo" {
 ```
 
 When the plugin is enabled, TFLint invokes the `tflint-ruleset-[name]` (`tflint-ruleset-[name].exe` on Windows) binary in the plugin directory (For instance, `~/.tflint.d/plugins/tflint-ruleset-[name]`). So you should move the binary into the directory in advance.
+
+## Bundled plugin
+
+[TFLint Ruleset for Terraform Language](https://github.com/terraform-linters/tflint-ruleset-terraform) is built directly into TFLint binary. This is called a bundled plugin. Unlike other plugins, bundled plugins can be used without installation.
+
+A bundled plugin is enabled by default without a plugin block declaration. The default config is below:
+
+```hcl
+plugin "terraform" {
+  enabled = true
+  preset  = "recommended"
+}
+```
+
+You can also change the behavior of the bundled plugin by explicitly declaring a plugin block.
+
+If you want to use a different version of tflint-ruleset-terraform instead of the bundled plugin, you can install it with `tflint --init` by specifying the `version` and `source`. In this case the bundled plugin will not be automatically enabled.
+
+```hcl
+plugin "terraform" {
+  enabled = true
+  preset  = "recommended"
+
+  version = "0.1.0"
+  source  = "github.com/terraform-linters/tflint-ruleset-terraform"
+}
+```
+
+If you have tflint-ruleset-terraform manually installed, the bundled plugin will not be automatically enabled. In this case the manually installed version takes precedence.

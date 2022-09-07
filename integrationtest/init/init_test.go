@@ -8,9 +8,16 @@ import (
 	"testing"
 
 	"github.com/terraform-linters/tflint/cmd"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 func TestIntegration(t *testing.T) {
+	// Disable the bundled plugin because the `os.Executable()` is go(1) in the tests
+	tflint.DisableBundledPlugin = true
+	defer func() {
+		tflint.DisableBundledPlugin = false
+	}()
+
 	current, _ := os.Getwd()
 	dir := filepath.Join(current, "basic")
 

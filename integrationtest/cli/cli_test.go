@@ -14,6 +14,12 @@ import (
 )
 
 func TestIntegration(t *testing.T) {
+	// Disable the bundled plugin because the `os.Executable()` is go(1) in the tests
+	tflint.DisableBundledPlugin = true
+	defer func() {
+		tflint.DisableBundledPlugin = false
+	}()
+
 	tests := []struct {
 		name    string
 		command string

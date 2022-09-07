@@ -8,6 +8,7 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
+	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
@@ -108,9 +109,18 @@ func EmptyConfig() *Config {
 	}
 }
 
-// LoadConfig reads TFLint config from a file.
-// If ./.tflint.hcl does not exist, load ~/.tflint.hcl.
-// This fallback does not fire when explicitly reading a file other than .tflint.hcl.
+// LoadConfig loads TFLint config file.
+// The priority of the configuration files is as follows:
+//
+// 1. current directory (./.tflint.hcl)
+// 2. home directory (~/.tflint.hcl)
+//
+// If neither file exists, an empty config is returned.
+// You can also load any file name. However, there is no fallback
+// to the home directory in this case.
+//
+// It also automatically enables bundled plugin if the "terraform"
+// plugin block is not explicitly declared.
 func LoadConfig(fs afero.Afero, file string) (*Config, error) {
 	log.Printf("[INFO] Load config: %s", file)
 	if f, err := fs.Open(file); err == nil {
@@ -118,7 +128,7 @@ func LoadConfig(fs afero.Afero, file string) (*Config, error) {
 		if err != nil {
 			return nil, err
 		}
-		return cfg, nil
+		return cfg.enableBundledPlugin(), nil
 	} else if file != defaultConfigFile {
 		return nil, fmt.Errorf("failed to load file: %w", err)
 	} else {
@@ -136,12 +146,12 @@ func LoadConfig(fs afero.Afero, file string) (*Config, error) {
 		if err != nil {
 			return nil, err
 		}
-		return cfg, nil
+		return cfg.enableBundledPlugin(), nil
 	}
 	log.Printf("[INFO] file not found")
 
 	log.Print("[INFO] Use default config")
-	return EmptyConfig(), nil
+	return EmptyConfig().enableBundledPlugin(), nil
 }
 
 func loadConfig(file afero.File) (*Config, error) {
@@ -263,10 +273,50 @@ func loadConfig(file afero.File) (*Config, error) {
 	return config, nil
 }
 
+// Enable the "recommended" preset if the bundled plugin is automatically enabled.
+var bundledPluginConfigFilename = "__bundled_plugin_config.hcl"
+var bundledPluginConfigContent = `
+preset = "recommended"
+`
+
+// DisbaleBundledPlugin is a flag to temporarily disable the bundled plugin for integration tests.
+var DisableBundledPlugin = false
+
+// Terraform Language plugin is automatically enabled if the plugin isn't explicitly declared.
+func (c *Config) enableBundledPlugin() *Config {
+	if DisableBundledPlugin {
+		return c
+	}
+
+	f, diags := hclsyntax.ParseConfig([]byte(bundledPluginConfigContent), bundledPluginConfigFilename, hcl.InitialPos)
+	if diags.HasErrors() {
+		panic(diags)
+	}
+
+	if _, exists := c.Plugins["terraform"]; !exists {
+		log.Print("[INFO] The `terraform` plugin block is not found. Enable the plugin `terraform` automatically")
+
+		c.Plugins["terraform"] = &PluginConfig{
+			Name:    "terraform",
+			Enabled: true,
+			Body:    f.Body,
+		}
+	}
+	return c
+}
+
 // Sources returns parsed config file sources.
-// Normally, there is only one file, but it is represented by map to retain the file name.
+// To support bundle plugin config, this function returns c.sources
+// with a merge of the pseudo config file.
 func (c *Config) Sources() map[string][]byte {
-	return c.sources
+	ret := map[string][]byte{
+		bundledPluginConfigFilename: []byte(bundledPluginConfigContent),
+	}
+
+	for name, content := range c.sources {
+		ret[name] = content
+	}
+	return ret
 }
 
 // Merge merges the two configs and applies to itself.
@@ -341,8 +391,8 @@ func (c *PluginConfig) Content(schema *hclext.BodySchema) (*hclext.BodyContent, 
 	return hclext.Content(c.Body, schema)
 }
 
-// RuleSet is an interface to handle plugin's RuleSet and core RuleSet both
-// In the future, when all RuleSets are cut out into plugins, it will no longer be needed.
+// RuleSet is an interface to handle plugin's RuleSet.
+// The real impl is github.com/terraform-linters/tflint-plugin-sdk/plugin/host2plugin.GRPCClient.
 type RuleSet interface {
 	RuleSetName() (string, error)
 	RuleSetVersion() (string, error)

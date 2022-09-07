@@ -17,7 +17,6 @@ import (
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint/plugin"
-	"github.com/terraform-linters/tflint/rules"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -39,7 +38,7 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 		return nil, nil, err
 	}
 
-	rulesets := []tflint.RuleSet{&rules.RuleSet{}}
+	rulesets := []tflint.RuleSet{}
 	for _, ruleset := range rulsetPlugin.RuleSets {
 		rulesets = append(rulesets, ruleset)
 	}
@@ -52,7 +51,6 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 		cliConfig:  cliConfig,
 		config:     cfg,
 		fs:         afero.NewCopyOnWriteFs(afero.NewOsFs(), afero.NewMemMapFs()),
-		rules:      rules.NewRules(cfg),
 		plugin:     rulsetPlugin,
 		diagsPaths: []string{},
 	}).handle), rulsetPlugin, nil
@@ -64,7 +62,6 @@ type handler struct {
 	config     *tflint.Config
 	fs         afero.Fs
 	rootDir    string
-	rules      []rules.Rule
 	plugin     *plugin.Plugin
 	shutdown   bool
 	diagsPaths []string
@@ -164,15 +161,6 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 		return ret, fmt.Errorf("Failed to prepare rule checking: %w", err)
 	}
 	runners = append(runners, runner)
-
-	for _, rule := range h.rules {
-		for _, runner := range runners {
-			err := rule.Check(runner)
-			if err != nil {
-				return ret, fmt.Errorf("Failed to check `%s` rule: %w", rule.Name(), err)
-			}
-		}
-	}
 
 	config := h.config.ToPluginConfig()
 	for name, ruleset := range h.plugin.RuleSets {

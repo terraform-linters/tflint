@@ -26,6 +26,12 @@ type jsonrpcMessage struct {
 }
 
 func TestMain(m *testing.M) {
+	// Disable the bundled plugin because the `os.Executable()` is go(1) in the tests
+	tflint.DisableBundledPlugin = true
+	defer func() {
+		tflint.DisableBundledPlugin = false
+	}()
+
 	filter := &logutils.LevelFilter{
 		Levels:   []logutils.LogLevel{"TRACE", "DEBUG", "INFO", "WARN", "ERROR"},
 		MinLevel: logutils.LogLevel(""),

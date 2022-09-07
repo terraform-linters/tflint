@@ -15,6 +15,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/terraform-linters/tflint/cmd"
 	"github.com/terraform-linters/tflint/formatter"
+	"github.com/terraform-linters/tflint/tflint"
 )
 
 func TestMain(m *testing.M) {
@@ -178,6 +179,12 @@ func TestIntegration(t *testing.T) {
 			Dir:     "sensitive",
 		},
 	}
+
+	// Disable the bundled plugin because the `os.Executable()` is go(1) in the tests
+	tflint.DisableBundledPlugin = true
+	defer func() {
+		tflint.DisableBundledPlugin = false
+	}()
 
 	dir, _ := os.Getwd()
 	for _, tc := range cases {

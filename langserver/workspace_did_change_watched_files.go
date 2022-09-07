@@ -8,7 +8,6 @@ import (
 	lsp "github.com/sourcegraph/go-lsp"
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/spf13/afero"
-	"github.com/terraform-linters/tflint/rules"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -23,7 +22,6 @@ func (h *handler) workspaceDidChangeWatchedFiles(ctx context.Context, conn *json
 	}
 	newConfig.Merge(h.cliConfig)
 	h.config = newConfig
-	h.rules = rules.NewRules(h.config)
 
 	h.fs = afero.NewCopyOnWriteFs(afero.NewOsFs(), afero.NewMemMapFs())
 

@@ -12,7 +12,7 @@ A Pluggable [Terraform](https://www.terraform.io/) Linter
 
 TFLint is a framework and each feature is provided by plugins, the key features are as follows:
 
-- Find possible errors (like illegal instance types) for Major Cloud providers (AWS/Azure/GCP).
+- Find possible errors (like invalid instance types) for Major Cloud providers (AWS/Azure/GCP).
 - Warn about deprecated syntax, unused declarations.
 - Enforce best practices, naming conventions.
 
@@ -74,13 +74,24 @@ If you want to run on GitHub Actions, [setup-tflint](https://github.com/terrafor
 
 ## Getting Started
 
-If you are using an AWS/Azure/GCP provider, it is a good idea to install the plugin and try it according to each usage:
+First, enable rules for [Terraform Language](https://www.terraform.io/language) (e.g. warn about deprecated syntax, unused declarations). [TFLint Ruleset for Terraform Language](https://github.com/terraform-linters/tflint-ruleset-terraform) is bundled with TFLint, so you can use it without installing it separately.
+
+The bundled plugin enables the "recommended" preset by default, but you can disable the plugin or use a different preset. Declare the plugin block in `.tflint.hcl` like this:
+
+```hcl
+plugin "terraform" {
+  enabled = true
+  preset  = "recommended"
+}
+```
+
+See the [tflint-ruleset-terraform documentation](https://github.com/terraform-linters/tflint-ruleset-terraform/blob/main/docs/configuration.md) for more information.
+
+Next, If you are using an AWS/Azure/GCP provider, it is a good idea to install the plugin and try it according to each usage:
 
 - [Amazon Web Services](https://github.com/terraform-linters/tflint-ruleset-aws)
 - [Microsoft Azure](https://github.com/terraform-linters/tflint-ruleset-azurerm)
 - [Google Cloud Platform](https://github.com/terraform-linters/tflint-ruleset-google)
-
-Rules for the Terraform Language is built into the TFLint binary, so you don't need to install any plugins. Please see [Rules](docs/rules) for a list of available rules.
 
 If you want to extend TFLint with other plugins, you can declare the plugins in the config file and easily install them with `tflint --init`.
 

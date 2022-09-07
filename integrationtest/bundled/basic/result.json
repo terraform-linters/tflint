@@ -1,0 +1,125 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "terraform_required_version",
+        "severity": "warning",
+        "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.0/docs/rules/terraform_required_version.md"
+      },
+      "message": "terraform \"required_version\" attribute is required",
+      "range": {
+        "filename": "",
+        "start": {
+          "line": 0,
+          "column": 0
+        },
+        "end": {
+          "line": 0,
+          "column": 0
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "terraform_typed_variables",
+        "severity": "warning",
+        "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.0/docs/rules/terraform_typed_variables.md"
+      },
+      "message": "`instance_type` variable has no type",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 1,
+          "column": 1
+        },
+        "end": {
+          "line": 1,
+          "column": 25
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "terraform_unused_declarations",
+        "severity": "warning",
+        "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.0/docs/rules/terraform_unused_declarations.md"
+      },
+      "message": "variable \"unused\" is declared but not used",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 18
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "terraform_required_providers",
+        "severity": "warning",
+        "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.0/docs/rules/terraform_required_providers.md"
+      },
+      "message": "Missing version constraint for provider \"aws\" in \"required_providers\"",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 6,
+          "column": 1
+        },
+        "end": {
+          "line": 6,
+          "column": 31
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "terraform_empty_list_equality",
+        "severity": "warning",
+        "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.0/docs/rules/terraform_empty_list_equality.md"
+      },
+      "message": "Comparing a collection with an empty list is invalid. To detect an empty collection, check its length.",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 7,
+          "column": 11
+        },
+        "end": {
+          "line": 7,
+          "column": 19
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "terraform_deprecated_interpolation",
+        "severity": "warning",
+        "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.0/docs/rules/terraform_deprecated_interpolation.md"
+      },
+      "message": "Interpolation-only expressions are deprecated in Terraform v0.12.14",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 9,
+          "column": 19
+        },
+        "end": {
+          "line": 9,
+          "column": 41
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}
