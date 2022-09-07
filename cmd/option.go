@@ -25,7 +25,6 @@ type Options struct {
 	Force              bool     `long:"force" description:"Return zero exit status even if issues found"`
 	Color              bool     `long:"color" description:"Enable colorized output"`
 	NoColor            bool     `long:"no-color" description:"Disable colorized output"`
-	LogLevel           string   `long:"loglevel" description:"Change the loglevel" choice:"trace" choice:"debug" choice:"info" choice:"warn" choice:"error"`
 	ActAsBundledPlugin bool     `long:"act-as-bundled-plugin" hidden:"true"`
 }
 
