@@ -1,13 +1,11 @@
 package tflint
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"path/filepath"
 
 	hcl "github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/terraform"
@@ -313,14 +311,6 @@ func resolveDynamicBlocks(content *hclext.BodyContent) *hclext.BodyContent {
 	return out
 }
 
-// TFConfigPath is a wrapper of addrs.Module
-func (r *Runner) TFConfigPath() string {
-	if r.TFConfig.Path.IsRoot() {
-		return "root"
-	}
-	return r.TFConfig.Path.String()
-}
-
 // LookupIssues returns issues according to the received files
 func (r *Runner) LookupIssues(files ...string) Issues {
 	if len(files) == 0 {
@@ -386,25 +376,6 @@ func (r *Runner) WithExpressionContext(expr hcl.Expression, proc func() error) e
 	err := proc()
 	r.currentExpr = nil
 	return err
-}
-
-// DecodeRuleConfig extracts the rule's configuration into the given value
-func (r *Runner) DecodeRuleConfig(ruleName string, val interface{}) error {
-	if rule, exists := r.config.Rules[ruleName]; exists {
-		// If you enable the rule through the CLI instead of the file, its hcl.Body will be nil.
-		if rule.Body == nil {
-			diags := gohcl.DecodeBody(hcl.EmptyBody(), nil, val)
-			if diags.HasErrors() {
-				return errors.New("This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration")
-			}
-		} else {
-			diags := gohcl.DecodeBody(rule.Body, nil, val)
-			if diags.HasErrors() {
-				return diags
-			}
-		}
-	}
-	return nil
 }
 
 // RuleConfig returns the corresponding rule configuration
