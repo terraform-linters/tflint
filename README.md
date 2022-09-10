@@ -3,8 +3,6 @@
 [![GitHub release](https://img.shields.io/github/release/terraform-linters/tflint-ruleset-terraform.svg)](https://github.com/terraform-linters/tflint-ruleset-terraform/releases/latest)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-blue.svg)](LICENSE)
 
-**This ruleset is a work in progress. Not ready for use yet.**
-
 TFLint ruleset plugin for Terraform Language
 
 This ruleset focus on possible errors and best practices about Terraform Language.
