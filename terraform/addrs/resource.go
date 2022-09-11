@@ -43,6 +43,10 @@ func (r ResourceInstance) String() string {
 	return r.Resource.String() + r.Key.String()
 }
 
+func (r ResourceInstance) ContainingResource() Resource {
+	return r.Resource
+}
+
 // ResourceMode defines which lifecycle applies to a given resource. Each
 // resource lifecycle has a slightly different address format.
 type ResourceMode rune

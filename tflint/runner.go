@@ -20,8 +20,8 @@ import (
 type Runner struct {
 	TFConfig *terraform.Config
 	Issues   Issues
+	Ctx      *terraform.Evaluator
 
-	ctx         *terraform.Evaluator
 	annotations map[string]Annotations
 	config      *Config
 	currentExpr hcl.Expression
@@ -47,12 +47,12 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *terraform.Config, va
 	}
 	log.Printf("[INFO] Initialize new runner for %s", path)
 
-	variableValues, diags := prepareVariableValues(cfg, variables...)
+	variableValues, diags := terraform.VariableValues(cfg, variables...)
 	if diags.HasErrors() {
 		return nil, diags
 	}
 	ctx := &terraform.Evaluator{
-		Meta:           &terraform.ContextMeta{Env: getTFWorkspace()},
+		Meta:           &terraform.ContextMeta{Env: terraform.Workspace()},
 		ModulePath:     cfg.Path.UnkeyedInstanceShim(),
 		Config:         cfg.Root,
 		VariableValues: variableValues,
@@ -62,7 +62,7 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *terraform.Config, va
 		TFConfig: cfg,
 		Issues:   Issues{},
 
-		ctx:         ctx,
+		Ctx:         ctx,
 		annotations: ants,
 		config:      c,
 
@@ -148,30 +148,18 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 		modVars := map[string]*moduleVariable{}
 		for varName, attribute := range moduleCallBody.Attributes {
 			if rawVar, exists := cfg.Module.Variables[varName]; exists {
-				evalauble, err := isEvaluableExpr(attribute.Expr)
-				if err != nil {
+				val, diags := parent.Ctx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType)
+				if diags.HasErrors() {
+					err := fmt.Errorf(
+						"failed to eval an expression in %s:%d; %w",
+						attribute.Expr.Range().Filename,
+						attribute.Expr.Range().Start.Line,
+						diags,
+					)
+					log.Printf("[ERROR] %s", err)
 					return runners, err
 				}
-
-				if evalauble {
-					val, diags := parent.ctx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType)
-					if diags.HasErrors() {
-						err := fmt.Errorf(
-							"failed to eval an expression in %s:%d; %w",
-							attribute.Expr.Range().Filename,
-							attribute.Expr.Range().Start.Line,
-							diags,
-						)
-						log.Printf("[ERROR] %s", err)
-						return runners, err
-					}
-					rawVar.Default = val
-				} else {
-					// If module attributes are not evaluable, it marks that value as unknown.
-					// Unknown values are ignored when evaluated inside the module.
-					log.Printf("[DEBUG] `%s` has been marked as unknown", varName)
-					rawVar.Default = cty.UnknownVal(cty.DynamicPseudoType)
-				}
+				rawVar.Default = val
 
 				if parent.TFConfig.Path.IsRoot() {
 					modVars[varName] = &moduleVariable{
@@ -408,40 +396,6 @@ func (r *Runner) listModuleVars(expr hcl.Expression) []*moduleVariable {
 		}
 	}
 	return ret
-}
-
-// prepareVariableValues builds variableValues from configs, input variables and environment variables.
-// Variables which declared in the configuration are overwritten by environment variables.
-// Finally, they are overwritten by input variables in the order passed.
-// Therefore, CLI flag input variables must be passed at the end of arguments.
-// This is the responsibility of the caller.
-// See https://learn.hashicorp.com/terraform/getting-started/variables.html#assigning-variables
-func prepareVariableValues(config *terraform.Config, cliVars ...terraform.InputValues) (map[string]map[string]cty.Value, hcl.Diagnostics) {
-	moduleKey := config.Path.UnkeyedInstanceShim().String()
-	variableValues := make(map[string]map[string]cty.Value)
-	variableValues[moduleKey] = make(map[string]cty.Value)
-
-	configVars := map[string]*terraform.Variable{}
-	for k, v := range config.Module.Variables {
-		configVars[k] = v
-		// If default is not set, Terraform will interactively collect the variable values. Therefore, Evaluator returns the value as it is, even if default is not set.
-		// This means that variables without default will be null in TFLint. This is unintended behavior, so assign an unknown value here.
-		if v.Default == cty.NilVal {
-			configVars[k].Default = cty.UnknownVal(v.Type)
-		}
-	}
-
-	variables := DefaultVariableValues(configVars)
-	envVars, diags := getTFEnvVariables(configVars)
-	if diags.HasErrors() {
-		return variableValues, diags
-	}
-	overrideVariables := variables.Override(envVars).Override(cliVars...)
-
-	for k, iv := range overrideVariables {
-		variableValues[moduleKey][k] = iv.Value
-	}
-	return variableValues, nil
 }
 
 func listVarRefs(expr hcl.Expression) map[string]addrs.InputVariable {

@@ -17,53 +17,6 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func testRunnerWithInputVariables(t *testing.T, files map[string]string, variables ...terraform.InputValues) *Runner {
-	config := EmptyConfig()
-	fs := afero.Afero{Fs: afero.NewMemMapFs()}
-	for name, src := range files {
-		err := fs.WriteFile(name, []byte(src), os.ModePerm)
-		if err != nil {
-			t.Fatal(err)
-		}
-	}
-
-	loader, err := NewLoader(fs, config)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	cfg, err := loader.LoadConfig(".")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	runner, err := NewRunner(config, map[string]Annotations{}, cfg, variables...)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	return runner
-}
-
-func withEnvVars(t *testing.T, envVars map[string]string, test func()) {
-	for key, value := range envVars {
-		err := os.Setenv(key, value)
-		if err != nil {
-			t.Fatal(err)
-		}
-	}
-	defer func() {
-		for key := range envVars {
-			err := os.Unsetenv(key)
-			if err != nil {
-				t.Fatal(err)
-			}
-		}
-	}()
-
-	test()
-}
-
 func withinFixtureDir(t *testing.T, dir string, test func()) {
 	currentDir, err := os.Getwd()
 	if err != nil {
