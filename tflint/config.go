@@ -301,6 +301,11 @@ func (c *Config) enableBundledPlugin() *Config {
 			Enabled: true,
 			Body:    f.Body,
 		}
+
+		// Implicit preset is ignored if you enable DisabledByDefault
+		if c.DisabledByDefault {
+			c.Plugins["terraform"].Body = nil
+		}
 	}
 	return c
 }

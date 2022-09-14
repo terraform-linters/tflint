@@ -41,6 +41,11 @@ func TestIntegration(t *testing.T) {
 			command: "tflint --format json --force",
 			dir:     "with_config",
 		},
+		{
+			name:    "disabled_by_default",
+			command: "tflint --format json --force",
+			dir:     "disabled_by_default",
+		},
 	}
 
 	dir, _ := os.Getwd()
