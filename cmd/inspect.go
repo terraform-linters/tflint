@@ -17,6 +17,8 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to load TFLint config; %w", err), map[string][]byte{})
 		return ExitCodeError
 	}
+	// tflint-plugin-sdk v0.13+ doesn't need to disable rules config when enabling the only option.
+	// This is for the backward compatibility.
 	if len(opts.Only) > 0 {
 		for _, rule := range cfg.Rules {
 			rule.Enabled = false

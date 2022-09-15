@@ -63,6 +63,8 @@ func (opts *Options) toConfig() *tflint.Config {
 
 	rules := map[string]*tflint.RuleConfig{}
 	if len(opts.Only) > 0 {
+		// tflint-plugin-sdk v0.13+ doesn't need rules config when enabling the only option.
+		// This is for the backward compatibility.
 		for _, rule := range opts.Only {
 			rules[rule] = &tflint.RuleConfig{
 				Name:    rule,
@@ -107,6 +109,7 @@ func (opts *Options) toConfig() *tflint.Config {
 		Varfiles:          varfiles,
 		Variables:         opts.Variables,
 		DisabledByDefault: len(opts.Only) > 0,
+		Only:              opts.Only,
 		Format:            opts.Format,
 		Rules:             rules,
 		Plugins:           plugins,

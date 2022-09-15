@@ -542,6 +542,7 @@ func TestMerge(t *testing.T) {
 				Varfiles:          []string{"example3.tfvars"},
 				Variables:         []string{"bar=baz"},
 				DisabledByDefault: true,
+				Only:              []string{"aws_instance_invalid_type", "aws_instance_previous_type"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -576,6 +577,7 @@ func TestMerge(t *testing.T) {
 				Varfiles:          []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
 				Variables:         []string{"foo=bar", "bar=baz"},
 				DisabledByDefault: true,
+				Only:              []string{"aws_instance_invalid_type", "aws_instance_previous_type"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -770,6 +772,7 @@ plugin "bar" {
 	if err != nil {
 		t.Fatal(err)
 	}
+	config.Only = []string{"aws_instance_invalid_ami"}
 
 	got := config.ToPluginConfig()
 	want := &sdk.Config{
@@ -784,6 +787,7 @@ plugin "bar" {
 			},
 		},
 		DisabledByDefault: true,
+		Only:              []string{"aws_instance_invalid_ami"},
 	}
 	opts := cmp.Options{
 		cmpopts.IgnoreUnexported(PluginConfig{}),
