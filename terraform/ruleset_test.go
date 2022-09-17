@@ -93,6 +93,14 @@ func TestApplyConfig(t *testing.T) {
 			},
 		},
 		{
+			name:   "only",
+			global: &tflint.Config{Only: []string{"terraform_deprecated_interpolation"}},
+			config: &hclext.BodyContent{},
+			want: []string{
+				"terraform_deprecated_interpolation",
+			},
+		},
+		{
 			name:   "disabled by default + preset",
 			global: &tflint.Config{DisabledByDefault: true},
 			config: &hclext.BodyContent{
@@ -122,6 +130,17 @@ func TestApplyConfig(t *testing.T) {
 			},
 		},
 		{
+			name: "disabled by default + only",
+			global: &tflint.Config{
+				DisabledByDefault: true,
+				Only:              []string{"terraform_comment_syntax"},
+			},
+			config: &hclext.BodyContent{},
+			want: []string{
+				"terraform_comment_syntax",
+			},
+		},
+		{
 			name: "preset + rule config",
 			global: &tflint.Config{
 				Rules: map[string]*tflint.RuleConfig{
@@ -138,6 +157,37 @@ func TestApplyConfig(t *testing.T) {
 			},
 			want: []string{
 				"terraform_deprecated_index",
+			},
+		},
+		{
+			name: "preset + only",
+			global: &tflint.Config{
+				Only: []string{"terraform_deprecated_interpolation"},
+			},
+			config: &hclext.BodyContent{
+				Attributes: hclext.Attributes{
+					"preset": &hclext.Attribute{Name: "preset", Expr: mustParseExpr(`"recommended"`)},
+				},
+			},
+			want: []string{
+				"terraform_deprecated_interpolation",
+			},
+		},
+		{
+			name: "rule config + only",
+			global: &tflint.Config{
+				Rules: map[string]*tflint.RuleConfig{
+					"terraform_comment_syntax": {
+						Name:    "terraform_comment_syntax",
+						Enabled: false,
+					},
+				},
+				Only: []string{"terraform_comment_syntax", "terraform_deprecated_interpolation"},
+			},
+			config: &hclext.BodyContent{},
+			want: []string{
+				"terraform_comment_syntax",
+				"terraform_deprecated_interpolation",
 			},
 		},
 		{
@@ -158,6 +208,28 @@ func TestApplyConfig(t *testing.T) {
 			},
 			want: []string{
 				"terraform_deprecated_index",
+			},
+		},
+		{
+			name: "disabled by default + preset + rule config + only",
+			global: &tflint.Config{
+				Rules: map[string]*tflint.RuleConfig{
+					"terraform_comment_syntax": {
+						Name:    "terraform_comment_syntax",
+						Enabled: false,
+					},
+				},
+				DisabledByDefault: true,
+				Only:              []string{"terraform_comment_syntax", "terraform_deprecated_interpolation"},
+			},
+			config: &hclext.BodyContent{
+				Attributes: hclext.Attributes{
+					"preset": &hclext.Attribute{Name: "preset", Expr: mustParseExpr(`"recommended"`)},
+				},
+			},
+			want: []string{
+				"terraform_comment_syntax",
+				"terraform_deprecated_interpolation",
 			},
 		},
 	}

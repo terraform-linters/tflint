@@ -43,9 +43,10 @@ func (r *RuleSet) ApplyGlobalConfig(config *tflint.Config) error {
 // ApplyConfig controls rule activation based on global and preset configs.
 // The priority of rules is in the following order:
 //
-//  1. Rule config declared in each "rule" block
-//  2. Preset config declared in "plugin" block
-//  3. The `disabled_by_default` declared in global "config" block
+//  1. --only option
+//  2. Rule config declared in each "rule" block
+//  3. Preset config declared in "plugin" block
+//  4. The `disabled_by_default` declared in global "config" block
 //
 // Individual rule configs always take precedence over anything else.
 // Preset rules are then prioritized. For example, if `disabled_by_default = true`
@@ -56,12 +57,17 @@ func (r *RuleSet) ApplyConfig(body *hclext.BodyContent) error {
 		return diags
 	}
 
-	if r.globalConfig.DisabledByDefault {
+	only := map[string]bool{}
+	if len(r.globalConfig.Only) > 0 {
 		logger.Debug("Only mode is enabled. Ignoring default plugin rules")
+		for _, rule := range r.globalConfig.Only {
+			only[rule] = true
+		}
+	} else if r.globalConfig.DisabledByDefault {
+		logger.Debug("Default plugin rules are disabled by default")
 	}
 
-	// Default preset is "all"
-	rules := r.PresetRules["all"]
+	preset := map[string]bool{}
 	_, presetExists := body.Attributes["preset"]
 	if presetExists {
 		presetRules, exists := r.PresetRules[r.rulesetConfig.Preset]
@@ -72,16 +78,24 @@ func (r *RuleSet) ApplyConfig(body *hclext.BodyContent) error {
 			}
 			return fmt.Errorf(`preset "%s" is not found. Valid presets are %s`, r.rulesetConfig.Preset, strings.Join(validPresets, ", "))
 		}
-		rules = presetRules
+		for _, rule := range presetRules {
+			preset[rule.Name()] = true
+		}
 	}
 
 	r.EnabledRules = []tflint.Rule{}
-	for _, rule := range rules {
+	for _, rule := range r.PresetRules["all"] {
 		enabled := rule.Enabled()
-		if cfg := r.globalConfig.Rules[rule.Name()]; cfg != nil {
+		if len(only) > 0 {
+			enabled = only[rule.Name()]
+		} else if cfg := r.globalConfig.Rules[rule.Name()]; cfg != nil {
 			enabled = cfg.Enabled
-		} else if r.globalConfig.DisabledByDefault && !presetExists {
-			// Preset takes precedence over DisabledByDefault
+		} else if presetExists {
+			// Ignore rules not in preset
+			if !preset[rule.Name()] {
+				enabled = false
+			}
+		} else if r.globalConfig.DisabledByDefault {
 			enabled = false
 		}
 
