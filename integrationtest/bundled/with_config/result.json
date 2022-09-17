@@ -4,7 +4,7 @@
       "rule": {
         "name": "terraform_required_version",
         "severity": "warning",
-        "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.0/docs/rules/terraform_required_version.md"
+        "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.1/docs/rules/terraform_required_version.md"
       },
       "message": "terraform \"required_version\" attribute is required",
       "range": {
@@ -24,7 +24,7 @@
       "rule": {
         "name": "terraform_documented_variables",
         "severity": "info",
-        "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.0/docs/rules/terraform_documented_variables.md"
+        "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.1/docs/rules/terraform_documented_variables.md"
       },
       "message": "`instance_type` variable has no description",
       "range": {
@@ -44,7 +44,7 @@
       "rule": {
         "name": "terraform_unused_declarations",
         "severity": "warning",
-        "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.0/docs/rules/terraform_unused_declarations.md"
+        "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.1/docs/rules/terraform_unused_declarations.md"
       },
       "message": "variable \"instance_type\" is declared but not used",
       "range": {

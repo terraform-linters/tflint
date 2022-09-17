@@ -170,3 +170,13 @@ Some rules support additional attributes that configure their behavior. See the 
 ### `plugin` blocks
 
 You can declare the plugin to use. See [Configuring Plugins](plugins.md)
+
+## Rule config priority
+
+The priority of rule configs is as follows:
+
+1. `--only` (CLI flag)
+2. `--enable-rule`, `--disable-rule` (CLI flag)
+3. `rule` blocks (config file)
+4. `preset` (config file, tflint-ruleset-terraform only)
+5. `disabled_by_default` (config file)

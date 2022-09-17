@@ -179,6 +179,7 @@ func Test_toConfig(t *testing.T) {
 				Varfiles:          []string{},
 				Variables:         []string{},
 				DisabledByDefault: true,
+				Only:              []string{"aws_instance_invalid_type"},
 				Rules: map[string]*tflint.RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",

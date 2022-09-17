@@ -64,6 +64,7 @@ type Config struct {
 	Varfiles          []string
 	Variables         []string
 	DisabledByDefault bool
+	Only              []string
 	PluginDir         string
 	Format            string
 	Rules             map[string]*RuleConfig
@@ -348,6 +349,7 @@ func (c *Config) Merge(other *Config) {
 	}
 	c.Varfiles = append(c.Varfiles, other.Varfiles...)
 	c.Variables = append(c.Variables, other.Variables...)
+	c.Only = append(c.Only, other.Only...)
 
 	for name, rule := range other.Rules {
 		// HACK: If you enable the rule through the CLI instead of the file, its hcl.Body will be nil.
@@ -375,6 +377,7 @@ func (c *Config) ToPluginConfig() *sdk.Config {
 	cfg := &sdk.Config{
 		Rules:             map[string]*sdk.RuleConfig{},
 		DisabledByDefault: c.DisabledByDefault,
+		Only:              c.Only,
 	}
 	for _, rule := range c.Rules {
 		cfg.Rules[rule.Name] = &sdk.RuleConfig{

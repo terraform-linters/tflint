@@ -46,6 +46,11 @@ func TestIntegration(t *testing.T) {
 			command: "tflint --format json --force",
 			dir:     "disabled_by_default",
 		},
+		{
+			name:    "only",
+			command: "tflint --format json --force --only terraform_unused_declarations",
+			dir:     "only",
+		},
 	}
 
 	dir, _ := os.Getwd()
