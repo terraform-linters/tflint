@@ -18,7 +18,7 @@ This ruleset is built into TFLint, so you usually don't need to worry about how 
 
 ```
 $ tflint -v
-TFLint version 0.40.0
+TFLint version 0.40.1
 + ruleset.terraform (0.1.1-bundled)
 ```
 
