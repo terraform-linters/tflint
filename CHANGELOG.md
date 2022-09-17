@@ -1,3 +1,16 @@
+## 0.40.1 (2022-09-17)
+
+### BugFixes
+
+- [#1514](https://github.com/terraform-linters/tflint/pull/1514): Ignore default preset by `disabled_by_default`
+- [#1516](https://github.com/terraform-linters/tflint/pull/1516): Prefer `--only` option over other rules config ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1509](https://github.com/terraform-linters/tflint/pull/1509): Remove unused functions ([@wata727](https://github.com/wata727))
+- [#1511](https://github.com/terraform-linters/tflint/pull/1511): build(deps): Bump github.com/google/go-cmp from 0.5.8 to 0.5.9
+- [#1512](https://github.com/terraform-linters/tflint/pull/1512): build(deps): Bump sigstore/cosign-installer from 2.5.1 to 2.6.0
+
 ## 0.40.0 (2022-09-08)
 
 This release contains major changes to the plugin system. All plugins must be built with tflint-plugin-sdk v0.12.0+ to support this version. See also https://github.com/terraform-linters/tflint-plugin-sdk/releases/tag/v0.12.0
