@@ -1,3 +1,14 @@
+## 0.41.0 (2022-09-24)
+
+### Enhancements
+
+- [#1519](https://github.com/terraform-linters/tflint/pull/1519): terraform: Add support for Terraform v1.3 ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1510](https://github.com/terraform-linters/tflint/pull/1510): Move evaluation impl to under the terraform package ([@wata727](https://github.com/wata727))
+- [#1523](https://github.com/terraform-linters/tflint/pull/1523): Update Terraform compatibility notices ([@wata727](https://github.com/wata727))
+
 ## 0.40.1 (2022-09-17)
 
 ### BugFixes
