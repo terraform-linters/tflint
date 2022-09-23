@@ -387,6 +387,119 @@ variable "foo" {
 			want:     `cty.StringVal("bar")`,
 			errCheck: neverHappend,
 		},
+		{
+			name: "module variable optional attributes",
+			config: `
+variable "foo" {
+  type = object({
+    required = string
+	optional = optional(string)
+	default  = optional(bool, true)
+  })
+  default = {
+    required = "boop"
+  }
+}`,
+			expr: expr(`var.foo`),
+			ty: cty.Object(map[string]cty.Type{
+				"required": cty.String,
+				"optional": cty.String,
+				"default":  cty.Bool,
+			}),
+			want:     `cty.ObjectVal(map[string]cty.Value{"default":cty.True, "optional":cty.NullVal(cty.String), "required":cty.StringVal("boop")})`,
+			errCheck: neverHappend,
+		},
+		{
+			name: "module variable optional attributes without default",
+			config: `
+variable "foo" {
+  type = object({
+    required = string
+    optional = optional(string)
+    default  = optional(bool, true)
+  })
+}`,
+			expr: expr(`var.foo`),
+			ty: cty.Object(map[string]cty.Type{
+				"required": cty.String,
+				"optional": cty.String,
+				"default":  cty.Bool,
+			}),
+			want:     `cty.UnknownVal(cty.Object(map[string]cty.Type{"default":cty.Bool, "optional":cty.String, "required":cty.String}))`,
+			errCheck: neverHappend,
+		},
+		{
+			name: "module variable optional attributes with inputs",
+			config: `
+variable "foo" {
+  type = object({
+    required = string
+    optional = optional(string)
+    default  = optional(bool, true)
+  })
+}`,
+			inputs: []InputValues{
+				{
+					"foo": {Value: cty.ObjectVal(map[string]cty.Value{"required": cty.StringVal("boop")})},
+				},
+			},
+			expr: expr(`var.foo`),
+			ty: cty.Object(map[string]cty.Type{
+				"required": cty.String,
+				"optional": cty.String,
+				"default":  cty.Bool,
+			}),
+			want:     `cty.ObjectVal(map[string]cty.Value{"default":cty.True, "optional":cty.NullVal(cty.String), "required":cty.StringVal("boop")})`,
+			errCheck: neverHappend,
+		},
+		{
+			name: "module variable optional attributes with null",
+			config: `
+variable "foo" {
+  type = object({
+    required = string
+    optional = optional(string)
+    default  = optional(bool, true)
+  })
+  default = null
+}`,
+			expr: expr(`var.foo`),
+			ty: cty.Object(map[string]cty.Type{
+				"required": cty.String,
+				"optional": cty.String,
+				"default":  cty.Bool,
+			}),
+			want:     `cty.NullVal(cty.Object(map[string]cty.Type{"default":cty.Bool, "optional":cty.String, "required":cty.String}))`,
+			errCheck: neverHappend,
+		},
+		{
+			name: "module variable optional attributes with null inputs",
+			config: `
+variable "foo" {
+  type = object({
+    required = string
+    optional = optional(string)
+    default  = optional(bool, true)
+  })
+}`,
+			inputs: []InputValues{
+				{
+					"foo": {Value: cty.NullVal(cty.Object(map[string]cty.Type{
+						"required": cty.String,
+						"optional": cty.String,
+						"default":  cty.Bool,
+					}))},
+				},
+			},
+			expr: expr(`var.foo`),
+			ty: cty.Object(map[string]cty.Type{
+				"required": cty.String,
+				"optional": cty.String,
+				"default":  cty.Bool,
+			}),
+			want:     `cty.NullVal(cty.Object(map[string]cty.Type{"default":cty.Bool, "optional":cty.String, "required":cty.String}))`,
+			errCheck: neverHappend,
+		},
 	}
 
 	for _, test := range tests {

@@ -290,18 +290,6 @@ func TestFunctions(t *testing.T) {
 			},
 		},
 
-		"defaults": {
-			// This function is pretty specialized and so this is mainly
-			// just a test that it is defined at all. See the function's
-			// own unit tests for more interesting test cases.
-			{
-				`defaults({a: 4}, {a: 5})`,
-				cty.ObjectVal(map[string]cty.Value{
-					"a": cty.NumberIntVal(4),
-				}),
-			},
-		},
-
 		"dirname": {
 			{
 				`dirname("testdata/hello.txt")`,
@@ -322,6 +310,17 @@ func TestFunctions(t *testing.T) {
 			{
 				`element(["hello"], 0)`,
 				cty.StringVal("hello"),
+			},
+		},
+
+		"endswith": {
+			{
+				`endswith("hello world", "world")`,
+				cty.True,
+			},
+			{
+				`endswith("hello world", "hello")`,
+				cty.False,
 			},
 		},
 
@@ -827,6 +826,17 @@ func TestFunctions(t *testing.T) {
 			},
 		},
 
+		"startswith": {
+			{
+				`startswith("hello world", "hello")`,
+				cty.True,
+			},
+			{
+				`startswith("hello world", "world")`,
+				cty.False,
+			},
+		},
+
 		"strrev": {
 			{
 				`strrev("hello world")`,
@@ -873,6 +883,13 @@ func TestFunctions(t *testing.T) {
 			{
 				`timeadd("2017-11-22T00:00:00Z", "1s")`,
 				cty.StringVal("2017-11-22T00:00:01Z"),
+			},
+		},
+
+		"timecmp": {
+			{
+				`timecmp("2017-11-22T00:00:00Z", "2017-11-22T00:00:00Z")`,
+				cty.Zero,
 			},
 		},
 

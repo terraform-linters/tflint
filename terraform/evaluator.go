@@ -100,6 +100,14 @@ func (d *evaluationData) GetInputVariable(addr addrs.InputVariable, rng hcl.Rang
 		val = config.Default
 	}
 
+	// Apply defaults from the variable's type constraint to the value,
+	// unless the value is null. We do not apply defaults to top-level
+	// null values, as doing so could prevent assigning null to a nullable
+	// variable.
+	if config.TypeDefaults != nil && !val.IsNull() {
+		val = config.TypeDefaults.Apply(val)
+	}
+
 	var err error
 	val, err = convert.Convert(val, config.ConstraintType)
 	if err != nil {
