@@ -12,6 +12,7 @@ import (
 type Module struct {
 	Resources   map[string]map[string]*Resource
 	Variables   map[string]*Variable
+	Locals      map[string]*Local
 	ModuleCalls map[string]*ModuleCall
 
 	SourceDir string
@@ -27,6 +28,7 @@ func NewEmptyModule() *Module {
 	return &Module{
 		Resources:   map[string]map[string]*Resource{},
 		Variables:   map[string]*Variable{},
+		Locals:      map[string]*Local{},
 		ModuleCalls: map[string]*ModuleCall{},
 
 		SourceDir: "",
@@ -61,6 +63,11 @@ func (m *Module) build() hcl.Diagnostics {
 			call, moduleDiags := decodeModuleBlock(block)
 			diags = diags.Extend(moduleDiags)
 			m.ModuleCalls[call.Name] = call
+		case "locals":
+			locals := decodeLocalsBlock(block)
+			for _, local := range locals {
+				m.Locals[local.Name] = local
+			}
 		}
 	}
 
@@ -185,7 +192,7 @@ func overrideBlocks(primaries, overrides hclext.Blocks) hclext.Blocks {
 // schemaWithDynamic appends a dynamic block schema to block schemes recursively.
 // The content retrieved by the added schema is formatted by resolveDynamicBlocks in the same way as regular blocks.
 func schemaWithDynamic(schema *hclext.BodySchema) *hclext.BodySchema {
-	out := &hclext.BodySchema{Attributes: schema.Attributes}
+	out := &hclext.BodySchema{Mode: schema.Mode, Attributes: schema.Attributes}
 
 	for _, block := range schema.Blocks {
 		block.Body = schemaWithDynamic(block.Body)
@@ -244,6 +251,10 @@ var moduleSchema = &hclext.BodySchema{
 			Type:       "module",
 			LabelNames: []string{"name"},
 			Body:       moduleBlockSchema,
+		},
+		{
+			Type: "locals",
+			Body: localBlockSchema,
 		},
 	},
 }

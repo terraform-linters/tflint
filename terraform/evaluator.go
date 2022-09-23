@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/agext/levenshtein"
 	"github.com/hashicorp/hcl/v2"
@@ -19,11 +20,54 @@ type ContextMeta struct {
 	OriginalWorkingDir string
 }
 
+type CallGraph struct {
+	edges map[string]addrs.Reference
+	stack []string
+}
+
+func NewCallGraph() *CallGraph {
+	return &CallGraph{
+		edges: make(map[string]addrs.Reference),
+		stack: make([]string, 0),
+	}
+}
+
+func (g *CallGraph) Add(addr addrs.Reference) hcl.Diagnostics {
+	g.stack = append(g.stack, addr.Subject.String())
+
+	if _, exists := g.edges[addr.Subject.String()]; exists {
+		return hcl.Diagnostics{
+			{
+				Severity: hcl.DiagError,
+				Summary:  "circular reference found",
+				Detail:   g.String(),
+				Subject:  addr.SourceRange.Ptr(),
+			},
+		}
+	}
+	g.edges[addr.Subject.String()] = addr
+	return hcl.Diagnostics{}
+}
+
+func (g *CallGraph) String() string {
+	return strings.Join(g.stack, " -> ")
+}
+
+func (g *CallGraph) Empty() bool {
+	return len(g.stack) == 0
+}
+
+func (g *CallGraph) Clear() {
+	g.edges = make(map[string]addrs.Reference)
+	g.stack = make([]string, 0)
+}
+
 type Evaluator struct {
 	Meta           *ContextMeta
 	ModulePath     addrs.ModuleInstance
 	Config         *Config
 	VariableValues map[string]map[string]cty.Value
+	CallGraph      *CallGraph
 }
 
 func (e *Evaluator) EvaluateExpr(expr hcl.Expression, wantType cty.Type) (cty.Value, hcl.Diagnostics) {
@@ -219,6 +263,53 @@ func (d *evaluationData) GetInputVariable(addr addrs.InputVariable, rng hcl.Rang
 		val = val.Mark(marks.Sensitive)
 	}
 
+	return val, diags
+}
+
+func (d *evaluationData) GetLocalValue(addr addrs.LocalValue, rng hcl.Range) (cty.Value, hcl.Diagnostics) {
+	var diags hcl.Diagnostics
+
+	// First we'll make sure the requested value is declared in configuration,
+	// so we can produce a nice message if not.
+	moduleConfig := d.Evaluator.Config.DescendentForInstance(d.ModulePath)
+	if moduleConfig == nil {
+		// should never happen, since we can't be evaluating in a module
+		// that wasn't mentioned in configuration.
+		panic(fmt.Sprintf("local value read from %s, which has no configuration", d.ModulePath))
+	}
+
+	config := moduleConfig.Module.Locals[addr.Name]
+	if config == nil {
+		var suggestions []string
+		for k := range moduleConfig.Module.Locals {
+			suggestions = append(suggestions, k)
+		}
+		suggestion := nameSuggestion(addr.Name, suggestions)
+		if suggestion != "" {
+			suggestion = fmt.Sprintf(" Did you mean %q?", suggestion)
+		}
+
+		diags = diags.Append(&hcl.Diagnostic{
+			Severity: hcl.DiagError,
+			Summary:  `Reference to undeclared local value`,
+			Detail:   fmt.Sprintf(`A local value with the name %q has not been declared.%s`, addr.Name, suggestion),
+			Subject:  rng.Ptr(),
+		})
+		return cty.DynamicVal, diags
+	}
+
+	entry := d.Evaluator.CallGraph.Empty()
+	// Build a callgraph for circular reference detection only when getting a local value.
+	if diags := d.Evaluator.CallGraph.Add(addrs.Reference{Subject: addr, SourceRange: rng}); diags.HasErrors() {
+		return cty.UnknownVal(cty.DynamicPseudoType), diags
+	}
+
+	val, diags := d.Evaluator.EvaluateExpr(config.Expr, cty.DynamicPseudoType)
+	// Since we build a callgraph for each local value,
+	// we clear the callgraph when the local value is finally resolved.
+	if entry {
+		d.Evaluator.CallGraph.Clear()
+	}
 	return val, diags
 }
 
