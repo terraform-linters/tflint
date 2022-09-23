@@ -1,14 +1,12 @@
 # Compatibility with Terraform
 
-TFLint bundles Terraform internal packages as a library. This allows the Terraform language to be parsed correctly even if Terraform is not installed at runtime.
+TFLint interprets the [Terraform language](https://www.terraform.io/language) with its own parser which is a fork of the Terraform's native one. This allows it to be parsed correctly even if Terraform is not installed at runtime.
 
-On the other hand, language semantics depend on the behavior of a particular bundled version. For example, a configuration parsed by Terraform v1.0 may be parsed by v1.1 language parser. The currently bundled version is v1.2.1.
-
-The best practice is to match the Terraform version bundled with TFLint to the version you actually use. However, the Terraform language guarantees some backward compatibility, so different versions may not cause immediate problems. However, keep in mind that false positives/negatives can occur depending on this assumption.
+The parser supports Terraform v1.x syntax and semantics. The language compatibility on Terraform v1.x is defined by [Compatibility Promises](https://www.terraform.io/language/v1-compatibility-promises). TFLint follows this promise. New features are only supported in newer TFLint versions, and bug and experimental features compatibility are not guaranteed.
 
 ## Input Variables
 
-Like Terraform, it supports the `--var`,` --var-file` options, environment variables (`TF_VAR_*`), and automatically loading variable definitions (`terraform.tfvars` and `*.auto.tfvars`) files. See [Input Variables](https://www.terraform.io/docs/language/values/variables.html).
+Like Terraform, TFLint supports the `--var`,` --var-file` options, environment variables (`TF_VAR_*`), and automatically loading variable definitions (`terraform.tfvars` and `*.auto.tfvars`) files. See [Input Variables](https://www.terraform.io/language/values/variables).
 
 Input variables are evaluated correctly, just like Terraform:
 
@@ -22,9 +20,11 @@ resource "aws_instance" "foo" {
 }
 ```
 
+Sensitive variables are ignored without being evaluated. This is to avoid unintended disclosure.
+
 ## Named Values
 
-[Named values](https://www.terraform.io/docs/configuration/expressions/references.html) are supported partially. The following named values are available:
+[Named values](https://www.terraform.io/language/expressions/references) are supported partially. The following named values are available:
 
 - `var.<NAME>`
 - `path.module`
@@ -32,7 +32,7 @@ resource "aws_instance" "foo" {
 - `path.cwd`
 - `terraform.workspace`
 
-Expressions that reference named values not included above (e.g. `locals.*`, `count.*`, `each.*`, etc.) are excluded from the inspection.
+Expressions containing unsupported named values (e.g. `local.*`, `count.index`, `each.key`) are simply ignored when evaluated.
 
 ```hcl
 locals {
@@ -46,12 +46,12 @@ resource "aws_instance" "foo" {
 
 ## Built-in Functions
 
-[Built-in Functions](https://www.terraform.io/docs/configuration/functions.html) are fully supported.
+[Built-in Functions](https://www.terraform.io/language/functions) are fully supported.
 
 ## Environment Variables
 
 The following environment variables are supported:
 
-- [TF_VAR_name](https://www.terraform.io/docs/commands/environment-variables.html#tf_var_name)
-- [TF_DATA_DIR](https://www.terraform.io/docs/commands/environment-variables.html#tf_data_dir)
-- [TF_WORKSPACE](https://www.terraform.io/docs/commands/environment-variables.html#tf_workspace)
+- [TF_VAR_name](https://www.terraform.io/cli/config/environment-variables#tf_var_name)
+- [TF_DATA_DIR](https://www.terraform.io/cli/config/environment-variables#tf_data_dir)
+- [TF_WORKSPACE](https://www.terraform.io/cli/config/environment-variables#tf_workspace)
