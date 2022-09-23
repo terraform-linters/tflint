@@ -357,10 +357,19 @@ func TestEvaluateExpr(t *testing.T) {
 variable "foo" {
 	default = "bar"
 }
+
 variable "sensitive" {
 	sensitive = true
 	default   = "foo"
-}`})
+}
+
+variable "no_default" {}
+
+variable "null" {
+	type    = string
+	default = null
+}
+`})
 	rootRunner := tflint.TestRunner(t, map[string]string{"main.tf": `
 variable "foo" {
 	default = "baz"
@@ -413,6 +422,93 @@ variable "foo" {
 			Want: cty.NullVal(cty.NilType),
 			ErrCheck: func(err error) bool {
 				return err == nil || !errors.Is(err, sdk.ErrSensitive)
+			},
+		},
+		{
+			Name: "no default",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				return hclExpr(`var.no_default`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want: cty.NullVal(cty.NilType),
+			ErrCheck: func(err error) bool {
+				return err == nil || !errors.Is(err, sdk.ErrUnknownValue)
+			},
+		},
+		{
+			Name: "no default as cty.Value",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				return hclExpr(`var.no_default`), sdk.EvaluateExprOption{WantType: &cty.DynamicPseudoType, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want:     cty.DynamicVal,
+			ErrCheck: neverHappend,
+		},
+		{
+			Name: "no default value in object",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				ty := cty.Object(map[string]cty.Type{"value": cty.String})
+				return hclExpr(`{ value = var.no_default }`), sdk.EvaluateExprOption{WantType: &ty, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want: cty.NullVal(cty.NilType),
+			ErrCheck: func(err error) bool {
+				return err == nil || !errors.Is(err, sdk.ErrUnknownValue)
+			},
+		},
+		{
+			Name: "null",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				return hclExpr(`var.null`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want: cty.NullVal(cty.NilType),
+			ErrCheck: func(err error) bool {
+				return err == nil || !errors.Is(err, sdk.ErrNullValue)
+			},
+		},
+		{
+			Name: "null as cty.Value",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				return hclExpr(`var.null`), sdk.EvaluateExprOption{WantType: &cty.DynamicPseudoType, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want:     cty.NullVal(cty.String),
+			ErrCheck: neverHappend,
+		},
+		{
+			Name: "null value in object",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				ty := cty.Object(map[string]cty.Type{"value": cty.String})
+				return hclExpr(`{ value = var.null }`), sdk.EvaluateExprOption{WantType: &ty, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want: cty.NullVal(cty.NilType),
+			ErrCheck: func(err error) bool {
+				return err == nil || !errors.Is(err, sdk.ErrNullValue)
+			},
+		},
+		{
+			Name: "unevaluable",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				return hclExpr(`module.instance.output`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want: cty.NullVal(cty.NilType),
+			ErrCheck: func(err error) bool {
+				return err == nil || !errors.Is(err, sdk.ErrUnknownValue)
+			},
+		},
+		{
+			Name: "unevaluable as cty.Value",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				return hclExpr(`module.instance.output`), sdk.EvaluateExprOption{WantType: &cty.DynamicPseudoType, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want:     cty.DynamicVal,
+			ErrCheck: neverHappend,
+		},
+		{
+			Name: "unevaluable value in object",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				ty := cty.Object(map[string]cty.Type{"value": cty.String})
+				return hclExpr(`{ value = module.instance.output }`), sdk.EvaluateExprOption{WantType: &ty, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want: cty.NullVal(cty.NilType),
+			ErrCheck: func(err error) bool {
+				return err == nil || !errors.Is(err, sdk.ErrUnknownValue)
 			},
 		},
 	}

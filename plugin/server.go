@@ -96,9 +96,9 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts sdk.EvaluateExprOpti
 		runner = s.rootRunner
 	}
 
-	val, err := runner.EvaluateExpr(expr, *opts.WantType)
-	if err != nil {
-		return val, err
+	val, diags := runner.Ctx.EvaluateExpr(expr, *opts.WantType)
+	if diags.HasErrors() {
+		return val, diags
 	}
 
 	if val.HasMark(marks.Sensitive) {
@@ -111,7 +111,41 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts sdk.EvaluateExprOpti
 		log.Printf("[INFO] %s. TFLint ignores expressions with sensitive values.", err)
 		return cty.NullVal(cty.NilType), err
 	}
-	return val, err
+
+	if *opts.WantType == cty.DynamicPseudoType {
+		return val, nil
+	}
+
+	err := cty.Walk(val, func(path cty.Path, v cty.Value) (bool, error) {
+		if !v.IsKnown() {
+			err := fmt.Errorf(
+				"unknown value found in %s:%d%w",
+				expr.Range().Filename,
+				expr.Range().Start.Line,
+				sdk.ErrUnknownValue,
+			)
+			log.Printf("[INFO] %s. TFLint can only evaluate provided variables and skips dynamic values.", err)
+			return false, err
+		}
+
+		if v.IsNull() {
+			err := fmt.Errorf(
+				"null value found in %s:%d%w",
+				expr.Range().Filename,
+				expr.Range().Start.Line,
+				sdk.ErrNullValue,
+			)
+			log.Printf("[INFO] %s. TFLint ignores expressions with null values.", err)
+			return false, err
+		}
+
+		return true, nil
+	})
+	if err != nil {
+		return cty.NullVal(cty.NilType), err
+	}
+
+	return val, nil
 }
 
 // EmitIssue stores an issue in the server based on passed rule, message, and location.

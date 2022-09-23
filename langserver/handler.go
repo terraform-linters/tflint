@@ -17,6 +17,7 @@ import (
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint/plugin"
+	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -146,9 +147,9 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 	if err != nil {
 		return ret, fmt.Errorf("Failed to load values files: %w", err)
 	}
-	cliVars, err := tflint.ParseTFVariables(h.config.Variables, configs.Module.Variables)
-	if err != nil {
-		return ret, fmt.Errorf("Failed to parse variables: %w", err)
+	cliVars, diags := terraform.ParseVariableValues(h.config.Variables, configs.Module.Variables)
+	if diags.HasErrors() {
+		return ret, fmt.Errorf("Failed to parse variables: %w", diags)
 	}
 	variables = append(variables, cliVars)
 

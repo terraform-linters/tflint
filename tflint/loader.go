@@ -50,7 +50,7 @@ func NewLoader(fs afero.Afero, cfg *Config) (*Loader, error) {
 		moduleManifest:       map[string]*moduleManifest{},
 	}
 
-	if _, err := os.Stat(getTFModuleManifestPath()); !os.IsNotExist(err) {
+	if _, err := os.Stat(terraform.ModuleManifestPath()); !os.IsNotExist(err) {
 		log.Print("[INFO] Module manifest file found. Initializing...")
 		if err := l.initializeModuleManifest(); err != nil {
 			log.Printf("[ERROR] %s", err)
@@ -133,8 +133,8 @@ func (l *Loader) LoadValuesFiles(files ...string) ([]terraform.InputValues, erro
 		log.Printf("[ERROR] %s", err)
 		return nil, err
 	}
-	if _, err := os.Stat(defaultValuesFile); !os.IsNotExist(err) {
-		autoLoadFiles = append([]string{defaultValuesFile}, autoLoadFiles...)
+	if _, err := os.Stat(terraform.DefaultVarsFilename); !os.IsNotExist(err) {
+		autoLoadFiles = append([]string{terraform.DefaultVarsFilename}, autoLoadFiles...)
 	}
 
 	for _, file := range autoLoadFiles {
@@ -237,7 +237,7 @@ func (l *Loader) ignoreModuleWalker() terraform.ModuleWalker {
 }
 
 func (l *Loader) initializeModuleManifest() error {
-	file, err := l.fs.ReadFile(getTFModuleManifestPath())
+	file, err := l.fs.ReadFile(terraform.ModuleManifestPath())
 	if err != nil {
 		return err
 	}

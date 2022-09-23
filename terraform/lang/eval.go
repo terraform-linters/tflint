@@ -89,6 +89,7 @@ func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceabl
 	// it, since that allows us to gather a full set of any errors and
 	// warnings, but once we've gathered all the data we'll then skip anything
 	// that's redundant in the process of populating our values map.
+	managedResources := map[string]cty.Value{}
 	inputVariables := map[string]cty.Value{}
 	pathAttrs := map[string]cty.Value{}
 	terraformAttrs := map[string]cty.Value{}
@@ -98,7 +99,23 @@ func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceabl
 
 		rawSubj := ref.Subject
 
+		// This type switch must cover all of the "Referenceable" implementations
+		// in package addrs, however we are removing the possibility of
+		// Instances beforehand.
+		switch addr := rawSubj.(type) {
+		case addrs.ResourceInstance:
+			rawSubj = addr.ContainingResource()
+		}
+
 		switch subj := rawSubj.(type) {
+		case addrs.Resource:
+			// Managed resources are not supported by TFLint, but it does support arbitrary
+			// key names, so it gathers the referenced resource names.
+			if subj.Mode != addrs.ManagedResourceMode {
+				continue
+			}
+			managedResources[subj.Type] = cty.UnknownVal(cty.DynamicPseudoType)
+
 		case addrs.InputVariable:
 			val, valDiags := normalizeRefValue(s.Data.GetInputVariable(subj, rng))
 			diags = diags.Extend(valDiags)
@@ -113,16 +130,28 @@ func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceabl
 			val, valDiags := normalizeRefValue(s.Data.GetTerraformAttr(subj, rng))
 			diags = diags.Extend(valDiags)
 			terraformAttrs[subj.Name] = val
-
-		default:
-			// Should never happen
-			panic(fmt.Errorf("Scope.buildEvalContext cannot handle address type %T", rawSubj))
 		}
+	}
+
+	// Managed resources are exposed in two different locations. This is
+	// at the top level where the resource type name is the root of the
+	// traversal.
+	for k, v := range managedResources {
+		vals[k] = v
 	}
 
 	vals["var"] = cty.ObjectVal(inputVariables)
 	vals["path"] = cty.ObjectVal(pathAttrs)
 	vals["terraform"] = cty.ObjectVal(terraformAttrs)
+
+	// The following are unknown values as they are not supported by TFLint.
+	vals["resource"] = cty.UnknownVal(cty.DynamicPseudoType)
+	vals["data"] = cty.UnknownVal(cty.DynamicPseudoType)
+	vals["module"] = cty.UnknownVal(cty.DynamicPseudoType)
+	vals["local"] = cty.UnknownVal(cty.DynamicPseudoType)
+	vals["count"] = cty.UnknownVal(cty.DynamicPseudoType)
+	vals["each"] = cty.UnknownVal(cty.DynamicPseudoType)
+	vals["self"] = cty.UnknownVal(cty.DynamicPseudoType)
 
 	return ctx, diags
 }
