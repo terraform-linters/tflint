@@ -1,7 +1,7 @@
 # TFLint
 [![Build Status](https://github.com/terraform-linters/tflint/workflows/build/badge.svg?branch=master)](https://github.com/terraform-linters/tflint/actions)
 [![GitHub release](https://img.shields.io/github/release/terraform-linters/tflint.svg)](https://github.com/terraform-linters/tflint/releases/latest)
-[![Terraform Compatibility](https://img.shields.io/badge/terraform-%3E%3D%200.12-blue)](docs/user-guide/compatibility.md)
+[![Terraform Compatibility](https://img.shields.io/badge/terraform-%3E%3D%201.0-blue)](docs/user-guide/compatibility.md)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-blue.svg)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/terraform-linters/tflint)](https://goreportcard.com/report/github.com/terraform-linters/tflint)
 [![Homebrew](https://img.shields.io/badge/dynamic/json.svg?url=https://formulae.brew.sh/api/formula/tflint.json&query=$.versions.stable&label=homebrew)](https://formulae.brew.sh/formula/tflint)
@@ -157,9 +157,6 @@ Note that if you want to recursively inspect local modules, you need to run them
 
 ### Do I need to install Terraform for TFLint to work?
 No. TFLint works as a single binary because Terraform is embedded as a library. Note that this means that the version of Terraform used is determined for each TFLint version. See also [Compatibility with Terraform](docs/user-guide/compatibility.md).
-
-### TFLint reports a loading error in my code, but this is valid in Terraform. Why?
-First, check the version of Terraform and TFLint you are using. TFLint loads files differently than the installed Terraform, so an error can occur if the version of Terraform supported by TFLint is different from the installed Terraform.
 
 ## Debugging
 
