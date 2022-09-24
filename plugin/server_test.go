@@ -21,6 +21,10 @@ func TestGetModuleContent(t *testing.T) {
 	runner := tflint.TestRunner(t, map[string]string{"main.tf": `
 resource "aws_instance" "foo" {
 	instance_type = "t2.micro"
+}
+resource "aws_instance" "baz" {
+	count         = 0
+	instance_type = "t3.nano"
 }`})
 	rootRunner := tflint.TestRunner(t, map[string]string{"main.tf": `
 resource "aws_instance" "bar" {
@@ -32,7 +36,7 @@ resource "aws_instance" "bar" {
 	tests := []struct {
 		Name string
 		Args func() (*hclext.BodySchema, sdk.GetModuleContentOption)
-		Want func() (*hclext.BodyContent, hcl.Diagnostics)
+		Want *hclext.BodyContent
 	}{
 		{
 			Name: "self module context",
@@ -47,20 +51,18 @@ resource "aws_instance" "bar" {
 							},
 						},
 					},
-				}, sdk.GetModuleContentOption{ModuleCtx: sdk.SelfModuleCtxType}
+				}, sdk.GetModuleContentOption{ModuleCtx: sdk.SelfModuleCtxType, Hint: sdk.GetModuleContentHint{ResourceType: "aws_instance"}}
 			},
-			Want: func() (*hclext.BodyContent, hcl.Diagnostics) {
-				return runner.GetModuleContent(&hclext.BodySchema{
-					Blocks: []hclext.BlockSchema{
-						{
-							Type:       "resource",
-							LabelNames: []string{"type", "name"},
-							Body: &hclext.BodySchema{
-								Attributes: []hclext.AttributeSchema{{Name: "instance_type"}},
-							},
+			Want: &hclext.BodyContent{
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "foo"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type"}},
 						},
 					},
-				}, sdk.GetModuleContentOption{})
+				},
 			},
 		},
 		{
@@ -76,10 +78,24 @@ resource "aws_instance" "bar" {
 							},
 						},
 					},
-				}, sdk.GetModuleContentOption{ModuleCtx: sdk.RootModuleCtxType}
+				}, sdk.GetModuleContentOption{ModuleCtx: sdk.RootModuleCtxType, Hint: sdk.GetModuleContentHint{ResourceType: "aws_instance"}}
 			},
-			Want: func() (*hclext.BodyContent, hcl.Diagnostics) {
-				return rootRunner.GetModuleContent(&hclext.BodySchema{
+			Want: &hclext.BodyContent{
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "bar"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type"}},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "include not created",
+			Args: func() (*hclext.BodySchema, sdk.GetModuleContentOption) {
+				return &hclext.BodySchema{
 					Blocks: []hclext.BlockSchema{
 						{
 							Type:       "resource",
@@ -89,29 +105,46 @@ resource "aws_instance" "bar" {
 							},
 						},
 					},
-				}, sdk.GetModuleContentOption{})
+				}, sdk.GetModuleContentOption{ModuleCtx: sdk.SelfModuleCtxType, IncludeNotCreated: true, Hint: sdk.GetModuleContentHint{ResourceType: "aws_instance"}}
+			},
+			Want: &hclext.BodyContent{
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "foo"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type"}},
+						},
+					},
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "baz"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type"}},
+						},
+					},
+				},
 			},
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.Name, func(t *testing.T) {
-			want, diags := test.Want()
-			if diags.HasErrors() {
-				t.Fatalf("failed to get want: %s", diags)
-			}
-
 			got, diags := server.GetModuleContent(test.Args())
 			if diags.HasErrors() {
 				t.Fatalf("failed to call GetModuleContent: %s", diags)
 			}
 
 			opts := cmp.Options{
-				cmp.Comparer(func(x, y cty.Value) bool {
-					return x.GoString() == y.GoString()
+				cmpopts.IgnoreFields(hclext.Block{}, "TypeRange", "LabelRanges"),
+				cmpopts.IgnoreFields(hclext.Attribute{}, "Expr", "NameRange"),
+				cmpopts.IgnoreFields(hcl.Range{}, "Start", "End", "Filename"),
+				cmpopts.SortSlices(func(i, j *hclext.Block) bool {
+					return i.DefRange.String() < j.DefRange.String()
 				}),
 			}
-			if diff := cmp.Diff(got, want, opts); diff != "" {
+
+			if diff := cmp.Diff(got, test.Want, opts); diff != "" {
 				t.Errorf("diff: %s", diff)
 			}
 		})

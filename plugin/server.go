@@ -8,6 +8,7 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/terraform/lang/marks"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
@@ -32,14 +33,32 @@ func (s *GRPCServer) GetModulePath() []string {
 
 // GetModuleContent returns module content based on the passed schema and options.
 func (s *GRPCServer) GetModuleContent(bodyS *hclext.BodySchema, opts sdk.GetModuleContentOption) (*hclext.BodyContent, hcl.Diagnostics) {
+	var module *terraform.Module
+	var ctx *terraform.Evaluator
+
 	switch opts.ModuleCtx {
 	case sdk.SelfModuleCtxType:
-		return s.runner.GetModuleContent(bodyS, opts)
+		module = s.runner.TFConfig.Module
+		ctx = s.runner.Ctx
 	case sdk.RootModuleCtxType:
-		return s.rootRunner.GetModuleContent(bodyS, opts)
+		module = s.rootRunner.TFConfig.Module
+		ctx = s.rootRunner.Ctx
 	default:
 		panic(fmt.Sprintf("unknown module ctx: %s", opts.ModuleCtx))
 	}
+
+	// For performance, determine in advance whether the target resource exists.
+	if opts.Hint.ResourceType != "" {
+		if _, exists := module.Resources[opts.Hint.ResourceType]; !exists {
+			return &hclext.BodyContent{}, nil
+		}
+	}
+
+	if opts.IncludeNotCreated {
+		ctx = nil
+	}
+
+	return module.PartialContent(bodyS, ctx)
 }
 
 // GetFile returns the hcl.File based on passed the file name.
