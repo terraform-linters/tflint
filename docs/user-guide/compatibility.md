@@ -8,7 +8,7 @@ The parser supports Terraform v1.x syntax and semantics. The language compatibil
 
 Like Terraform, TFLint supports the `--var`,` --var-file` options, environment variables (`TF_VAR_*`), and automatically loading variable definitions (`terraform.tfvars` and `*.auto.tfvars`) files. See [Input Variables](https://www.terraform.io/language/values/variables).
 
-Input variables are evaluated correctly, just like Terraform:
+Input variables are evaluated just like in Terraform:
 
 ```hcl
 variable "instance_type" {
@@ -20,7 +20,28 @@ resource "aws_instance" "foo" {
 }
 ```
 
-Sensitive variables are ignored without being evaluated. This is to avoid unintended disclosure.
+Unknown variables (e.g. no default) are ignored:
+
+```hcl
+variable "instance_type" {}
+
+resource "aws_instance" "foo" {
+  instance_type = var.instance_type # => ignored
+}
+```
+
+Sensitive variables are ignored. This is to avoid unintended disclosure.
+
+```hcl
+variable "instance_type" {
+  sensitive = true
+  default   = "t2.micro"
+}
+
+resource "aws_instance" "foo" {
+  instance_type = var.instance_type # => ignored
+}
+```
 
 ## Named Values
 
@@ -32,7 +53,7 @@ Sensitive variables are ignored without being evaluated. This is to avoid uninte
 - `path.cwd`
 - `terraform.workspace`
 
-Expressions containing unsupported named values (e.g. `local.*`, `count.index`, `each.key`) are simply ignored when evaluated.
+Unsupported named values (e.g. `local.*`, `count.index`, `each.key`) are ignored:
 
 ```hcl
 locals {
@@ -40,13 +61,92 @@ locals {
 }
 
 resource "aws_instance" "foo" {
-  instance_type = "${local.instance_family}.micro" # => Not an error, it will be ignored because it marks as unknown
+  instance_type = "${local.instance_family}.micro" # => ignored
 }
 ```
 
 ## Built-in Functions
 
 [Built-in Functions](https://www.terraform.io/language/functions) are fully supported.
+
+## Conditional Resources/Modules
+
+Resources and modules with [`count = 0`](https://www.terraform.io/language/meta-arguments/count) or [`for_each = {}`](https://www.terraform.io/language/meta-arguments/for_each) are ignored:
+
+```hcl
+resource "aws_instance" "foo" {
+  count = 0
+
+  instance_type = "invalid" # => ignored
+}
+```
+
+Note that this behavior may differ depending on a rule. Rules like `terraform_deprecated_syntax` will check resources regardless of the meta-argument values.
+
+If the meta-arguments are unknown, the resource/module is ignored:
+
+```hcl
+variable "count" {}
+
+resource "aws_instance" "foo" {
+  count = var.count
+
+  instance_type = "invalid" # => ignored
+}
+```
+
+## Dynamic Blocks
+
+[Dynamic blocks](https://www.terraform.io/language/expressions/dynamic-blocks
+) work just like normal blocks:
+
+```hcl
+resource "aws_instance" "static" {
+  ebs_block_device {
+    encrypted = false # => Must be encrypted
+  }
+}
+
+resource "aws_instance" "dynamic" {
+  dynamic "ebs_block_device" {
+    for_each = var.block_devices
+    content {
+      encrypted = false # => Must be encrypted
+    }
+  }
+}
+```
+
+Note that iterator evaluation is not supported.
+
+```hcl
+resource "aws_instance" "dynamic" {
+  dynamic "ebs_block_device" {
+    for_each = var.block_devices
+    content {
+      encrypted = ebs_block_device.value["encrypted"] # => ignored
+    }
+  }
+}
+```
+
+## Modules
+
+Resources contained within modules are ignored by default, but when the [Module Inspection](./module-inspection.md) is enabled, the arguments of module calls are inspected.
+
+```hcl
+resource "aws_instance" "static" {
+  ebs_block_device {
+    encrypted = false # => Must be encrypted
+  }
+}
+
+module "aws_instance" {
+  source = "./module/aws_instance"
+
+  encrypted = false # => Must be encrypted
+}
+```
 
 ## Environment Variables
 
