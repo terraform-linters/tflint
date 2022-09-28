@@ -20,4 +20,4 @@ Enable multiple rules at once. Please see [Rules](rules/README.md) for details. 
 
 The preset have higher priority than `disabled_by_default` and lower than each rule block.
 
-When using the bundled plugin built into TFLint, you can use this plugin without declaring a "plugin" block. In this case the default is `recommeneded`.
+When using the bundled plugin built into TFLint, you can use this plugin without declaring a "plugin" block. In this case the default is `recommended`.
