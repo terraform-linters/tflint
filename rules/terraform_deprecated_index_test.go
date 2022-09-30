@@ -40,6 +40,32 @@ locals {
 			},
 		},
 		{
+			Name: "deprecated dot splat index style",
+			Content: `
+locals {
+  maplist = [{a = "b"}]
+  values = maplist.*.a
+}
+`,
+			Expected: helper.Issues{
+				{
+					Rule:    NewTerraformDeprecatedIndexRule(),
+					Message: "List items should be accessed using square brackets",
+					Range: hcl.Range{
+						Filename: "config.tf",
+						Start: hcl.Pos{
+							Line:   4,
+							Column: 12,
+						},
+						End: hcl.Pos{
+							Line:   4,
+							Column: 23,
+						},
+					},
+				},
+			},
+		},
+		{
 			Name: "attribute access",
 			Content: `
 locals {

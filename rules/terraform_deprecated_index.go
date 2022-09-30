@@ -49,39 +49,49 @@ func (r *TerraformDeprecatedIndexRule) Check(runner tflint.Runner) error {
 	}
 
 	diags := runner.WalkExpressions(tflint.ExprWalkFunc(func(expr hcl.Expression) hcl.Diagnostics {
+		filename := expr.Range().Filename
+		file, err := runner.GetFile(filename)
+		if err != nil {
+			return hcl.Diagnostics{
+				{
+					Severity: hcl.DiagError,
+					Summary:  "failed to call GetFile()",
+					Detail:   err.Error(),
+				},
+			}
+		}
+
 		for _, variable := range expr.Variables() {
-			for _, traversal := range variable.SimpleSplit().Rel {
-				if traversal, ok := traversal.(hcl.TraverseIndex); ok {
-					filename := traversal.SrcRange.Filename
-					file, err := runner.GetFile(filename)
-					if err != nil {
-						return hcl.Diagnostics{
-							{
-								Severity: hcl.DiagError,
-								Summary:  "failed to call GetFile()",
-								Detail:   err.Error(),
-							},
-						}
-					}
-					bytes := traversal.SrcRange.SliceBytes(file.Bytes)
+			bytes := expr.Range().SliceBytes(file.Bytes)
 
-					tokens, diags := hclsyntax.LexExpression(bytes, filename, traversal.SrcRange.Start)
-					if diags.HasErrors() {
-						return diags
+			tokens, diags := hclsyntax.LexExpression(bytes, filename, variable.SourceRange().Start)
+			if diags.HasErrors() {
+				return diags
+			}
+
+			tokens = tokens[1:]
+
+			for i, token := range tokens {
+				if token.Type == hclsyntax.TokenDot {
+					if len(tokens) == i+1 {
+						return nil
 					}
 
-					if tokens[0].Type == hclsyntax.TokenDot {
-						if err := runner.EmitIssue(
-							r,
-							"List items should be accessed using square brackets",
-							expr.Range(),
-						); err != nil {
-							return hcl.Diagnostics{
-								{
-									Severity: hcl.DiagError,
-									Summary:  "failed to call EmitIssue()",
-									Detail:   err.Error(),
-								},
+					next := tokens[i+1].Type
+					if next == hclsyntax.TokenNumberLit || next == hclsyntax.TokenStar {
+						if tokens[0].Type == hclsyntax.TokenDot {
+							if err := runner.EmitIssue(
+								r,
+								"List items should be accessed using square brackets",
+								expr.Range(),
+							); err != nil {
+								return hcl.Diagnostics{
+									{
+										Severity: hcl.DiagError,
+										Summary:  "failed to call EmitIssue()",
+										Detail:   err.Error(),
+									},
+								}
 							}
 						}
 					}
@@ -91,6 +101,7 @@ func (r *TerraformDeprecatedIndexRule) Check(runner tflint.Runner) error {
 
 		return nil
 	}))
+
 	if diags.HasErrors() {
 		return diags
 	}
