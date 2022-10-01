@@ -36,6 +36,100 @@ func (e *Evaluator) EvaluateExpr(expr hcl.Expression, wantType cty.Type) (cty.Va
 	return scope.EvalExpr(expr, wantType)
 }
 
+// ResourceIsEvaluable checks whether the passed resource meta-arguments
+// (count/for_each) indicate the resource will be evaluated.
+//
+// If `count` is 0 or `for_each` is empty, Terraform will not evaluate
+// the attributes of that resource. Terraform doesn't expect to pass null
+// for these attributes (it will cause an error), but we'll treat them as
+// if they were undefined.
+func (e *Evaluator) ResourceIsEvaluable(resource *Resource) (bool, hcl.Diagnostics) {
+	if resource.Count != nil {
+		return e.countIsEvaluable(resource.Count)
+	}
+
+	if resource.ForEach != nil {
+		return e.forEachIsEvaluable(resource.ForEach)
+	}
+
+	// If `count` or `for_each` is not defined, it will be evaluated by default
+	return true, hcl.Diagnostics{}
+}
+
+func (e *Evaluator) ModuleCallIsEvaluable(moduleCall *ModuleCall) (bool, hcl.Diagnostics) {
+	if moduleCall.Count != nil {
+		return e.countIsEvaluable(moduleCall.Count)
+	}
+
+	if moduleCall.ForEach != nil {
+		return e.forEachIsEvaluable(moduleCall.ForEach)
+	}
+
+	// If `count` or `for_each` is not defined, it will be evaluated by default
+	return true, nil
+}
+
+func (e *Evaluator) countIsEvaluable(expr hcl.Expression) (bool, hcl.Diagnostics) {
+	var diags hcl.Diagnostics
+
+	val, diags := e.EvaluateExpr(expr, cty.DynamicPseudoType)
+	if diags.HasErrors() {
+		return false, diags
+	}
+	val, _ = val.Unmark()
+
+	if val.IsNull() {
+		// null value means that attribute is not set
+		return true, diags
+	}
+	if !val.IsKnown() {
+		// unknown value is non-deterministic
+		return false, diags
+	}
+
+	if val.Equals(cty.NumberIntVal(0)).True() {
+		// `count = 0` is not evaluated
+		return false, diags
+	}
+	// `count > 1` is evaluated`
+	return true, diags
+}
+
+func (e *Evaluator) forEachIsEvaluable(expr hcl.Expression) (bool, hcl.Diagnostics) {
+	var diags hcl.Diagnostics
+
+	val, diags := e.EvaluateExpr(expr, cty.DynamicPseudoType)
+	if diags.HasErrors() {
+		return false, diags
+	}
+
+	if val.IsNull() {
+		// null value means that attribute is not set
+		return true, diags
+	}
+	if !val.IsKnown() {
+		// unknown value is non-deterministic
+		return false, diags
+	}
+	if !val.CanIterateElements() {
+		// uniteratable values (string, number, etc.) are
+		return false, hcl.Diagnostics{
+			{
+				Severity: hcl.DiagError,
+				Summary:  "The `for_each` value is not iterable",
+				Detail:   fmt.Sprintf("`%s` is not iterable", val.GoString()),
+				Subject:  expr.Range().Ptr(),
+			},
+		}
+	}
+	if val.LengthInt() == 0 {
+		// empty `for_each` is not evaluated
+		return false, diags
+	}
+	// `for_each` with non-empty elements is evaluated
+	return true, diags
+}
+
 type evaluationData struct {
 	Evaluator  *Evaluator
 	ModulePath addrs.ModuleInstance
