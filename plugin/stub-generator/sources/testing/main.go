@@ -21,6 +21,7 @@ func main() {
 				rules.NewAwsRoute53RecordEvalOnRootCtxExampleRule(),
 				rules.NewAwsDBInstanceWithDefaultConfigExampleRule(),
 				rules.NewAwsCloudFormationStackErrorRule(),
+				rules.NewLocalsJustAttributesExampleRule(),
 			},
 		},
 	})

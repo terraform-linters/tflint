@@ -113,6 +113,38 @@ resource "aws_instance" "foo" {
 			},
 		},
 		{
+			name: "just attributes",
+			files: map[string]string{
+				"main.tf": `
+locals {
+  foo = "foo"
+  bar = "bar"
+}`,
+			},
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type: "locals",
+						Body: &hclext.BodySchema{Mode: hclext.SchemaJustAttributesMode},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Blocks: hclext.Blocks{
+					{
+						Type: "locals",
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{
+								"foo": &hclext.Attribute{Name: "foo", Range: hcl.Range{Filename: "main.tf"}},
+								"bar": &hclext.Attribute{Name: "bar", Range: hcl.Range{Filename: "main.tf"}},
+							},
+						},
+						DefRange: hcl.Range{Filename: "main.tf"},
+					},
+				},
+			},
+		},
+		{
 			name: "contains not created resource",
 			files: map[string]string{
 				"main.tf": `
