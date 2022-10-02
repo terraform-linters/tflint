@@ -299,6 +299,14 @@ variable "null_var" {
 			errCheck: neverHappend,
 		},
 		{
+			name:     "interpolation with no default value",
+			config:   `variable "no_value_var" {}`,
+			expr:     expr(`"Hello, ${var.no_value_var}"`),
+			ty:       cty.String,
+			want:     `cty.UnknownVal(cty.String)`,
+			errCheck: neverHappend,
+		},
+		{
 			name: "null value in map",
 			config: `
 variable "null_var" {
@@ -315,6 +323,13 @@ variable "null_var" {
 			expr:     expr(`{ value = module.text }`),
 			ty:       cty.Map(cty.String),
 			want:     `cty.MapVal(map[string]cty.Value{"value":cty.UnknownVal(cty.String)})`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "interpolation with unevalauble value",
+			expr:     expr(`"Hello, ${module.text}"`),
+			ty:       cty.String,
+			want:     `cty.UnknownVal(cty.String)`,
 			errCheck: neverHappend,
 		},
 		{
@@ -500,6 +515,75 @@ variable "foo" {
 			want:     `cty.NullVal(cty.Object(map[string]cty.Type{"default":cty.Bool, "optional":cty.String, "required":cty.String}))`,
 			errCheck: neverHappend,
 		},
+		{
+			name:     "static local value",
+			config:   `locals { foo = "bar" }`,
+			expr:     expr(`local.foo`),
+			ty:       cty.String,
+			want:     `cty.StringVal("bar")`,
+			errCheck: neverHappend,
+		},
+		{
+			name: "local value using variables",
+			config: `
+variable "bar" {
+  default = "baz"
+}
+locals {
+  foo = var.bar
+}`,
+			expr:     expr(`local.foo`),
+			ty:       cty.String,
+			want:     `cty.StringVal("baz")`,
+			errCheck: neverHappend,
+		},
+		{
+			name: "local value using other locals",
+			config: `
+locals {
+  foo = local.bar
+  bar = "baz"
+}`,
+			expr:     expr(`local.foo`),
+			ty:       cty.String,
+			want:     `cty.StringVal("baz")`,
+			errCheck: neverHappend,
+		},
+		{
+			name: "local value using unknown value",
+			config: `
+locals {
+  foo = module.meta.output
+}`,
+			expr:     expr(`local.foo`),
+			ty:       cty.String,
+			want:     `cty.UnknownVal(cty.String)`,
+			errCheck: neverHappend,
+		},
+		{
+			name:   "self-referencing local value",
+			config: `locals { foo = local.foo }`,
+			expr:   expr(`local.foo`),
+			ty:     cty.String,
+			want:   `cty.UnknownVal(cty.String)`,
+			errCheck: func(diags hcl.Diagnostics) bool {
+				return diags.Error() != `main.tf:1,16-25: circular reference found; local.foo -> local.foo`
+			},
+		},
+		{
+			name: "circular-referencing local value",
+			config: `
+locals {
+  foo = local.bar
+  bar = local.foo
+}`,
+			expr: expr(`local.foo`),
+			ty:   cty.String,
+			want: `cty.UnknownVal(cty.String)`,
+			errCheck: func(diags hcl.Diagnostics) bool {
+				return diags.Error() != `main.tf:4,9-18: circular reference found; local.foo -> local.bar -> local.foo`
+			},
+		},
 	}
 
 	for _, test := range tests {
@@ -528,6 +612,7 @@ variable "foo" {
 				ModulePath:     config.Path.UnkeyedInstanceShim(),
 				Config:         config,
 				VariableValues: variableValues,
+				CallGraph:      NewCallGraph(),
 			}
 
 			got, diags := evaluator.EvaluateExpr(test.expr, test.ty)

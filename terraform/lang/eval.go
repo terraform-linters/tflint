@@ -91,6 +91,7 @@ func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceabl
 	// that's redundant in the process of populating our values map.
 	managedResources := map[string]cty.Value{}
 	inputVariables := map[string]cty.Value{}
+	localValues := map[string]cty.Value{}
 	pathAttrs := map[string]cty.Value{}
 	terraformAttrs := map[string]cty.Value{}
 
@@ -121,6 +122,11 @@ func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceabl
 			diags = diags.Extend(valDiags)
 			inputVariables[subj.Name] = val
 
+		case addrs.LocalValue:
+			val, valDiags := normalizeRefValue(s.Data.GetLocalValue(subj, rng))
+			diags = diags.Extend(valDiags)
+			localValues[subj.Name] = val
+
 		case addrs.PathAttr:
 			val, valDiags := normalizeRefValue(s.Data.GetPathAttr(subj, rng))
 			diags = diags.Extend(valDiags)
@@ -141,6 +147,7 @@ func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceabl
 	}
 
 	vals["var"] = cty.ObjectVal(inputVariables)
+	vals["local"] = cty.ObjectVal(localValues)
 	vals["path"] = cty.ObjectVal(pathAttrs)
 	vals["terraform"] = cty.ObjectVal(terraformAttrs)
 
@@ -148,7 +155,6 @@ func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceabl
 	vals["resource"] = cty.UnknownVal(cty.DynamicPseudoType)
 	vals["data"] = cty.UnknownVal(cty.DynamicPseudoType)
 	vals["module"] = cty.UnknownVal(cty.DynamicPseudoType)
-	vals["local"] = cty.UnknownVal(cty.DynamicPseudoType)
 	vals["count"] = cty.UnknownVal(cty.DynamicPseudoType)
 	vals["each"] = cty.UnknownVal(cty.DynamicPseudoType)
 	vals["self"] = cty.UnknownVal(cty.DynamicPseudoType)

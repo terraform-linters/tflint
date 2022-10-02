@@ -43,25 +43,46 @@ resource "aws_instance" "foo" {
 }
 ```
 
+## Local Values
+
+TFLint supports [Local Values](https://www.terraform.io/language/values/locals).
+
+```hcl
+variable "foo" {
+  default = "variable value"
+}
+
+locals {
+  static   = "static value"
+  variable = var.foo
+  local    = local.static
+  resource = aws_instance.main.arn
+}
+
+local.static   # => "static value"
+local.variable # => "variable value"
+local.local    # => "static value"
+local.resource # => ignored (unknown)
+```
+
 ## Named Values
 
 [Named values](https://www.terraform.io/language/expressions/references) are supported partially. The following named values are available:
 
 - `var.<NAME>`
+- `local.<NAME>`
 - `path.module`
 - `path.root`
 - `path.cwd`
 - `terraform.workspace`
 
-Unsupported named values (e.g. `local.*`, `count.index`, `each.key`) are ignored:
+Unsupported named values (e.g. `count.index`, `each.key`) are ignored:
 
 ```hcl
-locals {
-  instance_family = "t2"
-}
-
 resource "aws_instance" "foo" {
-  instance_type = "${local.instance_family}.micro" # => ignored
+  count = 3
+
+  subnet_id = var.subnet_ids[count.index] # => ignored
 }
 ```
 

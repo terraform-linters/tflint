@@ -20,6 +20,7 @@ import (
 // cases where it's not possible to even determine a suitable result type,
 // cty.DynamicVal is returned along with errors describing the problem.
 type Data interface {
+	GetLocalValue(addrs.LocalValue, hcl.Range) (cty.Value, hcl.Diagnostics)
 	GetPathAttr(addrs.PathAttr, hcl.Range) (cty.Value, hcl.Diagnostics)
 	GetTerraformAttr(addrs.TerraformAttr, hcl.Range) (cty.Value, hcl.Diagnostics)
 	GetInputVariable(addrs.InputVariable, hcl.Range) (cty.Value, hcl.Diagnostics)
