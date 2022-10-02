@@ -1,0 +1,25 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "locals_just_attributes_example",
+        "severity": "info",
+        "link": ""
+      },
+      "message": "found 3 local values",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 1,
+          "column": 1
+        },
+        "end": {
+          "line": 1,
+          "column": 7
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}

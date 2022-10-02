@@ -178,6 +178,11 @@ func TestIntegration(t *testing.T) {
 			Command: "tflint --format json",
 			Dir:     "sensitive",
 		},
+		{
+			Name:    "just attributes",
+			Command: "tflint --format json",
+			Dir:     "just-attributes",
+		},
 	}
 
 	// Disable the bundled plugin because the `os.Executable()` is go(1) in the tests
