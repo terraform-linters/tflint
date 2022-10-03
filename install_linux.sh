@@ -41,8 +41,9 @@ get_latest_release() {
 }
 
 download_path=$(mktemp -d -t tflint.XXXXXXXXXX)
-download_zip="${download_path}/tflint.zip"
+download_zip="${download_path}/tflint_${os}.zip"
 download_executable="${download_path}/tflint"
+checksum_file="${download_path}/checksums.txt"
 
 if [ -z "${TFLINT_VERSION}" ] || [ "${TFLINT_VERSION}" == "latest" ]; then
   echo "Looking up the latest version ..."
@@ -64,6 +65,30 @@ fi
 echo -e "\n\n===================================================="
 echo "Unpacking ${download_zip} ..."
 unzip -u "${download_zip}" -d "${download_path}"
+
+if [ "${SKIP_VERIFY_CHECKSUM}" != "y" ] && [ "${SKIP_VERIFY_CHECKSUM}" != "yes" ]; then
+  echo "Verifying checksum with sha256sum..."
+  set +e
+
+  cd "${download_path}"
+  curl -s -L -o "${checksum_file}" "https://github.com/terraform-linters/tflint/releases/download/${version}/checksums.txt"
+  sha256sum --ignore-missing -c "${checksum_file}" >/dev/null 2>&1
+
+  retVal=$?
+  if [ $retVal -eq 127 ]; then
+    echo "  verify: sha256sum not found, ignore verifying checksum and continue installation!"
+  else
+    if [ $retVal -ne 0 ]; then
+      echo "  verify: sha256sum verification failed with error code $retVal, exit installation!"
+      rm -rf "${download_path}"
+      exit $retVal
+    fi
+  fi
+
+  set -e
+fi
+
+
 if [[ $os == "windows"* ]]; then
   dest="${TFLINT_INSTALL_PATH:-/bin}/"
   echo "Installing ${download_executable} to ${dest} ..."
