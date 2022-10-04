@@ -9,6 +9,8 @@ import (
 	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/tflint"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
@@ -56,6 +58,21 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	rulesets := []tflint.RuleSet{}
 	config := cfg.ToPluginConfig()
 	for name, ruleset := range rulesetPlugin.RuleSets {
+		constraints, err := ruleset.VersionConstraints()
+		if err != nil {
+			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
+				// VersionConstraints endpoint is available in tflint-plugin-sdk v0.14+.
+				// Skip verification if not available.
+			} else {
+				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to get TFLint version constraints to `%s` plugin; %w", name, err), cli.loader.Sources())
+				return ExitCodeError
+			}
+		}
+		if !constraints.Check(tflint.Version) {
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to satisfy version constraints; tflint-ruleset-%s requires %s, but TFLint version is %s", name, constraints, tflint.Version), cli.loader.Sources())
+			return ExitCodeError
+		}
+
 		if err := ruleset.ApplyGlobalConfig(config); err != nil {
 			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to apply global config to `%s` plugin; %w", name, err), cli.loader.Sources())
 			return ExitCodeError

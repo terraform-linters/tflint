@@ -1,9 +1,13 @@
 package tflint
 
-import "fmt"
+import (
+	"fmt"
+
+	version "github.com/hashicorp/go-version"
+)
 
 // Version is application version
-const Version string = "0.41.0"
+var Version *version.Version = version.Must(version.NewVersion("0.41.0"))
 
 // ReferenceLink returns the rule reference link
 func ReferenceLink(name string) string {
