@@ -36,6 +36,8 @@ Chocolatey (Windows):
 choco install tflint
 ```
 
+NOTE: The Chocolatey package is NOT directly maintained by the TFLint maintainers. The latest version is always available by manual installation.
+
 ### Verification
 
 GnuPG
