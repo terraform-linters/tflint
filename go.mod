@@ -24,7 +24,7 @@ require (
 	github.com/sourcegraph/go-lsp v0.0.0-20200429204803-219e11d77f5d
 	github.com/sourcegraph/jsonrpc2 v0.1.0
 	github.com/spf13/afero v1.9.2
-	github.com/terraform-linters/tflint-plugin-sdk v0.13.1-0.20221002072010-eed3c184986c
+	github.com/terraform-linters/tflint-plugin-sdk v0.13.1-0.20221007143453-76cc99146499
 	github.com/terraform-linters/tflint-ruleset-terraform v0.1.1
 	github.com/xeipuuv/gojsonschema v1.2.0
 	github.com/zclconf/go-cty v1.11.0
@@ -34,6 +34,7 @@ require (
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
 	golang.org/x/oauth2 v0.0.0-20210819190943-2bc19b11175f
 	golang.org/x/text v0.3.7
+	google.golang.org/grpc v1.49.0
 )
 
 require (
@@ -77,7 +78,6 @@ require (
 	google.golang.org/api v0.40.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20210226172003-ab064af71705 // indirect
-	google.golang.org/grpc v1.49.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
