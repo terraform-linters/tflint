@@ -126,6 +126,40 @@ resource "aws_instance" "bar" {
 				},
 			},
 		},
+		{
+			Name: "expand mode none",
+			Args: func() (*hclext.BodySchema, sdk.GetModuleContentOption) {
+				return &hclext.BodySchema{
+					Blocks: []hclext.BlockSchema{
+						{
+							Type:       "resource",
+							LabelNames: []string{"type", "name"},
+							Body: &hclext.BodySchema{
+								Attributes: []hclext.AttributeSchema{{Name: "instance_type"}},
+							},
+						},
+					},
+				}, sdk.GetModuleContentOption{ModuleCtx: sdk.SelfModuleCtxType, ExpandMode: sdk.ExpandModeNone, Hint: sdk.GetModuleContentHint{ResourceType: "aws_instance"}}
+			},
+			Want: &hclext.BodyContent{
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "foo"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type"}},
+						},
+					},
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "baz"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type"}},
+						},
+					},
+				},
+			},
+		},
 	}
 
 	for _, test := range tests {

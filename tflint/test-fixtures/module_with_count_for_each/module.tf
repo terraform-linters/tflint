@@ -17,6 +17,13 @@ module "count_is_one" {
   instance_type = "t2.micro"
 }
 
+module "count_is_two" {
+  source = "./module"
+  count = var.config != null ? 0 : 2
+
+  instance_type = "t${count.index}.micro"
+}
+
 variable "instance_types" {
   type = list(string)
   default = []
@@ -31,7 +38,7 @@ module "for_each_is_empty" {
 
 variable "instance_types_with_default" {
   type = list(string)
-  default = ["t2.micro"]
+  default = ["t2.micro", "t3.nano"]
 }
 
 module "for_each_is_not_empty" {

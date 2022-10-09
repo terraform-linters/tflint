@@ -10,8 +10,7 @@ type ModuleCall struct {
 	Name          string
 	SourceAddrRaw string
 
-	Count   hcl.Expression
-	ForEach hcl.Expression
+	expandable
 
 	DeclRange hcl.Range
 }
