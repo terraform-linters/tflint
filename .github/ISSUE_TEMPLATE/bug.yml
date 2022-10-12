@@ -1,0 +1,57 @@
+name: Bug Report
+description: Report an bug/issue in TFLint's CLI
+labels: 
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug in TFLint. Please be sure to complete the fields below as we can only investigate reproducible issues. If you're having an issue with a specific rule/ruleset, report that in the relevant [ruleset repository](https://github.com/terraform-linters?q=topic%3Atflint-ruleset&type=source&language=&sort=). 
+  - type: textarea
+    attributes:
+      label: Summary
+      description: Summarize the issue briefly, in a few sentences.
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Command
+      description: The command used to invoke TFLint, including all arguments
+      value: tflint
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Terraform Configuration
+      description: >
+        The Terraform configuration (typically HCL) that reproduces the bug.
+        You may need to reduce your project to an isolated configuration.
+      render: terraform
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: TFLint Configuration
+      description: The TFLint configuration (typically `.tflint.hcl`)
+      render: HCL
+  - type: textarea
+    attributes:
+      label: Output
+      description: The output printed by TFLint. If a clear error is not printed, enable debug logs (`TFLINT_LOG=debug`).
+      render: Shell
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: TFLint Version
+      placeholder: '0.41.0'
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Operating System
+      description: Select any OS where you have reproduced this issue
+      options:
+        - label: Linux
+        - label: macOS
+        - label: Windows
