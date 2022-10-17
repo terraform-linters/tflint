@@ -34,7 +34,7 @@ require (
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
 	golang.org/x/oauth2 v0.0.0-20210819190943-2bc19b11175f
 	golang.org/x/text v0.3.7
-	google.golang.org/grpc v1.50.0
+	google.golang.org/grpc v1.50.1
 )
 
 require (
