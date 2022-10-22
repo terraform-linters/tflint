@@ -585,6 +585,28 @@ module "aws_instance" {
 			want: &hclext.BodyContent{},
 		},
 		{
+			name: "count is string",
+			config: `
+resource "aws_instance" "main" {
+  count = "1"
+}
+module "aws_instance" {
+  count = "1"
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{}},
+					{Type: "module", LabelNames: []string{"name"}, Body: &hclext.BodySchema{}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Blocks: hclext.Blocks{
+					{Type: "resource", Labels: []string{"aws_instance", "main"}, Body: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}}},
+					{Type: "module", Labels: []string{"aws_instance"}, Body: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}}},
+				},
+			},
+		},
+		{
 			name: "count.index and sensitive value",
 			config: `
 variable "sensitive" {
