@@ -27,7 +27,7 @@ require (
 	github.com/terraform-linters/tflint-plugin-sdk v0.13.1-0.20221015184526-a26fa34f0348
 	github.com/terraform-linters/tflint-ruleset-terraform v0.1.1
 	github.com/xeipuuv/gojsonschema v1.2.0
-	github.com/zclconf/go-cty v1.11.0
+	github.com/zclconf/go-cty v1.11.1
 	github.com/zclconf/go-cty-yaml v1.0.2
 	golang.org/x/crypto v0.0.0-20220517005047-85d78b3ac167
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e
