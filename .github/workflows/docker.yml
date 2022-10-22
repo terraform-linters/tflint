@@ -11,20 +11,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      # Comma-delimited list of platforms to build for.
-      # See https://github.com/docker-library/official-images#multiple-architectures
-      # Only linux/amd64 is supported except for releases as it will take longer in CI
-      DOCKER_PLATFORMS: ${{ github.event_name != 'pull_request' && 'linux/amd64,linux/arm64/v8' || 'linux/amd64' }}
     steps:
     - name: Checkout
       uses: actions/checkout@v3
       with:
         submodules: true
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
-      with:
-        platforms: ${{ env.DOCKER_PLATFORMS }}
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
     - name: Docker meta
@@ -41,24 +32,7 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
-        platforms: ${{ env.DOCKER_PLATFORMS }}
+        platforms: 'linux/amd64,linux/arm64/v8'
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-    - name: Test
-      # NOTE(ivy): Docker Buildx doesn't support the --load flag when multiple
-      # platforms are specified but since pull requests aren't pushed, it's
-      # necessary to "re-run" the build (everything's already cached) to load
-      # each individual platform. When "docker manifest" is production-ready
-      # this will no longer be necessary.
-      # https://github.com/docker/build-push-action/issues/321
-      run: |
-        platforms=(${DOCKER_PLATFORMS//,/ })
-        for p in "${platforms[@]}"; do
-          docker buildx build \
-            --load \
-            --platform "$p" \
-            --tag ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.version }} \
-            .
-          docker run --platform "$p" ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.version }} -v
-        done
