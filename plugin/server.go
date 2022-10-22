@@ -54,7 +54,8 @@ func (s *GRPCServer) GetModuleContent(bodyS *hclext.BodySchema, opts sdk.GetModu
 		}
 	}
 
-	if opts.IncludeNotCreated {
+	//nolint:staticcheck
+	if opts.IncludeNotCreated || opts.ExpandMode == sdk.ExpandModeNone {
 		ctx = nil
 	}
 
@@ -115,7 +116,9 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts sdk.EvaluateExprOpti
 		runner = s.rootRunner
 	}
 
-	val, diags := runner.Ctx.EvaluateExpr(expr, *opts.WantType)
+	// We always use EvalDataForNoInstanceKey here because an expression that depend on
+	// an instance key, such as `each.key` and `count.index`, is already bound.
+	val, diags := runner.Ctx.EvaluateExpr(expr, *opts.WantType, terraform.EvalDataForNoInstanceKey)
 	if diags.HasErrors() {
 		return val, diags
 	}

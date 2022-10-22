@@ -1,0 +1,257 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is t0.micro",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 4,
+          "column": 19
+        },
+        "end": {
+          "line": 4,
+          "column": 42
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is t1.micro",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 4,
+          "column": 19
+        },
+        "end": {
+          "line": 4,
+          "column": 42
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is v1.micro",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 13,
+          "column": 19
+        },
+        "end": {
+          "line": 13,
+          "column": 46
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is v2.medium",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 13,
+          "column": 19
+        },
+        "end": {
+          "line": 13,
+          "column": 46
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is t0.micro",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 20,
+          "column": 19
+        },
+        "end": {
+          "line": 20,
+          "column": 42
+        }
+      },
+      "callers": [
+        {
+          "filename": "main.tf",
+          "start": {
+            "line": 20,
+            "column": 19
+          },
+          "end": {
+            "line": 20,
+            "column": 42
+          }
+        },
+        {
+          "filename": "module\\main.tf",
+          "start": {
+            "line": 4,
+            "column": 19
+          },
+          "end": {
+            "line": 4,
+            "column": 36
+          }
+        }
+      ]
+    },
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is t1.micro",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 20,
+          "column": 19
+        },
+        "end": {
+          "line": 20,
+          "column": 42
+        }
+      },
+      "callers": [
+        {
+          "filename": "main.tf",
+          "start": {
+            "line": 20,
+            "column": 19
+          },
+          "end": {
+            "line": 20,
+            "column": 42
+          }
+        },
+        {
+          "filename": "module\\main.tf",
+          "start": {
+            "line": 4,
+            "column": 19
+          },
+          "end": {
+            "line": 4,
+            "column": 36
+          }
+        }
+      ]
+    },
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is v1.micro",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 30,
+          "column": 19
+        },
+        "end": {
+          "line": 30,
+          "column": 46
+        }
+      },
+      "callers": [
+        {
+          "filename": "main.tf",
+          "start": {
+            "line": 30,
+            "column": 19
+          },
+          "end": {
+            "line": 30,
+            "column": 46
+          }
+        },
+        {
+          "filename": "module\\main.tf",
+          "start": {
+            "line": 4,
+            "column": 19
+          },
+          "end": {
+            "line": 4,
+            "column": 36
+          }
+        }
+      ]
+    },
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is v2.medium",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 30,
+          "column": 19
+        },
+        "end": {
+          "line": 30,
+          "column": 46
+        }
+      },
+      "callers": [
+        {
+          "filename": "main.tf",
+          "start": {
+            "line": 30,
+            "column": 19
+          },
+          "end": {
+            "line": 30,
+            "column": 46
+          }
+        },
+        {
+          "filename": "module\\main.tf",
+          "start": {
+            "line": 4,
+            "column": 19
+          },
+          "end": {
+            "line": 4,
+            "column": 36
+          }
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

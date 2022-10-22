@@ -62,6 +62,26 @@
     },
     {
       "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is t2.micro",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 61,
+          "column": 19
+        },
+        "end": {
+          "line": 61,
+          "column": 29
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
         "name": "aws_iam_policy_example",
         "severity": "error",
         "link": ""

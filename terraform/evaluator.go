@@ -70,116 +70,116 @@ type Evaluator struct {
 	CallGraph      *CallGraph
 }
 
-func (e *Evaluator) EvaluateExpr(expr hcl.Expression, wantType cty.Type) (cty.Value, hcl.Diagnostics) {
+func (e *Evaluator) EvaluateExpr(expr hcl.Expression, wantType cty.Type, keyData InstanceKeyEvalData) (cty.Value, hcl.Diagnostics) {
 	scope := &lang.Scope{
 		Data: &evaluationData{
-			Evaluator:  e,
-			ModulePath: e.ModulePath,
+			Evaluator:       e,
+			ModulePath:      e.ModulePath,
+			InstanceKeyData: keyData,
 		},
 	}
 	return scope.EvalExpr(expr, wantType)
 }
 
-// ResourceIsEvaluable checks whether the passed resource meta-arguments
-// (count/for_each) indicate the resource will be evaluated.
-//
-// If `count` is 0 or `for_each` is empty, Terraform will not evaluate
-// the attributes of that resource. Terraform doesn't expect to pass null
-// for these attributes (it will cause an error), but we'll treat them as
-// if they were undefined.
-func (e *Evaluator) ResourceIsEvaluable(resource *Resource) (bool, hcl.Diagnostics) {
-	if resource.Count != nil {
-		return e.countIsEvaluable(resource.Count)
-	}
-
-	if resource.ForEach != nil {
-		return e.forEachIsEvaluable(resource.ForEach)
-	}
-
-	// If `count` or `for_each` is not defined, it will be evaluated by default
-	return true, hcl.Diagnostics{}
+type InstanceKeyEvalData struct {
+	CountIndex         cty.Value
+	EachKey, EachValue cty.Value
 }
 
-func (e *Evaluator) ModuleCallIsEvaluable(moduleCall *ModuleCall) (bool, hcl.Diagnostics) {
-	if moduleCall.Count != nil {
-		return e.countIsEvaluable(moduleCall.Count)
-	}
-
-	if moduleCall.ForEach != nil {
-		return e.forEachIsEvaluable(moduleCall.ForEach)
-	}
-
-	// If `count` or `for_each` is not defined, it will be evaluated by default
-	return true, nil
-}
-
-func (e *Evaluator) countIsEvaluable(expr hcl.Expression) (bool, hcl.Diagnostics) {
-	var diags hcl.Diagnostics
-
-	val, diags := e.EvaluateExpr(expr, cty.DynamicPseudoType)
-	if diags.HasErrors() {
-		return false, diags
-	}
-	val, _ = val.Unmark()
-
-	if val.IsNull() {
-		// null value means that attribute is not set
-		return true, diags
-	}
-	if !val.IsKnown() {
-		// unknown value is non-deterministic
-		return false, diags
-	}
-
-	if val.Equals(cty.NumberIntVal(0)).True() {
-		// `count = 0` is not evaluated
-		return false, diags
-	}
-	// `count > 1` is evaluated`
-	return true, diags
-}
-
-func (e *Evaluator) forEachIsEvaluable(expr hcl.Expression) (bool, hcl.Diagnostics) {
-	var diags hcl.Diagnostics
-
-	val, diags := e.EvaluateExpr(expr, cty.DynamicPseudoType)
-	if diags.HasErrors() {
-		return false, diags
-	}
-
-	if val.IsNull() {
-		// null value means that attribute is not set
-		return true, diags
-	}
-	if !val.IsKnown() {
-		// unknown value is non-deterministic
-		return false, diags
-	}
-	if !val.CanIterateElements() {
-		// uniteratable values (string, number, etc.) are
-		return false, hcl.Diagnostics{
-			{
-				Severity: hcl.DiagError,
-				Summary:  "The `for_each` value is not iterable",
-				Detail:   fmt.Sprintf("`%s` is not iterable", val.GoString()),
-				Subject:  expr.Range().Ptr(),
-			},
-		}
-	}
-	if val.LengthInt() == 0 {
-		// empty `for_each` is not evaluated
-		return false, diags
-	}
-	// `for_each` with non-empty elements is evaluated
-	return true, diags
-}
+var EvalDataForNoInstanceKey = InstanceKeyEvalData{}
 
 type evaluationData struct {
-	Evaluator  *Evaluator
-	ModulePath addrs.ModuleInstance
+	Evaluator       *Evaluator
+	ModulePath      addrs.ModuleInstance
+	InstanceKeyData InstanceKeyEvalData
 }
 
 var _ lang.Data = (*evaluationData)(nil)
+
+func (d *evaluationData) GetCountAttr(addr addrs.CountAttr, rng hcl.Range) (cty.Value, hcl.Diagnostics) {
+	var diags hcl.Diagnostics
+
+	// Even when evaluating an expression that already has the value of `count.*` bound to it,
+	// it still tries to create an EvalContext because it contains `count.*` as a reference.
+	// In that case it returns an unknown value without returning an error.
+	if d.InstanceKeyData == EvalDataForNoInstanceKey {
+		return cty.UnknownVal(cty.Number), diags
+	}
+
+	switch addr.Name {
+
+	case "index":
+		idxVal := d.InstanceKeyData.CountIndex
+		if idxVal == cty.NilVal {
+			diags = diags.Append(&hcl.Diagnostic{
+				Severity: hcl.DiagError,
+				Summary:  `Reference to "count" in non-counted context`,
+				Detail:   `The "count" object can only be used in "module", "resource", and "data" blocks, and only when the "count" argument is set.`,
+				Subject:  rng.Ptr(),
+			})
+			return cty.UnknownVal(cty.Number), diags
+		}
+		return idxVal, diags
+
+	default:
+		diags = diags.Append(&hcl.Diagnostic{
+			Severity: hcl.DiagError,
+			Summary:  `Invalid "count" attribute`,
+			Detail:   fmt.Sprintf(`The "count" object does not have an attribute named %q. The only supported attribute is count.index, which is the index of each instance of a resource block that has the "count" argument set.`, addr.Name),
+			Subject:  rng.Ptr(),
+		})
+		return cty.DynamicVal, diags
+	}
+}
+
+func (d *evaluationData) GetForEachAttr(addr addrs.ForEachAttr, rng hcl.Range) (cty.Value, hcl.Diagnostics) {
+	var diags hcl.Diagnostics
+
+	// Even when evaluating an expression that already has the value of `each.*` bound to it,
+	// it still tries to create an EvalContext because it contains `each.*` as a reference.
+	// In that case it returns an unknown value without returning an error.
+	if d.InstanceKeyData == EvalDataForNoInstanceKey {
+		return cty.UnknownVal(cty.DynamicPseudoType), diags
+	}
+
+	var returnVal cty.Value
+	switch addr.Name {
+
+	case "key":
+		returnVal = d.InstanceKeyData.EachKey
+	case "value":
+		returnVal = d.InstanceKeyData.EachValue
+
+		if returnVal == cty.NilVal {
+			diags = diags.Append(&hcl.Diagnostic{
+				Severity: hcl.DiagError,
+				Summary:  `each.value cannot be used in this context`,
+				Detail:   `A reference to "each.value" has been used in a context in which it unavailable, such as when the configuration no longer contains the value in its "for_each" expression. Remove this reference to each.value in your configuration to work around this error.`,
+				Subject:  rng.Ptr(),
+			})
+			return cty.UnknownVal(cty.DynamicPseudoType), diags
+		}
+	default:
+		diags = diags.Append(&hcl.Diagnostic{
+			Severity: hcl.DiagError,
+			Summary:  `Invalid "each" attribute`,
+			Detail:   fmt.Sprintf(`The "each" object does not have an attribute named %q. The supported attributes are each.key and each.value, the current key and value pair of the "for_each" attribute set.`, addr.Name),
+			Subject:  rng.Ptr(),
+		})
+		return cty.DynamicVal, diags
+	}
+
+	if returnVal == cty.NilVal {
+		diags = diags.Append(&hcl.Diagnostic{
+			Severity: hcl.DiagError,
+			Summary:  `Reference to "each" in context without for_each`,
+			Detail:   `The "each" object can be used only in "module" or "resource" blocks, and only when the "for_each" argument is set.`,
+			Subject:  rng.Ptr(),
+		})
+		return cty.UnknownVal(cty.DynamicPseudoType), diags
+	}
+	return returnVal, diags
+}
 
 func (d *evaluationData) GetInputVariable(addr addrs.InputVariable, rng hcl.Range) (cty.Value, hcl.Diagnostics) {
 	var diags hcl.Diagnostics
@@ -304,7 +304,10 @@ func (d *evaluationData) GetLocalValue(addr addrs.LocalValue, rng hcl.Range) (ct
 		return cty.UnknownVal(cty.DynamicPseudoType), diags
 	}
 
-	val, diags := d.Evaluator.EvaluateExpr(config.Expr, cty.DynamicPseudoType)
+	// Always use EvalDataForNoInstanceKey because local values cannot use expressions
+	// that depend on instance keys, such as `count.*` and `each.*`.
+	val, diags := d.Evaluator.EvaluateExpr(config.Expr, cty.DynamicPseudoType, EvalDataForNoInstanceKey)
+
 	// Since we build a callgraph for each local value,
 	// we clear the callgraph when the local value is finally resolved.
 	if entry {

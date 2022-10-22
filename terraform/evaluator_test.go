@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/spf13/afero"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -37,6 +38,7 @@ func TestEvaluateExpr(t *testing.T) {
 		inputs   []InputValues
 		expr     hcl.Expression
 		ty       cty.Type
+		keyData  InstanceKeyEvalData
 		want     string
 		errCheck func(hcl.Diagnostics) bool
 	}{
@@ -584,6 +586,58 @@ locals {
 				return diags.Error() != `main.tf:4,9-18: circular reference found; local.foo -> local.bar -> local.foo`
 			},
 		},
+		{
+			name:     "count.index in non-counted context",
+			expr:     expr(`count.index`),
+			ty:       cty.Number,
+			want:     `cty.UnknownVal(cty.Number)`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "count.index in counted context",
+			expr:     expr(`count.index`),
+			ty:       cty.Number,
+			keyData:  InstanceKeyEvalData{CountIndex: cty.NumberIntVal(1)},
+			want:     `cty.NumberIntVal(1)`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "each.key in non-forEach context",
+			expr:     expr(`each.key`),
+			ty:       cty.String,
+			want:     `cty.UnknownVal(cty.String)`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "each.key in forEach context",
+			expr:     expr(`each.key`),
+			ty:       cty.String,
+			keyData:  InstanceKeyEvalData{EachKey: cty.StringVal("foo"), EachValue: cty.StringVal("bar")},
+			want:     `cty.StringVal("foo")`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "each.value in non-forEach context",
+			expr:     expr(`each.value`),
+			ty:       cty.String,
+			want:     `cty.UnknownVal(cty.String)`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "each.value in forEach context",
+			expr:     expr(`each.value`),
+			ty:       cty.String,
+			keyData:  InstanceKeyEvalData{EachKey: cty.StringVal("foo"), EachValue: cty.StringVal("bar")},
+			want:     `cty.StringVal("bar")`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "bound expr without key data",
+			expr:     hclext.BindValue(cty.StringVal("foo"), expr(`each.value`)),
+			ty:       cty.String,
+			want:     `cty.StringVal("foo")`,
+			errCheck: neverHappend,
+		},
 	}
 
 	for _, test := range tests {
@@ -615,7 +669,7 @@ locals {
 				CallGraph:      NewCallGraph(),
 			}
 
-			got, diags := evaluator.EvaluateExpr(test.expr, test.ty)
+			got, diags := evaluator.EvaluateExpr(test.expr, test.ty, test.keyData)
 			if test.errCheck(diags) {
 				t.Fatal(diags)
 			}

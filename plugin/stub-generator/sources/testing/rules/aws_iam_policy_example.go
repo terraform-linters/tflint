@@ -42,8 +42,8 @@ func (r *AwsIAMPolicyExampleRule) Check(runner tflint.Runner) error {
 	resources, err := runner.GetResourceContent("aws_iam_policy", &hclext.BodySchema{
 		Attributes: []hclext.AttributeSchema{{Name: "name"}},
 	}, &tflint.GetModuleContentOption{
-		ModuleCtx:         tflint.SelfModuleCtxType,
-		IncludeNotCreated: true,
+		ModuleCtx:  tflint.SelfModuleCtxType,
+		ExpandMode: tflint.ExpandModeNone,
 	})
 	if err != nil {
 		return err
