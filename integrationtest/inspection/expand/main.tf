@@ -39,3 +39,12 @@ resource "aws_instance" "sensitive" {
 
   instance_type = "${count.index}.${var.sensitive}"
 }
+
+resource "aws_instance" "tags" {
+  count = 1
+
+  tags = {
+    count = count.index
+    sensitive = var.sensitive
+  }
+}

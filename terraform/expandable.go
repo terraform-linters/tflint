@@ -111,7 +111,7 @@ func (e *expandable) expandBlockByCount(ctx *Evaluator, block *hclext.Block) (hc
 				}
 				// If marked as sensitive, the cty.Value cannot be marshaled in MessagePack,
 				// so only bind it if it is unmarked.
-				if !val.IsMarked() {
+				if !val.ContainsMarked() {
 					// Even if there is no instance key later, the evaluated result is bound to
 					// the expression so that it can be referenced by EvaluateExpr.
 					attr.Expr = hclext.BindValue(val, attr.Expr)
@@ -191,7 +191,7 @@ func (e *expandable) expandBlockByForEach(ctx *Evaluator, block *hclext.Block) (
 				}
 				// If marked as sensitive, the cty.Value cannot be marshaled in MessagePack,
 				// so only bind it if it is unmarked.
-				if !val.IsMarked() {
+				if !val.ContainsMarked() {
 					// Even if there is no instance key later, the evaluated result is bound to
 					// the expression so that it can be referenced by EvaluateExpr.
 					attr.Expr = hclext.BindValue(val, attr.Expr)

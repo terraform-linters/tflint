@@ -492,6 +492,17 @@ variable "foo" {
 			},
 		},
 		{
+			Name: "sensitive value in object",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				ty := cty.Object(map[string]cty.Type{"value": cty.String})
+				return hclExpr(`{ value = var.sensitive }`), sdk.EvaluateExprOption{WantType: &ty, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want: cty.NullVal(cty.NilType),
+			ErrCheck: func(err error) bool {
+				return err == nil || !errors.Is(err, sdk.ErrSensitive)
+			},
+		},
+		{
 			Name: "no default",
 			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
 				return hclExpr(`var.no_default`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}

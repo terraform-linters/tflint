@@ -9,7 +9,6 @@ import (
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/terraform"
-	"github.com/terraform-linters/tflint/terraform/lang/marks"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
 )
@@ -123,7 +122,7 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts sdk.EvaluateExprOpti
 		return val, diags
 	}
 
-	if val.HasMark(marks.Sensitive) {
+	if val.ContainsMarked() {
 		err := fmt.Errorf(
 			"sensitive value found in %s:%d%w",
 			expr.Range().Filename,

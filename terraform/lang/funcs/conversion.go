@@ -4,7 +4,6 @@ import (
 	"strconv"
 
 	"github.com/terraform-linters/tflint/terraform/lang/marks"
-	"github.com/terraform-linters/tflint/terraform/lang/types"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
 	"github.com/zclconf/go-cty/cty/function"
@@ -94,28 +93,4 @@ func MakeToFunc(wantTy cty.Type) function.Function {
 			return ret, nil
 		},
 	})
-}
-
-// TypeFunc returns an encapsulated value containing its argument's type. This
-// value is marked to allow us to limit the use of this function at the moment
-// to only a few supported use cases.
-var TypeFunc = function.New(&function.Spec{
-	Params: []function.Parameter{
-		{
-			Name:             "value",
-			Type:             cty.DynamicPseudoType,
-			AllowDynamicType: true,
-			AllowUnknown:     true,
-			AllowNull:        true,
-		},
-	},
-	Type: function.StaticReturnType(types.TypeType),
-	Impl: func(args []cty.Value, retType cty.Type) (cty.Value, error) {
-		givenType := args[0].Type()
-		return cty.CapsuleVal(types.TypeType, &givenType).Mark(marks.TypeType), nil
-	},
-})
-
-func Type(input []cty.Value) (cty.Value, error) {
-	return TypeFunc.Call(input)
 }
