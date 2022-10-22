@@ -623,6 +623,44 @@ module "aws_instance" {
 			},
 		},
 		{
+			name: "count.index and nested sensitive value",
+			config: `
+variable "sensitive" {
+  sensitive = true
+  default   = "foo"
+}
+resource "aws_instance" "main" {
+  count = 1
+  value = [count.index, var.sensitive]
+}
+module "aws_instance" {
+  count = 1
+  value = [count.index, var.sensitive]
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}}},
+					{Type: "module", LabelNames: []string{"name"}, Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Blocks: hclext.Blocks{
+					{
+						Type:     "resource",
+						Labels:   []string{"aws_instance", "main"},
+						Body:     &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.TupleVal([]cty.Value{cty.UnknownVal(cty.Number), cty.StringVal("foo").Mark(marks.Sensitive)}), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+						DefRange: hcl.Range{Start: hcl.Pos{Line: 6}},
+					},
+					{
+						Type:     "module",
+						Labels:   []string{"aws_instance"},
+						Body:     &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.TupleVal([]cty.Value{cty.UnknownVal(cty.Number), cty.StringVal("foo").Mark(marks.Sensitive)}), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+						DefRange: hcl.Range{Start: hcl.Pos{Line: 10}},
+					},
+				},
+			},
+		},
+		{
 			name: "for_each is not empty (literal)",
 			config: `
 resource "aws_instance" "main" {
@@ -922,6 +960,44 @@ module "aws_instance" {
 						Type:     "module",
 						Labels:   []string{"aws_instance"},
 						Body:     &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.UnknownVal(cty.String).Mark(marks.Sensitive), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+						DefRange: hcl.Range{Start: hcl.Pos{Line: 10}},
+					},
+				},
+			},
+		},
+		{
+			name: "each.key/each.value and nested sensitive value",
+			config: `
+variable "sensitive" {
+  sensitive = true
+  default   = "foo"
+}
+resource "aws_instance" "main" {
+  for_each = { foo = "bar" }
+  value    = [each.key, var.sensitive]
+}
+module "aws_instance" {
+  for_each = { foo = "bar" }
+  value    = [each.value, var.sensitive]
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}}},
+					{Type: "module", LabelNames: []string{"name"}, Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Blocks: hclext.Blocks{
+					{
+						Type:     "resource",
+						Labels:   []string{"aws_instance", "main"},
+						Body:     &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.TupleVal([]cty.Value{cty.DynamicVal, cty.StringVal("foo").Mark(marks.Sensitive)}), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+						DefRange: hcl.Range{Start: hcl.Pos{Line: 6}},
+					},
+					{
+						Type:     "module",
+						Labels:   []string{"aws_instance"},
+						Body:     &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.TupleVal([]cty.Value{cty.DynamicVal, cty.StringVal("foo").Mark(marks.Sensitive)}), hcl.Range{})}}, Blocks: hclext.Blocks{}},
 						DefRange: hcl.Range{Start: hcl.Pos{Line: 10}},
 					},
 				},
