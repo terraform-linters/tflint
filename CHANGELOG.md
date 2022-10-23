@@ -1,3 +1,15 @@
+## 0.2.0 (2022-10-23)
+
+### Enhancements
+
+- [#34](https://github.com/terraform-linters/tflint-ruleset-terraform/pull/34): deprecated_index: reject legacy splat expressions
+
+### Chores
+
+- [#30](https://github.com/terraform-linters/tflint-ruleset-terraform/pull/30): Bump github.com/hashicorp/hcl/v2 from 2.14.0 to 2.14.1
+- [#31](https://github.com/terraform-linters/tflint-ruleset-terraform/pull/31): Fix typo in configuration.md
+- [#38](https://github.com/terraform-linters/tflint-ruleset-terraform/pull/38): Bump tflint-plugin-sdk to v0.14.0
+
 ## 0.1.1 (2022-09-17)
 
 ### BugFixes
