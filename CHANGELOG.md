@@ -1,3 +1,34 @@
+## 0.42.0 (2022-10-23)
+
+This release adds support for evaluating `local.*`, `each.key`, `each.value`, and `count.index`. Support for `each.*` and `count.index` requires plugins built with SDK v0.14+.
+
+Starting with this release, resources/modules with `count` or `for_each` set will be expanded. Previously it was only expanded if `count = 0` or `for_each = {}`, but it is now always expanded and multiple resources/modules are passed to plugins.
+
+### Enhancements
+
+- [#1525](https://github.com/terraform-linters/tflint/pull/1525): terraform: Add local values support ([@wata727](https://github.com/wata727))
+- [#1530](https://github.com/terraform-linters/tflint/pull/1530): plugin: Add support for schema mode ([@wata727](https://github.com/wata727))
+- [#1535](https://github.com/terraform-linters/tflint/pull/1535): plugin: Allow plugins to set TFLint version constraints ([@wata727](https://github.com/wata727))
+- [#1537](https://github.com/terraform-linters/tflint/pull/1537): terraform: Add support for count/each value ([@wata727](https://github.com/wata727))
+- [#1560](https://github.com/terraform-linters/tflint/pull/1560): Bump tflint-plugin-sdk and bundled terraform plugin ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#1557](https://github.com/terraform-linters/tflint/pull/1557): plugin: Fix crash when evaluating nested sensitive values ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1526](https://github.com/terraform-linters/tflint/pull/1526): Move block expanding to under the terraform package ([@wata727](https://github.com/wata727))
+- [#1527](https://github.com/terraform-linters/tflint/pull/1527): docs: Update compatibility guide ([@wata727](https://github.com/wata727))
+- [#1528](https://github.com/terraform-linters/tflint/pull/1528) [#1539](https://github.com/terraform-linters/tflint/pull/1539): build(deps): Bump sigstore/cosign-installer from 2.6.0 to 2.8.0
+- [#1529](https://github.com/terraform-linters/tflint/pull/1529): workflow(docker): Improve multi-arch image build ([@wata727](https://github.com/wata727))
+- [#1534](https://github.com/terraform-linters/tflint/pull/1534): docs: Add notice about Chocolatey package ([@wata727](https://github.com/wata727))
+- [#1538](https://github.com/terraform-linters/tflint/pull/1538): build(deps): Bump google.golang.org/grpc from 1.49.0 to 1.50.0
+- [#1550](https://github.com/terraform-linters/tflint/pull/1550): build(deps): Bump github.com/zclconf/go-cty from 1.11.0 to 1.11.1
+- [#1558](https://github.com/terraform-linters/tflint/pull/1558): docs: Add API compatibility note ([@wata727](https://github.com/wata727))
+- [#1559](https://github.com/terraform-linters/tflint/pull/1559): Add test when the count is string ([@wata727](https://github.com/wata727))
+- [#1561](https://github.com/terraform-linters/tflint/pull/1561): build(deps): Bump golang.org/x/text from 0.3.7 to 0.4.0
+
 ## 0.41.0 (2022-09-24)
 
 ### Enhancements
