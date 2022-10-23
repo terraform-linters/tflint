@@ -79,7 +79,7 @@ func (r *TerraformStandardModuleStructureRule) Check(runner tflint.Runner) error
 				Body:       &hclext.BodySchema{},
 			},
 		},
-	}, &tflint.GetModuleContentOption{IncludeNotCreated: true})
+	}, &tflint.GetModuleContentOption{ExpandMode: tflint.ExpandModeNone})
 	if err != nil {
 		return err
 	}

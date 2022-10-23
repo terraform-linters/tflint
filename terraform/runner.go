@@ -36,7 +36,7 @@ func (r *Runner) GetModuleCalls() ([]*ModuleCall, hcl.Diagnostics) {
 				},
 			},
 		},
-	}, &tflint.GetModuleContentOption{IncludeNotCreated: true})
+	}, &tflint.GetModuleContentOption{ExpandMode: tflint.ExpandModeNone})
 	if err != nil {
 		return calls, hcl.Diagnostics{
 			{
@@ -142,7 +142,7 @@ func (r *Runner) GetProviderRefs() (map[string]*ProviderRef, hcl.Diagnostics) {
 				},
 			},
 		},
-	}, &tflint.GetModuleContentOption{IncludeNotCreated: true})
+	}, &tflint.GetModuleContentOption{ExpandMode: tflint.ExpandModeNone})
 	if err != nil {
 		return providerRefs, hcl.Diagnostics{
 			{

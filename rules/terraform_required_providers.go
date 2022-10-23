@@ -67,7 +67,7 @@ func (r *TerraformRequiredProvidersRule) Check(rr tflint.Runner) error {
 				},
 			},
 		},
-	}, &tflint.GetModuleContentOption{IncludeNotCreated: true})
+	}, &tflint.GetModuleContentOption{ExpandMode: tflint.ExpandModeNone})
 	if err != nil {
 		return err
 	}
@@ -110,7 +110,7 @@ func (r *TerraformRequiredProvidersRule) Check(rr tflint.Runner) error {
 				},
 			},
 		},
-	}, &tflint.GetModuleContentOption{IncludeNotCreated: true})
+	}, &tflint.GetModuleContentOption{ExpandMode: tflint.ExpandModeNone})
 	if err != nil {
 		return err
 	}

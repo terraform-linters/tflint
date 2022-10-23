@@ -124,7 +124,7 @@ func (r *TerraformUnusedDeclarationsRule) declarations(runner *terraform.Runner)
 				Body:       &hclext.BodySchema{},
 			},
 		},
-	}, &tflint.GetModuleContentOption{IncludeNotCreated: true})
+	}, &tflint.GetModuleContentOption{ExpandMode: tflint.ExpandModeNone})
 	if err != nil {
 		return decl, err
 	}

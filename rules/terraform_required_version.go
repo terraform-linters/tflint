@@ -66,7 +66,7 @@ func (r *TerraformRequiredVersionRule) Check(runner tflint.Runner) error {
 				},
 			},
 		},
-	}, &tflint.GetModuleContentOption{IncludeNotCreated: true})
+	}, &tflint.GetModuleContentOption{ExpandMode: tflint.ExpandModeNone})
 	if err != nil {
 		return err
 	}
