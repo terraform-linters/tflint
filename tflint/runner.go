@@ -53,7 +53,7 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *terraform.Config, va
 		ModulePath:     cfg.Path.UnkeyedInstanceShim(),
 		Config:         cfg.Root,
 		VariableValues: variableValues,
-		CallGraph:      terraform.NewCallGraph(),
+		CallStack:      terraform.NewCallStack(),
 	}
 
 	runner := &Runner{
