@@ -1,3 +1,9 @@
+## 0.42.1 (2022-10-25)
+
+### BugFixes
+
+- [#1566](https://github.com/terraform-linters/tflint/pull/1566): terraform: Fix incorrect circular reference detection ([@wata727](https://github.com/wata727))
+
 ## 0.42.0 (2022-10-23)
 
 This release adds support for evaluating `local.*`, `each.key`, `each.value`, and `count.index`. Support for `each.*` and `count.index` requires plugins built with SDK v0.14+.
