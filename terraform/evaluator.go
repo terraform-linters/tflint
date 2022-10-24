@@ -20,22 +20,22 @@ type ContextMeta struct {
 	OriginalWorkingDir string
 }
 
-type CallGraph struct {
-	edges map[string]addrs.Reference
+type CallStack struct {
+	addrs map[string]addrs.Reference
 	stack []string
 }
 
-func NewCallGraph() *CallGraph {
-	return &CallGraph{
-		edges: make(map[string]addrs.Reference),
+func NewCallStack() *CallStack {
+	return &CallStack{
+		addrs: make(map[string]addrs.Reference),
 		stack: make([]string, 0),
 	}
 }
 
-func (g *CallGraph) Add(addr addrs.Reference) hcl.Diagnostics {
+func (g *CallStack) Push(addr addrs.Reference) hcl.Diagnostics {
 	g.stack = append(g.stack, addr.Subject.String())
 
-	if _, exists := g.edges[addr.Subject.String()]; exists {
+	if _, exists := g.addrs[addr.Subject.String()]; exists {
 		return hcl.Diagnostics{
 			{
 				Severity: hcl.DiagError,
@@ -45,20 +45,30 @@ func (g *CallGraph) Add(addr addrs.Reference) hcl.Diagnostics {
 			},
 		}
 	}
-	g.edges[addr.Subject.String()] = addr
+	g.addrs[addr.Subject.String()] = addr
 	return hcl.Diagnostics{}
 }
 
-func (g *CallGraph) String() string {
+func (g *CallStack) Pop() {
+	if g.Empty() {
+		panic("cannot pop from empty stack")
+	}
+
+	addr := g.stack[len(g.stack)-1]
+	g.stack = g.stack[:len(g.stack)-1]
+	delete(g.addrs, addr)
+}
+
+func (g *CallStack) String() string {
 	return strings.Join(g.stack, " -> ")
 }
 
-func (g *CallGraph) Empty() bool {
+func (g *CallStack) Empty() bool {
 	return len(g.stack) == 0
 }
 
-func (g *CallGraph) Clear() {
-	g.edges = make(map[string]addrs.Reference)
+func (g *CallStack) Clear() {
+	g.addrs = make(map[string]addrs.Reference)
 	g.stack = make([]string, 0)
 }
 
@@ -67,7 +77,7 @@ type Evaluator struct {
 	ModulePath     addrs.ModuleInstance
 	Config         *Config
 	VariableValues map[string]map[string]cty.Value
-	CallGraph      *CallGraph
+	CallStack      *CallStack
 }
 
 func (e *Evaluator) EvaluateExpr(expr hcl.Expression, wantType cty.Type, keyData InstanceKeyEvalData) (cty.Value, hcl.Diagnostics) {
@@ -298,9 +308,8 @@ func (d *evaluationData) GetLocalValue(addr addrs.LocalValue, rng hcl.Range) (ct
 		return cty.DynamicVal, diags
 	}
 
-	entry := d.Evaluator.CallGraph.Empty()
-	// Build a callgraph for circular reference detection only when getting a local value.
-	if diags := d.Evaluator.CallGraph.Add(addrs.Reference{Subject: addr, SourceRange: rng}); diags.HasErrors() {
+	// Build a call stack for circular reference detection only when getting a local value.
+	if diags := d.Evaluator.CallStack.Push(addrs.Reference{Subject: addr, SourceRange: rng}); diags.HasErrors() {
 		return cty.UnknownVal(cty.DynamicPseudoType), diags
 	}
 
@@ -308,11 +317,7 @@ func (d *evaluationData) GetLocalValue(addr addrs.LocalValue, rng hcl.Range) (ct
 	// that depend on instance keys, such as `count.*` and `each.*`.
 	val, diags := d.Evaluator.EvaluateExpr(config.Expr, cty.DynamicPseudoType, EvalDataForNoInstanceKey)
 
-	// Since we build a callgraph for each local value,
-	// we clear the callgraph when the local value is finally resolved.
-	if entry {
-		d.Evaluator.CallGraph.Clear()
-	}
+	d.Evaluator.CallStack.Pop()
 	return val, diags
 }
 

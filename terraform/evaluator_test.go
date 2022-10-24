@@ -587,6 +587,18 @@ locals {
 			},
 		},
 		{
+			name: "nested multiple local values",
+			config: `
+locals {
+  foo = "foo"
+  bar = [local.foo, local.foo]
+}`,
+			expr:     expr(`local.bar`),
+			ty:       cty.List(cty.String),
+			want:     `cty.ListVal([]cty.Value{cty.StringVal("foo"), cty.StringVal("foo")})`,
+			errCheck: neverHappend,
+		},
+		{
 			name:     "count.index in non-counted context",
 			expr:     expr(`count.index`),
 			ty:       cty.Number,
@@ -666,7 +678,7 @@ locals {
 				ModulePath:     config.Path.UnkeyedInstanceShim(),
 				Config:         config,
 				VariableValues: variableValues,
-				CallGraph:      NewCallGraph(),
+				CallStack:      NewCallStack(),
 			}
 
 			got, diags := evaluator.EvaluateExpr(test.expr, test.ty, test.keyData)
