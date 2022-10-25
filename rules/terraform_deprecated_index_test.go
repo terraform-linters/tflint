@@ -84,6 +84,48 @@ locals {
 `,
 			Expected: helper.Issues{},
 		},
+		{
+			Name: "directive: valid",
+			Content: `
+locals {
+  servers = <<EOF
+%{ for ip in aws_instance.example[*].private_ip }
+server ${ip}
+%{ endfor }
+EOF
+}
+`,
+			Expected: helper.Issues{},
+		},
+		{
+			Name: "directive: invalid",
+			Content: `
+		locals {
+		  servers = <<EOF
+		%{ for ip in aws_instance.example.*.private_ip }
+		server ${ip}
+		%{ endfor }
+		EOF
+		}
+		`,
+			Expected: helper.Issues{
+				{
+					Rule:    NewTerraformDeprecatedIndexRule(),
+					Message: "List items should be accessed using square brackets",
+					Range: hcl.Range{
+						Filename: "config.tf",
+						Start: hcl.Pos{
+							Line:   4,
+							Column: 16,
+						},
+						End: hcl.Pos{
+							Line:   4,
+							Column: 49,
+						},
+					},
+				},
+			},
+		},
 	}
 
 	rule := NewTerraformDeprecatedIndexRule()
