@@ -2,7 +2,7 @@
   "issues": [],
   "errors": [
     {
-      "message": "Failed to satisfy version constraints; tflint-ruleset-incompatiblehost requires >= 1.0, but TFLint version is 0.42.1",
+      "message": "Failed to satisfy version constraints; tflint-ruleset-incompatiblehost requires >= 1.0, but TFLint version is 0.42.2",
       "severity": "error"
     }
   ]

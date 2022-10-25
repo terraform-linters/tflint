@@ -1,3 +1,14 @@
+## 0.42.2 (2022-10-26)
+
+### BugFixes
+
+- [#1574](https://github.com/terraform-linters/tflint/pull/1574): Bump bundled terraform plugin to v0.2.1 ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1568](https://github.com/terraform-linters/tflint/pull/1568): build(deps): Bump golangci/golangci-lint-action from 3.2.0 to 3.3.0
+- [#1569](https://github.com/terraform-linters/tflint/pull/1569): build(deps): Bump sigstore/cosign-installer from 2.8.0 to 2.8.1
+
 ## 0.42.1 (2022-10-25)
 
 ### BugFixes
