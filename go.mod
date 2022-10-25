@@ -25,7 +25,7 @@ require (
 	github.com/sourcegraph/jsonrpc2 v0.1.0
 	github.com/spf13/afero v1.9.2
 	github.com/terraform-linters/tflint-plugin-sdk v0.14.0
-	github.com/terraform-linters/tflint-ruleset-terraform v0.2.0
+	github.com/terraform-linters/tflint-ruleset-terraform v0.2.1
 	github.com/xeipuuv/gojsonschema v1.2.0
 	github.com/zclconf/go-cty v1.11.1
 	github.com/zclconf/go-cty-yaml v1.0.2
