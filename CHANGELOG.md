@@ -1,3 +1,13 @@
+## 0.2.1 (2022-10-26)
+
+### BugFixes
+
+- [#43](https://github.com/terraform-linters/tflint-ruleset-terraform/pull/43): terraform_deprecated_index: handle Terraform directives (HCL template)
+
+### Chores
+
+- [#39](https://github.com/terraform-linters/tflint-ruleset-terraform/pull/39): Bump github.com/zclconf/go-cty from 1.11.0 to 1.11.1
+
 ## 0.2.0 (2022-10-23)
 
 ### Enhancements
