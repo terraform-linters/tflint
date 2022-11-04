@@ -518,6 +518,102 @@ variable "foo" {
 			errCheck: neverHappend,
 		},
 		{
+			name: "module variable optional attributes with nested default optional",
+			config: `
+variable "foo" {
+  type = set(object({
+    name      = string
+    schedules = set(object({
+      name               = string
+      cold_storage_after = optional(number, 10)
+    }))
+  }))
+}`,
+			expr: expr(`var.foo`),
+			inputs: []InputValues{
+				{
+					"foo": {
+						Value: cty.SetVal([]cty.Value{
+							cty.ObjectVal(map[string]cty.Value{
+								"name": cty.StringVal("test1"),
+								"schedules": cty.SetVal([]cty.Value{
+									cty.MapVal(map[string]cty.Value{
+										"name": cty.StringVal("daily"),
+									}),
+								}),
+							}),
+							cty.ObjectVal(map[string]cty.Value{
+								"name": cty.StringVal("test2"),
+								"schedules": cty.SetVal([]cty.Value{
+									cty.MapVal(map[string]cty.Value{
+										"name": cty.StringVal("daily"),
+									}),
+									cty.MapVal(map[string]cty.Value{
+										"name":               cty.StringVal("weekly"),
+										"cold_storage_after": cty.StringVal("0"),
+									}),
+								}),
+							}),
+						}),
+					},
+				},
+			},
+			ty: cty.Set(cty.Object(map[string]cty.Type{
+				"name": cty.String,
+				"schedules": cty.Set(cty.Object(map[string]cty.Type{
+					"name":               cty.String,
+					"cold_storage_after": cty.Number,
+				})),
+			})),
+			want:     `cty.SetVal([]cty.Value{cty.ObjectVal(map[string]cty.Value{"name":cty.StringVal("test1"), "schedules":cty.SetVal([]cty.Value{cty.ObjectVal(map[string]cty.Value{"cold_storage_after":cty.NumberIntVal(10), "name":cty.StringVal("daily")})})}), cty.ObjectVal(map[string]cty.Value{"name":cty.StringVal("test2"), "schedules":cty.SetVal([]cty.Value{cty.ObjectVal(map[string]cty.Value{"cold_storage_after":cty.NumberIntVal(0), "name":cty.StringVal("weekly")}), cty.ObjectVal(map[string]cty.Value{"cold_storage_after":cty.NumberIntVal(10), "name":cty.StringVal("daily")})})})})`,
+			errCheck: neverHappend,
+		},
+		{
+			name: "module variable optional attributes with nested complex types",
+			config: `
+variable "foo" {
+  type = object({
+    name                       = string
+    nested_object              = object({
+      name  = string
+      value = optional(string, "foo")
+    })
+    nested_object_with_default = optional(object({
+      name  = string
+      value = optional(string, "bar")
+    }), {
+      name = "nested_object_with_default"
+    })
+  })
+}`,
+			expr: expr(`var.foo`),
+			inputs: []InputValues{
+				{
+					"foo": {
+						Value: cty.ObjectVal(map[string]cty.Value{
+							"name": cty.StringVal("object"),
+							"nested_object": cty.ObjectVal(map[string]cty.Value{
+								"name": cty.StringVal("nested_object"),
+							}),
+						}),
+					},
+				},
+			},
+			ty: cty.Object(map[string]cty.Type{
+				"name": cty.String,
+				"nested_object": cty.Object(map[string]cty.Type{
+					"name":  cty.String,
+					"value": cty.String,
+				}),
+				"nested_object_with_default": cty.Object(map[string]cty.Type{
+					"name":  cty.String,
+					"value": cty.String,
+				}),
+			}),
+			want:     `cty.ObjectVal(map[string]cty.Value{"name":cty.StringVal("object"), "nested_object":cty.ObjectVal(map[string]cty.Value{"name":cty.StringVal("nested_object"), "value":cty.StringVal("foo")}), "nested_object_with_default":cty.ObjectVal(map[string]cty.Value{"name":cty.StringVal("nested_object_with_default"), "value":cty.StringVal("bar")})})`,
+			errCheck: neverHappend,
+		},
+		{
 			name:     "static local value",
 			config:   `locals { foo = "bar" }`,
 			expr:     expr(`local.foo`),
