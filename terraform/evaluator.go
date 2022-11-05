@@ -8,6 +8,7 @@ import (
 
 	"github.com/agext/levenshtein"
 	"github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/lang"
 	"github.com/terraform-linters/tflint/terraform/lang/marks"
@@ -80,115 +81,62 @@ type Evaluator struct {
 	CallStack      *CallStack
 }
 
-func (e *Evaluator) EvaluateExpr(expr hcl.Expression, wantType cty.Type, keyData InstanceKeyEvalData) (cty.Value, hcl.Diagnostics) {
-	scope := &lang.Scope{
+// EvaluateExpr takes the given HCL expression and evaluates it to produce a value.
+func (e *Evaluator) EvaluateExpr(expr hcl.Expression, wantType cty.Type) (cty.Value, hcl.Diagnostics) {
+	if e == nil {
+		panic("evaluator must not be nil")
+	}
+	return e.scope().EvalExpr(expr, wantType)
+}
+
+// ExpandBlock expands "dynamic" blocks and resources/modules with count/for_each.
+//
+// In the expanded body, the content can be retrieved with the HCL API without
+// being aware of the differences in the dynamic block schema. Also, the number
+// of blocks and attribute values will be the same as the expanded result.
+func (e *Evaluator) ExpandBlock(body hcl.Body, schema *hclext.BodySchema) (hcl.Body, hcl.Diagnostics) {
+	if e == nil {
+		return body, nil
+	}
+	return e.scope().ExpandBlock(body, schema)
+}
+
+func (e *Evaluator) scope() *lang.Scope {
+	return &lang.Scope{
 		Data: &evaluationData{
-			Evaluator:       e,
-			ModulePath:      e.ModulePath,
-			InstanceKeyData: keyData,
+			Evaluator:  e,
+			ModulePath: e.ModulePath,
 		},
 	}
-	return scope.EvalExpr(expr, wantType)
 }
-
-type InstanceKeyEvalData struct {
-	CountIndex         cty.Value
-	EachKey, EachValue cty.Value
-}
-
-var EvalDataForNoInstanceKey = InstanceKeyEvalData{}
 
 type evaluationData struct {
-	Evaluator       *Evaluator
-	ModulePath      addrs.ModuleInstance
-	InstanceKeyData InstanceKeyEvalData
+	Evaluator  *Evaluator
+	ModulePath addrs.ModuleInstance
 }
 
 var _ lang.Data = (*evaluationData)(nil)
 
 func (d *evaluationData) GetCountAttr(addr addrs.CountAttr, rng hcl.Range) (cty.Value, hcl.Diagnostics) {
-	var diags hcl.Diagnostics
-
-	// Even when evaluating an expression that already has the value of `count.*` bound to it,
-	// it still tries to create an EvalContext because it contains `count.*` as a reference.
-	// In that case it returns an unknown value without returning an error.
-	if d.InstanceKeyData == EvalDataForNoInstanceKey {
-		return cty.UnknownVal(cty.Number), diags
-	}
-
-	switch addr.Name {
-
-	case "index":
-		idxVal := d.InstanceKeyData.CountIndex
-		if idxVal == cty.NilVal {
-			diags = diags.Append(&hcl.Diagnostic{
-				Severity: hcl.DiagError,
-				Summary:  `Reference to "count" in non-counted context`,
-				Detail:   `The "count" object can only be used in "module", "resource", and "data" blocks, and only when the "count" argument is set.`,
-				Subject:  rng.Ptr(),
-			})
-			return cty.UnknownVal(cty.Number), diags
-		}
-		return idxVal, diags
-
-	default:
-		diags = diags.Append(&hcl.Diagnostic{
-			Severity: hcl.DiagError,
-			Summary:  `Invalid "count" attribute`,
-			Detail:   fmt.Sprintf(`The "count" object does not have an attribute named %q. The only supported attribute is count.index, which is the index of each instance of a resource block that has the "count" argument set.`, addr.Name),
-			Subject:  rng.Ptr(),
-		})
-		return cty.DynamicVal, diags
-	}
+	// Note that the actual evaluation of count.index is not done here.
+	// count.index is already evaluated when expanded by ExpandBlock,
+	// and the value is bound to the expanded body.
+	//
+	// Although, there are cases where count.index is evaluated as-is,
+	// such as when not expanding the body. In that case, evaluate it
+	// as an unknown and skip further checks.
+	return cty.UnknownVal(cty.Number), nil
 }
 
 func (d *evaluationData) GetForEachAttr(addr addrs.ForEachAttr, rng hcl.Range) (cty.Value, hcl.Diagnostics) {
-	var diags hcl.Diagnostics
-
-	// Even when evaluating an expression that already has the value of `each.*` bound to it,
-	// it still tries to create an EvalContext because it contains `each.*` as a reference.
-	// In that case it returns an unknown value without returning an error.
-	if d.InstanceKeyData == EvalDataForNoInstanceKey {
-		return cty.UnknownVal(cty.DynamicPseudoType), diags
-	}
-
-	var returnVal cty.Value
-	switch addr.Name {
-
-	case "key":
-		returnVal = d.InstanceKeyData.EachKey
-	case "value":
-		returnVal = d.InstanceKeyData.EachValue
-
-		if returnVal == cty.NilVal {
-			diags = diags.Append(&hcl.Diagnostic{
-				Severity: hcl.DiagError,
-				Summary:  `each.value cannot be used in this context`,
-				Detail:   `A reference to "each.value" has been used in a context in which it unavailable, such as when the configuration no longer contains the value in its "for_each" expression. Remove this reference to each.value in your configuration to work around this error.`,
-				Subject:  rng.Ptr(),
-			})
-			return cty.UnknownVal(cty.DynamicPseudoType), diags
-		}
-	default:
-		diags = diags.Append(&hcl.Diagnostic{
-			Severity: hcl.DiagError,
-			Summary:  `Invalid "each" attribute`,
-			Detail:   fmt.Sprintf(`The "each" object does not have an attribute named %q. The supported attributes are each.key and each.value, the current key and value pair of the "for_each" attribute set.`, addr.Name),
-			Subject:  rng.Ptr(),
-		})
-		return cty.DynamicVal, diags
-	}
-
-	if returnVal == cty.NilVal {
-		diags = diags.Append(&hcl.Diagnostic{
-			Severity: hcl.DiagError,
-			Summary:  `Reference to "each" in context without for_each`,
-			Detail:   `The "each" object can be used only in "module" or "resource" blocks, and only when the "for_each" argument is set.`,
-			Subject:  rng.Ptr(),
-		})
-		return cty.UnknownVal(cty.DynamicPseudoType), diags
-	}
-	return returnVal, diags
+	// Note that the actual evaluation of each.key/each.value is not done here.
+	// each.key/each.value is already evaluated when expanded by ExpandBlock,
+	// and the value is bound to the expanded body.
+	//
+	// Although, there are cases where each.key/each.value is evaluated as-is,
+	// such as when not expanding the body. In that case, evaluate it
+	// as an unknown and skip further checks.
+	return cty.DynamicVal, nil
 }
 
 func (d *evaluationData) GetInputVariable(addr addrs.InputVariable, rng hcl.Range) (cty.Value, hcl.Diagnostics) {
@@ -313,9 +261,7 @@ func (d *evaluationData) GetLocalValue(addr addrs.LocalValue, rng hcl.Range) (ct
 		return cty.UnknownVal(cty.DynamicPseudoType), diags
 	}
 
-	// Always use EvalDataForNoInstanceKey because local values cannot use expressions
-	// that depend on instance keys, such as `count.*` and `each.*`.
-	val, diags := d.Evaluator.EvaluateExpr(config.Expr, cty.DynamicPseudoType, EvalDataForNoInstanceKey)
+	val, diags := d.Evaluator.EvaluateExpr(config.Expr, cty.DynamicPseudoType)
 
 	d.Evaluator.CallStack.Pop()
 	return val, diags

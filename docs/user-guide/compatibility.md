@@ -123,37 +123,23 @@ The values below are state-dependent and cannot be determined statically, so TFL
 
 ## Dynamic Blocks
 
-[Dynamic blocks](https://developer.hashicorp.com/terraform/language/expressions/dynamic-blocks) work just like normal blocks:
+TFLint supports [dynamic blocks](https://developer.hashicorp.com/terraform/language/expressions/dynamic-blocks).
 
 ```hcl
-resource "aws_instance" "static" {
-  ebs_block_device {
-    encrypted = false # => Must be encrypted
-  }
-}
-
 resource "aws_instance" "dynamic" {
   dynamic "ebs_block_device" {
-    for_each = var.block_devices
+    for_each = toset([
+      { size = 10 },
+      { size = 20 }
+    ])
     content {
-      encrypted = false # => Must be encrypted
+      volume_size = ebs_block_device.value["size"] # => 10 and 20
     }
   }
 }
 ```
 
-Note that iterator evaluation is not supported.
-
-```hcl
-resource "aws_instance" "dynamic" {
-  dynamic "ebs_block_device" {
-    for_each = var.block_devices
-    content {
-      encrypted = ebs_block_device.value["encrypted"] # => ignored
-    }
-  }
-}
-```
+Similar to support for meta-arguments, some rules may process a dynamic block as-is without expansion. If the `for_each` is unknown, the block will be empty.
 
 ## Modules
 

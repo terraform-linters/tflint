@@ -4,11 +4,13 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint/terraform/tfdiags"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
+	"github.com/zclconf/go-cty/cty/gocty"
 )
 
-type expandSpec struct {
+type expandDynamicSpec struct {
 	blockType      string
 	blockTypeRange hcl.Range
 	defRange       hcl.Range
@@ -16,10 +18,9 @@ type expandSpec struct {
 	iteratorName   string
 	labelExprs     []hcl.Expression
 	contentBody    hcl.Body
-	inherited      map[string]*iteration
 }
 
-func (b *expandBody) decodeSpec(blockS *hcl.BlockHeaderSchema, rawSpec *hcl.Block) (*expandSpec, hcl.Diagnostics) {
+func (b *expandBody) decodeDynamicSpec(blockS *hcl.BlockHeaderSchema, rawSpec *hcl.Block) (*expandDynamicSpec, hcl.Diagnostics) {
 	var diags hcl.Diagnostics
 
 	var schema *hcl.BodySchema
@@ -38,7 +39,7 @@ func (b *expandBody) decodeSpec(blockS *hcl.BlockHeaderSchema, rawSpec *hcl.Bloc
 	//// for_each attribute
 
 	eachAttr := specContent.Attributes["for_each"]
-	eachVal, eachDiags := eachAttr.Expr.Value(b.forEachCtx)
+	eachVal, eachDiags := eachAttr.Expr.Value(b.ctx)
 	diags = append(diags, eachDiags...)
 
 	if !eachVal.CanIterateElements() && eachVal.Type() != cty.DynamicPseudoType {
@@ -51,7 +52,7 @@ func (b *expandBody) decodeSpec(blockS *hcl.BlockHeaderSchema, rawSpec *hcl.Bloc
 			Detail:      fmt.Sprintf("Cannot use a %s value in for_each. An iterable collection is required.", eachVal.Type().FriendlyName()),
 			Subject:     eachAttr.Expr.Range().Ptr(),
 			Expression:  eachAttr.Expr,
-			EvalContext: b.forEachCtx,
+			EvalContext: b.ctx,
 		})
 		return nil, diags
 	}
@@ -62,7 +63,7 @@ func (b *expandBody) decodeSpec(blockS *hcl.BlockHeaderSchema, rawSpec *hcl.Bloc
 			Detail:      "Cannot use a null value in for_each.",
 			Subject:     eachAttr.Expr.Range().Ptr(),
 			Expression:  eachAttr.Expr,
-			EvalContext: b.forEachCtx,
+			EvalContext: b.ctx,
 		})
 		return nil, diags
 	}
@@ -139,7 +140,7 @@ func (b *expandBody) decodeSpec(blockS *hcl.BlockHeaderSchema, rawSpec *hcl.Bloc
 		return nil, diags
 	}
 
-	return &expandSpec{
+	return &expandDynamicSpec{
 		blockType:      blockS.Type,
 		blockTypeRange: rawSpec.LabelRanges[0],
 		defRange:       rawSpec.DefRange,
@@ -150,7 +151,7 @@ func (b *expandBody) decodeSpec(blockS *hcl.BlockHeaderSchema, rawSpec *hcl.Bloc
 	}, diags
 }
 
-func (s *expandSpec) newBlock(i *iteration, ctx *hcl.EvalContext) (*hcl.Block, hcl.Diagnostics) {
+func (s *expandDynamicSpec) newBlock(i *dynamicIteration, ctx *hcl.EvalContext) (*hcl.Block, hcl.Diagnostics) {
 	var diags hcl.Diagnostics
 	var labels []string
 	var labelRanges []hcl.Range
@@ -187,10 +188,13 @@ func (s *expandSpec) newBlock(i *iteration, ctx *hcl.EvalContext) (*hcl.Block, h
 			return nil, diags
 		}
 		if !labelVal.IsKnown() {
+			return nil, diags
+		}
+		if labelVal.IsMarked() {
 			diags = append(diags, &hcl.Diagnostic{
 				Severity:    hcl.DiagError,
 				Summary:     "Invalid dynamic block label",
-				Detail:      "This value is not yet known. Dynamic block labels must be immediately-known values.",
+				Detail:      "Cannot use a marked value as a dynamic block label.",
 				Subject:     labelExpr.Range().Ptr(),
 				Expression:  labelExpr,
 				EvalContext: lCtx,
@@ -212,4 +216,128 @@ func (s *expandSpec) newBlock(i *iteration, ctx *hcl.EvalContext) (*hcl.Block, h
 	}
 
 	return block, diags
+}
+
+type expandMetaArgSpec struct {
+	rawBlock   *hcl.Block
+	countSet   bool
+	countVal   cty.Value
+	countNum   int
+	forEachSet bool
+	forEachVal cty.Value
+}
+
+func (b *expandBody) decodeMetaArgSpec(rawSpec *hcl.Block) (*expandMetaArgSpec, hcl.Diagnostics) {
+	spec := &expandMetaArgSpec{rawBlock: rawSpec}
+	var diags hcl.Diagnostics
+
+	specContent, _, specDiags := rawSpec.Body.PartialContent(expandableBlockBodySchema)
+	diags = append(diags, specDiags...)
+	if specDiags.HasErrors() {
+		return spec, diags
+	}
+
+	//// count attribute
+
+	if countAttr, exists := specContent.Attributes["count"]; exists {
+		spec.countSet = true
+
+		countVal, countDiags := countAttr.Expr.Value(b.ctx)
+		diags = append(diags, countDiags...)
+		countVal, _ = countVal.Unmark()
+
+		spec.countVal = countVal
+
+		// We skip validation for count attribute if the value is unknwon
+		if countVal.IsKnown() {
+			if countVal.IsNull() {
+				diags = append(diags, &hcl.Diagnostic{
+					Severity:    hcl.DiagError,
+					Summary:     "Invalid count argument",
+					Detail:      `The given "count" argument value is null. An integer is required.`,
+					Subject:     countAttr.Expr.Range().Ptr(),
+					Expression:  countAttr.Expr,
+					EvalContext: b.ctx,
+				})
+				return spec, diags
+			}
+
+			var convErr error
+			countVal, convErr = convert.Convert(countVal, cty.Number)
+			if convErr != nil {
+				diags = diags.Append(&hcl.Diagnostic{
+					Severity:    hcl.DiagError,
+					Summary:     "Incorrect value type",
+					Detail:      fmt.Sprintf("Invalid expression value: %s.", tfdiags.FormatError(convErr)),
+					Subject:     countAttr.Expr.Range().Ptr(),
+					Expression:  countAttr.Expr,
+					EvalContext: b.ctx,
+				})
+				return spec, diags
+			}
+
+			err := gocty.FromCtyValue(countVal, &spec.countNum)
+			if err != nil {
+				diags = diags.Append(&hcl.Diagnostic{
+					Severity:    hcl.DiagError,
+					Summary:     "Invalid count argument",
+					Detail:      fmt.Sprintf(`The given "count" argument value is unsuitable: %s.`, err),
+					Subject:     countAttr.Expr.Range().Ptr(),
+					Expression:  countAttr.Expr,
+					EvalContext: b.ctx,
+				})
+				return spec, diags
+			}
+			if spec.countNum < 0 {
+				diags = diags.Append(&hcl.Diagnostic{
+					Severity:    hcl.DiagError,
+					Summary:     "Invalid count argument",
+					Detail:      `The given "count" argument value is unsuitable: negative numbers are not supported.`,
+					Subject:     countAttr.Expr.Range().Ptr(),
+					Expression:  countAttr.Expr,
+					EvalContext: b.ctx,
+				})
+				return spec, diags
+			}
+		}
+	}
+
+	//// for_each attribute
+
+	if eachAttr, exists := specContent.Attributes["for_each"]; exists {
+		spec.forEachSet = true
+
+		eachVal, eachDiags := eachAttr.Expr.Value(b.ctx)
+		diags = append(diags, eachDiags...)
+
+		spec.forEachVal = eachVal
+
+		if !eachVal.CanIterateElements() && eachVal.Type() != cty.DynamicPseudoType {
+			// We skip this error for DynamicPseudoType because that means we either
+			// have a null (which is checked immediately below) or an unknown
+			// (which is handled in the expandBody Content methods).
+			diags = diags.Append(&hcl.Diagnostic{
+				Severity:    hcl.DiagError,
+				Summary:     "The `for_each` value is not iterable",
+				Detail:      fmt.Sprintf("`%s` is not iterable", eachVal.GoString()),
+				Subject:     eachAttr.Expr.Range().Ptr(),
+				Expression:  eachAttr.Expr,
+				EvalContext: b.ctx,
+			})
+			return spec, diags
+		}
+		if eachVal.IsNull() {
+			diags = diags.Append(&hcl.Diagnostic{
+				Severity:    hcl.DiagError,
+				Summary:     "Invalid for_each argument",
+				Detail:      `The given "for_each" argument value is unsuitable: the given "for_each" argument value is null. A map, or set of strings is allowed.`,
+				Subject:     eachAttr.Expr.Range().Ptr(),
+				Expression:  eachAttr.Expr,
+				EvalContext: b.ctx,
+			})
+			return spec, diags
+		}
+	}
+
+	return spec, diags
 }

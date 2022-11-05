@@ -6,11 +6,14 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	"github.com/terraform-linters/tflint/terraform/lang/marks"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -38,7 +41,6 @@ func TestEvaluateExpr(t *testing.T) {
 		inputs   []InputValues
 		expr     hcl.Expression
 		ty       cty.Type
-		keyData  InstanceKeyEvalData
 		want     string
 		errCheck func(hcl.Diagnostics) bool
 	}{
@@ -702,26 +704,10 @@ locals {
 			errCheck: neverHappend,
 		},
 		{
-			name:     "count.index in counted context",
-			expr:     expr(`count.index`),
-			ty:       cty.Number,
-			keyData:  InstanceKeyEvalData{CountIndex: cty.NumberIntVal(1)},
-			want:     `cty.NumberIntVal(1)`,
-			errCheck: neverHappend,
-		},
-		{
 			name:     "each.key in non-forEach context",
 			expr:     expr(`each.key`),
 			ty:       cty.String,
 			want:     `cty.UnknownVal(cty.String)`,
-			errCheck: neverHappend,
-		},
-		{
-			name:     "each.key in forEach context",
-			expr:     expr(`each.key`),
-			ty:       cty.String,
-			keyData:  InstanceKeyEvalData{EachKey: cty.StringVal("foo"), EachValue: cty.StringVal("bar")},
-			want:     `cty.StringVal("foo")`,
 			errCheck: neverHappend,
 		},
 		{
@@ -732,15 +718,7 @@ locals {
 			errCheck: neverHappend,
 		},
 		{
-			name:     "each.value in forEach context",
-			expr:     expr(`each.value`),
-			ty:       cty.String,
-			keyData:  InstanceKeyEvalData{EachKey: cty.StringVal("foo"), EachValue: cty.StringVal("bar")},
-			want:     `cty.StringVal("bar")`,
-			errCheck: neverHappend,
-		},
-		{
-			name:     "bound expr without key data",
+			name:     "bound expr",
 			expr:     hclext.BindValue(cty.StringVal("foo"), expr(`each.value`)),
 			ty:       cty.String,
 			want:     `cty.StringVal("foo")`,
@@ -777,13 +755,1333 @@ locals {
 				CallStack:      NewCallStack(),
 			}
 
-			got, diags := evaluator.EvaluateExpr(test.expr, test.ty, test.keyData)
+			got, diags := evaluator.EvaluateExpr(test.expr, test.ty)
 			if test.errCheck(diags) {
 				t.Fatal(diags)
 			}
 
 			if test.want != got.GoString() {
 				t.Errorf("want: %s, got: %s", test.want, got.GoString())
+			}
+		})
+	}
+}
+
+func TestExpandBlock(t *testing.T) {
+	tests := []struct {
+		name   string
+		config string
+		schema *hclext.BodySchema
+		want   *hclext.BodyContent
+	}{
+		{
+			name: "no meta-arguments",
+			config: `
+resource "aws_instance" "main" {}
+`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{Type: "resource", Labels: []string{"aws_instance", "main"}, Body: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}}},
+				},
+			},
+		},
+		{
+			name: "count is not zero (literal)",
+			config: `
+resource "aws_instance" "main" {
+  count = 1
+  value = count.index
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.NumberIntVal(0), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+					},
+				},
+			},
+		},
+		{
+			name: "count is not zero (variable)",
+			config: `
+variable "count" {
+  default = 1
+}
+resource "aws_instance" "main" {
+  count = var.count
+  value = count.index
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.NumberIntVal(0), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+					},
+				},
+			},
+		},
+		{
+			name: "count is greater than 1",
+			config: `
+resource "aws_instance" "main" {
+  count = 2
+  value = count.index
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.NumberIntVal(0), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+					},
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.NumberIntVal(1), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+					},
+				},
+			},
+		},
+		{
+			name: "count is unknown",
+			config: `
+variable "count" {}
+
+resource "aws_instance" "main" {
+  count = var.count
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{}},
+				},
+			},
+			want: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}},
+		},
+		{
+			name: "count is sensitive",
+			config: `
+variable "count" {
+  sensitive = true
+  default   = 1
+}
+resource "aws_instance" "main" {
+  count = var.count
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{Type: "resource", Labels: []string{"aws_instance", "main"}, Body: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}}},
+				},
+			},
+		},
+		{
+			name: "count is unevaluable",
+			config: `
+resource "aws_instance" "main" {
+  count = module.meta.count
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{}},
+				},
+			},
+			want: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}},
+		},
+		{
+			name: "count is zero",
+			config: `
+resource "aws_instance" "main" {
+  count = 0
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{}},
+				},
+			},
+			want: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}},
+		},
+		{
+			name: "count is string",
+			config: `
+resource "aws_instance" "main" {
+  count = "1"
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{Type: "resource", Labels: []string{"aws_instance", "main"}, Body: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}}},
+				},
+			},
+		},
+		{
+			name: "count.index and sensitive value",
+			config: `
+variable "sensitive" {
+  sensitive = true
+  default   = "foo"
+}
+resource "aws_instance" "main" {
+  count = 1
+  value = "${count.index}-${var.sensitive}"
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.UnknownVal(cty.String).Mark(marks.Sensitive), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+					},
+				},
+			},
+		},
+		{
+			name: "count.index and nested sensitive value",
+			config: `
+variable "sensitive" {
+  sensitive = true
+  default   = "foo"
+}
+resource "aws_instance" "main" {
+  count = 1
+  value = [count.index, var.sensitive]
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.TupleVal([]cty.Value{cty.UnknownVal(cty.Number), cty.StringVal("foo").Mark(marks.Sensitive)}), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+					},
+				},
+			},
+		},
+		{
+			name: "for_each is not empty (literal)",
+			config: `
+resource "aws_instance" "main" {
+  for_each = { foo = "bar" }
+  value    = "${each.key}-${each.value}"
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("foo-bar"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+					},
+				},
+			},
+		},
+		{
+			name: "for_each is not empty (variable)",
+			config: `
+variable "for_each" {
+  default = { foo = "bar" }
+}
+resource "aws_instance" "main" {
+  for_each = var.for_each
+  value    = "${each.key}-${each.value}"
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("foo-bar"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+					},
+				},
+			},
+		},
+		{
+			name: "for_each is unknown",
+			config: `
+variable "for_each" {}
+
+resource "aws_instance" "main" {
+  for_each = var.for_each
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{}},
+				},
+			},
+			want: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}},
+		},
+		{
+			name: "for_each is evaluable",
+			config: `
+resource "aws_instance" "main" {
+  for_each = module.meta.for_each
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{}},
+				},
+			},
+			want: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}},
+		},
+		{
+			name: "for_each contains unevaluable",
+			config: `
+resource "aws_instance" "main" {
+  for_each = {
+    known   = "known"
+    unknown = module.meta.unknown
+  }
+  value = [each.key, each.value]
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{
+								"value": {
+									Name: "value",
+									Expr: hcl.StaticExpr(cty.TupleVal([]cty.Value{cty.StringVal("known"), cty.StringVal("known")}), hcl.Range{}),
+								},
+							},
+							Blocks: hclext.Blocks{},
+						},
+					},
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{
+								"value": {
+									Name: "value",
+									Expr: hcl.StaticExpr(cty.TupleVal([]cty.Value{cty.StringVal("unknown"), cty.DynamicVal}), hcl.Range{}),
+								},
+							},
+							Blocks: hclext.Blocks{},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "for_each is empty",
+			config: `
+resource "aws_instance" "main" {
+  for_each = {}
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{}},
+				},
+			},
+			want: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}},
+		},
+		{
+			name: "for_each is not empty set",
+			config: `
+resource "aws_instance" "main" {
+  for_each = toset(["foo", "bar"])
+  value    = each.key
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("bar"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+					},
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("foo"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+					},
+				},
+			},
+		},
+		{
+			name: "for_each is empty set",
+			config: `
+resource "aws_instance" "main" {
+  for_each = toset([])
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{}},
+				},
+			},
+			want: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}},
+		},
+		{
+			name: "each.key/each.value and sensitive value",
+			config: `
+variable "sensitive" {
+  sensitive = true
+  default   = "foo"
+}
+resource "aws_instance" "main" {
+  for_each = { foo = "bar" }
+  value    = "${each.key}-${each.value}-${var.sensitive}"
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.UnknownVal(cty.String).Mark(marks.Sensitive), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+					},
+				},
+			},
+		},
+		{
+			name: "each.key/each.value and nested sensitive value",
+			config: `
+variable "sensitive" {
+  sensitive = true
+  default   = "foo"
+}
+resource "aws_instance" "main" {
+  for_each = { foo = "bar" }
+  value    = [each.key, var.sensitive]
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{Type: "resource", LabelNames: []string{"type", "name"}, Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}}},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.TupleVal([]cty.Value{cty.DynamicVal, cty.StringVal("foo").Mark(marks.Sensitive)}), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+					},
+				},
+			},
+		},
+		{
+			name: "non-empty object dynamic blocks",
+			config: `
+resource "aws_instance" "main" {
+  dynamic "ebs_block_device" {
+    for_each = {
+      foo = "bar"
+      baz = "qux"
+    }
+    content {
+      value = "${ebs_block_device.key}-${ebs_block_device.value}"
+    }
+  }
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("baz-qux"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("foo-bar"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "non-empty object variable dynamic blocks",
+			config: `
+variable "for_each" {
+  default = {
+    foo = "bar"
+    baz = "qux"
+  }
+}
+resource "aws_instance" "main" {
+  dynamic "ebs_block_device" {
+    for_each = var.for_each
+    content {
+      value = "${ebs_block_device.key}-${ebs_block_device.value}"
+    }
+  }
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("baz-qux"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("foo-bar"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "unknown variable dynamic blocks",
+			config: `
+variable "for_each" {}
+
+resource "aws_instance" "main" {
+  dynamic "ebs_block_device" {
+    for_each = var.for_each
+    content {
+      value = "${ebs_block_device.key}-${ebs_block_device.value}"
+    }
+  }
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks:     hclext.Blocks{},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "unevaluable variable dynamic blocks",
+			config: `
+resource "aws_instance" "main" {
+  dynamic "ebs_block_device" {
+    for_each = module.meta.for_each
+    content {
+      value = "${ebs_block_device.key}-${ebs_block_device.value}"
+    }
+  }
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks:     hclext.Blocks{},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "object contains unevaluable dynamic blocks",
+			config: `
+resource "aws_instance" "main" {
+  dynamic "ebs_block_device" {
+    for_each = {
+      known   = "known"
+      unknown = module.meta.unknown
+    }
+    content {
+      value = "${ebs_block_device.key}-${ebs_block_device.value}"
+    }
+  }
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("known-known"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.UnknownVal(cty.String), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "empty object dynamic blocks",
+			config: `
+resource "aws_instance" "main" {
+  dynamic "ebs_block_device" {
+    for_each = {}
+    content {
+      value = "${ebs_block_device.key}-${ebs_block_device.value}"
+    }
+  }
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks:     hclext.Blocks{},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "non-empty set dynamic blocks",
+			config: `
+resource "aws_instance" "main" {
+  dynamic "ebs_block_device" {
+    for_each = toset(["foo", "bar"])
+    content {
+      value = "${ebs_block_device.key}-${ebs_block_device.value}"
+    }
+  }
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("bar-bar"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("foo-foo"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "empty set dynamic blocks",
+			config: `
+resource "aws_instance" "main" {
+  dynamic "ebs_block_device" {
+    for_each = toset([])
+    content {
+      value = "${ebs_block_device.key}-${ebs_block_device.value}"
+    }
+  }
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks:     hclext.Blocks{},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "iterator with sensitive value",
+			config: `
+variable "sensitive" {
+  sensitive = true
+  default   = "foo"
+}
+resource "aws_instance" "main" {
+  dynamic "ebs_block_device" {
+    for_each = { foo = "bar" }
+    content {
+      value = "${ebs_block_device.key}-${ebs_block_device.value}-${var.sensitive}"
+    }
+  }
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.UnknownVal(cty.String).Mark(marks.Sensitive), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "iterator with nested sensitive value",
+			config: `
+variable "sensitive" {
+  sensitive = true
+  default   = "foo"
+}
+resource "aws_instance" "main" {
+  dynamic "ebs_block_device" {
+    for_each = { foo = "bar" }
+    content {
+      value = [ebs_block_device.key, var.sensitive]
+    }
+  }
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.TupleVal([]cty.Value{cty.DynamicVal, cty.StringVal("foo").Mark(marks.Sensitive)}), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "nested dynamic blocks",
+			config: `
+resource "aws_instance" "main" {
+  dynamic "ebs_block_device" {
+    for_each = toset(["foo", "bar"])
+    content {
+      dynamic "nested" {
+        for_each = toset(["baz", "qux"])
+        content {
+          value = "${ebs_block_device.key}-${nested.value}"
+        }
+      }
+    }
+  }
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodySchema{
+										Blocks: []hclext.BlockSchema{
+											{
+												Type: "nested",
+												Body: &hclext.BodySchema{
+													Attributes: []hclext.AttributeSchema{{Name: "value"}},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{
+										Attributes: hclext.Attributes{},
+										Blocks: hclext.Blocks{
+											{
+												Type: "nested",
+												Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("bar-baz"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+											},
+											{
+												Type: "nested",
+												Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("bar-qux"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+											},
+										},
+									},
+								},
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{
+										Attributes: hclext.Attributes{},
+										Blocks: hclext.Blocks{
+											{
+												Type: "nested",
+												Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("foo-baz"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+											},
+											{
+												Type: "nested",
+												Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("foo-qux"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "custom iterator",
+			config: `
+resource "aws_instance" "main" {
+  dynamic "ebs_block_device" {
+    for_each = { foo = "bar" }
+    iterator = it
+    content {
+      value = "${it.key}-${it.value}"
+    }
+  }
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("foo-bar"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "dynamic labels",
+			config: `
+resource "aws_instance" "main" {
+  dynamic "ebs_block_device" {
+    for_each = { foo = "bar" }
+    labels   = [ebs_block_device.key]
+    content {
+      value = ebs_block_device.value
+    }
+  }
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type:       "ebs_block_device",
+									LabelNames: []string{"name"},
+									Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks: hclext.Blocks{
+								{
+									Type:   "ebs_block_device",
+									Labels: []string{"foo"},
+									Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("bar"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			// Terraform does not allow variables to be used in dynamic labels.
+			// @see https://github.com/hashicorp/terraform/issues/32180
+			name: "dynamic labels with variable",
+			config: `
+variable "label" {
+  default = "baz"
+}
+resource "aws_instance" "main" {
+  dynamic "ebs_block_device" {
+    for_each = { foo = "bar" }
+    labels   = [var.label]
+    content {
+      value = ebs_block_device.value
+    }
+  }
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type:       "ebs_block_device",
+									LabelNames: []string{"name"},
+									Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks: hclext.Blocks{
+								{
+									Type:   "ebs_block_device",
+									Labels: []string{"baz"},
+									Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("bar"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "meta-aruguments and dynamic blocks",
+			config: `
+resource "aws_instance" "main" {
+  count = 2
+
+  dynamic "ebs_block_device" {
+    for_each = toset(["foo", "bar"])
+    content {
+      value = "${count.index}-${ebs_block_device.value}"
+    }
+  }
+}`,
+			schema: &hclext.BodySchema{
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body: &hclext.BodySchema{
+							Blocks: []hclext.BlockSchema{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "value"}}},
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Attributes: hclext.Attributes{},
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("0-bar"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("0-foo"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+							},
+						},
+					},
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "main"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("1-bar"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.StringVal("1-foo"), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			fs := afero.Afero{Fs: afero.NewMemMapFs()}
+			if err := fs.WriteFile("main.tf", []byte(test.config), os.ModePerm); err != nil {
+				t.Fatal(err)
+			}
+			file, diags := hclsyntax.ParseConfig([]byte(test.config), "main.tf", hcl.InitialPos)
+			if diags.HasErrors() {
+				t.Fatal(diags)
+			}
+
+			parser := NewParser(fs)
+			mod, diags := parser.LoadConfigDir(".")
+			if diags.HasErrors() {
+				t.Fatal(diags)
+			}
+			config, diags := BuildConfig(mod, ModuleWalkerFunc(func(req *ModuleRequest) (*Module, *version.Version, hcl.Diagnostics) { return nil, nil, nil }))
+			if diags.HasErrors() {
+				t.Fatal(diags)
+			}
+			variableValues, diags := VariableValues(config)
+			if diags.HasErrors() {
+				t.Fatal(diags)
+			}
+
+			evaluator := &Evaluator{
+				Meta:           &ContextMeta{Env: Workspace()},
+				ModulePath:     config.Path.UnkeyedInstanceShim(),
+				Config:         config,
+				VariableValues: variableValues,
+				CallStack:      NewCallStack(),
+			}
+
+			expanded, diags := evaluator.ExpandBlock(file.Body, test.schema)
+			if diags.HasErrors() {
+				t.Fatal(diags)
+			}
+			got, diags := hclext.PartialContent(expanded, test.schema)
+			if diags.HasErrors() {
+				t.Fatal(diags)
+			}
+
+			opts := cmp.Options{
+				cmpopts.IgnoreFields(hclext.Block{}, "TypeRange", "LabelRanges"),
+				cmpopts.IgnoreFields(hclext.Attribute{}, "NameRange"),
+				cmpopts.IgnoreFields(hcl.Range{}, "Start", "End", "Filename"),
+				cmp.Comparer(func(x, y hcl.Expression) bool {
+					xv, diags := evaluator.EvaluateExpr(x, cty.DynamicPseudoType)
+					if diags.HasErrors() {
+						t.Fatal(diags)
+					}
+					yv, diags := evaluator.EvaluateExpr(y, cty.DynamicPseudoType)
+					if diags.HasErrors() {
+						t.Fatal(diags)
+					}
+					return xv.RawEquals(yv)
+				}),
+			}
+			if diff := cmp.Diff(got, test.want, opts); diff != "" {
+				t.Error(diff)
 			}
 		})
 	}

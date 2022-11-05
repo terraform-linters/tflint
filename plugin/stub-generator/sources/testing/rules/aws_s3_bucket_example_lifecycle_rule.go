@@ -1,6 +1,8 @@
 package rules
 
 import (
+	"fmt"
+
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 )
@@ -46,7 +48,14 @@ func (r *AwsS3BucketExampleLifecycleRuleRule) Check(runner tflint.Runner) error 
 						{Name: "enabled"},
 					},
 					Blocks: []hclext.BlockSchema{
-						{Type: "transition", Body: &hclext.BodySchema{}},
+						{
+							Type: "transition",
+							Body: &hclext.BodySchema{
+								Attributes: []hclext.AttributeSchema{
+									{Name: "days"},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -63,7 +72,11 @@ func (r *AwsS3BucketExampleLifecycleRuleRule) Check(runner tflint.Runner) error 
 			}
 
 			if attr, exists := lifecycle.Body.Attributes["enabled"]; exists {
-				if err := runner.EmitIssue(r, "`enabled` attribute found", attr.Expr.Range()); err != nil {
+				var enabled string
+				err := runner.EnsureNoError(runner.EvaluateExpr(attr.Expr, &enabled, nil), func() error {
+					return runner.EmitIssue(r, fmt.Sprintf("`enabled` attribute found: %s", enabled), attr.Expr.Range())
+				})
+				if err != nil {
 					return err
 				}
 			}
@@ -71,6 +84,16 @@ func (r *AwsS3BucketExampleLifecycleRuleRule) Check(runner tflint.Runner) error 
 			for _, transition := range lifecycle.Body.Blocks {
 				if err := runner.EmitIssue(r, "`transition` block found", transition.DefRange); err != nil {
 					return err
+				}
+
+				if attr, exists := transition.Body.Attributes["days"]; exists {
+					var days int
+					err := runner.EnsureNoError(runner.EvaluateExpr(attr.Expr, &days, nil), func() error {
+						return runner.EmitIssue(r, fmt.Sprintf("`days` attribute found: %d", days), attr.Expr.Range())
+					})
+					if err != nil {
+						return err
+					}
 				}
 			}
 		}

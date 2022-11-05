@@ -5,30 +5,21 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-type iteration struct {
+type dynamicIteration struct {
 	IteratorName string
 	Key          cty.Value
 	Value        cty.Value
-	Inherited    map[string]*iteration
+	Inherited    map[string]*dynamicIteration
 }
 
-func (s *expandSpec) MakeIteration(key, value cty.Value) *iteration {
-	return &iteration{
-		IteratorName: s.iteratorName,
-		Key:          key,
-		Value:        value,
-		Inherited:    s.inherited,
-	}
-}
-
-func (i *iteration) Object() cty.Value {
+func (i *dynamicIteration) Object() cty.Value {
 	return cty.ObjectVal(map[string]cty.Value{
 		"key":   i.Key,
 		"value": i.Value,
 	})
 }
 
-func (i *iteration) EvalContext(base *hcl.EvalContext) *hcl.EvalContext {
+func (i *dynamicIteration) EvalContext(base *hcl.EvalContext) *hcl.EvalContext {
 	new := base.NewChild()
 
 	if i != nil {
@@ -42,25 +33,71 @@ func (i *iteration) EvalContext(base *hcl.EvalContext) *hcl.EvalContext {
 	return new
 }
 
-func (i *iteration) MakeChild(iteratorName string, key, value cty.Value) *iteration {
+func (i *dynamicIteration) MakeChild(iteratorName string, key, value cty.Value) *dynamicIteration {
 	if i == nil {
 		// Create entirely new root iteration, then
-		return &iteration{
+		return &dynamicIteration{
 			IteratorName: iteratorName,
 			Key:          key,
 			Value:        value,
 		}
 	}
 
-	inherited := map[string]*iteration{}
+	inherited := map[string]*dynamicIteration{}
 	for name, otherIt := range i.Inherited {
 		inherited[name] = otherIt
 	}
 	inherited[i.IteratorName] = i
-	return &iteration{
+	return &dynamicIteration{
 		IteratorName: iteratorName,
 		Key:          key,
 		Value:        value,
 		Inherited:    inherited,
 	}
+}
+
+type metaArgIteration struct {
+	Count bool
+	Index cty.Value
+
+	ForEach bool
+	Key     cty.Value
+	Value   cty.Value
+}
+
+func MakeCountIteration(index cty.Value) *metaArgIteration {
+	return &metaArgIteration{
+		Count: true,
+		Index: index,
+	}
+}
+
+func MakeForEachIteration(key, value cty.Value) *metaArgIteration {
+	return &metaArgIteration{
+		ForEach: true,
+		Key:     key,
+		Value:   value,
+	}
+}
+
+func (i *metaArgIteration) EvalContext(base *hcl.EvalContext) *hcl.EvalContext {
+	new := base.NewChild()
+
+	if i != nil {
+		new.Variables = map[string]cty.Value{}
+
+		if i.Count {
+			new.Variables["count"] = cty.ObjectVal(map[string]cty.Value{
+				"index": i.Index,
+			})
+		}
+		if i.ForEach {
+			new.Variables["each"] = cty.ObjectVal(map[string]cty.Value{
+				"key":   i.Key,
+				"value": i.Value,
+			})
+		}
+	}
+
+	return new
 }

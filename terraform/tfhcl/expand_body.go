@@ -4,15 +4,17 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/zclconf/go-cty/cty"
 )
 
-// expandBody wraps another hcl.Body and expands any "dynamic" blocks found
-// inside whenever Content or PartialContent is called.
+// expandBody wraps another hcl.Body and expands any "dynamic" blocks, count/for-each
+// resources found inside whenever Content or PartialContent is called.
 type expandBody struct {
-	original   hcl.Body
-	forEachCtx *hcl.EvalContext
-	iteration  *iteration // non-nil if we're nested inside another "dynamic" block
+	original         hcl.Body
+	ctx              *hcl.EvalContext
+	dynamicIteration *dynamicIteration // non-nil if we're nested inside a "dynamic" block
+	metaArgIteration *metaArgIteration // non-nil if we're nested inside a block with meta-arguments
 
 	// These are used with PartialContent to produce a "remaining items"
 	// body to return. They are nil on all bodies fresh out of the transformer.
@@ -32,7 +34,8 @@ func (b *expandBody) Content(schema *hcl.BodySchema) (*hcl.BodyContent, hcl.Diag
 
 	blocks, blockDiags := b.expandBlocks(schema, rawContent.Blocks, false)
 	diags = append(diags, blockDiags...)
-	attrs := b.prepareAttributes(rawContent.Attributes)
+	attrs, attrDiags := b.prepareAttributes(rawContent.Attributes)
+	diags = append(diags, attrDiags...)
 
 	content := &hcl.BodyContent{
 		Attributes:       attrs,
@@ -51,7 +54,8 @@ func (b *expandBody) PartialContent(schema *hcl.BodySchema) (*hcl.BodyContent, h
 
 	blocks, blockDiags := b.expandBlocks(schema, rawContent.Blocks, true)
 	diags = append(diags, blockDiags...)
-	attrs := b.prepareAttributes(rawContent.Attributes)
+	attrs, attrDiags := b.prepareAttributes(rawContent.Attributes)
+	diags = append(diags, attrDiags...)
 
 	content := &hcl.BodyContent{
 		Attributes:       attrs,
@@ -60,11 +64,12 @@ func (b *expandBody) PartialContent(schema *hcl.BodySchema) (*hcl.BodyContent, h
 	}
 
 	remain := &expandBody{
-		original:     b.original,
-		forEachCtx:   b.forEachCtx,
-		iteration:    b.iteration,
-		hiddenAttrs:  make(map[string]struct{}),
-		hiddenBlocks: make(map[string]hcl.BlockHeaderSchema),
+		original:         b.original,
+		ctx:              b.ctx,
+		dynamicIteration: b.dynamicIteration,
+		metaArgIteration: b.metaArgIteration,
+		hiddenAttrs:      make(map[string]struct{}),
+		hiddenBlocks:     make(map[string]hcl.BlockHeaderSchema),
 	}
 	for name := range b.hiddenAttrs {
 		remain.hiddenAttrs[name] = struct{}{}
@@ -118,10 +123,12 @@ func (b *expandBody) extendSchema(schema *hcl.BodySchema) *hcl.BodySchema {
 	return extSchema
 }
 
-func (b *expandBody) prepareAttributes(rawAttrs hcl.Attributes) hcl.Attributes {
-	if len(b.hiddenAttrs) == 0 && b.iteration == nil {
+func (b *expandBody) prepareAttributes(rawAttrs hcl.Attributes) (hcl.Attributes, hcl.Diagnostics) {
+	var diags hcl.Diagnostics
+
+	if len(b.hiddenAttrs) == 0 && b.dynamicIteration == nil && b.metaArgIteration == nil {
 		// Easy path: just pass through the attrs from the original body verbatim
-		return rawAttrs
+		return rawAttrs, diags
 	}
 
 	// Otherwise we have some work to do: we must filter out any attributes
@@ -133,11 +140,24 @@ func (b *expandBody) prepareAttributes(rawAttrs hcl.Attributes) hcl.Attributes {
 		if _, hidden := b.hiddenAttrs[name]; hidden {
 			continue
 		}
-		if b.iteration != nil {
+		if b.dynamicIteration != nil || b.metaArgIteration != nil {
 			attr := *rawAttr // shallow copy so we can mutate it
-			attr.Expr = exprWrap{
+			expr := exprWrap{
 				Expression: attr.Expr,
-				i:          b.iteration,
+				di:         b.dynamicIteration,
+				mi:         b.metaArgIteration,
+			}
+			// Unlike hcl/ext/dynblock, wrapped expressions are evaluated immediately.
+			// The result is bound to the expression and can be accessed without
+			// the iterator context.
+			val, evalDiags := expr.Value(b.ctx)
+			if evalDiags.HasErrors() {
+				diags = append(diags, evalDiags...)
+				continue
+			}
+			// Marked values (e.g. sensitive values) are unbound for serialization.
+			if !val.ContainsMarked() {
+				attr.Expr = hclext.BindValue(val, expr)
 			}
 			attrs[name] = &attr
 		} else {
@@ -145,7 +165,7 @@ func (b *expandBody) prepareAttributes(rawAttrs hcl.Attributes) hcl.Attributes {
 			attrs[name] = rawAttr
 		}
 	}
-	return attrs
+	return attrs, diags
 }
 
 func (b *expandBody) expandBlocks(schema *hcl.BodySchema, rawBlocks hcl.Blocks, partial bool) (hcl.Blocks, hcl.Diagnostics) {
@@ -155,73 +175,18 @@ func (b *expandBody) expandBlocks(schema *hcl.BodySchema, rawBlocks hcl.Blocks, 
 	for _, rawBlock := range rawBlocks {
 		switch rawBlock.Type {
 		case "dynamic":
-			realBlockType := rawBlock.Labels[0]
-			if _, hidden := b.hiddenBlocks[realBlockType]; hidden {
-				continue
-			}
+			expandedBlocks, expandDiags := b.expandDynamicBlock(schema, rawBlock, partial)
+			blocks = append(blocks, expandedBlocks...)
+			diags = append(diags, expandDiags...)
 
-			var blockS *hcl.BlockHeaderSchema
-			for _, candidate := range schema.Blocks {
-				if candidate.Type == realBlockType {
-					blockS = &candidate
-					break
-				}
-			}
-			if blockS == nil {
-				// Not a block type that the caller requested.
-				if !partial {
-					diags = append(diags, &hcl.Diagnostic{
-						Severity: hcl.DiagError,
-						Summary:  "Unsupported block type",
-						Detail:   fmt.Sprintf("Blocks of type %q are not expected here.", realBlockType),
-						Subject:  &rawBlock.LabelRanges[0],
-					})
-				}
-				continue
-			}
-
-			spec, specDiags := b.decodeSpec(blockS, rawBlock)
-			diags = append(diags, specDiags...)
-			if specDiags.HasErrors() {
-				continue
-			}
-
-			if spec.forEachVal.IsKnown() {
-				for it := spec.forEachVal.ElementIterator(); it.Next(); {
-					key, value := it.Element()
-					i := b.iteration.MakeChild(spec.iteratorName, key, value)
-
-					block, blockDiags := spec.newBlock(i, b.forEachCtx)
-					diags = append(diags, blockDiags...)
-					if block != nil {
-						// Attach our new iteration context so that attributes
-						// and other nested blocks can refer to our iterator.
-						block.Body = b.expandChild(block.Body, i)
-						blocks = append(blocks, block)
-					}
-				}
-			} else {
-				// If our top-level iteration value isn't known then we
-				// substitute an unknownBody, which will cause the entire block
-				// to evaluate to an unknown value.
-				i := b.iteration.MakeChild(spec.iteratorName, cty.DynamicVal, cty.DynamicVal)
-				block, blockDiags := spec.newBlock(i, b.forEachCtx)
-				diags = append(diags, blockDiags...)
-				if block != nil {
-					block.Body = unknownBody{b.expandChild(block.Body, i)}
-					blocks = append(blocks, block)
-				}
-			}
+		case "resource", "module":
+			expandedBlocks, expandDiags := b.expandMetaArgBlock(schema, rawBlock)
+			blocks = append(blocks, expandedBlocks...)
+			diags = append(diags, expandDiags...)
 
 		default:
 			if _, hidden := b.hiddenBlocks[rawBlock.Type]; !hidden {
-				// A static block doesn't create a new iteration context, but
-				// it does need to inherit _our own_ iteration context in
-				// case it contains expressions that refer to our inherited
-				// iterators, or nested "dynamic" blocks.
-				expandedBlock := *rawBlock // shallow copy
-				expandedBlock.Body = b.expandChild(rawBlock.Body, b.iteration)
-				blocks = append(blocks, &expandedBlock)
+				blocks = append(blocks, b.expandStaticBlock(rawBlock))
 			}
 		}
 	}
@@ -229,10 +194,138 @@ func (b *expandBody) expandBlocks(schema *hcl.BodySchema, rawBlocks hcl.Blocks, 
 	return blocks, diags
 }
 
-func (b *expandBody) expandChild(child hcl.Body, i *iteration) hcl.Body {
-	chiCtx := i.EvalContext(b.forEachCtx)
+func (b *expandBody) expandDynamicBlock(schema *hcl.BodySchema, rawBlock *hcl.Block, partial bool) (hcl.Blocks, hcl.Diagnostics) {
+	var diags hcl.Diagnostics
+
+	realBlockType := rawBlock.Labels[0]
+	if _, hidden := b.hiddenBlocks[realBlockType]; hidden {
+		return hcl.Blocks{}, diags
+	}
+
+	var blockS *hcl.BlockHeaderSchema
+	for _, candidate := range schema.Blocks {
+		if candidate.Type == realBlockType {
+			blockS = &candidate
+			break
+		}
+	}
+	if blockS == nil {
+		// Not a block type that the caller requested.
+		if !partial {
+			diags = append(diags, &hcl.Diagnostic{
+				Severity: hcl.DiagError,
+				Summary:  "Unsupported block type",
+				Detail:   fmt.Sprintf("Blocks of type %q are not expected here.", realBlockType),
+				Subject:  &rawBlock.LabelRanges[0],
+			})
+		}
+		return hcl.Blocks{}, diags
+	}
+
+	spec, specDiags := b.decodeDynamicSpec(blockS, rawBlock)
+	diags = append(diags, specDiags...)
+	if specDiags.HasErrors() {
+		return hcl.Blocks{}, diags
+	}
+
+	if !spec.forEachVal.IsKnown() {
+		// If for_each is unknown, no blocks are returned
+		return hcl.Blocks{}, diags
+	}
+
+	var blocks hcl.Blocks
+
+	for it := spec.forEachVal.ElementIterator(); it.Next(); {
+		key, value := it.Element()
+		i := b.dynamicIteration.MakeChild(spec.iteratorName, key, value)
+
+		block, blockDiags := spec.newBlock(i, b.ctx)
+		diags = append(diags, blockDiags...)
+		if block != nil {
+			// Attach our new iteration context so that attributes
+			// and other nested blocks can refer to our iterator.
+			block.Body = b.expandChild(block.Body, i, b.metaArgIteration)
+			blocks = append(blocks, block)
+		}
+	}
+	return blocks, diags
+}
+
+func (b *expandBody) expandMetaArgBlock(schema *hcl.BodySchema, rawBlock *hcl.Block) (hcl.Blocks, hcl.Diagnostics) {
+	var diags hcl.Diagnostics
+
+	if _, hidden := b.hiddenBlocks[rawBlock.Type]; hidden {
+		return hcl.Blocks{}, diags
+	}
+
+	spec, specDiags := b.decodeMetaArgSpec(rawBlock)
+	diags = append(diags, specDiags...)
+	if specDiags.HasErrors() {
+		return hcl.Blocks{}, diags
+	}
+
+	//// count attribute
+
+	if spec.countSet {
+		if !spec.countVal.IsKnown() {
+			// If count is unknown, no blocks are returned
+			return hcl.Blocks{}, diags
+		}
+
+		var blocks hcl.Blocks
+
+		for idx := 0; idx < spec.countNum; idx++ {
+			i := MakeCountIteration(cty.NumberIntVal(int64(idx)))
+
+			expandedBlock := *rawBlock // shallow copy
+			expandedBlock.Body = b.expandChild(rawBlock.Body, b.dynamicIteration, i)
+			blocks = append(blocks, &expandedBlock)
+		}
+
+		return blocks, diags
+	}
+
+	//// for_each attribute
+
+	if spec.forEachSet {
+		if !spec.forEachVal.IsKnown() {
+			// If for_each is unknown, no blocks are returned
+			return hcl.Blocks{}, diags
+		}
+
+		var blocks hcl.Blocks
+
+		for it := spec.forEachVal.ElementIterator(); it.Next(); {
+			i := MakeForEachIteration(it.Element())
+
+			expandedBlock := *rawBlock // shallow copy
+			expandedBlock.Body = b.expandChild(rawBlock.Body, b.dynamicIteration, i)
+			blocks = append(blocks, &expandedBlock)
+		}
+
+		return blocks, diags
+	}
+
+	//// Neither count/for_each
+
+	return hcl.Blocks{b.expandStaticBlock(rawBlock)}, diags
+}
+
+func (b *expandBody) expandStaticBlock(rawBlock *hcl.Block) *hcl.Block {
+	// A static block doesn't create a new iteration context, but
+	// it does need to inherit _our own_ iteration context in
+	// case it contains expressions that refer to our inherited
+	// iterators, or nested "dynamic" blocks.
+	expandedBlock := *rawBlock
+	expandedBlock.Body = b.expandChild(rawBlock.Body, b.dynamicIteration, b.metaArgIteration)
+	return &expandedBlock
+}
+
+func (b *expandBody) expandChild(child hcl.Body, i *dynamicIteration, mi *metaArgIteration) hcl.Body {
+	chiCtx := i.EvalContext(mi.EvalContext(b.ctx))
 	ret := Expand(child, chiCtx)
-	ret.(*expandBody).iteration = i
+	ret.(*expandBody).dynamicIteration = i
+	ret.(*expandBody).metaArgIteration = mi
 	return ret
 }
 

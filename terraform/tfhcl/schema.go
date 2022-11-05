@@ -48,3 +48,16 @@ var dynamicBlockBodySchemaNoLabels = &hcl.BodySchema{
 		},
 	},
 }
+
+var expandableBlockBodySchema = &hcl.BodySchema{
+	Attributes: []hcl.AttributeSchema{
+		{
+			Name:     "count",
+			Required: false,
+		},
+		{
+			Name:     "for_each",
+			Required: false,
+		},
+	},
+}

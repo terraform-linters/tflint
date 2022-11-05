@@ -277,7 +277,7 @@ func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
 
 		_, err := NewModuleRunners(runner)
 
-		expected := errors.New(`failed to eval an expression in module.tf:4; module.tf:4,16-29: Invalid "terraform" attribute; The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The "state environment" concept was renamed to "workspace" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.`)
+		expected := errors.New(`module.tf:4,16-29: Invalid "terraform" attribute; The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The "state environment" concept was renamed to "workspace" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.`)
 		if err == nil {
 			t.Fatal("an error was expected to occur, but it did not")
 		}

@@ -21,10 +21,22 @@ func TestGetModuleContent(t *testing.T) {
 	runner := tflint.TestRunner(t, map[string]string{"main.tf": `
 resource "aws_instance" "foo" {
 	instance_type = "t2.micro"
+
+	ebs_block_device {}
+	dynamic "ebs_block_device" {
+		for_each = toset(["foo"])
+		content {}
+	}
 }
 resource "aws_instance" "baz" {
 	count         = 0
 	instance_type = "t3.nano"
+
+	ebs_block_device {}
+	dynamic "ebs_block_device" {
+		for_each = toset(["foo"])
+		content {}
+	}
 }`})
 	rootRunner := tflint.TestRunner(t, map[string]string{"main.tf": `
 resource "aws_instance" "bar" {
@@ -48,6 +60,7 @@ resource "aws_instance" "bar" {
 							LabelNames: []string{"type", "name"},
 							Body: &hclext.BodySchema{
 								Attributes: []hclext.AttributeSchema{{Name: "instance_type"}},
+								Blocks:     []hclext.BlockSchema{{Type: "ebs_block_device"}},
 							},
 						},
 					},
@@ -60,6 +73,16 @@ resource "aws_instance" "bar" {
 						Labels: []string{"aws_instance", "foo"},
 						Body: &hclext.BodyContent{
 							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type"}},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}},
+								},
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}},
+								},
+							},
 						},
 					},
 				},
@@ -87,6 +110,7 @@ resource "aws_instance" "bar" {
 						Labels: []string{"aws_instance", "bar"},
 						Body: &hclext.BodyContent{
 							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type"}},
+							Blocks:     hclext.Blocks{},
 						},
 					},
 				},
@@ -102,6 +126,7 @@ resource "aws_instance" "bar" {
 							LabelNames: []string{"type", "name"},
 							Body: &hclext.BodySchema{
 								Attributes: []hclext.AttributeSchema{{Name: "instance_type"}},
+								Blocks:     []hclext.BlockSchema{{Type: "ebs_block_device"}},
 							},
 						},
 					},
@@ -111,16 +136,28 @@ resource "aws_instance" "bar" {
 				Blocks: hclext.Blocks{
 					{
 						Type:   "resource",
-						Labels: []string{"aws_instance", "foo"},
+						Labels: []string{"aws_instance", "baz"},
 						Body: &hclext.BodyContent{
 							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type"}},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}},
+								},
+							},
 						},
 					},
 					{
 						Type:   "resource",
-						Labels: []string{"aws_instance", "baz"},
+						Labels: []string{"aws_instance", "foo"},
 						Body: &hclext.BodyContent{
 							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type"}},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}},
+								},
+							},
 						},
 					},
 				},
@@ -136,6 +173,7 @@ resource "aws_instance" "bar" {
 							LabelNames: []string{"type", "name"},
 							Body: &hclext.BodySchema{
 								Attributes: []hclext.AttributeSchema{{Name: "instance_type"}},
+								Blocks:     []hclext.BlockSchema{{Type: "ebs_block_device"}},
 							},
 						},
 					},
@@ -145,16 +183,28 @@ resource "aws_instance" "bar" {
 				Blocks: hclext.Blocks{
 					{
 						Type:   "resource",
-						Labels: []string{"aws_instance", "foo"},
+						Labels: []string{"aws_instance", "baz"},
 						Body: &hclext.BodyContent{
 							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type"}},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}},
+								},
+							},
 						},
 					},
 					{
 						Type:   "resource",
-						Labels: []string{"aws_instance", "baz"},
+						Labels: []string{"aws_instance", "foo"},
 						Body: &hclext.BodyContent{
 							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type"}},
+							Blocks: hclext.Blocks{
+								{
+									Type: "ebs_block_device",
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}},
+								},
+							},
 						},
 					},
 				},
