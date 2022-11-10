@@ -94,6 +94,8 @@ func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceabl
 	localValues := map[string]cty.Value{}
 	pathAttrs := map[string]cty.Value{}
 	terraformAttrs := map[string]cty.Value{}
+	countAttrs := map[string]cty.Value{}
+	forEachAttrs := map[string]cty.Value{}
 
 	for _, ref := range refs {
 		rng := ref.SourceRange
@@ -136,6 +138,16 @@ func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceabl
 			val, valDiags := normalizeRefValue(s.Data.GetTerraformAttr(subj, rng))
 			diags = diags.Extend(valDiags)
 			terraformAttrs[subj.Name] = val
+
+		case addrs.CountAttr:
+			val, valDiags := normalizeRefValue(s.Data.GetCountAttr(subj, rng))
+			diags = diags.Extend(valDiags)
+			countAttrs[subj.Name] = val
+
+		case addrs.ForEachAttr:
+			val, valDiags := normalizeRefValue(s.Data.GetForEachAttr(subj, rng))
+			diags = diags.Extend(valDiags)
+			forEachAttrs[subj.Name] = val
 		}
 	}
 
@@ -150,13 +162,13 @@ func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceabl
 	vals["local"] = cty.ObjectVal(localValues)
 	vals["path"] = cty.ObjectVal(pathAttrs)
 	vals["terraform"] = cty.ObjectVal(terraformAttrs)
+	vals["count"] = cty.ObjectVal(countAttrs)
+	vals["each"] = cty.ObjectVal(forEachAttrs)
 
 	// The following are unknown values as they are not supported by TFLint.
 	vals["resource"] = cty.UnknownVal(cty.DynamicPseudoType)
 	vals["data"] = cty.UnknownVal(cty.DynamicPseudoType)
 	vals["module"] = cty.UnknownVal(cty.DynamicPseudoType)
-	vals["count"] = cty.UnknownVal(cty.DynamicPseudoType)
-	vals["each"] = cty.UnknownVal(cty.DynamicPseudoType)
 	vals["self"] = cty.UnknownVal(cty.DynamicPseudoType)
 
 	return ctx, diags

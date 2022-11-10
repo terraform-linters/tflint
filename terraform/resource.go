@@ -6,10 +6,10 @@ import (
 )
 
 type Resource struct {
-	Name    string
-	Type    string
-	Count   hcl.Expression
-	ForEach hcl.Expression
+	Name string
+	Type string
+
+	expandable
 
 	DeclRange hcl.Range
 	TypeRange hcl.Range

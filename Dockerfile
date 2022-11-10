@@ -1,12 +1,14 @@
-FROM golang:1.19-alpine3.16 as builder
+FROM --platform=$BUILDPLATFORM golang:1.19-alpine3.16 as builder
+
+ARG TARGETOS TARGETARCH
 
 RUN apk add --no-cache make
 
 WORKDIR /tflint
 COPY . /tflint
-RUN make build
+RUN GOOS=$TARGETOS GOARCH=$TARGETARCH make build
 
-FROM alpine:3.16.2 as prod
+FROM alpine:3.16.2
 
 LABEL maintainer=terraform-linters
 

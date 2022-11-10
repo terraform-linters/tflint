@@ -188,6 +188,11 @@ func TestIntegration(t *testing.T) {
 			Command: "tflint --format json",
 			Dir:     "incompatible-host",
 		},
+		{
+			Name:    "expand resources/modules",
+			Command: "tflint --module --format json",
+			Dir:     "expand",
+		},
 	}
 
 	// Disable the bundled plugin because the `os.Executable()` is go(1) in the tests

@@ -2,7 +2,6 @@ package terraform
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2"
@@ -82,7 +81,7 @@ func (m *Module) build() hcl.Diagnostics {
 //     https://www.terraform.io/language/expressions/dynamic-blocks
 //  2. Supports overriding files
 //     https://www.terraform.io/language/files/override
-//  3. Resources not created by count or for_each will be ignored
+//  3. Expands resource/module depends on the meta-arguments
 //     https://www.terraform.io/language/meta-arguments/count
 //     https://www.terraform.io/language/meta-arguments/for_each
 //
@@ -123,8 +122,6 @@ func (m *Module) PartialContent(schema *hclext.BodySchema, ctx *Evaluator) (*hcl
 }
 
 // expandBlocks expands resource/module blocks depending on evaluation context.
-// Currently, only decrementing block expansions, such as when count is 0 or for_each is empty,
-// are supported, not incrementing expansions.
 func (m *Module) expandBlocks(content *hclext.BodyContent, ctx *Evaluator) (*hclext.BodyContent, hcl.Diagnostics) {
 	out := &hclext.BodyContent{Attributes: content.Attributes}
 	diags := hcl.Diagnostics{}
@@ -136,33 +133,19 @@ func (m *Module) expandBlocks(content *hclext.BodyContent, ctx *Evaluator) (*hcl
 			resourceName := block.Labels[1]
 
 			resource := m.Resources[resourceType][resourceName]
-			evaluable, evalDiags := ctx.ResourceIsEvaluable(resource)
-			if evalDiags.HasErrors() {
-				diags = diags.Extend(evalDiags)
-				continue
-			}
-
-			if !evaluable {
-				log.Printf("[WARN] Skip walking `%s` because it may not be created", resourceType+"."+resourceName)
-				continue
-			}
+			blocks, expandDiags := resource.expandBlock(ctx, block)
+			diags = diags.Extend(expandDiags)
+			out.Blocks = append(out.Blocks, blocks...)
 		case "module":
 			name := block.Labels[0]
 
 			module := m.ModuleCalls[name]
-			evaluable, evalDiags := ctx.ModuleCallIsEvaluable(module)
-			if evalDiags.HasErrors() {
-				diags = diags.Extend(evalDiags)
-				continue
-			}
-
-			if !evaluable {
-				log.Printf("[WARN] Skip walking `module.%s` because it may not be created", name)
-				continue
-			}
+			blocks, expandDiags := module.expandBlock(ctx, block)
+			diags = diags.Extend(expandDiags)
+			out.Blocks = append(out.Blocks, blocks...)
+		default:
+			out.Blocks = append(out.Blocks, block)
 		}
-
-		out.Blocks = append(out.Blocks, block)
 	}
 
 	return out, diags

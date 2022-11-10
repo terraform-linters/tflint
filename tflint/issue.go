@@ -50,7 +50,7 @@ func (issues Issues) Sort() Issues {
 		if iRange.End.Column != jRange.End.Column {
 			return iRange.End.Column > jRange.End.Column
 		}
-		return issues[i].Rule.Name() < issues[j].Rule.Name()
+		return issues[i].Message < issues[j].Message
 	})
 	return issues
 }

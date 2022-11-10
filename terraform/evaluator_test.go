@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/spf13/afero"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -37,6 +38,7 @@ func TestEvaluateExpr(t *testing.T) {
 		inputs   []InputValues
 		expr     hcl.Expression
 		ty       cty.Type
+		keyData  InstanceKeyEvalData
 		want     string
 		errCheck func(hcl.Diagnostics) bool
 	}{
@@ -516,6 +518,102 @@ variable "foo" {
 			errCheck: neverHappend,
 		},
 		{
+			name: "module variable optional attributes with nested default optional",
+			config: `
+variable "foo" {
+  type = set(object({
+    name      = string
+    schedules = set(object({
+      name               = string
+      cold_storage_after = optional(number, 10)
+    }))
+  }))
+}`,
+			expr: expr(`var.foo`),
+			inputs: []InputValues{
+				{
+					"foo": {
+						Value: cty.SetVal([]cty.Value{
+							cty.ObjectVal(map[string]cty.Value{
+								"name": cty.StringVal("test1"),
+								"schedules": cty.SetVal([]cty.Value{
+									cty.MapVal(map[string]cty.Value{
+										"name": cty.StringVal("daily"),
+									}),
+								}),
+							}),
+							cty.ObjectVal(map[string]cty.Value{
+								"name": cty.StringVal("test2"),
+								"schedules": cty.SetVal([]cty.Value{
+									cty.MapVal(map[string]cty.Value{
+										"name": cty.StringVal("daily"),
+									}),
+									cty.MapVal(map[string]cty.Value{
+										"name":               cty.StringVal("weekly"),
+										"cold_storage_after": cty.StringVal("0"),
+									}),
+								}),
+							}),
+						}),
+					},
+				},
+			},
+			ty: cty.Set(cty.Object(map[string]cty.Type{
+				"name": cty.String,
+				"schedules": cty.Set(cty.Object(map[string]cty.Type{
+					"name":               cty.String,
+					"cold_storage_after": cty.Number,
+				})),
+			})),
+			want:     `cty.SetVal([]cty.Value{cty.ObjectVal(map[string]cty.Value{"name":cty.StringVal("test1"), "schedules":cty.SetVal([]cty.Value{cty.ObjectVal(map[string]cty.Value{"cold_storage_after":cty.NumberIntVal(10), "name":cty.StringVal("daily")})})}), cty.ObjectVal(map[string]cty.Value{"name":cty.StringVal("test2"), "schedules":cty.SetVal([]cty.Value{cty.ObjectVal(map[string]cty.Value{"cold_storage_after":cty.NumberIntVal(0), "name":cty.StringVal("weekly")}), cty.ObjectVal(map[string]cty.Value{"cold_storage_after":cty.NumberIntVal(10), "name":cty.StringVal("daily")})})})})`,
+			errCheck: neverHappend,
+		},
+		{
+			name: "module variable optional attributes with nested complex types",
+			config: `
+variable "foo" {
+  type = object({
+    name                       = string
+    nested_object              = object({
+      name  = string
+      value = optional(string, "foo")
+    })
+    nested_object_with_default = optional(object({
+      name  = string
+      value = optional(string, "bar")
+    }), {
+      name = "nested_object_with_default"
+    })
+  })
+}`,
+			expr: expr(`var.foo`),
+			inputs: []InputValues{
+				{
+					"foo": {
+						Value: cty.ObjectVal(map[string]cty.Value{
+							"name": cty.StringVal("object"),
+							"nested_object": cty.ObjectVal(map[string]cty.Value{
+								"name": cty.StringVal("nested_object"),
+							}),
+						}),
+					},
+				},
+			},
+			ty: cty.Object(map[string]cty.Type{
+				"name": cty.String,
+				"nested_object": cty.Object(map[string]cty.Type{
+					"name":  cty.String,
+					"value": cty.String,
+				}),
+				"nested_object_with_default": cty.Object(map[string]cty.Type{
+					"name":  cty.String,
+					"value": cty.String,
+				}),
+			}),
+			want:     `cty.ObjectVal(map[string]cty.Value{"name":cty.StringVal("object"), "nested_object":cty.ObjectVal(map[string]cty.Value{"name":cty.StringVal("nested_object"), "value":cty.StringVal("foo")}), "nested_object_with_default":cty.ObjectVal(map[string]cty.Value{"name":cty.StringVal("nested_object_with_default"), "value":cty.StringVal("bar")})})`,
+			errCheck: neverHappend,
+		},
+		{
 			name:     "static local value",
 			config:   `locals { foo = "bar" }`,
 			expr:     expr(`local.foo`),
@@ -584,6 +682,70 @@ locals {
 				return diags.Error() != `main.tf:4,9-18: circular reference found; local.foo -> local.bar -> local.foo`
 			},
 		},
+		{
+			name: "nested multiple local values",
+			config: `
+locals {
+  foo = "foo"
+  bar = [local.foo, local.foo]
+}`,
+			expr:     expr(`local.bar`),
+			ty:       cty.List(cty.String),
+			want:     `cty.ListVal([]cty.Value{cty.StringVal("foo"), cty.StringVal("foo")})`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "count.index in non-counted context",
+			expr:     expr(`count.index`),
+			ty:       cty.Number,
+			want:     `cty.UnknownVal(cty.Number)`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "count.index in counted context",
+			expr:     expr(`count.index`),
+			ty:       cty.Number,
+			keyData:  InstanceKeyEvalData{CountIndex: cty.NumberIntVal(1)},
+			want:     `cty.NumberIntVal(1)`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "each.key in non-forEach context",
+			expr:     expr(`each.key`),
+			ty:       cty.String,
+			want:     `cty.UnknownVal(cty.String)`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "each.key in forEach context",
+			expr:     expr(`each.key`),
+			ty:       cty.String,
+			keyData:  InstanceKeyEvalData{EachKey: cty.StringVal("foo"), EachValue: cty.StringVal("bar")},
+			want:     `cty.StringVal("foo")`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "each.value in non-forEach context",
+			expr:     expr(`each.value`),
+			ty:       cty.String,
+			want:     `cty.UnknownVal(cty.String)`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "each.value in forEach context",
+			expr:     expr(`each.value`),
+			ty:       cty.String,
+			keyData:  InstanceKeyEvalData{EachKey: cty.StringVal("foo"), EachValue: cty.StringVal("bar")},
+			want:     `cty.StringVal("bar")`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "bound expr without key data",
+			expr:     hclext.BindValue(cty.StringVal("foo"), expr(`each.value`)),
+			ty:       cty.String,
+			want:     `cty.StringVal("foo")`,
+			errCheck: neverHappend,
+		},
 	}
 
 	for _, test := range tests {
@@ -612,10 +774,10 @@ locals {
 				ModulePath:     config.Path.UnkeyedInstanceShim(),
 				Config:         config,
 				VariableValues: variableValues,
-				CallGraph:      NewCallGraph(),
+				CallStack:      NewCallStack(),
 			}
 
-			got, diags := evaluator.EvaluateExpr(test.expr, test.ty)
+			got, diags := evaluator.EvaluateExpr(test.expr, test.ty, test.keyData)
 			if test.errCheck(diags) {
 				t.Fatal(diags)
 			}

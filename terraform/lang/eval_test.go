@@ -14,6 +14,13 @@ import (
 
 func TestScopeEvalContext(t *testing.T) {
 	data := &dataForTests{
+		CountAttrs: map[string]cty.Value{
+			"index": cty.NumberIntVal(0),
+		},
+		ForEachAttrs: map[string]cty.Value{
+			"key":   cty.StringVal("a"),
+			"value": cty.NumberIntVal(1),
+		},
 		LocalValues: map[string]cty.Value{
 			"foo": cty.StringVal("bar"),
 		},
@@ -37,6 +44,42 @@ func TestScopeEvalContext(t *testing.T) {
 			map[string]cty.Value{},
 		},
 		{
+			`count.index`,
+			map[string]cty.Value{
+				"count": cty.ObjectVal(map[string]cty.Value{
+					"index": cty.NumberIntVal(0),
+				}),
+				"resource": cty.DynamicVal,
+				"data":     cty.DynamicVal,
+				"module":   cty.DynamicVal,
+				"self":     cty.DynamicVal,
+			},
+		},
+		{
+			`each.key`,
+			map[string]cty.Value{
+				"each": cty.ObjectVal(map[string]cty.Value{
+					"key": cty.StringVal("a"),
+				}),
+				"resource": cty.DynamicVal,
+				"data":     cty.DynamicVal,
+				"module":   cty.DynamicVal,
+				"self":     cty.DynamicVal,
+			},
+		},
+		{
+			`each.value`,
+			map[string]cty.Value{
+				"each": cty.ObjectVal(map[string]cty.Value{
+					"value": cty.NumberIntVal(1),
+				}),
+				"resource": cty.DynamicVal,
+				"data":     cty.DynamicVal,
+				"module":   cty.DynamicVal,
+				"self":     cty.DynamicVal,
+			},
+		},
+		{
 			`local.foo`,
 			map[string]cty.Value{
 				"local": cty.ObjectVal(map[string]cty.Value{
@@ -45,8 +88,6 @@ func TestScopeEvalContext(t *testing.T) {
 				"resource": cty.DynamicVal,
 				"data":     cty.DynamicVal,
 				"module":   cty.DynamicVal,
-				"count":    cty.DynamicVal,
-				"each":     cty.DynamicVal,
 				"self":     cty.DynamicVal,
 			},
 		},
@@ -57,8 +98,6 @@ func TestScopeEvalContext(t *testing.T) {
 				"resource":      cty.DynamicVal,
 				"data":          cty.DynamicVal,
 				"module":        cty.DynamicVal,
-				"count":         cty.DynamicVal,
-				"each":          cty.DynamicVal,
 				"self":          cty.DynamicVal,
 			},
 		},
@@ -69,8 +108,6 @@ func TestScopeEvalContext(t *testing.T) {
 				"resource":      cty.DynamicVal,
 				"data":          cty.DynamicVal,
 				"module":        cty.DynamicVal,
-				"count":         cty.DynamicVal,
-				"each":          cty.DynamicVal,
 				"self":          cty.DynamicVal,
 			},
 		},
@@ -81,8 +118,6 @@ func TestScopeEvalContext(t *testing.T) {
 				"resource":      cty.DynamicVal,
 				"data":          cty.DynamicVal,
 				"module":        cty.DynamicVal,
-				"count":         cty.DynamicVal,
-				"each":          cty.DynamicVal,
 				"self":          cty.DynamicVal,
 			},
 		},
@@ -93,8 +128,6 @@ func TestScopeEvalContext(t *testing.T) {
 				"resource":      cty.DynamicVal,
 				"data":          cty.DynamicVal,
 				"module":        cty.DynamicVal,
-				"count":         cty.DynamicVal,
-				"each":          cty.DynamicVal,
 				"self":          cty.DynamicVal,
 			},
 		},
@@ -105,8 +138,6 @@ func TestScopeEvalContext(t *testing.T) {
 				"resource":      cty.DynamicVal,
 				"data":          cty.DynamicVal,
 				"module":        cty.DynamicVal,
-				"count":         cty.DynamicVal,
-				"each":          cty.DynamicVal,
 				"self":          cty.DynamicVal,
 			},
 		},
@@ -117,8 +148,6 @@ func TestScopeEvalContext(t *testing.T) {
 				"resource":      cty.DynamicVal,
 				"data":          cty.DynamicVal,
 				"module":        cty.DynamicVal,
-				"count":         cty.DynamicVal,
-				"each":          cty.DynamicVal,
 				"self":          cty.DynamicVal,
 			},
 		},
@@ -129,8 +158,6 @@ func TestScopeEvalContext(t *testing.T) {
 				"resource":      cty.DynamicVal,
 				"data":          cty.DynamicVal,
 				"module":        cty.DynamicVal,
-				"count":         cty.DynamicVal,
-				"each":          cty.DynamicVal,
 				"self":          cty.DynamicVal,
 			},
 		},
@@ -143,8 +170,6 @@ func TestScopeEvalContext(t *testing.T) {
 				"resource": cty.DynamicVal,
 				"data":     cty.DynamicVal,
 				"module":   cty.DynamicVal,
-				"count":    cty.DynamicVal,
-				"each":     cty.DynamicVal,
 				"self":     cty.DynamicVal,
 			},
 		},
@@ -157,8 +182,6 @@ func TestScopeEvalContext(t *testing.T) {
 				"resource": cty.DynamicVal,
 				"data":     cty.DynamicVal,
 				"module":   cty.DynamicVal,
-				"count":    cty.DynamicVal,
-				"each":     cty.DynamicVal,
 				"self":     cty.DynamicVal,
 			},
 		},
@@ -171,8 +194,6 @@ func TestScopeEvalContext(t *testing.T) {
 				"resource": cty.DynamicVal,
 				"data":     cty.DynamicVal,
 				"module":   cty.DynamicVal,
-				"count":    cty.DynamicVal,
-				"each":     cty.DynamicVal,
 				"self":     cty.DynamicVal,
 			},
 		},

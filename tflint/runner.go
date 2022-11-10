@@ -53,7 +53,7 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *terraform.Config, va
 		ModulePath:     cfg.Path.UnkeyedInstanceShim(),
 		Config:         cfg.Root,
 		VariableValues: variableValues,
-		CallGraph:      terraform.NewCallGraph(),
+		CallStack:      terraform.NewCallStack(),
 	}
 
 	runner := &Runner{
@@ -106,21 +106,18 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 		if diags.HasErrors() {
 			return runners, diags
 		}
-		var moduleCallBody *hclext.BodyContent
+		var moduleCallBodies []*hclext.BodyContent
 		for _, block := range moduleCalls.Blocks {
 			if moduleCall.Name == block.Labels[0] {
-				moduleCallBody = block.Body
+				moduleCallBodies = append(moduleCallBodies, block.Body)
 			}
 		}
-		if moduleCallBody == nil {
-			// If count is 0 or for_each is empty, the module is absent, so ignore
-			continue
-		}
 
-		modVars := map[string]*moduleVariable{}
-		for varName, attribute := range moduleCallBody.Attributes {
-			if rawVar, exists := cfg.Module.Variables[varName]; exists {
-				val, diags := parent.Ctx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType)
+		for _, body := range moduleCallBodies {
+			modVars := map[string]*moduleVariable{}
+			inputs := terraform.InputValues{}
+			for varName, attribute := range body.Attributes {
+				val, diags := parent.Ctx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType, terraform.EvalDataForNoInstanceKey)
 				if diags.HasErrors() {
 					err := fmt.Errorf(
 						"failed to eval an expression in %s:%d; %w",
@@ -131,7 +128,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 					log.Printf("[ERROR] %s", err)
 					return runners, err
 				}
-				rawVar.Default = val
+				inputs[varName] = &terraform.InputValue{Value: val}
 
 				if parent.TFConfig.Path.IsRoot() {
 					modVars[varName] = &moduleVariable{
@@ -151,19 +148,19 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 					}
 				}
 			}
-		}
 
-		runner, err := NewRunner(parent.config, parent.annotations, cfg)
-		if err != nil {
-			return runners, err
+			runner, err := NewRunner(parent.config, parent.annotations, cfg, inputs)
+			if err != nil {
+				return runners, err
+			}
+			runner.modVars = modVars
+			runners = append(runners, runner)
+			moduleRunners, err := NewModuleRunners(runner)
+			if err != nil {
+				return runners, err
+			}
+			runners = append(runners, moduleRunners...)
 		}
-		runner.modVars = modVars
-		runners = append(runners, runner)
-		moduleRunners, err := NewModuleRunners(runner)
-		if err != nil {
-			return runners, err
-		}
-		runners = append(runners, moduleRunners...)
 	}
 
 	return runners, nil
