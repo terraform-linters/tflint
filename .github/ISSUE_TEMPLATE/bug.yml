@@ -32,8 +32,10 @@ body:
   - type: textarea
     attributes:
       label: TFLint Configuration
-      description: The TFLint configuration (typically `.tflint.hcl`)
+      description: The TFLint configuration (typically `.tflint.hcl`).
       render: HCL
+    validations:
+      required: true
   - type: textarea
     attributes:
       label: Output
