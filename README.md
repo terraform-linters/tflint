@@ -172,6 +172,10 @@ $ TFLINT_LOG=debug tflint
 
 See [Developer Guide](docs/developer-guide).
 
+## Security
+
+If you find a security vulnerability, please refer our [security policy](SECURITY.md).
+
 ## Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/terraform-linters/tflint.svg)](https://starchart.cc/terraform-linters/tflint)
