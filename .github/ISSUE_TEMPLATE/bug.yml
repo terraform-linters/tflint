@@ -47,6 +47,12 @@ body:
       placeholder: '0.41.0'
     validations:
       required: true
+  - type: input
+    attributes:
+      label: Terraform Version
+      description: If TFLint is unable to parse your configuration but Terraform can, please include the Terraform version. Otherwise, this can be omitted.
+    validations:
+      required: true
   - type: checkboxes
     attributes:
       label: Operating System
