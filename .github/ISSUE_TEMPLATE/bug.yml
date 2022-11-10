@@ -10,7 +10,7 @@ body:
   - type: textarea
     attributes:
       label: Summary
-      description: Summarize the issue briefly, in a few sentences.
+      description: Summarize the issue briefly, in a few sentences. Use the fields below to provide code snippets.
     validations:
       required: true
   - type: input
