@@ -23,5 +23,5 @@ jobs:
     - name: goreleaser check
       uses: goreleaser/goreleaser-action@v3
       with:
-        version: v1.7.0
+        version: v1.12.3
         args: check
