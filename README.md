@@ -51,7 +51,7 @@ sha256sum --ignore-missing -c checksums.txt
 Cosign
 
 ```
-cosign verify-blob --cert checksums.txt.pem --signature checksums.txt.keyless.sig --certificate-github-workflow-repository=terraform-linters/tflint checksums.txt
+COSIGN_EXPERIMENTAL=1 cosign verify-blob --certificate checksums.txt.pem --signature checksums.txt.keyless.sig --certificate-github-workflow-repository=terraform-linters/tflint checksums.txt
 sha256sum --ignore-missing -c checksums.txt
 ```
 
