@@ -117,7 +117,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 			modVars := map[string]*moduleVariable{}
 			inputs := terraform.InputValues{}
 			for varName, attribute := range body.Attributes {
-				val, diags := parent.Ctx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType, terraform.EvalDataForNoInstanceKey)
+				val, diags := parent.Ctx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType)
 				if diags.HasErrors() {
 					err := fmt.Errorf(
 						"failed to eval an expression in %s:%d; %w",

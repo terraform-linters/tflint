@@ -4,11 +4,29 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/tfdiags"
+	"github.com/terraform-linters/tflint/terraform/tfhcl"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
 )
+
+// ExpandBlock expands "dynamic" blocks and resources/modules with count/for_each.
+// Note that Terraform only expands dynamic blocks, but TFLint also expands
+// count/for_each here.
+//
+// Expressions in expanded blocks are evaluated immediately, so all variables
+// contained in attributes specified in the body schema are gathered.
+func (s *Scope) ExpandBlock(body hcl.Body, schema *hclext.BodySchema) (hcl.Body, hcl.Diagnostics) {
+	traversals := tfhcl.ExpandVariablesHCLExt(body, schema)
+	refs, diags := References(traversals)
+
+	ctx, ctxDiags := s.EvalContext(refs)
+	diags = diags.Extend(ctxDiags)
+
+	return tfhcl.Expand(body, ctx), diags
+}
 
 // EvalExpr evaluates a single expression in the receiving context and returns
 // the resulting value. The value will be converted to the given type before

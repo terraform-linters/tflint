@@ -115,9 +115,7 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts sdk.EvaluateExprOpti
 		runner = s.rootRunner
 	}
 
-	// We always use EvalDataForNoInstanceKey here because an expression that depend on
-	// an instance key, such as `each.key` and `count.index`, is already bound.
-	val, diags := runner.Ctx.EvaluateExpr(expr, *opts.WantType, terraform.EvalDataForNoInstanceKey)
+	val, diags := runner.Ctx.EvaluateExpr(expr, *opts.WantType)
 	if diags.HasErrors() {
 		return val, diags
 	}

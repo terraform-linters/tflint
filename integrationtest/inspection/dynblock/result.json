@@ -26,7 +26,7 @@
         "severity": "error",
         "link": ""
       },
-      "message": "`enabled` attribute found",
+      "message": "`enabled` attribute found: false",
       "range": {
         "filename": "template.tf",
         "start": {
@@ -66,16 +66,16 @@
         "severity": "error",
         "link": ""
       },
-      "message": "`lifecycle_rule` block found",
+      "message": "`days` attribute found: 30",
       "range": {
         "filename": "template.tf",
         "start": {
-          "line": 15,
-          "column": 5
+          "line": 5,
+          "column": 23
         },
         "end": {
-          "line": 15,
-          "column": 12
+          "line": 5,
+          "column": 25
         }
       },
       "callers": []
@@ -86,16 +86,76 @@
         "severity": "error",
         "link": ""
       },
-      "message": "`enabled` attribute found",
+      "message": "`lifecycle_rule` block found",
       "range": {
         "filename": "template.tf",
         "start": {
-          "line": 16,
+          "line": 20,
+          "column": 3
+        },
+        "end": {
+          "line": 20,
+          "column": 27
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`lifecycle_rule` block found",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 20,
+          "column": 3
+        },
+        "end": {
+          "line": 20,
+          "column": 27
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`enabled` attribute found: false",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 24,
           "column": 17
         },
         "end": {
-          "line": 16,
-          "column": 37
+          "line": 24,
+          "column": 65
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`enabled` attribute found: true",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 24,
+          "column": 17
+        },
+        "end": {
+          "line": 24,
+          "column": 65
         }
       },
       "callers": []
@@ -110,12 +170,312 @@
       "range": {
         "filename": "template.tf",
         "start": {
-          "line": 21,
-          "column": 9
+          "line": 26,
+          "column": 7
         },
         "end": {
-          "line": 21,
-          "column": 16
+          "line": 26,
+          "column": 27
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`transition` block found",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 26,
+          "column": 7
+        },
+        "end": {
+          "line": 26,
+          "column": 27
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`transition` block found",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 26,
+          "column": 7
+        },
+        "end": {
+          "line": 26,
+          "column": 27
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`transition` block found",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 26,
+          "column": 7
+        },
+        "end": {
+          "line": 26,
+          "column": 27
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`days` attribute found: 30",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 30,
+          "column": 27
+        },
+        "end": {
+          "line": 30,
+          "column": 90
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`days` attribute found: 40",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 30,
+          "column": 27
+        },
+        "end": {
+          "line": 30,
+          "column": 90
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`days` attribute found: 60",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 30,
+          "column": 27
+        },
+        "end": {
+          "line": 30,
+          "column": 90
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`days` attribute found: 70",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 30,
+          "column": 27
+        },
+        "end": {
+          "line": 30,
+          "column": 90
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`lifecycle_rule` block found",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 46,
+          "column": 3
+        },
+        "end": {
+          "line": 46,
+          "column": 27
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`lifecycle_rule` block found",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 46,
+          "column": 3
+        },
+        "end": {
+          "line": 46,
+          "column": 27
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`lifecycle_rule` block found",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 46,
+          "column": 3
+        },
+        "end": {
+          "line": 46,
+          "column": 27
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`lifecycle_rule` block found",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 46,
+          "column": 3
+        },
+        "end": {
+          "line": 46,
+          "column": 27
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`enabled` attribute found: false",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 50,
+          "column": 17
+        },
+        "end": {
+          "line": 50,
+          "column": 51
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`enabled` attribute found: false",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 50,
+          "column": 17
+        },
+        "end": {
+          "line": 50,
+          "column": 51
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`enabled` attribute found: false",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 50,
+          "column": 17
+        },
+        "end": {
+          "line": 50,
+          "column": 51
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`enabled` attribute found: true",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 50,
+          "column": 17
+        },
+        "end": {
+          "line": 50,
+          "column": 51
         }
       },
       "callers": []

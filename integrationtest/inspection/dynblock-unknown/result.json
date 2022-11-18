@@ -1,0 +1,145 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`lifecycle_rule` block found",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 10,
+          "column": 3
+        },
+        "end": {
+          "line": 10,
+          "column": 17
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`enabled` attribute found: true",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 11,
+          "column": 15
+        },
+        "end": {
+          "line": 11,
+          "column": 19
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`lifecycle_rule` block found",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 22,
+          "column": 3
+        },
+        "end": {
+          "line": 22,
+          "column": 27
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_iam_role_example",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "inline policy found",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 32,
+          "column": 3
+        },
+        "end": {
+          "line": 32,
+          "column": 16
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_iam_role_example",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "name is static",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 33,
+          "column": 12
+        },
+        "end": {
+          "line": 33,
+          "column": 20
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "testing_assertions_example",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "equal block found: label=static",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 54,
+          "column": 3
+        },
+        "end": {
+          "line": 54,
+          "column": 17
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "testing_assertions_example",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "equal block found: label=known_label",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 56,
+          "column": 3
+        },
+        "end": {
+          "line": 56,
+          "column": 18
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}

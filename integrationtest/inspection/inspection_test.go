@@ -119,6 +119,11 @@ func TestIntegration(t *testing.T) {
 			Dir:     "dynblock",
 		},
 		{
+			Name:    "unknown dynamic blocks",
+			Command: "./tflint --format json",
+			Dir:     "dynblock-unknown",
+		},
+		{
 			Name:    "provider config",
 			Command: "./tflint --format json",
 			Dir:     "provider-config",
