@@ -1,3 +1,32 @@
+## 0.43.0 (2022-11-19)
+
+This release adds support for dynamic blocks, including block expansion and iterator evaluation. Previously, dynamic blocks were always treated as a single block.
+
+Plugin developers should be careful with dynamic blocks after this version. If you set `ExpandModeNone` (or `IncludeNotCreated`), dynamic blocks will not be fully expanded. Instead, dynamic blocks can be retrieved as-is via the `GetModuleContent` API.
+
+### Enhancements
+
+- [#1583](https://github.com/terraform-linters/tflint/pull/1583): Add support for dynamic blocks ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#1579](https://github.com/terraform-linters/tflint/pull/1579) [#1591](https://github.com/terraform-linters/tflint/pull/1591): build(deps): Bump github.com/zclconf/go-cty from 1.11.1 to 1.12.1
+- [#1582](https://github.com/terraform-linters/tflint/pull/1582): terraform: Convert variable types before applying defaults ([@wata727](https://github.com/wata727))
+- [#1592](https://github.com/terraform-linters/tflint/pull/1592): build(deps): Bump github.com/hashicorp/hcl/v2 from 2.14.1 to 2.15.0
+- [#1598](https://github.com/terraform-linters/tflint/pull/1598): Fix panic when file read fails ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1546](https://github.com/terraform-linters/tflint/pull/1546): Convert bug report issue template to form ([@bendrucker](https://github.com/bendrucker))
+- [#1584](https://github.com/terraform-linters/tflint/pull/1584): build(deps): Bump github.com/zclconf/go-cty-yaml from 1.0.2 to 1.0.3
+- [#1585](https://github.com/terraform-linters/tflint/pull/1585): Set up a security policy ([@wata727](https://github.com/wata727))
+- [#1586](https://github.com/terraform-linters/tflint/pull/1586): Follow up of upstream LICENSE updates ([@wata727](https://github.com/wata727))
+- [#1588](https://github.com/terraform-linters/tflint/pull/1588): Add COSIGN_EXPERIMENTAL=1 flag to the verification example ([@wata727](https://github.com/wata727))
+- [#1589](https://github.com/terraform-linters/tflint/pull/1589): Bump up GoReleaser version ([@wata727](https://github.com/wata727))
+- [#1590](https://github.com/terraform-linters/tflint/pull/1590): build(deps): Bump golangci/golangci-lint-action from 3.3.0 to 3.3.1
+- [#1593](https://github.com/terraform-linters/tflint/pull/1593): build(deps): Bump github.com/hashicorp/go-plugin from 1.4.5 to 1.4.6
+- [#1594](https://github.com/terraform-linters/tflint/pull/1594): build(deps): Bump alpine from 3.16.2 to 3.16.3
+
 ## 0.42.2 (2022-10-26)
 
 ### BugFixes
