@@ -66,6 +66,9 @@ func (p *Parser) LoadConfigDir(dir string) (*Module, hcl.Diagnostics) {
 	for i, path := range primaries {
 		f, loadDiags := p.loadHCLFile(path)
 		diags = diags.Extend(loadDiags)
+		if loadDiags.HasErrors() {
+			continue
+		}
 
 		mod.primaries[i] = f
 		mod.Sources[path] = f.Bytes
@@ -74,6 +77,9 @@ func (p *Parser) LoadConfigDir(dir string) (*Module, hcl.Diagnostics) {
 	for i, path := range overrides {
 		f, loadDiags := p.loadHCLFile(path)
 		diags = diags.Extend(loadDiags)
+		if loadDiags.HasErrors() {
+			continue
+		}
 
 		mod.overrides[i] = f
 		mod.Sources[path] = f.Bytes
