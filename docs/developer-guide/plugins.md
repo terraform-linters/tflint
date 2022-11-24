@@ -4,7 +4,7 @@ If you want to add custom rules, you can write ruleset plugins.
 
 ## Overview
 
-Plugins are independent binaries and use [go-plugin](https://github.com/hashicorp/go-plugin) to communicate with TFLint over RPC. TFLint executes the binary when the plugin is enabled, and the plugin process must act as an RPC server for TFLint.
+Plugins are independent binaries and use [go-plugin](https://github.com/hashicorp/go-plugin) to communicate with TFLint over gRPC. TFLint executes the binary when the plugin is enabled, and the plugin process must act as an gRPC server for TFLint.
 
 If you want to create a new plugin, [The template repository](https://github.com/terraform-linters/tflint-ruleset-template) is available to satisfy these specification. You can create your own repository from "Use this template" and easily add rules based on some reference rules.
 
