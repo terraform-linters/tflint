@@ -64,6 +64,11 @@ func TestIntegration(t *testing.T) {
 			Dir: "arguments",
 		},
 		{
+			Name:    "arguments with values file",
+			Command: fmt.Sprintf("./tflint --format json -c %s --var-file %s dir", filepath.Join("dir", ".tflint.hcl"), filepath.Join("dir", "subdir.tfvars")),
+			Dir:     "arguments-with-values-file",
+		},
+		{
 			Name:    "plugin",
 			Command: "./tflint --format json --module",
 			Dir:     "plugin",

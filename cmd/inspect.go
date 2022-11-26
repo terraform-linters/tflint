@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/spf13/afero"
@@ -31,12 +32,10 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	cli.formatter.Format = cfg.Format
 
 	// Setup loader
-	if !cli.testMode {
-		cli.loader, err = tflint.NewLoader(afero.Afero{Fs: afero.NewOsFs()}, cfg)
-		if err != nil {
-			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to prepare loading; %w", err), map[string][]byte{})
-			return ExitCodeError
-		}
+	cli.loader, err = terraform.NewLoader(afero.Afero{Fs: afero.NewOsFs()})
+	if err != nil {
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to prepare loading; %w", err), map[string][]byte{})
+		return ExitCodeError
 	}
 
 	// Setup runners
@@ -131,17 +130,31 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 }
 
 func (cli *CLI) setupRunners(opts Options, cfg *tflint.Config, dir string) ([]*tflint.Runner, error) {
-	configs, err := cli.loader.LoadConfig(dir)
-	if err != nil {
-		return []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", err)
+	configs, diags := cli.loader.LoadConfig(dir, cfg.Module)
+	if diags.HasErrors() {
+		return []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
 	}
-	annotations, err := cli.loader.LoadAnnotations(dir)
-	if err != nil {
-		return []*tflint.Runner{}, fmt.Errorf("Failed to load configuration tokens; %w", err)
+
+	files, diags := cli.loader.LoadConfigDirFiles(dir)
+	if diags.HasErrors() {
+		return []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
 	}
-	variables, err := cli.loader.LoadValuesFiles(cfg.Varfiles...)
-	if err != nil {
-		return []*tflint.Runner{}, fmt.Errorf("Failed to load values files; %w", err)
+	annotations := map[string]tflint.Annotations{}
+	for path, file := range files {
+		if !strings.HasSuffix(path, ".tf") {
+			continue
+		}
+		ants, lexDiags := tflint.NewAnnotations(path, file)
+		diags = diags.Extend(lexDiags)
+		annotations[path] = ants
+	}
+	if diags.HasErrors() {
+		return []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
+	}
+
+	variables, diags := cli.loader.LoadValuesFiles(dir, cfg.Varfiles...)
+	if diags.HasErrors() {
+		return []*tflint.Runner{}, fmt.Errorf("Failed to load values files; %w", diags)
 	}
 	cliVars, diags := terraform.ParseVariableValues(cfg.Variables, configs.Module.Variables)
 	if diags.HasErrors() {

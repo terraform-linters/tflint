@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/logutils"
 	flags "github.com/jessevdk/go-flags"
 	"github.com/terraform-linters/tflint/formatter"
+	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -28,9 +29,8 @@ type CLI struct {
 	// outStream and errStream are the stdout and stderr
 	// to write message from the CLI.
 	outStream, errStream io.Writer
-	loader               *tflint.Loader
+	loader               *terraform.Loader
 	formatter            *formatter.Formatter
-	testMode             bool
 }
 
 // NewCLI returns new CLI initialized by input streams

@@ -7,25 +7,16 @@ import (
 	"path/filepath"
 )
 
-var DefaultVarsFilename = "terraform.tfvars"
-
-func DataDir() string {
+func dataDir() string {
 	dir := os.Getenv("TF_DATA_DIR")
 	if dir != "" {
 		log.Printf("[INFO] TF_DATA_DIR environment variable found: %s", dir)
 	} else {
+		// The default data dir is always `.terraform` in the current directory
 		dir = ".terraform"
 	}
 
 	return dir
-}
-
-func ModuleDir() string {
-	return filepath.Join(DataDir(), "modules")
-}
-
-func ModuleManifestPath() string {
-	return filepath.Join(ModuleDir(), "modules.json")
 }
 
 func Workspace() string {
@@ -34,7 +25,7 @@ func Workspace() string {
 		return envVar
 	}
 
-	envData, _ := os.ReadFile(filepath.Join(DataDir(), "environment"))
+	envData, _ := os.ReadFile(filepath.Join(dataDir(), "environment"))
 	current := string(bytes.TrimSpace(envData))
 	if current != "" {
 		log.Printf("[INFO] environment file found: %s", current)

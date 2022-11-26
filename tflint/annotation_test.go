@@ -1,9 +1,6 @@
 package tflint
 
 import (
-	"fmt"
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -13,25 +10,23 @@ import (
 )
 
 func Test_NewAnnotations(t *testing.T) {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer func() {
-		if err = os.Chdir(currentDir); err != nil {
-			t.Fatal(err)
-		}
-	}()
+	src := `
+resource "aws_instance" "foo" {
+  /* tflint-ignore: aws_instance_invalid_type */
+  instance_type = "t2.micro" // tflint-ignore: aws_instance_invalid_type
+  # tflint-ignore: aws_instance_invalid_type This is also comment
+  iam_instance_profile = "foo" # This is also comment
+  // This is also comment
+}`
 
-	src, err := os.ReadFile(filepath.Join(currentDir, "test-fixtures", "annotations", "resource.tf"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	tokens, diags := hclsyntax.LexConfig(src, "resource.tf", hcl.Pos{Byte: 0, Line: 1, Column: 1})
+	file, diags := hclsyntax.ParseConfig([]byte(src), "resource.tf", hcl.Pos{Byte: 0, Line: 1, Column: 1})
 	if diags.HasErrors() {
 		t.Fatal(diags)
 	}
-	ret := NewAnnotations(tokens)
+	ret, diags := NewAnnotations("resource.tf", file)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
 
 	expected := Annotations{
 		{
@@ -41,8 +36,8 @@ func Test_NewAnnotations(t *testing.T) {
 				Bytes: []byte("/* tflint-ignore: aws_instance_invalid_type */"),
 				Range: hcl.Range{
 					Filename: "resource.tf",
-					Start:    hcl.Pos{Line: 2, Column: 5},
-					End:      hcl.Pos{Line: 2, Column: 51},
+					Start:    hcl.Pos{Line: 3, Column: 3},
+					End:      hcl.Pos{Line: 3, Column: 49},
 				},
 			},
 		},
@@ -50,23 +45,23 @@ func Test_NewAnnotations(t *testing.T) {
 			Content: "aws_instance_invalid_type",
 			Token: hclsyntax.Token{
 				Type:  hclsyntax.TokenComment,
-				Bytes: []byte(fmt.Sprintf("// tflint-ignore: aws_instance_invalid_type%s", newLine())),
+				Bytes: []byte("// tflint-ignore: aws_instance_invalid_type\n"),
 				Range: hcl.Range{
 					Filename: "resource.tf",
-					Start:    hcl.Pos{Line: 3, Column: 32},
-					End:      hcl.Pos{Line: 4, Column: 1},
-				},
-			},
-		},
-		{
-			Content: "aws_instance_invalid_type",
-			Token: hclsyntax.Token{
-				Type:  hclsyntax.TokenComment,
-				Bytes: []byte(fmt.Sprintf("# tflint-ignore: aws_instance_invalid_type This is also comment%s", newLine())),
-				Range: hcl.Range{
-					Filename: "resource.tf",
-					Start:    hcl.Pos{Line: 4, Column: 5},
+					Start:    hcl.Pos{Line: 4, Column: 30},
 					End:      hcl.Pos{Line: 5, Column: 1},
+				},
+			},
+		},
+		{
+			Content: "aws_instance_invalid_type",
+			Token: hclsyntax.Token{
+				Type:  hclsyntax.TokenComment,
+				Bytes: []byte("# tflint-ignore: aws_instance_invalid_type This is also comment\n"),
+				Range: hcl.Range{
+					Filename: "resource.tf",
+					Start:    hcl.Pos{Line: 5, Column: 3},
+					End:      hcl.Pos{Line: 6, Column: 1},
 				},
 			},
 		},
@@ -88,7 +83,7 @@ func Test_IsAffected(t *testing.T) {
 		},
 	}
 
-	cases := []struct {
+	tests := []struct {
 		Name       string
 		Annotation Annotation
 		Expected   bool
@@ -207,10 +202,12 @@ func Test_IsAffected(t *testing.T) {
 		},
 	}
 
-	for _, tc := range cases {
-		ret := tc.Annotation.IsAffected(issue)
-		if ret != tc.Expected {
-			t.Fatalf("Failed `%s` test: expected=%t, got=%t", tc.Name, tc.Expected, ret)
-		}
+	for _, test := range tests {
+		t.Run(test.Name, func(t *testing.T) {
+			got := test.Annotation.IsAffected(issue)
+			if got != test.Expected {
+				t.Fatalf("want=%t, got=%t", test.Expected, got)
+			}
+		})
 	}
 }
