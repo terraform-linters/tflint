@@ -24,7 +24,7 @@ The following diagram explains how an inspection is performed when a user execut
 ```mermaid
 flowchart TB
   CLI["CLI<br/>(cmd package)"]-->configLoad["Load TFLint config<br/>(tflint.LoadConfig)"]
-  configLoad-->tfLoad["Load Terraform config<br/>(terraform.BuildConfig)"]
+  configLoad-->tfLoad["Load Terraform config<br/>(terraform.LoadConfig)"]
   tfLoad-->discoverPlugin["Discover plugins<br/>(plugin.Discovery)"]
   discoverPlugin-->launchPlugin["Launch plugin processes<br/>(go-plugin)"]
   launchPlugin-->startRulesetServer["Start RuleSet gRPC server<br/>(go-plugin)"]
@@ -67,11 +67,11 @@ This package is responsible for parsing CLI flags and arguments. The parsed `cmd
 
 The `tflint.LoadConfig` loads a config file and returns `tflint.Config`. This config will be used in later steps.
 
-### Load Terraform config (`terraform.BuildConfig`)
+### Load Terraform config (`terraform.LoadConfig`)
 
 [The `terraform` package](https://github.com/terraform-linters/tflint/tree/master/terraform) is a fork of [github.com/hashicorp/terraform/internal](https://pkg.go.dev/github.com/hashicorp/terraform/internal). This package is responsible for processing the Terraform semantics, such as parsing `*.tf` files, evaluating expressions, and loading modules.
 
-The `terraform.BuildConfig` builds a `terraform.Config` based on the parsed `terraform.Module`. These structures are designed to be as similar to Terraform core. See "The Design of `terraform` Package" section below for details.
+The `terraform.LoadConfig` reads `*.tf` files as a `terraform.Config` in the given directory. These structures are designed to be as similar to Terraform core. See "The Design of `terraform` Package" section below for details.
 
 ### Discover plugins (`plugin.Discovery`)
 
@@ -142,13 +142,13 @@ flowchart TB
     modFiles["Terraform config files<br/>(*.tf)"]-->modParser["Language parser<br/>(terraform.Parser)"]
   end
   modParser-->modWalker["Module walker<br/>(terraform.ModuleWalker)"]  
-  parser-- terraform.Module -->builder["Config builder<br/>(terraform.BuildConfig)"]
-  modWalker-- terraform.Module -->builder
-  builder-- terraform.Config -->gatherVars["Gather variables<br/>(terraform.VariableValues)"]
+  parser-- terraform.Module -->loader["Config loader<br/>(terraform.LoadConfig)"]
+  modWalker-- terraform.Module -->loader
+  loader-- terraform.Config -->gatherVars["Gather variables<br/>(terraform.VariableValues)"]
   valuesFile["Variable definitions files<br/>(*.tfvars)"]-- terraform.InputValues -->gatherVars
   cliFlag["CLI flags<br/>(--var)"]-- terraform.InputValues -->gatherVars
   gatherVars-- cty.Value -->evaluator["Evaluator<br/>(terraform.Evaluator)"]
-  builder-- terraform.Config -->evaluator
+  loader-- terraform.Config -->evaluator
 ```
 
 ### HCL and cty

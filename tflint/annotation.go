@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"strings"
 
+	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"golang.org/x/exp/slices"
 )
@@ -21,8 +22,13 @@ type Annotation struct {
 type Annotations []Annotation
 
 // NewAnnotations find annotations from the passed tokens and return that list.
-func NewAnnotations(tokens hclsyntax.Tokens) Annotations {
+func NewAnnotations(path string, file *hcl.File) (Annotations, hcl.Diagnostics) {
 	ret := Annotations{}
+
+	tokens, diags := hclsyntax.LexConfig(file.Bytes, path, hcl.Pos{Byte: 0, Line: 1, Column: 1})
+	if diags.HasErrors() {
+		return ret, diags
+	}
 
 	for _, token := range tokens {
 		if token.Type != hclsyntax.TokenComment {
@@ -39,7 +45,7 @@ func NewAnnotations(tokens hclsyntax.Tokens) Annotations {
 		})
 	}
 
-	return ret
+	return ret, diags
 }
 
 // IsAffected checks if the passed issue is affected with the annotation

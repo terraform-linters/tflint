@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"runtime"
 	"testing"
 
 	"github.com/spf13/afero"
@@ -36,14 +35,14 @@ func withinFixtureDir(t *testing.T, dir string, test func()) {
 }
 
 func testRunnerWithOsFs(t *testing.T, config *Config) *Runner {
-	loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, config)
+	loader, err := terraform.NewLoader(afero.Afero{Fs: afero.NewOsFs()})
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	cfg, err := loader.LoadConfig(".")
-	if err != nil {
-		t.Fatal(err)
+	cfg, diags := loader.LoadConfig(".", config.Module)
+	if diags.HasErrors() {
+		t.Fatal(diags)
 	}
 
 	runner, err := NewRunner(config, map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
@@ -64,14 +63,14 @@ func testRunnerWithAnnotations(t *testing.T, files map[string]string, annotation
 		}
 	}
 
-	loader, err := NewLoader(fs, config)
+	loader, err := terraform.NewLoader(fs)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	cfg, err := loader.LoadConfig(".")
-	if err != nil {
-		t.Fatal(err)
+	cfg, diags := loader.LoadConfig(".", config.Module)
+	if diags.HasErrors() {
+		t.Fatal(diags)
 	}
 
 	runner, err := NewRunner(config, annotations, cfg, map[string]*terraform.InputValue{})
@@ -86,11 +85,4 @@ func moduleConfig() *Config {
 	c := EmptyConfig()
 	c.Module = true
 	return c
-}
-
-func newLine() string {
-	if runtime.GOOS == "windows" {
-		return "\r\n"
-	}
-	return "\n"
 }
