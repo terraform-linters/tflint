@@ -337,7 +337,7 @@ resource "aws_instance" "bar" {
 			}
 
 			parser := NewParser(fs)
-			mod, diags := parser.LoadConfigDir(".")
+			mod, diags := parser.LoadConfigDir(".", ".")
 			if diags.HasErrors() {
 				t.Fatal(diags)
 			}

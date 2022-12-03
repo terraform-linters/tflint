@@ -91,7 +91,7 @@ func (cli *CLI) Run(args []string) int {
 	case opts.Init:
 		return cli.init(opts)
 	case opts.Langserver:
-		return cli.startLanguageServer(opts.Config, opts.toConfig())
+		return cli.startLanguageServer(opts)
 	case opts.ActAsBundledPlugin:
 		return cli.actAsBundledPlugin()
 	default:

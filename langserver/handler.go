@@ -144,7 +144,7 @@ func (h *handler) chdir(dir string) error {
 func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 	ret := map[string][]lsp.Diagnostic{}
 
-	loader, err := terraform.NewLoader(afero.Afero{Fs: h.fs})
+	loader, err := terraform.NewLoader(afero.Afero{Fs: h.fs}, h.rootDir)
 	if err != nil {
 		return ret, fmt.Errorf("Failed to prepare loading: %w", err)
 	}
@@ -177,7 +177,7 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 	}
 	variables = append(variables, cliVars)
 
-	runner, err := tflint.NewRunner(h.config, annotations, configs, variables...)
+	runner, err := tflint.NewRunner(h.rootDir, h.config, annotations, configs, variables...)
 	if err != nil {
 		return ret, fmt.Errorf("Failed to initialize a runner: %w", err)
 	}

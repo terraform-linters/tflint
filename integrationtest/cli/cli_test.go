@@ -274,6 +274,20 @@ func TestIntegration(t *testing.T) {
 			status:  cmd.ExitCodeError,
 			stderr:  fmt.Sprintf("Failed to load `%s`: Multiple files in different directories are not allowed", filepath.Join("subdir", "main.tf")),
 		},
+		{
+			name:    "--chdir",
+			command: "./tflint --chdir subdir",
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeIssuesFound,
+			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is m5.2xlarge")),
+		},
+		{
+			name:    "--chdir and directory argument",
+			command: "./tflint --chdir subdir ../",
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeError,
+			stderr:  "Cannot use --chdir and directory argument at the same time",
+		},
 	}
 
 	dir, _ := os.Getwd()

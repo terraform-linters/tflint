@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2"
@@ -31,25 +32,10 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	cfg.Merge(opts.toConfig())
 	cli.formatter.Format = cfg.Format
 
-	// Setup loader
-	cli.loader, err = terraform.NewLoader(afero.Afero{Fs: afero.NewOsFs()})
-	if err != nil {
-		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to prepare loading; %w", err), map[string][]byte{})
-		return ExitCodeError
-	}
-
-	// Setup runners
-	runners, appErr := cli.setupRunners(opts, cfg, dir)
-	if appErr != nil {
-		cli.formatter.Print(tflint.Issues{}, appErr, cli.loader.Sources())
-		return ExitCodeError
-	}
-	rootRunner := runners[len(runners)-1]
-
 	// Lookup plugins and validation
 	rulesetPlugin, err := plugin.Discovery(cfg)
 	if err != nil {
-		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to initialize plugins; %w", err), cli.loader.Sources())
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to initialize plugins; %w", err), map[string][]byte{})
 		return ExitCodeError
 	}
 	defer rulesetPlugin.Clean()
@@ -63,22 +49,22 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 				// VersionConstraints endpoint is available in tflint-plugin-sdk v0.14+.
 				// Skip verification if not available.
 			} else {
-				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to get TFLint version constraints to `%s` plugin; %w", name, err), cli.loader.Sources())
+				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to get TFLint version constraints to `%s` plugin; %w", name, err), map[string][]byte{})
 				return ExitCodeError
 			}
 		}
 		if !constraints.Check(tflint.Version) {
-			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to satisfy version constraints; tflint-ruleset-%s requires %s, but TFLint version is %s", name, constraints, tflint.Version), cli.loader.Sources())
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to satisfy version constraints; tflint-ruleset-%s requires %s, but TFLint version is %s", name, constraints, tflint.Version), map[string][]byte{})
 			return ExitCodeError
 		}
 
 		if err := ruleset.ApplyGlobalConfig(config); err != nil {
-			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to apply global config to `%s` plugin; %w", name, err), cli.loader.Sources())
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to apply global config to `%s` plugin; %w", name, err), map[string][]byte{})
 			return ExitCodeError
 		}
 		configSchema, err := ruleset.ConfigSchema()
 		if err != nil {
-			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to fetch config schema from `%s` plugin; %w", name, err), cli.loader.Sources())
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to fetch config schema from `%s` plugin; %w", name, err), map[string][]byte{})
 			return ExitCodeError
 		}
 		content := &hclext.BodyContent{}
@@ -86,22 +72,56 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 			var diags hcl.Diagnostics
 			content, diags = plugin.Content(configSchema)
 			if diags.HasErrors() {
-				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse `%s` plugin config; %w", name, diags), cli.loader.Sources())
+				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse `%s` plugin config; %w", name, diags), map[string][]byte{})
 				return ExitCodeError
 			}
 		}
 		err = ruleset.ApplyConfig(content, cfg.Sources())
 		if err != nil {
-			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to apply config to `%s` plugin; %w", name, err), cli.loader.Sources())
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to apply config to `%s` plugin; %w", name, err), map[string][]byte{})
 			return ExitCodeError
 		}
 
 		rulesets = append(rulesets, ruleset)
 	}
 	if err := cfg.ValidateRules(rulesets...); err != nil {
-		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to check rule config; %w", err), cli.loader.Sources())
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to check rule config; %w", err), map[string][]byte{})
 		return ExitCodeError
 	}
+
+	// Switch to a different working directory before setting up loader
+	originalWd, err := os.Getwd()
+	if err != nil {
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to determine current working directory; %w", err), map[string][]byte{})
+		return ExitCodeError
+	}
+	if opts.Chdir != "" {
+		if dir != "." {
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Cannot use --chdir and directory argument at the same time"), map[string][]byte{})
+			return ExitCodeError
+		}
+
+		err := os.Chdir(opts.Chdir)
+		if err != nil {
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to switch to a different working directory; %w", err), map[string][]byte{})
+			return ExitCodeError
+		}
+	}
+
+	// Setup loader
+	cli.loader, err = terraform.NewLoader(afero.Afero{Fs: afero.NewOsFs()}, originalWd)
+	if err != nil {
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to prepare loading; %w", err), map[string][]byte{})
+		return ExitCodeError
+	}
+
+	// Setup runners
+	runners, appErr := cli.setupRunners(opts, cfg, originalWd, dir)
+	if appErr != nil {
+		cli.formatter.Print(tflint.Issues{}, appErr, cli.loader.Sources())
+		return ExitCodeError
+	}
+	rootRunner := runners[len(runners)-1]
 
 	// Run inspection
 	for _, ruleset := range rulesetPlugin.RuleSets {
@@ -129,7 +149,7 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	return ExitCodeOK
 }
 
-func (cli *CLI) setupRunners(opts Options, cfg *tflint.Config, dir string) ([]*tflint.Runner, error) {
+func (cli *CLI) setupRunners(opts Options, cfg *tflint.Config, originalWd string, dir string) ([]*tflint.Runner, error) {
 	configs, diags := cli.loader.LoadConfig(dir, cfg.Module)
 	if diags.HasErrors() {
 		return []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
@@ -162,7 +182,7 @@ func (cli *CLI) setupRunners(opts Options, cfg *tflint.Config, dir string) ([]*t
 	}
 	variables = append(variables, cliVars)
 
-	runner, err := tflint.NewRunner(cfg, annotations, configs, variables...)
+	runner, err := tflint.NewRunner(originalWd, cfg, annotations, configs, variables...)
 	if err != nil {
 		return []*tflint.Runner{}, fmt.Errorf("Failed to initialize a runner; %w", err)
 	}
