@@ -29,6 +29,8 @@ jobs:
         cache: true
     - name: Run test
       run: make test
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Run build
       run: make build
     - name: Upload Artifact
