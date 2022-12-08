@@ -7,5 +7,5 @@ plugin "terraform" {
 }
 
 config {
-  varfile = ["dir/from_config.tfvars"]
+  varfile = ["from_config.tfvars"]
 }

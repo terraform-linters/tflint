@@ -128,8 +128,7 @@ var defaultVarsFilename = "terraform.tfvars"
 // and returns terraform.InputValues in order of priority.
 //
 // The second and subsequent arguments are given the paths of value files to be read
-// manually. Argument order matches precedence. These files do not respect the original
-// working directory.
+// manually. Argument order matches precedence.
 func (l *Loader) LoadValuesFiles(dir string, files ...string) ([]InputValues, hcl.Diagnostics) {
 	values := []InputValues{}
 	diags := hcl.Diagnostics{}
@@ -145,14 +144,14 @@ func (l *Loader) LoadValuesFiles(dir string, files ...string) ([]InputValues, hc
 	}
 
 	for _, file := range autoLoadFiles {
-		vals, loadDiags := l.loadValuesFile(file, true)
+		vals, loadDiags := l.loadValuesFile(file)
 		diags = diags.Extend(loadDiags)
 		if !loadDiags.HasErrors() {
 			values = append(values, vals)
 		}
 	}
 	for _, file := range files {
-		vals, loadDiags := l.loadValuesFile(file, false)
+		vals, loadDiags := l.loadValuesFile(file)
 		diags = diags.Extend(loadDiags)
 		if !loadDiags.HasErrors() {
 			values = append(values, vals)
@@ -162,23 +161,7 @@ func (l *Loader) LoadValuesFiles(dir string, files ...string) ([]InputValues, hc
 	return values, diags
 }
 
-func (l *Loader) loadValuesFile(file string, auto bool) (InputValues, hcl.Diagnostics) {
-	if !auto {
-		// When reading the values file manually, it reads from the current directory,
-		// not the baseDir.
-		realPath, err := filepath.Rel(l.baseDir, file)
-		if err != nil {
-			return nil, hcl.Diagnostics{
-				{
-					Severity: hcl.DiagError,
-					Summary:  "Failed to determine the real path of the values file",
-					Detail:   err.Error(),
-				},
-			}
-		}
-		file = realPath
-	}
-
+func (l *Loader) loadValuesFile(file string) (InputValues, hcl.Diagnostics) {
 	vals, diags := l.parser.LoadValuesFile(l.baseDir, file)
 	if diags.HasErrors() {
 		return nil, diags

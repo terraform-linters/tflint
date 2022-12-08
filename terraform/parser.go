@@ -192,6 +192,7 @@ func (p *Parser) loadHCLFile(baseDir, path string) (*hcl.File, hcl.Diagnostics) 
 				{
 					Severity: hcl.DiagError,
 					Summary:  "Failed to read file",
+					Subject:  &hcl.Range{},
 					Detail:   fmt.Sprintf("The file %q does not exist.", realPath),
 				},
 			}
@@ -200,6 +201,7 @@ func (p *Parser) loadHCLFile(baseDir, path string) (*hcl.File, hcl.Diagnostics) 
 			{
 				Severity: hcl.DiagError,
 				Summary:  "Failed to read file",
+				Subject:  &hcl.Range{},
 				Detail:   fmt.Sprintf("The file %q could not be read.", realPath),
 			},
 		}

@@ -285,11 +285,11 @@ func TestLoadValuesFiles_withBaseDir(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		// Files passed manually are relative to the baseDir, not the current directory.
+		// Files passed manually are relative to the current directory.
 		ret, diags := loader.LoadValuesFiles(
 			".",
-			filepath.Join("values_files", "cli1.tfvars"),
-			filepath.Join("values_files", "cli2.tfvars"),
+			"cli1.tfvars",
+			"cli2.tfvars",
 		)
 		if diags.HasErrors() {
 			t.Fatal(diags)

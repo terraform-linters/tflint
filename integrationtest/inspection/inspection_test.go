@@ -205,7 +205,7 @@ func TestIntegration(t *testing.T) {
 		},
 		{
 			Name:    "chdir",
-			Command: fmt.Sprintf("tflint --chdir dir --module --var-file %s --format json", filepath.Join("dir", "from_cli.tfvars")),
+			Command: "tflint --chdir dir --module --var-file from_cli.tfvars --format json",
 			Dir:     "chdir",
 		},
 	}
