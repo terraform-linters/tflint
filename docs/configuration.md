@@ -6,7 +6,7 @@ Here's an example:
 
 ```hcl
 plugin "terraform" {
-    // Plugin common attributes
+    # Plugin common attributes
 
     preset = "recommended"
 }
