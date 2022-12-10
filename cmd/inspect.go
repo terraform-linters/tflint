@@ -16,80 +16,7 @@ import (
 )
 
 func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
-	// Setup config
-	cfg, err := tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, opts.Config)
-	if err != nil {
-		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to load TFLint config; %w", err), map[string][]byte{})
-		return ExitCodeError
-	}
-	// tflint-plugin-sdk v0.13+ doesn't need to disable rules config when enabling the only option.
-	// This is for the backward compatibility.
-	if len(opts.Only) > 0 {
-		for _, rule := range cfg.Rules {
-			rule.Enabled = false
-		}
-	}
-	cfg.Merge(opts.toConfig())
-	cli.formatter.Format = cfg.Format
-
-	// Lookup plugins and validation
-	rulesetPlugin, err := plugin.Discovery(cfg)
-	if err != nil {
-		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to initialize plugins; %w", err), map[string][]byte{})
-		return ExitCodeError
-	}
-	defer rulesetPlugin.Clean()
-
-	rulesets := []tflint.RuleSet{}
-	config := cfg.ToPluginConfig()
-	for name, ruleset := range rulesetPlugin.RuleSets {
-		constraints, err := ruleset.VersionConstraints()
-		if err != nil {
-			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
-				// VersionConstraints endpoint is available in tflint-plugin-sdk v0.14+.
-				// Skip verification if not available.
-			} else {
-				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to get TFLint version constraints to `%s` plugin; %w", name, err), map[string][]byte{})
-				return ExitCodeError
-			}
-		}
-		if !constraints.Check(tflint.Version) {
-			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to satisfy version constraints; tflint-ruleset-%s requires %s, but TFLint version is %s", name, constraints, tflint.Version), map[string][]byte{})
-			return ExitCodeError
-		}
-
-		if err := ruleset.ApplyGlobalConfig(config); err != nil {
-			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to apply global config to `%s` plugin; %w", name, err), map[string][]byte{})
-			return ExitCodeError
-		}
-		configSchema, err := ruleset.ConfigSchema()
-		if err != nil {
-			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to fetch config schema from `%s` plugin; %w", name, err), map[string][]byte{})
-			return ExitCodeError
-		}
-		content := &hclext.BodyContent{}
-		if plugin, exists := cfg.Plugins[name]; exists {
-			var diags hcl.Diagnostics
-			content, diags = plugin.Content(configSchema)
-			if diags.HasErrors() {
-				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse `%s` plugin config; %w", name, diags), map[string][]byte{})
-				return ExitCodeError
-			}
-		}
-		err = ruleset.ApplyConfig(content, cfg.Sources())
-		if err != nil {
-			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to apply config to `%s` plugin; %w", name, err), map[string][]byte{})
-			return ExitCodeError
-		}
-
-		rulesets = append(rulesets, ruleset)
-	}
-	if err := cfg.ValidateRules(rulesets...); err != nil {
-		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to check rule config; %w", err), map[string][]byte{})
-		return ExitCodeError
-	}
-
-	// Switch to a different working directory before setting up loader
+	// Switch to a different working directory
 	originalWd, err := os.Getwd()
 	if err != nil {
 		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to determine current working directory; %w", err), map[string][]byte{})
@@ -108,6 +35,22 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 		}
 	}
 
+	// Setup config
+	cfg, err := tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, opts.Config)
+	if err != nil {
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to load TFLint config; %w", err), map[string][]byte{})
+		return ExitCodeError
+	}
+	// tflint-plugin-sdk v0.13+ doesn't need to disable rules config when enabling the only option.
+	// This is for the backward compatibility.
+	if len(opts.Only) > 0 {
+		for _, rule := range cfg.Rules {
+			rule.Enabled = false
+		}
+	}
+	cfg.Merge(opts.toConfig())
+	cli.formatter.Format = cfg.Format
+
 	// Setup loader
 	cli.loader, err = terraform.NewLoader(afero.Afero{Fs: afero.NewOsFs()}, originalWd)
 	if err != nil {
@@ -122,6 +65,63 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 		return ExitCodeError
 	}
 	rootRunner := runners[len(runners)-1]
+
+	// Lookup plugins and validation
+	rulesetPlugin, err := plugin.Discovery(cfg)
+	if err != nil {
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to initialize plugins; %w", err), cli.loader.Sources())
+		return ExitCodeError
+	}
+	defer rulesetPlugin.Clean()
+
+	rulesets := []tflint.RuleSet{}
+	config := cfg.ToPluginConfig()
+	for name, ruleset := range rulesetPlugin.RuleSets {
+		constraints, err := ruleset.VersionConstraints()
+		if err != nil {
+			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
+				// VersionConstraints endpoint is available in tflint-plugin-sdk v0.14+.
+				// Skip verification if not available.
+			} else {
+				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to get TFLint version constraints to `%s` plugin; %w", name, err), cli.loader.Sources())
+				return ExitCodeError
+			}
+		}
+		if !constraints.Check(tflint.Version) {
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to satisfy version constraints; tflint-ruleset-%s requires %s, but TFLint version is %s", name, constraints, tflint.Version), cli.loader.Sources())
+			return ExitCodeError
+		}
+
+		if err := ruleset.ApplyGlobalConfig(config); err != nil {
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to apply global config to `%s` plugin; %w", name, err), cli.loader.Sources())
+			return ExitCodeError
+		}
+		configSchema, err := ruleset.ConfigSchema()
+		if err != nil {
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to fetch config schema from `%s` plugin; %w", name, err), cli.loader.Sources())
+			return ExitCodeError
+		}
+		content := &hclext.BodyContent{}
+		if plugin, exists := cfg.Plugins[name]; exists {
+			var diags hcl.Diagnostics
+			content, diags = plugin.Content(configSchema)
+			if diags.HasErrors() {
+				cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse `%s` plugin config; %w", name, diags), cli.loader.Sources())
+				return ExitCodeError
+			}
+		}
+		err = ruleset.ApplyConfig(content, cfg.Sources())
+		if err != nil {
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to apply config to `%s` plugin; %w", name, err), cli.loader.Sources())
+			return ExitCodeError
+		}
+
+		rulesets = append(rulesets, ruleset)
+	}
+	if err := cfg.ValidateRules(rulesets...); err != nil {
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to check rule config; %w", err), cli.loader.Sources())
+		return ExitCodeError
+	}
 
 	// Run inspection
 	for _, ruleset := range rulesetPlugin.RuleSets {
