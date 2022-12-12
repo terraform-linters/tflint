@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2"
@@ -15,6 +16,25 @@ import (
 )
 
 func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
+	// Switch to a different working directory
+	originalWd, err := os.Getwd()
+	if err != nil {
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to determine current working directory; %w", err), map[string][]byte{})
+		return ExitCodeError
+	}
+	if opts.Chdir != "" {
+		if dir != "." {
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Cannot use --chdir and directory argument at the same time"), map[string][]byte{})
+			return ExitCodeError
+		}
+
+		err := os.Chdir(opts.Chdir)
+		if err != nil {
+			cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to switch to a different working directory; %w", err), map[string][]byte{})
+			return ExitCodeError
+		}
+	}
+
 	// Setup config
 	cfg, err := tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, opts.Config)
 	if err != nil {
@@ -32,14 +52,14 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	cli.formatter.Format = cfg.Format
 
 	// Setup loader
-	cli.loader, err = terraform.NewLoader(afero.Afero{Fs: afero.NewOsFs()})
+	cli.loader, err = terraform.NewLoader(afero.Afero{Fs: afero.NewOsFs()}, originalWd)
 	if err != nil {
 		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to prepare loading; %w", err), map[string][]byte{})
 		return ExitCodeError
 	}
 
 	// Setup runners
-	runners, appErr := cli.setupRunners(opts, cfg, dir)
+	runners, appErr := cli.setupRunners(opts, cfg, originalWd, dir)
 	if appErr != nil {
 		cli.formatter.Print(tflint.Issues{}, appErr, cli.loader.Sources())
 		return ExitCodeError
@@ -129,7 +149,7 @@ func (cli *CLI) inspect(opts Options, dir string, filterFiles []string) int {
 	return ExitCodeOK
 }
 
-func (cli *CLI) setupRunners(opts Options, cfg *tflint.Config, dir string) ([]*tflint.Runner, error) {
+func (cli *CLI) setupRunners(opts Options, cfg *tflint.Config, originalWd string, dir string) ([]*tflint.Runner, error) {
 	configs, diags := cli.loader.LoadConfig(dir, cfg.Module)
 	if diags.HasErrors() {
 		return []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
@@ -162,7 +182,7 @@ func (cli *CLI) setupRunners(opts Options, cfg *tflint.Config, dir string) ([]*t
 	}
 	variables = append(variables, cliVars)
 
-	runner, err := tflint.NewRunner(cfg, annotations, configs, variables...)
+	runner, err := tflint.NewRunner(originalWd, cfg, annotations, configs, variables...)
 	if err != nil {
 		return []*tflint.Runner{}, fmt.Errorf("Failed to initialize a runner; %w", err)
 	}

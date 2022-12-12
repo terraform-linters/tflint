@@ -139,13 +139,13 @@ Application Options:
       --var-file=FILE                                           Terraform variable file name
       --var='foo=bar'                                           Set a Terraform variable
       --module                                                  Inspect modules
+      --chdir=DIR                                               Switch to a different working directory before running inspection
       --force                                                   Return zero exit status even if issues found
       --color                                                   Enable colorized output
       --no-color                                                Disable colorized output
 
 Help Options:
   -h, --help                                                    Show this help message
-
 ```
 
 See [User Guide](docs/user-guide) for details.

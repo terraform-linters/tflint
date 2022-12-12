@@ -35,7 +35,12 @@ func withinFixtureDir(t *testing.T, dir string, test func()) {
 }
 
 func testRunnerWithOsFs(t *testing.T, config *Config) *Runner {
-	loader, err := terraform.NewLoader(afero.Afero{Fs: afero.NewOsFs()})
+	originalWd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	loader, err := terraform.NewLoader(afero.Afero{Fs: afero.NewOsFs()}, originalWd)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -45,7 +50,7 @@ func testRunnerWithOsFs(t *testing.T, config *Config) *Runner {
 		t.Fatal(diags)
 	}
 
-	runner, err := NewRunner(config, map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
+	runner, err := NewRunner(originalWd, config, map[string]Annotations{}, cfg, map[string]*terraform.InputValue{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -63,7 +68,12 @@ func testRunnerWithAnnotations(t *testing.T, files map[string]string, annotation
 		}
 	}
 
-	loader, err := terraform.NewLoader(fs)
+	originalWd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	loader, err := terraform.NewLoader(fs, originalWd)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -73,7 +83,7 @@ func testRunnerWithAnnotations(t *testing.T, files map[string]string, annotation
 		t.Fatal(diags)
 	}
 
-	runner, err := NewRunner(config, annotations, cfg, map[string]*terraform.InputValue{})
+	runner, err := NewRunner(originalWd, config, annotations, cfg, map[string]*terraform.InputValue{})
 	if err != nil {
 		t.Fatal(err)
 	}

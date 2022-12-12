@@ -25,7 +25,12 @@ func TestRunnerWithConfig(t *testing.T, files map[string]string, config *Config)
 		}
 	}
 
-	loader, err := terraform.NewLoader(fs)
+	originalWd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	loader, err := terraform.NewLoader(fs, originalWd)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -56,7 +61,7 @@ func TestRunnerWithConfig(t *testing.T, files map[string]string, config *Config)
 		t.Fatal(diags)
 	}
 
-	runner, err := NewRunner(config, map[string]Annotations{}, configs, map[string]*terraform.InputValue{})
+	runner, err := NewRunner(originalWd, config, map[string]Annotations{}, configs, map[string]*terraform.InputValue{})
 	if err != nil {
 		t.Fatal(err)
 	}

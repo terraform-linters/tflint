@@ -50,13 +50,15 @@ func NewParser(fs afero.Fs) *Parser {
 // analysis.
 //
 // This file does not consider a directory with no files to be an error, and
-// will simply return an empty module in that case. Callers should first call
-// Parser.IsConfigDir if they wish to recognize that situation.
+// will simply return an empty module in that case.
 //
 // .tf files are parsed using the HCL native syntax while .tf.json files are
 // parsed using the HCL JSON syntax.
-func (p *Parser) LoadConfigDir(dir string) (*Module, hcl.Diagnostics) {
-	primaries, overrides, diags := p.configDirFiles(dir)
+//
+// If a baseDir is passed, the loaded files are assumed to be loaded from that
+// directory.
+func (p *Parser) LoadConfigDir(baseDir, dir string) (*Module, hcl.Diagnostics) {
+	primaries, overrides, diags := p.configDirFiles(baseDir, dir)
 	if diags.HasErrors() {
 		return nil, diags
 	}
@@ -66,32 +68,34 @@ func (p *Parser) LoadConfigDir(dir string) (*Module, hcl.Diagnostics) {
 	mod.overrides = make([]*hcl.File, len(overrides))
 
 	for i, path := range primaries {
-		f, loadDiags := p.loadHCLFile(path)
+		f, loadDiags := p.loadHCLFile(baseDir, path)
 		diags = diags.Extend(loadDiags)
 		if loadDiags.HasErrors() {
 			continue
 		}
+		realPath := filepath.Join(baseDir, path)
 
 		mod.primaries[i] = f
-		mod.Sources[path] = f.Bytes
-		mod.Files[path] = f
+		mod.Sources[realPath] = f.Bytes
+		mod.Files[realPath] = f
 	}
 	for i, path := range overrides {
-		f, loadDiags := p.loadHCLFile(path)
+		f, loadDiags := p.loadHCLFile(baseDir, path)
 		diags = diags.Extend(loadDiags)
 		if loadDiags.HasErrors() {
 			continue
 		}
+		realPath := filepath.Join(baseDir, path)
 
 		mod.overrides[i] = f
-		mod.Sources[path] = f.Bytes
-		mod.Files[path] = f
+		mod.Sources[realPath] = f.Bytes
+		mod.Files[realPath] = f
 	}
 	if diags.HasErrors() {
 		return mod, diags
 	}
 
-	mod.SourceDir = dir
+	mod.SourceDir = filepath.Join(baseDir, dir)
 
 	buildDiags := mod.build()
 	diags = diags.Extend(buildDiags)
@@ -105,8 +109,11 @@ func (p *Parser) LoadConfigDir(dir string) (*Module, hcl.Diagnostics) {
 // The difference with LoadConfigDir is that it returns hcl.File instead of
 // a single module. This is useful when parsing HCL files in a context outside of
 // Terraform.
-func (p *Parser) LoadConfigDirFiles(dir string) (map[string]*hcl.File, hcl.Diagnostics) {
-	primaries, overrides, diags := p.configDirFiles(dir)
+//
+// If a baseDir is passed, the loaded files are assumed to be loaded from that
+// directory.
+func (p *Parser) LoadConfigDirFiles(baseDir, dir string) (map[string]*hcl.File, hcl.Diagnostics) {
+	primaries, overrides, diags := p.configDirFiles(baseDir, dir)
 	if diags.HasErrors() {
 		return map[string]*hcl.File{}, diags
 	}
@@ -114,20 +121,20 @@ func (p *Parser) LoadConfigDirFiles(dir string) (map[string]*hcl.File, hcl.Diagn
 	files := map[string]*hcl.File{}
 
 	for _, path := range primaries {
-		f, loadDiags := p.loadHCLFile(path)
+		f, loadDiags := p.loadHCLFile(baseDir, path)
 		diags = diags.Extend(loadDiags)
 		if loadDiags.HasErrors() {
 			continue
 		}
-		files[path] = f
+		files[filepath.Join(baseDir, path)] = f
 	}
 	for _, path := range overrides {
-		f, loadDiags := p.loadHCLFile(path)
+		f, loadDiags := p.loadHCLFile(baseDir, path)
 		diags = diags.Extend(loadDiags)
 		if loadDiags.HasErrors() {
 			continue
 		}
-		files[path] = f
+		files[filepath.Join(baseDir, path)] = f
 	}
 
 	return files, diags
@@ -145,8 +152,11 @@ func (p *Parser) LoadConfigDirFiles(dir string) (map[string]*hcl.File, hcl.Diagn
 // If the returned diagnostics has errors when a non-nil map is returned
 // then the map may be incomplete but should be valid enough for careful
 // static analysis.
-func (p *Parser) LoadValuesFile(path string) (map[string]cty.Value, hcl.Diagnostics) {
-	f, diags := p.loadHCLFile(path)
+//
+// If a baseDir is passed, the loaded file is assumed to be loaded from that
+// directory.
+func (p *Parser) LoadValuesFile(baseDir, path string) (map[string]cty.Value, hcl.Diagnostics) {
+	f, diags := p.loadHCLFile(baseDir, path)
 	if diags.HasErrors() {
 		return nil, diags
 	}
@@ -171,8 +181,10 @@ func (p *Parser) LoadValuesFile(path string) (map[string]cty.Value, hcl.Diagnost
 	return vals, diags
 }
 
-func (p *Parser) loadHCLFile(path string) (*hcl.File, hcl.Diagnostics) {
+func (p *Parser) loadHCLFile(baseDir, path string) (*hcl.File, hcl.Diagnostics) {
 	src, err := p.fs.ReadFile(path)
+
+	realPath := filepath.Join(baseDir, path)
 
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -180,7 +192,8 @@ func (p *Parser) loadHCLFile(path string) (*hcl.File, hcl.Diagnostics) {
 				{
 					Severity: hcl.DiagError,
 					Summary:  "Failed to read file",
-					Detail:   fmt.Sprintf("The file %q does not exist.", path),
+					Subject:  &hcl.Range{},
+					Detail:   fmt.Sprintf("The file %q does not exist.", realPath),
 				},
 			}
 		}
@@ -188,16 +201,17 @@ func (p *Parser) loadHCLFile(path string) (*hcl.File, hcl.Diagnostics) {
 			{
 				Severity: hcl.DiagError,
 				Summary:  "Failed to read file",
-				Detail:   fmt.Sprintf("The file %q could not be read.", path),
+				Subject:  &hcl.Range{},
+				Detail:   fmt.Sprintf("The file %q could not be read.", realPath),
 			},
 		}
 	}
 
 	switch {
 	case strings.HasSuffix(path, ".json"):
-		return p.p.ParseJSON(src, path)
+		return p.p.ParseJSON(src, realPath)
 	default:
-		return p.p.ParseHCL(src, path)
+		return p.p.ParseHCL(src, realPath)
 	}
 }
 
@@ -215,13 +229,13 @@ func (p *Parser) Files() map[string]*hcl.File {
 	return p.p.Files()
 }
 
-func (p *Parser) configDirFiles(dir string) (primary, override []string, diags hcl.Diagnostics) {
+func (p *Parser) configDirFiles(baseDir, dir string) (primary, override []string, diags hcl.Diagnostics) {
 	infos, err := p.fs.ReadDir(dir)
 	if err != nil {
 		diags = append(diags, &hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  "Failed to read module directory",
-			Detail:   fmt.Sprintf("Module directory %s does not exist or cannot be read.", dir),
+			Detail:   fmt.Sprintf("Module directory %s does not exist or cannot be read.", filepath.Join(baseDir, dir)),
 		})
 		return
 	}
@@ -252,13 +266,13 @@ func (p *Parser) configDirFiles(dir string) (primary, override []string, diags h
 	return
 }
 
-func (p *Parser) autoLoadValuesDirFiles(dir string) (files []string, diags hcl.Diagnostics) {
+func (p *Parser) autoLoadValuesDirFiles(baseDir, dir string) (files []string, diags hcl.Diagnostics) {
 	infos, err := p.fs.ReadDir(dir)
 	if err != nil {
 		diags = append(diags, &hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  "Failed to read module directory",
-			Detail:   fmt.Sprintf("Module directory %s does not exist or cannot be read.", dir),
+			Detail:   fmt.Sprintf("Module directory %s does not exist or cannot be read.", filepath.Join(baseDir, dir)),
 		})
 		return nil, diags
 	}

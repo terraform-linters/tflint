@@ -20,6 +20,8 @@ import (
 type Loader struct {
 	parser  *Parser
 	modules moduleMgr
+
+	baseDir string
 }
 
 // NewLoader creates and returns a loader that reads configuration from the
@@ -29,8 +31,20 @@ type Loader struct {
 // installed, which is read from disk as part of this function. Note that
 // this will always read against the current directory unless TF_DATA_DIR
 // is set.
-func NewLoader(fs afero.Afero) (*Loader, error) {
+//
+// If an original working dir is passed, the paths of the loaded files will
+// be relative to that directory.
+func NewLoader(fs afero.Afero, originalWd string) (*Loader, error) {
 	log.Print("[INFO] Initialize new loader")
+
+	wd, err := os.Getwd()
+	if err != nil {
+		return nil, fmt.Errorf("failed to determine current working directory: %s", err)
+	}
+	baseDir, err := filepath.Rel(originalWd, wd)
+	if err != nil {
+		return nil, fmt.Errorf("failed to determine base dir: %s", err)
+	}
 
 	ret := &Loader{
 		parser: NewParser(fs),
@@ -38,9 +52,10 @@ func NewLoader(fs afero.Afero) (*Loader, error) {
 			fs:       fs,
 			manifest: moduleManifest{},
 		},
+		baseDir: baseDir,
 	}
 
-	err := ret.modules.readModuleManifest()
+	err = ret.modules.readModuleManifest()
 	if err != nil {
 		return nil, fmt.Errorf("failed to read module manifest: %s", err)
 	}
@@ -55,7 +70,7 @@ func NewLoader(fs afero.Afero) (*Loader, error) {
 // load installed child modules according to a manifest file. If false is given,
 // all child modules will not be loaded.
 func (l *Loader) LoadConfig(dir string, module bool) (*Config, hcl.Diagnostics) {
-	mod, diags := l.parser.LoadConfigDir(dir)
+	mod, diags := l.parser.LoadConfigDir(l.baseDir, dir)
 	if diags.HasErrors() {
 		return nil, diags
 	}
@@ -98,7 +113,7 @@ func (l *Loader) moduleWalkerLoad(req *ModuleRequest) (*Module, *version.Version
 
 	log.Printf("[DEBUG] Trying to load the module: key=%s, version=%s, dir=%s", key, record.VersionStr, record.Dir)
 
-	mod, diags := l.parser.LoadConfigDir(record.Dir)
+	mod, diags := l.parser.LoadConfigDir(l.baseDir, record.Dir)
 	return mod, record.Version, diags
 }
 
@@ -118,7 +133,7 @@ func (l *Loader) LoadValuesFiles(dir string, files ...string) ([]InputValues, hc
 	values := []InputValues{}
 	diags := hcl.Diagnostics{}
 
-	autoLoadFiles, listDiags := l.parser.autoLoadValuesDirFiles(dir)
+	autoLoadFiles, listDiags := l.parser.autoLoadValuesDirFiles(l.baseDir, dir)
 	diags = diags.Extend(listDiags)
 	if listDiags.HasErrors() {
 		return nil, diags
@@ -147,7 +162,7 @@ func (l *Loader) LoadValuesFiles(dir string, files ...string) ([]InputValues, hc
 }
 
 func (l *Loader) loadValuesFile(file string) (InputValues, hcl.Diagnostics) {
-	vals, diags := l.parser.LoadValuesFile(file)
+	vals, diags := l.parser.LoadValuesFile(l.baseDir, file)
 	if diags.HasErrors() {
 		return nil, diags
 	}
@@ -162,7 +177,7 @@ func (l *Loader) loadValuesFile(file string) (InputValues, hcl.Diagnostics) {
 }
 
 func (l *Loader) LoadConfigDirFiles(dir string) (map[string]*hcl.File, hcl.Diagnostics) {
-	return l.parser.LoadConfigDirFiles(dir)
+	return l.parser.LoadConfigDirFiles(l.baseDir, dir)
 }
 
 func (l *Loader) Sources() map[string][]byte {

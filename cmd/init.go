@@ -11,6 +11,11 @@ import (
 )
 
 func (cli *CLI) init(opts Options) int {
+	if opts.Chdir != "" {
+		fmt.Fprintf(cli.errStream, "Cannot use --chdir with --init\n")
+		return ExitCodeError
+	}
+
 	cfg, err := tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, opts.Config)
 	if err != nil {
 		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to load TFLint config; %w", err), map[string][]byte{})

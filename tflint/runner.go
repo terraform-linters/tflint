@@ -34,10 +34,10 @@ type Rule interface {
 	Link() string
 }
 
-// NewRunner returns new TFLint runner
+// NewRunner returns new TFLint runner.
 // It prepares built-in context (workpace metadata, variables) from
-// received `configs.Config` and `terraform.InputValues`
-func NewRunner(c *Config, ants map[string]Annotations, cfg *terraform.Config, variables ...terraform.InputValues) (*Runner, error) {
+// received `terraform.Config` and `terraform.InputValues`.
+func NewRunner(originalWorkingDir string, c *Config, ants map[string]Annotations, cfg *terraform.Config, variables ...terraform.InputValues) (*Runner, error) {
 	path := "root"
 	if !cfg.Path.IsRoot() {
 		path = cfg.Path.String()
@@ -49,7 +49,10 @@ func NewRunner(c *Config, ants map[string]Annotations, cfg *terraform.Config, va
 		return nil, diags
 	}
 	ctx := &terraform.Evaluator{
-		Meta:           &terraform.ContextMeta{Env: terraform.Workspace()},
+		Meta: &terraform.ContextMeta{
+			Env:                terraform.Workspace(),
+			OriginalWorkingDir: originalWorkingDir,
+		},
 		ModulePath:     cfg.Path.UnkeyedInstanceShim(),
 		Config:         cfg.Root,
 		VariableValues: variableValues,
@@ -149,7 +152,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 				}
 			}
 
-			runner, err := NewRunner(parent.config, parent.annotations, cfg, inputs)
+			runner, err := NewRunner(parent.Ctx.Meta.OriginalWorkingDir, parent.config, parent.annotations, cfg, inputs)
 			if err != nil {
 				return runners, err
 			}

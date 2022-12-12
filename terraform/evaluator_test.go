@@ -35,10 +35,17 @@ func TestEvaluateExpr(t *testing.T) {
 	}
 	cwd = filepath.ToSlash(cwd)
 
+	originalWd, err := filepath.Abs("/foo/bar/baz")
+	if err != nil {
+		t.Fatal(err)
+	}
+	originalWd = filepath.ToSlash(originalWd)
+
 	tests := []struct {
 		name     string
 		config   string
 		inputs   []InputValues
+		context  *ContextMeta
 		expr     hcl.Expression
 		ty       cty.Type
 		want     string
@@ -172,6 +179,14 @@ variable "string_var" {
 			expr:     expr(`path.cwd`),
 			ty:       cty.String,
 			want:     fmt.Sprintf(`cty.StringVal("%s")`, cwd),
+			errCheck: neverHappend,
+		},
+		{
+			name:     "path.cwd with original working dir",
+			context:  &ContextMeta{Env: Workspace(), OriginalWorkingDir: originalWd},
+			expr:     expr(`path.cwd`),
+			ty:       cty.String,
+			want:     fmt.Sprintf(`cty.StringVal("%s")`, originalWd),
 			errCheck: neverHappend,
 		},
 		{
@@ -734,7 +749,7 @@ locals {
 			}
 
 			parser := NewParser(fs)
-			mod, diags := parser.LoadConfigDir(".")
+			mod, diags := parser.LoadConfigDir(".", ".")
 			if diags.HasErrors() {
 				t.Fatal(diags)
 			}
@@ -748,11 +763,14 @@ locals {
 			}
 
 			evaluator := &Evaluator{
-				Meta:           &ContextMeta{Env: Workspace()},
+				Meta:           test.context,
 				ModulePath:     config.Path.UnkeyedInstanceShim(),
 				Config:         config,
 				VariableValues: variableValues,
 				CallStack:      NewCallStack(),
+			}
+			if evaluator.Meta == nil {
+				evaluator.Meta = &ContextMeta{Env: Workspace()}
 			}
 
 			got, diags := evaluator.EvaluateExpr(test.expr, test.ty)
@@ -2034,7 +2052,7 @@ resource "aws_instance" "main" {
 			}
 
 			parser := NewParser(fs)
-			mod, diags := parser.LoadConfigDir(".")
+			mod, diags := parser.LoadConfigDir(".", ".")
 			if diags.HasErrors() {
 				t.Fatal(diags)
 			}

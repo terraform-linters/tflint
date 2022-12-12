@@ -10,6 +10,11 @@ import (
 )
 
 func (cli *CLI) printVersion(opts Options) int {
+	if opts.Chdir != "" {
+		fmt.Fprintf(cli.errStream, "Cannot use --chdir with --version\n")
+		return ExitCodeError
+	}
+
 	fmt.Fprintf(cli.outStream, "TFLint version %s\n", tflint.Version)
 
 	// Load configuration files to print plugin versions

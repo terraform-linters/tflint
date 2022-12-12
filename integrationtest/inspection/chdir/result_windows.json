@@ -1,0 +1,48 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is from_config-from_cli-from_auto-from_auto_default-file_in_dir-file_in_root",
+      "range": {
+        "filename": "dir\\main.tf",
+        "start": {
+          "line": 20,
+          "column": 19
+        },
+        "end": {
+          "line": 20,
+          "column": 148
+        }
+      },
+      "callers": [
+        {
+          "filename": "dir\\main.tf",
+          "start": {
+            "line": 20,
+            "column": 19
+          },
+          "end": {
+            "line": 20,
+            "column": 148
+          }
+        },
+        {
+          "filename": "dir\\module\\main.tf",
+          "start": {
+            "line": 4,
+            "column": 19
+          },
+          "end": {
+            "line": 4,
+            "column": 36
+          }
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

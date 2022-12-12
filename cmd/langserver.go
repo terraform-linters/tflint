@@ -2,15 +2,22 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/terraform-linters/tflint/langserver"
-	"github.com/terraform-linters/tflint/tflint"
 )
 
-func (cli *CLI) startLanguageServer(configPath string, cliConfig *tflint.Config) int {
+func (cli *CLI) startLanguageServer(opts Options) int {
+	if opts.Chdir != "" {
+		fmt.Fprintf(cli.errStream, "Cannot use --chdir with --langserver\n")
+		return ExitCodeError
+	}
+	configPath := opts.Config
+	cliConfig := opts.toConfig()
+
 	log.Println("Starting language server...")
 
 	handler, plugin, err := langserver.NewHandler(configPath, cliConfig)
