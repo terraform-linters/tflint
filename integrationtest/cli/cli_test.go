@@ -288,6 +288,13 @@ func TestIntegration(t *testing.T) {
 			status:  cmd.ExitCodeError,
 			stderr:  "Cannot use --chdir and directory argument at the same time",
 		},
+		{
+			name:    "--recursive and arguments",
+			command: "./tflint --recursive subdir",
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeError,
+			stderr:  "Cannot use --recursive and arguments at the same time",
+		},
 	}
 
 	dir, _ := os.Getwd()
@@ -308,7 +315,10 @@ func TestIntegration(t *testing.T) {
 			}
 
 			outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
-			cli := cmd.NewCLI(outStream, errStream)
+			cli, err := cmd.NewCLI(outStream, errStream)
+			if err != nil {
+				t.Fatal(err)
+			}
 			args := strings.Split(test.command, " ")
 
 			got := cli.Run(args)

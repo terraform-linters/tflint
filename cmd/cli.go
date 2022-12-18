@@ -29,16 +29,25 @@ type CLI struct {
 	// outStream and errStream are the stdout and stderr
 	// to write message from the CLI.
 	outStream, errStream io.Writer
-	loader               *terraform.Loader
-	formatter            *formatter.Formatter
+	originalWorkingDir   string
+	sources              map[string][]byte
+
+	// fields for each module
+	config    *tflint.Config
+	loader    *terraform.Loader
+	formatter *formatter.Formatter
 }
 
 // NewCLI returns new CLI initialized by input streams
-func NewCLI(outStream io.Writer, errStream io.Writer) *CLI {
+func NewCLI(outStream io.Writer, errStream io.Writer) (*CLI, error) {
+	wd, err := os.Getwd()
+
 	return &CLI{
-		outStream: outStream,
-		errStream: errStream,
-	}
+		outStream:          outStream,
+		errStream:          errStream,
+		originalWorkingDir: wd,
+		sources:            map[string][]byte{},
+	}, err
 }
 
 // Run invokes the CLI with the given arguments.

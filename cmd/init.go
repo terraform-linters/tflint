@@ -15,6 +15,10 @@ func (cli *CLI) init(opts Options) int {
 		fmt.Fprintf(cli.errStream, "Cannot use --chdir with --init\n")
 		return ExitCodeError
 	}
+	if opts.Recursive {
+		fmt.Fprintf(cli.errStream, "Cannot use --recursive with --init\n")
+		return ExitCodeError
+	}
 
 	cfg, err := tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, opts.Config)
 	if err != nil {

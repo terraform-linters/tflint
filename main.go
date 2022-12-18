@@ -12,7 +12,11 @@ import (
 )
 
 func main() {
-	cli := cmd.NewCLI(colorable.NewColorable(os.Stdout), colorable.NewColorable(os.Stderr))
+	cli, err := cmd.NewCLI(colorable.NewColorable(os.Stdout), colorable.NewColorable(os.Stderr))
+	if err != nil {
+		fmt.Fprint(os.Stderr, err.Error())
+		os.Exit(cmd.ExitCodeError)
+	}
 
 	defer func() {
 		if r := recover(); r != nil {

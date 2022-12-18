@@ -208,6 +208,11 @@ func TestIntegration(t *testing.T) {
 			Command: "tflint --chdir dir --module --var-file from_cli.tfvars --format json",
 			Dir:     "chdir",
 		},
+		{
+			Name:    "recursive",
+			Command: "tflint --recursive --format json",
+			Dir:     "recursive",
+		},
 	}
 
 	// Disable the bundled plugin because the `os.Executable()` is go(1) in the tests
@@ -242,7 +247,10 @@ func TestIntegration(t *testing.T) {
 			}
 
 			outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
-			cli := cmd.NewCLI(outStream, errStream)
+			cli, err := cmd.NewCLI(outStream, errStream)
+			if err != nil {
+				t.Fatal(err)
+			}
 			args := strings.Split(tc.Command, " ")
 
 			cli.Run(args)

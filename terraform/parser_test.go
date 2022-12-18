@@ -414,3 +414,77 @@ func TestLoadValuesFile(t *testing.T) {
 		})
 	}
 }
+
+func TestIsConfigDir(t *testing.T) {
+	tests := []struct {
+		name    string
+		files   map[string]string
+		baseDir string
+		dir     string
+		want    bool
+	}{
+		{
+			name: "HCL native files (primary)",
+			files: map[string]string{
+				"main.tf": "",
+			},
+			baseDir: ".",
+			dir:     ".",
+			want:    true,
+		},
+		{
+			name: "HCL native files (override)",
+			files: map[string]string{
+				"override.tf": "",
+			},
+			baseDir: ".",
+			dir:     ".",
+			want:    true,
+		},
+		{
+			name: "HCL JSON files (primary)",
+			files: map[string]string{
+				"main.tf.json": "{}",
+			},
+			baseDir: ".",
+			dir:     ".",
+			want:    true,
+		},
+		{
+			name: "HCL JSON files (override)",
+			files: map[string]string{
+				"override.tf.json": "{}",
+			},
+			baseDir: ".",
+			dir:     ".",
+			want:    true,
+		},
+		{
+			name: "non-HCL files",
+			files: map[string]string{
+				"README.md": "",
+			},
+			baseDir: ".",
+			dir:     ".",
+			want:    false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			fs := afero.Afero{Fs: afero.NewMemMapFs()}
+			for name, content := range test.files {
+				if err := fs.WriteFile(name, []byte(content), os.ModePerm); err != nil {
+					t.Fatal(err)
+				}
+			}
+			parser := NewParser(fs)
+
+			got := parser.IsConfigDir(test.baseDir, test.dir)
+
+			if got != test.want {
+				t.Errorf("want=%t, got=%t", test.want, got)
+			}
+		})
+	}
+}

@@ -5,6 +5,8 @@ You can change the behavior not only in CLI flags but also in config files. By d
 - Current directory (`./.tflint.hcl`)
 - Home directory (`~/.tflint.hcl`)
 
+However, if `--chdir` or `--recursive` is used, The config file in the changed directory will be loaded.
+
 The config file is written in [HCL](https://github.com/hashicorp/hcl). An example is shown below:
 
 ```hcl
@@ -46,7 +48,16 @@ $ tflint --config other_config.hcl
 
 CLI flag: `--format`
 
-Change the output format.
+Change the output format. The following values are valid:
+
+- default
+- json
+- checkstyle
+- junit
+- compact
+- sarif
+
+Config files are ignored in recursive mode.
 
 ### `plugin_dir`
 
@@ -67,6 +78,8 @@ Return zero exit status even if issues found. TFLint returns the following exit 
 - 0: No issues found
 - 1: Errors occurred
 - 2: No errors occurred, but issues found
+
+Config files are ignored in recursive mode.
 
 ### `disabled_by_default`
 

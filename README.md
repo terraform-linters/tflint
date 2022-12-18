@@ -141,6 +141,7 @@ Application Options:
       --module                                                  Inspect modules
       --chdir=DIR                                               Switch to a different working directory before running inspection
       --force                                                   Return zero exit status even if issues found
+      --recursive                                               Inspect directories recursively
       --color                                                   Enable colorized output
       --no-color                                                Disable colorized output
 
@@ -149,16 +150,6 @@ Help Options:
 ```
 
 See [User Guide](docs/user-guide) for details.
-
-## FAQ
-
-### Does TFLint check modules recursively?
-No. TFLint always checks only the current root module (no recursive check). However, you can check calling child modules based on module arguments by enabling [Module Inspection](docs/user-guide/module-inspection.md). This allows you to check that you are not passing illegal values to the module.
-
-Note that if you want to recursively inspect local modules, you need to run them in each directory. This is a limitation that occurs because Terraform always works for one directory. TFLint tries to emulate Terraform's semantics, so cannot perform recursive inspection.
-
-### Do I need to install Terraform for TFLint to work?
-No. TFLint works as a single binary because Terraform is embedded as a library. Note that this means that the version of Terraform used is determined for each TFLint version. See also [Compatibility with Terraform](docs/user-guide/compatibility.md).
 
 ## Debugging
 
