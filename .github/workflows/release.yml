@@ -24,7 +24,7 @@ jobs:
     - name: Install Cosign
       uses: sigstore/cosign-installer@v2
     - name: Run GoReleaser
-      uses: goreleaser/goreleaser-action@v3
+      uses: goreleaser/goreleaser-action@v4
       with:
         version: v1.12.3
         args: release --rm-dist
