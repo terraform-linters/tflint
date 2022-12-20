@@ -57,7 +57,7 @@ Change the output format. The following values are valid:
 - compact
 - sarif
 
-Config files are ignored in recursive mode.
+In recursive mode (`--recursive`), this field will be ignored in configuration files and must be set via a flag.
 
 ### `plugin_dir`
 
@@ -79,7 +79,7 @@ Return zero exit status even if issues found. TFLint returns the following exit 
 - 1: Errors occurred
 - 2: No errors occurred, but issues found
 
-Config files are ignored in recursive mode.
+In recursive mode (`--recursive`), this field will be ignored in configuration files and must be set via a flag.
 
 ### `disabled_by_default`
 
