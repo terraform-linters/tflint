@@ -165,26 +165,21 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 	return issues, nil
 }
 
-func (cli *CLI) withinChangedDir(dir string, proc func() error) error {
+func (cli *CLI) withinChangedDir(dir string, proc func() error) (err error) {
 	if dir != "." {
-		err := os.Chdir(dir)
-		if err != nil {
-			return fmt.Errorf("Failed to switch to a different working directory; %w", err)
+		chErr := os.Chdir(dir)
+		if chErr != nil {
+			return fmt.Errorf("Failed to switch to a different working directory; %w", chErr)
 		}
+		defer func() {
+			chErr := os.Chdir(cli.originalWorkingDir)
+			if chErr != nil {
+				err = fmt.Errorf("Failed to switch to the original working directory; %s; %w", chErr, err)
+			}
+		}()
 	}
 
-	if err := proc(); err != nil {
-		return err
-	}
-
-	if dir != "." {
-		err := os.Chdir(cli.originalWorkingDir)
-		if err != nil {
-			return fmt.Errorf("Failed to switch to the original working directory; %w", err)
-		}
-	}
-
-	return nil
+	return proc()
 }
 
 func (cli *CLI) setupRunners(opts Options, dir string) ([]*tflint.Runner, error) {
