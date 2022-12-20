@@ -15,6 +15,11 @@ func (cli *CLI) startLanguageServer(opts Options) int {
 		fmt.Fprintf(cli.errStream, "Cannot use --chdir with --langserver\n")
 		return ExitCodeError
 	}
+	if opts.Recursive {
+		fmt.Fprintf(cli.errStream, "Cannot use --recursive with --langserver\n")
+		return ExitCodeError
+	}
+
 	configPath := opts.Config
 	cliConfig := opts.toConfig()
 

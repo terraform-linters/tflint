@@ -229,6 +229,14 @@ func (p *Parser) Files() map[string]*hcl.File {
 	return p.p.Files()
 }
 
+// IsConfigDir determines whether the given path refers to a directory that
+// exists and contains at least one Terraform config file (with a .tf or
+// .tf.json extension.)
+func (p *Parser) IsConfigDir(baseDir, path string) bool {
+	primaryPaths, overridePaths, _ := p.configDirFiles(baseDir, path)
+	return (len(primaryPaths) + len(overridePaths)) > 0
+}
+
 func (p *Parser) configDirFiles(baseDir, dir string) (primary, override []string, diags hcl.Diagnostics) {
 	infos, err := p.fs.ReadDir(dir)
 	if err != nil {

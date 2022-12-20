@@ -23,6 +23,7 @@ type Options struct {
 	Variables          []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
 	Module             bool     `long:"module" description:"Inspect modules"`
 	Chdir              string   `long:"chdir" description:"Switch to a different working directory before running inspection" value-name:"DIR"`
+	Recursive          bool     `long:"recursive" description:"Inspect directories recursively"`
 	Force              bool     `long:"force" description:"Return zero exit status even if issues found"`
 	Color              bool     `long:"color" description:"Enable colorized output"`
 	NoColor            bool     `long:"no-color" description:"Disable colorized output"`

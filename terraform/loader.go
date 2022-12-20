@@ -180,6 +180,10 @@ func (l *Loader) LoadConfigDirFiles(dir string) (map[string]*hcl.File, hcl.Diagn
 	return l.parser.LoadConfigDirFiles(l.baseDir, dir)
 }
 
+func (l *Loader) IsConfigDir(path string) bool {
+	return l.parser.IsConfigDir(l.baseDir, path)
+}
+
 func (l *Loader) Sources() map[string][]byte {
 	return l.parser.Sources()
 }

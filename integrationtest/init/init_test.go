@@ -35,7 +35,10 @@ func TestIntegration(t *testing.T) {
 	defer os.Setenv("TFLINT_PLUGIN_DIR", "")
 
 	outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
-	cli := cmd.NewCLI(outStream, errStream)
+	cli, err := cmd.NewCLI(outStream, errStream)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	cli.Run([]string{"./tflint"})
 	if !strings.Contains(errStream.String(), "Plugin `aws` not found. Did you run `tflint --init`?") {

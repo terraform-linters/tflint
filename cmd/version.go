@@ -14,6 +14,10 @@ func (cli *CLI) printVersion(opts Options) int {
 		fmt.Fprintf(cli.errStream, "Cannot use --chdir with --version\n")
 		return ExitCodeError
 	}
+	if opts.Recursive {
+		fmt.Fprintf(cli.errStream, "Cannot use --recursive with --version\n")
+		return ExitCodeError
+	}
 
 	fmt.Fprintf(cli.outStream, "TFLint version %s\n", tflint.Version)
 
