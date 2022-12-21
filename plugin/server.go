@@ -25,6 +25,11 @@ func NewGRPCServer(runner *tflint.Runner, rootRunner *tflint.Runner, files map[s
 	return &GRPCServer{runner: runner, rootRunner: rootRunner, files: files}
 }
 
+// GetOriginalwd returns the original working directory.
+func (s *GRPCServer) GetOriginalwd() string {
+	return s.runner.Ctx.Meta.OriginalWorkingDir
+}
+
 // GetModulePath returns the current module path.
 func (s *GRPCServer) GetModulePath() []string {
 	return s.runner.TFConfig.Path
