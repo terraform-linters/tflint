@@ -2,8 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2"
@@ -29,35 +27,10 @@ func (cli *CLI) inspect(opts Options, targetDir string, filterFiles []string) in
 		return ExitCodeError
 	}
 
-	workingDirs := []string{}
-
-	if opts.Recursive {
-		// NOTE: The target directory is always the current directory in recursive mode
-		err := filepath.WalkDir(".", func(path string, d os.DirEntry, err error) error {
-			if err != nil {
-				return err
-			}
-			if !d.IsDir() {
-				return nil
-			}
-			// hidden directories are skipped
-			if path != "." && strings.HasPrefix(d.Name(), ".") {
-				return filepath.SkipDir
-			}
-
-			workingDirs = append(workingDirs, path)
-			return nil
-		})
-		if err != nil {
-			cli.formatter.Print(tflint.Issues{}, err, map[string][]byte{})
-			return ExitCodeError
-		}
-	} else {
-		if opts.Chdir == "" {
-			workingDirs = []string{"."}
-		} else {
-			workingDirs = []string{opts.Chdir}
-		}
+	workingDirs, err := findWorkingDirs(opts)
+	if err != nil {
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to find workspaces; %w", err), map[string][]byte{})
+		return ExitCodeError
 	}
 
 	issues := tflint.Issues{}
@@ -163,23 +136,6 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 	}
 
 	return issues, nil
-}
-
-func (cli *CLI) withinChangedDir(dir string, proc func() error) (err error) {
-	if dir != "." {
-		chErr := os.Chdir(dir)
-		if chErr != nil {
-			return fmt.Errorf("Failed to switch to a different working directory; %w", chErr)
-		}
-		defer func() {
-			chErr := os.Chdir(cli.originalWorkingDir)
-			if chErr != nil {
-				err = fmt.Errorf("Failed to switch to the original working directory; %s; %w", chErr, err)
-			}
-		}()
-	}
-
-	return proc()
 }
 
 func (cli *CLI) setupRunners(opts Options, dir string) ([]*tflint.Runner, error) {

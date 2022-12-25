@@ -25,3 +25,11 @@ $ tflint --recursive
 ```
 
 It takes no arguments in recursive mode. Passing a directory or file name will result in an error.
+
+These flags are also valid for `--init` and `--version`. Recursive init is required when installing required plugins all at once:
+
+```console
+$ tflint --recursive --init
+$ tflint --recursive --version
+$ tflint --recursive
+```

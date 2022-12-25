@@ -139,9 +139,9 @@ Application Options:
       --var-file=FILE                                           Terraform variable file name
       --var='foo=bar'                                           Set a Terraform variable
       --module                                                  Inspect modules
-      --chdir=DIR                                               Switch to a different working directory before running inspection
+      --chdir=DIR                                               Switch to a different working directory before executing the command
+      --recursive                                               Run command in each directory recursively
       --force                                                   Return zero exit status even if issues found
-      --recursive                                               Inspect directories recursively
       --color                                                   Enable colorized output
       --no-color                                                Disable colorized output
 
