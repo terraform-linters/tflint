@@ -29,3 +29,5 @@ jobs:
         cache: true
     - name: Run e2e
       run: make e2e
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -27,6 +27,8 @@ jobs:
       run: |
         ./install_linux.sh
         tflint -v
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Install specific version
       env:
         TFLINT_VERSION: v0.15.0
@@ -40,6 +42,7 @@ jobs:
         "$TFLINT_INSTALL_PATH/tflint" -v
       env:
         TFLINT_INSTALL_PATH: ${{ github.workspace }}/install-path
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       shell: bash
   container:
     runs-on: ubuntu-latest
@@ -51,7 +54,7 @@ jobs:
       uses: actions/checkout@v3
     - name: Install dependencies
       run: |
-        apk add bash curl unzip
+        apk add bash curl curl-dev unzip
     - name: Install latest version
       run: |
         ./install_linux.sh
