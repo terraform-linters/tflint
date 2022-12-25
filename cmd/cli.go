@@ -178,3 +178,58 @@ func unknownOptionHandler(option string, arg flags.SplitArgument, args []string)
 	}
 	return []string{}, fmt.Errorf("`%s` is unknown option. Please run `tflint --help`", option)
 }
+
+func findWorkingDirs(opts Options) ([]string, error) {
+	if opts.Recursive && opts.Chdir != "" {
+		return []string{}, errors.New("cannot use --recursive and --chdir at the same time")
+	}
+
+	workingDirs := []string{}
+
+	if opts.Recursive {
+		// NOTE: The target directory is always the current directory in recursive mode
+		err := filepath.WalkDir(".", func(path string, d os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if !d.IsDir() {
+				return nil
+			}
+			// hidden directories are skipped
+			if path != "." && strings.HasPrefix(d.Name(), ".") {
+				return filepath.SkipDir
+			}
+
+			workingDirs = append(workingDirs, path)
+			return nil
+		})
+		if err != nil {
+			return []string{}, err
+		}
+	} else {
+		if opts.Chdir == "" {
+			workingDirs = []string{"."}
+		} else {
+			workingDirs = []string{opts.Chdir}
+		}
+	}
+
+	return workingDirs, nil
+}
+
+func (cli *CLI) withinChangedDir(dir string, proc func() error) (err error) {
+	if dir != "." {
+		chErr := os.Chdir(dir)
+		if chErr != nil {
+			return fmt.Errorf("Failed to switch to a different working directory; %w", chErr)
+		}
+		defer func() {
+			chErr := os.Chdir(cli.originalWorkingDir)
+			if chErr != nil {
+				err = fmt.Errorf("Failed to switch to the original working directory; %s; %w", chErr, err)
+			}
+		}()
+	}
+
+	return proc()
+}
