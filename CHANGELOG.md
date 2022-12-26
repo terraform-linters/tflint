@@ -1,3 +1,42 @@
+## 0.44.0 (2022-12-26)
+
+This release added support for `--chdir` and `--recursive` flags. Mostly loader related improvements, including some refactorings.
+
+The directory argument (e.g. `tflint dir`) has been deprecated. It works in v0.44 but will be removed in a future version. We recommend migrating to `tflint --chdir=dir`.
+
+The `--recursive` flag is an experimental feature. It may not suit all workflows. We may change behavior frequently to keep improving.
+
+### Enhancements
+
+- [#1612](https://github.com/terraform-linters/tflint/pull/1612): cmd: Add `--chdir` option ([@wata727](https://github.com/wata727))
+  - This change deprecates the directory argument. If you are using `tflint dir`, you should migrate to `tflint --chdir=dir`. In most cases the directory argument can be replaced with `--chdir`.
+  - The directory argument works in v0.44 but will be removed in a future version.
+- [#1622](https://github.com/terraform-linters/tflint/pull/1622) [#1629](https://github.com/terraform-linters/tflint/pull/1629): cmd: Add `--recursive` option ([@wata727](https://github.com/wata727) [@bendrucker](https://github.com/bendrucker))
+  - The `--recursive` option is an experimental feature. Behavior may change in future versions.
+- [#1626](https://github.com/terraform-linters/tflint/pull/1626): plugin: Add support for GetOriginalwd API ([@wata727](https://github.com/wata727))
+  - `GetOriginalwd()` is available from SDK v0.15.
+- [#1630](https://github.com/terraform-linters/tflint/pull/1630): Bump tflint-plugin-sdk to v0.15.0 ([@wata727](https://github.com/wata727))
+- [#1631](https://github.com/terraform-linters/tflint/pull/1631): Bump bundled terraform ruleset to v0.2.2 ([@wata727](https://github.com/wata727))
+
+### Changes
+
+- [#1610](https://github.com/terraform-linters/tflint/pull/1610): terraform: Move loader to under the terraform package ([@wata727](https://github.com/wata727))
+  - Changed the directory for autoloading value files when using a directory argument. Previously, `terraform.tfvars` and `*.auto.tfvars` in the current directory were loaded, but since v0.44, value files in the argument directory are loaded.
+  - In any case, the directory argument is deprecated and we recommend migrating to `--chdir`.
+
+### Chores
+
+- [#1602](https://github.com/terraform-linters/tflint/pull/1602): build(deps): Bump github.com/spf13/afero from 1.9.2 to 1.9.3
+- [#1603](https://github.com/terraform-linters/tflint/pull/1603): build(deps): Bump google.golang.org/grpc from 1.50.1 to 1.51.0
+- [#1607](https://github.com/terraform-linters/tflint/pull/1607): docs: Revise developer guide ([@wata727](https://github.com/wata727))
+- [#1611](https://github.com/terraform-linters/tflint/pull/1611): build(deps): Bump alpine from 3.16.3 to 3.17.0
+- [#1614](https://github.com/terraform-linters/tflint/pull/1614): build(deps): Bump golang.org/x/text from 0.4.0 to 0.5.0
+- [#1615](https://github.com/terraform-linters/tflint/pull/1615): tests: pass $GITHUB_TOKEN  ([@bendrucker](https://github.com/bendrucker))
+- [#1620](https://github.com/terraform-linters/tflint/pull/1620): build(deps): Bump github.com/go-test/deep from 1.0.8 to 1.1.0
+- [#1621](https://github.com/terraform-linters/tflint/pull/1621): build(deps): Bump github.com/hashicorp/go-plugin from 1.4.6 to 1.4.8
+- [#1623](https://github.com/terraform-linters/tflint/pull/1623): build(deps): Bump goreleaser/goreleaser-action from 3 to 4
+- [#1627](https://github.com/terraform-linters/tflint/pull/1627) [#1628](https://github.com/terraform-linters/tflint/pull/1628): chores: Fix flaky CI ([@wata727](https://github.com/wata727))
+
 ## 0.43.0 (2022-11-19)
 
 This release adds support for dynamic blocks, including block expansion and iterator evaluation. Previously, dynamic blocks were always treated as a single block.
