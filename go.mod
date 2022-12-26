@@ -8,7 +8,7 @@ require (
 	github.com/hashicorp/go-getter v1.6.2
 	github.com/hashicorp/go-version v1.6.0
 	github.com/hashicorp/hcl/v2 v2.15.0
-	github.com/hashicorp/terraform-registry-address v0.0.0-20220623143253-7d51757b572c
+	github.com/hashicorp/terraform-registry-address v0.1.0
 	github.com/terraform-linters/tflint-plugin-sdk v0.15.0
 	github.com/zclconf/go-cty v1.12.1
 )
