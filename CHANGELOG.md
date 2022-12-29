@@ -1,3 +1,10 @@
+## 0.44.1 (2022-12-30)
+
+### BugFixes
+
+- [#1635](https://github.com/terraform-linters/tflint/pull/1635): terraform: Fix `path.module` when using `--chdir`/`--recursive` ([@wata727](https://github.com/wata727))
+- [#1636](https://github.com/terraform-linters/tflint/pull/1636): cmd: Fix file arguments handling when using `--chdir` ([@wata727](https://github.com/wata727))
+
 ## 0.44.0 (2022-12-26)
 
 This release added support for `--chdir` and `--recursive` flags. Mostly loader related improvements, including some refactorings.
