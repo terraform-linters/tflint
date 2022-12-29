@@ -91,7 +91,7 @@ func TestLoadConfigDir(t *testing.T) {
 			baseDir: "foo",
 			dir:     ".",
 			want: &Module{
-				SourceDir: "foo",
+				SourceDir: ".",
 				primaries: []*hcl.File{
 					{Body: hcltest.MockBody(&hcl.BodyContent{MissingItemRange: hcl.Range{Filename: filepath.Join("foo", "main.tf")}})},
 				},
@@ -151,7 +151,7 @@ func TestLoadConfigDir(t *testing.T) {
 			baseDir: "foo",
 			dir:     "bar",
 			want: &Module{
-				SourceDir: filepath.Join("foo", "bar"),
+				SourceDir: "bar",
 				primaries: []*hcl.File{
 					{Body: hcltest.MockBody(&hcl.BodyContent{MissingItemRange: hcl.Range{Filename: filepath.Join("foo", "bar", "main.tf")}})},
 				},

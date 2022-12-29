@@ -30,48 +30,48 @@ func TestLoadConfig_v0_15_0(t *testing.T) {
 		// module.instance
 		testChildModule(t, config, "instance", "ec2")
 		// module.consul
-		testChildModule(t, config, "consul", filepath.Join(".terraform", "modules", "consul"))
+		testChildModule(t, config, "consul", ".terraform/modules/consul")
 		// module.consul.module.consul_clients
 		testChildModule(
 			t,
 			config.Children["consul"],
 			"consul_clients",
-			filepath.Join(".terraform", "modules", "consul", "modules", "consul-cluster"),
+			".terraform/modules/consul/modules/consul-cluster",
 		)
 		// module.consul.module.consul_clients.module.iam_policies
 		testChildModule(
 			t,
 			config.Children["consul"].Children["consul_clients"],
 			"iam_policies",
-			filepath.Join(".terraform", "modules", "consul", "modules", "consul-iam-policies"),
+			".terraform/modules/consul/modules/consul-iam-policies",
 		)
 		// module.consul.module.consul_clients.module.security_group_rules
 		testChildModule(
 			t,
 			config.Children["consul"].Children["consul_clients"],
 			"security_group_rules",
-			filepath.Join(".terraform", "modules", "consul", "modules", "consul-security-group-rules"),
+			".terraform/modules/consul/modules/consul-security-group-rules",
 		)
 		// module.consul.module.consul_servers
 		testChildModule(
 			t,
 			config.Children["consul"],
 			"consul_servers",
-			filepath.Join(".terraform", "modules", "consul", "modules", "consul-cluster"),
+			".terraform/modules/consul/modules/consul-cluster",
 		)
 		// module.consul.module.consul_servers.module.iam_policies
 		testChildModule(
 			t,
 			config.Children["consul"].Children["consul_servers"],
 			"iam_policies",
-			filepath.Join(".terraform", "modules", "consul", "modules", "consul-iam-policies"),
+			".terraform/modules/consul/modules/consul-iam-policies",
 		)
 		// module.consul.module.consul_servers.module.security_group_rules
 		testChildModule(
 			t,
 			config.Children["consul"].Children["consul_servers"],
 			"security_group_rules",
-			filepath.Join(".terraform", "modules", "consul", "modules", "consul-security-group-rules"),
+			".terraform/modules/consul/modules/consul-security-group-rules",
 		)
 	})
 }
@@ -89,54 +89,54 @@ func TestLoadConfig_v0_15_0_withBaseDir(t *testing.T) {
 		}
 
 		// root
-		if config.Module.SourceDir != "v0.15.0_module" {
-			t.Fatalf("root module path: want=%s, got=%s", "v0.15.0_module", config.Module.SourceDir)
+		if config.Module.SourceDir != "." {
+			t.Fatalf("root module path: want=%s, got=%s", ".", config.Module.SourceDir)
 		}
 		// module.instance
-		testChildModule(t, config, "instance", filepath.Join("v0.15.0_module", "ec2"))
+		testChildModule(t, config, "instance", "ec2")
 		// module.consul
-		testChildModule(t, config, "consul", filepath.Join("v0.15.0_module", ".terraform", "modules", "consul"))
+		testChildModule(t, config, "consul", ".terraform/modules/consul")
 		// module.consul.module.consul_clients
 		testChildModule(
 			t,
 			config.Children["consul"],
 			"consul_clients",
-			filepath.Join("v0.15.0_module", ".terraform", "modules", "consul", "modules", "consul-cluster"),
+			".terraform/modules/consul/modules/consul-cluster",
 		)
 		// module.consul.module.consul_clients.module.iam_policies
 		testChildModule(
 			t,
 			config.Children["consul"].Children["consul_clients"],
 			"iam_policies",
-			filepath.Join("v0.15.0_module", ".terraform", "modules", "consul", "modules", "consul-iam-policies"),
+			".terraform/modules/consul/modules/consul-iam-policies",
 		)
 		// module.consul.module.consul_clients.module.security_group_rules
 		testChildModule(
 			t,
 			config.Children["consul"].Children["consul_clients"],
 			"security_group_rules",
-			filepath.Join("v0.15.0_module", ".terraform", "modules", "consul", "modules", "consul-security-group-rules"),
+			".terraform/modules/consul/modules/consul-security-group-rules",
 		)
 		// module.consul.module.consul_servers
 		testChildModule(
 			t,
 			config.Children["consul"],
 			"consul_servers",
-			filepath.Join("v0.15.0_module", ".terraform", "modules", "consul", "modules", "consul-cluster"),
+			".terraform/modules/consul/modules/consul-cluster",
 		)
 		// module.consul.module.consul_servers.module.iam_policies
 		testChildModule(
 			t,
 			config.Children["consul"].Children["consul_servers"],
 			"iam_policies",
-			filepath.Join("v0.15.0_module", ".terraform", "modules", "consul", "modules", "consul-iam-policies"),
+			".terraform/modules/consul/modules/consul-iam-policies",
 		)
 		// module.consul.module.consul_servers.module.security_group_rules
 		testChildModule(
 			t,
 			config.Children["consul"].Children["consul_servers"],
 			"security_group_rules",
-			filepath.Join("v0.15.0_module", ".terraform", "modules", "consul", "modules", "consul-security-group-rules"),
+			".terraform/modules/consul/modules/consul-security-group-rules",
 		)
 	})
 }

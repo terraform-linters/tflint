@@ -6,7 +6,7 @@
         "severity": "error",
         "link": ""
       },
-      "message": "instance type is from_config-from_cli-from_auto-from_auto_default-file_in_dir-file_in_root",
+      "message": "instance type is from_config-from_cli-from_auto-from_auto_default-file_in_dir-file_in_root-file_in_module-file_in_module",
       "range": {
         "filename": "dir/main.tf",
         "start": {
@@ -15,7 +15,7 @@
         },
         "end": {
           "line": 20,
-          "column": 148
+          "column": 220
         }
       },
       "callers": [
@@ -27,7 +27,7 @@
           },
           "end": {
             "line": 20,
-            "column": 148
+            "column": 220
           }
         },
         {

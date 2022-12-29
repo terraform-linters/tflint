@@ -56,7 +56,8 @@ func NewParser(fs afero.Fs) *Parser {
 // parsed using the HCL JSON syntax.
 //
 // If a baseDir is passed, the loaded files are assumed to be loaded from that
-// directory.
+// directory. However, SourceDir does not contain baseDir because it affects
+// `path.module` and `path.root` values.
 func (p *Parser) LoadConfigDir(baseDir, dir string) (*Module, hcl.Diagnostics) {
 	primaries, overrides, diags := p.configDirFiles(baseDir, dir)
 	if diags.HasErrors() {
@@ -95,7 +96,8 @@ func (p *Parser) LoadConfigDir(baseDir, dir string) (*Module, hcl.Diagnostics) {
 		return mod, diags
 	}
 
-	mod.SourceDir = filepath.Join(baseDir, dir)
+	// Do not contain baseDir because it affects `path.module` and `path.root` values.
+	mod.SourceDir = dir
 
 	buildDiags := mod.build()
 	diags = diags.Extend(buildDiags)
