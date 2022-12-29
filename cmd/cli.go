@@ -88,11 +88,6 @@ func (cli *CLI) Run(args []string) int {
 		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse CLI options; %w", err), map[string][]byte{})
 		return ExitCodeError
 	}
-	dir, filterFiles, err := processArgs(args[1:])
-	if err != nil {
-		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse CLI arguments; %w", err), map[string][]byte{})
-		return ExitCodeError
-	}
 
 	switch {
 	case opts.Version:
@@ -104,51 +99,8 @@ func (cli *CLI) Run(args []string) int {
 	case opts.ActAsBundledPlugin:
 		return cli.actAsBundledPlugin()
 	default:
-		return cli.inspect(opts, dir, filterFiles)
+		return cli.inspect(opts, args)
 	}
-}
-
-func processArgs(args []string) (string, []string, error) {
-	if len(args) == 0 {
-		return ".", []string{}, nil
-	}
-
-	var dir string
-	filterFiles := []string{}
-
-	for _, file := range args {
-		fileInfo, err := os.Stat(file)
-		if err != nil {
-			if os.IsNotExist(err) {
-				return dir, filterFiles, fmt.Errorf("Failed to load `%s`: File not found", file)
-			}
-			return dir, filterFiles, fmt.Errorf("Failed to load `%s`: %s", file, err)
-		}
-
-		if fileInfo.IsDir() {
-			dir = file
-			if len(args) != 1 {
-				return dir, filterFiles, fmt.Errorf("Failed to load `%s`: Multiple arguments are not allowed when passing a directory", file)
-			}
-			return dir, filterFiles, nil
-		}
-
-		if !strings.HasSuffix(file, ".tf") && !strings.HasSuffix(file, ".tf.json") {
-			return dir, filterFiles, fmt.Errorf("Failed to load `%s`: File is not a target of Terraform", file)
-		}
-
-		fileDir := filepath.Dir(file)
-		if dir == "" {
-			dir = fileDir
-			filterFiles = append(filterFiles, file)
-		} else if fileDir == dir {
-			filterFiles = append(filterFiles, file)
-		} else {
-			return dir, filterFiles, fmt.Errorf("Failed to load `%s`: Multiple files in different directories are not allowed", file)
-		}
-	}
-
-	return dir, filterFiles, nil
 }
 
 func unknownOptionHandler(option string, arg flags.SplitArgument, args []string) ([]string, error) {
