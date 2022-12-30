@@ -275,6 +275,21 @@ func TestIntegration(t *testing.T) {
 			stderr:  fmt.Sprintf("Failed to load `%s`: Multiple files in different directories are not allowed", filepath.Join("subdir", "main.tf")),
 		},
 		{
+			name:    "--filter",
+			command: "./tflint --filter=empty.tf",
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeOK,
+			stdout:  "", // main.tf is ignored
+		},
+		{
+			name:    "--filter with multiple files",
+			command: "./tflint --filter=empty.tf --filter=main.tf",
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeIssuesFound,
+			// main.tf is not ignored
+			stdout: fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is t2.micro")),
+		},
+		{
 			name:    "--chdir",
 			command: "./tflint --chdir=subdir",
 			dir:     "chdir",
@@ -303,6 +318,13 @@ func TestIntegration(t *testing.T) {
 			stderr:  "Cannot use --chdir and directory argument at the same time",
 		},
 		{
+			name:    "--chdir and --filter",
+			command: "./tflint --chdir=subdir --filter=main.tf",
+			dir:     "chdir",
+			status:  cmd.ExitCodeIssuesFound,
+			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is m5.2xlarge")),
+		},
+		{
 			name:    "--recursive and file argument",
 			command: "./tflint --recursive main.tf",
 			dir:     "chdir",
@@ -315,6 +337,13 @@ func TestIntegration(t *testing.T) {
 			dir:     "chdir",
 			status:  cmd.ExitCodeError,
 			stderr:  "Cannot use --recursive and arguments at the same time",
+		},
+		{
+			name:    "--recursive and --filter",
+			command: "./tflint --recursive --filter=main.tf",
+			dir:     "chdir",
+			status:  cmd.ExitCodeIssuesFound,
+			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is m5.2xlarge")),
 		},
 	}
 

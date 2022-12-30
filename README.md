@@ -123,7 +123,7 @@ TFLint inspects files under the current directory by default. You can change the
 ```
 $ tflint --help
 Usage:
-  tflint [OPTIONS] [FILE or DIR...]
+  tflint --chdir=DIR/--recursive [OPTIONS]
 
 Application Options:
   -v, --version                                                 Print TFLint version
@@ -141,6 +141,7 @@ Application Options:
       --module                                                  Inspect modules
       --chdir=DIR                                               Switch to a different working directory before executing the command
       --recursive                                               Run command in each directory recursively
+      --filter=FILE                                             Filter reported issues by file name
       --force                                                   Return zero exit status even if issues found
       --color                                                   Enable colorized output
       --no-color                                                Disable colorized output
