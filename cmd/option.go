@@ -24,7 +24,7 @@ type Options struct {
 	Module             bool     `long:"module" description:"Inspect modules"`
 	Chdir              string   `long:"chdir" description:"Switch to a different working directory before executing the command" value-name:"DIR"`
 	Recursive          bool     `long:"recursive" description:"Run command in each directory recursively"`
-	Filter             []string `long:"filter" description:"Filter reported issues by file name" value-name:"FILE"`
+	Filter             []string `long:"filter" description:"Filter issues by file names or globs" value-name:"FILE"`
 	Force              bool     `long:"force" description:"Return zero exit status even if issues found"`
 	Color              bool     `long:"color" description:"Enable colorized output"`
 	NoColor            bool     `long:"no-color" description:"Disable colorized output"`

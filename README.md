@@ -141,7 +141,7 @@ Application Options:
       --module                                                  Inspect modules
       --chdir=DIR                                               Switch to a different working directory before executing the command
       --recursive                                               Run command in each directory recursively
-      --filter=FILE                                             Filter reported issues by file name
+      --filter=FILE                                             Filter issues by file names or globs.
       --force                                                   Return zero exit status even if issues found
       --color                                                   Enable colorized output
       --no-color                                                Disable colorized output

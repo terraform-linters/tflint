@@ -290,6 +290,20 @@ func TestIntegration(t *testing.T) {
 			stdout: fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is t2.micro")),
 		},
 		{
+			name:    "--filter with glob (files found)",
+			command: "./tflint --filter=*.tf",
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeIssuesFound,
+			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is t2.micro")),
+		},
+		{
+			name:    "--filter with glob (files not found)",
+			command: "./tflint --filter=*_generated.tf",
+			dir:     "multiple_files",
+			status:  cmd.ExitCodeOK,
+			stdout:  "",
+		},
+		{
 			name:    "--chdir",
 			command: "./tflint --chdir=subdir",
 			dir:     "chdir",

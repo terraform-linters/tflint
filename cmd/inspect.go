@@ -45,7 +45,18 @@ func (cli *CLI) inspect(opts Options, args []string) int {
 			if len(opts.Filter) > 0 && (targetDir != "." || len(filterFiles) > 0) {
 				return fmt.Errorf("Cannot use --filter and arguments at the same time")
 			}
-			filterFiles = append(filterFiles, opts.Filter...)
+
+			for _, pattern := range opts.Filter {
+				files, err := filepath.Glob(pattern)
+				if err != nil {
+					return fmt.Errorf("Failed to parse --filter options; %w", err)
+				}
+				// Add the raw pattern to return an empty result if it doesn't match any files
+				if len(files) == 0 {
+					filterFiles = append(filterFiles, pattern)
+				}
+				filterFiles = append(filterFiles, files...)
+			}
 
 			// Join with the working directory to create the fullpath
 			for i, file := range filterFiles {
