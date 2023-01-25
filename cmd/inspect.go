@@ -95,14 +95,12 @@ func (cli *CLI) inspect(opts Options, args []string) int {
 		if opts.MinimumSeverity != "" {
 			var minSeverity tflint.Severity
 			switch strings.ToLower(opts.MinimumSeverity) {
-			case "info":
-				minSeverity = 0
 			case "warning":
 				minSeverity = 1
 			case "error":
 				minSeverity = 2
 			default:
-				minSeverity = 0
+				return ExitCodeIssuesFound
 			}
 
 			for _, i := range issues {
