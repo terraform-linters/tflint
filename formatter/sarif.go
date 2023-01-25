@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/owenrumney/go-sarif/sarif"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -23,11 +24,11 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, appErr error) {
 
 		var level string
 		switch issue.Rule.Severity() {
-		case tflint.ERROR:
+		case sdk.ERROR:
 			level = "error"
-		case tflint.NOTICE:
+		case sdk.NOTICE:
 			level = "note"
-		case tflint.WARNING:
+		case sdk.WARNING:
 			level = "warning"
 		default:
 			panic(fmt.Errorf("Unexpected lint type: %s", issue.Rule.Severity()))

@@ -1,6 +1,9 @@
 package formatter
 
-import "github.com/terraform-linters/tflint/tflint"
+import (
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	"github.com/terraform-linters/tflint/tflint"
+)
 
 type testRule struct{}
 
@@ -13,7 +16,7 @@ func (r *testRule) Enabled() bool {
 }
 
 func (r *testRule) Severity() tflint.Severity {
-	return tflint.ERROR
+	return sdk.ERROR
 }
 
 func (r *testRule) Link() string {

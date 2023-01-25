@@ -9,27 +9,27 @@ import (
 
 // Options is an option specified by arguments.
 type Options struct {
-	Version            bool     `short:"v" long:"version" description:"Print TFLint version"`
-	Init               bool     `long:"init" description:"Install plugins"`
-	Langserver         bool     `long:"langserver" description:"Start language server"`
-	Format             string   `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" choice:"junit" choice:"compact" choice:"sarif"`
-	Config             string   `short:"c" long:"config" description:"Config file name" value-name:"FILE" default:".tflint.hcl"`
-	IgnoreModules      []string `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE"`
-	EnableRules        []string `long:"enable-rule" description:"Enable rules from the command line" value-name:"RULE_NAME"`
-	DisableRules       []string `long:"disable-rule" description:"Disable rules from the command line" value-name:"RULE_NAME"`
-	Only               []string `long:"only" description:"Enable only this rule, disabling all other defaults. Can be specified multiple times" value-name:"RULE_NAME"`
-	EnablePlugins      []string `long:"enable-plugin" description:"Enable plugins from the command line" value-name:"PLUGIN_NAME"`
-	Varfiles           []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
-	Variables          []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
-	Module             bool     `long:"module" description:"Inspect modules"`
-	Chdir              string   `long:"chdir" description:"Switch to a different working directory before executing the command" value-name:"DIR"`
-	Recursive          bool     `long:"recursive" description:"Run command in each directory recursively"`
-	Filter             []string `long:"filter" description:"Filter issues by file names or globs" value-name:"FILE"`
-	Force              bool     `long:"force" description:"Return zero exit status even if issues found"`
-	MinimumSeverity    string   `long:"minimum-severity" description:"Sets minimum severity for exiting with a non-zero error code" value-name:"SEVERITY"`
-	Color              bool     `long:"color" description:"Enable colorized output"`
-	NoColor            bool     `long:"no-color" description:"Disable colorized output"`
-	ActAsBundledPlugin bool     `long:"act-as-bundled-plugin" hidden:"true"`
+	Version                bool     `short:"v" long:"version" description:"Print TFLint version"`
+	Init                   bool     `long:"init" description:"Install plugins"`
+	Langserver             bool     `long:"langserver" description:"Start language server"`
+	Format                 string   `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" choice:"junit" choice:"compact" choice:"sarif"`
+	Config                 string   `short:"c" long:"config" description:"Config file name" value-name:"FILE" default:".tflint.hcl"`
+	IgnoreModules          []string `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE"`
+	EnableRules            []string `long:"enable-rule" description:"Enable rules from the command line" value-name:"RULE_NAME"`
+	DisableRules           []string `long:"disable-rule" description:"Disable rules from the command line" value-name:"RULE_NAME"`
+	Only                   []string `long:"only" description:"Enable only this rule, disabling all other defaults. Can be specified multiple times" value-name:"RULE_NAME"`
+	EnablePlugins          []string `long:"enable-plugin" description:"Enable plugins from the command line" value-name:"PLUGIN_NAME"`
+	Varfiles               []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
+	Variables              []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
+	Module                 bool     `long:"module" description:"Inspect modules"`
+	Chdir                  string   `long:"chdir" description:"Switch to a different working directory before executing the command" value-name:"DIR"`
+	Recursive              bool     `long:"recursive" description:"Run command in each directory recursively"`
+	Filter                 []string `long:"filter" description:"Filter issues by file names or globs" value-name:"FILE"`
+	Force                  bool     `long:"force" description:"Return zero exit status even if issues found"`
+	MinimumFailureSeverity string   `long:"minimum-failure-severity" description:"Sets minimum severity level for exiting with a non-zero error code" choice:"error" choice:"warning" choice:"notice"`
+	Color                  bool     `long:"color" description:"Enable colorized output"`
+	NoColor                bool     `long:"no-color" description:"Disable colorized output"`
+	ActAsBundledPlugin     bool     `long:"act-as-bundled-plugin" hidden:"true"`
 }
 
 func (opts *Options) toConfig() *tflint.Config {

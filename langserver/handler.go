@@ -16,6 +16,7 @@ import (
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/tflint"
@@ -279,11 +280,11 @@ func pathToURI(path string) lsp.DocumentURI {
 
 func toLSPSeverity(severity tflint.Severity) lsp.DiagnosticSeverity {
 	switch severity {
-	case tflint.ERROR:
+	case sdk.ERROR:
 		return lsp.Error
-	case tflint.WARNING:
+	case sdk.WARNING:
 		return lsp.Warning
-	case tflint.NOTICE:
+	case sdk.NOTICE:
 		return lsp.Information
 	default:
 		panic(fmt.Sprintf("Unexpected severity: %s", severity))
