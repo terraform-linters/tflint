@@ -26,6 +26,7 @@ type Options struct {
 	Recursive          bool     `long:"recursive" description:"Run command in each directory recursively"`
 	Filter             []string `long:"filter" description:"Filter issues by file names or globs" value-name:"FILE"`
 	Force              bool     `long:"force" description:"Return zero exit status even if issues found"`
+	MinimumSeverity    string   `long:"minimum-severity" description:"Sets minimum severity for exiting with a non-zero error code" value-name:"SEVERITY"`
 	Color              bool     `long:"color" description:"Enable colorized output"`
 	NoColor            bool     `long:"no-color" description:"Disable colorized output"`
 	ActAsBundledPlugin bool     `long:"act-as-bundled-plugin" hidden:"true"`

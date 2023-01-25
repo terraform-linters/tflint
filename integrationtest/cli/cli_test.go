@@ -64,6 +64,13 @@ func TestIntegration(t *testing.T) {
 			stdout:  "",
 		},
 		{
+			name:    "`--minimum-severity` option with no issues",
+			command: "./tflint --minimum-severity=info",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeOK,
+			stdout:  "",
+		},
+		{
 			name:    "`--only` option",
 			command: "./tflint --only aws_instance_example_type",
 			dir:     "no_issues",
@@ -192,6 +199,20 @@ func TestIntegration(t *testing.T) {
 		{
 			name:    "`--force` option with issues",
 			command: "./tflint --force",
+			dir:     "issues_found",
+			status:  cmd.ExitCodeOK,
+			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is t2.micro")),
+		},
+		{
+			name:    "`--minimum-severity` option with issues and severity level info",
+			command: "./tflint --minimum-severity=info",
+			dir:     "issues_found",
+			status:  cmd.ExitCodeIssuesFound,
+			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is t2.micro")),
+		},
+		{
+			name:    "`--minimum-severity` option with issues and severity level warning",
+			command: "./tflint --minimum-severity=warning",
 			dir:     "issues_found",
 			status:  cmd.ExitCodeOK,
 			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is t2.micro")),

@@ -92,6 +92,27 @@ func (cli *CLI) inspect(opts Options, args []string) int {
 	cli.formatter.Print(issues, nil, cli.sources)
 
 	if len(issues) > 0 && !force {
+		if opts.MinimumSeverity != "" {
+			var minSeverity tflint.Severity
+			switch strings.ToLower(opts.MinimumSeverity) {
+			case "info":
+				minSeverity = 0
+			case "warning":
+				minSeverity = 1
+			case "error":
+				minSeverity = 2
+			default:
+				minSeverity = 0
+			}
+
+			for _, i := range issues {
+				if i.Rule.Severity() >= minSeverity {
+					return ExitCodeIssuesFound
+				}
+			}
+			return ExitCodeOK
+		}
+
 		return ExitCodeIssuesFound
 	}
 
