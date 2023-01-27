@@ -10,6 +10,7 @@ import (
 	"github.com/fatih/color"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclparse"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -123,11 +124,11 @@ func parseSources(sources map[string][]byte) map[string]*hcl.File {
 
 func colorSeverity(severity tflint.Severity) string {
 	switch severity {
-	case tflint.ERROR:
+	case sdk.ERROR:
 		return colorError(severity)
-	case tflint.WARNING:
+	case sdk.WARNING:
 		return colorWarning(severity)
-	case tflint.NOTICE:
+	case sdk.NOTICE:
 		return colorNotice(severity)
 	default:
 		panic("Unreachable")

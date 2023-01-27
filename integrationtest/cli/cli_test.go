@@ -64,6 +64,13 @@ func TestIntegration(t *testing.T) {
 			stdout:  "",
 		},
 		{
+			name:    "`--minimum-failure-severity` option with no issues",
+			command: "./tflint --minimum-failure-severity=notice",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeOK,
+			stdout:  "",
+		},
+		{
 			name:    "`--only` option",
 			command: "./tflint --only aws_instance_example_type",
 			dir:     "no_issues",
@@ -195,6 +202,27 @@ func TestIntegration(t *testing.T) {
 			dir:     "issues_found",
 			status:  cmd.ExitCodeOK,
 			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is t2.micro")),
+		},
+		{
+			name:    "`--minimum-failure-severity` option with warning issues and minimum-failure-severity notice",
+			command: "./tflint --minimum-failure-severity=notice",
+			dir:     "warnings_found",
+			status:  cmd.ExitCodeIssuesFound,
+			stdout:  fmt.Sprintf("%s (aws_s3_bucket_with_config_example)", color.New(color.Bold).Sprint("bucket name is test, config=bucket")),
+		},
+		{
+			name:    "`--minimum-failure-severity` option with warning issues and minimum-failure-severity warning",
+			command: "./tflint --minimum-failure-severity=warning",
+			dir:     "warnings_found",
+			status:  cmd.ExitCodeIssuesFound,
+			stdout:  fmt.Sprintf("%s (aws_s3_bucket_with_config_example)", color.New(color.Bold).Sprint("bucket name is test, config=bucket")),
+		},
+		{
+			name:    "`--minimum-failure-severity` option with warning issues and minimum-failure-severity error",
+			command: "./tflint --minimum-failure-severity=error",
+			dir:     "warnings_found",
+			status:  cmd.ExitCodeOK,
+			stdout:  fmt.Sprintf("%s (aws_s3_bucket_with_config_example)", color.New(color.Bold).Sprint("bucket name is test, config=bucket")),
 		},
 		{
 			name:    "`--no-color` option",

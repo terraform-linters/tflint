@@ -91,7 +91,7 @@ func (cli *CLI) inspect(opts Options, args []string) int {
 
 	cli.formatter.Print(issues, nil, cli.sources)
 
-	if len(issues) > 0 && !force {
+	if len(issues) > 0 && !force && exceedsMinimumFailure(issues, opts.MinimumFailureSeverity) {
 		return ExitCodeIssuesFound
 	}
 
@@ -306,4 +306,31 @@ func launchPlugins(config *tflint.Config) (*plugin.Plugin, error) {
 	}
 
 	return rulesetPlugin, nil
+}
+
+// Checks if the given issues contain severities above or equal to the given minimum failure opt. Defaults to true if an error occurs
+func exceedsMinimumFailure(issues tflint.Issues, minimumFailureOpt string) bool {
+	if minimumFailureOpt != "" {
+		minSeverity, err := tflint.NewSeverity(minimumFailureOpt)
+		if err != nil {
+			return true
+		}
+
+		minSeverityInt32, err := tflint.SeverityToInt32(minSeverity)
+		if err != nil {
+			return true
+		}
+
+		for _, i := range issues {
+			ruleSeverityInt32, err := tflint.SeverityToInt32(i.Rule.Severity())
+			if err != nil {
+				return true
+			}
+			if ruleSeverityInt32 >= minSeverityInt32 {
+				return true
+			}
+		}
+		return false
+	}
+	return true
 }

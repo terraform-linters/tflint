@@ -9,6 +9,7 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/zclconf/go-cty/cty"
@@ -393,7 +394,7 @@ func (r *testRule) Name() string {
 	return "test_rule"
 }
 func (r *testRule) Severity() Severity {
-	return ERROR
+	return sdk.ERROR
 }
 func (r *testRule) Link() string {
 	return ""

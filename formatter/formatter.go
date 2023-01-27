@@ -5,6 +5,7 @@ import (
 	"io"
 
 	hcl "github.com/hashicorp/hcl/v2"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -38,11 +39,11 @@ func (f *Formatter) Print(issues tflint.Issues, err error, sources map[string][]
 
 func toSeverity(lintType tflint.Severity) string {
 	switch lintType {
-	case tflint.ERROR:
+	case sdk.ERROR:
 		return "error"
-	case tflint.WARNING:
+	case sdk.WARNING:
 		return "warning"
-	case tflint.NOTICE:
+	case sdk.NOTICE:
 		return "info"
 	default:
 		panic(fmt.Errorf("Unexpected lint type: %s", lintType))

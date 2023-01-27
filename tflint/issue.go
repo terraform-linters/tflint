@@ -1,6 +1,7 @@
 package tflint
 
 import (
+	"fmt"
 	"sort"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -21,14 +22,33 @@ type Issues []*Issue
 // Severity indicates the severity of the issue
 type Severity = sdk.Severity
 
-const (
-	// ERROR is possible errors
-	ERROR Severity = iota
-	// WARNING doesn't cause problem immediately, but not good
-	WARNING
-	// NOTICE is not important, it's mentioned
-	NOTICE
-)
+// Creates a new severity from a string
+func NewSeverity(s string) (Severity, error) {
+	switch s {
+	case "error":
+		return sdk.ERROR, nil
+	case "warning":
+		return sdk.WARNING, nil
+	case "notice":
+		return sdk.NOTICE, nil
+	default:
+		return sdk.NOTICE, fmt.Errorf("%s is not a recognized severity", s)
+	}
+}
+
+// Converts a severity into an ascending int32
+func SeverityToInt32(s Severity) (int32, error) {
+	switch s {
+	case sdk.ERROR:
+		return 2, nil
+	case sdk.WARNING:
+		return 1, nil
+	case sdk.NOTICE:
+		return 0, nil
+	default:
+		return 0, fmt.Errorf("%s is not a recognized severity", s)
+	}
+}
 
 // Sort returns the sorted receiver
 func (issues Issues) Sort() Issues {

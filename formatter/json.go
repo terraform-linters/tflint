@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/hcl/v2"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -96,7 +97,7 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, appErr error) {
 			}
 		} else {
 			ret.Errors = []JSONError{{
-				Severity: toSeverity(tflint.ERROR),
+				Severity: toSeverity(sdk.ERROR),
 				Message:  appErr.Error(),
 			}}
 		}

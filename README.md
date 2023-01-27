@@ -143,6 +143,7 @@ Application Options:
       --recursive                                               Run command in each directory recursively
       --filter=FILE                                             Filter issues by file names or globs.
       --force                                                   Return zero exit status even if issues found
+      --minimum-failure-severity                                Sets minimum severity for exiting with a non-zero error code
       --color                                                   Enable colorized output
       --no-color                                                Disable colorized output
 
