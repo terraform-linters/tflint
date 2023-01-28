@@ -13,7 +13,7 @@ For example, the plugin (client) to the host (server) requests to:
 The host (client) to the plugin (server) requests to:
 
 - Apply plugin configs
-- Request to run inspecions
+- Request to run inspections
 
 The plugin system is implemented by [TFLint plugin SDK](https://github.com/terraform-linters/tflint-plugin-sdk). If you want to know more about `*.proto` and detailed gRPC server/client implementation, check out the SDK.
 
