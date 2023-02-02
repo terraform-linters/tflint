@@ -72,6 +72,10 @@ This limitation can be a problem if you need to run `--init` frequently, such as
 
 It's also a good idea to cache the plugin directory, as TFLint will only send requests if plugins aren't installed. See also the [setup-tflint's example](https://github.com/terraform-linters/setup-tflint#usage).
 
+## Keeping plugins up to date
+
+We recommend using automatic updates to keep your plugin version up-to-date. [Renovate supports TFLint plugins](https://docs.renovatebot.com/modules/manager/tflint-plugin/) to easily set up automated update workflows.
+
 ## Manual installation
 
 You can also install the plugin manually. This is mainly useful for plugin development and for plugins that are not published on GitHub. In that case, omit the `source` and `version` attributes.
