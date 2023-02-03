@@ -74,6 +74,10 @@ docker run --rm -v $(pwd):/data -t ghcr.io/terraform-linters/tflint
 
 If you want to run on GitHub Actions, [setup-tflint](https://github.com/terraform-linters/setup-tflint) action is available.
 
+### Trunk Check
+
+[Trunk Check](https://trunk.io/products/check) is a universal linter & formatter, available as a CLI, VSCode extension, and GitHub Action, which you can use to install and version tflint in your repository.
+
 ## Getting Started
 
 First, enable rules for [Terraform Language](https://www.terraform.io/language) (e.g. warn about deprecated syntax, unused declarations). [TFLint Ruleset for Terraform Language](https://github.com/terraform-linters/tflint-ruleset-terraform) is bundled with TFLint, so you can use it without installing it separately.
