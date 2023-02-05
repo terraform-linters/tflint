@@ -26,6 +26,7 @@ func Test_toConfig(t *testing.T) {
 			Command: "./tflint --module",
 			Expected: &tflint.Config{
 				Module:            true,
+				ModuleSet:         true,
 				Force:             false,
 				IgnoreModules:     map[string]bool{},
 				Varfiles:          []string{},
@@ -41,6 +42,7 @@ func Test_toConfig(t *testing.T) {
 			Expected: &tflint.Config{
 				Module:            false,
 				Force:             true,
+				ForceSet:          true,
 				IgnoreModules:     map[string]bool{},
 				Varfiles:          []string{},
 				Variables:         []string{},
@@ -173,13 +175,14 @@ func Test_toConfig(t *testing.T) {
 			Name:    "--only",
 			Command: "./tflint --only aws_instance_invalid_type",
 			Expected: &tflint.Config{
-				Module:            false,
-				Force:             false,
-				IgnoreModules:     map[string]bool{},
-				Varfiles:          []string{},
-				Variables:         []string{},
-				DisabledByDefault: true,
-				Only:              []string{"aws_instance_invalid_type"},
+				Module:               false,
+				Force:                false,
+				IgnoreModules:        map[string]bool{},
+				Varfiles:             []string{},
+				Variables:            []string{},
+				DisabledByDefault:    true,
+				DisabledByDefaultSet: true,
+				Only:                 []string{"aws_instance_invalid_type"},
 				Rules: map[string]*tflint.RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -226,6 +229,7 @@ func Test_toConfig(t *testing.T) {
 				Variables:         []string{},
 				DisabledByDefault: false,
 				Format:            "compact",
+				FormatSet:         true,
 				Rules:             map[string]*tflint.RuleConfig{},
 				Plugins:           map[string]*tflint.PluginConfig{},
 			},

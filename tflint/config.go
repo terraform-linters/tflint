@@ -58,17 +58,27 @@ var validFormats = []string{
 
 // Config describes the behavior of TFLint
 type Config struct {
-	Module            bool
-	Force             bool
-	IgnoreModules     map[string]bool
-	Varfiles          []string
-	Variables         []string
-	DisabledByDefault bool
-	Only              []string
-	PluginDir         string
-	Format            string
-	Rules             map[string]*RuleConfig
-	Plugins           map[string]*PluginConfig
+	Module    bool
+	ModuleSet bool
+
+	Force    bool
+	ForceSet bool
+
+	DisabledByDefault    bool
+	DisabledByDefaultSet bool
+
+	PluginDir    string
+	PluginDirSet bool
+
+	Format    string
+	FormatSet bool
+
+	Varfiles      []string
+	Variables     []string
+	Only          []string
+	IgnoreModules map[string]bool
+	Rules         map[string]*RuleConfig
+	Plugins       map[string]*PluginConfig
 
 	sources map[string][]byte
 }
@@ -185,10 +195,12 @@ func loadConfig(file afero.File) (*Config, error) {
 			for name, attr := range inner.Attributes {
 				switch name {
 				case "module":
+					config.ModuleSet = true
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.Module); err != nil {
 						return config, err
 					}
 				case "force":
+					config.ForceSet = true
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.Force); err != nil {
 						return config, err
 					}
@@ -205,14 +217,17 @@ func loadConfig(file afero.File) (*Config, error) {
 						return config, err
 					}
 				case "disabled_by_default":
+					config.DisabledByDefaultSet = true
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.DisabledByDefault); err != nil {
 						return config, err
 					}
 				case "plugin_dir":
+					config.PluginDirSet = true
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.PluginDir); err != nil {
 						return config, err
 					}
 				case "format":
+					config.FormatSet = true
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.Format); err != nil {
 						return config, err
 					}
@@ -252,16 +267,22 @@ func loadConfig(file afero.File) (*Config, error) {
 
 	log.Printf("[DEBUG] Config loaded")
 	log.Printf("[DEBUG]   Module: %t", config.Module)
+	log.Printf("[DEBUG]   ModuleSet: %t", config.ModuleSet)
 	log.Printf("[DEBUG]   Force: %t", config.Force)
+	log.Printf("[DEBUG]   ForceSet: %t", config.ForceSet)
+	log.Printf("[DEBUG]   DisabledByDefault: %t", config.DisabledByDefault)
+	log.Printf("[DEBUG]   DisabledByDefaultSet: %t", config.DisabledByDefaultSet)
+	log.Printf("[DEBUG]   PluginDir: %s", config.PluginDir)
+	log.Printf("[DEBUG]   PluginDirSet: %t", config.PluginDirSet)
+	log.Printf("[DEBUG]   Format: %s", config.Format)
+	log.Printf("[DEBUG]   FormatSet: %t", config.FormatSet)
+	log.Printf("[DEBUG]   Varfiles: %s", strings.Join(config.Varfiles, ", "))
+	log.Printf("[DEBUG]   Variables: %s", strings.Join(config.Variables, ", "))
+	log.Printf("[DEBUG]   Only: %s", strings.Join(config.Only, ", "))
 	log.Printf("[DEBUG]   IgnoreModules:")
 	for name, ignore := range config.IgnoreModules {
 		log.Printf("[DEBUG]     %s: %t", name, ignore)
 	}
-	log.Printf("[DEBUG]   Varfiles: %s", strings.Join(config.Varfiles, ", "))
-	log.Printf("[DEBUG]   Variables: %s", strings.Join(config.Variables, ", "))
-	log.Printf("[DEBUG]   DisabledByDefault: %t", config.DisabledByDefault)
-	log.Printf("[DEBUG]   PluginDir: %s", config.PluginDir)
-	log.Printf("[DEBUG]   Format: %s", config.Format)
 	log.Printf("[DEBUG]   Rules:")
 	for name, rule := range config.Rules {
 		log.Printf("[DEBUG]     %s: %t", name, rule.Enabled)
@@ -328,28 +349,34 @@ func (c *Config) Sources() map[string][]byte {
 // Merge merges the two configs and applies to itself.
 // Since the argument takes precedence, it can be used as overwriting of the config.
 func (c *Config) Merge(other *Config) {
-	if other.Module {
-		c.Module = true
+	if other.ModuleSet {
+		c.ModuleSet = true
+		c.Module = other.Module
 	}
-	if other.Force {
-		c.Force = true
+	if other.ForceSet {
+		c.ForceSet = true
+		c.Force = other.Force
 	}
-	if other.DisabledByDefault {
-		c.DisabledByDefault = true
+	if other.DisabledByDefaultSet {
+		c.DisabledByDefaultSet = true
+		c.DisabledByDefault = other.DisabledByDefault
 	}
-	if other.PluginDir != "" {
+	if other.PluginDirSet {
+		c.PluginDirSet = true
 		c.PluginDir = other.PluginDir
 	}
-	if other.Format != "" {
+	if other.FormatSet {
+		c.FormatSet = true
 		c.Format = other.Format
 	}
+
+	c.Varfiles = append(c.Varfiles, other.Varfiles...)
+	c.Variables = append(c.Variables, other.Variables...)
+	c.Only = append(c.Only, other.Only...)
 
 	for name, ignore := range other.IgnoreModules {
 		c.IgnoreModules[name] = ignore
 	}
-	c.Varfiles = append(c.Varfiles, other.Varfiles...)
-	c.Variables = append(c.Variables, other.Variables...)
-	c.Only = append(c.Only, other.Only...)
 
 	for name, rule := range other.Rules {
 		// HACK: If you enable the rule through the CLI instead of the file, its hcl.Body will be nil.

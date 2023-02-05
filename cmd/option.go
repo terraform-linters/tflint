@@ -21,11 +21,11 @@ type Options struct {
 	EnablePlugins          []string `long:"enable-plugin" description:"Enable plugins from the command line" value-name:"PLUGIN_NAME"`
 	Varfiles               []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
 	Variables              []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
-	Module                 bool     `long:"module" description:"Inspect modules"`
+	Module                 *bool    `long:"module" description:"Inspect modules"`
 	Chdir                  string   `long:"chdir" description:"Switch to a different working directory before executing the command" value-name:"DIR"`
 	Recursive              bool     `long:"recursive" description:"Run command in each directory recursively"`
 	Filter                 []string `long:"filter" description:"Filter issues by file names or globs" value-name:"FILE"`
-	Force                  bool     `long:"force" description:"Return zero exit status even if issues found"`
+	Force                  *bool    `long:"force" description:"Return zero exit status even if issues found"`
 	MinimumFailureSeverity string   `long:"minimum-failure-severity" description:"Sets minimum severity level for exiting with a non-zero error code" choice:"error" choice:"warning" choice:"notice"`
 	Color                  bool     `long:"color" description:"Enable colorized output"`
 	NoColor                bool     `long:"no-color" description:"Disable colorized output"`
@@ -50,20 +50,38 @@ func (opts *Options) toConfig() *tflint.Config {
 		opts.Variables = []string{}
 	}
 
-	log.Printf("[DEBUG] CLI Options")
-	log.Printf("[DEBUG]   Module: %t", opts.Module)
-	log.Printf("[DEBUG]   Force: %t", opts.Force)
-	log.Printf("[DEBUG]   IgnoreModules:")
-	for name, ignore := range ignoreModules {
-		log.Printf("[DEBUG]     %s: %t", name, ignore)
+	var module, moduleSet bool
+	if opts.Module == nil {
+		module = false
+		moduleSet = false
+	} else {
+		module = *opts.Module
+		moduleSet = true
 	}
+
+	var force, forceSet bool
+	if opts.Force == nil {
+		force = false
+		forceSet = false
+	} else {
+		force = *opts.Force
+		forceSet = true
+	}
+
+	log.Printf("[DEBUG] CLI Options")
+	log.Printf("[DEBUG]   Module: %t", module)
+	log.Printf("[DEBUG]   Force: %t", force)
+	log.Printf("[DEBUG]   Format: %s", opts.Format)
+	log.Printf("[DEBUG]   Varfiles: %s", strings.Join(opts.Varfiles, ", "))
+	log.Printf("[DEBUG]   Variables: %s", strings.Join(opts.Variables, ", "))
 	log.Printf("[DEBUG]   EnableRules: %s", strings.Join(opts.EnableRules, ", "))
 	log.Printf("[DEBUG]   DisableRules: %s", strings.Join(opts.DisableRules, ", "))
 	log.Printf("[DEBUG]   Only: %s", strings.Join(opts.Only, ", "))
 	log.Printf("[DEBUG]   EnablePlugins: %s", strings.Join(opts.EnablePlugins, ", "))
-	log.Printf("[DEBUG]   Varfiles: %s", strings.Join(opts.Varfiles, ", "))
-	log.Printf("[DEBUG]   Variables: %s", strings.Join(opts.Variables, ", "))
-	log.Printf("[DEBUG]   Format: %s", opts.Format)
+	log.Printf("[DEBUG]   IgnoreModules:")
+	for name, ignore := range ignoreModules {
+		log.Printf("[DEBUG]     %s: %t", name, ignore)
+	}
 
 	rules := map[string]*tflint.RuleConfig{}
 	if len(opts.Only) > 0 {
@@ -107,15 +125,23 @@ func (opts *Options) toConfig() *tflint.Config {
 	}
 
 	return &tflint.Config{
-		Module:            opts.Module,
-		Force:             opts.Force,
-		IgnoreModules:     ignoreModules,
-		Varfiles:          varfiles,
-		Variables:         opts.Variables,
-		DisabledByDefault: len(opts.Only) > 0,
-		Only:              opts.Only,
-		Format:            opts.Format,
-		Rules:             rules,
-		Plugins:           plugins,
+		Module:    module,
+		ModuleSet: moduleSet,
+
+		Force:    force,
+		ForceSet: forceSet,
+
+		Format:    opts.Format,
+		FormatSet: opts.Format != "",
+
+		DisabledByDefault:    len(opts.Only) > 0,
+		DisabledByDefaultSet: len(opts.Only) > 0,
+
+		Varfiles:      varfiles,
+		Variables:     opts.Variables,
+		Only:          opts.Only,
+		IgnoreModules: ignoreModules,
+		Rules:         rules,
+		Plugins:       plugins,
 	}
 }
