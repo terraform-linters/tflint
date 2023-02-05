@@ -21,7 +21,8 @@ type Options struct {
 	EnablePlugins          []string `long:"enable-plugin" description:"Enable plugins from the command line" value-name:"PLUGIN_NAME"`
 	Varfiles               []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
 	Variables              []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
-	Module                 *bool    `long:"module" description:"Inspect modules"`
+	Module                 *bool    `long:"module" description:"Enable module inspection"`
+	NoModule               *bool    `long:"no-module" description:"Disable module inspection"`
 	Chdir                  string   `long:"chdir" description:"Switch to a different working directory before executing the command" value-name:"DIR"`
 	Recursive              bool     `long:"recursive" description:"Run command in each directory recursively"`
 	Filter                 []string `long:"filter" description:"Filter issues by file names or globs" value-name:"FILE"`
@@ -51,19 +52,17 @@ func (opts *Options) toConfig() *tflint.Config {
 	}
 
 	var module, moduleSet bool
-	if opts.Module == nil {
-		module = false
-		moduleSet = false
-	} else {
+	if opts.Module != nil {
 		module = *opts.Module
+		moduleSet = true
+	}
+	if opts.NoModule != nil {
+		module = !*opts.NoModule
 		moduleSet = true
 	}
 
 	var force, forceSet bool
-	if opts.Force == nil {
-		force = false
-		forceSet = false
-	} else {
+	if opts.Force != nil {
 		force = *opts.Force
 		forceSet = true
 	}
