@@ -83,7 +83,9 @@ func (cli *CLI) inspect(opts Options, args []string) int {
 	if opts.Recursive {
 		// Respect "--format" and "--force" flags in recursive mode
 		cli.formatter.Format = opts.Format
-		force = opts.Force
+		if opts.Force != nil {
+			force = *opts.Force
+		}
 	} else {
 		cli.formatter.Format = cli.config.Format
 		force = cli.config.Force
