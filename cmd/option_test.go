@@ -37,6 +37,21 @@ func Test_toConfig(t *testing.T) {
 			},
 		},
 		{
+			Name:    "--no-module",
+			Command: "./tflint --no-module",
+			Expected: &tflint.Config{
+				Module:            false,
+				ModuleSet:         true,
+				Force:             false,
+				IgnoreModules:     map[string]bool{},
+				Varfiles:          []string{},
+				Variables:         []string{},
+				DisabledByDefault: false,
+				Rules:             map[string]*tflint.RuleConfig{},
+				Plugins:           map[string]*tflint.PluginConfig{},
+			},
+		},
+		{
 			Name:    "--force",
 			Command: "./tflint --force",
 			Expected: &tflint.Config{
