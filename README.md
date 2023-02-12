@@ -140,12 +140,13 @@ Application Options:
       --enable-plugin=PLUGIN_NAME                               Enable plugins from the command line
       --var-file=FILE                                           Terraform variable file name
       --var='foo=bar'                                           Set a Terraform variable
-      --module                                                  Inspect modules
+      --module                                                  Enable module inspection
+      --no-module                                               Disable module inspection
       --chdir=DIR                                               Switch to a different working directory before executing the command
       --recursive                                               Run command in each directory recursively
-      --filter=FILE                                             Filter issues by file names or globs.
+      --filter=FILE                                             Filter issues by file names or globs
       --force                                                   Return zero exit status even if issues found
-      --minimum-failure-severity                                Sets minimum severity for exiting with a non-zero error code
+      --minimum-failure-severity=[error|warning|notice]         Sets minimum severity level for exiting with a non-zero error code
       --color                                                   Enable colorized output
       --no-color                                                Disable colorized output
 
