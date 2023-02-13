@@ -136,13 +136,15 @@ func findPluginPath(path string) (string, error) {
 
 func checkPluginExistance(path string) (string, error) {
 	info, err := os.Stat(path)
-	if os.IsNotExist(err) {
+	if err != nil {
+		return "", err
+	}
+	// directory is invalid as a plugin path
+	if info.IsDir() {
 		return "", os.ErrNotExist
-	} else if !os.IsNotExist(err) && !info.IsDir() {
-		return path, nil
 	}
 
-	return "", os.ErrNotExist
+	return path, nil
 }
 
 func pluginClientError(err error, config *tflint.PluginConfig) error {

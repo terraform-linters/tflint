@@ -1,3 +1,39 @@
+## 0.45.0 (2023-02-13)
+
+This release adds support for some CLI flags. File arguments (e.g. `tflint main.tf`) have been deprecated by the new `--filter` flag. It works in v0.45 but will be removed in a future version. We recommend migrating to `tflint --filter=main.tf`.
+
+All arguments are deprecated from this release. If you're using arguments, you'll need to migrate to the `--chdir` or `--filter` flags.
+
+This release updates the expiration date of the built-in GPG public key. Existing keys will expire on 2023-05-01, so you are encouraged to update by then.
+
+### Enhancements
+
+- [#1638](https://github.com/terraform-linters/tflint/pull/1638): cmd: Add `--filter` option ([@wata727](https://github.com/wata727))
+- [#1654](https://github.com/terraform-linters/tflint/pull/1654): cmd: Add `--minimum-failure-severity` flag, sets minimum issue severity for non-zero exit ([@nicolajv](https://github.com/nicolajv))
+- [#1671](https://github.com/terraform-linters/tflint/pull/1671): cmd: Add` --no-module` option ([@wata727](https://github.com/wata727))
+- [#1679](https://github.com/terraform-linters/tflint/pull/1679): plugin: Set the GPG key expiration to 2025-05-01 ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#1664](https://github.com/terraform-linters/tflint/pull/1664): plugin: Fix panic when plugin path could not be loaded ([@wata727](https://github.com/wata727))
+- [#1678](https://github.com/terraform-linters/tflint/pull/1678): cmd: Reject all directory arguments with --chdir/--recursive ([@wata727](https://github.com/wata727))
+
+### Chores
+
+- [#1642](https://github.com/terraform-linters/tflint/pull/1642): build(deps): Bump golang.org/x/text from 0.5.0 to 0.6.0
+- [#1651](https://github.com/terraform-linters/tflint/pull/1651): build(deps): Bump golangci/golangci-lint-action from 3.3.1 to 3.4.0
+- [#1652](https://github.com/terraform-linters/tflint/pull/1652): build(deps): Bump github.com/fatih/color from 1.13.0 to 1.14.1
+- [#1653](https://github.com/terraform-linters/tflint/pull/1653): build(deps): Bump alpine from 3.17.0 to 3.17.1
+- [#1658](https://github.com/terraform-linters/tflint/pull/1658): docs: Fix typo in architecture guide ([@Ankushpandey-ti](https://github.com/Ankushpandey-ti))
+- [#1659](https://github.com/terraform-linters/tflint/pull/1659): build(deps): Bump github.com/hashicorp/hcl/v2 from 2.15.0 to 2.16.0
+- [#1660](https://github.com/terraform-linters/tflint/pull/1660): build(deps): Bump google.golang.org/grpc from 1.51.0 to 1.52.3
+- [#1661](https://github.com/terraform-linters/tflint/pull/1661): docs: Mention OPA ruleset ([@wata727](https://github.com/wata727))
+- [#1666](https://github.com/terraform-linters/tflint/pull/1666): docs: Add Environment Variables documentation ([@wata727](https://github.com/wata727))
+- [#1667](https://github.com/terraform-linters/tflint/pull/1667): docs: Mention Renovate TFLint plugins support ([@wata727](https://github.com/wata727))
+- [#1670](https://github.com/terraform-linters/tflint/pull/1670): tflint: Allow config to be merged even with initial values ([@wata727](https://github.com/wata727))
+- [#1673](https://github.com/terraform-linters/tflint/pull/1673): build(deps): Bump docker/build-push-action from 3 to 4
+- [#1674](https://github.com/terraform-linters/tflint/pull/1674): build(deps): Bump golang from 1.19-alpine3.16 to 1.20-alpine3.16
+
 ## 0.44.1 (2022-12-30)
 
 ### BugFixes

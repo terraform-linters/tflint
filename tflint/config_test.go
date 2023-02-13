@@ -72,8 +72,10 @@ plugin "baz" {
 }`,
 			},
 			want: &Config{
-				Module: true,
-				Force:  true,
+				Module:    true,
+				ModuleSet: true,
+				Force:     true,
+				ForceSet:  true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-module": true,
 				},
@@ -81,7 +83,9 @@ plugin "baz" {
 				Variables:         []string{"foo=bar", "bar=['foo']"},
 				DisabledByDefault: false,
 				PluginDir:         "~/.tflint.d/plugins",
+				PluginDirSet:      true,
 				Format:            "compact",
+				FormatSet:         true,
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -136,13 +140,15 @@ config {
 }`,
 			},
 			want: &Config{
-				Module:            false,
-				Force:             true,
-				IgnoreModules:     map[string]bool{},
-				Varfiles:          []string{},
-				Variables:         []string{},
-				DisabledByDefault: true,
-				Rules:             map[string]*RuleConfig{},
+				Module:               false,
+				Force:                true,
+				ForceSet:             true,
+				IgnoreModules:        map[string]bool{},
+				Varfiles:             []string{},
+				Variables:            []string{},
+				DisabledByDefault:    true,
+				DisabledByDefaultSet: true,
+				Rules:                map[string]*RuleConfig{},
 				Plugins: map[string]*PluginConfig{
 					"terraform": {
 						Name:    "terraform",
@@ -329,8 +335,10 @@ func TestMerge(t *testing.T) {
 	}
 
 	config := &Config{
-		Module: true,
-		Force:  true,
+		Module:    true,
+		ModuleSet: true,
+		Force:     true,
+		ForceSet:  true,
 		IgnoreModules: map[string]bool{
 			"github.com/terraform-linters/example-1": true,
 			"github.com/terraform-linters/example-2": false,
@@ -339,7 +347,9 @@ func TestMerge(t *testing.T) {
 		Variables:         []string{"foo=bar"},
 		DisabledByDefault: false,
 		PluginDir:         "./.tflint.d/plugins",
+		PluginDirSet:      true,
 		Format:            "compact",
+		FormatSet:         true,
 		Rules: map[string]*RuleConfig{
 			"aws_instance_invalid_type": {
 				Name:    "aws_instance_invalid_type",
@@ -382,17 +392,21 @@ func TestMerge(t *testing.T) {
 		{
 			name: "override and merge",
 			base: &Config{
-				Module: true,
-				Force:  false,
+				Module:    true,
+				ModuleSet: true,
+				Force:     false,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-1": true,
 					"github.com/terraform-linters/example-2": false,
 				},
-				Varfiles:          []string{"example1.tfvars", "example2.tfvars"},
-				Variables:         []string{"foo=bar"},
-				DisabledByDefault: false,
-				PluginDir:         "./.tflint.d/plugins",
-				Format:            "compact",
+				Varfiles:             []string{"example1.tfvars", "example2.tfvars"},
+				Variables:            []string{"foo=bar"},
+				DisabledByDefault:    true,
+				DisabledByDefaultSet: true,
+				PluginDir:            "./.tflint.d/plugins",
+				PluginDirSet:         true,
+				Format:               "compact",
+				FormatSet:            true,
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -417,17 +431,21 @@ func TestMerge(t *testing.T) {
 				},
 			},
 			other: &Config{
-				Module: false,
-				Force:  true,
+				Module:   false,
+				Force:    true,
+				ForceSet: true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-2": true,
 					"github.com/terraform-linters/example-3": false,
 				},
-				Varfiles:          []string{"example3.tfvars"},
-				Variables:         []string{"bar=baz"},
-				DisabledByDefault: false,
-				PluginDir:         "~/.tflint.d/plugins",
-				Format:            "json",
+				Varfiles:             []string{"example3.tfvars"},
+				Variables:            []string{"bar=baz"},
+				DisabledByDefault:    false,
+				DisabledByDefaultSet: true,
+				PluginDir:            "~/.tflint.d/plugins",
+				PluginDirSet:         true,
+				Format:               "json",
+				FormatSet:            true,
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_ami": {
 						Name:    "aws_instance_invalid_ami",
@@ -452,18 +470,23 @@ func TestMerge(t *testing.T) {
 				},
 			},
 			want: &Config{
-				Module: true,
-				Force:  true,
+				Module:    true,
+				ModuleSet: true,
+				Force:     true,
+				ForceSet:  true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-1": true,
 					"github.com/terraform-linters/example-2": true,
 					"github.com/terraform-linters/example-3": false,
 				},
-				Varfiles:          []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
-				Variables:         []string{"foo=bar", "bar=baz"},
-				DisabledByDefault: false,
-				PluginDir:         "~/.tflint.d/plugins",
-				Format:            "json",
+				Varfiles:             []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
+				Variables:            []string{"foo=bar", "bar=baz"},
+				DisabledByDefault:    false,
+				DisabledByDefaultSet: true,
+				PluginDir:            "~/.tflint.d/plugins",
+				PluginDirSet:         true,
+				Format:               "json",
+				FormatSet:            true,
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -500,8 +523,9 @@ func TestMerge(t *testing.T) {
 		{
 			name: "CLI --only argument and merge",
 			base: &Config{
-				Module: true,
-				Force:  false,
+				Module:    true,
+				ModuleSet: true,
+				Force:     false,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-1": true,
 					"github.com/terraform-linters/example-2": false,
@@ -533,16 +557,18 @@ func TestMerge(t *testing.T) {
 				},
 			},
 			other: &Config{
-				Module: false,
-				Force:  true,
+				Module:   false,
+				Force:    true,
+				ForceSet: true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-2": true,
 					"github.com/terraform-linters/example-3": false,
 				},
-				Varfiles:          []string{"example3.tfvars"},
-				Variables:         []string{"bar=baz"},
-				DisabledByDefault: true,
-				Only:              []string{"aws_instance_invalid_type", "aws_instance_previous_type"},
+				Varfiles:             []string{"example3.tfvars"},
+				Variables:            []string{"bar=baz"},
+				DisabledByDefault:    true,
+				DisabledByDefaultSet: true,
+				Only:                 []string{"aws_instance_invalid_type", "aws_instance_previous_type"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",
@@ -567,17 +593,20 @@ func TestMerge(t *testing.T) {
 				},
 			},
 			want: &Config{
-				Module: true,
-				Force:  true,
+				Module:    true,
+				ModuleSet: true,
+				Force:     true,
+				ForceSet:  true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-1": true,
 					"github.com/terraform-linters/example-2": true,
 					"github.com/terraform-linters/example-3": false,
 				},
-				Varfiles:          []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
-				Variables:         []string{"foo=bar", "bar=baz"},
-				DisabledByDefault: true,
-				Only:              []string{"aws_instance_invalid_type", "aws_instance_previous_type"},
+				Varfiles:             []string{"example1.tfvars", "example2.tfvars", "example3.tfvars"},
+				Variables:            []string{"foo=bar", "bar=baz"},
+				DisabledByDefault:    true,
+				DisabledByDefaultSet: true,
+				Only:                 []string{"aws_instance_invalid_type", "aws_instance_previous_type"},
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
 						Name:    "aws_instance_invalid_type",

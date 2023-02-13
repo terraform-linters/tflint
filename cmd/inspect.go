@@ -36,13 +36,13 @@ func (cli *CLI) inspect(opts Options, args []string) int {
 				return fmt.Errorf("Failed to parse CLI arguments; %w", err)
 			}
 
-			if opts.Chdir != "" && targetDir != "." {
+			if opts.Chdir != "" && (len(args) > 1 && (len(filterFiles) == 0 || targetDir != ".")) {
 				return fmt.Errorf("Cannot use --chdir and directory argument at the same time")
 			}
-			if opts.Recursive && (targetDir != "." || len(filterFiles) > 0) {
+			if opts.Recursive && len(args) > 1 {
 				return fmt.Errorf("Cannot use --recursive and arguments at the same time")
 			}
-			if len(opts.Filter) > 0 && (targetDir != "." || len(filterFiles) > 0) {
+			if len(opts.Filter) > 0 && len(args) > 1 {
 				return fmt.Errorf("Cannot use --filter and arguments at the same time")
 			}
 
@@ -83,7 +83,9 @@ func (cli *CLI) inspect(opts Options, args []string) int {
 	if opts.Recursive {
 		// Respect "--format" and "--force" flags in recursive mode
 		cli.formatter.Format = opts.Format
-		force = opts.Force
+		if opts.Force != nil {
+			force = *opts.Force
+		}
 	} else {
 		cli.formatter.Format = cli.config.Format
 		force = cli.config.Force

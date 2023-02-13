@@ -11,4 +11,5 @@ This guide describes the various features of TFLint for end users.
 - [Module Inspection](module-inspection.md)
 - [Annotations](annotations.md)
 - [Compatibility with Terraform](compatibility.md)
+- [Environment Variables](./environment_variables.md)
 - [Editor Integration](editor-integration.md)

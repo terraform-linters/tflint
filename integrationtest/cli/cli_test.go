@@ -353,6 +353,13 @@ func TestIntegration(t *testing.T) {
 			stderr:  "Cannot use --chdir and directory argument at the same time",
 		},
 		{
+			name:    "--chdir and the current directory argument",
+			command: "./tflint --chdir=subdir .",
+			dir:     "chdir",
+			status:  cmd.ExitCodeError,
+			stderr:  "Cannot use --chdir and directory argument at the same time",
+		},
+		{
 			name:    "--chdir and file under the directory argument",
 			command: fmt.Sprintf("./tflint --chdir=subdir %s", filepath.Join("nested", "main.tf")),
 			dir:     "chdir",
@@ -376,6 +383,13 @@ func TestIntegration(t *testing.T) {
 		{
 			name:    "--recursive and directory argument",
 			command: "./tflint --recursive subdir",
+			dir:     "chdir",
+			status:  cmd.ExitCodeError,
+			stderr:  "Cannot use --recursive and arguments at the same time",
+		},
+		{
+			name:    "--recursive and the current directory argument",
+			command: "./tflint --recursive .",
 			dir:     "chdir",
 			status:  cmd.ExitCodeError,
 			stderr:  "Cannot use --recursive and arguments at the same time",
