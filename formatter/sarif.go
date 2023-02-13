@@ -3,6 +3,7 @@ package formatter
 import (
 	"errors"
 	"fmt"
+	"path/filepath"
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/owenrumney/go-sarif/sarif"
@@ -41,7 +42,7 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, appErr error) {
 		var location *sarif.PhysicalLocation
 		if issue.Range.Filename != "" {
 			location = sarif.NewPhysicalLocation().
-				WithArtifactLocation(sarif.NewSimpleArtifactLocation(issue.Range.Filename))
+				WithArtifactLocation(sarif.NewSimpleArtifactLocation(filepath.ToSlash(issue.Range.Filename)))
 
 			if !issue.Range.Empty() {
 				location.WithRegion(
@@ -73,7 +74,7 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, appErr error) {
 		if errors.As(appErr, &diags) {
 			for _, diag := range diags {
 				location := sarif.NewPhysicalLocation().
-					WithArtifactLocation(sarif.NewSimpleArtifactLocation(diag.Subject.Filename)).
+					WithArtifactLocation(sarif.NewSimpleArtifactLocation(filepath.ToSlash(diag.Subject.Filename))).
 					WithRegion(
 						sarif.NewRegion().
 							WithByteOffset(diag.Subject.Start.Byte).

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"path/filepath"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -95,6 +96,78 @@ func Test_sarifPrint(t *testing.T) {
               "physicalLocation": {
                 "artifactLocation": {
                   "uri": "test.tf"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 4
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint-errors",
+          "version": "0.45.0",
+          "informationUri": "https://github.com/terraform-linters/tflint"
+        }
+      },
+      "results": []
+    }
+  ]
+}`,
+		},
+		{
+			Name: "issues in directories",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRule{},
+					Message: "test",
+					Range: hcl.Range{
+						Filename: filepath.Join("test", "main.tf"),
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+					},
+				},
+			},
+			Stdout: `{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint",
+          "version": "0.45.0",
+          "informationUri": "https://github.com/terraform-linters/tflint",
+          "rules": [
+            {
+              "id": "test_rule",
+              "shortDescription": {
+                "text": ""
+              },
+              "helpUri": "https://github.com"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "test_rule",
+          "level": "error",
+          "message": {
+            "text": "test"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "test/main.tf"
                 },
                 "region": {
                   "startLine": 1,
