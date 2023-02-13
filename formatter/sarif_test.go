@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"path/filepath"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/xeipuuv/gojsonschema"
@@ -29,6 +31,7 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint",
+          "version": "0.45.0",
           "informationUri": "https://github.com/terraform-linters/tflint"
         }
       },
@@ -38,6 +41,7 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint-errors",
+          "version": "0.45.0",
           "informationUri": "https://github.com/terraform-linters/tflint"
         }
       },
@@ -67,6 +71,7 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint",
+          "version": "0.45.0",
           "informationUri": "https://github.com/terraform-linters/tflint",
           "rules": [
             {
@@ -108,6 +113,7 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint-errors",
+          "version": "0.45.0",
           "informationUri": "https://github.com/terraform-linters/tflint"
         }
       },
@@ -117,15 +123,85 @@ func Test_sarifPrint(t *testing.T) {
 }`,
 		},
 		{
-			Name: "Issues with SARIF-invalid position are output correctly",
+			Name: "issues in directories",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRule{},
+					Message: "test",
+					Range: hcl.Range{
+						Filename: filepath.Join("test", "main.tf"),
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+					},
+				},
+			},
+			Stdout: `{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint",
+          "version": "0.45.0",
+          "informationUri": "https://github.com/terraform-linters/tflint",
+          "rules": [
+            {
+              "id": "test_rule",
+              "shortDescription": {
+                "text": ""
+              },
+              "helpUri": "https://github.com"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "test_rule",
+          "level": "error",
+          "message": {
+            "text": "test"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "test/main.tf"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 4
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint-errors",
+          "version": "0.45.0",
+          "informationUri": "https://github.com/terraform-linters/tflint"
+        }
+      },
+      "results": []
+    }
+  ]
+}`,
+		},
+		{
+			Name: "Issues with missing source positions",
 			Issues: tflint.Issues{
 				{
 					Rule:    &testRule{},
 					Message: "test",
 					Range: hcl.Range{
 						Filename: "test.tf",
-						Start:    hcl.Pos{Line: 1, Column: 1},
-						End:      hcl.Pos{Line: 0, Column: 0},
 					},
 				},
 			},
@@ -138,6 +214,7 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint",
+          "version": "0.45.0",
           "informationUri": "https://github.com/terraform-linters/tflint",
           "rules": [
             {
@@ -162,12 +239,6 @@ func Test_sarifPrint(t *testing.T) {
               "physicalLocation": {
                 "artifactLocation": {
                   "uri": "test.tf"
-                },
-                "region": {
-                  "startLine": 1,
-                  "startColumn": 1,
-                  "endLine": 1,
-                  "endColumn": 1
                 }
               }
             }
@@ -179,6 +250,7 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint-errors",
+          "version": "0.45.0",
           "informationUri": "https://github.com/terraform-linters/tflint"
         }
       },
@@ -220,6 +292,7 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint",
+          "version": "0.45.0",
           "informationUri": "https://github.com/terraform-linters/tflint"
         }
       },
@@ -229,6 +302,7 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint-errors",
+          "version": "0.45.0",
           "informationUri": "https://github.com/terraform-linters/tflint"
         }
       },
@@ -272,8 +346,8 @@ func Test_sarifPrint(t *testing.T) {
 
 			formatter.Print(tc.Issues, tc.Error, map[string][]byte{})
 
-			if stdout.String() != tc.Stdout {
-				t.Fatalf("Failed %s test: expected=%s, stdout=%s", tc.Name, tc.Stdout, stdout.String())
+			if diff := cmp.Diff(tc.Stdout, stdout.String()); diff != "" {
+				t.Fatalf("Failed %s test: %s", tc.Name, diff)
 			}
 
 			schemaLoader := gojsonschema.NewReferenceLoader("http://json.schemastore.org/sarif-2.1.0")

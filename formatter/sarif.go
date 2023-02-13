@@ -3,6 +3,7 @@ package formatter
 import (
 	"errors"
 	"fmt"
+	"path/filepath"
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/owenrumney/go-sarif/sarif"
@@ -17,6 +18,10 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, appErr error) {
 	}
 
 	run := sarif.NewRun("tflint", "https://github.com/terraform-linters/tflint")
+
+	version := tflint.Version.String()
+	run.Tool.Driver.Version = &version
+
 	report.AddRun(run)
 
 	for _, issue := range issues {
@@ -34,39 +39,42 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, appErr error) {
 			panic(fmt.Errorf("Unexpected lint type: %s", issue.Rule.Severity()))
 		}
 
-		endLine := issue.Range.End.Line
-		if endLine == 0 {
-			endLine = 1
-		}
-		endColumn := issue.Range.End.Column
-		if endColumn == 0 {
-			endColumn = 1
+		var location *sarif.PhysicalLocation
+		if issue.Range.Filename != "" {
+			location = sarif.NewPhysicalLocation().
+				WithArtifactLocation(sarif.NewSimpleArtifactLocation(filepath.ToSlash(issue.Range.Filename)))
+
+			if !issue.Range.Empty() {
+				location.WithRegion(
+					sarif.NewRegion().
+						WithStartLine(issue.Range.Start.Line).
+						WithStartColumn(issue.Range.Start.Column).
+						WithEndLine(issue.Range.Start.Column).
+						WithEndColumn(issue.Range.End.Column),
+				)
+			}
 		}
 
-		location := sarif.NewPhysicalLocation().
-			WithArtifactLocation(sarif.NewSimpleArtifactLocation(issue.Range.Filename)).
-			WithRegion(
-				sarif.NewRegion().
-					WithStartLine(issue.Range.Start.Line).
-					WithStartColumn(issue.Range.Start.Column).
-					WithEndLine(endLine).
-					WithEndColumn(endColumn),
-			)
-
-		run.AddResult(rule.ID).
+		result := run.AddResult(rule.ID).
 			WithLevel(level).
-			WithLocation(sarif.NewLocationWithPhysicalLocation(location)).
 			WithMessage(sarif.NewTextMessage(issue.Message))
+
+		if location != nil {
+			result.WithLocation(sarif.NewLocationWithPhysicalLocation(location))
+		}
 	}
 
 	errRun := sarif.NewRun("tflint-errors", "https://github.com/terraform-linters/tflint")
+	errRun.Tool.Driver.Version = &version
+
 	report.AddRun(errRun)
+
 	if appErr != nil {
 		var diags hcl.Diagnostics
 		if errors.As(appErr, &diags) {
 			for _, diag := range diags {
 				location := sarif.NewPhysicalLocation().
-					WithArtifactLocation(sarif.NewSimpleArtifactLocation(diag.Subject.Filename)).
+					WithArtifactLocation(sarif.NewSimpleArtifactLocation(filepath.ToSlash(diag.Subject.Filename))).
 					WithRegion(
 						sarif.NewRegion().
 							WithByteOffset(diag.Subject.Start.Byte).
