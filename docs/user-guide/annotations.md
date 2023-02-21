@@ -3,8 +3,8 @@
 Annotation comments can disable rules on specific lines:
 
 ```hcl
+# tflint-ignore: aws_instance_invalid_type
 resource "aws_instance" "foo" {
-    # tflint-ignore: aws_instance_invalid_type
     instance_type = "t1.2xlarge"
 }
 ```
@@ -12,8 +12,8 @@ resource "aws_instance" "foo" {
 Multiple rules can be specified as a comma-separated list:
 
 ```hcl
+# tflint-ignore: aws_instance_invalid_type, other_rule
 resource "aws_instance" "foo" {
-    # tflint-ignore: aws_instance_invalid_type, other_rule
     instance_type = "t1.2xlarge"
 }
 ```
@@ -21,8 +21,8 @@ resource "aws_instance" "foo" {
 All rules can be ignored by specifying the `all` keyword:
 
 ```hcl
+# tflint-ignore: all
 resource "aws_instance" "foo" {
-    # tflint-ignore: all
     instance_type = "t1.2xlarge"
 }
 ```
