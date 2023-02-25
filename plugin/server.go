@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/hashicorp/go-version"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
@@ -15,14 +16,15 @@ import (
 
 // GRPCServer is a gRPC server for responding to requests from plugins.
 type GRPCServer struct {
-	runner     *tflint.Runner
-	rootRunner *tflint.Runner
-	files      map[string]*hcl.File
+	runner           *tflint.Runner
+	rootRunner       *tflint.Runner
+	files            map[string]*hcl.File
+	clientSDKVersion *version.Version
 }
 
 // NewGRPCServer initializes a gRPC server for plugins.
-func NewGRPCServer(runner *tflint.Runner, rootRunner *tflint.Runner, files map[string]*hcl.File) *GRPCServer {
-	return &GRPCServer{runner: runner, rootRunner: rootRunner, files: files}
+func NewGRPCServer(runner *tflint.Runner, rootRunner *tflint.Runner, files map[string]*hcl.File, sdkVersion *version.Version) *GRPCServer {
+	return &GRPCServer{runner: runner, rootRunner: rootRunner, files: files, clientSDKVersion: sdkVersion}
 }
 
 // GetOriginalwd returns the original working directory.
@@ -134,6 +136,11 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts sdk.EvaluateExprOpti
 		)
 		log.Printf("[INFO] %s. TFLint ignores expressions with sensitive values.", err)
 		return cty.NullVal(cty.NilType), err
+	}
+
+	// SDK v0.16+ introduces client-side handling of unknown and NULL values.
+	if s.clientSDKVersion != nil && s.clientSDKVersion.GreaterThanOrEqual(version.Must(version.NewVersion("0.16.0"))) {
+		return val, nil
 	}
 
 	if *opts.WantType == cty.DynamicPseudoType {
