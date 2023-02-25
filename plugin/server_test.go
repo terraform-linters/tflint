@@ -8,14 +8,18 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/hashicorp/go-version"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	"github.com/terraform-linters/tflint-plugin-sdk/plugin/host2plugin"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
 )
+
+var SDKVersion = version.Must(version.NewVersion(host2plugin.SDKVersion))
 
 func TestGetModuleContent(t *testing.T) {
 	runner := tflint.TestRunner(t, map[string]string{"main.tf": `
@@ -43,7 +47,7 @@ resource "aws_instance" "bar" {
 	instance_type = "m5.2xlarge"
 }`})
 
-	server := NewGRPCServer(runner, rootRunner, runner.Files())
+	server := NewGRPCServer(runner, rootRunner, runner.Files(), SDKVersion)
 
 	tests := []struct {
 		Name string
@@ -257,7 +261,7 @@ resource "aws_instance" "foo" {
 		files[name] = file
 	}
 
-	server := NewGRPCServer(runner, rootRunner, files)
+	server := NewGRPCServer(runner, rootRunner, files, SDKVersion)
 
 	tests := []struct {
 		Name string
@@ -324,7 +328,7 @@ resource "aws_instance" "bar" {
 	instance_type = "m5.2xlarge"
 }`})
 
-	server := NewGRPCServer(runner, rootRunner, runner.Files())
+	server := NewGRPCServer(runner, rootRunner, runner.Files(), SDKVersion)
 
 	tests := []struct {
 		Name string
@@ -388,7 +392,7 @@ rule "test_in_file" {
 	fileConfig.Merge(cliConfig)
 	runner := tflint.TestRunnerWithConfig(t, map[string]string{}, fileConfig)
 
-	server := NewGRPCServer(runner, nil, runner.Files())
+	server := NewGRPCServer(runner, nil, runner.Files(), SDKVersion)
 
 	// default error check helper
 	neverHappend := func(err error) bool { return err != nil }
@@ -492,7 +496,9 @@ variable "foo" {
 	default = "baz"
 }`})
 
-	server := NewGRPCServer(runner, rootRunner, runner.Files())
+	server := NewGRPCServer(runner, rootRunner, runner.Files(), SDKVersion)
+
+	sdkv15 := version.Must(version.NewVersion("0.15.0"))
 
 	// test util functions
 	hclExpr := func(expr string) hcl.Expression {
@@ -510,10 +516,11 @@ variable "foo" {
 	neverHappend := func(err error) bool { return err != nil }
 
 	tests := []struct {
-		Name     string
-		Args     func() (hcl.Expression, sdk.EvaluateExprOption)
-		Want     cty.Value
-		ErrCheck func(error) bool
+		Name       string
+		Args       func() (hcl.Expression, sdk.EvaluateExprOption)
+		SDKVersion *version.Version
+		Want       cty.Value
+		ErrCheck   func(error) bool
 	}{
 		{
 			Name: "self module context",
@@ -557,26 +564,37 @@ variable "foo" {
 			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
 				return hclExpr(`var.no_default`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
 			},
-			Want: cty.NullVal(cty.NilType),
+			Want:     cty.UnknownVal(cty.String),
+			ErrCheck: neverHappend,
+		},
+		{
+			Name: "no default (SDK v0.15)",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				return hclExpr(`var.no_default`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			SDKVersion: sdkv15,
+			Want:       cty.NullVal(cty.NilType),
 			ErrCheck: func(err error) bool {
 				return err == nil || !errors.Is(err, sdk.ErrUnknownValue)
 			},
 		},
 		{
-			Name: "no default as cty.Value",
+			Name: "no default as cty.Value (SDK v0.15)",
 			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
 				return hclExpr(`var.no_default`), sdk.EvaluateExprOption{WantType: &cty.DynamicPseudoType, ModuleCtx: sdk.SelfModuleCtxType}
 			},
-			Want:     cty.DynamicVal,
-			ErrCheck: neverHappend,
+			SDKVersion: sdkv15,
+			Want:       cty.DynamicVal,
+			ErrCheck:   neverHappend,
 		},
 		{
-			Name: "no default value in object",
+			Name: "no default value in object (SDK v0.15)",
 			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
 				ty := cty.Object(map[string]cty.Type{"value": cty.String})
 				return hclExpr(`{ value = var.no_default }`), sdk.EvaluateExprOption{WantType: &ty, ModuleCtx: sdk.SelfModuleCtxType}
 			},
-			Want: cty.NullVal(cty.NilType),
+			SDKVersion: sdkv15,
+			Want:       cty.NullVal(cty.NilType),
 			ErrCheck: func(err error) bool {
 				return err == nil || !errors.Is(err, sdk.ErrUnknownValue)
 			},
@@ -586,63 +604,50 @@ variable "foo" {
 			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
 				return hclExpr(`var.null`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
 			},
-			Want: cty.NullVal(cty.NilType),
-			ErrCheck: func(err error) bool {
-				return err == nil || !errors.Is(err, sdk.ErrNullValue)
-			},
-		},
-		{
-			Name: "null as cty.Value",
-			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
-				return hclExpr(`var.null`), sdk.EvaluateExprOption{WantType: &cty.DynamicPseudoType, ModuleCtx: sdk.SelfModuleCtxType}
-			},
 			Want:     cty.NullVal(cty.String),
 			ErrCheck: neverHappend,
 		},
 		{
-			Name: "null value in object",
+			Name: "null (SDK v0.15)",
 			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
-				ty := cty.Object(map[string]cty.Type{"value": cty.String})
-				return hclExpr(`{ value = var.null }`), sdk.EvaluateExprOption{WantType: &ty, ModuleCtx: sdk.SelfModuleCtxType}
+				return hclExpr(`var.null`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
 			},
-			Want: cty.NullVal(cty.NilType),
+			SDKVersion: sdkv15,
+			Want:       cty.NullVal(cty.NilType),
 			ErrCheck: func(err error) bool {
 				return err == nil || !errors.Is(err, sdk.ErrNullValue)
 			},
 		},
 		{
-			Name: "unevaluable",
+			Name: "null as cty.Value (SDK v0.15)",
 			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
-				return hclExpr(`module.instance.output`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
+				return hclExpr(`var.null`), sdk.EvaluateExprOption{WantType: &cty.DynamicPseudoType, ModuleCtx: sdk.SelfModuleCtxType}
 			},
-			Want: cty.NullVal(cty.NilType),
-			ErrCheck: func(err error) bool {
-				return err == nil || !errors.Is(err, sdk.ErrUnknownValue)
-			},
+			SDKVersion: sdkv15,
+			Want:       cty.NullVal(cty.String),
+			ErrCheck:   neverHappend,
 		},
 		{
-			Name: "unevaluable as cty.Value",
-			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
-				return hclExpr(`module.instance.output`), sdk.EvaluateExprOption{WantType: &cty.DynamicPseudoType, ModuleCtx: sdk.SelfModuleCtxType}
-			},
-			Want:     cty.DynamicVal,
-			ErrCheck: neverHappend,
-		},
-		{
-			Name: "unevaluable value in object",
+			Name: "null value in object (SDK v0.15)",
 			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
 				ty := cty.Object(map[string]cty.Type{"value": cty.String})
-				return hclExpr(`{ value = module.instance.output }`), sdk.EvaluateExprOption{WantType: &ty, ModuleCtx: sdk.SelfModuleCtxType}
+				return hclExpr(`{ value = var.null }`), sdk.EvaluateExprOption{WantType: &ty, ModuleCtx: sdk.SelfModuleCtxType}
 			},
-			Want: cty.NullVal(cty.NilType),
+			Want:       cty.NullVal(cty.NilType),
+			SDKVersion: sdkv15,
 			ErrCheck: func(err error) bool {
-				return err == nil || !errors.Is(err, sdk.ErrUnknownValue)
+				return err == nil || !errors.Is(err, sdk.ErrNullValue)
 			},
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.Name, func(t *testing.T) {
+			if test.SDKVersion == nil {
+				test.SDKVersion = SDKVersion
+			}
+			server.clientSDKVersion = test.SDKVersion
+
 			got, err := server.EvaluateExpr(test.Args())
 			if test.ErrCheck(err) {
 				t.Fatalf("failed to call EvaluateExpr: %s", err)
@@ -721,7 +726,7 @@ resource "aws_instance" "foo" {
 		t.Run(test.Name, func(t *testing.T) {
 			runner := tflint.TestRunner(t, map[string]string{"main.tf": config})
 
-			server := NewGRPCServer(runner, nil, runner.Files())
+			server := NewGRPCServer(runner, nil, runner.Files(), SDKVersion)
 
 			err := server.EmitIssue(test.Args())
 			if err != nil {

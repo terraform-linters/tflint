@@ -188,9 +188,19 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 	}
 
 	// Run inspection
-	for _, ruleset := range rulesetPlugin.RuleSets {
+	for name, ruleset := range rulesetPlugin.RuleSets {
+		sdkVersion, err := ruleset.SDKVersion()
+		if err != nil {
+			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
+				// SDKVersion endpoint is available in tflint-plugin-sdk v0.14+.
+				// Use nil if not available.
+			} else {
+				return tflint.Issues{}, fmt.Errorf("Failed to get TFLint version constraints to `%s` plugin; %w", name, err)
+			}
+		}
+
 		for _, runner := range runners {
-			err = ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files()))
+			err = ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersion))
 			if err != nil {
 				return tflint.Issues{}, fmt.Errorf("Failed to check ruleset; %w", err)
 			}

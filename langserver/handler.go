@@ -11,6 +11,7 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hcl/v2"
 	lsp "github.com/sourcegraph/go-lsp"
 	"github.com/sourcegraph/jsonrpc2"
@@ -43,6 +44,7 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 	}
 
 	rulesets := []tflint.RuleSet{}
+	clientSDKVersions := map[string]*version.Version{}
 	for name, ruleset := range rulsetPlugin.RuleSets {
 		constraints, err := ruleset.VersionConstraints()
 		if err != nil {
@@ -56,6 +58,17 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 		if !constraints.Check(tflint.Version) {
 			return nil, nil, fmt.Errorf("Failed to satisfy version constraints; tflint-ruleset-%s requires %s, but TFLint version is %s", name, constraints, tflint.Version)
 		}
+
+		clientSDKVersions[name], err = ruleset.SDKVersion()
+		if err != nil {
+			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
+				// SDKVersion endpoint is available in tflint-plugin-sdk v0.14+.
+				// Use nil if not available.
+			} else {
+				return nil, nil, fmt.Errorf("Failed to get SDK version of `%s` plugin; %w", name, err)
+			}
+		}
+
 		rulesets = append(rulesets, ruleset)
 	}
 	if err := cliConfig.ValidateRules(rulesets...); err != nil {
@@ -63,24 +76,26 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 	}
 
 	return jsonrpc2.HandlerWithError((&handler{
-		configPath: configPath,
-		cliConfig:  cliConfig,
-		config:     cfg,
-		fs:         afero.NewCopyOnWriteFs(afero.NewOsFs(), afero.NewMemMapFs()),
-		plugin:     rulsetPlugin,
-		diagsPaths: []string{},
+		configPath:        configPath,
+		cliConfig:         cliConfig,
+		config:            cfg,
+		fs:                afero.NewCopyOnWriteFs(afero.NewOsFs(), afero.NewMemMapFs()),
+		plugin:            rulsetPlugin,
+		clientSDKVersions: clientSDKVersions,
+		diagsPaths:        []string{},
 	}).handle), rulsetPlugin, nil
 }
 
 type handler struct {
-	configPath string
-	cliConfig  *tflint.Config
-	config     *tflint.Config
-	fs         afero.Fs
-	rootDir    string
-	plugin     *plugin.Plugin
-	shutdown   bool
-	diagsPaths []string
+	configPath        string
+	cliConfig         *tflint.Config
+	config            *tflint.Config
+	fs                afero.Fs
+	rootDir           string
+	plugin            *plugin.Plugin
+	clientSDKVersions map[string]*version.Version
+	shutdown          bool
+	diagsPaths        []string
 }
 
 func (h *handler) handle(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (result interface{}, err error) {
@@ -210,7 +225,7 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 			return ret, fmt.Errorf("Failed to apply config to `%s` plugin", name)
 		}
 		for _, runner := range runners {
-			err = ruleset.Check(plugin.NewGRPCServer(runner, runners[len(runners)-1], loader.Files()))
+			err = ruleset.Check(plugin.NewGRPCServer(runner, runners[len(runners)-1], loader.Files(), h.clientSDKVersions[name]))
 			if err != nil {
 				return ret, fmt.Errorf("Failed to check ruleset: %w", err)
 			}
