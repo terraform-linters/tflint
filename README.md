@@ -40,18 +40,10 @@ NOTE: The Chocolatey package is NOT directly maintained by the TFLint maintainer
 
 ### Verification
 
-GnuPG
+Releases are signed by [Cosign](https://github.com/sigstore/cosign). `cosign verify-blob` ensures that the release was built with this repository's GitHub Actions.
 
 ```
-gpg --import 8CE69160EB3F2FE9.key
-gpg --verify checksum.txt.sig checksum.txt
-sha256sum --ignore-missing -c checksums.txt
-```
-
-Cosign
-
-```
-COSIGN_EXPERIMENTAL=1 cosign verify-blob --certificate checksums.txt.pem --signature checksums.txt.keyless.sig --certificate-github-workflow-repository=terraform-linters/tflint checksums.txt
+cosign verify-blob --certificate=checksums.txt.pem --signature=checksums.txt.keyless.sig --certificate-identity-regexp="^https://github.com/terraform-linters/tflint" --certificate-oidc-issuer=https://token.actions.githubusercontent.com checksums.txt
 sha256sum --ignore-missing -c checksums.txt
 ```
 
