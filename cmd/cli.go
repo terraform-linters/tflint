@@ -91,14 +91,26 @@ func (cli *CLI) Run(args []string) int {
 
 	switch {
 	case opts.Version:
+		if len(args) > 1 {
+			fmt.Fprintln(cli.errStream, `WARNING: Arguments are not used in version mode and will error in a future version. Use --chdir instead.`)
+		}
 		return cli.printVersion(opts)
 	case opts.Init:
+		if len(args) > 1 {
+			fmt.Fprintln(cli.errStream, `WARNING: Arguments are not used in init mode and will error in a future version. Use --chdir instead.`)
+		}
 		return cli.init(opts)
 	case opts.Langserver:
+		if len(args) > 1 {
+			fmt.Fprintln(cli.errStream, `WARNING: Arguments are not used in language server mode and will error in a future version.`)
+		}
 		return cli.startLanguageServer(opts)
 	case opts.ActAsBundledPlugin:
 		return cli.actAsBundledPlugin()
 	default:
+		if len(args) > 1 {
+			fmt.Fprintln(cli.errStream, `WARNING: "tflint FILE/DIR" is deprecated and will error in a future version. Use --chdir or --filter instead.`)
+		}
 		return cli.inspect(opts, args)
 	}
 }

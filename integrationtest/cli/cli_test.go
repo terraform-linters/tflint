@@ -244,6 +244,7 @@ func TestIntegration(t *testing.T) {
 			dir:     "multiple_files",
 			status:  cmd.ExitCodeOK,
 			stdout:  "", // main.tf is ignored
+			stderr:  `WARNING: "tflint FILE/DIR" is deprecated and will error in a future version. Use --chdir or --filter instead.`,
 		},
 		{
 			name:    "file not found",
@@ -266,6 +267,7 @@ func TestIntegration(t *testing.T) {
 			status:  cmd.ExitCodeIssuesFound,
 			// main.tf is not ignored
 			stdout: fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is t2.micro")),
+			stderr: `WARNING: "tflint FILE/DIR" is deprecated and will error in a future version. Use --chdir or --filter instead.`,
 		},
 		{
 			name:    "directory argument",
@@ -273,6 +275,7 @@ func TestIntegration(t *testing.T) {
 			dir:     "multiple_files",
 			status:  cmd.ExitCodeIssuesFound,
 			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is m5.2xlarge")),
+			stderr:  `WARNING: "tflint FILE/DIR" is deprecated and will error in a future version. Use --chdir or --filter instead.`,
 		},
 		{
 			name:    "file under the directory",
@@ -280,6 +283,7 @@ func TestIntegration(t *testing.T) {
 			dir:     "multiple_files",
 			status:  cmd.ExitCodeIssuesFound,
 			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is m5.2xlarge")),
+			stderr:  `WARNING: "tflint FILE/DIR" is deprecated and will error in a future version. Use --chdir or --filter instead.`,
 		},
 		{
 			name:    "multiple directories",
@@ -344,6 +348,7 @@ func TestIntegration(t *testing.T) {
 			dir:     "chdir",
 			status:  cmd.ExitCodeIssuesFound,
 			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is m5.2xlarge")),
+			stderr:  `WARNING: "tflint FILE/DIR" is deprecated and will error in a future version. Use --chdir or --filter instead.`,
 		},
 		{
 			name:    "--chdir and directory argument",
