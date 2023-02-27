@@ -5,7 +5,7 @@ You can change the behavior not only in CLI flags but also in config files. By d
 - Current directory (`./.tflint.hcl`)
 - Home directory (`~/.tflint.hcl`)
 
-However, if `--chdir` or `--recursive` is used, The config file in the changed directory will be loaded.
+However, if `--chdir` or `--recursive` is used, the config file will be loaded relative to the module (changed) directory.
 
 The config file is written in [HCL](https://github.com/hashicorp/hcl). An example is shown below:
 
@@ -42,6 +42,12 @@ You can also use another file as a config file with the `--config` option:
 
 ```
 $ tflint --config other_config.hcl
+```
+
+This is also resolved relative to the module directory when `--chdir` or `--recursive` is used. To use a configuration file from the process working directory when recursing, pass an absolute path:
+
+```sh
+tflint --recursive --config "$(pwd)/.tflint.hcl"
 ```
 
 ### `format`
