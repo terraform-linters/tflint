@@ -64,13 +64,15 @@ If you want to change the plugin directory, you can change this with the [`plugi
 
 ## Avoiding rate limiting
 
-When you install plugins with `tflint --init`, call the GitHub API to get release metadata. This is typically an unauthenticated request with a rate limit of 60 requests per hour.
+When you install plugins with `tflint --init`, TFLint calls the GitHub API to get release metadata. By default, this is an unauthenticated request, subject to a rate limit of 60 requests per hour _per IP address_.
 
-https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting
+**Background:** [GitHub REST API: Rate Limiting](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting)
 
-This limitation can be a problem if you need to run `--init` frequently, such as in CI environments. If you want to increase the rate limit, you can send an authenticated request by setting an OAuth2 access token in the `GITHUB_TOKEN` environment variable.
+If you fetch plugins frequently in CI, you may hit this rate limit. If you run TFLint in a shared CI environment such as GitHub Actions, you will share this quota with other tenants and may encounter rate limiting errors regardless of how often you run TFLint. 
 
-It's also a good idea to cache the plugin directory, as TFLint will only send requests if plugins aren't installed. See also the [setup-tflint's example](https://github.com/terraform-linters/setup-tflint#usage).
+To increase the rate limit, you can send an authenticated request by authenticating your requests with an access token, by setting the `GITHUB_TOKEN` environment variable. In GitHub Actions, you can pass the built-in `GITHUB_TOKEN` that is injected into each job.
+
+It's also a good idea to cache the plugin directory, as TFLint will only send requests if plugins aren't installed. The [setup-tflint action](https://github.com/terraform-linters/setup-tflint#usage) includes an example of caching in GitHub Actions.
 
 ## Keeping plugins up to date
 
