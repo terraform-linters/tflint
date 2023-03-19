@@ -14,6 +14,7 @@ import (
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint-plugin-sdk/plugin/host2plugin"
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang/marks"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
@@ -543,18 +544,28 @@ variable "foo" {
 			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
 				return hclExpr(`var.sensitive`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
 			},
-			Want: cty.NullVal(cty.NilType),
+			Want:     cty.StringVal("foo").Mark(marks.Sensitive),
+			ErrCheck: neverHappend,
+		},
+		{
+			Name: "sensitive value (SDK v0.15)",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				return hclExpr(`var.sensitive`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want:       cty.NullVal(cty.NilType),
+			SDKVersion: sdkv15,
 			ErrCheck: func(err error) bool {
 				return err == nil || !errors.Is(err, sdk.ErrSensitive)
 			},
 		},
 		{
-			Name: "sensitive value in object",
+			Name: "sensitive value in object (SDK v0.15)",
 			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
 				ty := cty.Object(map[string]cty.Type{"value": cty.String})
 				return hclExpr(`{ value = var.sensitive }`), sdk.EvaluateExprOption{WantType: &ty, ModuleCtx: sdk.SelfModuleCtxType}
 			},
-			Want: cty.NullVal(cty.NilType),
+			Want:       cty.NullVal(cty.NilType),
+			SDKVersion: sdkv15,
 			ErrCheck: func(err error) bool {
 				return err == nil || !errors.Is(err, sdk.ErrSensitive)
 			},

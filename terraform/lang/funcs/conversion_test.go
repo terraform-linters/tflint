@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/terraform-linters/tflint/terraform/lang/marks"
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang/marks"
 	"github.com/zclconf/go-cty/cty"
 )
 
