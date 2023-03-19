@@ -49,12 +49,10 @@ func NewRunner(runner tflint.Runner, config *Config) (*Runner, error) {
 		opts := &tflint.EvaluateExprOption{ModuleCtx: tflint.RootModuleCtxType}
 
 		if attr, exists := provider.Body.Attributes["zone"]; exists {
-			var zone string
-			err := runner.EvaluateExpr(attr.Expr, &zone, opts)
-			err = runner.EnsureNoError(err, func() error {
+			err := runner.EvaluateExpr(attr.Expr, func(zone string) error {
 				config.Zone = zone
 				return nil
-			})
+			}, opts)
 			if err != nil {
 				return nil, err
 			}
@@ -62,12 +60,10 @@ func NewRunner(runner tflint.Runner, config *Config) (*Runner, error) {
 
 		for _, annotation := range provider.Body.Blocks {
 			if attr, exists := annotation.Body.Attributes["value"]; exists {
-				var val string
-				err := runner.EvaluateExpr(attr.Expr, &val, opts)
-				err = runner.EnsureNoError(err, func() error {
+				err := runner.EvaluateExpr(attr.Expr, func(val string) error {
 					config.Annotation = val
 					return nil
-				})
+				}, opts)
 				if err != nil {
 					return nil, err
 				}

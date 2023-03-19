@@ -61,16 +61,13 @@ func (r *AwsDBInstanceWithDefaultConfigExampleRule) Check(runner tflint.Runner) 
 			continue
 		}
 
-		var name string
-		err := runner.EvaluateExpr(attribute.Expr, &name, nil)
-
-		err = runner.EnsureNoError(err, func() error {
+		err := runner.EvaluateExpr(attribute.Expr, func(name string) error {
 			return runner.EmitIssue(
 				r,
 				fmt.Sprintf("DB name is %s, config=%s", name, config.Name),
 				attribute.Expr.Range(),
 			)
-		})
+		}, nil)
 		if err != nil {
 			return err
 		}

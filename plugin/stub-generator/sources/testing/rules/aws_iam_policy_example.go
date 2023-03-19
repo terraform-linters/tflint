@@ -55,16 +55,13 @@ func (r *AwsIAMPolicyExampleRule) Check(runner tflint.Runner) error {
 			continue
 		}
 
-		var name string
-		err := runner.EvaluateExpr(attribute.Expr, &name, nil)
-
-		err = runner.EnsureNoError(err, func() error {
+		err := runner.EvaluateExpr(attribute.Expr, func(name string) error {
 			return runner.EmitIssue(
 				r,
 				fmt.Sprintf("name is %s", name),
 				attribute.Expr.Range(),
 			)
-		})
+		}, nil)
 		if err != nil {
 			return err
 		}
