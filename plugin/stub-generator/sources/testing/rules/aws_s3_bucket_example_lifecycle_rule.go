@@ -72,10 +72,9 @@ func (r *AwsS3BucketExampleLifecycleRuleRule) Check(runner tflint.Runner) error 
 			}
 
 			if attr, exists := lifecycle.Body.Attributes["enabled"]; exists {
-				var enabled string
-				err := runner.EnsureNoError(runner.EvaluateExpr(attr.Expr, &enabled, nil), func() error {
+				err := runner.EvaluateExpr(attr.Expr, func(enabled string) error {
 					return runner.EmitIssue(r, fmt.Sprintf("`enabled` attribute found: %s", enabled), attr.Expr.Range())
-				})
+				}, nil)
 				if err != nil {
 					return err
 				}
@@ -87,10 +86,9 @@ func (r *AwsS3BucketExampleLifecycleRuleRule) Check(runner tflint.Runner) error 
 				}
 
 				if attr, exists := transition.Body.Attributes["days"]; exists {
-					var days int
-					err := runner.EnsureNoError(runner.EvaluateExpr(attr.Expr, &days, nil), func() error {
+					err := runner.EvaluateExpr(attr.Expr, func(days int) error {
 						return runner.EmitIssue(r, fmt.Sprintf("`days` attribute found: %d", days), attr.Expr.Range())
-					})
+					}, nil)
 					if err != nil {
 						return err
 					}

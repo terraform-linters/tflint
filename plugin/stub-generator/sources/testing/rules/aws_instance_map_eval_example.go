@@ -54,16 +54,13 @@ func (r *AwsInstanceMapEvalExampleRule) Check(runner tflint.Runner) error {
 		}
 
 		wantType := cty.Map(cty.String)
-		tags := map[string]string{}
-		err := runner.EvaluateExpr(attribute.Expr, &tags, &tflint.EvaluateExprOption{WantType: &wantType})
-
-		err = runner.EnsureNoError(err, func() error {
+		err := runner.EvaluateExpr(attribute.Expr, func(tags map[string]string) error {
 			return runner.EmitIssue(
 				r,
 				fmt.Sprintf("instance tags: %#v", tags),
 				attribute.Expr.Range(),
 			)
-		})
+		}, &tflint.EvaluateExprOption{WantType: &wantType})
 		if err != nil {
 			return err
 		}

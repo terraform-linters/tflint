@@ -65,16 +65,13 @@ func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
 			continue
 		}
 
-		var instanceType string
-		err := runner.EvaluateExpr(attribute.Expr, &instanceType, nil)
-
-		err = runner.EnsureNoError(err, func() error {
+		err := runner.EvaluateExpr(attribute.Expr, func(instanceType string) error {
 			return runner.EmitIssue(
 				r,
 				fmt.Sprintf("instance type is %s", instanceType),
 				attribute.Expr.Range(),
 			)
-		})
+		}, nil)
 		if err != nil {
 			return err
 		}

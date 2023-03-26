@@ -64,16 +64,13 @@ func (r *AwsAutoscalingGroupCtyEvalExampleRule) Check(runner tflint.Runner) erro
 			"value":               cty.String,
 			"propagate_at_launch": cty.Bool,
 		}))
-		var tags []tag
-		err := runner.EvaluateExpr(attribute.Expr, &tags, &tflint.EvaluateExprOption{WantType: &wantType})
-
-		err = runner.EnsureNoError(err, func() error {
+		err := runner.EvaluateExpr(attribute.Expr, func(tags []tag) error {
 			return runner.EmitIssue(
 				r,
 				fmt.Sprintf("autoscaling tags: %#v", tags),
 				attribute.Expr.Range(),
 			)
-		})
+		}, &tflint.EvaluateExprOption{WantType: &wantType})
 		if err != nil {
 			return err
 		}

@@ -23,3 +23,8 @@ TFLint version: v0.40.0+
 - Expand mode is only supported by SDK v0.14.0+ and TFLint v0.42.0+.
   - https://github.com/terraform-linters/tflint/pull/1537
   - https://github.com/terraform-linters/tflint-plugin-sdk/pull/208
+- Client-side value handling is introduced in SDK v0.16.0 and TFLint v0.46.0. TFLint v0.45.0 returns an error instead of a value.
+  - https://github.com/terraform-linters/tflint/pull/1700
+  - https://github.com/terraform-linters/tflint/pull/1722
+  - https://github.com/terraform-linters/tflint-plugin-sdk/pull/235
+  - https://github.com/terraform-linters/tflint-plugin-sdk/pull/239

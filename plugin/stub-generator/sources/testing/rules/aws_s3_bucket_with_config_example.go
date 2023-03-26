@@ -61,16 +61,13 @@ func (r *AwsS3BucketWithConfigExampleRule) Check(runner tflint.Runner) error {
 			continue
 		}
 
-		var bucket string
-		err := runner.EvaluateExpr(attribute.Expr, &bucket, nil)
-
-		err = runner.EnsureNoError(err, func() error {
+		err := runner.EvaluateExpr(attribute.Expr, func(bucket string) error {
 			return runner.EmitIssue(
 				r,
 				fmt.Sprintf("bucket name is %s, config=%s", bucket, config.Name),
 				attribute.Expr.Range(),
 			)
-		})
+		}, nil)
 		if err != nil {
 			return err
 		}

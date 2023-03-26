@@ -127,6 +127,11 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts sdk.EvaluateExprOpti
 		return val, diags
 	}
 
+	// SDK v0.16+ introduces client-side handling of unknown/NULL/sensitive values.
+	if s.clientSDKVersion != nil && s.clientSDKVersion.GreaterThanOrEqual(version.Must(version.NewVersion("0.16.0"))) {
+		return val, nil
+	}
+
 	if val.ContainsMarked() {
 		err := fmt.Errorf(
 			"sensitive value found in %s:%d%w",
@@ -136,11 +141,6 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts sdk.EvaluateExprOpti
 		)
 		log.Printf("[INFO] %s. TFLint ignores expressions with sensitive values.", err)
 		return cty.NullVal(cty.NilType), err
-	}
-
-	// SDK v0.16+ introduces client-side handling of unknown and NULL values.
-	if s.clientSDKVersion != nil && s.clientSDKVersion.GreaterThanOrEqual(version.Must(version.NewVersion("0.16.0"))) {
-		return val, nil
 	}
 
 	if *opts.WantType == cty.DynamicPseudoType {

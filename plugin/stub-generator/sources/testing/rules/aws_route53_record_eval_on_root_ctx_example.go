@@ -52,16 +52,13 @@ func (r *AwsRoute53RecordEvalOnRootCtxExampleRule) Check(runner tflint.Runner) e
 			continue
 		}
 
-		var name string
-		err := runner.EvaluateExpr(attribute.Expr, &name, &tflint.EvaluateExprOption{ModuleCtx: tflint.RootModuleCtxType})
-
-		err = runner.EnsureNoError(err, func() error {
+		err := runner.EvaluateExpr(attribute.Expr, func(name string) error {
 			return runner.EmitIssue(
 				r,
 				fmt.Sprintf("record name (root): %#v", name),
 				attribute.Expr.Range(),
 			)
-		})
+		}, &tflint.EvaluateExprOption{ModuleCtx: tflint.RootModuleCtxType})
 		if err != nil {
 			return err
 		}
