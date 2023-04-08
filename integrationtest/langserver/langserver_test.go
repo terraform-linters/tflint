@@ -19,10 +19,10 @@ import (
 )
 
 type jsonrpcMessage struct {
+	JSONRPC string      `json:"jsonrpc"`
 	ID      int         `json:"id,omitempty"`
 	Method  string      `json:"method"`
 	Params  interface{} `json:"params"`
-	JSONRPC string      `json:"jsonrpc"`
 }
 
 func TestMain(m *testing.M) {
