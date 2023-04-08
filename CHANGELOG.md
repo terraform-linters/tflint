@@ -1,3 +1,46 @@
+## 0.46.0 (2023-04-09)
+
+This release adds deprecation warnings for future breaking changes. Warn when using command line arguments like `tflint dir` and `tflint main.tf`. The former can be replaced with `tflint --chdir=dir` and the latter with `tflint --filter=main.tf`. See https://github.com/terraform-linters/tflint/pull/1687 for details.
+
+The GPG key signed signature attached to TFLint releases has been deprecated. This signature will not be added to releases after May 1, 2023. Please migrate to verification with Cosign.
+
+### Enhancements
+
+- [#1700](https://github.com/terraform-linters/tflint/pull/1700): plugin: Handle eval errors on the plugin side ([@wata727](https://github.com/wata727))
+- [#1722](https://github.com/terraform-linters/tflint/pull/1722): plugin: Handle sensitive values on the plugin side ([@wata727](https://github.com/wata727))
+- [#1730](https://github.com/terraform-linters/tflint/pull/1730): deps: Bump tflint-plugin-sdk to v0.16.0 ([@wata727](https://github.com/wata727))
+
+### Changes
+
+- [#1687](https://github.com/terraform-linters/tflint/pull/1687): cmd: Deprecate CLI arguments ([@wata727](https://github.com/wata727))
+
+### BugFixes
+
+- [#1686](https://github.com/terraform-linters/tflint/pull/1686): sarif: add tool version, exclude empty range/position, slash paths ([@bendrucker](https://github.com/bendrucker))
+
+### Chores
+
+- [#1587](https://github.com/terraform-linters/tflint/pull/1587): Deprecate GPG key signed signature ([@wata727](https://github.com/wata727))
+- [#1662](https://github.com/terraform-linters/tflint/pull/1662): deps: bump to go1.20 ([@chenrui333](https://github.com/chenrui333) [@bendrucker](https://github.com/bendrucker))
+- [#1681](https://github.com/terraform-linters/tflint/pull/1681): docs: Update usage output ([@wata727](https://github.com/wata727))
+- [#1682](https://github.com/terraform-linters/tflint/pull/1682) [#1733](https://github.com/terraform-linters/tflint/pull/1733): build(deps): Bump alpine from 3.17.1 to 3.17.3
+- [#1683](https://github.com/terraform-linters/tflint/pull/1683): build(deps): Bump golang.org/x/text from 0.6.0 to 0.7.0
+- [#1684](https://github.com/terraform-linters/tflint/pull/1684): build(deps): Bump github.com/hashicorp/hcl/v2 from 2.16.0 to 2.16.1
+- [#1685](https://github.com/terraform-linters/tflint/pull/1685) [#1729](https://github.com/terraform-linters/tflint/pull/1729): build(deps): Bump google.golang.org/grpc from 1.52.3 to 1.54.0
+- [#1691](https://github.com/terraform-linters/tflint/pull/1691): build(deps): Bump github.com/hashicorp/go-getter from 1.6.2 to 1.7.0
+- [#1692](https://github.com/terraform-linters/tflint/pull/1692): build(deps): Bump golang.org/x/net from 0.5.0 to 0.7.0
+- [#1695](https://github.com/terraform-linters/tflint/pull/1695) [#1714](https://github.com/terraform-linters/tflint/pull/1714): build(deps): Bump golang.org/x/oauth2 from 0.4.0 to 0.6.0
+- [#1701](https://github.com/terraform-linters/tflint/pull/1701): build(deps): Bump github.com/sourcegraph/jsonrpc2 from 0.1.0 to 0.2.0
+- [#1702](https://github.com/terraform-linters/tflint/pull/1702) [#1712](https://github.com/terraform-linters/tflint/pull/1712): build(deps): Bump github.com/spf13/afero from 1.9.3 to 1.9.5
+- [#1704](https://github.com/terraform-linters/tflint/pull/1704) [#1711](https://github.com/terraform-linters/tflint/pull/1711): build(deps): Bump golang.org/x/crypto from 0.0.0-20220517005047-85d78b3ac167 to 0.7.0
+- [#1708](https://github.com/terraform-linters/tflint/pull/1708): docs: revise plugin rate limiting guide ([@bendrucker](https://github.com/bendrucker))
+- [#1710](https://github.com/terraform-linters/tflint/pull/1710): build(deps): Bump sigstore/cosign-installer from 2.8.1 to 3.0.1
+- [#1715](https://github.com/terraform-linters/tflint/pull/1715): build(deps): Bump github.com/hashicorp/go-plugin from 1.4.8 to 1.4.9
+- [#1717](https://github.com/terraform-linters/tflint/pull/1717): build(deps): Bump github.com/fatih/color from 1.14.1 to 1.15.0
+- [#1723](https://github.com/terraform-linters/tflint/pull/1723): build(deps): Bump actions/setup-go from 3 to 4
+- [#1724](https://github.com/terraform-linters/tflint/pull/1724): build(deps): Bump github.com/zclconf/go-cty from 1.12.1 to 1.13.1
+- [#1736](https://github.com/terraform-linters/tflint/pull/1736): Fix GoReleaser config for Cosign v2 ([@wata727](https://github.com/wata727))
+
 ## 0.45.0 (2023-02-13)
 
 This release adds support for some CLI flags. File arguments (e.g. `tflint main.tf`) have been deprecated by the new `--filter` flag. It works in v0.45 but will be removed in a future version. We recommend migrating to `tflint --filter=main.tf`.

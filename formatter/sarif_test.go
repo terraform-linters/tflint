@@ -23,7 +23,7 @@ func Test_sarifPrint(t *testing.T) {
 		{
 			Name:   "no issues",
 			Issues: tflint.Issues{},
-			Stdout: `{
+			Stdout: fmt.Sprintf(`{
   "version": "2.1.0",
   "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
   "runs": [
@@ -31,7 +31,7 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint",
-          "version": "0.45.0",
+          "version": "%s",
           "informationUri": "https://github.com/terraform-linters/tflint"
         }
       },
@@ -41,14 +41,14 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint-errors",
-          "version": "0.45.0",
+          "version": "%s",
           "informationUri": "https://github.com/terraform-linters/tflint"
         }
       },
       "results": []
     }
   ]
-}`,
+}`, tflint.Version, tflint.Version),
 		},
 		{
 			Name: "issues",
@@ -63,7 +63,7 @@ func Test_sarifPrint(t *testing.T) {
 					},
 				},
 			},
-			Stdout: `{
+			Stdout: fmt.Sprintf(`{
   "version": "2.1.0",
   "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
   "runs": [
@@ -71,7 +71,7 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint",
-          "version": "0.45.0",
+          "version": "%s",
           "informationUri": "https://github.com/terraform-linters/tflint",
           "rules": [
             {
@@ -113,14 +113,14 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint-errors",
-          "version": "0.45.0",
+          "version": "%s",
           "informationUri": "https://github.com/terraform-linters/tflint"
         }
       },
       "results": []
     }
   ]
-}`,
+}`, tflint.Version, tflint.Version),
 		},
 		{
 			Name: "issues in directories",
@@ -135,7 +135,7 @@ func Test_sarifPrint(t *testing.T) {
 					},
 				},
 			},
-			Stdout: `{
+			Stdout: fmt.Sprintf(`{
   "version": "2.1.0",
   "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
   "runs": [
@@ -143,7 +143,7 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint",
-          "version": "0.45.0",
+          "version": "%s",
           "informationUri": "https://github.com/terraform-linters/tflint",
           "rules": [
             {
@@ -185,14 +185,14 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint-errors",
-          "version": "0.45.0",
+          "version": "%s",
           "informationUri": "https://github.com/terraform-linters/tflint"
         }
       },
       "results": []
     }
   ]
-}`,
+}`, tflint.Version, tflint.Version),
 		},
 		{
 			Name: "Issues with missing source positions",
@@ -206,7 +206,7 @@ func Test_sarifPrint(t *testing.T) {
 				},
 			},
 			Error: fmt.Errorf("Failed to work; %w", errors.New("I don't feel like working")),
-			Stdout: `{
+			Stdout: fmt.Sprintf(`{
   "version": "2.1.0",
   "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
   "runs": [
@@ -214,7 +214,7 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint",
-          "version": "0.45.0",
+          "version": "%s",
           "informationUri": "https://github.com/terraform-linters/tflint",
           "rules": [
             {
@@ -250,7 +250,7 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint-errors",
-          "version": "0.45.0",
+          "version": "%s",
           "informationUri": "https://github.com/terraform-linters/tflint"
         }
       },
@@ -265,7 +265,7 @@ func Test_sarifPrint(t *testing.T) {
       ]
     }
   ]
-}`,
+}`, tflint.Version, tflint.Version),
 		},
 		{
 			Name: "HCL diagnostics are surfaced as tflint-errors",
@@ -284,7 +284,7 @@ func Test_sarifPrint(t *testing.T) {
 					},
 				},
 			),
-			Stdout: `{
+			Stdout: fmt.Sprintf(`{
   "version": "2.1.0",
   "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
   "runs": [
@@ -292,7 +292,7 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint",
-          "version": "0.45.0",
+          "version": "%s",
           "informationUri": "https://github.com/terraform-linters/tflint"
         }
       },
@@ -302,7 +302,7 @@ func Test_sarifPrint(t *testing.T) {
       "tool": {
         "driver": {
           "name": "tflint-errors",
-          "version": "0.45.0",
+          "version": "%s",
           "informationUri": "https://github.com/terraform-linters/tflint"
         }
       },
@@ -334,7 +334,7 @@ func Test_sarifPrint(t *testing.T) {
       ]
     }
   ]
-}`,
+}`, tflint.Version, tflint.Version),
 		},
 	}
 
