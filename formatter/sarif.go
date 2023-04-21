@@ -49,7 +49,7 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, appErr error) {
 					sarif.NewRegion().
 						WithStartLine(issue.Range.Start.Line).
 						WithStartColumn(issue.Range.Start.Column).
-						WithEndLine(issue.Range.Start.Column).
+						WithEndLine(issue.Range.End.Line).
 						WithEndColumn(issue.Range.End.Column),
 				)
 			}
