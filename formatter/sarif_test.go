@@ -123,6 +123,150 @@ func Test_sarifPrint(t *testing.T) {
 }`, tflint.Version, tflint.Version),
 		},
 		{
+			Name: "issues not on line 1",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRule{},
+					Message: "test",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 3, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 3, Column: 4, Byte: 3},
+					},
+				},
+			},
+			Stdout: fmt.Sprintf(`{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint",
+          "version": "%s",
+          "informationUri": "https://github.com/terraform-linters/tflint",
+          "rules": [
+            {
+              "id": "test_rule",
+              "shortDescription": {
+                "text": ""
+              },
+              "helpUri": "https://github.com"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "test_rule",
+          "level": "error",
+          "message": {
+            "text": "test"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "test.tf"
+                },
+                "region": {
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 4
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint-errors",
+          "version": "%s",
+          "informationUri": "https://github.com/terraform-linters/tflint"
+        }
+      },
+      "results": []
+    }
+  ]
+}`, tflint.Version, tflint.Version),
+		},
+		{
+			Name: "issues spanning multiple lines",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRule{},
+					Message: "test",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 4, Column: 1, Byte: 3},
+					},
+				},
+			},
+			Stdout: fmt.Sprintf(`{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint",
+          "version": "%s",
+          "informationUri": "https://github.com/terraform-linters/tflint",
+          "rules": [
+            {
+              "id": "test_rule",
+              "shortDescription": {
+                "text": ""
+              },
+              "helpUri": "https://github.com"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "test_rule",
+          "level": "error",
+          "message": {
+            "text": "test"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "test.tf"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint-errors",
+          "version": "%s",
+          "informationUri": "https://github.com/terraform-linters/tflint"
+        }
+      },
+      "results": []
+    }
+  ]
+}`, tflint.Version, tflint.Version),
+		},
+		{
 			Name: "issues in directories",
 			Issues: tflint.Issues{
 				{
