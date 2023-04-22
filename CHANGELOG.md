@@ -1,3 +1,16 @@
+## 0.46.1 (2023-04-22)
+
+### BugFixes
+
+- [#1746](https://github.com/terraform-linters/tflint/pull/1746): sarif: fix incorrect `endLine` ([@tbutler-qontigo](https://github.com/tbutler-qontigo))
+
+### Chores
+
+- [#1738](https://github.com/terraform-linters/tflint/pull/1738): build(deps): Bump sigstore/cosign-installer from 3.0.1 to 3.0.2
+- [#1739](https://github.com/terraform-linters/tflint/pull/1739): build(deps): Bump golang.org/x/crypto from 0.7.0 to 0.8.0
+- [#1741](https://github.com/terraform-linters/tflint/pull/1741): build(deps): Bump golang.org/x/oauth2 from 0.6.0 to 0.7.0
+- [#1743](https://github.com/terraform-linters/tflint/pull/1743): build(deps): Bump github.com/terraform-linters/tflint-plugin-sdk from 0.16.0 to 0.16.1
+
 ## 0.46.0 (2023-04-09)
 
 This release adds deprecation warnings for future breaking changes. Warn when using command line arguments like `tflint dir` and `tflint main.tf`. The former can be replaced with `tflint --chdir=dir` and the latter with `tflint --filter=main.tf`. See https://github.com/terraform-linters/tflint/pull/1687 for details.
