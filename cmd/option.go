@@ -83,30 +83,18 @@ func (opts *Options) toConfig() *tflint.Config {
 	}
 
 	rules := map[string]*tflint.RuleConfig{}
-	if len(opts.Only) > 0 {
-		// tflint-plugin-sdk v0.13+ doesn't need rules config when enabling the only option.
-		// This is for the backward compatibility.
-		for _, rule := range opts.Only {
-			rules[rule] = &tflint.RuleConfig{
-				Name:    rule,
-				Enabled: true,
-				Body:    nil,
-			}
+	for _, rule := range append(opts.Only, opts.EnableRules...) {
+		rules[rule] = &tflint.RuleConfig{
+			Name:    rule,
+			Enabled: true,
+			Body:    nil,
 		}
-	} else {
-		for _, rule := range opts.EnableRules {
-			rules[rule] = &tflint.RuleConfig{
-				Name:    rule,
-				Enabled: true,
-				Body:    nil,
-			}
-		}
-		for _, rule := range opts.DisableRules {
-			rules[rule] = &tflint.RuleConfig{
-				Name:    rule,
-				Enabled: false,
-				Body:    nil,
-			}
+	}
+	for _, rule := range opts.DisableRules {
+		rules[rule] = &tflint.RuleConfig{
+			Name:    rule,
+			Enabled: false,
+			Body:    nil,
 		}
 	}
 

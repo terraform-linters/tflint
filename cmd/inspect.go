@@ -152,13 +152,6 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 	if err != nil {
 		return tflint.Issues{}, fmt.Errorf("Failed to load TFLint config; %w", err)
 	}
-	// tflint-plugin-sdk v0.13+ doesn't need to disable rules config when enabling the only option.
-	// This is for the backward compatibility.
-	if len(opts.Only) > 0 {
-		for _, rule := range cli.config.Rules {
-			rule.Enabled = false
-		}
-	}
 	cli.config.Merge(opts.toConfig())
 
 	// Setup loader
@@ -193,10 +186,13 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 		if err != nil {
 			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
 				// SDKVersion endpoint is available in tflint-plugin-sdk v0.14+.
-				// Use nil if not available.
+				return tflint.Issues{}, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
 			} else {
-				return tflint.Issues{}, fmt.Errorf("Failed to get TFLint version constraints to `%s` plugin; %w", name, err)
+				return tflint.Issues{}, fmt.Errorf(`Failed to get plugin "%s" SDK version; %w`, name, err)
 			}
+		}
+		if !plugin.SDKVersionConstraints.Check(sdkVersion) {
+			return tflint.Issues{}, fmt.Errorf(`Plugin "%s" SDK version (%s) is incompatible. Compatible versions: %s`, name, sdkVersion, plugin.SDKVersionConstraints)
 		}
 
 		for _, runner := range runners {
@@ -280,7 +276,7 @@ func launchPlugins(config *tflint.Config) (*plugin.Plugin, error) {
 		if err != nil {
 			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
 				// VersionConstraints endpoint is available in tflint-plugin-sdk v0.14+.
-				// Skip verification if not available.
+				return rulesetPlugin, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
 			} else {
 				return rulesetPlugin, fmt.Errorf("Failed to get TFLint version constraints to `%s` plugin; %w", name, err)
 			}
