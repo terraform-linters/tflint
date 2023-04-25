@@ -16,6 +16,8 @@ import (
 	"golang.org/x/oauth2"
 )
 
+const defaultSourceHost = "github.com"
+
 // InstallConfig is a config for plugin installation.
 // This is a wrapper for PluginConfig and manages naming conventions
 // and directory names for installation.
@@ -258,9 +260,8 @@ func newGitHubClient(ctx context.Context, config *InstallConfig) (*github.Client
 
 	hc.Transport = &requestLoggingTransport{hc.Transport}
 
-	client := github.NewClient(hc)
-	if config.SourceHost == client.BaseURL.Host {
-		return client, nil
+	if config.SourceHost == defaultSourceHost {
+		return github.NewClient(hc), nil
 	}
 
 	baseURL := fmt.Sprintf("https://%s/", config.SourceHost)
