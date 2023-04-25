@@ -17,6 +17,7 @@ func Test_Install(t *testing.T) {
 		Enabled:     true,
 		Version:     "0.4.0",
 		Source:      "github.com/terraform-linters/tflint-ruleset-aws",
+		SourceHost:  "github.com",
 		SourceOwner: "terraform-linters",
 		SourceRepo:  "tflint-ruleset-aws",
 	})

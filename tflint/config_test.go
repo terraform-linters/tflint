@@ -107,6 +107,7 @@ plugin "baz" {
 						Version:     "0.1.0",
 						Source:      "github.com/foo/bar",
 						SigningKey:  "SIGNING_KEY",
+						SourceHost:  "github.com",
 						SourceOwner: "foo",
 						SourceRepo:  "bar",
 					},
