@@ -244,7 +244,9 @@ func extractFileFromZipFile(zipFile *os.File, savePath string) error {
 }
 
 func newGitHubClient(ctx context.Context, config *InstallConfig) (*github.Client, error) {
-	var hc *http.Client
+	hc := &http.Client{
+		Transport: http.DefaultTransport,
+	}
 
 	if t := os.Getenv("GITHUB_TOKEN"); t != "" {
 		log.Printf("[DEBUG] GITHUB_TOKEN set, plugin requests to the GitHub API will be authenticated")
@@ -254,7 +256,7 @@ func newGitHubClient(ctx context.Context, config *InstallConfig) (*github.Client
 		}))
 	}
 
-	hc.Transport = &requestLoggingTransport{}
+	hc.Transport = &requestLoggingTransport{hc.Transport}
 
 	client := github.NewClient(hc)
 	if config.SourceHost == client.BaseURL.Host {
@@ -272,9 +274,12 @@ func fileExt() string {
 	return ""
 }
 
-type requestLoggingTransport struct{}
+// requestLoggingTransport wraps an existing RoundTripper and prints DEBUG logs before each request
+type requestLoggingTransport struct {
+	http.RoundTripper
+}
 
 func (s *requestLoggingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	log.Printf("[DEBUG] Request to %s", r.URL)
-	return http.DefaultTransport.RoundTrip(r)
+	return s.RoundTripper.RoundTrip(r)
 }
