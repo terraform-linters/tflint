@@ -13,7 +13,7 @@ Multiple rules can be specified as a comma-separated list:
 
 ```hcl
 resource "aws_instance" "foo" {
-    # tflint-ignore: aws_instance_invalid_type, other_rule
+    # tflint-ignore: aws_instance_invalid_type,other_rule
     instance_type = "t1.2xlarge"
 }
 ```
