@@ -50,7 +50,7 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 		if err != nil {
 			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
 				// VersionConstraints endpoint is available in tflint-plugin-sdk v0.14+.
-				// Skip verification if not available.
+				return nil, nil, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
 			} else {
 				return nil, nil, fmt.Errorf("Failed to get TFLint version constraints to `%s` plugin; %w", name, err)
 			}
@@ -63,10 +63,13 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 		if err != nil {
 			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
 				// SDKVersion endpoint is available in tflint-plugin-sdk v0.14+.
-				// Use nil if not available.
+				return nil, nil, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
 			} else {
-				return nil, nil, fmt.Errorf("Failed to get SDK version of `%s` plugin; %w", name, err)
+				return nil, nil, fmt.Errorf(`Failed to get plugin "%s" SDK version; %w`, name, err)
 			}
+		}
+		if !plugin.SDKVersionConstraints.Check(clientSDKVersions[name]) {
+			return nil, nil, fmt.Errorf(`Plugin "%s" SDK version (%s) is incompatible. Compatible versions: %s`, name, clientSDKVersions[name], plugin.SDKVersionConstraints)
 		}
 
 		rulesets = append(rulesets, ruleset)
