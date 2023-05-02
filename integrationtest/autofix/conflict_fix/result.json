@@ -1,0 +1,85 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "terraform_autofix_comment",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "Use \"# autofixed\" instead of \"// autofixed\"",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 1,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 1
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is [AUTO_FIXED]",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 3,
+          "column": 19
+        },
+        "end": {
+          "line": 3,
+          "column": 33
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_instance_autofix_conflict",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is [AUTO_FIXED]",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 3,
+          "column": 19
+        },
+        "end": {
+          "line": 3,
+          "column": 33
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "terraform_autofix_comment",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "Use \"# autofixed\" instead of \"// autofixed\"",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 3,
+          "column": 30
+        },
+        "end": {
+          "line": 4,
+          "column": 1
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}

@@ -1,6 +1,7 @@
 package terraform
 
 import (
+	"bytes"
 	"os"
 	"testing"
 
@@ -11,6 +12,179 @@ import (
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 )
+
+func TestRebuild(t *testing.T) {
+	tests := []struct {
+		name    string
+		module  *Module
+		sources map[string][]byte
+		want    *Module
+	}{
+		{
+			name: "HCL native files",
+			module: &Module{
+				SourceDir: ".",
+				Variables: map[string]*Variable{"foo": {Name: "foo"}},
+				primaries: map[string]*hcl.File{
+					"main.tf": {Bytes: []byte(`variable "foo" { default = 1 }`), Body: hcl.EmptyBody()},
+				},
+				overrides: map[string]*hcl.File{
+					"main_override.tf": {Bytes: []byte(`variable "foo" { default = 2 }`), Body: hcl.EmptyBody()},
+					"override.tf":      {Bytes: []byte(`variable "foo" { default = 3 }`), Body: hcl.EmptyBody()},
+				},
+				Sources: map[string][]byte{
+					"main.tf":          []byte(`variable "foo" { default = 1 }`),
+					"main_override.tf": []byte(`variable "foo" { default = 2 }`),
+					"override.tf":      []byte(`variable "foo" { default = 3 }`),
+				},
+				Files: map[string]*hcl.File{
+					"main.tf":          {Bytes: []byte(`variable "foo" { default = 1 }`), Body: hcl.EmptyBody()},
+					"main_override.tf": {Bytes: []byte(`variable "foo" { default = 2 }`), Body: hcl.EmptyBody()},
+					"override.tf":      {Bytes: []byte(`variable "foo" { default = 3 }`), Body: hcl.EmptyBody()},
+				},
+			},
+			sources: map[string][]byte{
+				"main.tf": []byte(`
+variable "foo" { default = 1 }
+variable "bar" { default = "bar" }
+`),
+				"main_override.tf": []byte(`
+variable "foo" { default = 2 }
+variable "bar" { default = "baz" }
+`),
+			},
+			want: &Module{
+				SourceDir: ".",
+				Variables: map[string]*Variable{"foo": {Name: "foo"}, "bar": {Name: "bar"}},
+				primaries: map[string]*hcl.File{
+					"main.tf": {
+						Bytes: []byte(`
+variable "foo" { default = 1 }
+variable "bar" { default = "bar" }
+`),
+						Body: hcl.EmptyBody(),
+					},
+				},
+				overrides: map[string]*hcl.File{
+					"main_override.tf": {
+						Bytes: []byte(`
+variable "foo" { default = 2 }
+variable "bar" { default = "baz" }
+`),
+						Body: hcl.EmptyBody(),
+					},
+					"override.tf": {Bytes: []byte(`variable "foo" { default = 3 }`), Body: hcl.EmptyBody()},
+				},
+				Sources: map[string][]byte{
+					"main.tf": []byte(`
+variable "foo" { default = 1 }
+variable "bar" { default = "bar" }
+`),
+					"main_override.tf": []byte(`
+variable "foo" { default = 2 }
+variable "bar" { default = "baz" }
+`),
+					"override.tf": []byte(`variable "foo" { default = 3 }`),
+				},
+				Files: map[string]*hcl.File{
+					"main.tf": {
+						Bytes: []byte(`
+variable "foo" { default = 1 }
+variable "bar" { default = "bar" }
+`),
+						Body: hcl.EmptyBody(),
+					},
+					"main_override.tf": {
+						Bytes: []byte(`
+variable "foo" { default = 2 }
+variable "bar" { default = "baz" }
+`),
+						Body: hcl.EmptyBody(),
+					},
+					"override.tf": {Bytes: []byte(`variable "foo" { default = 3 }`), Body: hcl.EmptyBody()},
+				},
+			},
+		},
+		{
+			name: "HCL JSON files",
+			module: &Module{
+				SourceDir: ".",
+				Variables: map[string]*Variable{"foo": {Name: "foo"}},
+				primaries: map[string]*hcl.File{
+					"main.tf.json": {Bytes: []byte(`{"variable": {"foo": {"default": 1}}}`), Body: hcl.EmptyBody()},
+				},
+				overrides: map[string]*hcl.File{
+					"main_override.tf.json": {Bytes: []byte(`{"variable": {"foo": {"default": 2}}}`), Body: hcl.EmptyBody()},
+					"override.tf.json":      {Bytes: []byte(`{"variable": {"foo": {"default": 3}}}`), Body: hcl.EmptyBody()},
+				},
+				Sources: map[string][]byte{
+					"main.tf.json":          []byte(`{"variable": {"foo": {"default": 1}}}`),
+					"main_override.tf.json": []byte(`{"variable": {"foo": {"default": 2}}}`),
+					"override.tf.json":      []byte(`{"variable": {"foo": {"default": 3}}}`),
+				},
+				Files: map[string]*hcl.File{
+					"main.tf.json":          {Bytes: []byte(`{"variable": {"foo": {"default": 1}}}`), Body: hcl.EmptyBody()},
+					"main_override.tf.json": {Bytes: []byte(`{"variable": {"foo": {"default": 2}}}`), Body: hcl.EmptyBody()},
+					"override.tf.json":      {Bytes: []byte(`{"variable": {"foo": {"default": 3}}}`), Body: hcl.EmptyBody()},
+				},
+			},
+			sources: map[string][]byte{
+				"main.tf.json":          []byte(`{"variable": {"foo": {"default": 1}, "bar": {"default": "bar"}}}`),
+				"main_override.tf.json": []byte(`{"variable": {"foo": {"default": 2}, "bar": {"default": "baz"}}}`),
+			},
+			want: &Module{
+				SourceDir: ".",
+				Variables: map[string]*Variable{"foo": {Name: "foo"}, "bar": {Name: "bar"}},
+				primaries: map[string]*hcl.File{
+					"main.tf.json": {Bytes: []byte(`{"variable": {"foo": {"default": 1}, "bar": {"default": "bar"}}}`), Body: hcl.EmptyBody()},
+				},
+				overrides: map[string]*hcl.File{
+					"main_override.tf.json": {Bytes: []byte(`{"variable": {"foo": {"default": 2}, "bar": {"default": "baz"}}}`), Body: hcl.EmptyBody()},
+					"override.tf.json":      {Bytes: []byte(`{"variable": {"foo": {"default": 3}}}`), Body: hcl.EmptyBody()},
+				},
+				Sources: map[string][]byte{
+					"main.tf.json":          []byte(`{"variable": {"foo": {"default": 1}, "bar": {"default": "bar"}}}`),
+					"main_override.tf.json": []byte(`{"variable": {"foo": {"default": 2}, "bar": {"default": "baz"}}}`),
+					"override.tf.json":      []byte(`{"variable": {"foo": {"default": 3}}}`),
+				},
+				Files: map[string]*hcl.File{
+					"main.tf.json":          {Bytes: []byte(`{"variable": {"foo": {"default": 1}, "bar": {"default": "bar"}}}`), Body: hcl.EmptyBody()},
+					"main_override.tf.json": {Bytes: []byte(`{"variable": {"foo": {"default": 2}, "bar": {"default": "baz"}}}`), Body: hcl.EmptyBody()},
+					"override.tf.json":      {Bytes: []byte(`{"variable": {"foo": {"default": 3}}}`), Body: hcl.EmptyBody()},
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			diags := test.module.Rebuild(test.sources)
+			if diags.HasErrors() {
+				t.Fatalf("unexpected error: %s", diags.Error())
+			}
+
+			opt := cmp.Comparer(func(x, y *hcl.File) bool {
+				return bytes.Equal(x.Bytes, y.Bytes)
+			})
+
+			if diff := cmp.Diff(test.want.Sources, test.module.Sources); diff != "" {
+				t.Errorf("sources mismatch:\n%s", diff)
+			}
+			if diff := cmp.Diff(test.want.Files, test.module.Files, opt); diff != "" {
+				t.Errorf("files mismatch:\n%s", diff)
+			}
+			if diff := cmp.Diff(test.want.primaries, test.module.primaries, opt); diff != "" {
+				t.Errorf("primaries mismatch:\n%s", diff)
+			}
+			if diff := cmp.Diff(test.want.overrides, test.module.overrides, opt); diff != "" {
+				t.Errorf("overrides mismatch:\n%s", diff)
+			}
+			if len(test.want.Variables) != len(test.module.Variables) {
+				t.Errorf("variables count mismatch: want %d, got %d", len(test.want.Variables), len(test.module.Variables))
+			}
+		})
+	}
+}
 
 func TestPartialContent(t *testing.T) {
 	tests := []struct {

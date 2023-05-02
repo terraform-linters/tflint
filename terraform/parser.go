@@ -65,10 +65,8 @@ func (p *Parser) LoadConfigDir(baseDir, dir string) (*Module, hcl.Diagnostics) {
 	}
 
 	mod := NewEmptyModule()
-	mod.primaries = make([]*hcl.File, len(primaries))
-	mod.overrides = make([]*hcl.File, len(overrides))
 
-	for i, path := range primaries {
+	for _, path := range primaries {
 		f, loadDiags := p.loadHCLFile(baseDir, path)
 		diags = diags.Extend(loadDiags)
 		if loadDiags.HasErrors() {
@@ -76,11 +74,11 @@ func (p *Parser) LoadConfigDir(baseDir, dir string) (*Module, hcl.Diagnostics) {
 		}
 		realPath := filepath.Join(baseDir, path)
 
-		mod.primaries[i] = f
+		mod.primaries[realPath] = f
 		mod.Sources[realPath] = f.Bytes
 		mod.Files[realPath] = f
 	}
-	for i, path := range overrides {
+	for _, path := range overrides {
 		f, loadDiags := p.loadHCLFile(baseDir, path)
 		diags = diags.Extend(loadDiags)
 		if loadDiags.HasErrors() {
@@ -88,7 +86,7 @@ func (p *Parser) LoadConfigDir(baseDir, dir string) (*Module, hcl.Diagnostics) {
 		}
 		realPath := filepath.Join(baseDir, path)
 
-		mod.overrides[i] = f
+		mod.overrides[realPath] = f
 		mod.Sources[realPath] = f.Bytes
 		mod.Files[realPath] = f
 	}

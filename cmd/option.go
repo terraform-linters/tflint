@@ -30,6 +30,7 @@ type Options struct {
 	MinimumFailureSeverity string   `long:"minimum-failure-severity" description:"Sets minimum severity level for exiting with a non-zero error code" choice:"error" choice:"warning" choice:"notice"`
 	Color                  bool     `long:"color" description:"Enable colorized output"`
 	NoColor                bool     `long:"no-color" description:"Disable colorized output"`
+	Fix                    bool     `long:"fix" description:"Fix issues automatically"`
 	ActAsBundledPlugin     bool     `long:"act-as-bundled-plugin" hidden:"true"`
 }
 

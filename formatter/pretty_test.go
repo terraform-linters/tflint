@@ -18,6 +18,7 @@ func Test_prettyPrint(t *testing.T) {
 	cases := []struct {
 		Name    string
 		Issues  tflint.Issues
+		Fix     bool
 		Error   error
 		Sources map[string][]byte
 		Stdout  string
@@ -96,6 +97,91 @@ Reference: https://github.com
 `,
 		},
 		{
+			Name: "fixable",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRule{},
+					Message: "test",
+					Fixable: true,
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+					},
+				},
+			},
+			Sources: map[string][]byte{
+				"test.tf": []byte("foo = 1"),
+			},
+			Stdout: `1 issue(s) found:
+
+Error: [Fixable] test (test_rule)
+
+  on test.tf line 1:
+   1: foo = 1
+
+Reference: https://github.com
+
+`,
+		},
+		{
+			Name: "fixed",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRule{},
+					Message: "test",
+					Fixable: true,
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+					},
+				},
+			},
+			Fix: true,
+			Sources: map[string][]byte{
+				"test.tf": []byte("foo = 1"),
+			},
+			Stdout: `1 issue(s) found:
+
+Error: [Fixed] test (test_rule)
+
+  on test.tf line 1:
+   1: foo = 1
+
+Reference: https://github.com
+
+`,
+		},
+		{
+			Name: "issue with source",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRule{},
+					Message: "test",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+					},
+					Source: []byte("bar = 1"),
+				},
+			},
+			Sources: map[string][]byte{
+				"test.tf": []byte("foo = 1"),
+			},
+			Stdout: `1 issue(s) found:
+
+Error: test (test_rule)
+
+  on test.tf line 1:
+   1: bar = 1
+
+Reference: https://github.com
+
+`,
+		},
+		{
 			Name:   "error",
 			Issues: tflint.Issues{},
 			Error:  fmt.Errorf("Failed to work; %w", errors.New("I don't feel like working")),
@@ -107,7 +193,7 @@ Reference: https://github.com
 		t.Run(tc.Name, func(t *testing.T) {
 			stdout := &bytes.Buffer{}
 			stderr := &bytes.Buffer{}
-			formatter := &Formatter{Stdout: stdout, Stderr: stderr}
+			formatter := &Formatter{Stdout: stdout, Stderr: stderr, Fix: tc.Fix}
 
 			formatter.prettyPrint(tc.Issues, tc.Error, tc.Sources)
 

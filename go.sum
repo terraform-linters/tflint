@@ -455,10 +455,10 @@ github.com/stretchr/testify v1.7.2/go.mod h1:R6va5+xMeoiuVRoj+gSkQ7d3FALtqAAGI1F
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
-github.com/terraform-linters/tflint-plugin-sdk v0.16.1 h1:fBfLL8KzP3pkQrNp3iQxaGoKBoMo2sFYoqmhuo6yc+A=
-github.com/terraform-linters/tflint-plugin-sdk v0.16.1/go.mod h1:ltxVy04PRwptL6P/Ugz2ZeTNclYapClrLn/kVFXJGzo=
-github.com/terraform-linters/tflint-ruleset-terraform v0.3.0 h1:80R40X4h6WgfUyrnVmts2VPr/QQ+ujXsN9OAJ+yJMxk=
-github.com/terraform-linters/tflint-ruleset-terraform v0.3.0/go.mod h1:ylnh9GPSG4iAC/ekt/BuD4ASudNYgkgV5oP4bFBUBkE=
+github.com/terraform-linters/tflint-plugin-sdk v0.16.2-0.20230605170513-64de942491dc h1:z0PQWOWfWOYps2Oo7nT/v9XASazFZITnMA+oGWZzB78=
+github.com/terraform-linters/tflint-plugin-sdk v0.16.2-0.20230605170513-64de942491dc/go.mod h1:ltxVy04PRwptL6P/Ugz2ZeTNclYapClrLn/kVFXJGzo=
+github.com/terraform-linters/tflint-ruleset-terraform v0.3.1-0.20230608133521-d55898e6e6f7 h1:2xEp15qLFCUaDiDqjQE7+SzrBRtr+XTGECDLcbtJMdk=
+github.com/terraform-linters/tflint-ruleset-terraform v0.3.1-0.20230608133521-d55898e6e6f7/go.mod h1:qmRHJdsLiqYBiz+MQ/JVS5NTZRtgckDSyR2vduTVSwk=
 github.com/ulikunitz/xz v0.5.10 h1:t92gobL9l3HE202wg3rlk19F6X+JOxl9BBrCCMYEYd8=
 github.com/ulikunitz/xz v0.5.10/go.mod h1:nbz6k7qbPmH4IRqmfOplQw/tblSgqTqBwxkY0oWt/14=
 github.com/vmihailenco/msgpack/v4 v4.3.12/go.mod h1:gborTTJjAo/GWTqqRjrLCn9pgNN+NXzzngzBKDPIqw4=
@@ -480,8 +480,8 @@ github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9dec
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 github.com/zclconf/go-cty v1.10.0/go.mod h1:vVKLxnk3puL4qRAv72AO+W99LUD4da90g3uUAzyuvAk=
-github.com/zclconf/go-cty v1.13.1 h1:0a6bRwuiSHtAmqCqNOE+c2oHgepv0ctoxU4FUe43kwc=
-github.com/zclconf/go-cty v1.13.1/go.mod h1:YKQzy/7pZ7iq2jNFzy5go57xdxdWoLLpaEp4u238AE0=
+github.com/zclconf/go-cty v1.13.2 h1:4GvrUxe/QUDYuJKAav4EYqdM47/kZa672LwmXFmEKT0=
+github.com/zclconf/go-cty v1.13.2/go.mod h1:YKQzy/7pZ7iq2jNFzy5go57xdxdWoLLpaEp4u238AE0=
 github.com/zclconf/go-cty-yaml v1.0.3 h1:og/eOQ7lvA/WWhHGFETVWNduJM7Rjsv2RRpx1sdFMLc=
 github.com/zclconf/go-cty-yaml v1.0.3/go.mod h1:9YLUH4g7lOhVWqUbctnVlZ5KLpg7JAprQNgxSZ1Gyxs=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=

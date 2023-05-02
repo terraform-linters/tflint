@@ -13,7 +13,13 @@ type Issue struct {
 	Rule    Rule
 	Message string
 	Range   hcl.Range
+	Fixable bool
 	Callers []hcl.Range
+
+	// Source is the source code of the file where the issue was found.
+	// Usually this is the same as the originally loaded source,
+	// but it may be a different if rewritten by autofixes.
+	Source []byte
 }
 
 // Issues is an alias for the map of Issue

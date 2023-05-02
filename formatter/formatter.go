@@ -14,6 +14,7 @@ type Formatter struct {
 	Stdout  io.Writer
 	Stderr  io.Writer
 	Format  string
+	Fix     bool
 	NoColor bool
 }
 

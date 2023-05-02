@@ -1,0 +1,45 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "terraform_autofix_remove_local",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "Do not use \"autofix_removed\" local value",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 3,
+          "column": 3
+        },
+        "end": {
+          "line": 3,
+          "column": 22
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "terraform_autofix_comment",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "Use \"# autofixed\" instead of \"// autofixed\"",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 3,
+          "column": 11
+        },
+        "end": {
+          "line": 4,
+          "column": 1
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}

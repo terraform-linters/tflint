@@ -241,33 +241,11 @@ resource "aws_instance" "bar" {
 }
 
 func TestGetFile(t *testing.T) {
-	runner := tflint.TestRunner(t, map[string]string{
-		"test1.tf": `
-resource "aws_instance" "foo" {
-	instance_type = "t2.micro"
-}`,
-		"test2.tf": `
-resource "aws_instance" "bar" {
-	instance_type = "m5.2xlarge"
-}`,
-	})
-	rootRunner := tflint.TestRunner(t, map[string]string{
-		"test_on_root1.tf": `
-resource "aws_instance" "foo" {
-	instance_type = "t2.nano"
-}`,
-	})
-	files := runner.Files()
-	for name, file := range rootRunner.Files() {
-		files[name] = file
-	}
-
-	server := NewGRPCServer(runner, rootRunner, files, SDKVersion)
-
 	tests := []struct {
-		Name string
-		Arg  string
-		Want string
+		Name    string
+		Arg     string
+		Changes map[string][]byte
+		Want    string
 	}{
 		{
 			Name: "get test1.tf",
@@ -298,10 +276,51 @@ resource "aws_instance" "foo" {
 	instance_type = "t2.nano"
 }`,
 		},
+		{
+			Name: "get autofixed file",
+			Arg:  "test1.tf",
+			Changes: map[string][]byte{
+				"test1.tf": []byte(`
+resource "aws_instance" "foo" {
+	instance_type = "t3.nano"
+}`),
+			},
+			Want: `
+resource "aws_instance" "foo" {
+	instance_type = "t3.nano"
+}`,
+		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.Name, func(t *testing.T) {
+			runner := tflint.TestRunner(t, map[string]string{
+				"test1.tf": `
+resource "aws_instance" "foo" {
+	instance_type = "t2.micro"
+}`,
+				"test2.tf": `
+resource "aws_instance" "bar" {
+	instance_type = "m5.2xlarge"
+}`,
+			})
+			rootRunner := tflint.TestRunner(t, map[string]string{
+				"test_on_root1.tf": `
+resource "aws_instance" "foo" {
+	instance_type = "t2.nano"
+}`,
+			})
+			files := runner.Files()
+			for name, file := range rootRunner.Files() {
+				files[name] = file
+			}
+
+			server := NewGRPCServer(runner, rootRunner, files, SDKVersion)
+
+			if diags := runner.ApplyChanges(test.Changes); diags.HasErrors() {
+				t.Fatal(diags)
+			}
+
 			file, err := server.GetFile(test.Arg)
 			if err != nil {
 				t.Fatalf("failed to call GetFile: %s", err)
@@ -707,27 +726,27 @@ resource "aws_instance" "foo" {
 
 	tests := []struct {
 		Name string
-		Args func() (sdk.Rule, string, hcl.Range)
+		Args func() (sdk.Rule, string, hcl.Range, bool)
 		Want int
 	}{
 		{
 			Name: "on expr",
-			Args: func() (sdk.Rule, string, hcl.Range) {
-				return &testRule{}, "error", exprRange
+			Args: func() (sdk.Rule, string, hcl.Range, bool) {
+				return &testRule{}, "error", exprRange, false
 			},
 			Want: 1,
 		},
 		{
 			Name: "on non-expr",
-			Args: func() (sdk.Rule, string, hcl.Range) {
-				return &testRule{}, "error", resourceDefRange
+			Args: func() (sdk.Rule, string, hcl.Range, bool) {
+				return &testRule{}, "error", resourceDefRange, false
 			},
 			Want: 1,
 		},
 		{
 			Name: "on another file",
-			Args: func() (sdk.Rule, string, hcl.Range) {
-				return &testRule{}, "error", hcl.Range{Filename: "not_found.tf"}
+			Args: func() (sdk.Rule, string, hcl.Range, bool) {
+				return &testRule{}, "error", hcl.Range{Filename: "not_found.tf"}, false
 			},
 			Want: 1,
 		},
@@ -739,13 +758,64 @@ resource "aws_instance" "foo" {
 
 			server := NewGRPCServer(runner, nil, runner.Files(), SDKVersion)
 
-			err := server.EmitIssue(test.Args())
+			_, err := server.EmitIssue(test.Args())
 			if err != nil {
 				t.Fatalf("failed to call EmitIssue: %s", err)
 			}
 
 			if len(runner.Issues) != test.Want {
 				t.Errorf("expected to %d issues, but got %d issues", test.Want, len(runner.Issues))
+			}
+		})
+	}
+}
+
+func TestApplyChanges(t *testing.T) {
+	tests := []struct {
+		name    string
+		files   map[string]string
+		changes map[string][]byte
+		want    map[string][]byte
+	}{
+		{
+			name: "change file",
+			files: map[string]string{
+				"main.tf": `
+resource "aws_instance" "foo" {
+	instance_type = "t2.micro"
+}`,
+				"variables.tf": `variable "foo" {}`,
+			},
+			changes: map[string][]byte{
+				"main.tf": []byte(`
+resource "aws_instance" "foo" {
+	instance_type = "t3.nano"
+}`),
+			},
+			want: map[string][]byte{
+				"main.tf": []byte(`
+resource "aws_instance" "foo" {
+	instance_type = "t3.nano"
+}`),
+				"variables.tf": []byte(`variable "foo" {}`),
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			runner := tflint.TestRunner(t, test.files)
+
+			server := NewGRPCServer(runner, nil, runner.Files(), SDKVersion)
+
+			err := server.ApplyChanges(test.changes)
+			if err != nil {
+				t.Fatalf("failed to call ApplyChanges: %s", err)
+			}
+
+			got := server.GetFiles(sdk.SelfModuleCtxType)
+			if diff := cmp.Diff(test.want, got); diff != "" {
+				t.Errorf(diff)
 			}
 		})
 	}

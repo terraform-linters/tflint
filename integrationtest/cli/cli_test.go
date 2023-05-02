@@ -236,7 +236,7 @@ func TestIntegration(t *testing.T) {
 			command: "./tflint",
 			dir:     "check_errors",
 			status:  cmd.ExitCodeError,
-			stderr:  "Failed to check `aws_cloudformation_stack_error` rule: an error occurred in Check",
+			stderr:  `failed to check "aws_cloudformation_stack_error" rule: an error occurred in Check`,
 		},
 		{
 			name:    "files arguments",

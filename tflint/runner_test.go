@@ -388,6 +388,50 @@ func Test_LookupIssues(t *testing.T) {
 	}
 }
 
+func TestLookupChanges(t *testing.T) {
+	tests := []struct {
+		name    string
+		in      string
+		changes map[string][]byte
+		want    map[string][]byte
+	}{
+		{
+			name: "multiple files",
+			in:   "main.tf",
+			changes: map[string][]byte{
+				"main.tf":     []byte("foo = 1"),
+				"resource.tf": []byte("bar = 2"),
+			},
+			want: map[string][]byte{
+				"main.tf": []byte("foo = 1"),
+			},
+		},
+		{
+			name: "path normalization",
+			in:   "./main.tf",
+			changes: map[string][]byte{
+				"main.tf": []byte("foo = 1"),
+			},
+			want: map[string][]byte{
+				"main.tf": []byte("foo = 1"),
+			},
+		},
+	}
+
+	runner := TestRunner(t, map[string]string{})
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			runner.changes = test.changes
+
+			got := runner.LookupChanges(test.in)
+			if diff := cmp.Diff(test.want, got); diff != "" {
+				t.Fatal(diff)
+			}
+		})
+	}
+}
+
 type testRule struct{}
 
 func (r *testRule) Name() string {
@@ -401,13 +445,34 @@ func (r *testRule) Link() string {
 }
 
 func Test_EmitIssue(t *testing.T) {
+	sources := map[string]string{
+		"test.tf":   "foo = 1",
+		"module.tf": "bar = 2",
+	}
+
+	parseExpr := func(in string) hcl.Expression {
+		expr, diags := hclsyntax.ParseExpression([]byte(in), "", hcl.InitialPos)
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+		return expr
+	}
+
+	type moduleConfig struct {
+		currentExpr hcl.Expression
+		variables   map[string]*moduleVariable
+	}
+
 	cases := []struct {
 		Name        string
 		Rule        Rule
 		Message     string
 		Location    hcl.Range
+		Fixable     bool
 		Annotations map[string]Annotations
+		Module      *moduleConfig
 		Expected    Issues
+		Applied     bool
 	}{
 		{
 			Name:    "basic",
@@ -426,8 +491,34 @@ func Test_EmitIssue(t *testing.T) {
 						Filename: "test.tf",
 						Start:    hcl.Pos{Line: 1},
 					},
+					Source: []byte("foo = 1"),
 				},
 			},
+			Applied: true,
+		},
+		{
+			Name:    "fixable",
+			Rule:    &testRule{},
+			Message: "This is test message",
+			Location: hcl.Range{
+				Filename: "test.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
+			Fixable:     true,
+			Annotations: map[string]Annotations{},
+			Expected: Issues{
+				{
+					Rule:    &testRule{},
+					Message: "This is test message",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1},
+					},
+					Fixable: true,
+					Source:  []byte("foo = 1"),
+				},
+			},
+			Applied: true,
 		},
 		{
 			Name:    "ignore",
@@ -452,17 +543,240 @@ func Test_EmitIssue(t *testing.T) {
 				},
 			},
 			Expected: Issues{},
+			Applied:  false,
+		},
+		{
+			Name:    "module",
+			Rule:    &testRule{},
+			Message: "This is test message",
+			Location: hcl.Range{
+				Filename: "test.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
+			Module: &moduleConfig{
+				currentExpr: parseExpr("var.foo"),
+				variables: map[string]*moduleVariable{
+					"foo": {Root: true, DeclRange: hcl.Range{Filename: "module.tf", Start: hcl.Pos{Line: 1}}},
+				},
+			},
+			Expected: Issues{
+				{
+					Rule:    &testRule{},
+					Message: "This is test message",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 1},
+					},
+					Callers: []hcl.Range{
+						{Filename: "module.tf", Start: hcl.Pos{Line: 1}},
+						{Filename: "test.tf", Start: hcl.Pos{Line: 1}},
+					},
+					Source: []byte("bar = 2"),
+				},
+			},
+			Applied: true,
+		},
+		{
+			Name:    "no variables in module",
+			Rule:    &testRule{},
+			Message: "This is test message",
+			Location: hcl.Range{
+				Filename: "test.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
+			Module: &moduleConfig{
+				currentExpr: parseExpr(`"foo"`),
+				variables:   map[string]*moduleVariable{},
+			},
+			Expected: Issues{},
+			Applied:  false,
+		},
+		{
+			Name:    "multiple variables in module",
+			Rule:    &testRule{},
+			Message: "This is test message",
+			Location: hcl.Range{
+				Filename: "test.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
+			Module: &moduleConfig{
+				currentExpr: parseExpr(`"${var.foo}-${var.bar}"`),
+				variables: map[string]*moduleVariable{
+					"foo": {Root: true, DeclRange: hcl.Range{Filename: "module.tf", Start: hcl.Pos{Line: 1}}},
+					"bar": {Root: true, DeclRange: hcl.Range{Filename: "module.tf", Start: hcl.Pos{Line: 3}}},
+				},
+			},
+			Expected: Issues{
+				{
+					Rule:    &testRule{},
+					Message: "This is test message",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 1},
+					},
+					Callers: []hcl.Range{
+						{Filename: "module.tf", Start: hcl.Pos{Line: 1}},
+						{Filename: "test.tf", Start: hcl.Pos{Line: 1}},
+					},
+					Source: []byte("bar = 2"),
+				},
+				{
+					Rule:    &testRule{},
+					Message: "This is test message",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3},
+					},
+					Callers: []hcl.Range{
+						{Filename: "module.tf", Start: hcl.Pos{Line: 3}},
+						{Filename: "test.tf", Start: hcl.Pos{Line: 1}},
+					},
+					Source: []byte("bar = 2"),
+				},
+			},
+			Applied: true,
+		},
+		{
+			Name:    "ignored multiple variables in module",
+			Rule:    &testRule{},
+			Message: "This is test message",
+			Location: hcl.Range{
+				Filename: "test.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
+			Module: &moduleConfig{
+				currentExpr: parseExpr(`"${var.foo}-${var.bar}"`),
+				variables: map[string]*moduleVariable{
+					"foo": {Root: true, DeclRange: hcl.Range{Filename: "module.tf", Start: hcl.Pos{Line: 1}}},
+					"bar": {Root: true, DeclRange: hcl.Range{Filename: "module.tf", Start: hcl.Pos{Line: 3}}},
+				},
+			},
+			Annotations: map[string]Annotations{
+				"module.tf": {
+					{
+						Content: "test_rule",
+						Token: hclsyntax.Token{
+							Type: hclsyntax.TokenComment,
+							Range: hcl.Range{
+								Filename: "module.tf",
+								Start:    hcl.Pos{Line: 1},
+							},
+						},
+					},
+				},
+			},
+			Expected: Issues{
+				{
+					Rule:    &testRule{},
+					Message: "This is test message",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 3},
+					},
+					Callers: []hcl.Range{
+						{Filename: "module.tf", Start: hcl.Pos{Line: 3}},
+						{Filename: "test.tf", Start: hcl.Pos{Line: 1}},
+					},
+					Source: []byte("bar = 2"),
+				},
+			},
+			Applied: false,
+		},
+		{
+			Name:    "fixable in module",
+			Rule:    &testRule{},
+			Message: "This is test message",
+			Location: hcl.Range{
+				Filename: "test.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
+			Fixable: true,
+			Module: &moduleConfig{
+				currentExpr: parseExpr("var.foo"),
+				variables: map[string]*moduleVariable{
+					"foo": {Root: true, DeclRange: hcl.Range{Filename: "module.tf", Start: hcl.Pos{Line: 1}}},
+				},
+			},
+			Expected: Issues{
+				{
+					Rule:    &testRule{},
+					Message: "This is test message",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 1},
+					},
+					Callers: []hcl.Range{
+						{Filename: "module.tf", Start: hcl.Pos{Line: 1}},
+						{Filename: "test.tf", Start: hcl.Pos{Line: 1}},
+					},
+					Fixable: false,
+					Source:  []byte("bar = 2"),
+				},
+			},
+			Applied: true,
 		},
 	}
 
 	for _, tc := range cases {
-		runner := testRunnerWithAnnotations(t, map[string]string{}, tc.Annotations)
+		t.Run(tc.Name, func(t *testing.T) {
+			runner := testRunnerWithAnnotations(t, sources, tc.Annotations)
+			if tc.Module != nil {
+				runner.TFConfig.Path = []string{"module", "module1"}
+				runner.currentExpr = tc.Module.currentExpr
+				runner.modVars = tc.Module.variables
+			}
 
-		runner.EmitIssue(tc.Rule, tc.Message, tc.Location)
+			got := runner.EmitIssue(tc.Rule, tc.Message, tc.Location, tc.Fixable)
+			if got != tc.Applied {
+				t.Fatalf("expected %v, got %v", tc.Applied, got)
+			}
 
-		if !cmp.Equal(runner.Issues, tc.Expected) {
-			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(runner.Issues, tc.Expected))
-		}
+			if diff := cmp.Diff(runner.Issues.Sort(), tc.Expected); diff != "" {
+				t.Fatalf(diff)
+			}
+		})
+	}
+}
+
+func TestApplyChanges(t *testing.T) {
+	tests := []struct {
+		name    string
+		files   map[string]string
+		changes map[string][]byte
+		want    map[string][]byte
+	}{
+		{
+			name: "apply changes",
+			files: map[string]string{
+				"main.tf":      `variable "foo" {}`,
+				"variables.tf": `variable "bar" {}`,
+			},
+			changes: map[string][]byte{
+				"variables.tf": []byte(`variable "bar" { type = string }`),
+			},
+			want: map[string][]byte{
+				"main.tf":      []byte(`variable "foo" {}`),
+				"variables.tf": []byte(`variable "bar" { type = string }`),
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			runner := TestRunner(t, test.files)
+
+			diags := runner.ApplyChanges(test.changes)
+			if diags.HasErrors() {
+				t.Fatal(diags)
+			}
+
+			if diff := cmp.Diff(test.want, runner.Sources()); diff != "" {
+				t.Fatal(diff)
+			}
+			if diff := cmp.Diff(test.changes, runner.changes); diff != "" {
+				t.Fatal(diff)
+			}
+		})
 	}
 }
 

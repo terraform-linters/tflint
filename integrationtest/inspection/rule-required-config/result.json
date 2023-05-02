@@ -2,7 +2,7 @@
   "issues": [],
   "errors": [
     {
-      "message": "Failed to check ruleset; Failed to check `aws_s3_bucket_with_config_example` rule: .tflint.hcl:5,42-42: Missing required argument; The argument \"name\" is required, but no definition was found.",
+      "message": "Failed to check ruleset; failed to check \"aws_s3_bucket_with_config_example\" rule: .tflint.hcl:5,42-42: Missing required argument; The argument \"name\" is required, but no definition was found.",
       "severity": "error"
     }
   ]

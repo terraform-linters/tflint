@@ -1,0 +1,4 @@
+locals {
+  foo = 1
+  bar = 3 # autofixed
+}
