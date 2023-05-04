@@ -101,6 +101,7 @@ type PluginConfig struct {
 	Body hcl.Body `hcl:",remain"`
 
 	// Parsed source attributes
+	SourceHost  string
 	SourceOwner string
 	SourceRepo  string
 }
@@ -477,11 +478,10 @@ func (c *PluginConfig) validate() error {
 		parts := strings.Split(c.Source, "/")
 		// Expected `github.com/owner/repo` format
 		if len(parts) != 3 {
-			return fmt.Errorf("plugin `%s`: `source` is invalid. Must be in the format `github.com/owner/repo`", c.Name)
+			return fmt.Errorf("plugin `%s`: `source` is invalid. Must be a GitHub reference in the format `${host}/${owner}/${repo}`", c.Name)
 		}
-		if parts[0] != "github.com" {
-			return fmt.Errorf("plugin `%s`: `source` is invalid. Hostname must be `github.com`", c.Name)
-		}
+
+		c.SourceHost = parts[0]
 		c.SourceOwner = parts[1]
 		c.SourceRepo = parts[2]
 	}

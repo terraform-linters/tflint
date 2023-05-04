@@ -107,6 +107,7 @@ plugin "baz" {
 						Version:     "0.1.0",
 						Source:      "github.com/foo/bar",
 						SigningKey:  "SIGNING_KEY",
+						SourceHost:  "github.com",
 						SourceOwner: "foo",
 						SourceRepo:  "bar",
 					},
@@ -276,24 +277,46 @@ plugin "foo" {
 }`,
 			},
 			errCheck: func(err error) bool {
-				return err == nil || err.Error() != "plugin `foo`: `source` is invalid. Must be in the format `github.com/owner/repo`"
+				return err == nil || err.Error() != "plugin `foo`: `source` is invalid. Must be a GitHub reference in the format `${host}/${owner}/${repo}`"
 			},
 		},
 		{
-			name: "plugin with invalid source host",
-			file: "plugin_with_invalid_source_host.hcl",
+			name: "plugin with GHES source host",
+			file: "plugin_with_ghes_source_host.hcl",
 			files: map[string]string{
-				"plugin_with_invalid_source_host.hcl": `
+				"plugin_with_ghes_source_host.hcl": `
 plugin "foo" {
 	enabled = true
 
 	version = "0.1.0"
-	source = "gitlab.com/foo/bar"
+	source = "github.example.com/foo/bar"
 }`,
 			},
-			errCheck: func(err error) bool {
-				return err == nil || err.Error() != "plugin `foo`: `source` is invalid. Hostname must be `github.com`"
+			want: &Config{
+				Module:            false,
+				Force:             false,
+				IgnoreModules:     map[string]bool{},
+				Varfiles:          []string{},
+				Variables:         []string{},
+				DisabledByDefault: false,
+				Rules:             map[string]*RuleConfig{},
+				Plugins: map[string]*PluginConfig{
+					"foo": {
+						Name:        "foo",
+						Enabled:     true,
+						Version:     "0.1.0",
+						Source:      "github.example.com/foo/bar",
+						SourceHost:  "github.example.com",
+						SourceOwner: "foo",
+						SourceRepo:  "bar",
+					},
+					"terraform": {
+						Name:    "terraform",
+						Enabled: true,
+					},
+				},
 			},
+			errCheck: neverHappend,
 		},
 	}
 

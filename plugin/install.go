@@ -16,6 +16,8 @@ import (
 	"golang.org/x/oauth2"
 )
 
+const defaultSourceHost = "github.com"
+
 // InstallConfig is a config for plugin installation.
 // This is a wrapper for PluginConfig and manages naming conventions
 // and directory names for installation.
@@ -149,9 +151,12 @@ func (c *InstallConfig) fetchReleaseAssets() (map[string]*github.ReleaseAsset, e
 	assets := map[string]*github.ReleaseAsset{}
 
 	ctx := context.Background()
-	client := newGitHubClient(ctx)
 
-	log.Printf("[DEBUG] Request to https://api.github.com/repos/%s/%s/releases/tags/%s", c.SourceOwner, c.SourceRepo, c.TagName())
+	client, err := newGitHubClient(ctx, c)
+	if err != nil {
+		return assets, err
+	}
+
 	release, _, err := client.Repositories.GetReleaseByTag(ctx, c.SourceOwner, c.SourceRepo, c.TagName())
 	if err != nil {
 		return assets, err
@@ -172,9 +177,12 @@ func (c *InstallConfig) downloadToTempFile(asset *github.ReleaseAsset) (*os.File
 	}
 
 	ctx := context.Background()
-	client := newGitHubClient(ctx)
 
-	log.Printf("[DEBUG] Request to https://api.github.com/repos/%s/%s/releases/assets/%d", c.SourceOwner, c.SourceRepo, asset.GetID())
+	client, err := newGitHubClient(ctx, c)
+	if err != nil {
+		return nil, err
+	}
+
 	downloader, _, err := client.Repositories.DownloadReleaseAsset(ctx, c.SourceOwner, c.SourceRepo, asset.GetID(), http.DefaultClient)
 	if err != nil {
 		return nil, err
@@ -237,18 +245,27 @@ func extractFileFromZipFile(zipFile *os.File, savePath string) error {
 	return nil
 }
 
-func newGitHubClient(ctx context.Context) *github.Client {
-	token := os.Getenv("GITHUB_TOKEN")
-	if token == "" {
-		return github.NewClient(nil)
+func newGitHubClient(ctx context.Context, config *InstallConfig) (*github.Client, error) {
+	hc := &http.Client{
+		Transport: http.DefaultTransport,
 	}
 
-	log.Printf("[DEBUG] GITHUB_TOKEN set, plugin requests to the GitHub API will be authenticated")
+	if t := os.Getenv("GITHUB_TOKEN"); t != "" {
+		log.Printf("[DEBUG] GITHUB_TOKEN set, plugin requests to the GitHub API will be authenticated")
 
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: token},
-	)
-	return github.NewClient(oauth2.NewClient(ctx, ts))
+		hc = oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{
+			AccessToken: t,
+		}))
+	}
+
+	hc.Transport = &requestLoggingTransport{hc.Transport}
+
+	if config.SourceHost == defaultSourceHost {
+		return github.NewClient(hc), nil
+	}
+
+	baseURL := fmt.Sprintf("https://%s/", config.SourceHost)
+	return github.NewEnterpriseClient(baseURL, baseURL, hc)
 }
 
 func fileExt() string {
@@ -256,4 +273,14 @@ func fileExt() string {
 		return ".exe"
 	}
 	return ""
+}
+
+// requestLoggingTransport wraps an existing RoundTripper and prints DEBUG logs before each request
+type requestLoggingTransport struct {
+	http.RoundTripper
+}
+
+func (s *requestLoggingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	log.Printf("[DEBUG] Request to %s", r.URL)
+	return s.RoundTripper.RoundTrip(r)
 }
