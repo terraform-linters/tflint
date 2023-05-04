@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"context"
 	"os"
 	"testing"
 
@@ -39,5 +40,47 @@ func Test_Install(t *testing.T) {
 	expected := "tflint-ruleset-aws" + fileExt()
 	if info.Name() != expected {
 		t.Fatalf("Installed binary name is invalid: expected=%s, got=%s", expected, info.Name())
+	}
+}
+
+func TestNewGitHubClient(t *testing.T) {
+	cases := []struct {
+		name     string
+		config   *InstallConfig
+		expected string
+	}{
+		{
+			name: "default",
+			config: &InstallConfig{
+				PluginConfig: &tflint.PluginConfig{
+					SourceHost: "github.com",
+				},
+			},
+			expected: "https://api.github.com/",
+		},
+		{
+			name: "enterprise",
+			config: &InstallConfig{
+				PluginConfig: &tflint.PluginConfig{
+					SourceHost: "github.example.com",
+				},
+			},
+			expected: "https://github.example.com/api/v3/",
+		},
+	}
+
+	for _, tc := range cases {
+		tc := tc
+
+		t.Run(tc.name, func(t *testing.T) {
+			client, err := newGitHubClient(context.Background(), tc.config)
+			if err != nil {
+				t.Fatalf("Failed to create client: %s", err)
+			}
+
+			if client.BaseURL.String() != tc.expected {
+				t.Fatalf("Unexpected API URL: want %s, got %s", tc.expected, client.BaseURL.String())
+			}
+		})
 	}
 }
