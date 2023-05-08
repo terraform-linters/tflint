@@ -66,7 +66,7 @@
         "severity": "warning",
         "link": "https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.1.1/docs/rules/terraform_required_providers.md"
       },
-      "message": "Missing version constraint for provider \"aws\" in \"required_providers\"",
+      "message": "Missing version constraint for provider \"aws\" in `required_providers`",
       "range": {
         "filename": "main.tf",
         "start": {
