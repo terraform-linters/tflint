@@ -64,7 +64,7 @@ echo "Downloaded successfully"
 
 echo -e "\n\n===================================================="
 echo "Unpacking ${download_zip} ..."
-unzip -u "${download_zip}" -d "${download_path}"
+unzip -o "${download_zip}" -d "${download_path}"
 if [[ $os == "windows"* ]]; then
   dest="${TFLINT_INSTALL_PATH:-/bin}/"
   echo "Installing ${download_executable} to ${dest} ..."
