@@ -18,7 +18,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (cli *CLI) inspect(opts Options, args []string) int {
+func (cli *CLI) inspect(opts Options) int {
 	// Respect the "--format" flag until a config is loaded
 	cli.formatter.Format = opts.Format
 
@@ -33,22 +33,7 @@ func (cli *CLI) inspect(opts Options, args []string) int {
 
 	for _, wd := range workingDirs {
 		err := cli.withinChangedDir(wd, func() error {
-			// Parse directory/file arguments after changing the working directory
-			targetDir, filterFiles, err := processArgs(args[1:])
-			if err != nil {
-				return fmt.Errorf("Failed to parse CLI arguments; %w", err)
-			}
-
-			if opts.Chdir != "" && (len(args) > 1 && (len(filterFiles) == 0 || targetDir != ".")) {
-				return fmt.Errorf("Cannot use --chdir and directory argument at the same time")
-			}
-			if opts.Recursive && len(args) > 1 {
-				return fmt.Errorf("Cannot use --recursive and arguments at the same time")
-			}
-			if len(opts.Filter) > 0 && len(args) > 1 {
-				return fmt.Errorf("Cannot use --filter and arguments at the same time")
-			}
-
+			filterFiles := []string{}
 			for _, pattern := range opts.Filter {
 				files, err := filepath.Glob(pattern)
 				if err != nil {
@@ -66,7 +51,7 @@ func (cli *CLI) inspect(opts Options, args []string) int {
 				filterFiles[i] = filepath.Join(wd, file)
 			}
 
-			moduleIssues, moduleChanges, err := cli.inspectModule(opts, targetDir, filterFiles)
+			moduleIssues, moduleChanges, err := cli.inspectModule(opts, ".", filterFiles)
 			if err != nil {
 				return err
 			}
@@ -114,49 +99,6 @@ func (cli *CLI) inspect(opts Options, args []string) int {
 	}
 
 	return ExitCodeOK
-}
-
-func processArgs(args []string) (string, []string, error) {
-	if len(args) == 0 {
-		return ".", []string{}, nil
-	}
-
-	var dir string
-	filterFiles := []string{}
-
-	for _, file := range args {
-		fileInfo, err := os.Stat(file)
-		if err != nil {
-			if os.IsNotExist(err) {
-				return dir, filterFiles, fmt.Errorf("Failed to load `%s`: File not found", file)
-			}
-			return dir, filterFiles, fmt.Errorf("Failed to load `%s`: %s", file, err)
-		}
-
-		if fileInfo.IsDir() {
-			dir = file
-			if len(args) != 1 {
-				return dir, filterFiles, fmt.Errorf("Failed to load `%s`: Multiple arguments are not allowed when passing a directory", file)
-			}
-			return dir, filterFiles, nil
-		}
-
-		if !strings.HasSuffix(file, ".tf") && !strings.HasSuffix(file, ".tf.json") {
-			return dir, filterFiles, fmt.Errorf("Failed to load `%s`: File is not a target of Terraform", file)
-		}
-
-		fileDir := filepath.Dir(file)
-		if dir == "" {
-			dir = fileDir
-			filterFiles = append(filterFiles, file)
-		} else if fileDir == dir {
-			filterFiles = append(filterFiles, file)
-		} else {
-			return dir, filterFiles, fmt.Errorf("Failed to load `%s`: Multiple files in different directories are not allowed", file)
-		}
-	}
-
-	return dir, filterFiles, nil
 }
 
 func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (tflint.Issues, map[string][]byte, error) {

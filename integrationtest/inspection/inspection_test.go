@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -56,19 +55,6 @@ func TestIntegration(t *testing.T) {
 			Dir:     "without_module_init",
 		},
 		{
-			Name:    "arguments",
-			Command: fmt.Sprintf("./tflint --format json %s", filepath.Join("dir", "template.tf")),
-			Env: map[string]string{
-				"TF_DATA_DIR": filepath.Join("dir", ".terraform"),
-			},
-			Dir: "arguments",
-		},
-		{
-			Name:    "arguments with values file",
-			Command: fmt.Sprintf("./tflint --format json -c %s --var-file %s dir", filepath.Join("dir", ".tflint.hcl"), filepath.Join("dir", "subdir.tfvars")),
-			Dir:     "arguments-with-values-file",
-		},
-		{
 			Name:    "plugin",
 			Command: "./tflint --format json --module",
 			Dir:     "plugin",
@@ -82,11 +68,6 @@ func TestIntegration(t *testing.T) {
 			Name:    "path",
 			Command: "./tflint --format json --module",
 			Dir:     "path",
-		},
-		{
-			Name:    "init from parent",
-			Command: "./tflint --format json --module root",
-			Dir:     "init-parent",
 		},
 		{
 			Name:    "init from cwd",
