@@ -35,14 +35,28 @@ func (f *Formatter) prettyPrint(issues tflint.Issues, err error, sources map[str
 }
 
 func (f *Formatter) prettyPrintIssueWithSource(issue *tflint.Issue, sources map[string][]byte) {
+	message := issue.Message
+	if issue.Fixable {
+		if f.Fix {
+			message = "[Fixed] " + message
+		} else {
+			message = "[Fixable] " + message
+		}
+	}
+
 	fmt.Fprintf(
 		f.Stdout,
 		"%s: %s (%s)\n\n",
-		colorSeverity(issue.Rule.Severity()), colorBold(issue.Message), issue.Rule.Name(),
+		colorSeverity(issue.Rule.Severity()), colorBold(message), issue.Rule.Name(),
 	)
 	fmt.Fprintf(f.Stdout, "  on %s line %d:\n", issue.Range.Filename, issue.Range.Start.Line)
 
-	src := sources[issue.Range.Filename]
+	var src []byte
+	if issue.Source != nil {
+		src = issue.Source
+	} else {
+		src = sources[issue.Range.Filename]
+	}
 
 	if src == nil {
 		fmt.Fprintf(f.Stdout, "   (source code not available)\n")

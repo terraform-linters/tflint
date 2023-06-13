@@ -25,6 +25,7 @@ type Runner struct {
 	config      *Config
 	currentExpr hcl.Expression
 	modVars     map[string]*moduleVariable
+	changes     map[string][]byte
 }
 
 // Rule is interface for building the issue
@@ -66,6 +67,7 @@ func NewRunner(originalWorkingDir string, c *Config, ants map[string]Annotations
 		Ctx:         ctx,
 		annotations: ants,
 		config:      c,
+		changes:     map[string][]byte{},
 	}
 
 	return runner, nil
@@ -186,6 +188,23 @@ func (r *Runner) LookupIssues(files ...string) Issues {
 	return issues
 }
 
+// LookupChanges returns changes according to the received files
+func (r *Runner) LookupChanges(files ...string) map[string][]byte {
+	if len(files) == 0 {
+		return r.changes
+	}
+
+	changes := make(map[string][]byte)
+	for path, source := range r.changes {
+		for _, file := range files {
+			if filepath.Clean(file) == filepath.Clean(path) {
+				changes[path] = source
+			}
+		}
+	}
+	return changes
+}
+
 // File returns the raw *hcl.File representation of a Terraform configuration at the specified path,
 // or nil if there path does not match any configuration.
 func (r *Runner) File(path string) *hcl.File {
@@ -208,23 +227,35 @@ func (r *Runner) Sources() map[string][]byte {
 	return r.TFConfig.Module.Sources
 }
 
-// EmitIssue builds an issue and accumulates it
-func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range) {
+// EmitIssue builds an issue and accumulates it.
+// Returns true if the issue was not ignored by annotations.
+func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range, fixable bool) bool {
 	if r.TFConfig.Path.IsRoot() {
-		r.emitIssue(&Issue{
+		return r.emitIssue(&Issue{
 			Rule:    rule,
 			Message: message,
 			Range:   location,
+			Fixable: fixable,
+			Source:  r.Sources()[location.Filename],
 		})
 	} else {
-		for _, modVar := range r.listModuleVars(r.currentExpr) {
-			r.emitIssue(&Issue{
+		modVars := r.listModuleVars(r.currentExpr)
+		// Returns true only if all issues have not been ignored in module inspection.
+		allApplied := len(modVars) > 0
+		for _, modVar := range modVars {
+			applied := r.emitIssue(&Issue{
 				Rule:    rule,
 				Message: message,
 				Range:   modVar.DeclRange,
+				Fixable: false, // Issues for module inspection are always not fixable.
 				Callers: append(modVar.callers(), location),
+				Source:  r.Sources()[modVar.DeclRange.Filename],
 			})
+			if !applied {
+				allApplied = false
+			}
 		}
+		return allApplied
 	}
 }
 
@@ -246,16 +277,38 @@ func (r *Runner) ConfigSources() map[string][]byte {
 	return r.config.Sources()
 }
 
-func (r *Runner) emitIssue(issue *Issue) {
+// ApplyChanges saves the changes and applies them to the Terraform module.
+func (r *Runner) ApplyChanges(changes map[string][]byte) hcl.Diagnostics {
+	if len(changes) == 0 {
+		return nil
+	}
+
+	diags := r.TFConfig.Module.Rebuild(changes)
+	if diags.HasErrors() {
+		return diags
+	}
+	for path, source := range changes {
+		r.changes[path] = source
+	}
+	return nil
+}
+
+// ClearChanges clears changes
+func (r *Runner) ClearChanges() {
+	r.changes = map[string][]byte{}
+}
+
+func (r *Runner) emitIssue(issue *Issue) bool {
 	if annotations, ok := r.annotations[issue.Range.Filename]; ok {
 		for _, annotation := range annotations {
 			if annotation.IsAffected(issue) {
 				log.Printf("[INFO] %s (%s) is ignored by %s", issue.Range.String(), issue.Rule.Name(), annotation.String())
-				return
+				return false
 			}
 		}
 	}
 	r.Issues = append(r.Issues, issue)
+	return true
 }
 
 func (r *Runner) listModuleVars(expr hcl.Expression) []*moduleVariable {

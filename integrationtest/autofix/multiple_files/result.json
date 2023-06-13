@@ -1,0 +1,45 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "terraform_autofix_comment",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "Use \"# autofixed\" instead of \"// autofixed\"",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 1,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 1
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "terraform_autofix_comment",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "Use \"# autofixed\" instead of \"// autofixed\"",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 1,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 1
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}

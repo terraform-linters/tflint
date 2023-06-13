@@ -5,6 +5,8 @@ import (
 	"strings"
 
 	"github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/hclsyntax"
+	hcljson "github.com/hashicorp/hcl/v2/json"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 )
 
@@ -19,8 +21,8 @@ type Module struct {
 	Sources map[string][]byte
 	Files   map[string]*hcl.File
 
-	primaries []*hcl.File
-	overrides []*hcl.File
+	primaries map[string]*hcl.File
+	overrides map[string]*hcl.File
 }
 
 func NewEmptyModule() *Module {
@@ -35,8 +37,8 @@ func NewEmptyModule() *Module {
 		Sources: map[string][]byte{},
 		Files:   map[string]*hcl.File{},
 
-		primaries: []*hcl.File{},
-		overrides: []*hcl.File{},
+		primaries: map[string]*hcl.File{},
+		overrides: map[string]*hcl.File{},
 	}
 }
 
@@ -70,6 +72,42 @@ func (m *Module) build() hcl.Diagnostics {
 		}
 	}
 
+	return diags
+}
+
+// Rebuild rebuilds the module from the passed sources.
+// The main purpose of this is to apply autofixes in the module.
+func (m *Module) Rebuild(sources map[string][]byte) hcl.Diagnostics {
+	if len(sources) == 0 {
+		return nil
+	}
+	var diags hcl.Diagnostics
+
+	for path, source := range sources {
+		var file *hcl.File
+		var d hcl.Diagnostics
+		if strings.HasSuffix(path, ".json") {
+			file, d = hcljson.Parse(source, path)
+		} else {
+			file, d = hclsyntax.ParseConfig(source, path, hcl.InitialPos)
+		}
+		if d.HasErrors() {
+			diags = diags.Extend(d)
+			continue
+		}
+
+		m.Sources[path] = source
+		m.Files[path] = file
+		if _, exists := m.primaries[path]; exists {
+			m.primaries[path] = file
+		}
+		if _, exists := m.overrides[path]; exists {
+			m.overrides[path] = file
+		}
+	}
+
+	d := m.build()
+	diags = diags.Extend(d)
 	return diags
 }
 

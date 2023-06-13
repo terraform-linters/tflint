@@ -2,10 +2,12 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
@@ -27,6 +29,7 @@ func (cli *CLI) inspect(opts Options, args []string) int {
 	}
 
 	issues := tflint.Issues{}
+	changes := map[string][]byte{}
 
 	for _, wd := range workingDirs {
 		err := cli.withinChangedDir(wd, func() error {
@@ -62,11 +65,16 @@ func (cli *CLI) inspect(opts Options, args []string) int {
 			for i, file := range filterFiles {
 				filterFiles[i] = filepath.Join(wd, file)
 			}
-			moduleIssues, err := cli.inspectModule(opts, targetDir, filterFiles)
+
+			moduleIssues, moduleChanges, err := cli.inspectModule(opts, targetDir, filterFiles)
 			if err != nil {
 				return err
 			}
 			issues = append(issues, moduleIssues...)
+			for path, source := range moduleChanges {
+				changes[path] = source
+			}
+
 			return nil
 		})
 		if err != nil {
@@ -91,7 +99,15 @@ func (cli *CLI) inspect(opts Options, args []string) int {
 		force = cli.config.Force
 	}
 
+	cli.formatter.Fix = opts.Fix
 	cli.formatter.Print(issues, nil, cli.sources)
+
+	if opts.Fix {
+		if err := writeChanges(changes); err != nil {
+			cli.formatter.Print(tflint.Issues{}, err, cli.sources)
+			return ExitCodeError
+		}
+	}
 
 	if len(issues) > 0 && !force && exceedsMinimumFailure(issues, opts.MinimumFailureSeverity) {
 		return ExitCodeIssuesFound
@@ -143,75 +159,113 @@ func processArgs(args []string) (string, []string, error) {
 	return dir, filterFiles, nil
 }
 
-func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (tflint.Issues, error) {
+func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (tflint.Issues, map[string][]byte, error) {
 	issues := tflint.Issues{}
+	changes := map[string][]byte{}
 	var err error
 
 	// Setup config
 	cli.config, err = tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, opts.Config)
 	if err != nil {
-		return tflint.Issues{}, fmt.Errorf("Failed to load TFLint config; %w", err)
+		return issues, changes, fmt.Errorf("Failed to load TFLint config; %w", err)
 	}
 	cli.config.Merge(opts.toConfig())
 
 	// Setup loader
 	cli.loader, err = terraform.NewLoader(afero.Afero{Fs: afero.NewOsFs()}, cli.originalWorkingDir)
 	if err != nil {
-		return tflint.Issues{}, fmt.Errorf("Failed to prepare loading; %w", err)
+		return issues, changes, fmt.Errorf("Failed to prepare loading; %w", err)
 	}
 	if opts.Recursive && !cli.loader.IsConfigDir(dir) {
 		// Ignore non-module directories in recursive mode
-		return tflint.Issues{}, nil
+		return issues, changes, nil
 	}
 
 	// Setup runners
 	runners, err := cli.setupRunners(opts, dir)
 	if err != nil {
-		return tflint.Issues{}, err
+		return issues, changes, err
 	}
 	rootRunner := runners[len(runners)-1]
 
 	// Launch plugin processes
-	rulesetPlugin, err := launchPlugins(cli.config)
+	rulesetPlugin, err := launchPlugins(cli.config, opts.Fix)
 	if rulesetPlugin != nil {
 		defer rulesetPlugin.Clean()
 	}
 	if err != nil {
-		return tflint.Issues{}, err
+		return issues, changes, err
 	}
 
-	// Run inspection
+	// Check preconditions
+	sdkVersions := map[string]*version.Version{}
 	for name, ruleset := range rulesetPlugin.RuleSets {
 		sdkVersion, err := ruleset.SDKVersion()
 		if err != nil {
 			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
 				// SDKVersion endpoint is available in tflint-plugin-sdk v0.14+.
-				return tflint.Issues{}, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
+				return issues, changes, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
 			} else {
-				return tflint.Issues{}, fmt.Errorf(`Failed to get plugin "%s" SDK version; %w`, name, err)
+				return issues, changes, fmt.Errorf(`Failed to get plugin "%s" SDK version; %w`, name, err)
 			}
 		}
 		if !plugin.SDKVersionConstraints.Check(sdkVersion) {
-			return tflint.Issues{}, fmt.Errorf(`Plugin "%s" SDK version (%s) is incompatible. Compatible versions: %s`, name, sdkVersion, plugin.SDKVersionConstraints)
+			return issues, changes, fmt.Errorf(`Plugin "%s" SDK version (%s) is incompatible. Compatible versions: %s`, name, sdkVersion, plugin.SDKVersionConstraints)
+		}
+		sdkVersions[name] = sdkVersion
+	}
+
+	// Run inspection
+	//
+	// Repeat an inspection until there are no more changes or the limit is reached,
+	// in case an autofix introduces new issues.
+	for loop := 1; ; loop++ {
+		if loop > 10 {
+			return issues, changes, fmt.Errorf(`Reached the limit of autofix attempts, and the changes made by the autofix will not be applied. This may be due to the following reasons:
+
+1. The autofix is making changes that do not fix the issue.
+2. The autofix is continuing to introduce new issues.
+
+By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and start troubleshooting.`)
 		}
 
-		for _, runner := range runners {
-			err = ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersion))
-			if err != nil {
-				return tflint.Issues{}, fmt.Errorf("Failed to check ruleset; %w", err)
+		for name, ruleset := range rulesetPlugin.RuleSets {
+			for _, runner := range runners {
+				err = ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersions[name]))
+				if err != nil {
+					return issues, changes, fmt.Errorf("Failed to check ruleset; %w", err)
+				}
 			}
 		}
+
+		changesInAttempt := map[string][]byte{}
+		for _, runner := range runners {
+			for _, issue := range runner.LookupIssues(filterFiles...) {
+				// On the second attempt, only fixable issues are appended to avoid duplicates.
+				if loop == 1 || issue.Fixable {
+					issues = append(issues, issue)
+				}
+			}
+			runner.Issues = tflint.Issues{}
+
+			for path, source := range runner.LookupChanges(filterFiles...) {
+				changesInAttempt[path] = source
+				changes[path] = source
+			}
+			runner.ClearChanges()
+		}
+
+		if !opts.Fix || len(changesInAttempt) == 0 {
+			break
+		}
 	}
 
-	for _, runner := range runners {
-		issues = append(issues, runner.LookupIssues(filterFiles...)...)
-	}
 	// Set module sources to CLI
 	for path, source := range cli.loader.Sources() {
 		cli.sources[path] = source
 	}
 
-	return issues, nil
+	return issues, changes, nil
 }
 
 func (cli *CLI) setupRunners(opts Options, dir string) ([]*tflint.Runner, error) {
@@ -260,7 +314,7 @@ func (cli *CLI) setupRunners(opts Options, dir string) ([]*tflint.Runner, error)
 	return append(runners, runner), nil
 }
 
-func launchPlugins(config *tflint.Config) (*plugin.Plugin, error) {
+func launchPlugins(config *tflint.Config, fix bool) (*plugin.Plugin, error) {
 	// Lookup plugins
 	rulesetPlugin, err := plugin.Discovery(config)
 	if err != nil {
@@ -269,6 +323,7 @@ func launchPlugins(config *tflint.Config) (*plugin.Plugin, error) {
 
 	rulesets := []tflint.RuleSet{}
 	pluginConf := config.ToPluginConfig()
+	pluginConf.Fix = fix
 
 	// Check version constraints and apply a config to plugins
 	for name, ruleset := range rulesetPlugin.RuleSets {
@@ -314,6 +369,28 @@ func launchPlugins(config *tflint.Config) (*plugin.Plugin, error) {
 	}
 
 	return rulesetPlugin, nil
+}
+
+func writeChanges(changes map[string][]byte) error {
+	fs := afero.NewOsFs()
+	for path, source := range changes {
+		f, err := fs.OpenFile(path, os.O_WRONLY|os.O_TRUNC, 0644)
+		if err != nil {
+			return fmt.Errorf("Failed to apply autofixes; failed to open %s: %w", path, err)
+		}
+
+		n, err := f.Write(source)
+		if err == nil && n < len(source) {
+			err = io.ErrShortWrite
+		}
+		if err1 := f.Close(); err == nil {
+			err = err1
+		}
+		if err != nil {
+			return fmt.Errorf("Failed to apply autofixes; failed to write source code to %s: %w", path, err)
+		}
+	}
+	return nil
 }
 
 // Checks if the given issues contain severities above or equal to the given minimum failure opt. Defaults to true if an error occurs

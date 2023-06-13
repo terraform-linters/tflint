@@ -1,0 +1,9 @@
+resource "aws_instance" "autofixed_literal" {
+  instance_type = "t2.micro" # autofixed
+}
+
+module "instances" {
+  source = "./module"
+
+  input = "[AUTO_FIXED]"
+}

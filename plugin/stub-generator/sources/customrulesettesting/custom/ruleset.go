@@ -1,8 +1,6 @@
 package custom
 
 import (
-	"fmt"
-
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 )
@@ -26,16 +24,6 @@ func (r *RuleSet) ApplyConfig(body *hclext.BodyContent) error {
 	return nil
 }
 
-func (r *RuleSet) Check(rr tflint.Runner) error {
-	runner, err := NewRunner(rr, r.config)
-	if err != nil {
-		return err
-	}
-
-	for _, rule := range r.EnabledRules {
-		if err := rule.Check(runner); err != nil {
-			return fmt.Errorf("Failed to check `%s` rule: %s", rule.Name(), err)
-		}
-	}
-	return nil
+func (r *RuleSet) NewRunner(runner tflint.Runner) (tflint.Runner, error) {
+	return NewRunner(runner, r.config)
 }

@@ -141,6 +141,7 @@ Application Options:
       --minimum-failure-severity=[error|warning|notice]         Sets minimum severity level for exiting with a non-zero error code
       --color                                                   Enable colorized output
       --no-color                                                Disable colorized output
+      --fix                                                     Fix issues automatically
 
 Help Options:
   -h, --help                                                    Show this help message
