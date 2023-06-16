@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package lang
 
 import (
@@ -638,6 +641,13 @@ func TestFunctions(t *testing.T) {
 			},
 		},
 
+		"plantimestamp": {
+			{
+				`plantimestamp()`,
+				cty.UnknownVal(cty.String),
+			},
+		},
+
 		"pow": {
 			{
 				`pow(1,0)`,
@@ -834,6 +844,17 @@ func TestFunctions(t *testing.T) {
 			{
 				`startswith("hello world", "world")`,
 				cty.False,
+			},
+		},
+
+		"strcontains": {
+			{
+				`strcontains("hello", "llo")`,
+				cty.BoolVal(true),
+			},
+			{
+				`strcontains("hello", "a")`,
+				cty.BoolVal(false),
 			},
 		},
 
