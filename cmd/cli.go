@@ -88,30 +88,22 @@ func (cli *CLI) Run(args []string) int {
 		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse CLI options; %w", err), map[string][]byte{})
 		return ExitCodeError
 	}
+	if len(args) > 1 {
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Command line arguments support was dropped in v0.47. Use --chdir or --filter instead."), map[string][]byte{})
+		return ExitCodeError
+	}
 
 	switch {
 	case opts.Version:
-		if len(args) > 1 {
-			fmt.Fprintln(cli.errStream, `WARNING: Arguments are not used in version mode and will error in a future version. Use --chdir instead.`)
-		}
 		return cli.printVersion(opts)
 	case opts.Init:
-		if len(args) > 1 {
-			fmt.Fprintln(cli.errStream, `WARNING: Arguments are not used in init mode and will error in a future version. Use --chdir instead.`)
-		}
 		return cli.init(opts)
 	case opts.Langserver:
-		if len(args) > 1 {
-			fmt.Fprintln(cli.errStream, `WARNING: Arguments are not used in language server mode and will error in a future version.`)
-		}
 		return cli.startLanguageServer(opts)
 	case opts.ActAsBundledPlugin:
 		return cli.actAsBundledPlugin()
 	default:
-		if len(args) > 1 {
-			fmt.Fprintln(cli.errStream, `WARNING: "tflint FILE/DIR" is deprecated and will error in a future version. Use --chdir or --filter instead.`)
-		}
-		return cli.inspect(opts, args)
+		return cli.inspect(opts)
 	}
 }
 

@@ -1,3 +1,0 @@
-module "one" {
-  source = "../one"
-}
