@@ -51,8 +51,6 @@ func (r ResourceInstance) ContainingResource() Resource {
 // resource lifecycle has a slightly different address format.
 type ResourceMode rune
 
-//go:generate go run golang.org/x/tools/cmd/stringer -type ResourceMode
-
 const (
 	// InvalidResourceMode is the zero value of ResourceMode and is not
 	// a valid resource mode.

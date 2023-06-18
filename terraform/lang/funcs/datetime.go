@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package funcs
 
 import (
@@ -14,6 +17,16 @@ var TimestampFunc = function.New(&function.Spec{
 	Type:   function.StaticReturnType(cty.String),
 	Impl: func(args []cty.Value, retType cty.Type) (cty.Value, error) {
 		return cty.StringVal(time.Now().UTC().Format(time.RFC3339)), nil
+	},
+})
+
+// PlantimestampFunc constructs a function that returns the time of the plan.
+// TFLint always treats this value as unknown.
+var PlantimestampFunc = function.New(&function.Spec{
+	Params: []function.Parameter{},
+	Type:   function.StaticReturnType(cty.String),
+	Impl: func(args []cty.Value, retType cty.Type) (cty.Value, error) {
+		return cty.UnknownVal(cty.String), nil
 	},
 })
 
