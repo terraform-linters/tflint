@@ -1,3 +1,40 @@
+## 0.47.0 (2023-06-18)
+
+This release introduces autofix feature. Running `tflint --fix` will automatically fix issues as possible. Note that not all rules support autofix. In order to support autofix, plugins must be built with SDK v0.17+ and implement autofix.
+
+The bundled Terraform ruleset has been updated to v0.4.0 with autofix support. In other words, for Terraform rules, you can use autofix as it is. See the [tflint-ruleset-terraform v0.4.0 changelog](https://github.com/terraform-linters/tflint-ruleset-terraform/releases/tag/v0.4.0) for details.
+
+### Breaking Changes
+
+- [#1749](https://github.com/terraform-linters/tflint/pull/1749): plugin: Drop support for plugin SDK v0.12/v0.13 ([@wata727](https://github.com/wata727))
+  - Plugins built using SDKs v0.12/v0.13 are no longer supported. If you get "SDK version is incompatible" error, you need to update the plugin to use SDK v0.14+.
+- [#1750](https://github.com/terraform-linters/tflint/pull/1750) [#1781](https://github.com/terraform-linters/tflint/pull/1781): Bump tflint-plugin-sdk and bundled terraform plugin
+  - The SDK has been updated to v0.17.0 and the bundled Terraform plugin to v0.4.0. Terraform ruleset v0.3.0 contains breaking changes. Check the [changelog](https://github.com/terraform-linters/tflint-ruleset-terraform/releases/tag/v0.3.0) for details.
+- [#1779](https://github.com/terraform-linters/tflint/pull/1779): cmd: Drop support for CLI arguments ([@wata727](https://github.com/wata727))
+  - Argument support has been removed based on the deprecation warning added in v0.46. As of v0.47, it returns an error instead of a warning. See https://github.com/terraform-linters/tflint/pull/1687 for details.
+
+### Enhancements
+
+- [#1751](https://github.com/terraform-linters/tflint/pull/1751): plugin: support GitHub Enterprise Server as plugin source ([@bendrucker](https://github.com/bendrucker))
+- [#1755](https://github.com/terraform-linters/tflint/pull/1755): Introduce autofix ([@wata727](https://github.com/wata727))
+- [#1773](https://github.com/terraform-linters/tflint/pull/1773): build(deps): Bump github.com/hashicorp/hcl/v2 from 2.16.2 to 2.17.0
+  - TFLint v0.47 host server return `cty.Value` now supports refinemnet. This is a change that only affects plugin developers. See [HCL v2.17.0 changelog](https://github.com/hashicorp/hcl/releases/tag/v2.17.0) for details.
+- [#1780](https://github.com/terraform-linters/tflint/pull/1780): terraform: Add support for Terraform v1.5 ([@wata727](https://github.com/wata727))
+  - Added support for the `planttimestamp` and `strcontains` functions.
+
+### Chores
+
+- [#1754](https://github.com/terraform-linters/tflint/pull/1754) [#1766](https://github.com/terraform-linters/tflint/pull/1766): build(deps): Bump sigstore/cosign-installer from 3.0.2 to 3.0.5
+- [#1759](https://github.com/terraform-linters/tflint/pull/1759): build(deps): Bump google.golang.org/grpc from 1.54.0 to 1.55.0
+- [#1762](https://github.com/terraform-linters/tflint/pull/1762): build(deps): Bump alpine from 3.17.3 to 3.18.0
+- [#1763](https://github.com/terraform-linters/tflint/pull/1763): build(deps): Bump golang.org/x/oauth2 from 0.7.0 to 0.8.0
+- [#1764](https://github.com/terraform-linters/tflint/pull/1764): build(deps): Bump golang.org/x/crypto from 0.8.0 to 0.9.0
+- [#1767](https://github.com/terraform-linters/tflint/pull/1767): build(deps): Bump github.com/zclconf/go-cty from 1.13.1 to 1.13.2
+- [#1771](https://github.com/terraform-linters/tflint/pull/1771): fix(install_linux): Update unzip arguments ([@alexjurkiewicz](https://github.com/alexjurkiewicz))
+- [#1772](https://github.com/terraform-linters/tflint/pull/1772) [#1775](https://github.com/terraform-linters/tflint/pull/1775): build(deps): Bump golangci/golangci-lint-action from 3.4.0 to 3.6.0
+- [#1774](https://github.com/terraform-linters/tflint/pull/1774): build(deps): Bump github.com/hashicorp/go-plugin from 1.4.9 to 1.4.10
+- [#1776](https://github.com/terraform-linters/tflint/pull/1776): build(deps): Bump golang.org/x/text from 0.9.0 to 0.10.0
+
 ## 0.46.1 (2023-04-22)
 
 ### BugFixes
