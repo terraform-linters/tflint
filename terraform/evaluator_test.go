@@ -322,7 +322,7 @@ variable "null_var" {
 			config:   `variable "no_value_var" {}`,
 			expr:     expr(`"Hello, ${var.no_value_var}"`),
 			ty:       cty.String,
-			want:     `cty.UnknownVal(cty.String)`,
+			want:     `cty.UnknownVal(cty.String).Refine().NotNull().StringPrefixFull("Hello, ").NewValue()`,
 			errCheck: neverHappend,
 		},
 		{
@@ -348,7 +348,7 @@ variable "null_var" {
 			name:     "interpolation with unevalauble value",
 			expr:     expr(`"Hello, ${module.text}"`),
 			ty:       cty.String,
-			want:     `cty.UnknownVal(cty.String)`,
+			want:     `cty.UnknownVal(cty.String).Refine().NotNull().StringPrefixFull("Hello, ").NewValue()`,
 			errCheck: neverHappend,
 		},
 		{
@@ -989,7 +989,7 @@ resource "aws_instance" "main" {
 					{
 						Type:   "resource",
 						Labels: []string{"aws_instance", "main"},
-						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.UnknownVal(cty.String).Mark(marks.Sensitive), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.UnknownVal(cty.String).RefineNotNull().Mark(marks.Sensitive), hcl.Range{})}}, Blocks: hclext.Blocks{}},
 					},
 				},
 			},
@@ -1221,7 +1221,7 @@ resource "aws_instance" "main" {
 					{
 						Type:   "resource",
 						Labels: []string{"aws_instance", "main"},
-						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.UnknownVal(cty.String).Mark(marks.Sensitive), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+						Body:   &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.UnknownVal(cty.String).RefineNotNull().Mark(marks.Sensitive), hcl.Range{})}}, Blocks: hclext.Blocks{}},
 					},
 				},
 			},
@@ -1491,7 +1491,7 @@ resource "aws_instance" "main" {
 								},
 								{
 									Type: "ebs_block_device",
-									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.UnknownVal(cty.String), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.UnknownVal(cty.String).Refine().NotNull().StringPrefixFull("unknown-").NewValue(), hcl.Range{})}}, Blocks: hclext.Blocks{}},
 								},
 							},
 						},
@@ -1673,7 +1673,7 @@ resource "aws_instance" "main" {
 							Blocks: hclext.Blocks{
 								{
 									Type: "ebs_block_device",
-									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.UnknownVal(cty.String).Mark(marks.Sensitive), hcl.Range{})}}, Blocks: hclext.Blocks{}},
+									Body: &hclext.BodyContent{Attributes: hclext.Attributes{"value": {Name: "value", Expr: hcl.StaticExpr(cty.UnknownVal(cty.String).RefineNotNull().Mark(marks.Sensitive), hcl.Range{})}}, Blocks: hclext.Blocks{}},
 								},
 							},
 						},
