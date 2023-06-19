@@ -385,7 +385,8 @@ func TestMerge(t *testing.T) {
 				Body:    file2.Body,
 			},
 		},
-		Plugins: map[string]*PluginConfig{},
+		Plugins:   map[string]*PluginConfig{},
+		IgnoreDir: []string{"modules/foo", "modules/bar"},
 	}
 
 	tests := []struct {
@@ -452,6 +453,7 @@ func TestMerge(t *testing.T) {
 						Enabled: false,
 					},
 				},
+				IgnoreDir: []string{"modules/foo", "modules/bar"},
 			},
 			other: &Config{
 				Module:   false,
@@ -491,6 +493,7 @@ func TestMerge(t *testing.T) {
 						Enabled: true,
 					},
 				},
+				IgnoreDir: []string{"modules/baz"},
 			},
 			want: &Config{
 				Module:    true,
@@ -541,6 +544,7 @@ func TestMerge(t *testing.T) {
 						Enabled: true,
 					},
 				},
+				IgnoreDir: []string{"modules/foo", "modules/bar", "modules/baz"},
 			},
 		},
 		{
@@ -578,6 +582,7 @@ func TestMerge(t *testing.T) {
 						Enabled: false,
 					},
 				},
+				IgnoreDir: []string{"modules/foo", "modules/bar"},
 			},
 			other: &Config{
 				Module:   false,
@@ -614,6 +619,7 @@ func TestMerge(t *testing.T) {
 						Enabled: true,
 					},
 				},
+				IgnoreDir: []string{"modules/baz"},
 			},
 			want: &Config{
 				Module:    true,
@@ -661,6 +667,7 @@ func TestMerge(t *testing.T) {
 						Enabled: true,
 					},
 				},
+				IgnoreDir: []string{"modules/foo", "modules/bar", "modules/baz"},
 			},
 		},
 		{

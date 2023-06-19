@@ -249,6 +249,36 @@ func Test_toConfig(t *testing.T) {
 				Plugins:           map[string]*tflint.PluginConfig{},
 			},
 		},
+		{
+			Name:    "--ignore-dir",
+			Command: "./tflint --ignore-dir=modules/foo",
+			Expected: &tflint.Config{
+				Module:            false,
+				Force:             false,
+				IgnoreModules:     map[string]bool{},
+				Varfiles:          []string{},
+				Variables:         []string{},
+				DisabledByDefault: false,
+				Rules:             map[string]*tflint.RuleConfig{},
+				Plugins:           map[string]*tflint.PluginConfig{},
+				IgnoreDir:         []string{"modules/foo"},
+			},
+		},
+		{
+			Name:    "--ignore-dir",
+			Command: "./tflint --ignore-dir=modules/foo --ignore-dir=modules/bar",
+			Expected: &tflint.Config{
+				Module:            false,
+				Force:             false,
+				IgnoreModules:     map[string]bool{},
+				Varfiles:          []string{},
+				Variables:         []string{},
+				DisabledByDefault: false,
+				Rules:             map[string]*tflint.RuleConfig{},
+				Plugins:           map[string]*tflint.PluginConfig{},
+				IgnoreDir:         []string{"modules/foo", "modules/bar"},
+			},
+		},
 	}
 
 	for _, tc := range cases {

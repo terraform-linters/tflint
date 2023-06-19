@@ -32,6 +32,7 @@ type Options struct {
 	NoColor                bool     `long:"no-color" description:"Disable colorized output"`
 	Fix                    bool     `long:"fix" description:"Fix issues automatically"`
 	ActAsBundledPlugin     bool     `long:"act-as-bundled-plugin" hidden:"true"`
+	IgnoreDir              []string `long:"ignore-dir" description:"Disable dir sources" value-name:"DIR_PATH"`
 }
 
 func (opts *Options) toConfig() *tflint.Config {
@@ -131,5 +132,6 @@ func (opts *Options) toConfig() *tflint.Config {
 		IgnoreModules: ignoreModules,
 		Rules:         rules,
 		Plugins:       plugins,
+		IgnoreDir:     opts.IgnoreDir,
 	}
 }
