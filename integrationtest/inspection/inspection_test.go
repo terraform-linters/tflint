@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -10,6 +11,7 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+	"text/template"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/terraform-linters/tflint/cmd"
@@ -20,6 +22,10 @@ import (
 func TestMain(m *testing.M) {
 	log.SetOutput(io.Discard)
 	os.Exit(m.Run())
+}
+
+type meta struct {
+	Version string
 }
 
 func TestIntegration(t *testing.T) {
@@ -216,11 +222,6 @@ func TestIntegration(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			resultFile := "result.json"
-			if runtime.GOOS == "windows" && IsWindowsResultExist() {
-				resultFile = "result_windows.json"
-			}
-
 			if tc.Env != nil {
 				for k, v := range tc.Env {
 					t.Setenv(k, v)
@@ -236,13 +237,12 @@ func TestIntegration(t *testing.T) {
 
 			cli.Run(args)
 
-			b, err := os.ReadFile(filepath.Join(testDir, resultFile))
+			rawWant, err := readResultFile(testDir)
 			if err != nil {
 				t.Fatal(err)
 			}
-
-			var expected *formatter.JSONOutput
-			if err := json.Unmarshal(b, &expected); err != nil {
+			var want *formatter.JSONOutput
+			if err := json.Unmarshal(rawWant, &want); err != nil {
 				t.Fatal(err)
 			}
 
@@ -251,14 +251,32 @@ func TestIntegration(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			if diff := cmp.Diff(got, expected); diff != "" {
+			if diff := cmp.Diff(got, want); diff != "" {
 				t.Fatal(diff)
 			}
 		})
 	}
 }
 
-func IsWindowsResultExist() bool {
-	_, err := os.Stat("result_windows.json")
-	return !os.IsNotExist(err)
+func readResultFile(dir string) ([]byte, error) {
+	resultFile := "result.json"
+	if runtime.GOOS == "windows" {
+		if _, err := os.Stat(filepath.Join(dir, "result_windows.json")); !os.IsNotExist(err) {
+			resultFile = "result_windows.json"
+		}
+	}
+	if _, err := os.Stat(fmt.Sprintf("%s.tmpl", resultFile)); !os.IsNotExist(err) {
+		resultFile = fmt.Sprintf("%s.tmpl", resultFile)
+	}
+
+	if !strings.HasSuffix(resultFile, ".tmpl") {
+		return os.ReadFile(filepath.Join(dir, resultFile))
+	}
+
+	want := new(bytes.Buffer)
+	tmpl := template.Must(template.ParseFiles(filepath.Join(dir, resultFile)))
+	if err := tmpl.Execute(want, meta{Version: tflint.Version.String()}); err != nil {
+		return nil, err
+	}
+	return want.Bytes(), nil
 }
