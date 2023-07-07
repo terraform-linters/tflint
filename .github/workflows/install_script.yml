@@ -29,6 +29,12 @@ jobs:
         tflint -v
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Install latest version (duplicate)
+      run: |
+        ./install_linux.sh
+        tflint -v
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Install specific version
       env:
         TFLINT_VERSION: v0.15.0
