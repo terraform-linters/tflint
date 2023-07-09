@@ -18,8 +18,6 @@ archives:
     format: zip
     files:
       - none*
-changelog:
-  skip: true
 checksum:
   name_template: 'checksums.txt'
 signs:
@@ -38,6 +36,5 @@ release:
   github:
     owner: terraform-linters
     name: tflint
-  draft: true
 snapshot:
   name_template: "{{ .Tag }}-dev"
