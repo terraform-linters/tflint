@@ -7,3 +7,4 @@ The goal of this guide is to quickly understand how TFLint works and to help mor
 - [Architecture](architecture.md)
 - [Building TFLint](building.md)
 - [Writing Plugins](plugins.md)
+- [Releasing a new version of TFLint](releasing.md)

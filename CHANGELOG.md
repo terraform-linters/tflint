@@ -1,3 +1,5 @@
+See https://github.com/terraform-linters/tflint/releases for later releases.
+
 ## 0.47.0 (2023-06-18)
 
 This release introduces autofix feature. Running `tflint --fix` will automatically fix issues as possible. Note that not all rules support autofix. In order to support autofix, plugins must be built with SDK v0.17+ and implement autofix.

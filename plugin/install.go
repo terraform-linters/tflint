@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/google/go-github/v35/github"
+	"github.com/google/go-github/v53/github"
 	"github.com/terraform-linters/tflint/tflint"
 	"golang.org/x/oauth2"
 )
