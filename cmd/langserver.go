@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/terraform-linters/tflint/langserver"
@@ -34,14 +36,21 @@ func (cli *CLI) startLanguageServer(opts Options) int {
 		defer plugin.Clean()
 	}
 
-	var connOpt []jsonrpc2.ConnOpt
-	<-jsonrpc2.NewConn(
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, os.Interrupt, syscall.SIGTERM)
+
+	conn := jsonrpc2.NewConn(
 		context.Background(),
 		jsonrpc2.NewBufferedStream(langserver.NewConn(os.Stdin, os.Stdout), jsonrpc2.VSCodeObjectCodec{}),
 		handler,
-		connOpt...,
-	).DisconnectNotify()
-	log.Println("Shutting down...")
+	)
+
+	select {
+	case sig := <-ch:
+		log.Printf("Received %s, shutting down...\n", sig)
+	case <-conn.DisconnectNotify():
+		log.Println("Shutting down...")
+	}
 
 	return ExitCodeOK
 }
