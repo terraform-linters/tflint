@@ -22,7 +22,7 @@ import (
 // is specified will launch the bundled plugin instead of returning an error.
 func Discovery(config *tflint.Config) (*Plugin, error) {
 	clients := map[string]*plugin.Client{}
-	rulesets := map[string]*host2plugin.GRPCClient{}
+	rulesets := map[string]*host2plugin.Client{}
 
 	for _, pluginCfg := range config.Plugins {
 		installCfg := NewInstallConfig(config, pluginCfg)
@@ -64,7 +64,7 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 			if err != nil {
 				return nil, err
 			}
-			ruleset := raw.(*host2plugin.GRPCClient)
+			ruleset := raw.(*host2plugin.Client)
 
 			clients[pluginCfg.Name] = client
 			rulesets[pluginCfg.Name] = ruleset

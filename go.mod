@@ -24,7 +24,7 @@ require (
 	github.com/sourcegraph/go-lsp v0.0.0-20200429204803-219e11d77f5d
 	github.com/sourcegraph/jsonrpc2 v0.2.0
 	github.com/spf13/afero v1.9.5
-	github.com/terraform-linters/tflint-plugin-sdk v0.17.0
+	github.com/terraform-linters/tflint-plugin-sdk v0.18.0
 	github.com/terraform-linters/tflint-ruleset-terraform v0.4.0
 	github.com/xeipuuv/gojsonschema v1.2.0
 	github.com/zclconf/go-cty v1.13.2
@@ -33,7 +33,7 @@ require (
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e
 	golang.org/x/oauth2 v0.10.0
 	golang.org/x/text v0.11.0
-	google.golang.org/grpc v1.56.2
+	google.golang.org/grpc v1.57.0
 )
 
 require (
