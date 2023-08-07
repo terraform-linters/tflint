@@ -462,8 +462,8 @@ github.com/stretchr/testify v1.7.2/go.mod h1:R6va5+xMeoiuVRoj+gSkQ7d3FALtqAAGI1F
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
-github.com/terraform-linters/tflint-plugin-sdk v0.17.0 h1:epg9rqt6zaj7C3qaNqRMlqscOqX0S1UKiTk+UHGvi1Q=
-github.com/terraform-linters/tflint-plugin-sdk v0.17.0/go.mod h1:XrMaY79YpbU4J4cZgo6o4F31ZiMO2ccETXISniTOCsA=
+github.com/terraform-linters/tflint-plugin-sdk v0.18.0 h1:XqQS6/RfUU6J3ySDTdN5c/KvNu6sOYdGqtTo4zgRPXE=
+github.com/terraform-linters/tflint-plugin-sdk v0.18.0/go.mod h1:OvyC1d9NyIFxNZQeKM7vSGrRWq0cuq27zAQUMpJH5h8=
 github.com/terraform-linters/tflint-ruleset-terraform v0.4.0 h1:HOkKth3zhtpEo4J0f122ln6xAo1RKnroDYzP+gnZWbM=
 github.com/terraform-linters/tflint-ruleset-terraform v0.4.0/go.mod h1:rcgg6YCJIvU2zL2aJlYE9s1u0HirSunjJg7Gu/mqUNY=
 github.com/ulikunitz/xz v0.5.10 h1:t92gobL9l3HE202wg3rlk19F6X+JOxl9BBrCCMYEYd8=

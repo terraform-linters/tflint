@@ -13,14 +13,14 @@ import (
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
-	"github.com/terraform-linters/tflint-plugin-sdk/plugin/host2plugin"
+	"github.com/terraform-linters/tflint-plugin-sdk/plugin"
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang/marks"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
 )
 
-var SDKVersion = version.Must(version.NewVersion(host2plugin.SDKVersion))
+var SDKVersion = version.Must(version.NewVersion(plugin.SDKVersion))
 
 func TestGetModuleContent(t *testing.T) {
 	runner := tflint.TestRunner(t, map[string]string{"main.tf": `
@@ -116,53 +116,6 @@ resource "aws_instance" "bar" {
 						Body: &hclext.BodyContent{
 							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type"}},
 							Blocks:     hclext.Blocks{},
-						},
-					},
-				},
-			},
-		},
-		{
-			Name: "include not created",
-			Args: func() (*hclext.BodySchema, sdk.GetModuleContentOption) {
-				return &hclext.BodySchema{
-					Blocks: []hclext.BlockSchema{
-						{
-							Type:       "resource",
-							LabelNames: []string{"type", "name"},
-							Body: &hclext.BodySchema{
-								Attributes: []hclext.AttributeSchema{{Name: "instance_type"}},
-								Blocks:     []hclext.BlockSchema{{Type: "ebs_block_device"}},
-							},
-						},
-					},
-				}, sdk.GetModuleContentOption{ModuleCtx: sdk.SelfModuleCtxType, IncludeNotCreated: true, Hint: sdk.GetModuleContentHint{ResourceType: "aws_instance"}}
-			},
-			Want: &hclext.BodyContent{
-				Blocks: hclext.Blocks{
-					{
-						Type:   "resource",
-						Labels: []string{"aws_instance", "baz"},
-						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type"}},
-							Blocks: hclext.Blocks{
-								{
-									Type: "ebs_block_device",
-									Body: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}},
-								},
-							},
-						},
-					},
-					{
-						Type:   "resource",
-						Labels: []string{"aws_instance", "foo"},
-						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type"}},
-							Blocks: hclext.Blocks{
-								{
-									Type: "ebs_block_device",
-									Body: &hclext.BodyContent{Attributes: hclext.Attributes{}, Blocks: hclext.Blocks{}},
-								},
-							},
 						},
 					},
 				},

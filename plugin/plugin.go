@@ -19,7 +19,7 @@ var SDKVersionConstraints = version.MustConstraints(version.NewConstraint(">= 0.
 // Plugin is an object handling plugins
 // Basically, it is a wrapper for go-plugin and provides an API to handle them collectively.
 type Plugin struct {
-	RuleSets map[string]*host2plugin.GRPCClient
+	RuleSets map[string]*host2plugin.Client
 
 	clients map[string]*plugin.Client
 }

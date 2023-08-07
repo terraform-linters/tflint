@@ -63,8 +63,7 @@ func (s *GRPCServer) GetModuleContent(bodyS *hclext.BodySchema, opts sdk.GetModu
 		}
 	}
 
-	//nolint:staticcheck
-	if opts.IncludeNotCreated || opts.ExpandMode == sdk.ExpandModeNone {
+	if opts.ExpandMode == sdk.ExpandModeNone {
 		ctx = nil
 	}
 
