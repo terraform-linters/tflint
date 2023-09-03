@@ -12,9 +12,9 @@ import (
 func Test_NewAnnotations(t *testing.T) {
 	src := `
 resource "aws_instance" "foo" {
-  /* tflint-ignore: aws_instance_invalid_type */
+  /* tflint-ignore: aws_instance_invalid_type, terraform_deprecated_syntax */
   instance_type = "t2.micro" // tflint-ignore: aws_instance_invalid_type
-  # tflint-ignore: aws_instance_invalid_type This is also comment
+  # tflint-ignore: aws_instance_invalid_type
   iam_instance_profile = "foo" # This is also comment
   // This is also comment
 }`
@@ -30,14 +30,14 @@ resource "aws_instance" "foo" {
 
 	expected := Annotations{
 		{
-			Content: "aws_instance_invalid_type",
+			Content: "aws_instance_invalid_type, terraform_deprecated_syntax ",
 			Token: hclsyntax.Token{
 				Type:  hclsyntax.TokenComment,
-				Bytes: []byte("/* tflint-ignore: aws_instance_invalid_type */"),
+				Bytes: []byte("/* tflint-ignore: aws_instance_invalid_type, terraform_deprecated_syntax */"),
 				Range: hcl.Range{
 					Filename: "resource.tf",
 					Start:    hcl.Pos{Line: 3, Column: 3},
-					End:      hcl.Pos{Line: 3, Column: 49},
+					End:      hcl.Pos{Line: 3, Column: 78},
 				},
 			},
 		},
@@ -57,7 +57,7 @@ resource "aws_instance" "foo" {
 			Content: "aws_instance_invalid_type",
 			Token: hclsyntax.Token{
 				Type:  hclsyntax.TokenComment,
-				Bytes: []byte("# tflint-ignore: aws_instance_invalid_type This is also comment\n"),
+				Bytes: []byte("# tflint-ignore: aws_instance_invalid_type\n"),
 				Range: hcl.Range{
 					Filename: "resource.tf",
 					Start:    hcl.Pos{Line: 5, Column: 3},
