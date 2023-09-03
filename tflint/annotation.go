@@ -10,7 +10,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-var annotationPattern = regexp.MustCompile(`tflint-ignore: (\S+)`)
+var annotationPattern = regexp.MustCompile(`tflint-ignore: ([^\n*/]+)`)
 
 // Annotation represents comments with special meaning in TFLint
 type Annotation struct {
