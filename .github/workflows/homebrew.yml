@@ -13,6 +13,7 @@ jobs:
         with:
           # A PR will be sent to github.com/Homebrew/homebrew-core to update this formula:
           formula-name: tflint
+          formula-path: Formula/t/tflint.rb
           push-to: chenrui333/homebrew-core
         env:
           COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
