@@ -49,14 +49,7 @@ sha256sum --ignore-missing -c checksums.txt
 
 ### Docker
 
-Instead of installing directly, you can use the Docker images:
-
-| Name | Description |
-| ---- | ----------- |
-| [ghcr.io/terraform-linters/tflint](https://github.com/terraform-linters/tflint/pkgs/container/tflint) | Basic image |
-| [ghcr.io/terraform-linters/tflint-bundle](https://github.com/terraform-linters/tflint-bundle/pkgs/container/tflint-bundle) | A Docker image with TFLint and ruleset plugins |
-
-Example:
+Instead of installing directly, you can use the Docker image:
 
 ```console
 docker run --rm -v $(pwd):/data -t ghcr.io/terraform-linters/tflint
