@@ -3,11 +3,11 @@ package tflint
 import (
 	"fmt"
 	"regexp"
+	"slices"
 	"strings"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"golang.org/x/exp/slices"
 )
 
 var annotationPattern = regexp.MustCompile(`tflint-ignore: ([^\n*/]+)`)
