@@ -27,7 +27,7 @@ require (
 	github.com/terraform-linters/tflint-plugin-sdk v0.18.0
 	github.com/terraform-linters/tflint-ruleset-terraform v0.4.0
 	github.com/xeipuuv/gojsonschema v1.2.0
-	github.com/zclconf/go-cty v1.13.2
+	github.com/zclconf/go-cty v1.14.0
 	github.com/zclconf/go-cty-yaml v1.0.3
 	golang.org/x/crypto v0.13.0
 	golang.org/x/oauth2 v0.12.0
@@ -43,7 +43,6 @@ require (
 	cloud.google.com/go/storage v1.29.0 // indirect
 	github.com/Masterminds/semver/v3 v3.2.1 // indirect
 	github.com/ProtonMail/go-crypto v0.0.0-20230217124315-7d5c6f04bbb8 // indirect
-	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/aws/aws-sdk-go v1.44.122 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
