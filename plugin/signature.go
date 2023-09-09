@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	//nolint:staticcheck
-	"golang.org/x/crypto/openpgp"
+	"github.com/ProtonMail/go-crypto/openpgp"
 )
 
 // SignatureChecker checks the signature of GitHub releases.
@@ -52,7 +52,7 @@ func (c *SignatureChecker) Verify(target, signature io.Reader) error {
 		return err
 	}
 
-	_, err = openpgp.CheckDetachedSignature(keyring, target, signature)
+	_, err = openpgp.CheckDetachedSignature(keyring, target, signature, nil)
 	if err != nil {
 		return err
 	}
