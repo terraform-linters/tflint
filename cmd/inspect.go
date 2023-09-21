@@ -222,7 +222,7 @@ func (cli *CLI) setupRunners(opts Options, dir string) ([]*tflint.Runner, error)
 	}
 	annotations := map[string]tflint.Annotations{}
 	for path, file := range files {
-		if !strings.HasSuffix(path, ".tf") {
+		if !strings.HasSuffix(path, ".tf") && !strings.HasSuffix(path, ".hcl") {
 			continue
 		}
 		ants, lexDiags := tflint.NewAnnotations(path, file)

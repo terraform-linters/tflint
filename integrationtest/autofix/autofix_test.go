@@ -102,7 +102,7 @@ func TestIntegration(t *testing.T) {
 				if info.IsDir() {
 					return nil
 				}
-				if strings.HasSuffix(path, ".tf") {
+				if strings.HasSuffix(path, ".tf") || strings.HasSuffix(path, ".hcl") {
 					sources, err := os.ReadFile(path)
 					if err != nil {
 						return err

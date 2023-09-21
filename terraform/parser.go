@@ -312,6 +312,8 @@ func configFileExt(path string) string {
 		return ".tf"
 	} else if strings.HasSuffix(path, ".tf.json") {
 		return ".tf.json"
+	} else if strings.HasSuffix(path, ".hcl") {
+		return ".hcl"
 	} else {
 		return ""
 	}
