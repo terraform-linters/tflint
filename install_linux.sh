@@ -50,7 +50,7 @@ download_path=$(mktemp -d -t tflint.XXXXXXXXXX)
 download_zip="${download_path}/tflint.zip"
 download_executable="${download_path}/tflint"
 
-version = "${TFLINT_VERSION:-latest}"
+version="${TFLINT_VERSION:-latest}"
 if [ "${version}" == "latest" ]; then
   echo "Looking up the latest version ..."
   if [ -n "${GITHUB_TOKEN}" ]; then
