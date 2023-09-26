@@ -44,6 +44,21 @@ jobs:
         TFLINT_INSTALL_PATH: ${{ github.workspace }}/install-path
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       shell: bash
+    - name: Non-existent version
+      id: fail
+      continue-on-error: true
+      run: |
+        ./install_linux.sh
+        tflint -v
+      env:
+        TFLINT_VERSION: vBROKEN
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Check failure
+      if: steps.fail.outcome != 'failure'
+      run: |
+        echo "::error::Expected previous step to fail, outcome was ${{ steps.fail.outcome }}"
+        exit 1
+
   container:
     runs-on: ubuntu-latest
     container:
