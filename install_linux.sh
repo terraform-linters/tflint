@@ -1,4 +1,6 @@
-#!/bin/bash -e
+#!/bin/bash
+
+set -euxo pipefail
 
 get_machine_arch () {
     machine_arch=""
