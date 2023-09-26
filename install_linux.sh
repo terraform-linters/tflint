@@ -39,7 +39,7 @@ get_latest_release() {
   if [ -n "${GITHUB_TOKEN}" ]; then
       headers=(-H "Authorization: Bearer ${GITHUB_TOKEN}")
   fi
-  curl --fail -sS "${headers[@]}" "https://api.github.com/repos/terraform-linters/tflint/releases/latest" | # Get latest release from GitHub api
+  curl -sSL "${headers[@]}" "https://api.github.com/repos/terraform-linters/tflint/releases/latest" | # Get latest release from GitHub api
     grep '"tag_name":' |                                                                                    # Get tag line
     sed -E 's/.*"([^"]+)".*/\1/'                                                                            # Pluck JSON value
 }
@@ -48,18 +48,18 @@ download_path=$(mktemp -d -t tflint.XXXXXXXXXX)
 download_zip="${download_path}/tflint.zip"
 download_executable="${download_path}/tflint"
 
-if [ -z "${TFLINT_VERSION}" ] || [ "${TFLINT_VERSION}" == "latest" ]; then
+if [ -n "${TFLINT_VERSION}" ] && [ "${TFLINT_VERSION}" != "latest" ]; then
+  version=${TFLINT_VERSION}
+else
   echo "Looking up the latest version ..."
   if [ -n "${GITHUB_TOKEN}" ]; then
     echo "Requesting with GITHUB_TOKEN ..."
   fi
   version=$(get_latest_release)
-else
-  version=${TFLINT_VERSION}
 fi
 
 echo "Downloading TFLint $version"
-curl --fail -sS -L -o "${download_zip}" "https://github.com/terraform-linters/tflint/releases/download/${version}/tflint_${os}.zip"
+curl -sSLo "${download_zip}" "https://github.com/terraform-linters/tflint/releases/download/${version}/tflint_${os}.zip"
 echo "Downloaded successfully"
 
 echo -e "\n\n===================================================="
