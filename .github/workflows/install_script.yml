@@ -48,7 +48,7 @@ jobs:
       id: fail
       continue-on-error: true
       run: |
-        ./install_linux.sh
+        cat install_linux.sh | bash
         tflint -v
       env:
         TFLINT_VERSION: vBROKEN
