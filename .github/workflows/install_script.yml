@@ -47,8 +47,10 @@ jobs:
     - name: Non-existent version
       id: fail
       continue-on-error: true
+      # Install instructions pipe the script from curl to bash
+      # Passing scripts via stdin can have differing behavior from passing as a file arg
       run: |
-        ./install_linux.sh
+        bash < install_linux.sh
         tflint -v
       env:
         TFLINT_VERSION: vBROKEN
