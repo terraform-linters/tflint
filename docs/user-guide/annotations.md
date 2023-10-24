@@ -26,3 +26,12 @@ resource "aws_instance" "foo" {
     instance_type = "t1.2xlarge"
 }
 ```
+
+It is possible to add a reason for why a rule is ignored:
+
+```hcl
+resource "aws_instance" "foo" {
+    # tflint-ignore: aws_instance_invalid_type # A good reason
+    instance_type = "t1.2xlarge"
+}
+```

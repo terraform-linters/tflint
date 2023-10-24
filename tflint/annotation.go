@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 )
 
-var annotationPattern = regexp.MustCompile(`tflint-ignore: ([^\n*/]+)`)
+var annotationPattern = regexp.MustCompile(`tflint-ignore: ([^\n*/#]+)`)
 
 // Annotation represents comments with special meaning in TFLint
 type Annotation struct {
@@ -40,7 +40,7 @@ func NewAnnotations(path string, file *hcl.File) (Annotations, hcl.Diagnostics) 
 			continue
 		}
 		ret = append(ret, Annotation{
-			Content: match[1],
+			Content: strings.TrimSpace(match[1]),
 			Token:   token,
 		})
 	}
