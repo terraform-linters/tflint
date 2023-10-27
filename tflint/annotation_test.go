@@ -17,6 +17,9 @@ resource "aws_instance" "foo" {
   # tflint-ignore: aws_instance_invalid_type
   iam_instance_profile = "foo" # This is also comment
   // This is also comment
+  instance_type_reason = "t2.micro" // tflint-ignore: aws_instance_invalid_type // With reason
+  # tflint-ignore: aws_instance_invalid_type # With reason
+  iam_instance_profile_reason = "foo" # This is also comment
 }`
 
 	file, diags := hclsyntax.ParseConfig([]byte(src), "resource.tf", hcl.Pos{Byte: 0, Line: 1, Column: 1})
@@ -30,7 +33,7 @@ resource "aws_instance" "foo" {
 
 	expected := Annotations{
 		{
-			Content: "aws_instance_invalid_type, terraform_deprecated_syntax ",
+			Content: "aws_instance_invalid_type, terraform_deprecated_syntax",
 			Token: hclsyntax.Token{
 				Type:  hclsyntax.TokenComment,
 				Bytes: []byte("/* tflint-ignore: aws_instance_invalid_type, terraform_deprecated_syntax */"),
@@ -62,6 +65,30 @@ resource "aws_instance" "foo" {
 					Filename: "resource.tf",
 					Start:    hcl.Pos{Line: 5, Column: 3},
 					End:      hcl.Pos{Line: 6, Column: 1},
+				},
+			},
+		},
+		{
+			Content: "aws_instance_invalid_type",
+			Token: hclsyntax.Token{
+				Type:  hclsyntax.TokenComment,
+				Bytes: []byte("// tflint-ignore: aws_instance_invalid_type // With reason\n"),
+				Range: hcl.Range{
+					Filename: "resource.tf",
+					Start:    hcl.Pos{Line: 8, Column: 37},
+					End:      hcl.Pos{Line: 9, Column: 1},
+				},
+			},
+		},
+		{
+			Content: "aws_instance_invalid_type",
+			Token: hclsyntax.Token{
+				Type:  hclsyntax.TokenComment,
+				Bytes: []byte("# tflint-ignore: aws_instance_invalid_type # With reason\n"),
+				Range: hcl.Range{
+					Filename: "resource.tf",
+					Start:    hcl.Pos{Line: 9, Column: 3},
+					End:      hcl.Pos{Line: 10, Column: 1},
 				},
 			},
 		},
