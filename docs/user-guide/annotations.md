@@ -27,7 +27,7 @@ resource "aws_instance" "foo" {
 }
 ```
 
-It is possible to add a reason for why a rule is ignored:
+It's a good idea to add a reason for why a rule is ignored, especially temporarily:
 
 ```hcl
 resource "aws_instance" "foo" {
@@ -46,7 +46,7 @@ resource "aws_instance" "foo" {
 }
 ```
 
-One can also use `//`-style comments
+The `//` comment style is also supported, but Terraform recommends `#`.
 
 ```hcl
 resource "aws_instance" "foo" {
