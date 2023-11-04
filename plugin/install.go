@@ -100,24 +100,32 @@ func (c *InstallConfig) Install() (string, error) {
 	}
 
 	sigchecker := NewSignatureChecker(c)
-	if sigchecker.HasSigningKey() {
-		log.Printf("[DEBUG] Download checksums.txt.sig")
-		signatureFile, err := c.downloadToTempFile(assets["checksums.txt.sig"])
-		if signatureFile != nil {
-			defer os.Remove(signatureFile.Name())
-		}
-		if err != nil {
-			return "", fmt.Errorf("Failed to download checksums.txt.sig: %s", err)
-		}
 
-		if err := sigchecker.Verify(checksumsFile, signatureFile); err != nil {
-			return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
-		}
-		if _, err := checksumsFile.Seek(0, 0); err != nil {
-			return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
-		}
-		log.Printf("[DEBUG] Verified signature successfully")
+	log.Printf("[DEBUG] Download checksums.txt.pem")
+	certificateFile, err := c.downloadToTempFile(assets["checksums.txt.pem"])
+	if certificateFile != nil {
+		defer os.Remove(certificateFile.Name())
 	}
+	if err != nil {
+		return "", fmt.Errorf("Failed to download checksums.txt.pem: %s", err)
+	}
+
+	log.Printf("[DEBUG] Download checksums.txt.keyless.sig")
+	signatureFile, err := c.downloadToTempFile(assets["checksums.txt.keyless.sig"])
+	if certificateFile != nil {
+		defer os.Remove(signatureFile.Name())
+	}
+	if err != nil {
+		return "", fmt.Errorf("Failed to download checksums.txt.keyless.sig: %s", err)
+	}
+
+	if err := sigchecker.VerifyKeyless(checksumsFile, certificateFile, signatureFile); err != nil {
+		return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
+	}
+	if _, err := checksumsFile.Seek(0, 0); err != nil {
+		return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
+	}
+	log.Printf("[DEBUG] Verified signature successfully")
 
 	log.Printf("[DEBUG] Download %s", c.AssetName())
 	zipFile, err := c.downloadToTempFile(assets[c.AssetName()])
