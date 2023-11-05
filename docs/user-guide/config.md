@@ -1,11 +1,11 @@
 # Configuring TFLint
 
-You can change the behavior not only in CLI flags but also in config files. By default, TFLint looks up `.tflint.hcl` according to the following priority:
+You can change the behavior not only in CLI flags but also in config files. TFLint loads config files according to the following priority order:
 
-- Current directory (`./.tflint.hcl`)
-- Home directory (`~/.tflint.hcl`)
-
-However, if `--chdir` or `--recursive` is used, the config file will be loaded relative to the module (changed) directory.
+1. File passed by the `--config` option
+2. File set by the `TFLINT_CONFIG_FILE` environment variable
+3. Current directory (`./.tflint.hcl`)
+4. Home directory (`~/.tflint.hcl`)
 
 The config file is written in [HCL](https://github.com/hashicorp/hcl). An example is shown below:
 
@@ -38,13 +38,7 @@ rule "aws_instance_invalid_type" {
 }
 ```
 
-You can also use another file as a config file with the `--config` option:
-
-```
-$ tflint --config other_config.hcl
-```
-
-This is also resolved relative to the module directory when `--chdir` or `--recursive` is used. To use a configuration file from the process working directory when recursing, pass an absolute path:
+The file path is resolved relative to the module directory when `--chdir` or `--recursive` is used. To use a config file from the working directory when recursing, pass an absolute path:
 
 ```sh
 tflint --recursive --config "$(pwd)/.tflint.hcl"
