@@ -3,6 +3,7 @@ package tflint
 import (
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -124,16 +125,47 @@ func EmptyConfig() *Config {
 // LoadConfig loads TFLint config file.
 // The priority of the configuration files is as follows:
 //
-// 1. current directory (./.tflint.hcl)
-// 2. home directory (~/.tflint.hcl)
+// 1. file passed by the --config option
+// 2. file set by the TFLINT_CONFIG_FILE environment variable
+// 3. current directory (./.tflint.hcl)
+// 4. home directory (~/.tflint.hcl)
 //
-// If neither file exists, an empty config is returned.
-// You can also load any file name. However, there is no fallback
-// to the home directory in this case.
+// For 1 and 2, if the file does not exist, an error will be returned immediately.
+// If 3 fails, fallback to 4, and If it fails, an empty configuration is returned.
 //
 // It also automatically enables bundled plugin if the "terraform"
 // plugin block is not explicitly declared.
 func LoadConfig(fs afero.Afero, file string) (*Config, error) {
+	// Load the file passed by the --config option
+	if file != defaultConfigFile {
+		log.Printf("[INFO] Load config: %s", file)
+		f, err := fs.Open(file)
+		if err != nil {
+			return nil, fmt.Errorf("failed to load file: %w", err)
+		}
+		cfg, err := loadConfig(f)
+		if err != nil {
+			return nil, err
+		}
+		return cfg.enableBundledPlugin(), nil
+	}
+
+	// Load the file set by the environment variable
+	envFile := os.Getenv("TFLINT_CONFIG_FILE")
+	if envFile != "" {
+		log.Printf("[INFO] Found TFLINT_CONFIG_FILE. Load config: %s", envFile)
+		f, err := fs.Open(envFile)
+		if err != nil {
+			return nil, fmt.Errorf("failed to load file: %w", err)
+		}
+		cfg, err := loadConfig(f)
+		if err != nil {
+			return nil, err
+		}
+		return cfg.enableBundledPlugin(), nil
+	}
+
+	// Load the default config file
 	log.Printf("[INFO] Load config: %s", file)
 	if f, err := fs.Open(file); err == nil {
 		cfg, err := loadConfig(f)
@@ -141,17 +173,14 @@ func LoadConfig(fs afero.Afero, file string) (*Config, error) {
 			return nil, err
 		}
 		return cfg.enableBundledPlugin(), nil
-	} else if file != defaultConfigFile {
-		return nil, fmt.Errorf("failed to load file: %w", err)
-	} else {
-		log.Printf("[INFO] file not found")
 	}
+	log.Printf("[INFO] file not found")
 
+	// Load the fallback config file
 	fallback, err := homedir.Expand(fallbackConfigFile)
 	if err != nil {
 		return nil, err
 	}
-
 	log.Printf("[INFO] Load config: %s", fallback)
 	if f, err := fs.Open(fallback); err == nil {
 		cfg, err := loadConfig(f)
@@ -162,6 +191,7 @@ func LoadConfig(fs afero.Afero, file string) (*Config, error) {
 	}
 	log.Printf("[INFO] file not found")
 
+	// Use the default config
 	log.Print("[INFO] Use default config")
 	return EmptyConfig().enableBundledPlugin(), nil
 }

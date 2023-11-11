@@ -22,6 +22,7 @@ func TestLoadConfig(t *testing.T) {
 		name     string
 		file     string
 		files    map[string]string
+		envs     map[string]string
 		want     *Config
 		errCheck func(error) bool
 	}{
@@ -131,6 +132,38 @@ plugin "baz" {
 			errCheck: neverHappend,
 		},
 		{
+			name: "TFLINT_CONFIG_FILE",
+			file: ".tflint.hcl",
+			files: map[string]string{
+				"env.hcl": `
+config {
+	force = true
+	disabled_by_default = true
+}`,
+			},
+			envs: map[string]string{
+				"TFLINT_CONFIG_FILE": "env.hcl",
+			},
+			want: &Config{
+				Module:               false,
+				Force:                true,
+				ForceSet:             true,
+				IgnoreModules:        map[string]bool{},
+				Varfiles:             []string{},
+				Variables:            []string{},
+				DisabledByDefault:    true,
+				DisabledByDefaultSet: true,
+				Rules:                map[string]*RuleConfig{},
+				Plugins: map[string]*PluginConfig{
+					"terraform": {
+						Name:    "terraform",
+						Enabled: true,
+					},
+				},
+			},
+			errCheck: neverHappend,
+		},
+		{
 			name: "default home config",
 			file: ".tflint.hcl",
 			files: map[string]string{
@@ -194,6 +227,16 @@ plugin "terraform" {
 		{
 			name: "file not found",
 			file: "not_found.hcl",
+			errCheck: func(err error) bool {
+				return err == nil || err.Error() != "failed to load file: open not_found.hcl: file does not exist"
+			},
+		},
+		{
+			name: "file not found with TFLINT_CONFIG_FILE",
+			file: ".tflint.hcl",
+			envs: map[string]string{
+				"TFLINT_CONFIG_FILE": "not_found.hcl",
+			},
 			errCheck: func(err error) bool {
 				return err == nil || err.Error() != "failed to load file: open not_found.hcl: file does not exist"
 			},
@@ -318,11 +361,51 @@ plugin "foo" {
 			},
 			errCheck: neverHappend,
 		},
+		{
+			name: "prefer the passed file over TFLINT_CONFIG_FILE",
+			file: "cli.hcl",
+			files: map[string]string{
+				"cli.hcl": `
+config {
+	force = true
+	disabled_by_default = false
+}`,
+				"env.hcl": `
+config {
+	force = false
+	disabled_by_default = true
+}`,
+			},
+			envs: map[string]string{
+				"TFLINT_CONFIG_FILE": "env.hcl",
+			},
+			want: &Config{
+				Module:               false,
+				Force:                true,
+				ForceSet:             true,
+				IgnoreModules:        map[string]bool{},
+				Varfiles:             []string{},
+				Variables:            []string{},
+				DisabledByDefault:    false,
+				DisabledByDefaultSet: true,
+				Rules:                map[string]*RuleConfig{},
+				Plugins: map[string]*PluginConfig{
+					"terraform": {
+						Name:    "terraform",
+						Enabled: true,
+					},
+				},
+			},
+			errCheck: neverHappend,
+		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			t.Setenv("HOME", "/root")
+			for k, v := range test.envs {
+				t.Setenv(k, v)
+			}
 			fs := afero.Afero{Fs: afero.NewMemMapFs()}
 			for name, src := range test.files {
 				if err := fs.WriteFile(name, []byte(src), os.ModePerm); err != nil {
