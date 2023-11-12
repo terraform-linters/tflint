@@ -10,15 +10,13 @@ import (
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 )
 
-var annotationPattern = regexp.MustCompile(`tflint-ignore: ([^\n*/#]+)`)
-
 // Annotation represents comments with special meaning in TFLint
-type Annotation struct {
-	Content string
-	Token   hclsyntax.Token
+type Annotation interface {
+	IsAffected(*Issue) bool
+	String() string
 }
 
-// Annotations is slice of Annotation
+// Annotations is a slice of Annotation
 type Annotations []Annotation
 
 // NewAnnotations find annotations from the passed tokens and return that list.
@@ -35,21 +33,49 @@ func NewAnnotations(path string, file *hcl.File) (Annotations, hcl.Diagnostics) 
 			continue
 		}
 
-		match := annotationPattern.FindStringSubmatch(string(token.Bytes))
-		if len(match) != 2 {
+		// tflint-ignore annotation
+		match := lineAnnotationPattern.FindStringSubmatch(string(token.Bytes))
+		if len(match) == 2 {
+			ret = append(ret, &LineAnnotation{
+				Content: strings.TrimSpace(match[1]),
+				Token:   token,
+			})
 			continue
 		}
-		ret = append(ret, Annotation{
-			Content: strings.TrimSpace(match[1]),
-			Token:   token,
-		})
+
+		// tflint-ignore-file annotation
+		match = fileAnnotationPattern.FindStringSubmatch(string(token.Bytes))
+		if len(match) == 2 {
+			if !(token.Range.Start.Line == 1 && token.Range.Start.Column == 1) {
+				diags = append(diags, &hcl.Diagnostic{
+					Severity: hcl.DiagError,
+					Summary:  "tflint-ignore-file annotation must be written at the top of file",
+					Detail:   fmt.Sprintf("tflint-ignore-file annotation is written at line %d, column %d", token.Range.Start.Line, token.Range.Start.Column),
+					Subject:  token.Range.Ptr(),
+				})
+				continue
+			}
+			ret = append(ret, &FileAnnotation{
+				Content: strings.TrimSpace(match[1]),
+				Token:   token,
+			})
+			continue
+		}
 	}
 
 	return ret, diags
 }
 
+var lineAnnotationPattern = regexp.MustCompile(`tflint-ignore: ([^\n*/#]+)`)
+
+// LineAnnotation is an annotation for ignoring issues in a line
+type LineAnnotation struct {
+	Content string
+	Token   hclsyntax.Token
+}
+
 // IsAffected checks if the passed issue is affected with the annotation
-func (a *Annotation) IsAffected(issue *Issue) bool {
+func (a *LineAnnotation) IsAffected(issue *Issue) bool {
 	if a.Token.Range.Filename != issue.Range.Filename {
 		return false
 	}
@@ -71,6 +97,36 @@ func (a *Annotation) IsAffected(issue *Issue) bool {
 }
 
 // String returns the string representation of the annotation
-func (a *Annotation) String() string {
-	return fmt.Sprintf("annotation:%s (%s)", a.Content, a.Token.Range.String())
+func (a *LineAnnotation) String() string {
+	return fmt.Sprintf("tflint-ignore: %s (%s)", a.Content, a.Token.Range.String())
+}
+
+var fileAnnotationPattern = regexp.MustCompile(`tflint-ignore-file: ([^\n*/#]+)`)
+
+// FileAnnotation is an annotation for ignoring issues in a file
+type FileAnnotation struct {
+	Content string
+	Token   hclsyntax.Token
+}
+
+// IsAffected checks if the passed issue is affected with the annotation
+func (a *FileAnnotation) IsAffected(issue *Issue) bool {
+	if a.Token.Range.Filename != issue.Range.Filename {
+		return false
+	}
+
+	rules := strings.Split(a.Content, ",")
+	for i, rule := range rules {
+		rules[i] = strings.TrimSpace(rule)
+	}
+
+	if slices.Contains(rules, issue.Rule.Name()) || slices.Contains(rules, "all") {
+		return true
+	}
+	return false
+}
+
+// String returns the string representation of the annotation
+func (a *FileAnnotation) String() string {
+	return fmt.Sprintf("tflint-ignore-file: %s (%s)", a.Content, a.Token.Range.String())
 }

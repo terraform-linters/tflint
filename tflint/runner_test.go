@@ -530,7 +530,7 @@ func Test_EmitIssue(t *testing.T) {
 			},
 			Annotations: map[string]Annotations{
 				"test.tf": {
-					{
+					&LineAnnotation{
 						Content: "test_rule",
 						Token: hclsyntax.Token{
 							Type: hclsyntax.TokenComment,
@@ -653,7 +653,7 @@ func Test_EmitIssue(t *testing.T) {
 			},
 			Annotations: map[string]Annotations{
 				"module.tf": {
-					{
+					&LineAnnotation{
 						Content: "test_rule",
 						Token: hclsyntax.Token{
 							Type: hclsyntax.TokenComment,
