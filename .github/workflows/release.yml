@@ -24,7 +24,7 @@ jobs:
       with:
         go-version-file: 'go.mod'
     - name: Install Cosign
-      uses: sigstore/cosign-installer@v3.1.2
+      uses: sigstore/cosign-installer@v3.2.0
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@v5
       with:
