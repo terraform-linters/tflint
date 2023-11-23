@@ -15,6 +15,7 @@ import (
 	"github.com/terraform-linters/tflint/formatter"
 	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/tflint"
+	"golang.org/x/exp/slices"
 )
 
 // Exit codes are int values that represent an exit code for a particular error.
@@ -71,6 +72,15 @@ func (cli *CLI) Run(args []string) int {
 	if opts.NoColor {
 		color.NoColor = true
 		cli.formatter.NoColor = true
+	}
+	if len(opts.IgnoreDir) > 0 {
+		for idx, value := range opts.IgnoreDir {
+			if filepath.Separator == '/' {
+				opts.IgnoreDir[idx] = filepath.ToSlash(value)
+			} else {
+				opts.IgnoreDir[idx] = filepath.FromSlash(value)
+			}
+		}
 	}
 	level := os.Getenv("TFLINT_LOG")
 	log.SetOutput(&logutils.LevelFilter{
@@ -144,11 +154,17 @@ func findWorkingDirs(opts Options) ([]string, error) {
 
 	if opts.Recursive {
 		// NOTE: The target directory is always the current directory in recursive mode
-		err := filepath.WalkDir(".", func(path string, d os.DirEntry, err error) error {
+		var root, _ = filepath.Abs(".")
+		err := filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
 			if err != nil {
 				return err
 			}
 			if !d.IsDir() {
+				return nil
+			}
+			// ignored directories are skipped
+			var relDirPath, _ = filepath.Rel(root, path)
+			if d.IsDir() && slices.Contains(opts.IgnoreDir, relDirPath) {
 				return nil
 			}
 			// hidden directories are skipped

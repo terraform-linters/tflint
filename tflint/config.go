@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
@@ -45,6 +45,7 @@ var innerConfigSchema = &hcl.BodySchema{
 		{Name: "disabled_by_default"},
 		{Name: "plugin_dir"},
 		{Name: "format"},
+		{Name: "ignore_dir"},
 	},
 }
 
@@ -80,6 +81,8 @@ type Config struct {
 	IgnoreModules map[string]bool
 	Rules         map[string]*RuleConfig
 	Plugins       map[string]*PluginConfig
+
+	IgnoreDir []string
 
 	sources map[string][]byte
 }
@@ -272,6 +275,10 @@ func loadConfig(file afero.File) (*Config, error) {
 					if !formatValid {
 						return config, fmt.Errorf("%s is invalid format. Allowed formats are: %s", config.Format, strings.Join(validFormats, ", "))
 					}
+				case "ignore_dir":
+					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.IgnoreDir); err != nil {
+						return config, err
+					}
 				default:
 					panic("never happened")
 				}
@@ -322,7 +329,7 @@ func loadConfig(file afero.File) (*Config, error) {
 	for name, plugin := range config.Plugins {
 		log.Printf("[DEBUG]     %s: enabled=%t, version=%s, source=%s", name, plugin.Enabled, plugin.Version, plugin.Source)
 	}
-
+	log.Printf("[DEBUG]   Variables: %s", strings.Join(config.IgnoreDir, ", "))
 	return config, nil
 }
 
@@ -428,6 +435,8 @@ func (c *Config) Merge(other *Config) {
 			c.Plugins[name] = plugin
 		}
 	}
+
+	c.IgnoreDir = append(c.IgnoreDir, other.IgnoreDir...)
 }
 
 // ToPluginConfig converts self into the plugin configuration format

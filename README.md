@@ -135,6 +135,7 @@ Application Options:
       --color                                                   Enable colorized output
       --no-color                                                Disable colorized output
       --fix                                                     Fix issues automatically
+      --ignore-dir                                              Ignore dir sources
 
 Help Options:
   -h, --help                                                    Show this help message
