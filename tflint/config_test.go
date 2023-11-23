@@ -12,6 +12,7 @@ import (
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	"github.com/terraform-linters/tflint/terraform"
 )
 
 func TestLoadConfig(t *testing.T) {
@@ -35,7 +36,7 @@ config {
 	format = "compact"
 	plugin_dir = "~/.tflint.d/plugins"
 
-	module = true
+	call_module_type = "all"
 	force = true
 
 	ignore_module = {
@@ -73,10 +74,10 @@ plugin "baz" {
 }`,
 			},
 			want: &Config{
-				Module:    true,
-				ModuleSet: true,
-				Force:     true,
-				ForceSet:  true,
+				CallModuleType:    terraform.CallAllModule,
+				CallModuleTypeSet: true,
+				Force:             true,
+				ForceSet:          true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-module": true,
 				},
@@ -145,7 +146,7 @@ config {
 				"TFLINT_CONFIG_FILE": "env.hcl",
 			},
 			want: &Config{
-				Module:               false,
+				CallModuleType:       terraform.CallLocalModule,
 				Force:                true,
 				ForceSet:             true,
 				IgnoreModules:        map[string]bool{},
@@ -174,7 +175,7 @@ config {
 }`,
 			},
 			want: &Config{
-				Module:               false,
+				CallModuleType:       terraform.CallLocalModule,
 				Force:                true,
 				ForceSet:             true,
 				IgnoreModules:        map[string]bool{},
@@ -208,7 +209,7 @@ plugin "terraform" {
 }`,
 			},
 			want: &Config{
-				Module:            false,
+				CallModuleType:    terraform.CallLocalModule,
 				Force:             false,
 				IgnoreModules:     map[string]bool{},
 				Varfiles:          []string{},
@@ -278,6 +279,19 @@ config {
 			},
 		},
 		{
+			name: "invalid call_module_type",
+			file: "invalid_call_module_type.hcl",
+			files: map[string]string{
+				"invalid_call_module_type.hcl": `
+config {
+	call_module_type = "invalid"
+}`,
+			},
+			errCheck: func(err error) bool {
+				return err == nil || err.Error() != "invalid is invalid call module type. Allowed values are: all, local, none"
+			},
+		},
+		{
 			name: "plugin without source",
 			file: "plugin_without_source.hcl",
 			files: map[string]string{
@@ -336,7 +350,7 @@ plugin "foo" {
 }`,
 			},
 			want: &Config{
-				Module:            false,
+				CallModuleType:    terraform.CallLocalModule,
 				Force:             false,
 				IgnoreModules:     map[string]bool{},
 				Varfiles:          []string{},
@@ -380,7 +394,7 @@ config {
 				"TFLINT_CONFIG_FILE": "env.hcl",
 			},
 			want: &Config{
-				Module:               false,
+				CallModuleType:       terraform.CallLocalModule,
 				Force:                true,
 				ForceSet:             true,
 				IgnoreModules:        map[string]bool{},
@@ -389,6 +403,34 @@ config {
 				DisabledByDefault:    false,
 				DisabledByDefaultSet: true,
 				Rules:                map[string]*RuleConfig{},
+				Plugins: map[string]*PluginConfig{
+					"terraform": {
+						Name:    "terraform",
+						Enabled: true,
+					},
+				},
+			},
+			errCheck: neverHappend,
+		},
+		{
+			name: "prefer call_module_type over module",
+			file: "config.hcl",
+			files: map[string]string{
+				"config.hcl": `
+config {
+  call_module_type = "none"
+  module           = true
+}`,
+			},
+			want: &Config{
+				CallModuleType:    terraform.CallNoModule,
+				CallModuleTypeSet: true,
+				Force:             false,
+				IgnoreModules:     map[string]bool{},
+				Varfiles:          []string{},
+				Variables:         []string{},
+				DisabledByDefault: false,
+				Rules:             map[string]*RuleConfig{},
 				Plugins: map[string]*PluginConfig{
 					"terraform": {
 						Name:    "terraform",
@@ -441,10 +483,10 @@ func TestMerge(t *testing.T) {
 	}
 
 	config := &Config{
-		Module:    true,
-		ModuleSet: true,
-		Force:     true,
-		ForceSet:  true,
+		CallModuleType:    terraform.CallAllModule,
+		CallModuleTypeSet: true,
+		Force:             true,
+		ForceSet:          true,
 		IgnoreModules: map[string]bool{
 			"github.com/terraform-linters/example-1": true,
 			"github.com/terraform-linters/example-2": false,
@@ -498,9 +540,10 @@ func TestMerge(t *testing.T) {
 		{
 			name: "override and merge",
 			base: &Config{
-				Module:    true,
-				ModuleSet: true,
-				Force:     false,
+				CallModuleType:    terraform.CallNoModule,
+				CallModuleTypeSet: true,
+				Force:             false,
+				ForceSet:          true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-1": true,
 					"github.com/terraform-linters/example-2": false,
@@ -537,9 +580,10 @@ func TestMerge(t *testing.T) {
 				},
 			},
 			other: &Config{
-				Module:   false,
-				Force:    true,
-				ForceSet: true,
+				CallModuleType:    terraform.CallAllModule,
+				CallModuleTypeSet: true,
+				Force:             true,
+				ForceSet:          true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-2": true,
 					"github.com/terraform-linters/example-3": false,
@@ -576,10 +620,10 @@ func TestMerge(t *testing.T) {
 				},
 			},
 			want: &Config{
-				Module:    true,
-				ModuleSet: true,
-				Force:     true,
-				ForceSet:  true,
+				CallModuleType:    terraform.CallAllModule,
+				CallModuleTypeSet: true,
+				Force:             true,
+				ForceSet:          true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-1": true,
 					"github.com/terraform-linters/example-2": true,
@@ -629,9 +673,9 @@ func TestMerge(t *testing.T) {
 		{
 			name: "CLI --only argument and merge",
 			base: &Config{
-				Module:    true,
-				ModuleSet: true,
-				Force:     false,
+				CallModuleType:    terraform.CallAllModule,
+				CallModuleTypeSet: true,
+				Force:             false,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-1": true,
 					"github.com/terraform-linters/example-2": false,
@@ -663,9 +707,9 @@ func TestMerge(t *testing.T) {
 				},
 			},
 			other: &Config{
-				Module:   false,
-				Force:    true,
-				ForceSet: true,
+				CallModuleType: terraform.CallLocalModule,
+				Force:          true,
+				ForceSet:       true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-2": true,
 					"github.com/terraform-linters/example-3": false,
@@ -699,10 +743,10 @@ func TestMerge(t *testing.T) {
 				},
 			},
 			want: &Config{
-				Module:    true,
-				ModuleSet: true,
-				Force:     true,
-				ForceSet:  true,
+				CallModuleType:    terraform.CallAllModule,
+				CallModuleTypeSet: true,
+				Force:             true,
+				ForceSet:          true,
 				IgnoreModules: map[string]bool{
 					"github.com/terraform-linters/example-1": true,
 					"github.com/terraform-linters/example-2": true,
@@ -749,7 +793,7 @@ func TestMerge(t *testing.T) {
 		{
 			name: "merge rule config with CLI-based config",
 			base: &Config{
-				Module:            false,
+				CallModuleType:    terraform.CallLocalModule,
 				Force:             false,
 				IgnoreModules:     map[string]bool{},
 				Varfiles:          []string{},
@@ -765,7 +809,7 @@ func TestMerge(t *testing.T) {
 				Plugins: map[string]*PluginConfig{},
 			},
 			other: &Config{
-				Module:            false,
+				CallModuleType:    terraform.CallLocalModule,
 				Force:             false,
 				IgnoreModules:     map[string]bool{},
 				Varfiles:          []string{},
@@ -781,7 +825,7 @@ func TestMerge(t *testing.T) {
 				Plugins: map[string]*PluginConfig{},
 			},
 			want: &Config{
-				Module:            false,
+				CallModuleType:    terraform.CallLocalModule,
 				Force:             false,
 				IgnoreModules:     map[string]bool{},
 				Varfiles:          []string{},
@@ -800,7 +844,7 @@ func TestMerge(t *testing.T) {
 		{
 			name: "merge plugin config with CLI-based config",
 			base: &Config{
-				Module:            false,
+				CallModuleType:    terraform.CallLocalModule,
 				Force:             false,
 				IgnoreModules:     map[string]bool{},
 				Varfiles:          []string{},
@@ -821,7 +865,7 @@ func TestMerge(t *testing.T) {
 				},
 			},
 			other: &Config{
-				Module:            false,
+				CallModuleType:    terraform.CallLocalModule,
 				Force:             false,
 				IgnoreModules:     map[string]bool{},
 				Varfiles:          []string{},
@@ -836,7 +880,7 @@ func TestMerge(t *testing.T) {
 				},
 			},
 			want: &Config{
-				Module:            false,
+				CallModuleType:    terraform.CallLocalModule,
 				Force:             false,
 				IgnoreModules:     map[string]bool{},
 				Varfiles:          []string{},

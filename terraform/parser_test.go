@@ -487,3 +487,47 @@ func TestIsConfigDir(t *testing.T) {
 		})
 	}
 }
+
+func TestExists(t *testing.T) {
+	tests := []struct {
+		name  string
+		files map[string]string
+		path  string
+		want  bool
+	}{
+		{
+			name: "exists",
+			files: map[string]string{
+				"foo": "",
+			},
+			path: "foo",
+			want: true,
+		},
+		{
+			name: "not exists",
+			files: map[string]string{
+				"foo": "",
+			},
+			path: "bar",
+			want: false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			fs := afero.Afero{Fs: afero.NewMemMapFs()}
+			for name, content := range test.files {
+				if err := fs.WriteFile(name, []byte(content), os.ModePerm); err != nil {
+					t.Fatal(err)
+				}
+			}
+			parser := NewParser(fs)
+
+			got := parser.Exists(test.path)
+
+			if got != test.want {
+				t.Errorf("want=%t, got=%t", test.want, got)
+			}
+		})
+	}
+}

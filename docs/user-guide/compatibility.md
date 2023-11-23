@@ -143,7 +143,7 @@ Similar to support for meta-arguments, some rules may process a dynamic block as
 
 ## Modules
 
-Resources contained within modules are ignored by default, but when the [Module Inspection](./module-inspection.md) is enabled, the arguments of module calls are inspected.
+Local modules are inspected by default. This allows you to identify issues caused by input values as well.
 
 ```hcl
 resource "aws_instance" "static" {
@@ -158,6 +158,8 @@ module "aws_instance" {
   encrypted = false # => Must be encrypted
 }
 ```
+
+Remote modules can also be inspected. See [Calling Modules](./calling-modules.md) for details.
 
 ## Environment Variables
 

@@ -1,0 +1,91 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is t1.2xlarge",
+      "range": {
+        "filename": "module.tf",
+        "start": {
+          "line": 8,
+          "column": 19
+        },
+        "end": {
+          "line": 8,
+          "column": 36
+        }
+      },
+      "callers": [
+        {
+          "filename": "module.tf",
+          "start": {
+            "line": 8,
+            "column": 19
+          },
+          "end": {
+            "line": 8,
+            "column": 36
+          }
+        },
+        {
+          "filename": "ec2-instance/main.tf",
+          "start": {
+            "line": 4,
+            "column": 19
+          },
+          "end": {
+            "line": 4,
+            "column": 36
+          }
+        }
+      ]
+    },
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is t1.2xlarge",
+      "range": {
+        "filename": "module.tf",
+        "start": {
+          "line": 14,
+          "column": 19
+        },
+        "end": {
+          "line": 14,
+          "column": 36
+        }
+      },
+      "callers": [
+        {
+          "filename": "module.tf",
+          "start": {
+            "line": 14,
+            "column": 19
+          },
+          "end": {
+            "line": 14,
+            "column": 36
+          }
+        },
+        {
+          "filename": ".terraform/modules/remote/main.tf",
+          "start": {
+            "line": 25,
+            "column": 26
+          },
+          "end": {
+            "line": 25,
+            "column": 43
+          }
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

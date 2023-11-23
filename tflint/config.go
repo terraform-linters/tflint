@@ -14,6 +14,7 @@ import (
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	"github.com/terraform-linters/tflint/terraform"
 )
 
 var defaultConfigFile = ".tflint.hcl"
@@ -38,6 +39,7 @@ var configSchema = &hcl.BodySchema{
 var innerConfigSchema = &hcl.BodySchema{
 	Attributes: []hcl.AttributeSchema{
 		{Name: "module"},
+		{Name: "call_module_type"},
 		{Name: "force"},
 		{Name: "ignore_module"},
 		{Name: "varfile"},
@@ -59,8 +61,8 @@ var validFormats = []string{
 
 // Config describes the behavior of TFLint
 type Config struct {
-	Module    bool
-	ModuleSet bool
+	CallModuleType    terraform.CallModuleType
+	CallModuleTypeSet bool
 
 	Force    bool
 	ForceSet bool
@@ -111,7 +113,7 @@ type PluginConfig struct {
 // It is mainly used for testing
 func EmptyConfig() *Config {
 	return &Config{
-		Module:            false,
+		CallModuleType:    terraform.CallLocalModule,
 		Force:             false,
 		IgnoreModules:     map[string]bool{},
 		Varfiles:          []string{},
@@ -225,38 +227,68 @@ func loadConfig(file afero.File) (*Config, error) {
 
 			for name, attr := range inner.Attributes {
 				switch name {
-				case "module":
-					config.ModuleSet = true
-					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.Module); err != nil {
+				case "call_module_type":
+					var callModuleType string
+					config.CallModuleTypeSet = true
+					if err := gohcl.DecodeExpression(attr.Expr, nil, &callModuleType); err != nil {
 						return config, err
 					}
+					config.CallModuleType, err = terraform.AsCallModuleType(callModuleType)
+					if err != nil {
+						return config, err
+					}
+
+				// "module" attribute is deprecated. Use "call_module_type" instead.
+				// This is for backward compatibility.
+				case "module":
+					if config.CallModuleTypeSet {
+						// If "call_module_type" is set, ignore "module" attribute
+						continue
+					}
+					var module bool
+					config.CallModuleTypeSet = true
+					if err := gohcl.DecodeExpression(attr.Expr, nil, &module); err != nil {
+						return config, err
+					}
+					if module {
+						config.CallModuleType = terraform.CallAllModule
+					} else {
+						config.CallModuleType = terraform.CallNoModule
+					}
+
 				case "force":
 					config.ForceSet = true
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.Force); err != nil {
 						return config, err
 					}
+
 				case "ignore_module":
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.IgnoreModules); err != nil {
 						return config, err
 					}
+
 				case "varfile":
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.Varfiles); err != nil {
 						return config, err
 					}
+
 				case "variables":
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.Variables); err != nil {
 						return config, err
 					}
+
 				case "disabled_by_default":
 					config.DisabledByDefaultSet = true
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.DisabledByDefault); err != nil {
 						return config, err
 					}
+
 				case "plugin_dir":
 					config.PluginDirSet = true
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.PluginDir); err != nil {
 						return config, err
 					}
+
 				case "format":
 					config.FormatSet = true
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.Format); err != nil {
@@ -272,16 +304,19 @@ func loadConfig(file afero.File) (*Config, error) {
 					if !formatValid {
 						return config, fmt.Errorf("%s is invalid format. Allowed formats are: %s", config.Format, strings.Join(validFormats, ", "))
 					}
+
 				default:
 					panic("never happened")
 				}
 			}
+
 		case "rule":
 			ruleConfig := &RuleConfig{Name: block.Labels[0]}
 			if err := gohcl.DecodeBody(block.Body, nil, ruleConfig); err != nil {
 				return config, err
 			}
 			config.Rules[block.Labels[0]] = ruleConfig
+
 		case "plugin":
 			pluginConfig := &PluginConfig{Name: block.Labels[0]}
 			if err := gohcl.DecodeBody(block.Body, nil, pluginConfig); err != nil {
@@ -291,14 +326,15 @@ func loadConfig(file afero.File) (*Config, error) {
 				return config, err
 			}
 			config.Plugins[block.Labels[0]] = pluginConfig
+
 		default:
 			panic("never happened")
 		}
 	}
 
 	log.Printf("[DEBUG] Config loaded")
-	log.Printf("[DEBUG]   Module: %t", config.Module)
-	log.Printf("[DEBUG]   ModuleSet: %t", config.ModuleSet)
+	log.Printf("[DEBUG]   CallModuleType: %s", config.CallModuleType)
+	log.Printf("[DEBUG]   CallModuleTypeSet: %t", config.CallModuleTypeSet)
 	log.Printf("[DEBUG]   Force: %t", config.Force)
 	log.Printf("[DEBUG]   ForceSet: %t", config.ForceSet)
 	log.Printf("[DEBUG]   DisabledByDefault: %t", config.DisabledByDefault)
@@ -380,9 +416,9 @@ func (c *Config) Sources() map[string][]byte {
 // Merge merges the two configs and applies to itself.
 // Since the argument takes precedence, it can be used as overwriting of the config.
 func (c *Config) Merge(other *Config) {
-	if other.ModuleSet {
-		c.ModuleSet = true
-		c.Module = other.Module
+	if other.CallModuleTypeSet {
+		c.CallModuleTypeSet = true
+		c.CallModuleType = other.CallModuleType
 	}
 	if other.ForceSet {
 		c.ForceSet = true

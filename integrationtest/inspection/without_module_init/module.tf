@@ -6,7 +6,7 @@ variable "instance_type" {
 
 // terraform init did not run
 module "instances" {
-  source = "./module"
+  source = "example/instances"
 
   unknown = var.unknown
   instance_type = var.instance_type

@@ -189,7 +189,7 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts sdk.EvaluateExprOpti
 // EmitIssue stores an issue in the server based on passed rule, message, and location.
 func (s *GRPCServer) EmitIssue(rule sdk.Rule, message string, location hcl.Range, fixable bool) (bool, error) {
 	// If the issue range represents an expression, it is emitted based on that context.
-	// This is important for module inspection that emits issues for module arguments included in the expression.
+	// This is required to emit issues in called modules.
 	expr, err := s.getExprFromRange(location)
 	if err != nil {
 		// If the range does not represent an expression, just emit it without context.

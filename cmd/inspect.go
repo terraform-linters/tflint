@@ -211,7 +211,7 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 }
 
 func (cli *CLI) setupRunners(opts Options, dir string) ([]*tflint.Runner, error) {
-	configs, diags := cli.loader.LoadConfig(dir, cli.config.Module)
+	configs, diags := cli.loader.LoadConfig(dir, cli.config.CallModuleType)
 	if diags.HasErrors() {
 		return []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
 	}

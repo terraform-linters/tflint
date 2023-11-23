@@ -1,3 +1,6 @@
 [submodule "terraform/test-fixtures/v0.15.0_module/.terraform/modules/consul"]
 	path = terraform/test-fixtures/v0.15.0_module/.terraform/modules/consul
 	url = https://github.com/hashicorp/terraform-aws-consul
+[submodule "integrationtest/inspection/with_module_init/.terraform/modules/remote"]
+	path = integrationtest/inspection/with_module_init/.terraform/modules/remote
+	url = https://github.com/terraform-aws-modules/terraform-aws-ec2-instance
