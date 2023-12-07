@@ -143,7 +143,7 @@ Similar to support for meta-arguments, some rules may process a dynamic block as
 
 ## Modules
 
-Local modules are inspected by default. This allows you to identify issues caused by input values as well.
+TFLint doesn't automatically inspect the content of modules themselves. However, by default, it will analyze their content in order to raise any issues that arise from attributes in module calls.
 
 ```hcl
 resource "aws_instance" "static" {
