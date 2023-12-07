@@ -8,7 +8,7 @@ This guide describes the various features of TFLint for end users.
 - [Configuring TFLint](config.md)
 - [Configuring Plugins](plugins.md)
 - [Switching working directory](working-directory.md)
-- [Module Inspection](module-inspection.md)
+- [Calling Modules](calling-modules.md)
 - [Annotations](annotations.md)
 - [Autofix](autofix.md)
 - [Compatibility with Terraform](compatibility.md)

@@ -143,7 +143,7 @@ Similar to support for meta-arguments, some rules may process a dynamic block as
 
 ## Modules
 
-Resources contained within modules are ignored by default, but when the [Module Inspection](./module-inspection.md) is enabled, the arguments of module calls are inspected.
+TFLint doesn't automatically inspect the content of modules themselves. However, by default, it will analyze their content in order to raise any issues that arise from attributes in module calls.
 
 ```hcl
 resource "aws_instance" "static" {
@@ -158,6 +158,8 @@ module "aws_instance" {
   encrypted = false # => Must be encrypted
 }
 ```
+
+Remote modules can also be inspected. See [Calling Modules](./calling-modules.md) for details.
 
 ## Environment Variables
 

@@ -4,6 +4,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -21,8 +22,9 @@ type Options struct {
 	EnablePlugins          []string `long:"enable-plugin" description:"Enable plugins from the command line" value-name:"PLUGIN_NAME"`
 	Varfiles               []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
 	Variables              []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
-	Module                 *bool    `long:"module" description:"Enable module inspection"`
-	NoModule               *bool    `long:"no-module" description:"Disable module inspection"`
+	Module                 *bool    `long:"module" description:"Enable module inspection" hidden:"true"`
+	NoModule               *bool    `long:"no-module" description:"Disable module inspection" hidden:"true"`
+	CallModuleType         *string  `long:"call-module-type" description:"Types of module to call (default: local)" choice:"all" choice:"local" choice:"none"`
 	Chdir                  string   `long:"chdir" description:"Switch to a different working directory before executing the command" value-name:"DIR"`
 	Recursive              bool     `long:"recursive" description:"Run command in each directory recursively"`
 	Filter                 []string `long:"filter" description:"Filter issues by file names or globs" value-name:"FILE"`
@@ -52,14 +54,25 @@ func (opts *Options) toConfig() *tflint.Config {
 		opts.Variables = []string{}
 	}
 
-	var module, moduleSet bool
+	callModuleType := terraform.CallLocalModule
+	callModuleTypeSet := false
+	// --call-module-type takes precedence over --module/--no-module. This is for backward compatibility.
 	if opts.Module != nil {
-		module = *opts.Module
-		moduleSet = true
+		callModuleType = terraform.CallAllModule
+		callModuleTypeSet = true
 	}
 	if opts.NoModule != nil {
-		module = !*opts.NoModule
-		moduleSet = true
+		callModuleType = terraform.CallNoModule
+		callModuleTypeSet = true
+	}
+	if opts.CallModuleType != nil {
+		var err error
+		callModuleType, err = terraform.AsCallModuleType(*opts.CallModuleType)
+		if err != nil {
+			// This should never happen because the option is already validated by go-flags
+			panic(err)
+		}
+		callModuleTypeSet = true
 	}
 
 	var force, forceSet bool
@@ -69,7 +82,7 @@ func (opts *Options) toConfig() *tflint.Config {
 	}
 
 	log.Printf("[DEBUG] CLI Options")
-	log.Printf("[DEBUG]   Module: %t", module)
+	log.Printf("[DEBUG]   CallModuleType: %s", callModuleType)
 	log.Printf("[DEBUG]   Force: %t", force)
 	log.Printf("[DEBUG]   Format: %s", opts.Format)
 	log.Printf("[DEBUG]   Varfiles: %s", strings.Join(opts.Varfiles, ", "))
@@ -113,8 +126,8 @@ func (opts *Options) toConfig() *tflint.Config {
 	}
 
 	return &tflint.Config{
-		Module:    module,
-		ModuleSet: moduleSet,
+		CallModuleType:    callModuleType,
+		CallModuleTypeSet: callModuleTypeSet,
 
 		Force:    force,
 		ForceSet: forceSet,

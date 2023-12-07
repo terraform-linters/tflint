@@ -52,17 +52,27 @@ func TestIntegration(t *testing.T) {
 		},
 		{
 			Name:    "module",
-			Command: "./tflint --format json --module --ignore-module ./ignore_module",
+			Command: "./tflint --format json --ignore-module ./ignore_module",
 			Dir:     "module",
 		},
 		{
-			Name:    "without_module_init",
+			Name:    "without module init",
 			Command: "./tflint --format json",
 			Dir:     "without_module_init",
 		},
 		{
+			Name:    "with module init",
+			Command: "./tflint --format json --call-module-type all",
+			Dir:     "with_module_init",
+		},
+		{
+			Name:    "no calling module",
+			Command: "./tflint --format json --call-module-type none",
+			Dir:     "no_calling_module",
+		},
+		{
 			Name:    "plugin",
-			Command: "./tflint --format json --module",
+			Command: "./tflint --format json",
 			Dir:     "plugin",
 		},
 		{
@@ -72,12 +82,12 @@ func TestIntegration(t *testing.T) {
 		},
 		{
 			Name:    "path",
-			Command: "./tflint --format json --module",
+			Command: "./tflint --format json",
 			Dir:     "path",
 		},
 		{
 			Name:    "init from cwd",
-			Command: "./tflint --format json --module",
+			Command: "./tflint --format json",
 			Dir:     "init-cwd/root",
 		},
 		{
@@ -167,7 +177,7 @@ func TestIntegration(t *testing.T) {
 		},
 		{
 			Name:    "eval on root context",
-			Command: "tflint --module --format json",
+			Command: "tflint --format json",
 			Dir:     "eval-on-root-context",
 		},
 		{
@@ -187,12 +197,12 @@ func TestIntegration(t *testing.T) {
 		},
 		{
 			Name:    "expand resources/modules",
-			Command: "tflint --module --format json",
+			Command: "tflint --format json",
 			Dir:     "expand",
 		},
 		{
 			Name:    "chdir",
-			Command: "tflint --chdir dir --module --var-file from_cli.tfvars --format json",
+			Command: "tflint --chdir dir --var-file from_cli.tfvars --format json",
 			Dir:     "chdir",
 		},
 		{

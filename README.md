@@ -125,8 +125,7 @@ Application Options:
       --enable-plugin=PLUGIN_NAME                               Enable plugins from the command line
       --var-file=FILE                                           Terraform variable file name
       --var='foo=bar'                                           Set a Terraform variable
-      --module                                                  Enable module inspection
-      --no-module                                               Disable module inspection
+      --call-module-type=[all|local|none]                       Types of module to call (default: local)
       --chdir=DIR                                               Switch to a different working directory before executing the command
       --recursive                                               Run command in each directory recursively
       --filter=FILE                                             Filter issues by file names or globs

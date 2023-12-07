@@ -168,7 +168,7 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 		return ret, fmt.Errorf("Failed to prepare loading: %w", err)
 	}
 
-	configs, diags := loader.LoadConfig(".", h.config.Module)
+	configs, diags := loader.LoadConfig(".", h.config.CallModuleType)
 	if diags.HasErrors() {
 		return ret, fmt.Errorf("Failed to load configurations: %w", diags)
 	}

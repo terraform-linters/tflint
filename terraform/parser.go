@@ -237,12 +237,19 @@ func (p *Parser) IsConfigDir(baseDir, path string) bool {
 	return (len(primaryPaths) + len(overridePaths)) > 0
 }
 
+// Exists returns true if the given path exists in fs.
+func (p *Parser) Exists(path string) bool {
+	_, err := p.fs.Stat(path)
+	return err == nil
+}
+
 func (p *Parser) configDirFiles(baseDir, dir string) (primary, override []string, diags hcl.Diagnostics) {
 	infos, err := p.fs.ReadDir(dir)
 	if err != nil {
 		diags = append(diags, &hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  "Failed to read module directory",
+			Subject:  &hcl.Range{},
 			Detail:   fmt.Sprintf("Module directory %s does not exist or cannot be read.", filepath.Join(baseDir, dir)),
 		})
 		return
@@ -280,6 +287,7 @@ func (p *Parser) autoLoadValuesDirFiles(baseDir, dir string) (files []string, di
 		diags = append(diags, &hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  "Failed to read module directory",
+			Subject:  &hcl.Range{},
 			Detail:   fmt.Sprintf("Module directory %s does not exist or cannot be read.", filepath.Join(baseDir, dir)),
 		})
 		return nil, diags

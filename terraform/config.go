@@ -1,6 +1,10 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package terraform
 
 import (
+	"fmt"
 	"sort"
 
 	"github.com/hashicorp/go-version"
@@ -81,10 +85,22 @@ func buildChildModules(parent *Config, walker ModuleWalker) (map[string]*Config,
 		copy(path, parent.Path)
 		path[len(path)-1] = call.Name
 
+		// Return an error for nesting too deep to avoid infinite loops due to circular references.
+		if len(path) > 10 {
+			return ret, diags.Append(&hcl.Diagnostic{
+				Severity: hcl.DiagError,
+				Summary:  "Module stack level too deep",
+				Detail:   fmt.Sprintf("This configuration has nested modules more than 10 levels deep. This is mainly caused by circular references. current path: %s", parent.Path),
+				Subject:  &call.DeclRange,
+			})
+		}
+
 		req := ModuleRequest{
-			Name:      call.Name,
-			Path:      path,
-			CallRange: call.DeclRange,
+			Name:       call.Name,
+			Path:       path,
+			SourceAddr: call.SourceAddr,
+			Parent:     parent,
+			CallRange:  call.DeclRange,
 		}
 
 		mod, _, modDiags := walker.LoadModule(&req)
@@ -165,6 +181,17 @@ type ModuleRequest struct {
 	// each distinct module call in a configuration, allowing for multiple
 	// calls with the same name at different points in the tree.
 	Path addrs.Module
+
+	// SourceAddr is the source address string provided by the user in
+	// configuration.
+	SourceAddr addrs.ModuleSource
+
+	// Parent is the partially-constructed module tree node that the loaded
+	// module will be added to. Callers may refer to any field of this
+	// structure except Children, which is still under construction when
+	// ModuleRequest objects are created and thus has undefined content.
+	// The main reason this is provided is to build the full path for the module.
+	Parent *Config
 
 	// CallRange is the source range for the header of the "module" block
 	// in configuration that prompted this request. This can be used as the

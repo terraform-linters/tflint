@@ -240,14 +240,14 @@ func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range, fixabl
 		})
 	} else {
 		modVars := r.listModuleVars(r.currentExpr)
-		// Returns true only if all issues have not been ignored in module inspection.
+		// Returns true only if all issues have not been ignored in called modules.
 		allApplied := len(modVars) > 0
 		for _, modVar := range modVars {
 			applied := r.emitIssue(&Issue{
 				Rule:    rule,
 				Message: message,
 				Range:   modVar.DeclRange,
-				Fixable: false, // Issues for module inspection are always not fixable.
+				Fixable: false, // Issues are always not fixable in called modules.
 				Callers: append(modVar.callers(), location),
 				Source:  r.Sources()[modVar.DeclRange.Filename],
 			})

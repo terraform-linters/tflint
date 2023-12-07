@@ -1,0 +1,25 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is t1.2xlarge",
+      "range": {
+        "filename": "module.tf",
+        "start": {
+          "line": 6,
+          "column": 19
+        },
+        "end": {
+          "line": 6,
+          "column": 36
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}

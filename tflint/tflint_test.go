@@ -45,7 +45,7 @@ func testRunnerWithOsFs(t *testing.T, config *Config) *Runner {
 		t.Fatal(err)
 	}
 
-	cfg, diags := loader.LoadConfig(".", config.Module)
+	cfg, diags := loader.LoadConfig(".", config.CallModuleType)
 	if diags.HasErrors() {
 		t.Fatal(diags)
 	}
@@ -78,7 +78,7 @@ func testRunnerWithAnnotations(t *testing.T, files map[string]string, annotation
 		t.Fatal(err)
 	}
 
-	cfg, diags := loader.LoadConfig(".", config.Module)
+	cfg, diags := loader.LoadConfig(".", config.CallModuleType)
 	if diags.HasErrors() {
 		t.Fatal(diags)
 	}
@@ -93,6 +93,6 @@ func testRunnerWithAnnotations(t *testing.T, files map[string]string, annotation
 
 func moduleConfig() *Config {
 	c := EmptyConfig()
-	c.Module = true
+	c.CallModuleType = terraform.CallAllModule
 	return c
 }

@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"local","Source":"./ec2-instance","Dir":"ec2-instance"},{"Key":"remote","Source":"registry.terraform.io/terraform-aws-modules/ec2-instance/aws","Version":"5.5.0","Dir":".terraform/modules/remote"}]}

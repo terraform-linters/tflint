@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/spf13/afero"
+	"github.com/terraform-linters/tflint/terraform/addrs"
 )
 
 // Loader is a fork of configload.Loader. The instance is the main entry-point
@@ -65,23 +66,24 @@ func NewLoader(fs afero.Afero, originalWd string) (*Loader, error) {
 
 // LoadConfig reads the Terraform module in the given directory and uses it as the
 // root module to build the static module tree that represents a configuration.
-//
-// The second argument determines whether to load child modules. If true is given,
-// load installed child modules according to a manifest file. If false is given,
-// all child modules will not be loaded.
-func (l *Loader) LoadConfig(dir string, module bool) (*Config, hcl.Diagnostics) {
+func (l *Loader) LoadConfig(dir string, callModuleType CallModuleType) (*Config, hcl.Diagnostics) {
 	mod, diags := l.parser.LoadConfigDir(l.baseDir, dir)
 	if diags.HasErrors() {
 		return nil, diags
 	}
 
 	var walker ModuleWalkerFunc
-	if module {
-		log.Print("[INFO] Module inspection is enabled. Building the root module with children...")
-		walker = ModuleWalkerFunc(l.moduleWalkerLoad)
-	} else {
-		log.Print("[INFO] Module inspection is disabled. Building the root module without children...")
-		walker = ModuleWalkerFunc(l.moduleWalkerIgnore)
+	switch callModuleType {
+	case CallAllModule:
+		log.Print("[INFO] Building the root module while calling child modules...")
+		walker = l.moduleWalkerFunc(true, true)
+	case CallLocalModule:
+		log.Print("[INFO] Building the root module while calling local child modules...")
+		walker = l.moduleWalkerFunc(true, false)
+	case CallNoModule:
+		walker = l.moduleWalkerFunc(false, false)
+	default:
+		panic(fmt.Sprintf("unexpected module call type: %d", callModuleType))
 	}
 
 	cfg, diags := BuildConfig(mod, walker)
@@ -91,35 +93,56 @@ func (l *Loader) LoadConfig(dir string, module bool) (*Config, hcl.Diagnostics) 
 	return cfg, nil
 }
 
-func (l *Loader) moduleWalkerLoad(req *ModuleRequest) (*Module, *version.Version, hcl.Diagnostics) {
-	// Since we're just loading here, we expect that all referenced modules
-	// will be already installed and described in our manifest. However, we
-	// do verify that the manifest and the configuration are in agreement
-	// so that we can prompt the user to run "terraform init" if not.
+func (l *Loader) moduleWalkerFunc(walkLocal, walkRemote bool) ModuleWalkerFunc {
+	return func(req *ModuleRequest) (*Module, *version.Version, hcl.Diagnostics) {
+		switch source := req.SourceAddr.(type) {
+		case addrs.ModuleSourceLocal:
+			if !walkLocal {
+				return nil, nil, nil
+			}
+			dir := filepath.ToSlash(filepath.Join(req.Parent.Module.SourceDir, source.String()))
+			log.Printf("[DEBUG] Trying to load the local module: name=%s dir=%s", req.Name, dir)
+			if !l.parser.Exists(dir) {
+				return nil, nil, hcl.Diagnostics{
+					{
+						Severity: hcl.DiagError,
+						Summary:  fmt.Sprintf(`"%s" module is not found`, req.Name),
+						Detail:   fmt.Sprintf(`The module directory "%s" does not exist or cannot be read.`, filepath.Join(l.baseDir, dir)),
+						Subject:  &req.CallRange,
+					},
+				}
+			}
+			mod, diags := l.parser.LoadConfigDir(l.baseDir, dir)
+			return mod, nil, diags
 
-	key := l.modules.manifest.moduleKey(req.Path)
-	record, exists := l.modules.manifest[key]
+		case addrs.ModuleSourceRemote:
+			if !walkRemote {
+				return nil, nil, nil
+			}
+			// Since we're just loading here, we expect that all referenced modules
+			// will be already installed and described in our manifest. However, we
+			// do verify that the manifest and the configuration are in agreement
+			// so that we can prompt the user to run "terraform init" if not.
+			key := l.modules.manifest.moduleKey(req.Path)
+			record, exists := l.modules.manifest[key]
+			if !exists {
+				log.Printf(`[DEBUG] Failed to find "%s"`, key)
+				return nil, nil, hcl.Diagnostics{
+					{
+						Severity: hcl.DiagError,
+						Summary:  fmt.Sprintf(`"%s" module is not found. Did you run "terraform init"?`, req.Name),
+						Subject:  &req.CallRange,
+					},
+				}
+			}
+			log.Printf("[DEBUG] Trying to load the remote module: key=%s, version=%s, dir=%s", key, record.VersionStr, record.Dir)
+			mod, diags := l.parser.LoadConfigDir(l.baseDir, record.Dir)
+			return mod, record.Version, diags
 
-	if !exists {
-		log.Printf("[DEBUG] Failed to search by `%s` key.", key)
-		return nil, nil, hcl.Diagnostics{
-			{
-				Severity: hcl.DiagError,
-				Summary:  fmt.Sprintf("`%s` module is not found. Did you run `terraform init`?", req.Name),
-				Subject:  &req.CallRange,
-			},
+		default:
+			panic(fmt.Sprintf("unexpected module source type: %T", req.SourceAddr))
 		}
 	}
-
-	log.Printf("[DEBUG] Trying to load the module: key=%s, version=%s, dir=%s", key, record.VersionStr, record.Dir)
-
-	mod, diags := l.parser.LoadConfigDir(l.baseDir, record.Dir)
-	return mod, record.Version, diags
-}
-
-func (l *Loader) moduleWalkerIgnore(req *ModuleRequest) (*Module, *version.Version, hcl.Diagnostics) {
-	// Prevents loading any child modules by returning nil for all module requests
-	return nil, nil, nil
 }
 
 var defaultVarsFilename = "terraform.tfvars"

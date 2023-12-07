@@ -14,7 +14,7 @@ config {
   format = "compact"
   plugin_dir = "~/.tflint.d/plugins"
 
-  module = true
+  call_module_type = "local"
   force = false
   disabled_by_default = false
 
@@ -63,11 +63,27 @@ In recursive mode (`--recursive`), this field will be ignored in configuration f
 
 Set the plugin directory. The default is `~/.tflint.d/plugins` (or `./.tflint.d/plugins`). See also [Configuring Plugins](plugins.md#advanced-usage)
 
-### `module`
+### `call_module_type`
 
-CLI flag: `--module`
+CLI flag: `--call-module-type`
 
-Enable [Module Inspection](module-inspection.md).
+Select types of module to call. The following values are valid:
+
+- all
+- local (default)
+- none
+
+If you select `all`, you can call all (local and remote) modules. See [Calling Modules](./calling-modules.md).
+
+```hcl
+config {
+  call_module_type = "all"
+}
+```
+
+```console
+$ tflint --call-module-type=all
+```
 
 ### `force`
 
@@ -110,7 +126,7 @@ $ tflint --only aws_instance_invalid_type --only aws_instance_previous_type
 
 CLI flag: `--ignore-module`
 
-Skip inspections for module calls in [Module Inspection](module-inspection.md). Note that you need to specify module sources rather than module ids for backward compatibility.
+Adding a module source to `ignore_module` will cause it to be ignored when [calling modules](./calling-modules.md). Note that you need to specify module sources rather than module ids for backward compatibility.
 
 ```hcl
 config {
