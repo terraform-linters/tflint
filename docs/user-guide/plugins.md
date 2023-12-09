@@ -23,8 +23,8 @@ After declaring the `version` and `source`, `tflint --init` can automatically in
 
 ```console
 $ tflint --init
-Installing `foo` plugin...
-Installed `foo` (source: github.com/org/tflint-ruleset-foo, version: 0.1.0)
+Installing "foo" plugin...
+Installed "foo" (source: github.com/org/tflint-ruleset-foo, version: 0.1.0)
 $ tflint -v
 TFLint version 0.28.1
 + ruleset.foo (0.1.0)

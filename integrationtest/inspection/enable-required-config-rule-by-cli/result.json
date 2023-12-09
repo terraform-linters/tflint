@@ -2,7 +2,7 @@
   "issues": [],
   "errors": [
     {
-      "message": "Failed to check ruleset; failed to check \"aws_s3_bucket_with_config_example\" rule: This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration",
+      "message": "Failed to check ruleset; failed to check \"aws_s3_bucket_with_config_example\" rule: This rule cannot be enabled with the --enable-rule option because it lacks the required configuration",
       "severity": "error"
     }
   ]

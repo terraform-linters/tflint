@@ -377,7 +377,7 @@ rule "test_in_file" {
 		ErrCheck func(error) bool
 	}{
 		{
-			Name: "get `test_in_file` rule",
+			Name: `get "test_in_file" rule`,
 			Args: func() (string, *hclext.BodySchema) {
 				return "test_in_file", &hclext.BodySchema{
 					Attributes: []hclext.AttributeSchema{{Name: "foo"}},
@@ -420,7 +420,7 @@ rule "test_in_file" {
 			},
 			Want: nil,
 			ErrCheck: func(err error) bool {
-				return err == nil || err.Error() != "This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration"
+				return err == nil || err.Error() != "This rule cannot be enabled with the --enable-rule option because it lacks the required configuration"
 			},
 		},
 	}
@@ -637,7 +637,7 @@ variable "foo" {
 			}
 
 			if got.GoString() != test.Want.GoString() {
-				t.Errorf("expected to get `%s`, but got `%s`", test.Want.GoString(), got.GoString())
+				t.Errorf(`expected to get %s, but got %s`, test.Want.GoString(), got.GoString())
 			}
 		})
 	}

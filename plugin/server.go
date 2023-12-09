@@ -112,7 +112,7 @@ func (s *GRPCServer) GetRuleConfigContent(name string, bodyS *hclext.BodySchema)
 	body, diags := hclext.Content(configBody, bodyS)
 	if diags.HasErrors() {
 		if enabledByCLI {
-			return nil, s.runner.ConfigSources(), errors.New("This rule cannot be enabled with the `--enable-rule` option because it lacks the required configuration")
+			return nil, s.runner.ConfigSources(), errors.New("This rule cannot be enabled with the --enable-rule option because it lacks the required configuration")
 		}
 		return body, s.runner.ConfigSources(), diags
 	}

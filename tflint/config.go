@@ -383,7 +383,7 @@ func (c *Config) enableBundledPlugin() *Config {
 	}
 
 	if _, exists := c.Plugins["terraform"]; !exists {
-		log.Print("[INFO] The `terraform` plugin block is not found. Enable the plugin `terraform` automatically")
+		log.Print(`[INFO] The "terraform" plugin block is not found. Enable the plugin "terraform" automatically`)
 
 		c.Plugins["terraform"] = &PluginConfig{
 			Name:    "terraform",
@@ -516,7 +516,7 @@ func (c *Config) ValidateRules(rulesets ...RuleSet) error {
 
 		for _, rule := range ruleNames {
 			if existsName, exists := rulesMap[rule]; exists {
-				return fmt.Errorf("`%s` is duplicated in %s and %s", rule, existsName, rulesetName)
+				return fmt.Errorf(`"%s" is duplicated in %s and %s`, rule, existsName, rulesetName)
 			}
 			rulesMap[rule] = rulesetName
 		}
@@ -533,18 +533,18 @@ func (c *Config) ValidateRules(rulesets ...RuleSet) error {
 
 func (c *PluginConfig) validate() error {
 	if c.Version != "" && c.Source == "" {
-		return fmt.Errorf("plugin `%s`: `source` attribute cannot be omitted when specifying `version`", c.Name)
+		return fmt.Errorf(`plugin "%s": "source" attribute cannot be omitted when specifying "version"`, c.Name)
 	}
 
 	if c.Source != "" {
 		if c.Version == "" {
-			return fmt.Errorf("plugin `%s`: `version` attribute cannot be omitted when specifying `source`", c.Name)
+			return fmt.Errorf(`plugin "%s": "version" attribute cannot be omitted when specifying "source"`, c.Name)
 		}
 
 		parts := strings.Split(c.Source, "/")
 		// Expected `github.com/owner/repo` format
 		if len(parts) != 3 {
-			return fmt.Errorf("plugin `%s`: `source` is invalid. Must be a GitHub reference in the format `${host}/${owner}/${repo}`", c.Name)
+			return fmt.Errorf(`plugin "%s": "source" is invalid. Must be a GitHub reference in the format "${host}/${owner}/${repo}"`, c.Name)
 		}
 
 		c.SourceHost = parts[0]

@@ -45,11 +45,11 @@ func (cli *CLI) init(opts Options) int {
 
 				_, err := plugin.FindPluginPath(installCfg)
 				if os.IsNotExist(err) {
-					fmt.Fprintf(cli.outStream, "Installing `%s` plugin...\n", pluginCfg.Name)
+					fmt.Fprintf(cli.outStream, `Installing "%s" plugin...\n`, pluginCfg.Name)
 
 					sigchecker := plugin.NewSignatureChecker(installCfg)
 					if !sigchecker.HasSigningKey() {
-						_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, "No signing key configured. Set `signing_key` to verify that the release is signed by the plugin developer")
+						_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `No signing key configured. Set "signing_key" to verify that the release is signed by the plugin developer`)
 					}
 
 					_, err = installCfg.Install()
@@ -57,7 +57,7 @@ func (cli *CLI) init(opts Options) int {
 						return fmt.Errorf("Failed to install a plugin; %w", err)
 					}
 
-					fmt.Fprintf(cli.outStream, "Installed `%s` (source: %s, version: %s)\n", pluginCfg.Name, pluginCfg.Source, pluginCfg.Version)
+					fmt.Fprintf(cli.outStream, `Installed "%s" (source: %s, version: %s)\n`, pluginCfg.Name, pluginCfg.Source, pluginCfg.Version)
 					continue
 				}
 
@@ -65,7 +65,7 @@ func (cli *CLI) init(opts Options) int {
 					return fmt.Errorf("Failed to find a plugin; %w", err)
 				}
 
-				fmt.Fprintf(cli.outStream, "Plugin `%s` is already installed\n", pluginCfg.Name)
+				fmt.Fprintf(cli.outStream, `Plugin "%s" is already installed\n`, pluginCfg.Name)
 			}
 
 			if opts.Recursive && !found {

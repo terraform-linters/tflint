@@ -41,20 +41,20 @@ func TestIntegration(t *testing.T) {
 	}
 
 	cli.Run([]string{"./tflint"})
-	if !strings.Contains(errStream.String(), "Plugin `aws` not found. Did you run `tflint --init`?") {
+	if !strings.Contains(errStream.String(), `Plugin "aws" not found. Did you run "tflint --init"?`) {
 		t.Fatalf("Expected to contain an initialization error, but did not: stdout=%s, stderr=%s", outStream, errStream)
 	}
 
 	cli.Run([]string{"./tflint", "--init"})
-	if !strings.Contains(outStream.String(), "Installing `aws` plugin...") {
+	if !strings.Contains(outStream.String(), `Installing "aws" plugin...`) {
 		t.Fatalf("Expected to contain an installation log, but did not: stdout=%s, stderr=%s", outStream, errStream)
 	}
-	if !strings.Contains(outStream.String(), "Installed `aws` (source: github.com/terraform-linters/tflint-ruleset-aws, version: 0.21.1)") {
+	if !strings.Contains(outStream.String(), `Installed "aws" (source: github.com/terraform-linters/tflint-ruleset-aws, version: 0.21.1)`) {
 		t.Fatalf("Expected to contain an installed log, but did not: stdout=%s, stderr=%s", outStream, errStream)
 	}
 
 	cli.Run([]string{"./tflint", "--init"})
-	if !strings.Contains(outStream.String(), "Plugin `aws` is already installed") {
+	if !strings.Contains(outStream.String(), `Plugin "aws" is already installed`) {
 		t.Fatalf("Expected to contain an already installed log, but did not: stdout=%s, stderr=%s", outStream, errStream)
 	}
 
@@ -74,7 +74,7 @@ func TestIntegration(t *testing.T) {
 	}
 
 	cli.Run([]string{"./tflint", "--chdir", "basic", "--init"})
-	if !strings.Contains(outStream.String(), "Plugin `aws` is already installed") {
+	if !strings.Contains(outStream.String(), `Plugin "aws" is already installed`) {
 		t.Fatalf("Expected to contain an already installed log, but did not: stdout=%s, stderr=%s", outStream, errStream)
 	}
 
@@ -103,7 +103,7 @@ func TestIntegration(t *testing.T) {
 	if !strings.Contains(outStream.String(), "working directory: basic") {
 		t.Fatalf("Expected to contain working dir log, but did not: stdout=%s, stderr=%s", outStream, errStream)
 	}
-	if !strings.Contains(outStream.String(), "Plugin `aws` is already installed") {
+	if !strings.Contains(outStream.String(), `Plugin "aws" is already installed`) {
 		t.Fatalf("Expected to contain an already installed log, but did not: stdout=%s, stderr=%s", outStream, errStream)
 	}
 

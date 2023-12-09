@@ -179,7 +179,7 @@ func TestLoadConfig_withoutModuleManifest(t *testing.T) {
 
 		expected := `module.tf:6,1-16: "consul" module is not found. Did you run "terraform init"?; `
 		if diags.Error() != expected {
-			t.Fatalf("Expected error is `%s`, but got `%s`", expected, diags)
+			t.Fatalf(`Expected error is "%s", but got "%s"`, expected, diags)
 		}
 	})
 }
@@ -221,7 +221,7 @@ func TestLoadConfig_moduleNotFound(t *testing.T) {
 
 		expected := `module.tf:1,1-22: "ec2_instance" module is not found; The module directory "tf_aws_ec2_instance" does not exist or cannot be read.`
 		if diags.Error() != expected {
-			t.Fatalf("Expected error is `%s`, but get `%s`", expected, diags)
+			t.Fatalf(`Expected error is "%s", but got "%s"`, expected, diags)
 		}
 	})
 }
@@ -279,7 +279,7 @@ func TestLoadConfig_invalidConfiguration(t *testing.T) {
 
 		expected := "resource.tf:3,23-29: Missing newline after argument; An argument definition must end with a newline."
 		if diags.Error() != expected {
-			t.Fatalf("Expected error is `%s`, but get `%s`", expected, diags)
+			t.Fatalf(`Expected error is "%s", but got "%s"`, expected, diags)
 		}
 	})
 }
@@ -298,7 +298,7 @@ func TestLoadConfig_circularReferencingModules(t *testing.T) {
 		file := filepath.Join("module2", "main.tf")
 		expected := fmt.Sprintf(`%s:1,1-17: Module stack level too deep; This configuration has nested modules more than 10 levels deep. This is mainly caused by circular references. current path: module.module1.module.module2.module.module1.module.module2.module.module1.module.module2.module.module1.module.module2.module.module1.module.module2`, file)
 		if diags.Error() != expected {
-			t.Fatalf("Expected error is `%s`, but got `%s`", expected, diags)
+			t.Fatalf(`Expected error is "%s", but got "%s"`, expected, diags)
 		}
 	})
 }
@@ -509,7 +509,7 @@ func TestLoadValuesFiles_invalidValuesFile(t *testing.T) {
 
 		expected := "terraform.tfvars:3,1-9: Unexpected \"resource\" block; Blocks are not allowed here."
 		if diags.Error() != expected {
-			t.Fatalf("Expected error is `%s`, but get `%s`", expected, diags)
+			t.Fatalf(`Expected error is "%s", but got "%s"`, expected, diags)
 		}
 	})
 }

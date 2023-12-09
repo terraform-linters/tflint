@@ -30,7 +30,7 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 		var cmd *exec.Cmd
 		if os.IsNotExist(err) {
 			if pluginCfg.Name == "terraform" && installCfg.ManuallyInstalled() {
-				log.Print("[INFO] Plugin `terraform` is not installed, but the bundled plugin is available.")
+				log.Print(`[INFO] Plugin "terraform" is not installed, but the bundled plugin is available.`)
 				self, err := os.Executable()
 				if err != nil {
 					return nil, err
@@ -42,16 +42,16 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 					if err != nil {
 						return nil, err
 					}
-					return nil, fmt.Errorf("Plugin `%s` not found in %s", pluginCfg.Name, pluginDir)
+					return nil, fmt.Errorf(`Plugin "%s" not found in %s`, pluginCfg.Name, pluginDir)
 				}
-				return nil, fmt.Errorf("Plugin `%s` not found. Did you run `tflint --init`?", pluginCfg.Name)
+				return nil, fmt.Errorf(`Plugin "%s" not found. Did you run "tflint --init"?`, pluginCfg.Name)
 			}
 		} else {
 			cmd = exec.Command(pluginPath)
 		}
 
 		if pluginCfg.Enabled {
-			log.Printf("[INFO] Plugin `%s` found", pluginCfg.Name)
+			log.Printf(`[INFO] Plugin "%s" found`, pluginCfg.Name)
 
 			client := host2plugin.NewClient(&host2plugin.ClientOpts{
 				Cmd: cmd,
@@ -69,7 +69,7 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 			clients[pluginCfg.Name] = client
 			rulesets[pluginCfg.Name] = ruleset
 		} else {
-			log.Printf("[INFO] Plugin `%s` found, but the plugin is disabled", pluginCfg.Name)
+			log.Printf(`[INFO] Plugin "%s" found, but the plugin is disabled`, pluginCfg.Name)
 		}
 	}
 

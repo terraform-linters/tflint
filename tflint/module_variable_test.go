@@ -74,11 +74,13 @@ func Test_roots(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		ret := tc.Var.roots()
-		opts := []cmp.Option{cmpopts.IgnoreFields(moduleVariable{}, "Callers")}
-		if !cmp.Equal(ret, tc.Expected, opts...) {
-			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(ret, tc.Expected, opts...))
-		}
+		t.Run(tc.Name, func(t *testing.T) {
+			ret := tc.Var.roots()
+			opts := []cmp.Option{cmpopts.IgnoreFields(moduleVariable{}, "Callers")}
+			if !cmp.Equal(ret, tc.Expected, opts...) {
+				t.Errorf("diff=%s", cmp.Diff(ret, tc.Expected, opts...))
+			}
+		})
 	}
 }
 
@@ -127,14 +129,16 @@ func Test_callers(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		roots := tc.Var.roots()
-		if len(roots) != 1 {
-			t.Fatalf("Failed `%s` test: expected 1 root, but get `%d` roots", tc.Name, len(roots))
-		}
+		t.Run(tc.Name, func(t *testing.T) {
+			roots := tc.Var.roots()
+			if len(roots) != 1 {
+				t.Fatalf("expected 1 root, but got %d roots", len(roots))
+			}
 
-		ret := roots[0].callers()
-		if !cmp.Equal(ret, tc.Expected) {
-			t.Fatalf("Failed `%s` test: diff=%s", tc.Name, cmp.Diff(ret, tc.Expected))
-		}
+			ret := roots[0].callers()
+			if !cmp.Equal(ret, tc.Expected) {
+				t.Errorf("diff=%s", cmp.Diff(ret, tc.Expected))
+			}
+		})
 	}
 }

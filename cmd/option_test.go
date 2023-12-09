@@ -112,7 +112,7 @@ func Test_toConfig(t *testing.T) {
 			},
 		},
 		{
-			Name:    "multiple `--ignore-module`",
+			Name:    "multiple --ignore-module",
 			Command: "./tflint --ignore-module module1 --ignore-module module2",
 			Expected: &tflint.Config{
 				CallModuleType:    terraform.CallLocalModule,
@@ -140,7 +140,7 @@ func Test_toConfig(t *testing.T) {
 			},
 		},
 		{
-			Name:    "multiple `--var-file`",
+			Name:    "multiple --var-file",
 			Command: "./tflint --var-file example1.tfvars --var-file example2.tfvars",
 			Expected: &tflint.Config{
 				CallModuleType:    terraform.CallLocalModule,
