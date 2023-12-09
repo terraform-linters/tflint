@@ -53,6 +53,10 @@ func (cli *CLI) inspect(opts Options) int {
 
 			moduleIssues, moduleChanges, err := cli.inspectModule(opts, ".", filterFiles)
 			if err != nil {
+				if len(workingDirs) > 1 {
+					// Print the current working directory in recursive inspection
+					return fmt.Errorf("%w working_dir=%s", err, wd)
+				}
 				return err
 			}
 			issues = append(issues, moduleIssues...)
