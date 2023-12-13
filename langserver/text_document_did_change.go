@@ -50,7 +50,7 @@ func (h *handler) textDocumentDidChange(ctx context.Context, conn *jsonrpc2.Conn
 		return nil, err
 	}
 
-	log.Printf("Notify `textDocument/publishDiagnostics` with `%#v`", diagnostics)
+	log.Printf("Notify textDocument/publishDiagnostics with %#v", diagnostics)
 	for path, diags := range diagnostics {
 		err = conn.Notify(
 			ctx,
@@ -61,7 +61,7 @@ func (h *handler) textDocumentDidChange(ctx context.Context, conn *jsonrpc2.Conn
 			},
 		)
 		if err != nil {
-			return nil, fmt.Errorf("Failed to notify `textDocument/publishDiagnostics`: %s", err)
+			return nil, fmt.Errorf("Failed to notify textDocument/publishDiagnostics: %s", err)
 		}
 	}
 

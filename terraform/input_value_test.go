@@ -219,7 +219,7 @@ func TestParseVariableValues(t *testing.T) {
 			vars:     []string{"foo"},
 			want:     InputValues{},
 			errCheck: func(diags hcl.Diagnostics) bool {
-				return diags.Error() != "<nil>: invalid variable value format; `foo` is invalid. Variables must be `key=value` format"
+				return diags.Error() != `<nil>: invalid variable value format; "foo" is invalid. Variables must be "key=value" format`
 			},
 		},
 		{

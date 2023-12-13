@@ -98,7 +98,7 @@ func ParseVariableValues(vars []string, declVars map[string]*Variable) (InputVal
 			diags = diags.Append(&hcl.Diagnostic{
 				Severity: hcl.DiagError,
 				Summary:  "invalid variable value format",
-				Detail:   fmt.Sprintf("`%s` is invalid. Variables must be `key=value` format", raw),
+				Detail:   fmt.Sprintf(`"%s" is invalid. Variables must be "key=value" format`, raw),
 			})
 			continue
 		}

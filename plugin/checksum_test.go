@@ -39,20 +39,22 @@ db4eed4c0abcfb0b851da5bbfe8d0c71e1c2b6afe4fd627638a462c655045902  tflint-ruleset
 	}
 
 	for _, tc := range cases {
-		_, err := NewChecksummer(strings.NewReader(tc.Input))
+		t.Run(tc.Name, func(t *testing.T) {
+			_, err := NewChecksummer(strings.NewReader(tc.Input))
 
-		if err != nil {
-			if tc.Expected == nil {
-				t.Fatalf("Failed `%s`: Unexpected error `%s`", tc.Name, err)
+			if err != nil {
+				if tc.Expected == nil {
+					t.Fatal(err)
+				}
+				if err.Error() != tc.Expected.Error() {
+					t.Errorf("expected=%s, actual=%s", tc.Expected, err)
+				}
+			} else {
+				if tc.Expected != nil {
+					t.Errorf("expected=%s, actual=no errors", tc.Expected)
+				}
 			}
-			if err.Error() != tc.Expected.Error() {
-				t.Fatalf("Failed `%s`: expected=%s, actual=%s", tc.Name, tc.Expected, err)
-			}
-		} else {
-			if tc.Expected != nil {
-				t.Fatalf("Failed `%s`: expected=%s, actual=no errors", tc.Name, tc.Expected)
-			}
-		}
+		})
 	}
 }
 
@@ -88,26 +90,28 @@ func Test_Checksummer_Verify(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		checksumReader := strings.NewReader(tc.Checksums)
-		inputReader := strings.NewReader(tc.Input)
+		t.Run(tc.Name, func(t *testing.T) {
+			checksumReader := strings.NewReader(tc.Checksums)
+			inputReader := strings.NewReader(tc.Input)
 
-		checksummer, err := NewChecksummer(checksumReader)
-		if err != nil {
-			t.Fatalf("Failed `%s`: Unexpected error `%s`", tc.Name, err)
-		}
+			checksummer, err := NewChecksummer(checksumReader)
+			if err != nil {
+				t.Fatal(err)
+			}
 
-		err = checksummer.Verify(tc.Filename, inputReader)
-		if err != nil {
-			if tc.Error == nil {
-				t.Fatalf("Failed `%s`: Unexpected error `%s`", tc.Name, err)
+			err = checksummer.Verify(tc.Filename, inputReader)
+			if err != nil {
+				if tc.Error == nil {
+					t.Fatal(err)
+				}
+				if err.Error() != tc.Error.Error() {
+					t.Errorf("expected=%s, actual=%s", tc.Error, err)
+				}
+			} else {
+				if tc.Error != nil {
+					t.Errorf("expected=%s, actual=no errors", tc.Error)
+				}
 			}
-			if err.Error() != tc.Error.Error() {
-				t.Fatalf("Failed `%s`: expected=%s, actual=%s", tc.Name, tc.Error, err)
-			}
-		} else {
-			if tc.Error != nil {
-				t.Fatalf("Failed `%s`: expected=%s, actual=no errors", tc.Name, tc.Error)
-			}
-		}
+		})
 	}
 }

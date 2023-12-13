@@ -39,7 +39,7 @@ type Options struct {
 func (opts *Options) toConfig() *tflint.Config {
 	ignoreModules := map[string]bool{}
 	for _, module := range opts.IgnoreModules {
-		// For the backward compatibility, allow specifying like `source1,source2` style
+		// For the backward compatibility, allow specifying like "source1,source2" style
 		for _, m := range strings.Split(module, ",") {
 			ignoreModules[m] = true
 		}
@@ -47,7 +47,7 @@ func (opts *Options) toConfig() *tflint.Config {
 
 	varfiles := []string{}
 	for _, vf := range opts.Varfiles {
-		// For the backward compatibility, allow specifying like `varfile1,varfile2` style
+		// For the backward compatibility, allow specifying like "varfile1,varfile2" style
 		varfiles = append(varfiles, strings.Split(vf, ",")...)
 	}
 	if opts.Variables == nil {

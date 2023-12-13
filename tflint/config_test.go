@@ -303,7 +303,7 @@ plugin "foo" {
 }`,
 			},
 			errCheck: func(err error) bool {
-				return err == nil || err.Error() != "plugin `foo`: `source` attribute cannot be omitted when specifying `version`"
+				return err == nil || err.Error() != `plugin "foo": "source" attribute cannot be omitted when specifying "version"`
 			},
 		},
 		{
@@ -318,7 +318,7 @@ plugin "foo" {
 }`,
 			},
 			errCheck: func(err error) bool {
-				return err == nil || err.Error() != "plugin `foo`: `version` attribute cannot be omitted when specifying `source`"
+				return err == nil || err.Error() != `plugin "foo": "version" attribute cannot be omitted when specifying "source"`
 			},
 		},
 		{
@@ -334,7 +334,7 @@ plugin "foo" {
 }`,
 			},
 			errCheck: func(err error) bool {
-				return err == nil || err.Error() != "plugin `foo`: `source` is invalid. Must be a GitHub reference in the format `${host}/${owner}/${repo}`"
+				return err == nil || err.Error() != `plugin "foo": "source" is invalid. Must be a GitHub reference in the format "${host}/${owner}/${repo}"`
 			},
 		},
 		{
@@ -1092,7 +1092,7 @@ plugin "test" {
 				var exists bool
 				plugin, exists = config.Plugins["test"]
 				if !exists {
-					t.Fatal("plugin `test` should be declared")
+					t.Fatal(`plugin "test" should be declared`)
 				}
 			}
 
@@ -1171,7 +1171,7 @@ func Test_ValidateRules(t *testing.T) {
 			Name:     "duplicate",
 			Config:   config,
 			RuleSets: []RuleSet{&ruleSetA{}, &ruleSetB{}, &ruleSetB{}},
-			Err:      errors.New("`aws_instance_invalid_ami` is duplicated in ruleSetB and ruleSetB"),
+			Err:      errors.New(`"aws_instance_invalid_ami" is duplicated in ruleSetB and ruleSetB`),
 		},
 		{
 			Name:     "not found",

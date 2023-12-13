@@ -40,12 +40,14 @@ func Test_GetSigningKey(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		sigchecker := NewSignatureChecker(tc.Config)
+		t.Run(tc.Name, func(t *testing.T) {
+			sigchecker := NewSignatureChecker(tc.Config)
 
-		got := sigchecker.GetSigningKey()
-		if got != tc.Expected {
-			t.Fatalf("Failed `%s`: expected=%s, got=%s", tc.Name, tc.Expected, got)
-		}
+			got := sigchecker.GetSigningKey()
+			if got != tc.Expected {
+				t.Errorf("expected=%s, got=%s", tc.Expected, got)
+			}
+		})
 	}
 }
 
@@ -78,12 +80,14 @@ func Test_HasSigningKey(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		sigchecker := NewSignatureChecker(tc.Config)
+		t.Run(tc.Name, func(t *testing.T) {
+			sigchecker := NewSignatureChecker(tc.Config)
 
-		got := sigchecker.HasSigningKey()
-		if got != tc.Expected {
-			t.Fatalf("Failed `%s`: expected=%t, got=%t", tc.Name, tc.Expected, got)
-		}
+			got := sigchecker.HasSigningKey()
+			if got != tc.Expected {
+				t.Errorf("expected=%t, got=%t", tc.Expected, got)
+			}
+		})
 	}
 }
 
@@ -189,16 +193,18 @@ dd536fed0ebe4c1115240574c5dd7a31b563d67bfe0d1111750438718f995d43  tflint-ruleset
 	}
 
 	for _, tc := range cases {
-		sigchecker := NewSignatureChecker(tc.Config)
-		reader := strings.NewReader(tc.Target)
+		t.Run(tc.Name, func(t *testing.T) {
+			sigchecker := NewSignatureChecker(tc.Config)
+			reader := strings.NewReader(tc.Target)
 
-		err := sigchecker.Verify(reader, tc.Signature)
-		if err == nil {
-			t.Fatalf("Failed `%s`: expected=%s, actual=no errors", tc.Name, tc.Expected)
-		}
-		if err.Error() != tc.Expected.Error() {
-			t.Fatalf("Failed `%s`: expected=%s, actual=%s", tc.Name, tc.Expected, err)
-		}
+			err := sigchecker.Verify(reader, tc.Signature)
+			if err == nil {
+				t.Fatalf("expected=%s, actual=no errors", tc.Expected)
+			}
+			if err.Error() != tc.Expected.Error() {
+				t.Errorf("expected=%s, actual=%s", tc.Expected, err)
+			}
+		})
 	}
 }
 

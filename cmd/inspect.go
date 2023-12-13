@@ -279,7 +279,7 @@ func launchPlugins(config *tflint.Config, fix bool) (*plugin.Plugin, error) {
 				// VersionConstraints endpoint is available in tflint-plugin-sdk v0.14+.
 				return rulesetPlugin, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
 			} else {
-				return rulesetPlugin, fmt.Errorf("Failed to get TFLint version constraints to `%s` plugin; %w", name, err)
+				return rulesetPlugin, fmt.Errorf(`Failed to get TFLint version constraints to "%s" plugin; %w`, name, err)
 			}
 		}
 		if !constraints.Check(tflint.Version) {
@@ -287,23 +287,23 @@ func launchPlugins(config *tflint.Config, fix bool) (*plugin.Plugin, error) {
 		}
 
 		if err := ruleset.ApplyGlobalConfig(pluginConf); err != nil {
-			return rulesetPlugin, fmt.Errorf("Failed to apply global config to `%s` plugin; %w", name, err)
+			return rulesetPlugin, fmt.Errorf(`Failed to apply global config to "%s" plugin; %w`, name, err)
 		}
 		configSchema, err := ruleset.ConfigSchema()
 		if err != nil {
-			return rulesetPlugin, fmt.Errorf("Failed to fetch config schema from `%s` plugin; %w", name, err)
+			return rulesetPlugin, fmt.Errorf(`Failed to fetch config schema from "%s" plugin; %w`, name, err)
 		}
 		content := &hclext.BodyContent{}
 		if plugin, exists := config.Plugins[name]; exists {
 			var diags hcl.Diagnostics
 			content, diags = plugin.Content(configSchema)
 			if diags.HasErrors() {
-				return rulesetPlugin, fmt.Errorf("Failed to parse `%s` plugin config; %w", name, diags)
+				return rulesetPlugin, fmt.Errorf(`Failed to parse "%s" plugin config; %w`, name, diags)
 			}
 		}
 		err = ruleset.ApplyConfig(content, config.Sources())
 		if err != nil {
-			return rulesetPlugin, fmt.Errorf("Failed to apply config to `%s` plugin; %w", name, err)
+			return rulesetPlugin, fmt.Errorf(`Failed to apply config to "%s" plugin; %w`, name, err)
 		}
 
 		rulesets = append(rulesets, ruleset)

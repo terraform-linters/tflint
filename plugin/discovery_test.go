@@ -191,7 +191,7 @@ func Test_Discovery_notFound(t *testing.T) {
 	if err == nil {
 		t.Fatal("The error should have occurred, but didn't")
 	}
-	expected := fmt.Sprintf("Plugin `foo` not found in %s", PluginRoot)
+	expected := fmt.Sprintf(`Plugin "foo" not found in %s`, PluginRoot)
 	if err.Error() != expected {
 		t.Fatalf("The error message is not matched: want=%s, got=%s", expected, err.Error())
 	}
@@ -229,7 +229,7 @@ func Test_Discovery_plugin_name_is_directory(t *testing.T) {
 	if err == nil {
 		t.Fatal("The error should have occurred, but didn't")
 	}
-	expected := fmt.Sprintf("Plugin `foo` not found in %s", PluginRoot)
+	expected := fmt.Sprintf(`Plugin "foo" not found in %s`, PluginRoot)
 	if err.Error() != expected {
 		t.Fatalf("The error message is not matched: want=%s, got=%s", expected, err.Error())
 	}
@@ -269,7 +269,7 @@ func Test_Discovery_notFoundForAutoInstallation(t *testing.T) {
 	if err == nil {
 		t.Fatal("An error should have occurred, but it did not occur")
 	}
-	expected := "Plugin `foo` not found. Did you run `tflint --init`?"
+	expected := `Plugin "foo" not found. Did you run "tflint --init"?`
 	if err.Error() != expected {
 		t.Fatalf("Error message not matched: want=%s, got=%s", expected, err.Error())
 	}
@@ -309,7 +309,7 @@ func Test_Discovery_bundledPluginWithVersion(t *testing.T) {
 	if err == nil {
 		t.Fatal("An error should have occurred, but it did not occur")
 	}
-	expected := "Plugin `terraform` not found. Did you run `tflint --init`?"
+	expected := `Plugin "terraform" not found. Did you run "tflint --init"?`
 	if err.Error() != expected {
 		t.Fatalf("Error message not matched: want=%s, got=%s", expected, err.Error())
 	}
@@ -348,13 +348,15 @@ func Test_FindPluginPath(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		got, err := FindPluginPath(tc.Input)
-		if err != nil {
-			t.Fatalf("Unexpected error occurred %s", err)
-		}
-		if got != tc.Expected {
-			t.Fatalf("Failed `%s`: want=%s got=%s", tc.Name, tc.Expected, got)
-		}
+		t.Run(tc.Name, func(t *testing.T) {
+			got, err := FindPluginPath(tc.Input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.Expected {
+				t.Errorf("want=%s got=%s", tc.Expected, got)
+			}
+		})
 	}
 }
 
@@ -398,13 +400,15 @@ func Test_FindPluginPath_locals(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		got, err := FindPluginPath(tc.Input)
-		if err != nil {
-			t.Fatalf("Unexpected error occurred %s", err)
-		}
-		if got != tc.Expected {
-			t.Fatalf("Failed `%s`: want=%s got=%s", tc.Name, tc.Expected, got)
-		}
+		t.Run(tc.Name, func(t *testing.T) {
+			got, err := FindPluginPath(tc.Input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.Expected {
+				t.Errorf("want=%s got=%s", tc.Expected, got)
+			}
+		})
 	}
 }
 
@@ -441,13 +445,15 @@ func Test_FindPluginPath_envVar(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		got, err := FindPluginPath(tc.Input)
-		if err != nil {
-			t.Fatalf("Unexpected error occurred %s", err)
-		}
-		if got != tc.Expected {
-			t.Fatalf("Failed `%s`: want=%s got=%s", tc.Name, tc.Expected, got)
-		}
+		t.Run(tc.Name, func(t *testing.T) {
+			got, err := FindPluginPath(tc.Input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.Expected {
+				t.Errorf("want=%s got=%s", tc.Expected, got)
+			}
+		})
 	}
 }
 
@@ -483,13 +489,15 @@ func Test_FindPluginPath_pluginDirConfig(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		got, err := FindPluginPath(tc.Input)
-		if err != nil {
-			t.Fatalf("Unexpected error occurred %s", err)
-		}
-		if got != tc.Expected {
-			t.Fatalf("Failed `%s`: want=%s got=%s", tc.Name, tc.Expected, got)
-		}
+		t.Run(tc.Name, func(t *testing.T) {
+			got, err := FindPluginPath(tc.Input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.Expected {
+				t.Errorf("want=%s got=%s", tc.Expected, got)
+			}
+		})
 	}
 }
 

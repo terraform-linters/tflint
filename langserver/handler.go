@@ -52,7 +52,7 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 				// VersionConstraints endpoint is available in tflint-plugin-sdk v0.14+.
 				return nil, nil, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
 			} else {
-				return nil, nil, fmt.Errorf("Failed to get TFLint version constraints to `%s` plugin; %w", name, err)
+				return nil, nil, fmt.Errorf(`Failed to get TFLint version constraints to "%s" plugin; %w`, name, err)
 			}
 		}
 		if !constraints.Check(tflint.Version) {
@@ -111,9 +111,9 @@ func (h *handler) handle(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2
 				Data:    req.Params,
 			}
 		}
-		log.Printf("Received `%s` with `%s`", req.Method, string(params))
+		log.Printf(`Received %s with %s`, req.Method, string(params))
 	} else {
-		log.Printf("Received `%s`", req.Method)
+		log.Printf(`Received %s`, req.Method)
 	}
 
 	if h.shutdown && req.Method != "exit" {
@@ -209,23 +209,23 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 	config := h.config.ToPluginConfig()
 	for name, ruleset := range h.plugin.RuleSets {
 		if err := ruleset.ApplyGlobalConfig(config); err != nil {
-			return ret, fmt.Errorf("Failed to apply global config to `%s` plugin", name)
+			return ret, fmt.Errorf(`Failed to apply global config to "%s" plugin`, name)
 		}
 		configSchema, err := ruleset.ConfigSchema()
 		if err != nil {
-			return ret, fmt.Errorf("Failed to fetch config schema from `%s` plugin", name)
+			return ret, fmt.Errorf(`Failed to fetch config schema from "%s" plugin`, name)
 		}
 		content := &hclext.BodyContent{}
 		if plugin, exists := h.config.Plugins[name]; exists {
 			var diags hcl.Diagnostics
 			content, diags = plugin.Content(configSchema)
 			if diags.HasErrors() {
-				return ret, fmt.Errorf("Failed to parse `%s` plugin config", name)
+				return ret, fmt.Errorf(`Failed to parse "%s" plugin config`, name)
 			}
 		}
 		err = ruleset.ApplyConfig(content, h.config.Sources())
 		if err != nil {
-			return ret, fmt.Errorf("Failed to apply config to `%s` plugin", name)
+			return ret, fmt.Errorf(`Failed to apply config to "%s" plugin`, name)
 		}
 		for _, runner := range runners {
 			err = ruleset.Check(plugin.NewGRPCServer(runner, runners[len(runners)-1], loader.Files(), h.clientSDKVersions[name]))

@@ -185,7 +185,7 @@ func Test_NewModuleRunners_modVars(t *testing.T) {
 
 		child := runners[0]
 		if child.TFConfig.Path.String() != "module.module1" {
-			t.Fatalf("Expected child config path name is `module.module1`, but get `%s`", child.TFConfig.Path.String())
+			t.Fatalf(`Expected child config path name is "module.module1", but got "%s"`, child.TFConfig.Path.String())
 		}
 
 		expected := map[string]*moduleVariable{
@@ -213,7 +213,7 @@ func Test_NewModuleRunners_modVars(t *testing.T) {
 
 		grandchild := runners[1]
 		if grandchild.TFConfig.Path.String() != "module.module1.module.module2" {
-			t.Fatalf("Expected child config path name is `module.module1.module.module2`, but get `%s`", grandchild.TFConfig.Path.String())
+			t.Fatalf(`Expected child config path name is "module.module1.module.module2", but got "%s"`, grandchild.TFConfig.Path.String())
 		}
 
 		expected = map[string]*moduleVariable{
@@ -267,7 +267,7 @@ func Test_NewModuleRunners_ignoreModules(t *testing.T) {
 		}
 
 		if len(runners) != 0 {
-			t.Fatalf("This function must not return runners because `ignore_module` is set. Got `%d` runner(s)", len(runners))
+			t.Fatalf(`This function must not return runners because "ignore_module" is set. Got %d runner(s)`, len(runners))
 		}
 	})
 }
@@ -283,7 +283,7 @@ func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
 			t.Fatal("an error was expected to occur, but it did not")
 		}
 		if expected.Error() != err.Error() {
-			t.Fatalf("expected error is `%s`, but get `%s`", expected, err)
+			t.Fatalf(`expected error is "%s", but get "%s"`, expected, err)
 		}
 	})
 }
