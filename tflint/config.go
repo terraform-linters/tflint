@@ -139,7 +139,7 @@ func EmptyConfig() *Config {
 // plugin block is not explicitly declared.
 func LoadConfig(fs afero.Afero, file string) (*Config, error) {
 	// Load the file passed by the --config option
-	if file != defaultConfigFile {
+	if file != "" {
 		log.Printf("[INFO] Load config: %s", file)
 		f, err := fs.Open(file)
 		if err != nil {
@@ -168,8 +168,8 @@ func LoadConfig(fs afero.Afero, file string) (*Config, error) {
 	}
 
 	// Load the default config file
-	log.Printf("[INFO] Load config: %s", file)
-	if f, err := fs.Open(file); err == nil {
+	log.Printf("[INFO] Load config: %s", defaultConfigFile)
+	if f, err := fs.Open(defaultConfigFile); err == nil {
 		cfg, err := loadConfig(f)
 		if err != nil {
 			return nil, err

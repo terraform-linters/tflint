@@ -134,7 +134,7 @@ plugin "baz" {
 		},
 		{
 			name: "TFLINT_CONFIG_FILE",
-			file: ".tflint.hcl",
+			file: "",
 			files: map[string]string{
 				"env.hcl": `
 config {
@@ -166,7 +166,7 @@ config {
 		},
 		{
 			name: "default home config",
-			file: ".tflint.hcl",
+			file: "",
 			files: map[string]string{
 				"/root/.tflint.hcl": `
 config {
@@ -195,7 +195,7 @@ config {
 		},
 		{
 			name:     "no config",
-			file:     ".tflint.hcl",
+			file:     "",
 			want:     EmptyConfig().enableBundledPlugin(),
 			errCheck: neverHappend,
 		},
@@ -234,7 +234,7 @@ plugin "terraform" {
 		},
 		{
 			name: "file not found with TFLINT_CONFIG_FILE",
-			file: ".tflint.hcl",
+			file: "",
 			envs: map[string]string{
 				"TFLINT_CONFIG_FILE": "not_found.hcl",
 			},

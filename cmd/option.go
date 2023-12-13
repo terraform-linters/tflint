@@ -14,7 +14,7 @@ type Options struct {
 	Init                   bool     `long:"init" description:"Install plugins"`
 	Langserver             bool     `long:"langserver" description:"Start language server"`
 	Format                 string   `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" choice:"junit" choice:"compact" choice:"sarif"`
-	Config                 string   `short:"c" long:"config" description:"Config file name" value-name:"FILE" default:".tflint.hcl"`
+	Config                 string   `short:"c" long:"config" description:"Config file name (default: .tflint.hcl)" value-name:"FILE"`
 	IgnoreModules          []string `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE"`
 	EnableRules            []string `long:"enable-rule" description:"Enable rules from the command line" value-name:"RULE_NAME"`
 	DisableRules           []string `long:"disable-rule" description:"Disable rules from the command line" value-name:"RULE_NAME"`
