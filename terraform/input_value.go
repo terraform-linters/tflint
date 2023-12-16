@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package terraform
 
 import (
@@ -50,6 +53,7 @@ func DefaultVariableValues(configs map[string]*Variable) InputValues {
 
 // EnvironmentVariableValues looks up `TF_VAR_*` env variables and returns InputValues.
 // Declared variables are required because the parsing mode of the variable value is type-dependent.
+// However, in the case of environment variables, no error is returned even if the variable is not declared.
 func EnvironmentVariableValues(declVars map[string]*Variable) (InputValues, hcl.Diagnostics) {
 	envVariables := make(InputValues)
 	var diags hcl.Diagnostics
@@ -88,6 +92,7 @@ func EnvironmentVariableValues(declVars map[string]*Variable) (InputValues, hcl.
 
 // ParseVariableValues parses the variable values passed as CLI flags and returns InputValues.
 // Declared variables are required because the parsing mode of the variable value is type-dependent.
+// Return an error if the variable is not declared.
 func ParseVariableValues(vars []string, declVars map[string]*Variable) (InputValues, hcl.Diagnostics) {
 	variables := make(InputValues)
 	var diags hcl.Diagnostics
@@ -97,6 +102,7 @@ func ParseVariableValues(vars []string, declVars map[string]*Variable) (InputVal
 		if idx == -1 {
 			diags = diags.Append(&hcl.Diagnostic{
 				Severity: hcl.DiagError,
+				Subject:  &hcl.Range{Filename: "<input-value>", Start: hcl.InitialPos, End: hcl.InitialPos},
 				Summary:  "invalid variable value format",
 				Detail:   fmt.Sprintf(`"%s" is invalid. Variables must be "key=value" format`, raw),
 			})
@@ -110,7 +116,13 @@ func ParseVariableValues(vars []string, declVars map[string]*Variable) (InputVal
 		if declared {
 			mode = declVar.ParsingMode
 		} else {
-			mode = VariableParseLiteral
+			diags = diags.Append(&hcl.Diagnostic{
+				Severity: hcl.DiagError,
+				Subject:  &hcl.Range{Filename: fmt.Sprintf("<value for var.%s>", name), Start: hcl.InitialPos, End: hcl.InitialPos},
+				Summary:  "Value for undeclared variable",
+				Detail:   fmt.Sprintf("A variable named %q was assigned, but the root module does not declare a variable of that name.", name),
+			})
+			continue
 		}
 
 		val, parseDiags := mode.Parse(name, rawVal)
