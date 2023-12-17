@@ -33,6 +33,7 @@ type Options struct {
 	Color                  bool     `long:"color" description:"Enable colorized output"`
 	NoColor                bool     `long:"no-color" description:"Disable colorized output"`
 	Fix                    bool     `long:"fix" description:"Fix issues automatically"`
+	NoParallelRunners      bool     `long:"no-parallel-runners" description:"Disable per-runner parallelism"`
 	ActAsBundledPlugin     bool     `long:"act-as-bundled-plugin" hidden:"true"`
 }
 

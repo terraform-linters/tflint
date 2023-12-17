@@ -128,11 +128,10 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 	}
 
 	// Setup runners
-	runners, err := cli.setupRunners(opts, dir)
+	rootRunner, moduleRunners, err := cli.setupRunners(opts, dir)
 	if err != nil {
 		return issues, changes, err
 	}
-	rootRunner := runners[len(runners)-1]
 
 	// Launch plugin processes
 	rulesetPlugin, err := launchPlugins(cli.config, opts.Fix)
@@ -176,16 +175,33 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 		}
 
 		for name, ruleset := range rulesetPlugin.RuleSets {
-			for _, runner := range runners {
-				err = ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersions[name]))
+			if err := ruleset.Check(plugin.NewGRPCServer(rootRunner, rootRunner, cli.loader.Files(), sdkVersions[name])); err != nil {
+				return issues, changes, fmt.Errorf("Failed to check ruleset; %w", err)
+			}
+			// Run checks for module calls are performed in parallel.
+			// The rootRunner is shared between goroutines but read-only, so this is goroutine-safe.
+			// Note that checks against the rootRunner are not parallelized, as autofix may cause the module to be rebuilt.
+			ch := make(chan error, len(moduleRunners))
+			for _, runner := range moduleRunners {
+				if opts.NoParallelRunners {
+					ch <- ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersions[name]))
+				} else {
+					go func(runner *tflint.Runner) {
+						ch <- ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersions[name]))
+					}(runner)
+				}
+			}
+			for i := 0; i < len(moduleRunners); i++ {
+				err = <-ch
 				if err != nil {
 					return issues, changes, fmt.Errorf("Failed to check ruleset; %w", err)
 				}
 			}
+			close(ch)
 		}
 
 		changesInAttempt := map[string][]byte{}
-		for _, runner := range runners {
+		for _, runner := range append(moduleRunners, rootRunner) {
 			for _, issue := range runner.LookupIssues(filterFiles...) {
 				// On the second attempt, only fixable issues are appended to avoid duplicates.
 				if loop == 1 || issue.Fixable {
@@ -214,15 +230,15 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 	return issues, changes, nil
 }
 
-func (cli *CLI) setupRunners(opts Options, dir string) ([]*tflint.Runner, error) {
+func (cli *CLI) setupRunners(opts Options, dir string) (*tflint.Runner, []*tflint.Runner, error) {
 	configs, diags := cli.loader.LoadConfig(dir, cli.config.CallModuleType)
 	if diags.HasErrors() {
-		return []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
+		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
 	}
 
 	files, diags := cli.loader.LoadConfigDirFiles(dir)
 	if diags.HasErrors() {
-		return []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
+		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
 	}
 	annotations := map[string]tflint.Annotations{}
 	for path, file := range files {
@@ -234,30 +250,30 @@ func (cli *CLI) setupRunners(opts Options, dir string) ([]*tflint.Runner, error)
 		annotations[path] = ants
 	}
 	if diags.HasErrors() {
-		return []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
+		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
 	}
 
 	variables, diags := cli.loader.LoadValuesFiles(dir, cli.config.Varfiles...)
 	if diags.HasErrors() {
-		return []*tflint.Runner{}, fmt.Errorf("Failed to load values files; %w", diags)
+		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load values files; %w", diags)
 	}
 	cliVars, diags := terraform.ParseVariableValues(cli.config.Variables, configs.Module.Variables)
 	if diags.HasErrors() {
-		return []*tflint.Runner{}, fmt.Errorf("Failed to parse variables; %w", diags)
+		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to parse variables; %w", diags)
 	}
 	variables = append(variables, cliVars)
 
 	runner, err := tflint.NewRunner(cli.originalWorkingDir, cli.config, annotations, configs, variables...)
 	if err != nil {
-		return []*tflint.Runner{}, fmt.Errorf("Failed to initialize a runner; %w", err)
+		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to initialize a runner; %w", err)
 	}
 
-	runners, err := tflint.NewModuleRunners(runner)
+	moduleRunners, err := tflint.NewModuleRunners(runner)
 	if err != nil {
-		return []*tflint.Runner{}, fmt.Errorf("Failed to prepare rule checking; %w", err)
+		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to prepare rule checking; %w", err)
 	}
 
-	return append(runners, runner), nil
+	return runner, moduleRunners, nil
 }
 
 func launchPlugins(config *tflint.Config, fix bool) (*plugin.Plugin, error) {

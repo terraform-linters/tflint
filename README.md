@@ -134,6 +134,7 @@ Application Options:
       --color                                                   Enable colorized output
       --no-color                                                Disable colorized output
       --fix                                                     Fix issues automatically
+      --no-parallel-runners                                     Disable per-runner parallelism
 
 Help Options:
   -h, --help                                                    Show this help message
