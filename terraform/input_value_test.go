@@ -172,21 +172,11 @@ func TestParseVariableValues(t *testing.T) {
 			declared: map[string]*Variable{},
 			vars: []string{
 				"foo=bar",
-				"bar=[\"foo\"]",
-				"baz={ foo=\"bar\" }",
 			},
-			want: InputValues{
-				"foo": &InputValue{
-					Value: cty.StringVal("bar"),
-				},
-				"bar": &InputValue{
-					Value: cty.StringVal("[\"foo\"]"),
-				},
-				"baz": &InputValue{
-					Value: cty.StringVal("{ foo=\"bar\" }"),
-				},
+			want: InputValues{},
+			errCheck: func(diags hcl.Diagnostics) bool {
+				return diags.Error() != `<value for var.foo>:1,1-1: Value for undeclared variable; A variable named "foo" was assigned, but the root module does not declare a variable of that name.`
 			},
-			errCheck: neverHappend,
 		},
 		{
 			name: "declared",
@@ -219,7 +209,7 @@ func TestParseVariableValues(t *testing.T) {
 			vars:     []string{"foo"},
 			want:     InputValues{},
 			errCheck: func(diags hcl.Diagnostics) bool {
-				return diags.Error() != `<nil>: invalid variable value format; "foo" is invalid. Variables must be "key=value" format`
+				return diags.Error() != `<input-value>:1,1-1: invalid variable value format; "foo" is invalid. Variables must be "key=value" format`
 			},
 		},
 		{
