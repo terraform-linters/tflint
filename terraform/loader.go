@@ -96,6 +96,10 @@ func (l *Loader) LoadConfig(dir string, callModuleType CallModuleType) (*Config,
 func (l *Loader) moduleWalkerFunc(walkLocal, walkRemote bool) ModuleWalkerFunc {
 	return func(req *ModuleRequest) (*Module, *version.Version, hcl.Diagnostics) {
 		switch source := req.SourceAddr.(type) {
+		case nil:
+			// Case for no source attribute. This is usually invalid, but is ignored to prevent panic.
+			return nil, nil, nil
+
 		case addrs.ModuleSourceLocal:
 			if !walkLocal {
 				return nil, nil, nil
