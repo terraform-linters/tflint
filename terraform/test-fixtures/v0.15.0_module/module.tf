@@ -7,3 +7,5 @@ module "consul" {
    source = "hashicorp/consul/aws"
    version = "0.9.0"
 }
+
+module "no_source" {}
