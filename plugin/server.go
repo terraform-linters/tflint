@@ -77,6 +77,7 @@ func (s *GRPCServer) GetFile(name string) (*hcl.File, error) {
 		return file, nil
 	}
 	// If the file is not found in the current module, it may be in other modules (e.g. root module).
+	log.Printf(`[DEBUG] The file "%s" is not found in the current module. Fall back to global caches.`, name)
 	return s.files[name], nil
 }
 

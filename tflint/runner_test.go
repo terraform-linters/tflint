@@ -292,7 +292,6 @@ func Test_RunnerFiles(t *testing.T) {
 	runner := TestRunner(t, map[string]string{
 		"main.tf": "",
 	})
-	runner.TFConfig.Module.Files["child/main.tf"] = &hcl.File{}
 
 	expected := map[string]*hcl.File{
 		"main.tf": {
