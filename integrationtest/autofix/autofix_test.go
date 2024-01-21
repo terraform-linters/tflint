@@ -71,6 +71,11 @@ func TestIntegration(t *testing.T) {
 			Dir:     "chdir",
 		},
 		{
+			Name:    "--chdir with conflict",
+			Command: "./tflint --chdir=dir --format json --fix",
+			Dir:     "chdir_with_conflict",
+		},
+		{
 			Name:    "--filter",
 			Command: "./tflint --format json --fix --filter=main.tf",
 			Dir:     "filter",
