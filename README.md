@@ -24,6 +24,13 @@ Bash script (Linux):
 curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 ```
 
+Snap (Ubuntu and other Linux distributions with snapd installed)
+
+```console
+sudo snap install tflint
+```
+NOTE: The [tflint](https://snapcraft.io/tflint) snap is NOT directly maintained by the TFLint maintainers. The latest version is always available by manual installation.
+
 Homebrew (macOS):
 
 ```console
