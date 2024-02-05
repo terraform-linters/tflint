@@ -18,6 +18,13 @@ If you change code, make sure that the tests you add and existing tests will be 
 $ make test
 ```
 
+Some tests depending on Git submodules. Running `make test` will update these automatically, but if you run tests directly with `go test`, you need to update submodules manually:
+
+```sh
+git submodule init
+git submodule update
+```
+
 ## Run E2E tests
 
 You can check the actual CLI behavior by running the E2E tests. Since the E2E tests uses the installed `tflint` command, it is necessary to add the path into `$PATH` environment so that the binary built by `go install` can be referenced.

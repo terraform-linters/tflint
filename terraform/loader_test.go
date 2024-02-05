@@ -609,7 +609,7 @@ func testChildModule(t *testing.T, config *Config, key string, wantPath string) 
 	t.Helper()
 
 	if _, exists := config.Children[key]; !exists {
-		t.Fatalf("`%s` module is not loaded: %#v", key, config.Children)
+		t.Fatalf("`%s` module is not loaded, are submodules downloaded?: %#v", key, config.Children)
 	}
 	modulePath := config.Children[key].Module.SourceDir
 	if modulePath != wantPath {
