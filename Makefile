@@ -1,6 +1,8 @@
 default: build
 
 prepare:
+	git submodule init
+	git submodule update
 	go run ./plugin/stub-generator
 
 test: prepare
