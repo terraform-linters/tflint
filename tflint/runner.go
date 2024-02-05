@@ -319,14 +319,18 @@ func (r *Runner) listModuleVars(expr hcl.Expression) []*moduleVariable {
 	return ret
 }
 
+// listVarRefs returns the references in the expression.
+// If the expression is not a valid expression, it returns an empty map.
 func listVarRefs(expr hcl.Expression) map[string]addrs.InputVariable {
+	ret := map[string]addrs.InputVariable{}
 	refs, diags := lang.ReferencesInExpr(expr)
+
 	if diags.HasErrors() {
-		// Maybe this is bug
-		panic(diags)
+		// If we cannot determine the references in the expression, it is likely a valid HCL expression, but not a valid Terraform expression.
+		// The declaration range of a block with no labels is its name, which is syntactically valid as an HCL expression, but is not a valid Terraform reference.
+		return ret
 	}
 
-	ret := map[string]addrs.InputVariable{}
 	for _, ref := range refs {
 		if varRef, ok := ref.Subject.(addrs.InputVariable); ok {
 			ret[varRef.String()] = varRef

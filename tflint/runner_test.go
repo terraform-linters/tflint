@@ -820,6 +820,11 @@ func Test_listVarRefs(t *testing.T) {
 				"var.tags": {Name: "tags"},
 			},
 		},
+		{
+			Name:     "invalid expression",
+			Expr:     "my_block",
+			Expected: map[string]addrs.InputVariable{},
+		},
 	}
 
 	for _, tc := range cases {
