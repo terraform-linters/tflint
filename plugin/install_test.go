@@ -16,7 +16,7 @@ func Test_Install(t *testing.T) {
 	config := NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{
 		Name:        "aws",
 		Enabled:     true,
-		Version:     "0.4.0",
+		Version:     "0.29.0",
 		Source:      "github.com/terraform-linters/tflint-ruleset-aws",
 		SourceHost:  "github.com",
 		SourceOwner: "terraform-linters",
