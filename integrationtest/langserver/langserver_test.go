@@ -129,5 +129,13 @@ func withinTempDir(t *testing.T, test func(dir string)) {
 	}
 	defer os.RemoveAll(dir)
 
+	// on macOS MkdirTemp returns a /var/folders/... path
+	// In other contexts these paths are returned with their full /private/var/folders/... path
+	// EvalSymlinks will resolve the /var/folders/... path to the full path
+	dir, err = filepath.EvalSymlinks(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	test(dir)
 }
