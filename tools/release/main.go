@@ -233,7 +233,16 @@ func editFileInteractive(path string) error {
 	if e := os.Getenv("EDITOR"); e != "" {
 		editor = e
 	}
-	return execCommand(os.Stdout, editor, path)
+	return execShellCommand(os.Stdout, fmt.Sprintf("%s %s", editor, path))
+}
+
+func execShellCommand(stdout io.Writer, command string) error {
+	shell := "sh"
+	if s := os.Getenv("SHELL"); s != "" {
+		shell = s
+	}
+
+	return execCommand(stdout, shell, "-c", command)
 }
 
 func execCommand(stdout io.Writer, name string, args ...string) error {
