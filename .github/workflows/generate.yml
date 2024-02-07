@@ -14,7 +14,6 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version-file: 'go.mod'
-        cache: true
     - run: go generate ./...
     - run: git add --intent-to-add .
     - run: git diff --exit-code
