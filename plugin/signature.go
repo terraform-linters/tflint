@@ -1,11 +1,32 @@
 package plugin
 
 import (
+	"context"
+	"crypto/sha256"
+	"crypto/x509"
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
+	"encoding/pem"
+	"errors"
 	"fmt"
 	"io"
+	"log"
 	"strings"
 
 	//nolint:staticcheck
+	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+	"github.com/mitchellh/go-homedir"
+	rekor "github.com/sigstore/rekor/pkg/client"
+	"github.com/sigstore/rekor/pkg/generated/client/entries"
+	"github.com/sigstore/rekor/pkg/generated/models"
+	hashedrekord_v001 "github.com/sigstore/rekor/pkg/types/hashedrekord/v0.0.1"
+	"github.com/sigstore/sigstore-go/pkg/bundle"
+	"github.com/sigstore/sigstore-go/pkg/root"
+	"github.com/sigstore/sigstore-go/pkg/tlog"
+	"github.com/sigstore/sigstore-go/pkg/tuf"
+	"github.com/sigstore/sigstore-go/pkg/verify"
 	"golang.org/x/crypto/openpgp"
 )
 
@@ -56,6 +77,281 @@ func (c *SignatureChecker) Verify(target, signature io.Reader) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+var rekorURL string = "https://rekor.sigstore.dev"
+var tufRootURL string = "tuf-repo-cdn.sigstore.dev"
+var githubActionsOIDIssuer string = "https://token.actions.githubusercontent.com"
+var tufPath string = "~/.tflint.d/tufdata"
+
+// In sigstore-go, SignedEntity is assumed to be a parsed Sigstore bundle,
+// but if you implement the interface, it can also be used for entities signed by Cosign.
+// @see https://github.com/sigstore/sigstore-go/blob/v0.1.0/docs/verification.md#abstractions
+type signedEntity struct {
+	verify.BaseSignedEntity
+
+	artifact    []byte
+	certificate []byte
+	signature   []byte
+	tlogs       []*tlog.Entry
+}
+
+var _ verify.SignedEntity = (*signedEntity)(nil)
+
+func newSignedEntity(artifact, certificate, signature io.ReadSeeker) (*signedEntity, error) {
+	art, err := io.ReadAll(artifact)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := artifact.Seek(0, 0); err != nil {
+		return nil, err
+	}
+
+	encodedCert, err := io.ReadAll(certificate)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := certificate.Seek(0, 0); err != nil {
+		return nil, err
+	}
+	cert, err := base64.StdEncoding.DecodeString(string(encodedCert))
+	if err != nil {
+		return nil, err
+	}
+
+	encodedSig, err := io.ReadAll(signature)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := signature.Seek(0, 0); err != nil {
+		return nil, err
+	}
+	sig, err := base64.StdEncoding.DecodeString(string(encodedSig))
+	if err != nil {
+		return nil, err
+	}
+
+	logs, err := findTLogEntries(art, cert, sig)
+	if err != nil {
+		return nil, err
+	}
+
+	return &signedEntity{
+		artifact:    art,
+		certificate: cert,
+		signature:   sig,
+		tlogs:       logs,
+	}, nil
+}
+
+// findTLogEntries searches transparency logs for the artifact signed by Cosign.
+// This is inspired by Cosign's implementation and is equivalent to the logic to get transparency logs
+// in sigstore-go's WithOnlineVerification.
+// https://github.com/sigstore/cosign/blob/v2.2.0/pkg/cosign/tlog.go#L407
+// https://github.com/sigstore/sigstore-go/blob/v0.1.0/pkg/verify/tlog.go#L115-L162
+//
+// TODO: Is this safe when the artifact is signed multiple times? Do we need filtering like below?
+// @see https://github.com/sigstore/sigstore-go/blob/v0.1.0/pkg/verify/tlog.go#L164-L179
+func findTLogEntries(artifact, certificate, signature []byte) ([]*tlog.Entry, error) {
+	searchParams := entries.NewSearchLogQueryParamsWithContext(context.Background())
+	searchLogQuery := models.SearchLogQuery{}
+
+	sha256CheckSum := sha256.New()
+	if _, err := sha256CheckSum.Write(artifact); err != nil {
+		return nil, err
+	}
+	re := hashedrekord_v001.V001Entry{
+		HashedRekordObj: models.HashedrekordV001Schema{
+			Data: &models.HashedrekordV001SchemaData{
+				Hash: &models.HashedrekordV001SchemaDataHash{
+					Algorithm: swag.String(models.HashedrekordV001SchemaDataHashAlgorithmSha256),
+					Value:     swag.String(hex.EncodeToString(sha256CheckSum.Sum(nil))),
+				},
+			},
+			Signature: &models.HashedrekordV001SchemaSignature{
+				Content: strfmt.Base64(signature),
+				PublicKey: &models.HashedrekordV001SchemaSignaturePublicKey{
+					Content: strfmt.Base64(certificate),
+				},
+			},
+		},
+	}
+	entry := &models.Hashedrekord{
+		APIVersion: swag.String(re.APIVersion()),
+		Spec:       re.HashedRekordObj,
+	}
+	proposedEntries := []models.ProposedEntry{entry}
+
+	searchLogQuery.SetEntries(proposedEntries)
+	searchParams.SetEntry(&searchLogQuery)
+
+	rekorClient, err := rekor.GetRekorClient(rekorURL)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := rekorClient.Entries.SearchLogQuery(searchParams)
+	if err != nil {
+		return nil, fmt.Errorf("searching log query: %w", err)
+	}
+	if len(resp.Payload) == 0 {
+		return nil, errors.New("signature not found in transparency log")
+	}
+
+	logs := []*tlog.Entry{}
+	for _, logEntry := range resp.GetPayload() {
+		for _, e := range logEntry {
+			decodedBody, err := base64.StdEncoding.DecodeString(e.Body.(string))
+			if err != nil {
+				return nil, err
+			}
+			decodedLogId, err := hex.DecodeString(*e.LogID)
+			if err != nil {
+				return nil, err
+			}
+
+			log, err := tlog.NewEntry(
+				decodedBody,
+				*e.IntegratedTime,
+				*e.LogIndex,
+				decodedLogId,
+				e.Verification.SignedEntryTimestamp,
+				e.Verification.InclusionProof,
+			)
+			if err != nil {
+				return nil, err
+			}
+			logs = append(logs, log)
+		}
+	}
+
+	return logs, nil
+}
+
+// HasInclustionPromise seems to be a flag that determines whether to verify SET,
+// but the entity flag is not used in sigstore-go, and only the Tlog flag seems to be checked.
+// @see https://github.com/sigstore/sigstore-go/blob/v0.1.0/pkg/verify/tlog.go#L84
+//
+// So it probably doesn't make sense to return this flag either way.
+func (e *signedEntity) HasInclusionPromise() bool {
+	return true
+}
+
+// When HasInclustionProof returns true, Rekor's public key is used to verify STH
+// and to verify that the Tlog has not been tampered with.
+// @see https://github.com/sigstore/sigstore-go/blob/v0.1.0/pkg/verify/tlog.go#L94-L113
+func (e *signedEntity) HasInclusionProof() bool {
+	return true
+}
+
+func (e *signedEntity) SignatureContent() (verify.SignatureContent, error) {
+	return bundle.NewMessageSignature(nil, "", e.signature), nil
+}
+
+func (e *signedEntity) VerificationContent() (verify.VerificationContent, error) {
+	block, _ := pem.Decode(e.certificate)
+	if block == nil {
+		return nil, fmt.Errorf("failed to parse PEM block")
+	}
+	certificate, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &bundle.CertificateChain{Certificates: []*x509.Certificate{certificate}}, nil
+}
+
+func (e *signedEntity) TlogEntries() ([]*tlog.Entry, error) {
+	return e.tlogs, nil
+}
+
+func (c *SignatureChecker) VerifyKeyless(artifact, certificate, signature io.ReadSeeker) error {
+	entity, err := newSignedEntity(artifact, certificate, signature)
+	if err != nil {
+		return err
+	}
+
+	verifierConfig := []verify.VerifierOption{}
+	// Verify SCT using the CT log server's public key to ensure that the certificate was issued by Fulcio in a legitimate manner.
+	// @see https://github.com/sigstore/sigstore-go/blob/v0.1.0/pkg/verify/signed_entity.go#L516-L521
+	verifierConfig = append(verifierConfig, verify.WithSignedCertificateTimestamps(1))
+	// Verify SET using the Rekor's public key to ensure that the short-lived certificate was valid when the artifact was signed.
+	// @see https://github.com/sigstore/sigstore-go/blob/v0.1.0/pkg/verify/signed_entity.go#L616-L627
+	// @see https://github.com/sigstore/sigstore-go/blob/v0.1.0/pkg/verify/signed_entity.go#L654-L659
+	verifierConfig = append(verifierConfig, verify.WithTransparencyLog(1))
+	verifierConfig = append(verifierConfig, verify.WithIntegratedTimestamps(1))
+	// Note that WithOnlineVerification is not enabled. If online validation is enabled, Tlog will be retrieved based on the log ID
+	// to verify SET and inclusion proof. But this is the same as what we're doing with findTLogEntries.
+	// If not enabled, SET and inclusion proof are verified against TlogEntries. That's enough.
+	// @see https://github.com/sigstore/sigstore-go/blob/v0.1.0/pkg/verify/tlog.go#L81-L113
+
+	// Verify certificate identity to ensure that the signature was made in GitHub Actions for the repository.
+	// @see https://github.com/sigstore/sigstore-go/blob/v0.1.0/pkg/verify/signed_entity.go#L587-L604
+	identityPolicies := []verify.PolicyOption{}
+	expectedSANRegex := fmt.Sprintf("^https://%s/%s/%s/", c.config.SourceHost, c.config.SourceOwner, c.config.SourceRepo)
+	certID, err := verify.NewShortCertificateIdentity(githubActionsOIDIssuer, "", "", expectedSANRegex)
+	if err != nil {
+		return err
+	}
+	identityPolicies = append(identityPolicies, verify.WithCertificateIdentity(certID))
+
+	// Get the public keys of Rekor, Fulcio, CTlog server.
+	// These are the roots and the ends of the chain of trust.
+	workPath, err := homedir.Expand(tufPath)
+	if err != nil {
+		return err
+	}
+	var trustedMaterial = make(root.TrustedMaterialCollection, 0)
+	var trustedrootJSON []byte
+	trustedrootJSON, err = tuf.GetTrustedrootJSON(tufRootURL, workPath)
+	if err != nil {
+		return err
+	}
+	var trustedRoot *root.TrustedRoot
+	trustedRoot, err = root.NewTrustedRootFromJSON(trustedrootJSON)
+	if err != nil {
+		return err
+	}
+	trustedMaterial = append(trustedMaterial, trustedRoot)
+
+	// Verify signature to ensure that the artifact was signed by the certificate.
+	// @see https://github.com/sigstore/sigstore-go/blob/v0.1.0/pkg/verify/signed_entity.go#L538-L548
+	verifier, err := verify.NewSignedEntityVerifier(trustedMaterial, verifierConfig...)
+	if err != nil {
+		return err
+	}
+	artifactPolicy := verify.WithArtifact(artifact)
+	if _, err := artifact.Seek(0, 0); err != nil {
+		return err
+	}
+
+	// In short, here's what Verify does:
+	//
+	// 1. Verify SET in VerifyObserverTimestamps. The SET is embedded in the Tlog, which can be retrieved
+	//    from Rekor based on the artifact's SHA-256. The SET and T logs cannot be tampered with because
+	//    they are verified using Rekor's root public key.
+	// 2. Verify certificate chain in VerifyLeafCertificate. This allows you to verify that the certificate
+	//    passed was issued by Fulcio using Fulcio's root public key. At the same time, it verifies that
+	//    the certificate was valid in SET and ensures that the leaked and revoked short-lived certificate
+	//    has not been reused.
+	// 3. Verify SCT in VerifySignedCertificateTimestamp. This ensures that the certificate was recorded
+	//    in CT log servers. The SCT is verified using the CT log server's root public key, so it cannot be tampered with.
+	// 4. Verify signature in VerifySignatureWithArtifact. Since the certificate's public key is guaranteed
+	//    in previous steps, we use it to verify that the artifact is signed.
+	// 5. Verify certificate identity in certificateIdentities.Verify. Since anyone can issue a certificate,
+	//    the final step is to verify the certificate's identity. The identity is embedded in a certificate
+	//    signed by Fulcio, so there is no room for tampering.
+	resp, err := verifier.Verify(entity, verify.NewPolicy(artifactPolicy, identityPolicies...))
+	if err != nil {
+		return err
+	}
+
+	marshaled, err := json.Marshal(resp)
+	if err != nil {
+		return err
+	}
+	log.Printf("[DEBUG] verification result=%s", string(marshaled))
+
 	return nil
 }
 
