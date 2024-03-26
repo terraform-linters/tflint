@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/terraform-linters/tflint/terraform"
@@ -59,10 +61,12 @@ func (opts *Options) toConfig() *tflint.Config {
 	callModuleTypeSet := false
 	// --call-module-type takes precedence over --module/--no-module. This is for backward compatibility.
 	if opts.Module != nil {
+		fmt.Fprintln(os.Stderr, "WARNING: --module is deprecated. Use --call-module-type=all instead.")
 		callModuleType = terraform.CallAllModule
 		callModuleTypeSet = true
 	}
 	if opts.NoModule != nil {
+		fmt.Fprintln(os.Stderr, "WARNING: --no-module is deprecated. Use --call-module-type=none instead.")
 		callModuleType = terraform.CallNoModule
 		callModuleTypeSet = true
 	}
