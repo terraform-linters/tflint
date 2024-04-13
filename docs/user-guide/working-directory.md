@@ -22,6 +22,8 @@ The `--recursive` flag enables recursive inspection. This is the same as running
 $ tflint --recursive
 ```
 
+Recursive inspection is performed in parallel by default. The default parallelism is the number of CPUs. This can be controlled with `--max-workers`.
+
 These flags are also valid for `--init` and `--version`. Recursive init is required when installing required plugins all at once:
 
 ```console

@@ -15,6 +15,10 @@ func Test_prettyPrint(t *testing.T) {
 	// Disable color
 	color.NoColor = true
 
+	warningColor := "\x1b[33m"
+	highlightColor := "\x1b[1;4m"
+	resetColor := "\x1b[0m"
+
 	cases := []struct {
 		Name    string
 		Issues  tflint.Issues
@@ -186,6 +190,70 @@ Reference: https://github.com
 			Issues: tflint.Issues{},
 			Error:  fmt.Errorf("Failed to work; %w", errors.New("I don't feel like working")),
 			Stderr: "Failed to work; I don't feel like working\n",
+		},
+		{
+			Name:   "diagnostics",
+			Issues: tflint.Issues{},
+			Error: hcl.Diagnostics{
+				&hcl.Diagnostic{
+					Severity: hcl.DiagWarning,
+					Summary:  "summary",
+					Detail:   "detail",
+					Subject: &hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+					},
+				},
+			},
+			Sources: map[string][]byte{
+				"test.tf": []byte("foo = 1"),
+			},
+			Stderr: fmt.Sprintf(`test.tf:1,1-4: summary; detail:
+
+%sWarning%s: summary
+
+  on test.tf line 1:
+   1: %sfoo%s = 1
+
+detail
+
+`, warningColor, resetColor, highlightColor, resetColor),
+		},
+		{
+			Name:   "joined errors",
+			Issues: tflint.Issues{},
+			Error: errors.Join(
+				errors.New("an error occurred"),
+				errors.New("failed"),
+				hcl.Diagnostics{
+					&hcl.Diagnostic{
+						Severity: hcl.DiagWarning,
+						Summary:  "summary",
+						Detail:   "detail",
+						Subject: &hcl.Range{
+							Filename: "test.tf",
+							Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+							End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+						},
+					},
+				},
+			),
+			Sources: map[string][]byte{
+				"test.tf": []byte("foo = 1"),
+			},
+			Stderr: fmt.Sprintf(`an error occurred
+failed
+test.tf:1,1-4: summary; detail:
+
+%sWarning%s: summary
+
+  on test.tf line 1:
+   1: %sfoo%s = 1
+
+detail
+
+`, warningColor, resetColor, highlightColor, resetColor),
 		},
 	}
 

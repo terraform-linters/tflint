@@ -1,8 +1,10 @@
 package formatter
 
 import (
+	"errors"
 	"fmt"
 	"io"
+	"slices"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
@@ -16,6 +18,10 @@ type Formatter struct {
 	Format  string
 	Fix     bool
 	NoColor bool
+
+	// Errors occurred in parallel workers.
+	// Some formats do not output immediately, so they are saved here.
+	errInParallel error
 }
 
 // Print outputs the given issues and errors according to configured format
@@ -36,6 +42,43 @@ func (f *Formatter) Print(issues tflint.Issues, err error, sources map[string][]
 	default:
 		f.prettyPrint(issues, err, sources)
 	}
+}
+
+// PrintErrorParallel outputs an error occurred in parallel workers.
+// Depending on the configured format, errors may not be output immediately.
+// This function itself is called serially, so changes to f.errInParallel are safe.
+func (f *Formatter) PrintErrorParallel(err error, sources map[string][]byte) {
+	if f.errInParallel == nil {
+		f.errInParallel = err
+	} else {
+		f.errInParallel = errors.Join(f.errInParallel, err)
+	}
+
+	if slices.Contains([]string{"json", "checkstyle", "junit", "compact", "sarif"}, f.Format) {
+		// These formats require errors to be printed at the end, so do nothing here
+		return
+	}
+
+	// Print errors immediately for other formats
+	f.prettyPrintErrors(err, sources, true)
+}
+
+// PrintParallel outputs issues and errors in parallel workers.
+// Errors stored with PrintErrorParallel are output,
+// but in the default format they are output in real time, so they are ignored.
+func (f *Formatter) PrintParallel(issues tflint.Issues, sources map[string][]byte) error {
+	if slices.Contains([]string{"json", "checkstyle", "junit", "compact", "sarif"}, f.Format) {
+		f.Print(issues, f.errInParallel, sources)
+		return f.errInParallel
+	}
+
+	if f.errInParallel != nil {
+		// Do not print the errors since they are already printed in real time
+		return f.errInParallel
+	}
+
+	f.Print(issues, nil, sources)
+	return nil
 }
 
 func toSeverity(lintType tflint.Severity) string {

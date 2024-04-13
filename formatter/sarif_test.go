@@ -481,6 +481,90 @@ func Test_sarifPrint(t *testing.T) {
   ]
 }`, tflint.Version, tflint.Version),
 		},
+		{
+			Name: "joined errors",
+			Error: errors.Join(
+				errors.New("an error occurred"),
+				errors.New("failed"),
+				hcl.Diagnostics{
+					&hcl.Diagnostic{
+						Severity: hcl.DiagWarning,
+						Summary:  "summary",
+						Detail:   "detail",
+						Subject: &hcl.Range{
+							Filename: "filename",
+							Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+							End:      hcl.Pos{Line: 5, Column: 1, Byte: 4},
+						},
+					},
+				},
+			),
+			Stdout: fmt.Sprintf(`{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint",
+          "version": "%s",
+          "informationUri": "https://github.com/terraform-linters/tflint"
+        }
+      },
+      "results": []
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "tflint-errors",
+          "version": "%s",
+          "informationUri": "https://github.com/terraform-linters/tflint"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "application_error",
+          "level": "error",
+          "message": {
+            "text": "an error occurred"
+          }
+        },
+        {
+          "ruleId": "application_error",
+          "level": "error",
+          "message": {
+            "text": "failed"
+          }
+        },
+        {
+          "ruleId": "summary",
+          "level": "warning",
+          "message": {
+            "text": "detail"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "filename"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 1,
+                  "byteOffset": 0,
+                  "byteLength": 4
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}`, tflint.Version, tflint.Version),
+		},
 	}
 
 	for _, tc := range cases {

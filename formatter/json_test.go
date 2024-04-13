@@ -28,7 +28,7 @@ func Test_jsonPrint(t *testing.T) {
 			Stdout: `{"issues":[],"errors":[{"message":"Failed to work; I don't feel like working","severity":"error"}]}`,
 		},
 		{
-			Name: "error",
+			Name: "diagnostics",
 			Error: fmt.Errorf(
 				"babel fish confused; %w",
 				hcl.Diagnostics{
@@ -45,6 +45,26 @@ func Test_jsonPrint(t *testing.T) {
 				},
 			),
 			Stdout: `{"issues":[],"errors":[{"summary":"summary","message":"detail","severity":"warning","range":{"filename":"filename","start":{"line":1,"column":1},"end":{"line":5,"column":1}}}]}`,
+		},
+		{
+			Name: "joined errors",
+			Error: errors.Join(
+				errors.New("an error occurred"),
+				errors.New("failed"),
+				hcl.Diagnostics{
+					&hcl.Diagnostic{
+						Severity: hcl.DiagWarning,
+						Summary:  "summary",
+						Detail:   "detail",
+						Subject: &hcl.Range{
+							Filename: "filename",
+							Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+							End:      hcl.Pos{Line: 5, Column: 1, Byte: 4},
+						},
+					},
+				},
+			),
+			Stdout: `{"issues":[],"errors":[{"message":"an error occurred","severity":"error"},{"message":"failed","severity":"error"},{"summary":"summary","message":"detail","severity":"warning","range":{"filename":"filename","start":{"line":1,"column":1},"end":{"line":5,"column":1}}}]}`,
 		},
 	}
 

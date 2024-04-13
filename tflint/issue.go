@@ -1,6 +1,7 @@
 package tflint
 
 import (
+	"encoding/json"
 	"fmt"
 	"sort"
 
@@ -79,4 +80,57 @@ func (issues Issues) Sort() Issues {
 		return issues[i].Message < issues[j].Message
 	})
 	return issues
+}
+
+type issue struct {
+	Rule    *rule       `json:"rule"`
+	Message string      `json:"message"`
+	Range   hcl.Range   `json:"range"`
+	Fixable bool        `json:"fixable"`
+	Callers []hcl.Range `json:"callers"`
+	Source  []byte      `json:"source"`
+}
+
+type rule struct {
+	RawName     string   `json:"name"`
+	RawSeverity Severity `json:"severity"`
+	RawLink     string   `json:"link"`
+}
+
+var _ Rule = (*rule)(nil)
+
+func (r *rule) Name() string       { return r.RawName }
+func (r *rule) Severity() Severity { return r.RawSeverity }
+func (r *rule) Link() string       { return r.RawLink }
+
+func (i *Issue) MarshalJSON() ([]byte, error) {
+	return json.Marshal(issue{
+		Rule: &rule{
+			RawName:     i.Rule.Name(),
+			RawSeverity: i.Rule.Severity(),
+			RawLink:     i.Rule.Link(),
+		},
+		Message: i.Message,
+		Range:   i.Range,
+		Fixable: i.Fixable,
+		Callers: i.Callers,
+		Source:  i.Source,
+	})
+}
+
+func (i *Issue) UnmarshalJSON(data []byte) error {
+	var out issue
+	err := json.Unmarshal(data, &out)
+	if err != nil {
+		return err
+	}
+
+	i.Rule = out.Rule
+	i.Message = out.Message
+	i.Range = out.Range
+	i.Fixable = out.Fixable
+	i.Callers = out.Callers
+	i.Source = out.Source
+
+	return nil
 }

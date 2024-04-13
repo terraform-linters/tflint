@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/terraform-linters/tflint/langserver"
@@ -36,8 +34,7 @@ func (cli *CLI) startLanguageServer(opts Options) int {
 		defer plugin.Clean()
 	}
 
-	ch := make(chan os.Signal, 1)
-	signal.Notify(ch, os.Interrupt, syscall.SIGTERM)
+	ch := registerShutdownCh()
 
 	conn := jsonrpc2.NewConn(
 		context.Background(),

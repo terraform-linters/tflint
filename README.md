@@ -135,6 +135,7 @@ Application Options:
       --no-color                                                Disable colorized output
       --fix                                                     Fix issues automatically
       --no-parallel-runners                                     Disable per-runner parallelism
+      --max-workers=N                                           Set maximum number of workers in recursive inspection (default: number of CPUs)
 
 Help Options:
   -h, --help                                                    Show this help message

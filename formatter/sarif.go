@@ -68,37 +68,52 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, appErr error) {
 	errRun.Tool.Driver.Version = &version
 
 	report.AddRun(errRun)
-
-	if appErr != nil {
-		var diags hcl.Diagnostics
-		if errors.As(appErr, &diags) {
-			for _, diag := range diags {
-				location := sarif.NewPhysicalLocation().
-					WithArtifactLocation(sarif.NewSimpleArtifactLocation(filepath.ToSlash(diag.Subject.Filename))).
-					WithRegion(
-						sarif.NewRegion().
-							WithByteOffset(diag.Subject.Start.Byte).
-							WithByteLength(diag.Subject.End.Byte - diag.Subject.Start.Byte).
-							WithStartLine(diag.Subject.Start.Line).
-							WithStartColumn(diag.Subject.Start.Column).
-							WithEndLine(diag.Subject.End.Line).
-							WithEndColumn(diag.Subject.End.Column),
-					)
-
-				errRun.AddResult(diag.Summary).
-					WithLevel(fromHclSeverity(diag.Severity)).
-					WithLocation(sarif.NewLocationWithPhysicalLocation(location)).
-					WithMessage(sarif.NewTextMessage(diag.Detail))
-			}
-		} else {
-			errRun.AddResult("application_error").
-				WithLevel("error").
-				WithMessage(sarif.NewTextMessage(appErr.Error()))
-		}
-	}
+	f.sarifAddErrors(errRun, appErr)
 
 	stdoutErr := report.PrettyWrite(f.Stdout)
 	if stdoutErr != nil {
 		panic(stdoutErr)
 	}
+}
+
+func (f *Formatter) sarifAddErrors(errRun *sarif.Run, err error) {
+	if err == nil {
+		return
+	}
+
+	// errors.Join
+	if errs, ok := err.(interface{ Unwrap() []error }); ok {
+		for _, err := range errs.Unwrap() {
+			f.sarifAddErrors(errRun, err)
+		}
+		return
+	}
+
+	// hcl.Diagnostics
+	var diags hcl.Diagnostics
+	if errors.As(err, &diags) {
+		for _, diag := range diags {
+			location := sarif.NewPhysicalLocation().
+				WithArtifactLocation(sarif.NewSimpleArtifactLocation(filepath.ToSlash(diag.Subject.Filename))).
+				WithRegion(
+					sarif.NewRegion().
+						WithByteOffset(diag.Subject.Start.Byte).
+						WithByteLength(diag.Subject.End.Byte - diag.Subject.Start.Byte).
+						WithStartLine(diag.Subject.Start.Line).
+						WithStartColumn(diag.Subject.Start.Column).
+						WithEndLine(diag.Subject.End.Line).
+						WithEndColumn(diag.Subject.End.Column),
+				)
+
+			errRun.AddResult(diag.Summary).
+				WithLevel(fromHclSeverity(diag.Severity)).
+				WithLocation(sarif.NewLocationWithPhysicalLocation(location)).
+				WithMessage(sarif.NewTextMessage(diag.Detail))
+		}
+		return
+	}
+
+	errRun.AddResult("application_error").
+		WithLevel("error").
+		WithMessage(sarif.NewTextMessage(err.Error()))
 }

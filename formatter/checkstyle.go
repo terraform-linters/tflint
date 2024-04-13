@@ -61,6 +61,6 @@ func (f *Formatter) checkstylePrint(issues tflint.Issues, appErr error, sources 
 	fmt.Fprint(f.Stdout, string(out))
 
 	if appErr != nil {
-		f.prettyPrintErrors(appErr, sources)
+		f.prettyPrintErrors(appErr, sources, false)
 	}
 }
