@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/hashicorp/go-version"
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
@@ -22,6 +23,9 @@ var fallbackConfigFile = "~/.tflint.hcl"
 
 var configSchema = &hcl.BodySchema{
 	Blocks: []hcl.BlockHeaderSchema{
+		{
+			Type: "tflint",
+		},
 		{
 			Type: "config",
 		},
@@ -210,6 +214,10 @@ func loadConfig(file afero.File) (*Config, error) {
 		return nil, diags
 	}
 
+	if diags := checkVersionRequirement(f.Body); diags.HasErrors() {
+		return nil, diags
+	}
+
 	content, diags := f.Body.Content(configSchema)
 	if diags.HasErrors() {
 		return nil, diags
@@ -219,6 +227,9 @@ func loadConfig(file afero.File) (*Config, error) {
 	config.sources = parser.Sources()
 	for _, block := range content.Blocks {
 		switch block.Type {
+		case "tflint":
+			// The "tflint" block is already handled by checkVersionRequirement and is therefore ignored
+
 		case "config":
 			inner, diags := block.Body.Content(innerConfigSchema)
 			if diags.HasErrors() {
@@ -360,6 +371,84 @@ func loadConfig(file afero.File) (*Config, error) {
 	}
 
 	return config, nil
+}
+
+// checkVersionRequirement checks whether the TFLint version satisfy the "required_version".
+// At the time of this check, we do not know if other schema meet our requirements,
+// so we only extract the minimal schema. Note that it therefore needs to be independent of loadConfig.
+func checkVersionRequirement(body hcl.Body) hcl.Diagnostics {
+	content, _, diags := body.PartialContent(&hcl.BodySchema{
+		Blocks: []hcl.BlockHeaderSchema{
+			{Type: "tflint"},
+		},
+	})
+	if diags.HasErrors() {
+		return diags
+	}
+
+	if len(content.Blocks) == 0 {
+		return nil
+	}
+	if len(content.Blocks) > 1 {
+		return hcl.Diagnostics{
+			{
+				Severity: hcl.DiagError,
+				Summary:  `Multiple "tflint" blocks are not allowed`,
+				Detail:   fmt.Sprintf(`The "tflint" block is already found in %s, but found the second one.`, content.Blocks[0].DefRange),
+				Subject:  content.Blocks[1].DefRange.Ptr(),
+			},
+		}
+	}
+	block := content.Blocks[0]
+
+	inner, _, diags := block.Body.PartialContent(&hcl.BodySchema{
+		Attributes: []hcl.AttributeSchema{
+			{Name: "required_version"},
+		},
+	})
+	if diags.HasErrors() {
+		return diags
+	}
+
+	versionAttr, exists := inner.Attributes["required_version"]
+	if !exists {
+		return nil
+	}
+	var requiredVersion string
+	if err := gohcl.DecodeExpression(versionAttr.Expr, nil, &requiredVersion); err != nil {
+		return hcl.Diagnostics{
+			{
+				Severity: hcl.DiagError,
+				Summary:  `Failed to decode "required_version" attribute`,
+				Detail:   err.Error(),
+				Subject:  versionAttr.Expr.Range().Ptr(),
+			},
+		}
+	}
+	constraints, err := version.NewConstraint(requiredVersion)
+	if err != nil {
+		return hcl.Diagnostics{
+			{
+				Severity: hcl.DiagError,
+				Summary:  `Failed to parse "required_version" attribute`,
+				Detail:   err.Error(),
+				Subject:  versionAttr.Expr.Range().Ptr(),
+			},
+		}
+	}
+
+	if !constraints.Check(Version) {
+		return hcl.Diagnostics{
+			{
+				Severity: hcl.DiagError,
+				Summary:  "Unsupported TFLint version",
+				Detail:   fmt.Sprintf(`This config does not support the currently used TFLint version %s. Please update to another supported version or change the version requirement.`, Version),
+				Subject:  versionAttr.Expr.Range().Ptr(),
+			},
+		}
+	}
+
+	return nil
 }
 
 // Enable the "recommended" preset if the bundled plugin is automatically enabled.
