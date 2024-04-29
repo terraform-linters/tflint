@@ -1,5 +1,5 @@
 // Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: BUSL-1.1
 
 package lang
 
@@ -106,6 +106,7 @@ func (s *Scope) Functions() map[string]function.Function {
 			"rsadecrypt":       funcs.RsaDecryptFunc,
 			"sensitive":        funcs.SensitiveFunc,
 			"nonsensitive":     funcs.NonsensitiveFunc,
+			"issensitive":      funcs.IssensitiveFunc,
 			"setintersection":  stdlib.SetIntersectionFunc,
 			"setproduct":       stdlib.SetProductFunc,
 			"setsubtract":      stdlib.SetSubtractFunc,

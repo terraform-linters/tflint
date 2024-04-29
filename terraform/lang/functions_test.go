@@ -1,5 +1,5 @@
 // Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: BUSL-1.1
 
 package lang
 
@@ -477,6 +477,13 @@ func TestFunctions(t *testing.T) {
 			{
 				`index(["a", "b", "c"], "a")`,
 				cty.NumberIntVal(0),
+			},
+		},
+
+		"issensitive": {
+			{
+				`issensitive(1)`,
+				cty.False,
 			},
 		},
 
