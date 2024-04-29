@@ -48,3 +48,9 @@ resource "aws_instance" "tags" {
     sensitive = var.sensitive
   }
 }
+
+resource "aws_instance" "provider_function" {
+  count = 1
+
+  instance_type = "${count.index}.${provider::tflint::instance_type()}"
+}
