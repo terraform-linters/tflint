@@ -252,6 +252,7 @@ func loadConfig(file afero.File) (*Config, error) {
 				// "module" attribute is deprecated. Use "call_module_type" instead.
 				// This is for backward compatibility.
 				case "module":
+					fmt.Fprintf(os.Stderr, "WARNING: \"module\" attribute in %s is deprecated. Use \"call_module_type\" instead.\n", file.Name())
 					if config.CallModuleTypeSet {
 						// If "call_module_type" is set, ignore "module" attribute
 						continue
