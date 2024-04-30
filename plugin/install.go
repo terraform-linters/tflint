@@ -10,9 +10,11 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/google/go-github/v53/github"
 	"github.com/terraform-linters/tflint/tflint"
+	"golang.org/x/net/idna"
 	"golang.org/x/oauth2"
 )
 
@@ -204,6 +206,53 @@ func (c *InstallConfig) downloadToTempFile(asset *github.ReleaseAsset) (*os.File
 	return file, nil
 }
 
+// getGitHubToken gets a GitHub access token from environment variables.
+// Environment variables are used in the following order of priority:
+//
+//   - GITHUB_TOKEN_{source_host} (e.g. GITHUB_TOKEN_example_com)
+//   - GITHUB_TOKEN
+//
+// In most cases, GITHUB_TOKEN will meet your requirements, but GITHUB_TOKEN_{source_host}
+// can be useful, for example if you are hosting your plugin on GHES.
+// The host name must be normalized with Punycode, and "-" can be converted to "__" and "." to "-".
+func (c *InstallConfig) getGitHubToken() string {
+	prefix := "GITHUB_TOKEN_"
+	for _, env := range os.Environ() {
+		eqIdx := strings.Index(env, "=")
+		if eqIdx < 0 {
+			continue
+		}
+		name := env[:eqIdx]
+		value := env[eqIdx+1:]
+
+		if !strings.HasPrefix(name, prefix) {
+			continue
+		}
+
+		rawHost := name[len(prefix):]
+		rawHost = strings.ReplaceAll(rawHost, "__", "-")
+		rawHost = strings.ReplaceAll(rawHost, "_", ".")
+		host, err := idna.Lookup.ToUnicode(rawHost)
+		if err != nil {
+			log.Printf(`[DEBUG] Failed to convert "%s" to Unicode format: %s`, rawHost, err)
+			continue
+		}
+
+		if host != c.SourceHost {
+			continue
+		}
+		log.Printf("[DEBUG] %s set, plugin requests to %s will be authenticated", name, c.SourceHost)
+		return value
+	}
+
+	if t := os.Getenv("GITHUB_TOKEN"); t != "" {
+		log.Printf("[DEBUG] GITHUB_TOKEN set, plugin requests to the GitHub API will be authenticated")
+		return t
+	}
+
+	return ""
+}
+
 func extractFileFromZipFile(zipFile *os.File, savePath string) error {
 	zipFileStat, err := zipFile.Stat()
 	if err != nil {
@@ -250,9 +299,7 @@ func newGitHubClient(ctx context.Context, config *InstallConfig) (*github.Client
 		Transport: http.DefaultTransport,
 	}
 
-	if t := os.Getenv("GITHUB_TOKEN"); t != "" {
-		log.Printf("[DEBUG] GITHUB_TOKEN set, plugin requests to the GitHub API will be authenticated")
-
+	if t := config.getGitHubToken(); t != "" {
 		hc = oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{
 			AccessToken: t,
 		}))
