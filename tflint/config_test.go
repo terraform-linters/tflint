@@ -2,6 +2,7 @@ package tflint
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"testing"
 
@@ -32,6 +33,10 @@ func TestLoadConfig(t *testing.T) {
 			file: "config.hcl",
 			files: map[string]string{
 				"config.hcl": `
+tflint {
+	required_version = ">= 0"
+}
+
 config {
 	format = "compact"
 	plugin_dir = "~/.tflint.d/plugins"
@@ -439,6 +444,48 @@ config {
 				},
 			},
 			errCheck: neverHappend,
+		},
+		{
+			name: "valid required_version",
+			file: "config.hcl",
+			files: map[string]string{
+				"config.hcl": `
+tflint {
+  required_version = ">= 0.50"
+}`,
+			},
+			want:     EmptyConfig().enableBundledPlugin(),
+			errCheck: neverHappend,
+		},
+		{
+			name: "invalid required_version",
+			file: "config.hcl",
+			files: map[string]string{
+				"config.hcl": `
+tflint {
+  required_version = "< 0.50"
+}`,
+			},
+			errCheck: func(err error) bool {
+				return err == nil || err.Error() != fmt.Sprintf(`config.hcl:3,22-30: Unsupported TFLint version; This config does not support the currently used TFLint version %s. Please update to another supported version or change the version requirement.`, Version)
+			},
+		},
+		{
+			name: "multiple required_versions",
+			file: "config.hcl",
+			files: map[string]string{
+				"config.hcl": `
+tflint {
+  required_version = ">= 0.50"
+}
+
+tflint {
+  required_version = "< 0.50"
+}`,
+			},
+			errCheck: func(err error) bool {
+				return err == nil || err.Error() != `config.hcl:6,1-7: Multiple "tflint" blocks are not allowed; The "tflint" block is already found in config.hcl:2,1-7, but found the second one.`
+			},
 		},
 	}
 

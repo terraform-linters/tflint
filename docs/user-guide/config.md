@@ -10,6 +10,10 @@ You can change the behavior not only in CLI flags but also in config files. TFLi
 The config file is written in [HCL](https://github.com/hashicorp/hcl). An example is shown below:
 
 ```hcl
+tflint {
+  required_version = ">= 0.50"
+}
+
 config {
   format = "compact"
   plugin_dir = "~/.tflint.d/plugins"
@@ -43,6 +47,11 @@ The file path is resolved relative to the module directory when `--chdir` or `--
 ```sh
 tflint --recursive --config "$(pwd)/.tflint.hcl"
 ```
+
+### `required_version`
+
+Restrict the TFLint version used. This is almost the same as [Terraform's `required_version`](https://developer.hashicorp.com/terraform/language/settings#specifying-a-required-terraform-version).
+You can write version constraints in the same way.
 
 ### `format`
 
