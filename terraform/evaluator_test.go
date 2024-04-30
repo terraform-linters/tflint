@@ -157,6 +157,13 @@ variable "string_var" {
 			errCheck: neverHappend,
 		},
 		{
+			name:     "built-in provider-defined functions",
+			expr:     expr(`provider::terraform::tfvarsdecode("a = 1")`),
+			ty:       cty.Object(map[string]cty.Type{"a": cty.Number}),
+			want:     `cty.ObjectVal(map[string]cty.Value{"a":cty.NumberIntVal(1)})`,
+			errCheck: neverHappend,
+		},
+		{
 			name:     "terraform workspace",
 			expr:     expr(`terraform.workspace`),
 			ty:       cty.String,

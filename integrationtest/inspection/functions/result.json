@@ -39,6 +39,26 @@
         }
       },
       "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is a = 1\n",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 14,
+          "column": 19
+        },
+        "end": {
+          "line": 14,
+          "column": 63
+        }
+      },
+      "callers": []
     }
   ],
   "errors": []

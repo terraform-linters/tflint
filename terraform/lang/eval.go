@@ -108,7 +108,11 @@ func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceabl
 		if !call.IsProviderDefined() {
 			continue
 		}
-		funcs[call.Name] = NewMockFunction(call)
+		// Some provider-defined functions are supported,
+		// so only generate mocks for undefined functions
+		if _, exists := funcs[call.Name]; !exists {
+			funcs[call.Name] = NewMockFunction(call)
+		}
 	}
 	ctx := &hcl.EvalContext{
 		Variables: vals,

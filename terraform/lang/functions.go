@@ -11,6 +11,7 @@ import (
 	"github.com/zclconf/go-cty/cty/function/stdlib"
 
 	"github.com/terraform-linters/tflint/terraform/lang/funcs"
+	"github.com/terraform-linters/tflint/terraform/lang/funcs/terraform"
 )
 
 var impureFunctions = []string{
@@ -174,6 +175,12 @@ func (s *Scope) Functions() map[string]function.Function {
 			s.funcs[name] = fn
 			s.funcs["core::"+name] = fn
 		}
+
+		// Built-in Terraform provider-defined functions are typically obtained dynamically,
+		// but given that they are built-ins, they are provided just like regular functions.
+		s.funcs["provider::terraform::tfvarsencode"] = terraform.TFVarsEncodeFunc
+		s.funcs["provider::terraform::tfvarsdecode"] = terraform.TFVarsDecodeFunc
+		s.funcs["provider::terraform::exprencode"] = terraform.ExprEncodeFunc
 	}
 	s.funcsLock.Unlock()
 
