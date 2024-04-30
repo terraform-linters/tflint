@@ -74,7 +74,7 @@ To increase the rate limit, you can send an authenticated request by authenticat
 
 It's also a good idea to cache the plugin directory, as TFLint will only send requests if plugins aren't installed. The [setup-tflint action](https://github.com/terraform-linters/setup-tflint#usage) includes an example of caching in GitHub Actions.
 
-If you host your plugins on GitHub Enterprise Server (GHES), you may want to use tokens differently from GitHub.com. In this case, you can use a host-specific token like `GITHUB_TOKEN_example_com`. The hostname must be normalized with Punycode, and you can use "_" instead of "." and "__" instead of "-".
+If you host your plugins on GitHub Enterprise Server (GHES), you may need to use a different token than on GitHub.com. In this case, you can use a host-specific token like `GITHUB_TOKEN_example_com`. The hostname must be normalized with Punycode. Use "_" instead of "." and "__" instead of "-".
 
 ```hcl
 # GITHUB_TOKEN will be used
