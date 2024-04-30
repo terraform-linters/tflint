@@ -1,6 +1,7 @@
 package tflint
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"testing"
@@ -224,5 +225,62 @@ func Test_Sort(t *testing.T) {
 	got := issues.Sort()
 	if !cmp.Equal(got, expected) {
 		t.Fatalf("Failed: diff=%s", cmp.Diff(got, expected))
+	}
+}
+
+func TestMarshalJSON(t *testing.T) {
+	tests := []struct {
+		name   string
+		issues Issues
+	}{
+		{
+			name:   "no issues",
+			issues: Issues{},
+		},
+		{
+			name: "issues",
+			issues: Issues{
+				{
+					Rule:    &testRule{},
+					Message: "test",
+					Range: hcl.Range{
+						Filename: "main.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 1},
+						End:      hcl.Pos{Line: 1, Column: 2, Byte: 2},
+					},
+					Fixable: true,
+					Callers: []hcl.Range{
+						{
+							Filename: "caller.tf",
+							Start:    hcl.Pos{Line: 2, Column: 2, Byte: 2},
+							End:      hcl.Pos{Line: 2, Column: 3, Byte: 3},
+						},
+					},
+					Source: []byte(`resource "aws_instance" "web" {}`),
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			out, err := json.Marshal(test.issues)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			var got Issues
+			err = json.Unmarshal(out, &got)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			opt := cmp.Comparer(func(x, y Rule) bool {
+				return x.Name() == y.Name() && x.Severity() == y.Severity() && x.Link() == y.Link()
+			})
+			if diff := cmp.Diff(got, test.issues, opt); diff != "" {
+				t.Errorf("diff=%s", diff)
+			}
+		})
 	}
 }

@@ -36,7 +36,9 @@ type Options struct {
 	NoColor                bool     `long:"no-color" description:"Disable colorized output"`
 	Fix                    bool     `long:"fix" description:"Fix issues automatically"`
 	NoParallelRunners      bool     `long:"no-parallel-runners" description:"Disable per-runner parallelism"`
+	MaxWorkers             *int     `long:"max-workers" description:"Set maximum number of workers in recursive inspection (default: number of CPUs)" value-name:"N"`
 	ActAsBundledPlugin     bool     `long:"act-as-bundled-plugin" hidden:"true"`
+	ActAsWorker            bool     `long:"act-as-worker" hidden:"true"`
 }
 
 func (opts *Options) toConfig() *tflint.Config {
@@ -150,4 +152,78 @@ func (opts *Options) toConfig() *tflint.Config {
 		Rules:         rules,
 		Plugins:       plugins,
 	}
+}
+
+// Return commands to be executed by worker processes in recursive inspection.
+// All possible CLI flags are delegated, but some flags are ignored because
+// the coordinator process that starts the workers is responsible.
+func (opts *Options) toWorkerCommands(workingDir string) []string {
+	commands := []string{
+		"--act-as-worker",
+		"--chdir=" + workingDir,
+		"--force", // Exit status is always ignored
+	}
+
+	// opts.Version, opts.Init, and opts.Langserver are not supported
+
+	// opt.Format is ignored because workers always output serialized issues
+
+	if opts.Config != "" {
+		commands = append(commands, fmt.Sprintf("--config=%s", opts.Config))
+	}
+	for _, ignoreModule := range opts.IgnoreModules {
+		commands = append(commands, fmt.Sprintf("--ignore-module=%s", ignoreModule))
+	}
+	for _, rule := range opts.EnableRules {
+		commands = append(commands, fmt.Sprintf("--enable-rule=%s", rule))
+	}
+	for _, rule := range opts.DisableRules {
+		commands = append(commands, fmt.Sprintf("--disable-rule=%s", rule))
+	}
+	for _, rule := range opts.Only {
+		commands = append(commands, fmt.Sprintf("--only=%s", rule))
+	}
+	for _, plugin := range opts.EnablePlugins {
+		commands = append(commands, fmt.Sprintf("--enable-plugin=%s", plugin))
+	}
+	for _, varfile := range opts.Varfiles {
+		commands = append(commands, fmt.Sprintf("--var-file=%s", varfile))
+	}
+	for _, variable := range opts.Variables {
+		commands = append(commands, fmt.Sprintf("--var=%s", variable))
+	}
+	if opts.Module != nil && *opts.Module {
+		commands = append(commands, "--module")
+	}
+	if opts.NoModule != nil && *opts.NoModule {
+		commands = append(commands, "--no-module")
+	}
+	if opts.CallModuleType != nil {
+		commands = append(commands, fmt.Sprintf("--call-module-type=%s", *opts.CallModuleType))
+	}
+
+	// opts.Chdir should be ignored because it is given by the coordinator
+
+	// opts.Recursive is not supported
+
+	for _, filter := range opts.Filter {
+		commands = append(commands, fmt.Sprintf("--filter=%s", filter))
+	}
+
+	// opts.Force and opts.MinimumFailureSeverity are ignored because exit status is controlled by the coordinator
+
+	// opts.Color and opts.NoColor are ignored because the coordinator is responsible for colorized output
+
+	if opts.Fix {
+		commands = append(commands, "--fix")
+	}
+	if opts.NoParallelRunners {
+		commands = append(commands, "--no-parallel-runners")
+	}
+
+	// opts.MaxWorkers is ignored because the coordinator is responsible for parallelism
+
+	// opts.ActAsBundledPlugin and opts.ActAsWorker are not supported
+
+	return commands
 }

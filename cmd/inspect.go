@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -19,77 +20,53 @@ import (
 )
 
 func (cli *CLI) inspect(opts Options) int {
-	// Respect the "--format" flag until a config is loaded
-	cli.formatter.Format = opts.Format
-
-	workingDirs, err := findWorkingDirs(opts)
-	if err != nil {
-		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to find workspaces; %w", err), map[string][]byte{})
-		return ExitCodeError
-	}
-
 	issues := tflint.Issues{}
 	changes := map[string][]byte{}
 
-	for _, wd := range workingDirs {
-		err := cli.withinChangedDir(wd, func() error {
-			filterFiles := []string{}
-			for _, pattern := range opts.Filter {
-				files, err := filepath.Glob(pattern)
-				if err != nil {
-					return fmt.Errorf("Failed to parse --filter options; %w", err)
-				}
-				// Add the raw pattern to return an empty result if it doesn't match any files
-				if len(files) == 0 {
-					filterFiles = append(filterFiles, pattern)
-				}
-				filterFiles = append(filterFiles, files...)
-			}
-
-			// Join with the working directory to create the fullpath
-			for i, file := range filterFiles {
-				filterFiles[i] = filepath.Join(wd, file)
-			}
-
-			moduleIssues, moduleChanges, err := cli.inspectModule(opts, ".", filterFiles)
+	err := cli.withinChangedDir(opts.Chdir, func() error {
+		filterFiles := []string{}
+		for _, pattern := range opts.Filter {
+			files, err := filepath.Glob(pattern)
 			if err != nil {
-				if len(workingDirs) > 1 {
-					// Print the current working directory in recursive inspection
-					return fmt.Errorf("%w working_dir=%s", err, wd)
-				}
-				return err
+				return fmt.Errorf("Failed to parse --filter options; %w", err)
 			}
-			issues = append(issues, moduleIssues...)
-			for path, source := range moduleChanges {
-				changes[path] = source
+			// Add the raw pattern to return an empty result if it doesn't match any files
+			if len(files) == 0 {
+				filterFiles = append(filterFiles, pattern)
 			}
+			filterFiles = append(filterFiles, files...)
+		}
 
-			return nil
-		})
+		// Join with the working directory to create the fullpath
+		for i, file := range filterFiles {
+			filterFiles[i] = filepath.Join(opts.Chdir, file)
+		}
+
+		var err error
+		issues, changes, err = cli.inspectModule(opts, ".", filterFiles)
+		return err
+	})
+	if err != nil {
+		sources := map[string][]byte{}
+		if cli.loader != nil {
+			sources = cli.loader.Sources()
+		}
+		cli.formatter.Print(tflint.Issues{}, err, sources)
+		return ExitCodeError
+	}
+
+	if opts.ActAsWorker {
+		// When acting as a recursive inspection worker, the formatter is ignored
+		// and the serialized issues are output.
+		out, err := json.Marshal(issues)
 		if err != nil {
-			sources := map[string][]byte{}
-			if cli.loader != nil {
-				sources = cli.loader.Sources()
-			}
-			cli.formatter.Print(tflint.Issues{}, err, sources)
+			fmt.Fprint(cli.errStream, err)
 			return ExitCodeError
 		}
-	}
-
-	var force bool
-	if opts.Recursive {
-		// Respect "--format" and "--force" flags in recursive mode
-		cli.formatter.Format = opts.Format
-		if opts.Force != nil {
-			force = *opts.Force
-		}
+		fmt.Fprint(cli.outStream, string(out))
 	} else {
-		cli.formatter.Format = cli.config.Format
-		force = cli.config.Force
+		cli.formatter.Print(issues, nil, cli.sources)
 	}
-
-	cli.formatter.Fix = opts.Fix
-	cli.formatter.Print(issues, nil, cli.sources)
 
 	if opts.Fix {
 		if err := writeChanges(changes); err != nil {
@@ -98,7 +75,7 @@ func (cli *CLI) inspect(opts Options) int {
 		}
 	}
 
-	if len(issues) > 0 && !force && exceedsMinimumFailure(issues, opts.MinimumFailureSeverity) {
+	if len(issues) > 0 && !cli.config.Force && exceedsMinimumFailure(issues, opts.MinimumFailureSeverity) {
 		return ExitCodeIssuesFound
 	}
 
@@ -122,8 +99,8 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 	if err != nil {
 		return issues, changes, fmt.Errorf("Failed to prepare loading; %w", err)
 	}
-	if opts.Recursive && !cli.loader.IsConfigDir(dir) {
-		// Ignore non-module directories in recursive mode
+	if opts.ActAsWorker && !cli.loader.IsConfigDir(dir) {
+		// Ignore non-module directories in worker mode
 		return issues, changes, nil
 	}
 
@@ -137,6 +114,10 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 	rulesetPlugin, err := launchPlugins(cli.config, opts.Fix)
 	if rulesetPlugin != nil {
 		defer rulesetPlugin.Clean()
+		go cli.registerShutdownHandler(func() {
+			rulesetPlugin.Clean()
+			os.Exit(ExitCodeError)
+		})
 	}
 	if err != nil {
 		return issues, changes, err

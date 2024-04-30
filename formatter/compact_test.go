@@ -51,6 +51,16 @@ test.tf:1:1: Error - test (test_rule)
 			Error:  hclDiags(`resource "foo" "bar" {`),
 			Stdout: "main.tf:1:22: error - Unclosed configuration block. There is no closing brace for this block before the end of the file. This may be caused by incorrect brace nesting elsewhere in this file.\n",
 		},
+		{
+			Name: "joined errors",
+			Error: errors.Join(
+				errors.New("an error occurred"),
+				errors.New("failed"),
+				hclDiags(`resource "foo" "bar" {`),
+			),
+			Stdout: "main.tf:1:22: error - Unclosed configuration block. There is no closing brace for this block before the end of the file. This may be caused by incorrect brace nesting elsewhere in this file.\n",
+			Stderr: "an error occurred\nfailed\n",
+		},
 	}
 
 	for _, tc := range cases {

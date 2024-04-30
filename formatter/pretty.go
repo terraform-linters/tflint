@@ -30,7 +30,7 @@ func (f *Formatter) prettyPrint(issues tflint.Issues, err error, sources map[str
 	}
 
 	if err != nil {
-		f.prettyPrintErrors(err, sources)
+		f.prettyPrintErrors(err, sources, false)
 	}
 }
 
@@ -102,16 +102,39 @@ func (f *Formatter) prettyPrintIssueWithSource(issue *tflint.Issue, sources map[
 	fmt.Fprint(f.Stdout, "\n")
 }
 
-func (f *Formatter) prettyPrintErrors(err error, sources map[string][]byte) {
+func (f *Formatter) prettyPrintErrors(err error, sources map[string][]byte, withIndent bool) {
+	if err == nil {
+		return
+	}
+
+	// errors.Join
+	if errs, ok := err.(interface{ Unwrap() []error }); ok {
+		for _, err := range errs.Unwrap() {
+			f.prettyPrintErrors(err, sources, withIndent)
+		}
+		return
+	}
+
+	// hcl.Diagnostics
 	var diags hcl.Diagnostics
 	if errors.As(err, &diags) {
 		fmt.Fprintf(f.Stderr, "%s:\n\n", err)
 
 		writer := hcl.NewDiagnosticTextWriter(f.Stderr, parseSources(sources), 0, !f.NoColor)
 		_ = writer.WriteDiagnostics(diags)
+		return
+	}
+
+	if withIndent {
+		fmt.Fprintf(f.Stderr, "%s %s\n", colorError("│"), err)
 	} else {
 		fmt.Fprintf(f.Stderr, "%s\n", err)
 	}
+}
+
+// PrettyPrintStderr outputs the given output to stderr with an indent.
+func (f *Formatter) PrettyPrintStderr(output string) {
+	fmt.Fprintf(f.Stderr, "%s %s\n", colorWarning("│"), output)
 }
 
 func parseSources(sources map[string][]byte) map[string]*hcl.File {

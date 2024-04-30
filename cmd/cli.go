@@ -6,8 +6,10 @@ import (
 	"io"
 	"log"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strings"
+	"syscall"
 
 	"github.com/fatih/color"
 	"github.com/hashicorp/logutils"
@@ -63,6 +65,7 @@ func (cli *CLI) Run(args []string) int {
 		Stdout: cli.outStream,
 		Stderr: cli.errStream,
 		Format: opts.Format,
+		Fix:    opts.Fix,
 	}
 	if opts.Color {
 		color.NoColor = false
@@ -92,6 +95,10 @@ func (cli *CLI) Run(args []string) int {
 		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Command line arguments support was dropped in v0.47. Use --chdir or --filter instead."), map[string][]byte{})
 		return ExitCodeError
 	}
+	if opts.MaxWorkers != nil && *opts.MaxWorkers <= 0 {
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Max workers should be greater than 0"), map[string][]byte{})
+		return ExitCodeError
+	}
 
 	switch {
 	case opts.Version:
@@ -103,7 +110,11 @@ func (cli *CLI) Run(args []string) int {
 	case opts.ActAsBundledPlugin:
 		return cli.actAsBundledPlugin()
 	default:
-		return cli.inspect(opts)
+		if opts.Recursive {
+			return cli.inspectParallel(opts)
+		} else {
+			return cli.inspect(opts)
+		}
 	}
 }
 
@@ -171,7 +182,7 @@ func findWorkingDirs(opts Options) ([]string, error) {
 }
 
 func (cli *CLI) withinChangedDir(dir string, proc func() error) (err error) {
-	if dir != "." {
+	if dir != "." && dir != "" {
 		chErr := os.Chdir(dir)
 		if chErr != nil {
 			return fmt.Errorf("Failed to switch to a different working directory; %w", chErr)
@@ -185,4 +196,17 @@ func (cli *CLI) withinChangedDir(dir string, proc func() error) (err error) {
 	}
 
 	return proc()
+}
+
+func registerShutdownCh() <-chan os.Signal {
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, os.Interrupt, syscall.SIGTERM)
+	return ch
+}
+
+func (cli *CLI) registerShutdownHandler(callback func()) {
+	ch := registerShutdownCh()
+	sig := <-ch
+	fmt.Fprintf(cli.errStream, "Received %s, shutting down...\n", sig)
+	callback()
 }

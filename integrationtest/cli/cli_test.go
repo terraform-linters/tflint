@@ -366,32 +366,11 @@ func TestIntegration(t *testing.T) {
 			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is m5.2xlarge")),
 		},
 		{
-			name:    "--recursive and file argument",
-			command: "./tflint --recursive main.tf",
-			dir:     "chdir",
+			name:    "invalid max workers",
+			command: "./tflint --max-workers=0",
+			dir:     "no_issues",
 			status:  cmd.ExitCodeError,
-			stderr:  `Command line arguments support was dropped in v0.47. Use --chdir or --filter instead.`,
-		},
-		{
-			name:    "--recursive and directory argument",
-			command: "./tflint --recursive subdir",
-			dir:     "chdir",
-			status:  cmd.ExitCodeError,
-			stderr:  `Command line arguments support was dropped in v0.47. Use --chdir or --filter instead.`,
-		},
-		{
-			name:    "--recursive and the current directory argument",
-			command: "./tflint --recursive .",
-			dir:     "chdir",
-			status:  cmd.ExitCodeError,
-			stderr:  `Command line arguments support was dropped in v0.47. Use --chdir or --filter instead.`,
-		},
-		{
-			name:    "--recursive and --filter",
-			command: "./tflint --recursive --filter=main.tf",
-			dir:     "chdir",
-			status:  cmd.ExitCodeIssuesFound,
-			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is m5.2xlarge")),
+			stderr:  `Max workers should be greater than 0`,
 		},
 	}
 

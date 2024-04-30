@@ -205,11 +205,6 @@ func TestIntegration(t *testing.T) {
 			Command: "tflint --chdir dir --var-file from_cli.tfvars --format json",
 			Dir:     "chdir",
 		},
-		{
-			Name:    "recursive",
-			Command: "tflint --recursive --format json",
-			Dir:     "recursive",
-		},
 	}
 
 	// Disable the bundled plugin because the `os.Executable()` is go(1) in the tests

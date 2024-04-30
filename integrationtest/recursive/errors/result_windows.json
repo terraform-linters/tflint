@@ -1,0 +1,13 @@
+{
+  "issues": [],
+  "errors": [
+    {
+      "message": "Failed to run in subdir2; exit status 1\n\nFailed to load configurations; subdir2\\main.tf:2,1-2: Argument or block definition required; An argument or block definition is required here.:\n\n\u001b[31mError\u001b[0m: Argument or block definition required\n\n  on subdir2\\main.tf line 2:\n   2: \u001b[1;4m}\u001b[0m\n\nAn argument or block definition is required here.\n\n",
+      "severity": "error"
+    },
+    {
+      "message": "Failed to run in subdir1; exit status 1\n\nFailed to load configurations; subdir1\\main.tf:1,31-32: Unclosed configuration block; There is no closing brace for this block before the end of the file. This may be caused by incorrect brace nesting elsewhere in this file.:\n\n\u001b[31mError\u001b[0m: Unclosed configuration block\n\n  on subdir1\\main.tf line 1, in resource \"aws_instance\" \"foo\":\n   1: resource \"aws_instance\" \"foo\" \u001b[1;4m{\u001b[0m\n\nThere is no closing brace for this block before the end of the file. This may be caused by incorrect brace nesting elsewhere in this file.\n\n",
+      "severity": "error"
+    }
+  ]
+}

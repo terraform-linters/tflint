@@ -26,25 +26,39 @@ func (f *Formatter) compactPrint(issues tflint.Issues, appErr error, sources map
 		)
 	}
 
-	if appErr != nil {
-		var diags hcl.Diagnostics
-		if errors.As(appErr, &diags) {
-			for _, diag := range diags {
-				fmt.Fprintf(
-					f.Stdout,
-					"%s:%d:%d: %s - %s. %s\n",
-					diag.Subject.Filename,
-					diag.Subject.Start.Line,
-					diag.Subject.Start.Column,
-					fromHclSeverity(diag.Severity),
-					diag.Summary,
-					diag.Detail,
-				)
-			}
+	f.compactPrintErrors(appErr, sources)
+}
 
-			return
-		}
-
-		f.prettyPrintErrors(appErr, sources)
+func (f *Formatter) compactPrintErrors(err error, sources map[string][]byte) {
+	if err == nil {
+		return
 	}
+
+	// errors.Join
+	if errs, ok := err.(interface{ Unwrap() []error }); ok {
+		for _, err := range errs.Unwrap() {
+			f.compactPrintErrors(err, sources)
+		}
+		return
+	}
+
+	// hcl.Diagnostics
+	var diags hcl.Diagnostics
+	if errors.As(err, &diags) {
+		for _, diag := range diags {
+			fmt.Fprintf(
+				f.Stdout,
+				"%s:%d:%d: %s - %s. %s\n",
+				diag.Subject.Filename,
+				diag.Subject.Start.Line,
+				diag.Subject.Start.Column,
+				fromHclSeverity(diag.Severity),
+				diag.Summary,
+				diag.Detail,
+			)
+		}
+		return
+	}
+
+	f.prettyPrintErrors(err, sources, false)
 }

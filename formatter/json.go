@@ -53,7 +53,7 @@ type JSONOutput struct {
 }
 
 func (f *Formatter) jsonPrint(issues tflint.Issues, appErr error) {
-	ret := &JSONOutput{Issues: make([]JSONIssue, len(issues)), Errors: []JSONError{}}
+	ret := &JSONOutput{Issues: make([]JSONIssue, len(issues)), Errors: f.jsonErrors(appErr)}
 
 	for idx, issue := range issues.Sort() {
 		ret.Issues[idx] = JSONIssue{
@@ -79,33 +79,48 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, appErr error) {
 		}
 	}
 
-	if appErr != nil {
-		var diags hcl.Diagnostics
-		if errors.As(appErr, &diags) {
-			ret.Errors = make([]JSONError, len(diags))
-			for idx, diag := range diags {
-				ret.Errors[idx] = JSONError{
-					Severity: fromHclSeverity(diag.Severity),
-					Summary:  diag.Summary,
-					Message:  diag.Detail,
-					Range: &JSONRange{
-						Filename: diag.Subject.Filename,
-						Start:    JSONPos{Line: diag.Subject.Start.Line, Column: diag.Subject.Start.Column},
-						End:      JSONPos{Line: diag.Subject.End.Line, Column: diag.Subject.End.Column},
-					},
-				}
-			}
-		} else {
-			ret.Errors = []JSONError{{
-				Severity: toSeverity(sdk.ERROR),
-				Message:  appErr.Error(),
-			}}
-		}
-	}
-
 	out, err := json.Marshal(ret)
 	if err != nil {
 		fmt.Fprint(f.Stderr, err)
 	}
 	fmt.Fprint(f.Stdout, string(out))
+}
+
+func (f *Formatter) jsonErrors(err error) []JSONError {
+	if err == nil {
+		return []JSONError{}
+	}
+
+	// errors.Join
+	if errs, ok := err.(interface{ Unwrap() []error }); ok {
+		ret := []JSONError{}
+		for _, err := range errs.Unwrap() {
+			ret = append(ret, f.jsonErrors(err)...)
+		}
+		return ret
+	}
+
+	// hcl.Diagnostics
+	var diags hcl.Diagnostics
+	if errors.As(err, &diags) {
+		ret := make([]JSONError, len(diags))
+		for idx, diag := range diags {
+			ret[idx] = JSONError{
+				Severity: fromHclSeverity(diag.Severity),
+				Summary:  diag.Summary,
+				Message:  diag.Detail,
+				Range: &JSONRange{
+					Filename: diag.Subject.Filename,
+					Start:    JSONPos{Line: diag.Subject.Start.Line, Column: diag.Subject.Start.Column},
+					End:      JSONPos{Line: diag.Subject.End.Line, Column: diag.Subject.End.Column},
+				},
+			}
+		}
+		return ret
+	}
+
+	return []JSONError{{
+		Severity: toSeverity(sdk.ERROR),
+		Message:  err.Error(),
+	}}
 }

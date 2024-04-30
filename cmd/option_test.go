@@ -304,3 +304,123 @@ func Test_toConfig(t *testing.T) {
 		})
 	}
 }
+
+func Test_toWorkerCommands(t *testing.T) {
+	tests := []struct {
+		name       string
+		in         []string
+		workingDir string
+		want       []string
+	}{
+		{
+			name:       "no args",
+			in:         []string{},
+			workingDir: "subdir",
+			want:       []string{"--act-as-worker", "--chdir=subdir", "--force"},
+		},
+		{
+			name: "all",
+			in: []string{
+				"--version",
+				"--init",
+				"--langserver",
+				"--format=json",
+				"--config=tflint.hcl",
+				"--ignore-module=module1",
+				"--ignore-module=module2",
+				"--enable-rule=rule1",
+				"--enable-rule=rule2",
+				"--disable-rule=rule3",
+				"--disable-rule=rule4",
+				"--only=rule5",
+				"--only=rule6",
+				"--enable-plugin=plugin1",
+				"--enable-plugin=plugin2",
+				"--var-file=example1.tfvars",
+				"--var-file=example2.tfvars",
+				"--var=foo=bar",
+				"--var=bar=baz",
+				"--module",
+				"--no-module",
+				"--call-module-type=all",
+				"--chdir=dir",
+				"--recursive",
+				"--filter=main1.tf",
+				"--filter=main2.tf",
+				"--force",
+				"--minimum-failure-severity=warning",
+				"--color",
+				"--no-color",
+				"--fix",
+				"--no-parallel-runners",
+				"--max-workers=2",
+				"--act-as-bundled-plugin",
+				"--act-as-worker",
+			},
+			workingDir: "subdir",
+			want: []string{
+				// "--version",
+				// "--init",
+				// "--langserver",
+				// "--format=json",
+				"--config=tflint.hcl",
+				"--ignore-module=module1",
+				"--ignore-module=module2",
+				"--enable-rule=rule1",
+				"--enable-rule=rule2",
+				"--disable-rule=rule3",
+				"--disable-rule=rule4",
+				"--only=rule5",
+				"--only=rule6",
+				"--enable-plugin=plugin1",
+				"--enable-plugin=plugin2",
+				"--var-file=example1.tfvars",
+				"--var-file=example2.tfvars",
+				"--var=foo=bar",
+				"--var=bar=baz",
+				"--module",
+				"--no-module",
+				"--call-module-type=all",
+				"--chdir=subdir", // "--chdir=dir",
+				// "--recursive",
+				"--filter=main1.tf",
+				"--filter=main2.tf",
+				"--force",
+				// "--minimum-failure-severity=warning",
+				// "--color",
+				// "--no-color",
+				"--fix",
+				"--no-parallel-runners",
+				// "--max-workers=2",
+				// "--act-as-bundled-plugin",
+				"--act-as-worker",
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			var in Options
+			parser := flags.NewParser(&in, flags.HelpFlag)
+			_, err := parser.ParseArgs(test.in)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			got := in.toWorkerCommands(test.workingDir)
+
+			opt := cmpopts.SortSlices(func(a, b string) bool { return a < b })
+			if diff := cmp.Diff(test.want, got, opt); diff != "" {
+				t.Fatal(diff)
+			}
+
+			// Check if the output can be parsed
+			var out Options
+			parser = flags.NewParser(&out, flags.HelpFlag)
+			_, err = parser.ParseArgs(got)
+			if err != nil {
+				t.Fatal(err)
+			}
+		})
+	}
+}
