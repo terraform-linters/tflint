@@ -1,5 +1,5 @@
 // Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: BUSL-1.1
 
 package lang
 
@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/hcl/v2"
@@ -480,6 +481,13 @@ func TestFunctions(t *testing.T) {
 			},
 		},
 
+		"issensitive": {
+			{
+				`issensitive(1)`,
+				cty.False,
+			},
+		},
+
 		"join": {
 			{
 				`join(" ", ["Hello", "World"])`,
@@ -898,6 +906,10 @@ func TestFunctions(t *testing.T) {
 				`templatefile("hello.tmpl", {name = "Jodie"})`,
 				cty.StringVal("Hello, Jodie!"),
 			},
+			{
+				`core::templatefile("hello.tmpl", {name = "Namespaced Jodie"})`,
+				cty.StringVal("Hello, Namespaced Jodie!"),
+			},
 		},
 
 		"timeadd": {
@@ -1038,6 +1050,10 @@ func TestFunctions(t *testing.T) {
 				`upper("hello")`,
 				cty.StringVal("HELLO"),
 			},
+			{
+				`core::upper("hello")`,
+				cty.StringVal("HELLO"),
+			},
 		},
 
 		"urlencode": {
@@ -1138,6 +1154,11 @@ func TestFunctions(t *testing.T) {
 			delete(allFunctions, impureFunc)
 		}
 		for f := range scope.Functions() {
+			if strings.Contains(f, "::") {
+				// Only non-namespaced functions are absolutely required to
+				// have at least one test. (Others _may_ have tests.)
+				continue
+			}
 			if _, ok := tests[f]; !ok {
 				t.Errorf("Missing test for function %s\n", f)
 			}
@@ -1216,3 +1237,83 @@ Had'em
 
 E.E. Cummings`
 )
+
+func TestNewMockFunction(t *testing.T) {
+	tests := []struct {
+		name string
+		call *FunctionCall
+		args []cty.Value
+	}{
+		{
+			name: "no args",
+			call: &FunctionCall{
+				Name:      "foo",
+				ArgsCount: 0,
+			},
+			args: []cty.Value{},
+		},
+		{
+			name: "single arg",
+			call: &FunctionCall{
+				Name:      "bar",
+				ArgsCount: 1,
+			},
+			args: []cty.Value{cty.StringVal("hello")},
+		},
+		{
+			name: "multiple args",
+			call: &FunctionCall{
+				Name:      "baz",
+				ArgsCount: 2,
+			},
+			args: []cty.Value{cty.BoolVal(false), cty.NumberIntVal(1)},
+		},
+		{
+			name: "null arg",
+			call: &FunctionCall{
+				Name:      "null",
+				ArgsCount: 1,
+			},
+			args: []cty.Value{cty.NullVal(cty.String)},
+		},
+		{
+			name: "unknown arg",
+			call: &FunctionCall{
+				Name:      "unknown",
+				ArgsCount: 1,
+			},
+			args: []cty.Value{cty.UnknownVal(cty.Number)},
+		},
+		{
+			name: "dynamic value arg",
+			call: &FunctionCall{
+				Name:      "dynamic",
+				ArgsCount: 1,
+			},
+			args: []cty.Value{cty.DynamicVal},
+		},
+		{
+			name: "marked value arg",
+			call: &FunctionCall{
+				Name:      "marked",
+				ArgsCount: 1,
+			},
+			args: []cty.Value{cty.StringVal("marked").Mark(marks.Sensitive)},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			fn := NewMockFunction(test.call)
+
+			got, err := fn.Call(test.args)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if !got.RawEquals(cty.DynamicVal) {
+				t.Errorf("want: cty.DynamicVal, got: %s", got.GoString())
+			}
+		})
+	}
+}

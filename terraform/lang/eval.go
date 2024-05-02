@@ -16,13 +16,21 @@ import (
 // Note that Terraform only expands dynamic blocks, but TFLint also expands
 // count/for_each here.
 //
-// Expressions in expanded blocks are evaluated immediately, so all variables
-// contained in attributes specified in the body schema are gathered.
+// Expressions in expanded blocks are evaluated immediately, so all variables and
+// function calls contained in attributes specified in the body schema are gathered.
 func (s *Scope) ExpandBlock(body hcl.Body, schema *hclext.BodySchema) (hcl.Body, hcl.Diagnostics) {
 	traversals := tfhcl.ExpandVariablesHCLExt(body, schema)
 	refs, diags := References(traversals)
 
-	ctx, ctxDiags := s.EvalContext(refs)
+	exprs := tfhcl.ExpandExpressionsHCLExt(body, schema)
+	funcCalls := []*FunctionCall{}
+	for _, expr := range exprs {
+		calls, funcDiags := FunctionCallsInExpr(expr)
+		diags = diags.Extend(funcDiags)
+		funcCalls = append(funcCalls, calls...)
+	}
+
+	ctx, ctxDiags := s.EvalContext(refs, funcCalls)
 	diags = diags.Extend(ctxDiags)
 
 	return tfhcl.Expand(body, ctx), diags
@@ -40,8 +48,10 @@ func (s *Scope) ExpandBlock(body hcl.Body, schema *hclext.BodySchema) (hcl.Body,
 // incomplete, but will always be of the requested type.
 func (s *Scope) EvalExpr(expr hcl.Expression, wantType cty.Type) (cty.Value, hcl.Diagnostics) {
 	refs, diags := ReferencesInExpr(expr)
+	funcCalls, funcDiags := FunctionCallsInExpr(expr)
+	diags = diags.Extend(funcDiags)
 
-	ctx, ctxDiags := s.EvalContext(refs)
+	ctx, ctxDiags := s.EvalContext(refs, funcCalls)
 	diags = diags.Extend(ctxDiags)
 	if diags.HasErrors() {
 		// We'll stop early if we found problems in the references, because
@@ -72,16 +82,17 @@ func (s *Scope) EvalExpr(expr hcl.Expression, wantType cty.Type) (cty.Value, hcl
 }
 
 // EvalContext constructs a HCL expression evaluation context whose variable
-// scope contains sufficient values to satisfy the given set of references.
+// scope contains sufficient values to satisfy the given set of references
+// and function calls.
 //
 // Most callers should prefer to use the evaluation helper methods that
 // this type offers, but this is here for less common situations where the
 // caller will handle the evaluation calls itself.
-func (s *Scope) EvalContext(refs []*addrs.Reference) (*hcl.EvalContext, hcl.Diagnostics) {
-	return s.evalContext(refs, s.SelfAddr)
+func (s *Scope) EvalContext(refs []*addrs.Reference, funcCalls []*FunctionCall) (*hcl.EvalContext, hcl.Diagnostics) {
+	return s.evalContext(refs, s.SelfAddr, funcCalls)
 }
 
-func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceable) (*hcl.EvalContext, hcl.Diagnostics) {
+func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceable, funcCalls []*FunctionCall) (*hcl.EvalContext, hcl.Diagnostics) {
 	if s == nil {
 		panic("attempt to construct EvalContext for nil Scope")
 	}
@@ -89,6 +100,20 @@ func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceabl
 	var diags hcl.Diagnostics
 	vals := make(map[string]cty.Value)
 	funcs := s.Functions()
+	// Provider-defined functions introduced in Terraform v1.8 cannot be
+	// evaluated statically in many cases. Here, we avoid the error by dynamically
+	// generating an evaluation context in which the provider-defined functions
+	// in the given expression are replaced with mock functions.
+	for _, call := range funcCalls {
+		if !call.IsProviderDefined() {
+			continue
+		}
+		// Some provider-defined functions are supported,
+		// so only generate mocks for undefined functions
+		if _, exists := funcs[call.Name]; !exists {
+			funcs[call.Name] = NewMockFunction(call)
+		}
+	}
 	ctx := &hcl.EvalContext{
 		Variables: vals,
 		Functions: funcs,

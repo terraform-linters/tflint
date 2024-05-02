@@ -215,10 +215,15 @@ func TestScopeEvalContext(t *testing.T) {
 				t.Fatal(refsDiags)
 			}
 
+			funcCalls, funcDiags := FunctionCallsInExpr(expr)
+			if funcDiags.HasErrors() {
+				t.Fatal(funcDiags)
+			}
+
 			scope := &Scope{
 				Data: data,
 			}
-			ctx, ctxDiags := scope.EvalContext(refs)
+			ctx, ctxDiags := scope.EvalContext(refs, funcCalls)
 			if ctxDiags.HasErrors() {
 				t.Fatal(ctxDiags)
 			}

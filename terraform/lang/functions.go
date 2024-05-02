@@ -1,5 +1,5 @@
 // Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: BUSL-1.1
 
 package lang
 
@@ -11,6 +11,7 @@ import (
 	"github.com/zclconf/go-cty/cty/function/stdlib"
 
 	"github.com/terraform-linters/tflint/terraform/lang/funcs"
+	"github.com/terraform-linters/tflint/terraform/lang/funcs/terraform"
 )
 
 var impureFunctions = []string{
@@ -31,7 +32,7 @@ func (s *Scope) Functions() map[string]function.Function {
 		// later if the functionality seems to be something domain-agnostic
 		// that would be useful to all applications using cty functions.
 
-		s.funcs = map[string]function.Function{
+		coreFuncs := map[string]function.Function{
 			"abs":              stdlib.AbsoluteFunc,
 			"abspath":          funcs.AbsPathFunc,
 			"alltrue":          funcs.AllTrueFunc,
@@ -106,6 +107,7 @@ func (s *Scope) Functions() map[string]function.Function {
 			"rsadecrypt":       funcs.RsaDecryptFunc,
 			"sensitive":        funcs.SensitiveFunc,
 			"nonsensitive":     funcs.NonsensitiveFunc,
+			"issensitive":      funcs.IssensitiveFunc,
 			"setintersection":  stdlib.SetIntersectionFunc,
 			"setproduct":       stdlib.SetProductFunc,
 			"setsubtract":      stdlib.SetSubtractFunc,
@@ -150,9 +152,10 @@ func (s *Scope) Functions() map[string]function.Function {
 			"zipmap":           stdlib.ZipmapFunc,
 		}
 
-		s.funcs["templatefile"] = funcs.MakeTemplateFileFunc(s.BaseDir, func() map[string]function.Function {
+		coreFuncs["templatefile"] = funcs.MakeTemplateFileFunc(s.BaseDir, func() map[string]function.Function {
 			// The templatefile function prevents recursive calls to itself
-			// by copying this map and overwriting the "templatefile" entry.
+			// by copying this map and overwriting the "templatefile" and
+			// "core:templatefile" entries.
 			return s.funcs
 		})
 
@@ -160,11 +163,49 @@ func (s *Scope) Functions() map[string]function.Function {
 			// Force our few impure functions to return unknown so that we
 			// can defer evaluating them until a later pass.
 			for _, name := range impureFunctions {
-				s.funcs[name] = function.Unpredictable(s.funcs[name])
+				coreFuncs[name] = function.Unpredictable(s.funcs[name])
 			}
 		}
+
+		// All of the built-in functions are also available under the "core::"
+		// namespace, to distinguish from the "provider::" and "module::"
+		// namespaces that can serve as external extension points.
+		s.funcs = make(map[string]function.Function, len(coreFuncs)*2)
+		for name, fn := range coreFuncs {
+			s.funcs[name] = fn
+			s.funcs["core::"+name] = fn
+		}
+
+		// Built-in Terraform provider-defined functions are typically obtained dynamically,
+		// but given that they are built-ins, they are provided just like regular functions.
+		s.funcs["provider::terraform::tfvarsencode"] = terraform.TFVarsEncodeFunc
+		s.funcs["provider::terraform::tfvarsdecode"] = terraform.TFVarsDecodeFunc
+		s.funcs["provider::terraform::exprencode"] = terraform.ExprEncodeFunc
 	}
 	s.funcsLock.Unlock()
 
 	return s.funcs
+}
+
+// NewMockFunction creates a mock function that returns a dynamic value.
+// This is primarily used to replace provider-defined functions.
+func NewMockFunction(call *FunctionCall) function.Function {
+	params := make([]function.Parameter, call.ArgsCount)
+	for idx := 0; idx < call.ArgsCount; idx++ {
+		params[idx] = function.Parameter{
+			Type:             cty.DynamicPseudoType,
+			AllowNull:        true,
+			AllowUnknown:     true,
+			AllowDynamicType: true,
+			AllowMarked:      true,
+		}
+	}
+
+	return function.New(&function.Spec{
+		Params: params,
+		Type:   function.StaticReturnType(cty.DynamicPseudoType),
+		Impl: func(args []cty.Value, retType cty.Type) (cty.Value, error) {
+			return cty.DynamicVal, nil
+		},
+	})
 }

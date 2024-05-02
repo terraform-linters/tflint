@@ -205,6 +205,11 @@ func TestIntegration(t *testing.T) {
 			Command: "tflint --chdir dir --var-file from_cli.tfvars --format json",
 			Dir:     "chdir",
 		},
+		{
+			Name:    "functions",
+			Command: "tflint --format json",
+			Dir:     "functions",
+		},
 	}
 
 	// Disable the bundled plugin because the `os.Executable()` is go(1) in the tests
