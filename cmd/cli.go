@@ -140,6 +140,12 @@ func unknownOptionHandler(option string, arg flags.SplitArgument, args []string)
 	if option == "loglevel" {
 		return []string{}, errors.New("--loglevel option was removed in v0.40.0. Please set TFLINT_LOG environment variables instead")
 	}
+	if option == "module" {
+		return []string{}, errors.New("--module option was removed in v0.54.0. Use --call-module-type=all instead")
+	}
+	if option == "no-module" {
+		return []string{}, errors.New("--no-module option was removed in v0.54.0. Use --call-module-type=none instead")
+	}
 	return []string{}, fmt.Errorf(`--%s is unknown option. Please run "tflint --help"`, option)
 }
 
