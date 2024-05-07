@@ -70,8 +70,6 @@ func TestNewGitHubClient(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
-
 		t.Run(tc.name, func(t *testing.T) {
 			client, err := newGitHubClient(context.Background(), tc.config)
 			if err != nil {

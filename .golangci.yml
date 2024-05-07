@@ -4,6 +4,7 @@ linters:
   enable:
     - gci
     - gofmt
+    - copyloopvar
 issues:
   exclude-dirs:
     - terraform/
