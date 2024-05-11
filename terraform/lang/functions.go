@@ -178,9 +178,9 @@ func (s *Scope) Functions() map[string]function.Function {
 
 		// Built-in Terraform provider-defined functions are typically obtained dynamically,
 		// but given that they are built-ins, they are provided just like regular functions.
-		s.funcs["provider::terraform::tfvarsencode"] = terraform.TFVarsEncodeFunc
-		s.funcs["provider::terraform::tfvarsdecode"] = terraform.TFVarsDecodeFunc
-		s.funcs["provider::terraform::exprencode"] = terraform.ExprEncodeFunc
+		s.funcs["provider::terraform::encode_tfvars"] = terraform.EncodeTfvarsFunc
+		s.funcs["provider::terraform::decode_tfvars"] = terraform.DecodeTfvarsFunc
+		s.funcs["provider::terraform::encode_expr"] = terraform.EncodeExprFunc
 	}
 	s.funcsLock.Unlock()
 

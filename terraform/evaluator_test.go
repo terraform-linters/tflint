@@ -158,7 +158,7 @@ variable "string_var" {
 		},
 		{
 			name:     "built-in provider-defined functions",
-			expr:     expr(`provider::terraform::tfvarsdecode("a = 1")`),
+			expr:     expr(`provider::terraform::decode_tfvars("a = 1")`),
 			ty:       cty.Object(map[string]cty.Type{"a": cty.Number}),
 			want:     `cty.ObjectVal(map[string]cty.Value{"a":cty.NumberIntVal(1)})`,
 			errCheck: neverHappend,
