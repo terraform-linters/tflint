@@ -15,7 +15,7 @@ import (
 	"github.com/zclconf/go-cty/cty/function"
 )
 
-var TFVarsEncodeFunc = function.New(&function.Spec{
+var EncodeTfvarsFunc = function.New(&function.Spec{
 	Params: []function.Parameter{
 		{
 			Name:             "value",
@@ -88,7 +88,7 @@ var TFVarsEncodeFunc = function.New(&function.Spec{
 	},
 })
 
-var TFVarsDecodeFunc = function.New(&function.Spec{
+var DecodeTfvarsFunc = function.New(&function.Spec{
 	Params: []function.Parameter{
 		{
 			Name:      "src",
@@ -131,7 +131,7 @@ var TFVarsDecodeFunc = function.New(&function.Spec{
 		// stuff HCL diagnostics into plain string error messages. This produces
 		// a non-ideal result but is still better than hiding the HCL-provided
 		// diagnosis altogether.
-		f, hclDiags := hclsyntax.ParseConfig(src, "<tfvarsdecode argument>", hcl.InitialPos)
+		f, hclDiags := hclsyntax.ParseConfig(src, "<decode_tfvars argument>", hcl.InitialPos)
 		if hclDiags.HasErrors() {
 			return cty.NilVal, fmt.Errorf("invalid tfvars syntax: %s", hclDiags.Error())
 		}
@@ -155,7 +155,7 @@ var TFVarsDecodeFunc = function.New(&function.Spec{
 	},
 })
 
-var ExprEncodeFunc = function.New(&function.Spec{
+var EncodeExprFunc = function.New(&function.Spec{
 	Params: []function.Parameter{
 		{
 			Name:             "value",

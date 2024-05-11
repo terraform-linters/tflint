@@ -11,5 +11,5 @@ resource "aws_instance" "provider" {
 }
 
 resource "aws_instance" "builtin_provider" {
-  instance_type = provider::terraform::tfvarsencode({ a = 1 })
+  instance_type = provider::terraform::encode_tfvars({ a = 1 })
 }

@@ -11,7 +11,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-func TestTFVarsEncode(t *testing.T) {
+func TestEncodeTfvars(t *testing.T) {
 	tests := []struct {
 		Input   cty.Value
 		Want    cty.Value
@@ -128,7 +128,7 @@ two   = 2
 
 	for _, test := range tests {
 		t.Run(test.Input.GoString(), func(t *testing.T) {
-			got, err := TFVarsEncodeFunc.Call([]cty.Value{test.Input})
+			got, err := EncodeTfvarsFunc.Call([]cty.Value{test.Input})
 			if test.WantErr != "" {
 				if err == nil {
 					t.Fatalf("unexpected success for %#v; want error\ngot: %#v", test.Input, got)
@@ -148,7 +148,7 @@ two   = 2
 	}
 }
 
-func TestTFVarsDecode(t *testing.T) {
+func TestDecodeTfvars(t *testing.T) {
 	tests := []struct {
 		Input   cty.Value
 		Want    cty.Value
@@ -179,25 +179,25 @@ number = 2`),
 			// This is actually not a very good diagnosis for this error,
 			// since we're expecting HCL arguments rather than HCL blocks,
 			// but that's something we'd need to address in HCL.
-			WantErr: `invalid tfvars syntax: <tfvarsdecode argument>:1,17-17: Invalid block definition; Either a quoted string block label or an opening brace ("{") is expected here.`,
+			WantErr: `invalid tfvars syntax: <decode_tfvars argument>:1,17-17: Invalid block definition; Either a quoted string block label or an opening brace ("{") is expected here.`,
 		},
 		{
 			Input:   cty.StringVal(`foo = not valid syntax`),
-			WantErr: `invalid tfvars syntax: <tfvarsdecode argument>:1,11-16: Missing newline after argument; An argument definition must end with a newline.`,
+			WantErr: `invalid tfvars syntax: <decode_tfvars argument>:1,11-16: Missing newline after argument; An argument definition must end with a newline.`,
 		},
 		{
 			Input:   cty.StringVal(`foo = var.whatever`),
-			WantErr: `invalid expression for variable "foo": <tfvarsdecode argument>:1,7-10: Variables not allowed; Variables may not be used here.`,
+			WantErr: `invalid expression for variable "foo": <decode_tfvars argument>:1,7-10: Variables not allowed; Variables may not be used here.`,
 		},
 		{
 			Input:   cty.StringVal(`foo = whatever()`),
-			WantErr: `invalid expression for variable "foo": <tfvarsdecode argument>:1,7-17: Function calls not allowed; Functions may not be called here.`,
+			WantErr: `invalid expression for variable "foo": <decode_tfvars argument>:1,7-17: Function calls not allowed; Functions may not be called here.`,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.Input.GoString(), func(t *testing.T) {
-			got, err := TFVarsDecodeFunc.Call([]cty.Value{test.Input})
+			got, err := DecodeTfvarsFunc.Call([]cty.Value{test.Input})
 			if test.WantErr != "" {
 				if err == nil {
 					t.Fatalf("unexpected success for %#v; want error\ngot: %#v", test.Input, got)
@@ -217,7 +217,7 @@ number = 2`),
 	}
 }
 
-func TestExprEncode(t *testing.T) {
+func TestEncodeExpr(t *testing.T) {
 	tests := []struct {
 		Input   cty.Value
 		Want    cty.Value
@@ -361,7 +361,7 @@ func TestExprEncode(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.Input.GoString(), func(t *testing.T) {
-			got, err := ExprEncodeFunc.Call([]cty.Value{test.Input})
+			got, err := EncodeExprFunc.Call([]cty.Value{test.Input})
 			if test.WantErr != "" {
 				if err == nil {
 					t.Fatalf("unexpected success for %#v; want error\ngot: %#v", test.Input, got)
