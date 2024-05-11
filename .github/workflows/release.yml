@@ -10,6 +10,7 @@ on:
 permissions:
   contents: write
   id-token: write
+  attestations: write
 
 jobs:
   goreleaser:
@@ -32,3 +33,6 @@ jobs:
         args: release --rm-dist --release-notes tools/release/release-note.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/attest-build-provenance@v1
+      with:
+        subject-path: 'dist/checksums.txt'
