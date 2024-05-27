@@ -8,7 +8,7 @@ WORKDIR /tflint
 COPY . /tflint
 RUN GOOS=$TARGETOS GOARCH=$TARGETARCH make build
 
-FROM alpine:3.19
+FROM alpine:3.20
 
 LABEL maintainer=terraform-linters
 
