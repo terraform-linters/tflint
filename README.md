@@ -40,21 +40,21 @@ NOTE: The Chocolatey package is NOT directly maintained by the TFLint maintainer
 
 ### Verification
 
+#### GitHub CLI (Recommended)
+
+[Artifact Attestations](https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds) are available that can be verified using the GitHub CLI.
+
+```console
+gh attestation verify checksums.txt -R terraform-linters/tflint
+sha256sum --ignore-missing -c checksums.txt
+```
+
 #### Cosign
 
 [Cosign](https://github.com/sigstore/cosign) `verify-blob` command ensures that the release was built with GitHub Actions in this repository.
 
 ```console
 cosign verify-blob --certificate=checksums.txt.pem --signature=checksums.txt.keyless.sig --certificate-identity-regexp="^https://github.com/terraform-linters/tflint" --certificate-oidc-issuer=https://token.actions.githubusercontent.com checksums.txt
-sha256sum --ignore-missing -c checksums.txt
-```
-
-#### GitHub CLI (Beta)
-
-[Artifact Attestations](https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds) are available that can be verified using the GitHub CLI.
-
-```console
-gh attestation verify checksums.txt -R terraform-linters/tflint
 sha256sum --ignore-missing -c checksums.txt
 ```
 
