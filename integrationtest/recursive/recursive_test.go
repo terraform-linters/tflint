@@ -40,6 +40,11 @@ func TestIntegration(t *testing.T) {
 			error:       true,
 			ignoreOrder: true,
 		},
+		{
+			name:    "recursive + chdir",
+			command: "tflint --chdir=subdir1 --recursive --format json --force",
+			dir:     "chdir",
+		},
 	}
 
 	dir, _ := os.Getwd()
