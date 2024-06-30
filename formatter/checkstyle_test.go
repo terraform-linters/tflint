@@ -37,21 +37,23 @@ func Test_checkstylePrint(t *testing.T) {
 			Stdout: `<?xml version="1.0" encoding="UTF-8"?>
 <checkstyle>
   <file name="test.tf">
-    <error rule="test_rule" line="1" column="1" severity="error" message="test" link="https://github.com"></error>
+    <error source="test_rule" line="1" column="1" severity="error" message="test" link="https://github.com" rule="test_rule"></error>
   </file>
 </checkstyle>`,
 		},
 	}
 
 	for _, tc := range cases {
-		stdout := &bytes.Buffer{}
-		stderr := &bytes.Buffer{}
-		formatter := &Formatter{Stdout: stdout, Stderr: stderr}
+		t.Run(tc.Name, func(t *testing.T) {
+			stdout := &bytes.Buffer{}
+			stderr := &bytes.Buffer{}
+			formatter := &Formatter{Stdout: stdout, Stderr: stderr}
 
-		formatter.checkstylePrint(tc.Issues, tc.Error, map[string][]byte{})
+			formatter.checkstylePrint(tc.Issues, tc.Error, map[string][]byte{})
 
-		if stdout.String() != tc.Stdout {
-			t.Fatalf("Failed %s test: expected=%s, stdout=%s", tc.Name, tc.Stdout, stdout.String())
-		}
+			if stdout.String() != tc.Stdout {
+				t.Fatalf("expected=%s, stdout=%s", tc.Stdout, stdout.String())
+			}
+		})
 	}
 }

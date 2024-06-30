@@ -8,12 +8,15 @@ import (
 )
 
 type checkstyleError struct {
-	Rule     string `xml:"rule,attr"`
+	Source   string `xml:"source,attr"`
 	Line     int    `xml:"line,attr"`
 	Column   int    `xml:"column,attr"`
 	Severity string `xml:"severity,attr"`
 	Message  string `xml:"message,attr"`
 	Link     string `xml:"link,attr"`
+
+	// Deprecated: Use `source` instead
+	Rule string `xml:"rule,attr"`
 }
 
 type checkstyleFile struct {
@@ -30,12 +33,14 @@ func (f *Formatter) checkstylePrint(issues tflint.Issues, appErr error, sources 
 	files := map[string]*checkstyleFile{}
 	for _, issue := range issues {
 		cherr := &checkstyleError{
-			Rule:     issue.Rule.Name(),
+			Source:   issue.Rule.Name(),
 			Line:     issue.Range.Start.Line,
 			Column:   issue.Range.Start.Column,
 			Severity: toSeverity(issue.Rule.Severity()),
 			Message:  issue.Message,
 			Link:     issue.Rule.Link(),
+
+			Rule: issue.Rule.Name(),
 		}
 
 		if file, exists := files[issue.Range.Filename]; exists {
