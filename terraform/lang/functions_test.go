@@ -912,6 +912,21 @@ func TestFunctions(t *testing.T) {
 			},
 		},
 
+		"templatestring": {
+			{
+				`templatestring(local.greeting_template, {
+  name = "Arthur"
+})`,
+				cty.StringVal("Hello, Arthur!"),
+			},
+			{
+				`core::templatestring(local.greeting_template, {
+  name = "Namespaced Arthur"
+})`,
+				cty.StringVal("Hello, Namespaced Arthur!"),
+			},
+		},
+
 		"timeadd": {
 			{
 				`timeadd("2017-11-22T00:00:00Z", "1s")`,
@@ -1169,7 +1184,11 @@ func TestFunctions(t *testing.T) {
 		t.Run(funcName, func(t *testing.T) {
 			for _, test := range funcTests {
 				t.Run(test.src, func(t *testing.T) {
-					data := &dataForTests{} // no variables available; we only need literals here
+					data := &dataForTests{
+						LocalValues: map[string]cty.Value{
+							"greeting_template": cty.StringVal("Hello, ${name}!"),
+						},
+					}
 					scope := &Scope{
 						Data:    data,
 						BaseDir: "./testdata/functions-test", // for the functions that read from the filesystem
