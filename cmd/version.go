@@ -1,9 +1,13 @@
 package cmd
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"log"
 
+	"github.com/google/go-github/v35/github"
+	"github.com/hashicorp/go-version"
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/tflint"
@@ -11,6 +15,8 @@ import (
 
 func (cli *CLI) printVersion(opts Options) int {
 	fmt.Fprintf(cli.outStream, "TFLint version %s\n", tflint.Version)
+
+	cli.printLatestReleaseVersion()
 
 	workingDirs, err := findWorkingDirs(opts)
 	if err != nil {
@@ -80,4 +86,39 @@ func getPluginVersions(opts Options) []string {
 	}
 
 	return versions
+}
+
+// Checks GitHub releases and prints new version, if current version is outdated.
+// requires GitHub releases to follow semver.
+func (cli *CLI) printLatestReleaseVersion() {
+	latest, err := getLatestVersion()
+	if err != nil {
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to check updates; %w", err), map[string][]byte{})
+	}
+	latestVersion, err := version.NewSemver(*latest.Name)
+	if err != nil {
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse version; %w", err), map[string][]byte{})
+	}
+	compare := tflint.Version.Compare(latestVersion)
+	if compare < 0 {
+		fmt.Fprintf(cli.outStream, "New version available: %s\n", *latest.HTMLURL)
+	}
+}
+
+func getLatestVersion() (*github.RepositoryRelease, error) {
+	ghClient := github.NewClient(nil)
+	releases, _, err := ghClient.Repositories.ListReleases(context.Background(),
+		"terraform-linters", "tflint", &github.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	// GitHub sorts releases results. Select first non-prerelease version and return it.
+	for i := range releases {
+		release := releases[i]
+		if !*release.Prerelease {
+			return release, nil
+		}
+	}
+	return nil, errors.New("not found")
 }
