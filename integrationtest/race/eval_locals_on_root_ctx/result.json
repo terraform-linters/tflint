@@ -1,0 +1,25 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_route53_record_eval_on_root_ctx_example",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "record name (root): \"www.example.com\"",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 7,
+          "column": 13
+        },
+        "end": {
+          "line": 7,
+          "column": 27
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}

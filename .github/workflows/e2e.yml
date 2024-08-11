@@ -33,3 +33,18 @@ jobs:
       run: make e2e
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  race:
+    name: race
+    # go test -race is slow and only runs on ubuntu
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: 'go.mod'
+    - name: Run e2e-race
+      run: make e2e-race

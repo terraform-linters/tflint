@@ -16,7 +16,10 @@ install:
 	go install
 
 e2e: prepare install
-	go test -timeout 5m ./integrationtest/...
+	go test -timeout 5m $$(go list ./integrationtest/... | grep -v race)
+
+e2e-race: prepare
+	go test --race --timeout 5m ./integrationtest/race
 
 lint:
 	golangci-lint run ./...
