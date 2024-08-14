@@ -1,6 +1,6 @@
 # Building TFLint
 
-Go 1.22 or higher is required to build TFLint from source code. Clone the source code and run the `make` command. Built binary will be placed in `dist` directory.
+Go 1.23 or higher is required to build TFLint from source code. Clone the source code and run the `make` command. Built binary will be placed in `dist` directory.
 
 ```console
 $ git clone https://github.com/terraform-linters/tflint.git
