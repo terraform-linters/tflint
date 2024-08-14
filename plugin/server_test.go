@@ -768,7 +768,7 @@ resource "aws_instance" "foo" {
 
 			got := server.GetFiles(sdk.SelfModuleCtxType)
 			if diff := cmp.Diff(test.want, got); diff != "" {
-				t.Errorf(diff)
+				t.Errorf("diff: %s", diff)
 			}
 		})
 	}
