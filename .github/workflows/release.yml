@@ -17,22 +17,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
       with:
         submodules: true
     - name: Set up Go
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5
       with:
         go-version-file: 'go.mod'
     - name: Install Cosign
-      uses: sigstore/cosign-installer@v3.6.0
+      uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382 # v3.6.0
     - name: Run GoReleaser
-      uses: goreleaser/goreleaser-action@v6
+      uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6
       with:
         version: v1.12.3
         args: release --rm-dist --release-notes tools/release/release-note.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - uses: actions/attest-build-provenance@v1
+    - uses: actions/attest-build-provenance@d6e56129ac57db21eabf33778e4aa20e800eb5cb # v1
       with:
         subject-path: 'dist/checksums.txt'

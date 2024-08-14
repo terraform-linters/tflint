@@ -7,11 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
       with:
         submodules: true
     - name: Set up Go
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5
       with:
         go-version-file: 'go.mod'
     - run: go generate ./...
