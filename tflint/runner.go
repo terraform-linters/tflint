@@ -57,7 +57,6 @@ func NewRunner(originalWorkingDir string, c *Config, ants map[string]Annotations
 		ModulePath:     cfg.Path.UnkeyedInstanceShim(),
 		Config:         cfg.Root,
 		VariableValues: variableValues,
-		CallStack:      terraform.NewCallStack(),
 	}
 
 	runner := &Runner{

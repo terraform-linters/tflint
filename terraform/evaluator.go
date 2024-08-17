@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/agext/levenshtein"
 	"github.com/hashicorp/hcl/v2"
@@ -21,64 +20,11 @@ type ContextMeta struct {
 	OriginalWorkingDir string
 }
 
-type CallStack struct {
-	addrs map[string]addrs.Reference
-	stack []string
-}
-
-func NewCallStack() *CallStack {
-	return &CallStack{
-		addrs: make(map[string]addrs.Reference),
-		stack: make([]string, 0),
-	}
-}
-
-func (g *CallStack) Push(addr addrs.Reference) hcl.Diagnostics {
-	g.stack = append(g.stack, addr.Subject.String())
-
-	if _, exists := g.addrs[addr.Subject.String()]; exists {
-		return hcl.Diagnostics{
-			{
-				Severity: hcl.DiagError,
-				Summary:  "circular reference found",
-				Detail:   g.String(),
-				Subject:  addr.SourceRange.Ptr(),
-			},
-		}
-	}
-	g.addrs[addr.Subject.String()] = addr
-	return hcl.Diagnostics{}
-}
-
-func (g *CallStack) Pop() {
-	if g.Empty() {
-		panic("cannot pop from empty stack")
-	}
-
-	addr := g.stack[len(g.stack)-1]
-	g.stack = g.stack[:len(g.stack)-1]
-	delete(g.addrs, addr)
-}
-
-func (g *CallStack) String() string {
-	return strings.Join(g.stack, " -> ")
-}
-
-func (g *CallStack) Empty() bool {
-	return len(g.stack) == 0
-}
-
-func (g *CallStack) Clear() {
-	g.addrs = make(map[string]addrs.Reference)
-	g.stack = make([]string, 0)
-}
-
 type Evaluator struct {
 	Meta           *ContextMeta
 	ModulePath     addrs.ModuleInstance
 	Config         *Config
 	VariableValues map[string]map[string]cty.Value
-	CallStack      *CallStack
 }
 
 // EvaluateExpr takes the given HCL expression and evaluates it to produce a value.
@@ -101,18 +47,27 @@ func (e *Evaluator) ExpandBlock(body hcl.Body, schema *hclext.BodySchema) (hcl.B
 	return e.scope().ExpandBlock(body, schema)
 }
 
+// scope creates a new evaluation scope.
+// The difference with Evaluator is that each evaluation is independent
+// and is not shared between goroutines.
 func (e *Evaluator) scope() *lang.Scope {
-	return &lang.Scope{
-		Data: &evaluationData{
-			Evaluator:  e,
-			ModulePath: e.ModulePath,
-		},
+	scope := &lang.Scope{CallStack: lang.NewCallStack()}
+	scope.Data = &evaluationData{
+		Scope:          scope,
+		Meta:           e.Meta,
+		ModulePath:     e.ModulePath,
+		Config:         e.Config,
+		VariableValues: e.VariableValues,
 	}
+	return scope
 }
 
 type evaluationData struct {
-	Evaluator  *Evaluator
-	ModulePath addrs.ModuleInstance
+	Scope          *lang.Scope
+	Meta           *ContextMeta
+	ModulePath     addrs.ModuleInstance
+	Config         *Config
+	VariableValues map[string]map[string]cty.Value
 }
 
 var _ lang.Data = (*evaluationData)(nil)
@@ -142,7 +97,7 @@ func (d *evaluationData) GetForEachAttr(addr addrs.ForEachAttr, rng hcl.Range) (
 func (d *evaluationData) GetInputVariable(addr addrs.InputVariable, rng hcl.Range) (cty.Value, hcl.Diagnostics) {
 	var diags hcl.Diagnostics
 
-	moduleConfig := d.Evaluator.Config.DescendentForInstance(d.ModulePath)
+	moduleConfig := d.Config.DescendentForInstance(d.ModulePath)
 	if moduleConfig == nil {
 		// should never happen, since we can't be evaluating in a module
 		// that wasn't mentioned in configuration.
@@ -172,7 +127,7 @@ func (d *evaluationData) GetInputVariable(addr addrs.InputVariable, rng hcl.Rang
 	}
 
 	moduleAddrStr := d.ModulePath.String()
-	vals := d.Evaluator.VariableValues[moduleAddrStr]
+	vals := d.VariableValues[moduleAddrStr]
 	if vals == nil {
 		return cty.UnknownVal(config.Type), diags
 	}
@@ -229,7 +184,7 @@ func (d *evaluationData) GetLocalValue(addr addrs.LocalValue, rng hcl.Range) (ct
 
 	// First we'll make sure the requested value is declared in configuration,
 	// so we can produce a nice message if not.
-	moduleConfig := d.Evaluator.Config.DescendentForInstance(d.ModulePath)
+	moduleConfig := d.Config.DescendentForInstance(d.ModulePath)
 	if moduleConfig == nil {
 		// should never happen, since we can't be evaluating in a module
 		// that wasn't mentioned in configuration.
@@ -257,13 +212,13 @@ func (d *evaluationData) GetLocalValue(addr addrs.LocalValue, rng hcl.Range) (ct
 	}
 
 	// Build a call stack for circular reference detection only when getting a local value.
-	if diags := d.Evaluator.CallStack.Push(addrs.Reference{Subject: addr, SourceRange: rng}); diags.HasErrors() {
+	if diags := d.Scope.CallStack.Push(addrs.Reference{Subject: addr, SourceRange: rng}); diags.HasErrors() {
 		return cty.UnknownVal(cty.DynamicPseudoType), diags
 	}
 
-	val, diags := d.Evaluator.EvaluateExpr(config.Expr, cty.DynamicPseudoType)
+	val, diags := d.Scope.EvalExpr(config.Expr, cty.DynamicPseudoType)
 
-	d.Evaluator.CallStack.Pop()
+	d.Scope.CallStack.Pop()
 	return val, diags
 }
 
@@ -274,10 +229,10 @@ func (d *evaluationData) GetPathAttr(addr addrs.PathAttr, rng hcl.Range) (cty.Va
 	case "cwd":
 		var err error
 		var wd string
-		if d.Evaluator.Meta != nil {
+		if d.Meta != nil {
 			// Meta is always non-nil in the normal case, but some test cases
 			// are not so realistic.
-			wd = d.Evaluator.Meta.OriginalWorkingDir
+			wd = d.Meta.OriginalWorkingDir
 		}
 		if wd == "" {
 			wd, err = os.Getwd()
@@ -308,7 +263,7 @@ func (d *evaluationData) GetPathAttr(addr addrs.PathAttr, rng hcl.Range) (cty.Va
 		return cty.StringVal(filepath.ToSlash(wd)), diags
 
 	case "module":
-		moduleConfig := d.Evaluator.Config.DescendentForInstance(d.ModulePath)
+		moduleConfig := d.Config.DescendentForInstance(d.ModulePath)
 		if moduleConfig == nil {
 			// should never happen, since we can't be evaluating in a module
 			// that wasn't mentioned in configuration.
@@ -318,7 +273,7 @@ func (d *evaluationData) GetPathAttr(addr addrs.PathAttr, rng hcl.Range) (cty.Va
 		return cty.StringVal(filepath.ToSlash(sourceDir)), diags
 
 	case "root":
-		sourceDir := d.Evaluator.Config.Module.SourceDir
+		sourceDir := d.Config.Module.SourceDir
 		return cty.StringVal(filepath.ToSlash(sourceDir)), diags
 
 	default:
@@ -341,7 +296,7 @@ func (d *evaluationData) GetTerraformAttr(addr addrs.TerraformAttr, rng hcl.Rang
 	switch addr.Name {
 
 	case "workspace":
-		workspaceName := d.Evaluator.Meta.Env
+		workspaceName := d.Meta.Env
 		return cty.StringVal(workspaceName), diags
 
 	case "env":

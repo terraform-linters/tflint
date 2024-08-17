@@ -788,7 +788,6 @@ locals {
 				ModulePath:     config.Path.UnkeyedInstanceShim(),
 				Config:         config,
 				VariableValues: variableValues,
-				CallStack:      NewCallStack(),
 			}
 			if evaluator.Meta == nil {
 				evaluator.Meta = &ContextMeta{Env: Workspace()}
@@ -2181,7 +2180,6 @@ resource "aws_instance" "main" {
 				ModulePath:     config.Path.UnkeyedInstanceShim(),
 				Config:         config,
 				VariableValues: variableValues,
-				CallStack:      NewCallStack(),
 			}
 
 			expanded, diags := evaluator.ExpandBlock(file.Body, test.schema)
