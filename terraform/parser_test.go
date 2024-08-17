@@ -201,7 +201,7 @@ func TestLoadConfigDir(t *testing.T) {
 				primariesWant[i] = f.Body.MissingItemRange().Filename
 			}
 			if diff := cmp.Diff(primaries, primariesWant); diff != "" {
-				t.Errorf(diff)
+				t.Errorf("diff: %s", diff)
 			}
 
 			overrides := map[string]string{}
@@ -213,11 +213,11 @@ func TestLoadConfigDir(t *testing.T) {
 				overridesWant[i] = f.Body.MissingItemRange().Filename
 			}
 			if diff := cmp.Diff(overrides, overridesWant); diff != "" {
-				t.Errorf(diff)
+				t.Errorf("diff: %s", diff)
 			}
 
 			if diff := cmp.Diff(mod.Sources, test.want.Sources); diff != "" {
-				t.Errorf(diff)
+				t.Errorf("diff: %s", diff)
 			}
 
 			files := []string{}
@@ -230,7 +230,7 @@ func TestLoadConfigDir(t *testing.T) {
 			}
 			opt := cmpopts.SortSlices(func(x, y string) bool { return x > y })
 			if diff := cmp.Diff(files, filesWant, opt); diff != "" {
-				t.Errorf(diff)
+				t.Errorf("diff: %s", diff)
 			}
 		})
 	}
@@ -343,7 +343,7 @@ func TestLoadConfigDirFiles(t *testing.T) {
 				got = append(got, name)
 			}
 			if diff := cmp.Diff(got, test.want, opt); diff != "" {
-				t.Errorf(diff)
+				t.Errorf("diff: %s", diff)
 			}
 		})
 	}

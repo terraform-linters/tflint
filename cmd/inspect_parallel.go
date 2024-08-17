@@ -58,7 +58,7 @@ func (cli *CLI) inspectParallel(opts Options) int {
 		}
 		if worker.err != nil {
 			// If the worker is canceled, suppress the error message.
-			if errors.Is(context.Canceled, worker.err) {
+			if errors.Is(worker.err, context.Canceled) {
 				canceled = true
 				continue
 			}

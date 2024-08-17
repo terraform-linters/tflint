@@ -116,7 +116,7 @@ func TestFunctionCallsInExpr(t *testing.T) {
 			}
 
 			if diff := cmp.Diff(test.want, got); diff != "" {
-				t.Errorf(diff)
+				t.Errorf("diff: %s", diff)
 			}
 		})
 	}

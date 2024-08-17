@@ -203,7 +203,7 @@ resource "aws_instance" "foo" {
 
 			opts := cmpopts.IgnoreFields(hcl.Pos{}, "Byte")
 			if diff := cmp.Diff(test.want, got, opts); diff != "" {
-				t.Errorf(diff)
+				t.Errorf("diff: %s", diff)
 			}
 		})
 	}

@@ -731,7 +731,7 @@ func Test_EmitIssue(t *testing.T) {
 			}
 
 			if diff := cmp.Diff(runner.Issues.Sort(), tc.Expected); diff != "" {
-				t.Fatalf(diff)
+				t.Fatalf("diff: %s", diff)
 			}
 		})
 	}

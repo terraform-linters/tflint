@@ -69,7 +69,7 @@ failed
 			formatter.PrintErrorParallel(test.err, map[string][]byte{})
 
 			if diff := cmp.Diff(test.stderr, stderr.String()); diff != "" {
-				t.Errorf(diff)
+				t.Errorf("diff: %s", diff)
 			}
 		})
 	}
@@ -162,10 +162,10 @@ Reference: https://github.com
 			}
 
 			if diff := cmp.Diff(test.stdout, stdout.String()); diff != "" {
-				t.Errorf(diff)
+				t.Errorf("diff: %s", diff)
 			}
 			if diff := cmp.Diff(test.stderr, stderr.String()); diff != "" {
-				t.Errorf(diff)
+				t.Errorf("diff: %s", diff)
 			}
 		})
 	}
