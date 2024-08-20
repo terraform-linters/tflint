@@ -12,6 +12,9 @@ build:
 	mkdir -p dist
 	go build -v -o dist/tflint
 
+wasi:
+	GOOS=wasip1 GOARCH=wasm go build -mod=vendor -o main.wasm main.go
+
 install:
 	go install
 

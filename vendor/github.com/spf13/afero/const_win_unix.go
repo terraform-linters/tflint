@@ -15,8 +15,11 @@
 
 package afero
 
-import (
-	"syscall"
-)
+type Errno uintptr
 
-const BADFD = syscall.EBADFD
+const BADFD = Errno(0x9)
+
+// Dummy implementation to compile it to WASI
+func (e Errno) Error() string {
+	return "dummy"
+}
