@@ -50,7 +50,9 @@ type CmdRunner struct {
 // NewCmdRunner returns an implementation of runner.Runner for running a plugin
 // as a subprocess. It must be passed a cmd that hasn't yet been started.
 func NewCmdRunner(logger hclog.Logger, cmd *exec.Cmd) (*CmdRunner, error) {
+	//@todo - how to fix this shit
 	stdout, err := cmd.StdoutPipe()
+
 	if err != nil {
 		return nil, err
 	}

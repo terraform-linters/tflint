@@ -110,11 +110,7 @@ func (cli *CLI) Run(args []string) int {
 	case opts.ActAsBundledPlugin:
 		return cli.actAsBundledPlugin()
 	default:
-		if opts.Recursive {
-			return cli.inspectParallel(opts)
-		} else {
-			return cli.inspect(opts)
-		}
+		return cli.inspect(opts)
 	}
 }
 

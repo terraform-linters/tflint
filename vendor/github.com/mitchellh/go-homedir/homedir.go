@@ -110,6 +110,8 @@ func dirUnix() (string, error) {
 				return result, nil
 			}
 		}
+	} else if runtime.GOOS == "wasip1" {
+		return "/", nil
 	} else {
 		cmd := exec.Command("getent", "passwd", strconv.Itoa(os.Getuid()))
 		cmd.Stdout = &stdout

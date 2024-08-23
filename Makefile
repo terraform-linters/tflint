@@ -15,6 +15,9 @@ build:
 wasi:
 	GOOS=wasip1 GOARCH=wasm go build -mod=vendor -o main.wasm main.go
 
+debug-wasi:
+	make wasi && wasmtime --env TFLINT_LOG=debug --dir=../vanguard-demo/wordpress/infra/aws::/demo main.wasm --chdir /demo --recursive
+
 install:
 	go install
 

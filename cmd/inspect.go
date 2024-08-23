@@ -20,62 +20,75 @@ import (
 )
 
 func (cli *CLI) inspect(opts Options) int {
-	issues := tflint.Issues{}
-	changes := map[string][]byte{}
-
-	err := cli.withinChangedDir(opts.Chdir, func() error {
-		filterFiles := []string{}
-		for _, pattern := range opts.Filter {
-			files, err := filepath.Glob(pattern)
-			if err != nil {
-				return fmt.Errorf("Failed to parse --filter options; %w", err)
-			}
-			// Add the raw pattern to return an empty result if it doesn't match any files
-			if len(files) == 0 {
-				filterFiles = append(filterFiles, pattern)
-			}
-			filterFiles = append(filterFiles, files...)
-		}
-
-		// Join with the working directory to create the fullpath
-		for i, file := range filterFiles {
-			filterFiles[i] = filepath.Join(opts.Chdir, file)
-		}
-
-		var err error
-		issues, changes, err = cli.inspectModule(opts, ".", filterFiles)
-		return err
-	})
+	workingDirs, err := findWorkingDirs(opts)
 	if err != nil {
-		sources := map[string][]byte{}
-		if cli.loader != nil {
-			sources = cli.loader.Sources()
-		}
-		cli.formatter.Print(tflint.Issues{}, err, sources)
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to find workspaces; %w", err), map[string][]byte{})
 		return ExitCodeError
 	}
 
+	fmt.Printf("Working directories: %s\n", strings.Join(workingDirs, ", "))
+
+	// Aggregating results across all working directories
+	allIssues := tflint.Issues{}
+	allChanges := map[string][]byte{}
+
+	for _, dir := range workingDirs {
+		issues := tflint.Issues{}
+		changes := map[string][]byte{}
+
+		err = cli.withinChangedDir(dir, func() error {
+			filterFiles := []string{}
+			for _, pattern := range opts.Filter {
+				files, err := filepath.Glob(pattern)
+				if err != nil {
+					return fmt.Errorf("Failed to parse --filter options; %w", err)
+				}
+				if len(files) == 0 {
+					filterFiles = append(filterFiles, pattern)
+				}
+				filterFiles = append(filterFiles, files...)
+			}
+
+			var err error
+			issues, changes, err = cli.inspectModule(opts, ".", filterFiles)
+			return err
+		})
+
+		if err != nil {
+			sources := map[string][]byte{}
+			if cli.loader != nil {
+				sources = cli.loader.Sources()
+			}
+			cli.formatter.Print(tflint.Issues{}, err, sources)
+			return ExitCodeError
+		}
+
+		// Aggregate results
+		allIssues = append(allIssues, issues...)
+		for k, v := range changes {
+			allChanges[k] = v
+		}
+	}
+
 	if opts.ActAsWorker {
-		// When acting as a recursive inspection worker, the formatter is ignored
-		// and the serialized issues are output.
-		out, err := json.Marshal(issues)
+		out, err := json.Marshal(allIssues)
 		if err != nil {
 			fmt.Fprint(cli.errStream, err)
 			return ExitCodeError
 		}
 		fmt.Fprint(cli.outStream, string(out))
 	} else {
-		cli.formatter.Print(issues, nil, cli.sources)
+		cli.formatter.Print(allIssues, nil, cli.sources)
 	}
 
 	if opts.Fix {
-		if err := writeChanges(changes); err != nil {
+		if err := writeChanges(allChanges); err != nil {
 			cli.formatter.Print(tflint.Issues{}, err, cli.sources)
 			return ExitCodeError
 		}
 	}
 
-	if len(issues) > 0 && !cli.config.Force && exceedsMinimumFailure(issues, opts.MinimumFailureSeverity) {
+	if len(allIssues) > 0 && !cli.config.Force && exceedsMinimumFailure(allIssues, opts.MinimumFailureSeverity) {
 		return ExitCodeIssuesFound
 	}
 
@@ -212,6 +225,7 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 }
 
 func (cli *CLI) setupRunners(opts Options, dir string) (*tflint.Runner, []*tflint.Runner, error) {
+
 	configs, diags := cli.loader.LoadConfig(dir, cli.config.CallModuleType)
 	if diags.HasErrors() {
 		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
@@ -260,6 +274,17 @@ func (cli *CLI) setupRunners(opts Options, dir string) (*tflint.Runner, []*tflin
 func launchPlugins(config *tflint.Config, fix bool) (*plugin.Plugin, error) {
 	// Lookup plugins
 	rulesetPlugin, err := plugin.Discovery(config)
+
+	// plugin.Serve(&plugin.ServeOpts{
+	// 	RuleSet: &terraform.RuleSet{
+	// 		BuiltinRuleSet: tflint.BuiltinRuleSet{
+	// 			Name:    "terraform",
+	// 			Version: fmt.Sprintf("%s-bundled", project.Version),
+	// 		},
+	// 		PresetRules: rules.PresetRules,
+	// 	},
+	// })
+
 	if err != nil {
 		return nil, fmt.Errorf("Failed to initialize plugins; %w", err)
 	}

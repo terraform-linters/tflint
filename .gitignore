@@ -2,3 +2,4 @@
 /dist
 tflint-ruleset-*
 !tflint-ruleset-*/
+main.wasm

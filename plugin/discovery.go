@@ -21,6 +21,9 @@ import (
 // The Terraform Language plugin is treated specially. Plugins for which no version
 // is specified will launch the bundled plugin instead of returning an error.
 func Discovery(config *tflint.Config) (*Plugin, error) {
+
+	//@todo - try to not run a CMD but run the plugin directly
+
 	clients := map[string]*plugin.Client{}
 	rulesets := map[string]*host2plugin.Client{}
 
