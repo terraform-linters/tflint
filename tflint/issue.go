@@ -6,12 +6,13 @@ import (
 	"sort"
 
 	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 )
 
 // Issue represents a problem in configurations
 type Issue struct {
-	Rule    Rule
+	Rule    tflint.Rule
 	Message string
 	Range   hcl.Range
 	Fixable bool
@@ -97,7 +98,7 @@ type rule struct {
 	RawLink     string   `json:"link"`
 }
 
-var _ Rule = (*rule)(nil)
+var _ tflint.Rule = (*rule)(nil)
 
 func (r *rule) Name() string       { return r.RawName }
 func (r *rule) Severity() Severity { return r.RawSeverity }

@@ -8,15 +8,15 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
-	"github.com/terraform-linters/tflint/plugin"
+	tflintsdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	tflintDefaultRules "github.com/terraform-linters/tflint-ruleset-terraform/rules"
 	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/tflint"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+
+	tflintDefaultRuleset "github.com/terraform-linters/tflint-ruleset-terraform/terraform"
 )
 
 func (cli *CLI) inspect(opts Options) int {
@@ -124,35 +124,35 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 	}
 
 	// Launch plugin processes
-	rulesetPlugin, err := launchPlugins(cli.config, opts.Fix)
-	if rulesetPlugin != nil {
-		defer rulesetPlugin.Clean()
-		go cli.registerShutdownHandler(func() {
-			rulesetPlugin.Clean()
-			os.Exit(ExitCodeError)
-		})
-	}
+	RuleSets, err := launchPlugins(cli.config, opts.Fix)
+	// if rulesetPlugin != nil {
+	// 	defer rulesetPlugin.Clean()
+	// 	go cli.registerShutdownHandler(func() {
+	// 		rulesetPlugin.Clean()
+	// 		os.Exit(ExitCodeError)
+	// 	})
+	// }
 	if err != nil {
 		return issues, changes, err
 	}
 
 	// Check preconditions
-	sdkVersions := map[string]*version.Version{}
-	for name, ruleset := range rulesetPlugin.RuleSets {
-		sdkVersion, err := ruleset.SDKVersion()
-		if err != nil {
-			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
-				// SDKVersion endpoint is available in tflint-plugin-sdk v0.14+.
-				return issues, changes, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
-			} else {
-				return issues, changes, fmt.Errorf(`Failed to get plugin "%s" SDK version; %w`, name, err)
-			}
-		}
-		if !plugin.SDKVersionConstraints.Check(sdkVersion) {
-			return issues, changes, fmt.Errorf(`Plugin "%s" SDK version (%s) is incompatible. Compatible versions: %s`, name, sdkVersion, plugin.SDKVersionConstraints)
-		}
-		sdkVersions[name] = sdkVersion
-	}
+	// sdkVersions := map[string]*version.Version{}
+	// for name, ruleset := range RuleSets {
+	// 	sdkVersion, err := ruleset.SDKVersion()
+	// 	if err != nil {
+	// 		if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
+	// 			// SDKVersion endpoint is available in tflint-plugin-sdk v0.14+.
+	// 			return issues, changes, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
+	// 		} else {
+	// 			return issues, changes, fmt.Errorf(`Failed to get plugin "%s" SDK version; %w`, name, err)
+	// 		}
+	// 	}
+	// 	if !plugin.SDKVersionConstraints.Check(sdkVersion) {
+	// 		return issues, changes, fmt.Errorf(`Plugin "%s" SDK version (%s) is incompatible. Compatible versions: %s`, name, sdkVersion, plugin.SDKVersionConstraints)
+	// 	}
+	// 	sdkVersions[name] = sdkVersion
+	// }
 
 	// Run inspection
 	//
@@ -168,29 +168,42 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and start troubleshooting.`)
 		}
 
-		for name, ruleset := range rulesetPlugin.RuleSets {
-			if err := ruleset.Check(plugin.NewGRPCServer(rootRunner, rootRunner, cli.loader.Files(), sdkVersions[name])); err != nil {
-				return issues, changes, fmt.Errorf("Failed to check ruleset; %w", err)
+		for _, ruleset := range RuleSets {
+
+			rules := ruleset.BuiltinImpl().EnabledRules
+
+			// runner, err := ruleset.NewRunner(rootRunner)
+
+			ch := make(chan error, len(moduleRunners))
+			for _, rule := range rules {
+				// err := rule.Check(*rootRunner)
+				ch <- rule.Check(rootRunner)
 			}
+
+			// if err := ruleset.Check(plugin.NewGRPCServer(rootRunner, rootRunner, cli.loader.Files(), sdkVersions[name])); err != nil {
+			// 	return issues, changes, fmt.Errorf("Failed to check ruleset; %w", err)
+			// }
 			// Run checks for module calls are performed in parallel.
 			// The rootRunner is shared between goroutines but read-only, so this is goroutine-safe.
 			// Note that checks against the rootRunner are not parallelized, as autofix may cause the module to be rebuilt.
-			ch := make(chan error, len(moduleRunners))
-			for _, runner := range moduleRunners {
-				if opts.NoParallelRunners {
-					ch <- ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersions[name]))
-				} else {
-					go func(runner *tflint.Runner) {
-						ch <- ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersions[name]))
-					}(runner)
-				}
-			}
+
+			// for _, runner := range moduleRunners {
+			// 	if opts.NoParallelRunners {
+			// 		ch <- ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersions[name]))
+			// 	} else {
+			// 		go func(runner *tflint.Runner) {
+			// 			ch <- ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersions[name]))
+			// 		}(runner)
+			// 	}
+			// }
+
 			for i := 0; i < len(moduleRunners); i++ {
 				err = <-ch
 				if err != nil {
 					return issues, changes, fmt.Errorf("Failed to check ruleset; %w", err)
 				}
 			}
+
 			close(ch)
 		}
 
@@ -271,72 +284,52 @@ func (cli *CLI) setupRunners(opts Options, dir string) (*tflint.Runner, []*tflin
 	return runner, moduleRunners, nil
 }
 
-func launchPlugins(config *tflint.Config, fix bool) (*plugin.Plugin, error) {
+func launchPlugins(config *tflint.Config, fix bool) (map[string]tflintsdk.RuleSet, error) {
 	// Lookup plugins
-	rulesetPlugin, err := plugin.Discovery(config)
+	// rulesetPlugin, err := plugin.Discovery(config)
 
-	// plugin.Serve(&plugin.ServeOpts{
-	// 	RuleSet: &terraform.RuleSet{
-	// 		BuiltinRuleSet: tflint.BuiltinRuleSet{
-	// 			Name:    "terraform",
-	// 			Version: fmt.Sprintf("%s-bundled", project.Version),
-	// 		},
-	// 		PresetRules: rules.PresetRules,
-	// 	},
-	// })
-
-	if err != nil {
-		return nil, fmt.Errorf("Failed to initialize plugins; %w", err)
+	builtInRuleSet := tflintDefaultRuleset.RuleSet{
+		PresetRules: tflintDefaultRules.PresetRules,
 	}
 
-	rulesets := []tflint.RuleSet{}
+	// @nonfx - Manually add plugins to this array if you need to add more plugins
+	rulesetMap := map[string]tflintsdk.RuleSet{
+		"tflint": &builtInRuleSet,
+	}
+
 	pluginConf := config.ToPluginConfig()
 	pluginConf.Fix = fix
 
 	// Check version constraints and apply a config to plugins
-	for name, ruleset := range rulesetPlugin.RuleSets {
-		constraints, err := ruleset.VersionConstraints()
-		if err != nil {
-			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
-				// VersionConstraints endpoint is available in tflint-plugin-sdk v0.14+.
-				return rulesetPlugin, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
-			} else {
-				return rulesetPlugin, fmt.Errorf(`Failed to get TFLint version constraints to "%s" plugin; %w`, name, err)
-			}
-		}
-		if !constraints.Check(tflint.Version) {
-			return rulesetPlugin, fmt.Errorf("Failed to satisfy version constraints; tflint-ruleset-%s requires %s, but TFLint version is %s", name, constraints, tflint.Version)
+	for name, ruleset := range rulesetMap {
+		if err := ruleset.ApplyGlobalConfig(pluginConf); err != nil {
+			return rulesetMap, fmt.Errorf(`Failed to apply global config to "%s" plugin; %w`, name, err)
 		}
 
-		if err := ruleset.ApplyGlobalConfig(pluginConf); err != nil {
-			return rulesetPlugin, fmt.Errorf(`Failed to apply global config to "%s" plugin; %w`, name, err)
-		}
-		configSchema, err := ruleset.ConfigSchema()
-		if err != nil {
-			return rulesetPlugin, fmt.Errorf(`Failed to fetch config schema from "%s" plugin; %w`, name, err)
-		}
+		configSchema := ruleset.ConfigSchema()
 		content := &hclext.BodyContent{}
+
 		if plugin, exists := config.Plugins[name]; exists {
 			var diags hcl.Diagnostics
 			content, diags = plugin.Content(configSchema)
 			if diags.HasErrors() {
-				return rulesetPlugin, fmt.Errorf(`Failed to parse "%s" plugin config; %w`, name, diags)
+				return rulesetMap, fmt.Errorf(`Failed to parse "%s" plugin config; %w`, name, diags)
 			}
 		}
-		err = ruleset.ApplyConfig(content, config.Sources())
-		if err != nil {
-			return rulesetPlugin, fmt.Errorf(`Failed to apply config to "%s" plugin; %w`, name, err)
-		}
 
-		rulesets = append(rulesets, ruleset)
+		// err := ruleset.ApplyConfig(content, config.Sources())
+		err := ruleset.ApplyConfig(content)
+		if err != nil {
+			return rulesetMap, fmt.Errorf(`Failed to apply config to "%s" plugin; %w`, name, err)
+		}
 	}
 
 	// Validate config for plugins
-	if err := config.ValidateRules(rulesets...); err != nil {
-		return rulesetPlugin, fmt.Errorf("Failed to check rule config; %w", err)
-	}
+	// if err := config.ValidateRules(rulesets...); err != nil {
+	// 	return rulesets, fmt.Errorf("Failed to check rule config; %w", err)
+	// }
 
-	return rulesetPlugin, nil
+	return rulesetMap, nil
 }
 
 func writeChanges(changes map[string][]byte) error {

@@ -1,3 +1,0 @@
-plugin "testing" {
-  enabled = true
-}

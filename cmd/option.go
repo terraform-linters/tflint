@@ -14,7 +14,6 @@ import (
 type Options struct {
 	Version                bool     `short:"v" long:"version" description:"Print TFLint version"`
 	Init                   bool     `long:"init" description:"Install plugins"`
-	Langserver             bool     `long:"langserver" description:"Start language server"`
 	Format                 string   `short:"f" long:"format" description:"Output format" choice:"default" choice:"json" choice:"checkstyle" choice:"junit" choice:"compact" choice:"sarif"`
 	Config                 string   `short:"c" long:"config" description:"Config file name (default: .tflint.hcl)" value-name:"FILE"`
 	IgnoreModules          []string `long:"ignore-module" description:"Ignore module sources" value-name:"SOURCE"`
@@ -37,7 +36,6 @@ type Options struct {
 	Fix                    bool     `long:"fix" description:"Fix issues automatically"`
 	NoParallelRunners      bool     `long:"no-parallel-runners" description:"Disable per-runner parallelism"`
 	MaxWorkers             *int     `long:"max-workers" description:"Set maximum number of workers in recursive inspection (default: number of CPUs)" value-name:"N"`
-	ActAsBundledPlugin     bool     `long:"act-as-bundled-plugin" hidden:"true"`
 	ActAsWorker            bool     `long:"act-as-worker" hidden:"true"`
 }
 

@@ -1,11 +1,17 @@
 package tflint
 
 import (
+	"github.com/hashicorp/go-version"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint-plugin-sdk/logger"
 )
 
 var _ RuleSet = &BuiltinRuleSet{}
+
+// SDKVersion returns the version of the SDK used by the plugin.
+func (r *BuiltinRuleSet) SDKVersion() (*version.Version, error) {
+	return version.NewVersion("0.21.0")
+}
 
 // BuiltinRuleSet is the basis of the ruleset. Plugins can serve this ruleset directly.
 // You can serve a custom ruleset by embedding this ruleset if you need special extensions.

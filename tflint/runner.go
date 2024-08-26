@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
+	"reflect"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/lang"
@@ -29,11 +31,11 @@ type Runner struct {
 }
 
 // Rule is interface for building the issue
-type Rule interface {
-	Name() string
-	Severity() Severity
-	Link() string
-}
+// type Rule interface {
+// 	Name() string
+// 	Severity() Severity
+// 	Link() string
+// }
 
 // NewRunner returns new TFLint runner.
 // It prepares built-in context (workpace metadata, variables) from
@@ -170,6 +172,12 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 	return runners, nil
 }
 
+func (r *Runner) DecodeRuleConfig(name string, ret interface{}) error {
+	content := r.RuleConfig(name)
+	reflect.ValueOf(ret).Elem().Set(reflect.ValueOf(content).Elem())
+	return nil
+}
+
 // LookupIssues returns issues according to the received files
 func (r *Runner) LookupIssues(files ...string) Issues {
 	if len(files) == 0 {
@@ -185,6 +193,10 @@ func (r *Runner) LookupIssues(files ...string) Issues {
 		}
 	}
 	return issues
+}
+
+func (r *Runner) GetModulePath() []string {
+	return r.TFConfig.Path
 }
 
 // LookupChanges returns changes according to the received files
@@ -224,9 +236,12 @@ func (r *Runner) Sources() map[string][]byte {
 	return r.TFConfig.Module.Sources
 }
 
+// have EmitIssue("github.com/terraform-linters/tflint-plugin-sdk/tflint".Rule, string, hcl.Range, bool) bool
+// want EmitIssue("github.com/terraform-linters/tflint-plugin-sdk/tflint".Rule, string, hcl.Range) errorcompilerInvalidIfaceAssign
+
 // EmitIssue builds an issue and accumulates it.
 // Returns true if the issue was not ignored by annotations.
-func (r *Runner) EmitIssue(rule Rule, message string, location hcl.Range, fixable bool) bool {
+func (r *Runner) EmitIssue(rule tflint.Rule, message string, location hcl.Range, fixable bool) bool {
 	if r.TFConfig.Path.IsRoot() {
 		return r.emitIssue(&Issue{
 			Rule:    rule,
