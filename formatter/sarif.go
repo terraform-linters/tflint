@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/hashicorp/hcl/v2"
-	"github.com/owenrumney/go-sarif/sarif"
+	"github.com/owenrumney/go-sarif/v2/sarif"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 )
@@ -17,7 +17,7 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, appErr error) {
 		panic(initErr)
 	}
 
-	run := sarif.NewRun("tflint", "https://github.com/terraform-linters/tflint")
+	run := sarif.NewRunWithInformationURI("tflint", "https://github.com/terraform-linters/tflint")
 
 	version := tflint.Version.String()
 	run.Tool.Driver.Version = &version
@@ -25,7 +25,9 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, appErr error) {
 	report.AddRun(run)
 
 	for _, issue := range issues {
-		rule := run.AddRule(issue.Rule.Name()).WithHelpURI(issue.Rule.Link()).WithDescription("")
+		rule := run.AddRule(issue.Rule.Name()).
+			WithHelpURI(issue.Rule.Link()).
+			WithDescription("")
 
 		var level string
 		switch issue.Rule.Severity() {
@@ -55,16 +57,16 @@ func (f *Formatter) sarifPrint(issues tflint.Issues, appErr error) {
 			}
 		}
 
-		result := run.AddResult(rule.ID).
+		result := run.CreateResultForRule(rule.ID).
 			WithLevel(level).
 			WithMessage(sarif.NewTextMessage(issue.Message))
 
 		if location != nil {
-			result.WithLocation(sarif.NewLocationWithPhysicalLocation(location))
+			result.AddLocation(sarif.NewLocationWithPhysicalLocation(location))
 		}
 	}
 
-	errRun := sarif.NewRun("tflint-errors", "https://github.com/terraform-linters/tflint")
+	errRun := sarif.NewRunWithInformationURI("tflint-errors", "https://github.com/terraform-linters/tflint")
 	errRun.Tool.Driver.Version = &version
 
 	report.AddRun(errRun)
@@ -105,15 +107,15 @@ func (f *Formatter) sarifAddErrors(errRun *sarif.Run, err error) {
 						WithEndColumn(diag.Subject.End.Column),
 				)
 
-			errRun.AddResult(diag.Summary).
+			errRun.CreateResultForRule(diag.Summary).
 				WithLevel(fromHclSeverity(diag.Severity)).
-				WithLocation(sarif.NewLocationWithPhysicalLocation(location)).
-				WithMessage(sarif.NewTextMessage(diag.Detail))
+				WithMessage(sarif.NewTextMessage(diag.Detail)).
+				AddLocation(sarif.NewLocationWithPhysicalLocation(location))
 		}
 		return
 	}
 
-	errRun.AddResult("application_error").
+	errRun.CreateResultForRule("application_error").
 		WithLevel("error").
 		WithMessage(sarif.NewTextMessage(err.Error()))
 }
