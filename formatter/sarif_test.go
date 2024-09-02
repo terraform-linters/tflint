@@ -26,14 +26,15 @@ func Test_sarifPrint(t *testing.T) {
 			Issues: tflint.Issues{},
 			Stdout: fmt.Sprintf(`{
   "version": "2.1.0",
-  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
   "runs": [
     {
       "tool": {
         "driver": {
+          "informationUri": "https://github.com/terraform-linters/tflint",
           "name": "tflint",
-          "version": "%s",
-          "informationUri": "https://github.com/terraform-linters/tflint"
+          "rules": [],
+          "version": "%s"
         }
       },
       "results": []
@@ -41,9 +42,10 @@ func Test_sarifPrint(t *testing.T) {
     {
       "tool": {
         "driver": {
+          "informationUri": "https://github.com/terraform-linters/tflint",
           "name": "tflint-errors",
-          "version": "%s",
-          "informationUri": "https://github.com/terraform-linters/tflint"
+          "rules": [],
+          "version": "%s"
         }
       },
       "results": []
@@ -66,14 +68,13 @@ func Test_sarifPrint(t *testing.T) {
 			},
 			Stdout: fmt.Sprintf(`{
   "version": "2.1.0",
-  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
   "runs": [
     {
       "tool": {
         "driver": {
-          "name": "tflint",
-          "version": "%s",
           "informationUri": "https://github.com/terraform-linters/tflint",
+          "name": "tflint",
           "rules": [
             {
               "id": "test_rule",
@@ -82,12 +83,14 @@ func Test_sarifPrint(t *testing.T) {
               },
               "helpUri": "https://github.com"
             }
-          ]
+          ],
+          "version": "%s"
         }
       },
       "results": [
         {
           "ruleId": "test_rule",
+          "ruleIndex": 0,
           "level": "error",
           "message": {
             "text": "test"
@@ -113,9 +116,10 @@ func Test_sarifPrint(t *testing.T) {
     {
       "tool": {
         "driver": {
+          "informationUri": "https://github.com/terraform-linters/tflint",
           "name": "tflint-errors",
-          "version": "%s",
-          "informationUri": "https://github.com/terraform-linters/tflint"
+          "rules": [],
+          "version": "%s"
         }
       },
       "results": []
@@ -138,14 +142,13 @@ func Test_sarifPrint(t *testing.T) {
 			},
 			Stdout: fmt.Sprintf(`{
   "version": "2.1.0",
-  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
   "runs": [
     {
       "tool": {
         "driver": {
-          "name": "tflint",
-          "version": "%s",
           "informationUri": "https://github.com/terraform-linters/tflint",
+          "name": "tflint",
           "rules": [
             {
               "id": "test_rule",
@@ -154,12 +157,14 @@ func Test_sarifPrint(t *testing.T) {
               },
               "helpUri": "https://github.com"
             }
-          ]
+          ],
+          "version": "%s"
         }
       },
       "results": [
         {
           "ruleId": "test_rule",
+          "ruleIndex": 0,
           "level": "error",
           "message": {
             "text": "test"
@@ -185,9 +190,10 @@ func Test_sarifPrint(t *testing.T) {
     {
       "tool": {
         "driver": {
+          "informationUri": "https://github.com/terraform-linters/tflint",
           "name": "tflint-errors",
-          "version": "%s",
-          "informationUri": "https://github.com/terraform-linters/tflint"
+          "rules": [],
+          "version": "%s"
         }
       },
       "results": []
@@ -210,14 +216,13 @@ func Test_sarifPrint(t *testing.T) {
 			},
 			Stdout: fmt.Sprintf(`{
   "version": "2.1.0",
-  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
   "runs": [
     {
       "tool": {
         "driver": {
-          "name": "tflint",
-          "version": "%s",
           "informationUri": "https://github.com/terraform-linters/tflint",
+          "name": "tflint",
           "rules": [
             {
               "id": "test_rule",
@@ -226,12 +231,14 @@ func Test_sarifPrint(t *testing.T) {
               },
               "helpUri": "https://github.com"
             }
-          ]
+          ],
+          "version": "%s"
         }
       },
       "results": [
         {
           "ruleId": "test_rule",
+          "ruleIndex": 0,
           "level": "error",
           "message": {
             "text": "test"
@@ -257,9 +264,10 @@ func Test_sarifPrint(t *testing.T) {
     {
       "tool": {
         "driver": {
+          "informationUri": "https://github.com/terraform-linters/tflint",
           "name": "tflint-errors",
-          "version": "%s",
-          "informationUri": "https://github.com/terraform-linters/tflint"
+          "rules": [],
+          "version": "%s"
         }
       },
       "results": []
@@ -282,14 +290,13 @@ func Test_sarifPrint(t *testing.T) {
 			},
 			Stdout: fmt.Sprintf(`{
   "version": "2.1.0",
-  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
   "runs": [
     {
       "tool": {
         "driver": {
-          "name": "tflint",
-          "version": "%s",
           "informationUri": "https://github.com/terraform-linters/tflint",
+          "name": "tflint",
           "rules": [
             {
               "id": "test_rule",
@@ -298,12 +305,14 @@ func Test_sarifPrint(t *testing.T) {
               },
               "helpUri": "https://github.com"
             }
-          ]
+          ],
+          "version": "%s"
         }
       },
       "results": [
         {
           "ruleId": "test_rule",
+          "ruleIndex": 0,
           "level": "error",
           "message": {
             "text": "test"
@@ -329,9 +338,10 @@ func Test_sarifPrint(t *testing.T) {
     {
       "tool": {
         "driver": {
+          "informationUri": "https://github.com/terraform-linters/tflint",
           "name": "tflint-errors",
-          "version": "%s",
-          "informationUri": "https://github.com/terraform-linters/tflint"
+          "rules": [],
+          "version": "%s"
         }
       },
       "results": []
@@ -353,14 +363,13 @@ func Test_sarifPrint(t *testing.T) {
 			Error: fmt.Errorf("Failed to work; %w", errors.New("I don't feel like working")),
 			Stdout: fmt.Sprintf(`{
   "version": "2.1.0",
-  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
   "runs": [
     {
       "tool": {
         "driver": {
-          "name": "tflint",
-          "version": "%s",
           "informationUri": "https://github.com/terraform-linters/tflint",
+          "name": "tflint",
           "rules": [
             {
               "id": "test_rule",
@@ -369,12 +378,14 @@ func Test_sarifPrint(t *testing.T) {
               },
               "helpUri": "https://github.com"
             }
-          ]
+          ],
+          "version": "%s"
         }
       },
       "results": [
         {
           "ruleId": "test_rule",
+          "ruleIndex": 0,
           "level": "error",
           "message": {
             "text": "test"
@@ -394,14 +405,16 @@ func Test_sarifPrint(t *testing.T) {
     {
       "tool": {
         "driver": {
+          "informationUri": "https://github.com/terraform-linters/tflint",
           "name": "tflint-errors",
-          "version": "%s",
-          "informationUri": "https://github.com/terraform-linters/tflint"
+          "rules": [],
+          "version": "%s"
         }
       },
       "results": [
         {
           "ruleId": "application_error",
+          "ruleIndex": 18446744073709551615,
           "level": "error",
           "message": {
             "text": "Failed to work; I don't feel like working"
@@ -431,14 +444,15 @@ func Test_sarifPrint(t *testing.T) {
 			),
 			Stdout: fmt.Sprintf(`{
   "version": "2.1.0",
-  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
   "runs": [
     {
       "tool": {
         "driver": {
+          "informationUri": "https://github.com/terraform-linters/tflint",
           "name": "tflint",
-          "version": "%s",
-          "informationUri": "https://github.com/terraform-linters/tflint"
+          "rules": [],
+          "version": "%s"
         }
       },
       "results": []
@@ -446,14 +460,16 @@ func Test_sarifPrint(t *testing.T) {
     {
       "tool": {
         "driver": {
+          "informationUri": "https://github.com/terraform-linters/tflint",
           "name": "tflint-errors",
-          "version": "%s",
-          "informationUri": "https://github.com/terraform-linters/tflint"
+          "rules": [],
+          "version": "%s"
         }
       },
       "results": [
         {
           "ruleId": "summary",
+          "ruleIndex": 18446744073709551615,
           "level": "warning",
           "message": {
             "text": "detail"
@@ -501,14 +517,15 @@ func Test_sarifPrint(t *testing.T) {
 			),
 			Stdout: fmt.Sprintf(`{
   "version": "2.1.0",
-  "$schema": "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
   "runs": [
     {
       "tool": {
         "driver": {
+          "informationUri": "https://github.com/terraform-linters/tflint",
           "name": "tflint",
-          "version": "%s",
-          "informationUri": "https://github.com/terraform-linters/tflint"
+          "rules": [],
+          "version": "%s"
         }
       },
       "results": []
@@ -516,14 +533,16 @@ func Test_sarifPrint(t *testing.T) {
     {
       "tool": {
         "driver": {
+          "informationUri": "https://github.com/terraform-linters/tflint",
           "name": "tflint-errors",
-          "version": "%s",
-          "informationUri": "https://github.com/terraform-linters/tflint"
+          "rules": [],
+          "version": "%s"
         }
       },
       "results": [
         {
           "ruleId": "application_error",
+          "ruleIndex": 18446744073709551615,
           "level": "error",
           "message": {
             "text": "an error occurred"
@@ -531,6 +550,7 @@ func Test_sarifPrint(t *testing.T) {
         },
         {
           "ruleId": "application_error",
+          "ruleIndex": 18446744073709551615,
           "level": "error",
           "message": {
             "text": "failed"
@@ -538,6 +558,7 @@ func Test_sarifPrint(t *testing.T) {
         },
         {
           "ruleId": "summary",
+          "ruleIndex": 18446744073709551615,
           "level": "warning",
           "message": {
             "text": "detail"
