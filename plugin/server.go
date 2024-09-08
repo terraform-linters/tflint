@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"sync"
 
 	"github.com/hashicorp/go-version"
 	hcl "github.com/hashicorp/hcl/v2"
@@ -17,6 +18,7 @@ import (
 
 // GRPCServer is a gRPC server for responding to requests from plugins.
 type GRPCServer struct {
+	mu               sync.Mutex
 	runner           *tflint.Runner
 	rootRunner       *tflint.Runner
 	files            map[string]*hcl.File
@@ -50,6 +52,8 @@ func (s *GRPCServer) GetModuleContent(bodyS *hclext.BodySchema, opts sdk.GetModu
 		module = s.runner.TFConfig.Module
 		ctx = s.runner.Ctx
 	case sdk.RootModuleCtxType:
+		s.mu.Lock()
+		defer s.mu.Unlock()
 		module = s.rootRunner.TFConfig.Module
 		ctx = s.rootRunner.Ctx
 	default:
@@ -87,6 +91,8 @@ func (s *GRPCServer) GetFiles(ty sdk.ModuleCtxType) map[string][]byte {
 	case sdk.SelfModuleCtxType:
 		return s.runner.Sources()
 	case sdk.RootModuleCtxType:
+		// HINT: This is an operation on the root runner,
+		//       but it works without locking since it is obviously readonly.
 		return s.rootRunner.Sources()
 	default:
 		panic(fmt.Sprintf("invalid ModuleCtxType: %s", ty))
@@ -127,6 +133,8 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts sdk.EvaluateExprOpti
 	case sdk.SelfModuleCtxType:
 		runner = s.runner
 	case sdk.RootModuleCtxType:
+		s.mu.Lock()
+		defer s.mu.Unlock()
 		runner = s.rootRunner
 	}
 
