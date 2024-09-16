@@ -152,10 +152,18 @@ func (m *Module) PartialContent(schema *hclext.BodySchema, ctx *Evaluator) (*hcl
 	return content, diags
 }
 
-// overrideBlocks changes the attributes in the passed primary blocks by override blocks recursively.
+// overrideBlocks overrides the primary blocks passed with override blocks,
+// following Terraform's merge behavior.
+// https://developer.hashicorp.com/terraform/language/files/override#merging-behavior
+//
+// Note that this function returns the overwritten primary blocks
+// but has side effects on the primary blocks.
 func overrideBlocks(primaries, overrides hclext.Blocks) hclext.Blocks {
 	dict := map[string]*hclext.Block{}
 	for _, primary := range primaries {
+		// A top-level block in an override file merges with a block in a normal configuration file
+		// that has the same block header.
+		// The block header is the block type and any quoted labels that follow it.
 		key := fmt.Sprintf("%s[%s]", primary.Type, strings.Join(primary.Labels, ","))
 		dict[key] = primary
 	}
@@ -163,10 +171,24 @@ func overrideBlocks(primaries, overrides hclext.Blocks) hclext.Blocks {
 	for _, override := range overrides {
 		key := fmt.Sprintf("%s[%s]", override.Type, strings.Join(override.Labels, ","))
 		if primary, exists := dict[key]; exists {
+			// Within a top-level block, an attribute argument within an override block
+			// replaces any argument of the same name in the original block.
 			for name, attr := range override.Body.Attributes {
 				primary.Body.Attributes[name] = attr
 			}
-			primary.Body.Blocks = overrideBlocks(primary.Body.Blocks, override.Body.Blocks)
+
+			// Within a top-level block, any nested blocks within an override block replace
+			// all blocks of the same type in the original block.
+			// Any block types that do not appear in the override block remain from the original block.
+			for _, overrideBlock := range override.Body.Blocks {
+				overriddenBlocks := hclext.Blocks{}
+				for _, primaryBlock := range primary.Body.Blocks {
+					if primaryBlock.Type != overrideBlock.Type {
+						overriddenBlocks = append(overriddenBlocks, primaryBlock)
+					}
+				}
+				primary.Body.Blocks = append(overriddenBlocks, overrideBlock)
+			}
 		}
 	}
 

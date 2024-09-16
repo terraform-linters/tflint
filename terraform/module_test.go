@@ -603,6 +603,7 @@ func Test_overrideBlocks(t *testing.T) {
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{
 							"foo": &hclext.Attribute{Name: "bar"},
+							"baz": &hclext.Attribute{Name: "baz"},
 						},
 					},
 				},
@@ -614,6 +615,7 @@ func Test_overrideBlocks(t *testing.T) {
 						Attributes: hclext.Attributes{
 							"foo": &hclext.Attribute{Name: "bar"},
 							"bar": &hclext.Attribute{Name: "bar"},
+							"baz": &hclext.Attribute{Name: "baz"},
 						},
 					},
 				},
@@ -651,6 +653,7 @@ func Test_overrideBlocks(t *testing.T) {
 								Body: &hclext.BodyContent{
 									Attributes: hclext.Attributes{
 										"baz": &hclext.Attribute{Name: "qux"},
+										"bar": &hclext.Attribute{Name: "bar"},
 									},
 								},
 							},
@@ -668,8 +671,89 @@ func Test_overrideBlocks(t *testing.T) {
 								Type: "nested",
 								Body: &hclext.BodyContent{
 									Attributes: hclext.Attributes{
+										// The contents of nested configuration blocks are not merged.
 										"baz": &hclext.Attribute{Name: "qux"},
+										"bar": &hclext.Attribute{Name: "bar"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override multiple nested blocks",
+			Primaries: hclext.Blocks{
+				{
+					Type: "resource",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"foo": &hclext.Attribute{Name: "foo"},
+									},
+								},
+							},
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"bar": &hclext.Attribute{Name: "bar"},
+									},
+								},
+							},
+							{
+								Type: "other_nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
 										"qux": &hclext.Attribute{Name: "qux"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "resource",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"baz": &hclext.Attribute{Name: "baz"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "resource",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							// Any block types that do not appear in the override block remain from the original block.
+							{
+								Type: "other_nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"qux": &hclext.Attribute{Name: "qux"},
+									},
+								},
+							},
+							// override block replace all blocks of the same type in the original block.
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"baz": &hclext.Attribute{Name: "baz"},
 									},
 								},
 							},
