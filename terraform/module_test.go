@@ -236,19 +236,19 @@ resource "aws_instance" "bar" {
 						Type:   "resource",
 						Labels: []string{"aws_instance", "foo"},
 						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main1.tf"}}},
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main1.tf", Start: hcl.Pos{Line: 3}}}},
 							Blocks:     hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main1.tf"},
+						DefRange: hcl.Range{Filename: "main1.tf", Start: hcl.Pos{Line: 2}},
 					},
 					{
 						Type:   "resource",
 						Labels: []string{"aws_instance", "bar"},
 						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main2.tf"}}},
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main2.tf", Start: hcl.Pos{Line: 3}}}},
 							Blocks:     hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main2.tf"},
+						DefRange: hcl.Range{Filename: "main2.tf", Start: hcl.Pos{Line: 2}},
 					},
 				},
 			},
@@ -281,10 +281,53 @@ resource "aws_instance" "foo" {
 						Type:   "resource",
 						Labels: []string{"aws_instance", "foo"},
 						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main_override.tf"}}},
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main_override.tf", Start: hcl.Pos{Line: 3}}}},
 							Blocks:     hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 2}},
+					},
+				},
+			},
+		},
+		{
+			name: "overrides by multiple files/blocks",
+			files: map[string]string{
+				"main.tf": `
+resource "aws_instance" "foo" {
+  instance_type = "t2.micro"
+}`,
+				"main1_override.tf": `
+resource "aws_instance" "foo" {
+  instance_type = "m5.2xlarge"
+}`,
+				"main2_override.tf": `
+resource "aws_instance" "foo" {
+  instance_type = "m5.4xlarge"
+}
+resource "aws_instance" "foo" {
+  instance_type = "m5.8xlarge"
+}`,
+			},
+			schema: &hclext.BodySchema{
+				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "foo"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main2_override.tf", Start: hcl.Pos{Line: 6}}}},
+							Blocks:     hclext.Blocks{},
+						},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 2}},
 					},
 				},
 			},
@@ -312,12 +355,12 @@ locals {
 						Type: "locals",
 						Body: &hclext.BodyContent{
 							Attributes: hclext.Attributes{
-								"foo": &hclext.Attribute{Name: "foo", Range: hcl.Range{Filename: "main.tf"}},
-								"bar": &hclext.Attribute{Name: "bar", Range: hcl.Range{Filename: "main.tf"}},
+								"foo": &hclext.Attribute{Name: "foo", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 3}}},
+								"bar": &hclext.Attribute{Name: "bar", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 4}}},
 							},
 							Blocks: hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 2}},
 					},
 				},
 			},
@@ -351,19 +394,19 @@ resource "aws_instance" "bar" {
 						Type:   "resource",
 						Labels: []string{"aws_instance", "bar"},
 						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf"}}},
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 8}}}},
 							Blocks:     hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 6}},
 					},
 					{
 						Type:   "resource",
 						Labels: []string{"aws_instance", "bar"},
 						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf"}}},
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 8}}}},
 							Blocks:     hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 6}},
 					},
 				},
 			},
@@ -397,19 +440,19 @@ module "bar" {
 						Type:   "module",
 						Labels: []string{"bar"},
 						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf"}}},
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 8}}}},
 							Blocks:     hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 6}},
 					},
 					{
 						Type:   "module",
 						Labels: []string{"bar"},
 						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf"}}},
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 8}}}},
 							Blocks:     hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 6}},
 					},
 				},
 			},
@@ -461,14 +504,14 @@ resource "aws_instance" "bar" {
 								{
 									Type: "ebs_block_device",
 									Body: &hclext.BodyContent{
-										Attributes: hclext.Attributes{"volume_size": &hclext.Attribute{Name: "volume_size", Range: hcl.Range{Filename: "main.tf"}}},
+										Attributes: hclext.Attributes{"volume_size": &hclext.Attribute{Name: "volume_size", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 4}}}},
 										Blocks:     hclext.Blocks{},
 									},
-									DefRange: hcl.Range{Filename: "main.tf"},
+									DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 3}},
 								},
 							},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 2}},
 					},
 					{
 						Type:   "resource",
@@ -479,22 +522,22 @@ resource "aws_instance" "bar" {
 								{
 									Type: "ebs_block_device",
 									Body: &hclext.BodyContent{
-										Attributes: hclext.Attributes{"volume_size": &hclext.Attribute{Name: "volume_size", Range: hcl.Range{Filename: "main.tf"}}},
+										Attributes: hclext.Attributes{"volume_size": &hclext.Attribute{Name: "volume_size", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 11}}}},
 										Blocks:     hclext.Blocks{},
 									},
-									DefRange: hcl.Range{Filename: "main.tf"},
+									DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 8}},
 								},
 								{
 									Type: "ebs_block_device",
 									Body: &hclext.BodyContent{
-										Attributes: hclext.Attributes{"volume_size": &hclext.Attribute{Name: "volume_size", Range: hcl.Range{Filename: "main.tf"}}},
+										Attributes: hclext.Attributes{"volume_size": &hclext.Attribute{Name: "volume_size", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 11}}}},
 										Blocks:     hclext.Blocks{},
 									},
-									DefRange: hcl.Range{Filename: "main.tf"},
+									DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 8}},
 								},
 							},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 7}},
 					},
 				},
 			},
@@ -539,7 +582,8 @@ resource "aws_instance" "bar" {
 			opts := cmp.Options{
 				cmpopts.IgnoreFields(hclext.Block{}, "TypeRange", "LabelRanges"),
 				cmpopts.IgnoreFields(hclext.Attribute{}, "Expr", "NameRange"),
-				cmpopts.IgnoreFields(hcl.Range{}, "Start", "End"),
+				cmpopts.IgnoreFields(hcl.Range{}, "End"),
+				cmpopts.IgnoreFields(hcl.Pos{}, "Column", "Byte"),
 				cmpopts.SortSlices(func(i, j *hclext.Block) bool {
 					return i.DefRange.String() < j.DefRange.String()
 				}),

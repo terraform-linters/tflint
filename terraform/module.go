@@ -2,6 +2,9 @@ package terraform
 
 import (
 	"fmt"
+	"maps"
+	"slices"
+	"sort"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2"
@@ -138,8 +141,15 @@ func (m *Module) PartialContent(schema *hclext.BodySchema, ctx *Evaluator) (*hcl
 		}
 		content.Blocks = append(content.Blocks, c.Blocks...)
 	}
-	for _, f := range m.overrides {
-		expanded, d := ctx.ExpandBlock(f.Body, schema)
+
+	// If more than one override file defines the same top-level block, the overriding effect is compounded,
+	// with later blocks taking precedence over earlier blocks.
+	// Overrides are processed in order first by filename (in lexicographical order)
+	// and then by position in each file.
+	overrideFilenames := slices.Collect(maps.Keys(m.overrides))
+	sort.Strings(overrideFilenames)
+	for _, filename := range overrideFilenames {
+		expanded, d := ctx.ExpandBlock(m.overrides[filename].Body, schema)
 		diags = diags.Extend(d)
 		c, d := hclext.PartialContent(expanded, schema)
 		diags = diags.Extend(d)
