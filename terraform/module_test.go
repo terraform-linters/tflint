@@ -806,6 +806,483 @@ func Test_overrideBlocks(t *testing.T) {
 				},
 			},
 		},
+		{
+			Name: "no override multiple required_version",
+			Primaries: hclext.Blocks{
+				// The "terraform" blocks are allowed to be declared multiple times.
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version1"}},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version2"}},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version1"}},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version2"}},
+					},
+				},
+			},
+		},
+		{
+			Name: "override multiple required_version",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version1"}},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version2"}},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version3"}},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version4"}},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				// In both the required_version and required_providers settings,
+				// each override constraint entirely replaces the constraints for the same component in the original block.
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version4"}},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version4"}},
+					},
+				},
+			},
+		},
+		{
+			Name: "no override required_providers",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws"},
+										"google": &hclext.Attribute{Name: "google"},
+									},
+								},
+							},
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"azurerm": &hclext.Attribute{Name: "azurerm"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google-beta": &hclext.Attribute{Name: "google-beta"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws"},
+										"google": &hclext.Attribute{Name: "google"},
+									},
+								},
+							},
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"azurerm": &hclext.Attribute{Name: "azurerm"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google-beta": &hclext.Attribute{Name: "google-beta"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			// If the required_providers argument is set, its value is merged on an element-by-element basis
+			Name: "override required_providers",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws"},
+										"google": &hclext.Attribute{Name: "google"},
+									},
+								},
+							},
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"azurerm": &hclext.Attribute{Name: "azurerm"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google-beta": &hclext.Attribute{Name: "google-beta"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":     &hclext.Attribute{Name: "aws2"},
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+									},
+								},
+							},
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"assert": &hclext.Attribute{Name: "assert"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google": &hclext.Attribute{Name: "google2"},
+										"time":   &hclext.Attribute{Name: "time"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws2"},
+										"google": &hclext.Attribute{Name: "google2"},
+									},
+								},
+							},
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google-beta": &hclext.Attribute{Name: "google-beta"},
+									},
+								},
+							},
+						},
+					},
+				},
+				// Blocks not present in the primaries are added
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"assert": &hclext.Attribute{Name: "assert"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"time": &hclext.Attribute{Name: "time"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override backend",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type:   "backend",
+								Labels: []string{"local"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"path": &hclext.Attribute{Name: "path"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type:   "backend",
+								Labels: []string{"remote"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"host": &hclext.Attribute{Name: "host"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type:   "backend",
+								Labels: []string{"remote"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"host": &hclext.Attribute{Name: "host"}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			// The presence of a block defining a backend (either cloud or backend) in an override file
+			// always takes precedence over a block defining a backend in the original configuration
+			Name: "override backend by cloud",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type:   "backend",
+								Labels: []string{"local"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"path": &hclext.Attribute{Name: "path"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "cloud",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"organization": &hclext.Attribute{Name: "organization"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "cloud",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"organization": &hclext.Attribute{Name: "organization"}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override cloud by backend",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "cloud",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"organization": &hclext.Attribute{Name: "organization"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type:   "backend",
+								Labels: []string{"remote"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"host": &hclext.Attribute{Name: "host"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type:   "backend",
+								Labels: []string{"remote"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"host": &hclext.Attribute{Name: "host"}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 	}
 
 	for _, test := range tests {
