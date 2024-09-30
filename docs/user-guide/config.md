@@ -139,7 +139,7 @@ Adding a module source to `ignore_module` will cause it to be ignored when [call
 
 ```hcl
 config {
-  module = true
+  call_module_type = "all"
   ignore_module = {
     "terraform-aws-modules/vpc/aws"            = true
     "terraform-aws-modules/security-group/aws" = true
