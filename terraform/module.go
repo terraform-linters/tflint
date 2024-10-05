@@ -172,8 +172,8 @@ func overrideBlocks(primaries, overrides hclext.Blocks) hclext.Blocks {
 	dict := map[string]hclext.Blocks{}
 	for _, primary := range primaries {
 		switch primary.Type {
-		case "terraform":
-			// The "terraform" blocks are allowed to be declared multiple times.
+		case "locals", "terraform":
+			// The "locals", "terraform" blocks are allowed to be declared multiple times.
 			dict[primary.Type] = append(dict[primary.Type], primary)
 
 		default:
@@ -188,6 +188,38 @@ func overrideBlocks(primaries, overrides hclext.Blocks) hclext.Blocks {
 	newPrimaries := hclext.Blocks{}
 	for _, override := range overrides {
 		switch override.Type {
+		case "locals":
+			// Tracks locals ​​that were not used to override.
+			remainLocals := hclext.Attributes{}
+			for name, attr := range override.Body.Attributes {
+				remainLocals[name] = attr
+			}
+
+			// Each locals block defines a number of named values.
+			// Overrides are applied on a value-by-value basis, ignoring which locals block they are defined in.
+			for _, primary := range dict[override.Type] {
+				for name, attr := range override.Body.Attributes {
+					if _, exists := primary.Body.Attributes[name]; exists {
+						primary.Body.Attributes[name] = attr
+						delete(remainLocals, name)
+					}
+				}
+			}
+
+			// Any remaining locals that aren't overridden will be added as a new block.
+			if len(remainLocals) > 0 {
+				newPrimaries = append(newPrimaries, &hclext.Block{
+					Type:   override.Type,
+					Labels: override.Labels,
+					Body: &hclext.BodyContent{
+						Attributes: remainLocals,
+					},
+					DefRange:    override.DefRange,
+					TypeRange:   override.TypeRange,
+					LabelRanges: override.LabelRanges,
+				})
+			}
+
 		case "terraform":
 			// Any required_providers that were not used for overrides will be added,
 			// so we will track whether they were used for overrides or not.

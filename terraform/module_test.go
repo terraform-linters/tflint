@@ -807,6 +807,65 @@ func Test_overrideBlocks(t *testing.T) {
 			},
 		},
 		{
+			Name: "override locals",
+			Primaries: hclext.Blocks{
+				// The "locals" blocks are allowed to be declared multiple times.
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}, "bar": &hclext.Attribute{Name: "bar"}},
+					},
+				},
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"baz": &hclext.Attribute{Name: "baz"}, "qux": &hclext.Attribute{Name: "qux"}},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"baz": &hclext.Attribute{Name: "baz2"}, "foo2": &hclext.Attribute{Name: "foo2"}},
+					},
+				},
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"bar": &hclext.Attribute{Name: "bar2"}, "qux2": &hclext.Attribute{Name: "qux2"}},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}, "bar": &hclext.Attribute{Name: "bar2"}},
+					},
+				},
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"baz": &hclext.Attribute{Name: "baz2"}, "qux": &hclext.Attribute{Name: "qux"}},
+					},
+				},
+				// Locals not present in the primaries are added
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo2": &hclext.Attribute{Name: "foo2"}},
+					},
+				},
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"qux2": &hclext.Attribute{Name: "qux2"}},
+					},
+				},
+			},
+		},
+		{
 			Name: "no override multiple required_version",
 			Primaries: hclext.Blocks{
 				// The "terraform" blocks are allowed to be declared multiple times.
