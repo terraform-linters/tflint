@@ -188,6 +188,39 @@ func overrideBlocks(primaries, overrides hclext.Blocks) hclext.Blocks {
 	newPrimaries := hclext.Blocks{}
 	for _, override := range overrides {
 		switch override.Type {
+		case "resource":
+			key := fmt.Sprintf("%s[%s]", override.Type, strings.Join(override.Labels, ","))
+			if primaries, exists := dict[key]; exists {
+				// Duplicated blocks are not allowed.
+				primary := primaries[0]
+
+				// Within a top-level block, an attribute argument within an override block
+				// replaces any argument of the same name in the original block.
+				for name, attr := range override.Body.Attributes {
+					primary.Body.Attributes[name] = attr
+				}
+
+				// Within a top-level block, any nested blocks within an override block replace
+				// all blocks of the same type in the original block.
+				// Any block types that do not appear in the override block remain from the original block.
+				for _, overrideInnerBlock := range override.Body.Blocks {
+					newInnerBlocks := hclext.Blocks{}
+					for _, primaryInnerBlock := range primary.Body.Blocks {
+						if primaryInnerBlock.Type != overrideInnerBlock.Type {
+							newInnerBlocks = append(newInnerBlocks, primaryInnerBlock)
+						} else if overrideInnerBlock.Type == "lifecycle" {
+							// Within a resource block, the contents of any lifecycle nested block are merged on an argument-by-argument basis.
+							for name, attr := range overrideInnerBlock.Body.Attributes {
+								primaryInnerBlock.Body.Attributes[name] = attr
+							}
+							// Can't override nested blocks
+							newInnerBlocks = append(newInnerBlocks, primaryInnerBlock)
+						}
+					}
+					primary.Body.Blocks = append(newInnerBlocks, overrideInnerBlock)
+				}
+			}
+
 		case "locals":
 			// Tracks locals ​​that were not used to override.
 			remainLocals := hclext.Attributes{}

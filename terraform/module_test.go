@@ -807,6 +807,91 @@ func Test_overrideBlocks(t *testing.T) {
 			},
 		},
 		{
+			Name: "override lifecycle/provisioner/connection",
+			Primaries: hclext.Blocks{
+				{
+					Type:   "resource",
+					Labels: []string{"random_id", "server"},
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"create_before_destroy": &hclext.Attribute{Name: "create_before_destroy"}, "prevent_destroy": &hclext.Attribute{Name: "prevent_destroy"}},
+						Blocks: hclext.Blocks{
+							{
+								Type:   "provisioner",
+								Labels: []string{"local-exec"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"command": &hclext.Attribute{Name: "command"}},
+								},
+							},
+							{
+								Type:   "provisioner",
+								Labels: []string{"file"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"content": &hclext.Attribute{Name: "content"}},
+								},
+							},
+							{
+								Type: "connection",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"type": &hclext.Attribute{Name: "type"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type:   "resource",
+					Labels: []string{"random_id", "server"},
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"ignore_changes": &hclext.Attribute{Name: "ignore_changes"}, "create_before_destroy": &hclext.Attribute{Name: "create_before_destroy2"}},
+						Blocks: hclext.Blocks{
+							{
+								Type:   "provisioner",
+								Labels: []string{"remote-exec"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"inline": &hclext.Attribute{Name: "inline"}},
+								},
+							},
+							{
+								Type: "connection",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"user": &hclext.Attribute{Name: "user"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type:   "resource",
+					Labels: []string{"random_id", "server"},
+					Body: &hclext.BodyContent{
+						// the contents of any lifecycle nested block are merged on an argument-by-argument basis.
+						Attributes: hclext.Attributes{"create_before_destroy": &hclext.Attribute{Name: "create_before_destroy2"}, "prevent_destroy": &hclext.Attribute{Name: "prevent_destroy"}, "ignore_changes": &hclext.Attribute{Name: "ignore_changes"}},
+						// If an overriding resource block contains one or more provisioner blocks then any provisioner blocks in the original block are ignored.
+						// If an overriding resource block contains a connection block then it completely overrides any connection block present in the original block.
+						Blocks: hclext.Blocks{
+							{
+								Type:   "provisioner",
+								Labels: []string{"remote-exec"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"inline": &hclext.Attribute{Name: "inline"}},
+								},
+							},
+							{
+								Type: "connection",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"user": &hclext.Attribute{Name: "user"}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
 			Name: "override locals",
 			Primaries: hclext.Blocks{
 				// The "locals" blocks are allowed to be declared multiple times.
