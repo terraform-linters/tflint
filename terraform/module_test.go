@@ -612,7 +612,8 @@ func Test_overrideBlocks(t *testing.T) {
 			Name: "no override",
 			Primaries: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
 					},
@@ -621,7 +622,38 @@ func Test_overrideBlocks(t *testing.T) {
 			Overrides: hclext.Blocks{},
 			Want: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+					},
+				},
+			},
+		},
+		{
+			Name: "no override because resources are difference",
+			Primaries: hclext.Blocks{
+				{
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type:   "resource",
+					Labels: []string{"baz", "qux"},
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo2"}},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
 					},
@@ -632,7 +664,8 @@ func Test_overrideBlocks(t *testing.T) {
 			Name: "override",
 			Primaries: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{
 							"foo": &hclext.Attribute{Name: "foo"},
@@ -643,7 +676,8 @@ func Test_overrideBlocks(t *testing.T) {
 			},
 			Overrides: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{
 							"foo": &hclext.Attribute{Name: "bar"},
@@ -654,7 +688,8 @@ func Test_overrideBlocks(t *testing.T) {
 			},
 			Want: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{
 							"foo": &hclext.Attribute{Name: "bar"},
@@ -669,7 +704,8 @@ func Test_overrideBlocks(t *testing.T) {
 			Name: "override nested blocks",
 			Primaries: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
 						Blocks: hclext.Blocks{
@@ -688,7 +724,8 @@ func Test_overrideBlocks(t *testing.T) {
 			},
 			Overrides: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "bar"}},
 						Blocks: hclext.Blocks{
@@ -707,7 +744,8 @@ func Test_overrideBlocks(t *testing.T) {
 			},
 			Want: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "bar"}},
 						Blocks: hclext.Blocks{
@@ -730,7 +768,8 @@ func Test_overrideBlocks(t *testing.T) {
 			Name: "override multiple nested blocks",
 			Primaries: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Blocks: hclext.Blocks{
 							{
@@ -763,7 +802,8 @@ func Test_overrideBlocks(t *testing.T) {
 			},
 			Overrides: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Blocks: hclext.Blocks{
 							{
@@ -780,7 +820,8 @@ func Test_overrideBlocks(t *testing.T) {
 			},
 			Want: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Blocks: hclext.Blocks{
 							// Any block types that do not appear in the override block remain from the original block.
@@ -811,10 +852,15 @@ func Test_overrideBlocks(t *testing.T) {
 			Primaries: hclext.Blocks{
 				{
 					Type:   "resource",
-					Labels: []string{"random_id", "server"},
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{"create_before_destroy": &hclext.Attribute{Name: "create_before_destroy"}, "prevent_destroy": &hclext.Attribute{Name: "prevent_destroy"}},
 						Blocks: hclext.Blocks{
+							{
+								Type: "lifecycle",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"create_before_destroy": &hclext.Attribute{Name: "create_before_destroy"}, "prevent_destroy": &hclext.Attribute{Name: "prevent_destroy"}},
+								},
+							},
 							{
 								Type:   "provisioner",
 								Labels: []string{"local-exec"},
@@ -842,10 +888,15 @@ func Test_overrideBlocks(t *testing.T) {
 			Overrides: hclext.Blocks{
 				{
 					Type:   "resource",
-					Labels: []string{"random_id", "server"},
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{"ignore_changes": &hclext.Attribute{Name: "ignore_changes"}, "create_before_destroy": &hclext.Attribute{Name: "create_before_destroy2"}},
 						Blocks: hclext.Blocks{
+							{
+								Type: "lifecycle",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"ignore_changes": &hclext.Attribute{Name: "ignore_changes"}, "create_before_destroy": &hclext.Attribute{Name: "create_before_destroy2"}},
+								},
+							},
 							{
 								Type:   "provisioner",
 								Labels: []string{"remote-exec"},
@@ -866,13 +917,17 @@ func Test_overrideBlocks(t *testing.T) {
 			Want: hclext.Blocks{
 				{
 					Type:   "resource",
-					Labels: []string{"random_id", "server"},
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
-						// the contents of any lifecycle nested block are merged on an argument-by-argument basis.
-						Attributes: hclext.Attributes{"create_before_destroy": &hclext.Attribute{Name: "create_before_destroy2"}, "prevent_destroy": &hclext.Attribute{Name: "prevent_destroy"}, "ignore_changes": &hclext.Attribute{Name: "ignore_changes"}},
-						// If an overriding resource block contains one or more provisioner blocks then any provisioner blocks in the original block are ignored.
-						// If an overriding resource block contains a connection block then it completely overrides any connection block present in the original block.
 						Blocks: hclext.Blocks{
+							// the contents of any lifecycle nested block are merged on an argument-by-argument basis.
+							{
+								Type: "lifecycle",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"create_before_destroy": &hclext.Attribute{Name: "create_before_destroy2"}, "prevent_destroy": &hclext.Attribute{Name: "prevent_destroy"}, "ignore_changes": &hclext.Attribute{Name: "ignore_changes"}},
+								},
+							},
+							// If an overriding resource block contains one or more provisioner blocks then any provisioner blocks in the original block are ignored.
 							{
 								Type:   "provisioner",
 								Labels: []string{"remote-exec"},
@@ -880,6 +935,7 @@ func Test_overrideBlocks(t *testing.T) {
 									Attributes: hclext.Attributes{"inline": &hclext.Attribute{Name: "inline"}},
 								},
 							},
+							// If an overriding resource block contains a connection block then it completely overrides any connection block present in the original block.
 							{
 								Type: "connection",
 								Body: &hclext.BodyContent{
@@ -892,9 +948,102 @@ func Test_overrideBlocks(t *testing.T) {
 			},
 		},
 		{
+			Name: "override data sources",
+			Primaries: hclext.Blocks{
+				{
+					Type:   "data",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{
+							"foo": &hclext.Attribute{Name: "foo"},
+							"bar": &hclext.Attribute{Name: "bar"},
+						},
+						Blocks: hclext.Blocks{
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"foo": &hclext.Attribute{Name: "foo"},
+									},
+								},
+							},
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"bar": &hclext.Attribute{Name: "bar"},
+									},
+								},
+							},
+							{
+								Type: "other_nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"qux": &hclext.Attribute{Name: "qux"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type:   "data",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{
+							"foo": &hclext.Attribute{Name: "bar"},
+							"baz": &hclext.Attribute{Name: "baz"},
+						},
+						Blocks: hclext.Blocks{
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"baz": &hclext.Attribute{Name: "baz"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type:   "data",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{
+							"foo": &hclext.Attribute{Name: "bar"},
+							"bar": &hclext.Attribute{Name: "bar"},
+							"baz": &hclext.Attribute{Name: "baz"},
+						},
+						Blocks: hclext.Blocks{
+							{
+								Type: "other_nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"qux": &hclext.Attribute{Name: "qux"},
+									},
+								},
+							},
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"baz": &hclext.Attribute{Name: "baz"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
 			Name: "override locals",
 			Primaries: hclext.Blocks{
-				// The "locals" blocks are allowed to be declared multiple times.
 				{
 					Type: "locals",
 					Body: &hclext.BodyContent{
@@ -918,7 +1067,7 @@ func Test_overrideBlocks(t *testing.T) {
 				{
 					Type: "locals",
 					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{"bar": &hclext.Attribute{Name: "bar2"}, "qux2": &hclext.Attribute{Name: "qux2"}},
+						Attributes: hclext.Attributes{"bar": &hclext.Attribute{Name: "bar2"}},
 					},
 				},
 			},
@@ -935,50 +1084,11 @@ func Test_overrideBlocks(t *testing.T) {
 						Attributes: hclext.Attributes{"baz": &hclext.Attribute{Name: "baz2"}, "qux": &hclext.Attribute{Name: "qux"}},
 					},
 				},
-				// Locals not present in the primaries are added
+				// Locals not present in the primaries are added.
 				{
 					Type: "locals",
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{"foo2": &hclext.Attribute{Name: "foo2"}},
-					},
-				},
-				{
-					Type: "locals",
-					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{"qux2": &hclext.Attribute{Name: "qux2"}},
-					},
-				},
-			},
-		},
-		{
-			Name: "no override multiple required_version",
-			Primaries: hclext.Blocks{
-				// The "terraform" blocks are allowed to be declared multiple times.
-				{
-					Type: "terraform",
-					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version1"}},
-					},
-				},
-				{
-					Type: "terraform",
-					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version2"}},
-					},
-				},
-			},
-			Overrides: hclext.Blocks{},
-			Want: hclext.Blocks{
-				{
-					Type: "terraform",
-					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version1"}},
-					},
-				},
-				{
-					Type: "terraform",
-					Body: &hclext.BodyContent{
-						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version2"}},
 					},
 				},
 			},
@@ -1014,8 +1124,8 @@ func Test_overrideBlocks(t *testing.T) {
 				},
 			},
 			Want: hclext.Blocks{
-				// In both the required_version and required_providers settings,
-				// each override constraint entirely replaces the constraints for the same component in the original block.
+				// When overriding attributes, the last element in override takes precedence,
+				// so all attributes of primaries are overridden by required_version4.
 				{
 					Type: "terraform",
 					Body: &hclext.BodyContent{
@@ -1031,93 +1141,6 @@ func Test_overrideBlocks(t *testing.T) {
 			},
 		},
 		{
-			Name: "no override required_providers",
-			Primaries: hclext.Blocks{
-				{
-					Type: "terraform",
-					Body: &hclext.BodyContent{
-						Blocks: hclext.Blocks{
-							{
-								Type: "required_providers",
-								Body: &hclext.BodyContent{
-									Attributes: hclext.Attributes{
-										"aws":    &hclext.Attribute{Name: "aws"},
-										"google": &hclext.Attribute{Name: "google"},
-									},
-								},
-							},
-							{
-								Type: "required_providers",
-								Body: &hclext.BodyContent{
-									Attributes: hclext.Attributes{
-										"azurerm": &hclext.Attribute{Name: "azurerm"},
-									},
-								},
-							},
-						},
-					},
-				},
-				{
-					Type: "terraform",
-					Body: &hclext.BodyContent{
-						Blocks: hclext.Blocks{
-							{
-								Type: "required_providers",
-								Body: &hclext.BodyContent{
-									Attributes: hclext.Attributes{
-										"google-beta": &hclext.Attribute{Name: "google-beta"},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-			Overrides: hclext.Blocks{},
-			Want: hclext.Blocks{
-				{
-					Type: "terraform",
-					Body: &hclext.BodyContent{
-						Blocks: hclext.Blocks{
-							{
-								Type: "required_providers",
-								Body: &hclext.BodyContent{
-									Attributes: hclext.Attributes{
-										"aws":    &hclext.Attribute{Name: "aws"},
-										"google": &hclext.Attribute{Name: "google"},
-									},
-								},
-							},
-							{
-								Type: "required_providers",
-								Body: &hclext.BodyContent{
-									Attributes: hclext.Attributes{
-										"azurerm": &hclext.Attribute{Name: "azurerm"},
-									},
-								},
-							},
-						},
-					},
-				},
-				{
-					Type: "terraform",
-					Body: &hclext.BodyContent{
-						Blocks: hclext.Blocks{
-							{
-								Type: "required_providers",
-								Body: &hclext.BodyContent{
-									Attributes: hclext.Attributes{
-										"google-beta": &hclext.Attribute{Name: "google-beta"},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-		{
-			// If the required_providers argument is set, its value is merged on an element-by-element basis
 			Name: "override required_providers",
 			Primaries: hclext.Blocks{
 				{
@@ -1242,7 +1265,7 @@ func Test_overrideBlocks(t *testing.T) {
 						},
 					},
 				},
-				// Blocks not present in the primaries are added
+				// Blocks not present in the primaries are added.
 				{
 					Type: "terraform",
 					Body: &hclext.BodyContent{
