@@ -236,19 +236,19 @@ resource "aws_instance" "bar" {
 						Type:   "resource",
 						Labels: []string{"aws_instance", "foo"},
 						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main1.tf"}}},
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main1.tf", Start: hcl.Pos{Line: 3}}}},
 							Blocks:     hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main1.tf"},
+						DefRange: hcl.Range{Filename: "main1.tf", Start: hcl.Pos{Line: 2}},
 					},
 					{
 						Type:   "resource",
 						Labels: []string{"aws_instance", "bar"},
 						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main2.tf"}}},
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main2.tf", Start: hcl.Pos{Line: 3}}}},
 							Blocks:     hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main2.tf"},
+						DefRange: hcl.Range{Filename: "main2.tf", Start: hcl.Pos{Line: 2}},
 					},
 				},
 			},
@@ -281,10 +281,53 @@ resource "aws_instance" "foo" {
 						Type:   "resource",
 						Labels: []string{"aws_instance", "foo"},
 						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main_override.tf"}}},
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main_override.tf", Start: hcl.Pos{Line: 3}}}},
 							Blocks:     hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 2}},
+					},
+				},
+			},
+		},
+		{
+			name: "overrides by multiple files/blocks",
+			files: map[string]string{
+				"main.tf": `
+resource "aws_instance" "foo" {
+  instance_type = "t2.micro"
+}`,
+				"main1_override.tf": `
+resource "aws_instance" "foo" {
+  instance_type = "m5.2xlarge"
+}`,
+				"main2_override.tf": `
+resource "aws_instance" "foo" {
+  instance_type = "m5.4xlarge"
+}
+resource "aws_instance" "foo" {
+  instance_type = "m5.8xlarge"
+}`,
+			},
+			schema: &hclext.BodySchema{
+				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "foo"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main2_override.tf", Start: hcl.Pos{Line: 6}}}},
+							Blocks:     hclext.Blocks{},
+						},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 2}},
 					},
 				},
 			},
@@ -312,12 +355,12 @@ locals {
 						Type: "locals",
 						Body: &hclext.BodyContent{
 							Attributes: hclext.Attributes{
-								"foo": &hclext.Attribute{Name: "foo", Range: hcl.Range{Filename: "main.tf"}},
-								"bar": &hclext.Attribute{Name: "bar", Range: hcl.Range{Filename: "main.tf"}},
+								"foo": &hclext.Attribute{Name: "foo", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 3}}},
+								"bar": &hclext.Attribute{Name: "bar", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 4}}},
 							},
 							Blocks: hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 2}},
 					},
 				},
 			},
@@ -351,19 +394,19 @@ resource "aws_instance" "bar" {
 						Type:   "resource",
 						Labels: []string{"aws_instance", "bar"},
 						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf"}}},
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 8}}}},
 							Blocks:     hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 6}},
 					},
 					{
 						Type:   "resource",
 						Labels: []string{"aws_instance", "bar"},
 						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf"}}},
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 8}}}},
 							Blocks:     hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 6}},
 					},
 				},
 			},
@@ -397,19 +440,19 @@ module "bar" {
 						Type:   "module",
 						Labels: []string{"bar"},
 						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf"}}},
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 8}}}},
 							Blocks:     hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 6}},
 					},
 					{
 						Type:   "module",
 						Labels: []string{"bar"},
 						Body: &hclext.BodyContent{
-							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf"}}},
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 8}}}},
 							Blocks:     hclext.Blocks{},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 6}},
 					},
 				},
 			},
@@ -461,14 +504,14 @@ resource "aws_instance" "bar" {
 								{
 									Type: "ebs_block_device",
 									Body: &hclext.BodyContent{
-										Attributes: hclext.Attributes{"volume_size": &hclext.Attribute{Name: "volume_size", Range: hcl.Range{Filename: "main.tf"}}},
+										Attributes: hclext.Attributes{"volume_size": &hclext.Attribute{Name: "volume_size", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 4}}}},
 										Blocks:     hclext.Blocks{},
 									},
-									DefRange: hcl.Range{Filename: "main.tf"},
+									DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 3}},
 								},
 							},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 2}},
 					},
 					{
 						Type:   "resource",
@@ -479,22 +522,22 @@ resource "aws_instance" "bar" {
 								{
 									Type: "ebs_block_device",
 									Body: &hclext.BodyContent{
-										Attributes: hclext.Attributes{"volume_size": &hclext.Attribute{Name: "volume_size", Range: hcl.Range{Filename: "main.tf"}}},
+										Attributes: hclext.Attributes{"volume_size": &hclext.Attribute{Name: "volume_size", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 11}}}},
 										Blocks:     hclext.Blocks{},
 									},
-									DefRange: hcl.Range{Filename: "main.tf"},
+									DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 8}},
 								},
 								{
 									Type: "ebs_block_device",
 									Body: &hclext.BodyContent{
-										Attributes: hclext.Attributes{"volume_size": &hclext.Attribute{Name: "volume_size", Range: hcl.Range{Filename: "main.tf"}}},
+										Attributes: hclext.Attributes{"volume_size": &hclext.Attribute{Name: "volume_size", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 11}}}},
 										Blocks:     hclext.Blocks{},
 									},
-									DefRange: hcl.Range{Filename: "main.tf"},
+									DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 8}},
 								},
 							},
 						},
-						DefRange: hcl.Range{Filename: "main.tf"},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 7}},
 					},
 				},
 			},
@@ -539,7 +582,8 @@ resource "aws_instance" "bar" {
 			opts := cmp.Options{
 				cmpopts.IgnoreFields(hclext.Block{}, "TypeRange", "LabelRanges"),
 				cmpopts.IgnoreFields(hclext.Attribute{}, "Expr", "NameRange"),
-				cmpopts.IgnoreFields(hcl.Range{}, "Start", "End"),
+				cmpopts.IgnoreFields(hcl.Range{}, "End"),
+				cmpopts.IgnoreFields(hcl.Pos{}, "Column", "Byte"),
 				cmpopts.SortSlices(func(i, j *hclext.Block) bool {
 					return i.DefRange.String() < j.DefRange.String()
 				}),
@@ -568,7 +612,8 @@ func Test_overrideBlocks(t *testing.T) {
 			Name: "no override",
 			Primaries: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
 					},
@@ -577,7 +622,38 @@ func Test_overrideBlocks(t *testing.T) {
 			Overrides: hclext.Blocks{},
 			Want: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+					},
+				},
+			},
+		},
+		{
+			Name: "no override because resources are difference",
+			Primaries: hclext.Blocks{
+				{
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type:   "resource",
+					Labels: []string{"baz", "qux"},
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo2"}},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
 					},
@@ -588,7 +664,8 @@ func Test_overrideBlocks(t *testing.T) {
 			Name: "override",
 			Primaries: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{
 							"foo": &hclext.Attribute{Name: "foo"},
@@ -599,21 +676,25 @@ func Test_overrideBlocks(t *testing.T) {
 			},
 			Overrides: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{
 							"foo": &hclext.Attribute{Name: "bar"},
+							"baz": &hclext.Attribute{Name: "baz"},
 						},
 					},
 				},
 			},
 			Want: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{
 							"foo": &hclext.Attribute{Name: "bar"},
 							"bar": &hclext.Attribute{Name: "bar"},
+							"baz": &hclext.Attribute{Name: "baz"},
 						},
 					},
 				},
@@ -623,7 +704,8 @@ func Test_overrideBlocks(t *testing.T) {
 			Name: "override nested blocks",
 			Primaries: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}},
 						Blocks: hclext.Blocks{
@@ -642,7 +724,8 @@ func Test_overrideBlocks(t *testing.T) {
 			},
 			Overrides: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "bar"}},
 						Blocks: hclext.Blocks{
@@ -651,6 +734,7 @@ func Test_overrideBlocks(t *testing.T) {
 								Body: &hclext.BodyContent{
 									Attributes: hclext.Attributes{
 										"baz": &hclext.Attribute{Name: "qux"},
+										"bar": &hclext.Attribute{Name: "bar"},
 									},
 								},
 							},
@@ -660,7 +744,8 @@ func Test_overrideBlocks(t *testing.T) {
 			},
 			Want: hclext.Blocks{
 				{
-					Type: "resource",
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
 					Body: &hclext.BodyContent{
 						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "bar"}},
 						Blocks: hclext.Blocks{
@@ -668,9 +753,1003 @@ func Test_overrideBlocks(t *testing.T) {
 								Type: "nested",
 								Body: &hclext.BodyContent{
 									Attributes: hclext.Attributes{
+										// The contents of nested configuration blocks are not merged.
 										"baz": &hclext.Attribute{Name: "qux"},
+										"bar": &hclext.Attribute{Name: "bar"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override multiple nested blocks",
+			Primaries: hclext.Blocks{
+				{
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"foo": &hclext.Attribute{Name: "foo"},
+									},
+								},
+							},
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"bar": &hclext.Attribute{Name: "bar"},
+									},
+								},
+							},
+							{
+								Type: "other_nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
 										"qux": &hclext.Attribute{Name: "qux"},
 									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"baz": &hclext.Attribute{Name: "baz"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							// Any block types that do not appear in the override block remain from the original block.
+							{
+								Type: "other_nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"qux": &hclext.Attribute{Name: "qux"},
+									},
+								},
+							},
+							// override block replace all blocks of the same type in the original block.
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"baz": &hclext.Attribute{Name: "baz"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override lifecycle/provisioner/connection",
+			Primaries: hclext.Blocks{
+				{
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "lifecycle",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"create_before_destroy": &hclext.Attribute{Name: "create_before_destroy"}, "prevent_destroy": &hclext.Attribute{Name: "prevent_destroy"}},
+								},
+							},
+							{
+								Type:   "provisioner",
+								Labels: []string{"local-exec"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"command": &hclext.Attribute{Name: "command"}},
+								},
+							},
+							{
+								Type:   "provisioner",
+								Labels: []string{"file"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"content": &hclext.Attribute{Name: "content"}},
+								},
+							},
+							{
+								Type: "connection",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"type": &hclext.Attribute{Name: "type"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "lifecycle",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"ignore_changes": &hclext.Attribute{Name: "ignore_changes"}, "create_before_destroy": &hclext.Attribute{Name: "create_before_destroy2"}},
+								},
+							},
+							{
+								Type:   "provisioner",
+								Labels: []string{"remote-exec"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"inline": &hclext.Attribute{Name: "inline"}},
+								},
+							},
+							{
+								Type: "connection",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"user": &hclext.Attribute{Name: "user"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type:   "resource",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							// the contents of any lifecycle nested block are merged on an argument-by-argument basis.
+							{
+								Type: "lifecycle",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"create_before_destroy": &hclext.Attribute{Name: "create_before_destroy2"}, "prevent_destroy": &hclext.Attribute{Name: "prevent_destroy"}, "ignore_changes": &hclext.Attribute{Name: "ignore_changes"}},
+								},
+							},
+							// If an overriding resource block contains one or more provisioner blocks then any provisioner blocks in the original block are ignored.
+							{
+								Type:   "provisioner",
+								Labels: []string{"remote-exec"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"inline": &hclext.Attribute{Name: "inline"}},
+								},
+							},
+							// If an overriding resource block contains a connection block then it completely overrides any connection block present in the original block.
+							{
+								Type: "connection",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"user": &hclext.Attribute{Name: "user"}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override data sources",
+			Primaries: hclext.Blocks{
+				{
+					Type:   "data",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{
+							"foo": &hclext.Attribute{Name: "foo"},
+							"bar": &hclext.Attribute{Name: "bar"},
+						},
+						Blocks: hclext.Blocks{
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"foo": &hclext.Attribute{Name: "foo"},
+									},
+								},
+							},
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"bar": &hclext.Attribute{Name: "bar"},
+									},
+								},
+							},
+							{
+								Type: "other_nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"qux": &hclext.Attribute{Name: "qux"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type:   "data",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{
+							"foo": &hclext.Attribute{Name: "bar"},
+							"baz": &hclext.Attribute{Name: "baz"},
+						},
+						Blocks: hclext.Blocks{
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"baz": &hclext.Attribute{Name: "baz"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type:   "data",
+					Labels: []string{"foo", "bar"},
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{
+							"foo": &hclext.Attribute{Name: "bar"},
+							"bar": &hclext.Attribute{Name: "bar"},
+							"baz": &hclext.Attribute{Name: "baz"},
+						},
+						Blocks: hclext.Blocks{
+							{
+								Type: "other_nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"qux": &hclext.Attribute{Name: "qux"},
+									},
+								},
+							},
+							{
+								Type: "nested",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"baz": &hclext.Attribute{Name: "baz"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override locals",
+			Primaries: hclext.Blocks{
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}, "bar": &hclext.Attribute{Name: "bar"}},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"bar": &hclext.Attribute{Name: "bar2"}, "foo2": &hclext.Attribute{Name: "foo2"}},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{
+							"foo":  &hclext.Attribute{Name: "foo"},
+							"bar":  &hclext.Attribute{Name: "bar2"},
+							"foo2": &hclext.Attribute{Name: "foo2"},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override multiple locals",
+			Primaries: hclext.Blocks{
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}, "bar": &hclext.Attribute{Name: "bar"}},
+					},
+				},
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"baz": &hclext.Attribute{Name: "baz"}, "qux": &hclext.Attribute{Name: "qux"}},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"baz": &hclext.Attribute{Name: "baz2"}, "foo2": &hclext.Attribute{Name: "foo2"}},
+					},
+				},
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"bar": &hclext.Attribute{Name: "bar2"}},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}, "bar": &hclext.Attribute{Name: "bar2"}},
+					},
+				},
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"baz": &hclext.Attribute{Name: "baz2"}, "qux": &hclext.Attribute{Name: "qux"}},
+					},
+				},
+				// Locals not present in the primaries are added.
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo2": &hclext.Attribute{Name: "foo2"}},
+					},
+				},
+			},
+		},
+		{
+			Name: "override multiple required_version",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version1"}},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version2"}},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version3"}},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version4"}},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				// When overriding attributes, the last element in override takes precedence,
+				// so all attributes of primaries are overridden by required_version4.
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version4"}},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"required_version": &hclext.Attribute{Name: "required_version4"}},
+					},
+				},
+			},
+		},
+		{
+			Name: "override required_providers",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws"},
+										"google": &hclext.Attribute{Name: "google"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":     &hclext.Attribute{Name: "aws2"},
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+									},
+								},
+							},
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google": &hclext.Attribute{Name: "google2"},
+										"assert": &hclext.Attribute{Name: "assert"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"time": &hclext.Attribute{Name: "time"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":     &hclext.Attribute{Name: "aws2"},
+										"google":  &hclext.Attribute{Name: "google2"},
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+										"assert":  &hclext.Attribute{Name: "assert"},
+										"time":    &hclext.Attribute{Name: "time"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override multiple required_providers",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws"},
+										"google": &hclext.Attribute{Name: "google"},
+									},
+								},
+							},
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google-beta": &hclext.Attribute{Name: "google-beta"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":     &hclext.Attribute{Name: "aws2"},
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws2"},
+										"google": &hclext.Attribute{Name: "google"},
+									},
+								},
+							},
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google-beta": &hclext.Attribute{Name: "google-beta"},
+									},
+								},
+							},
+						},
+					},
+				},
+				// Blocks not present in the primaries are added.
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override multiple terraform blocks with single required_providers",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws"},
+										"google": &hclext.Attribute{Name: "google"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google-beta": &hclext.Attribute{Name: "google-beta"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":     &hclext.Attribute{Name: "aws2"},
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws2"},
+										"google": &hclext.Attribute{Name: "google"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google-beta": &hclext.Attribute{Name: "google-beta"},
+									},
+								},
+							},
+						},
+					},
+				},
+				// Blocks not present in the primaries are added.
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override multiple terraform blocks with multiple required_providers",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws"},
+										"google": &hclext.Attribute{Name: "google"},
+									},
+								},
+							},
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"azurerm": &hclext.Attribute{Name: "azurerm"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google-beta": &hclext.Attribute{Name: "google-beta"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":     &hclext.Attribute{Name: "aws2"},
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+									},
+								},
+							},
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"assert": &hclext.Attribute{Name: "assert"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google": &hclext.Attribute{Name: "google2"},
+										"time":   &hclext.Attribute{Name: "time"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws2"},
+										"google": &hclext.Attribute{Name: "google2"},
+									},
+								},
+							},
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google-beta": &hclext.Attribute{Name: "google-beta"},
+									},
+								},
+							},
+						},
+					},
+				},
+				// Blocks not present in the primaries are added.
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"assert": &hclext.Attribute{Name: "assert"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"time": &hclext.Attribute{Name: "time"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override backend",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type:   "backend",
+								Labels: []string{"local"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"path": &hclext.Attribute{Name: "path"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type:   "backend",
+								Labels: []string{"remote"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"host": &hclext.Attribute{Name: "host"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type:   "backend",
+								Labels: []string{"remote"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"host": &hclext.Attribute{Name: "host"}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			// The presence of a block defining a backend (either cloud or backend) in an override file
+			// always takes precedence over a block defining a backend in the original configuration
+			Name: "override backend by cloud",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type:   "backend",
+								Labels: []string{"local"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"path": &hclext.Attribute{Name: "path"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "cloud",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"organization": &hclext.Attribute{Name: "organization"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "cloud",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"organization": &hclext.Attribute{Name: "organization"}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override cloud by backend",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "cloud",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"organization": &hclext.Attribute{Name: "organization"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type:   "backend",
+								Labels: []string{"remote"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"host": &hclext.Attribute{Name: "host"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type:   "backend",
+								Labels: []string{"remote"},
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{"host": &hclext.Attribute{Name: "host"}},
 								},
 							},
 						},

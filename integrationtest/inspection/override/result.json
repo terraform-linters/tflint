@@ -2,6 +2,26 @@
   "issues": [
     {
       "rule": {
+        "name": "terraform_required_providers",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "required_providers: aws=2,azurerm=1,google=3,oracle=2",
+      "range": {
+        "filename": "template.tf",
+        "start": {
+          "line": 11,
+          "column": 3
+        },
+        "end": {
+          "line": 11,
+          "column": 21
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
         "name": "aws_instance_example_type",
         "severity": "error",
         "link": ""
