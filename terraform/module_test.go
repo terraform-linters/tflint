@@ -1050,6 +1050,37 @@ func Test_overrideBlocks(t *testing.T) {
 						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}, "bar": &hclext.Attribute{Name: "bar"}},
 					},
 				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"bar": &hclext.Attribute{Name: "bar2"}, "foo2": &hclext.Attribute{Name: "foo2"}},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{
+							"foo":  &hclext.Attribute{Name: "foo"},
+							"bar":  &hclext.Attribute{Name: "bar2"},
+							"foo2": &hclext.Attribute{Name: "foo2"},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override multiple locals",
+			Primaries: hclext.Blocks{
+				{
+					Type: "locals",
+					Body: &hclext.BodyContent{
+						Attributes: hclext.Attributes{"foo": &hclext.Attribute{Name: "foo"}, "bar": &hclext.Attribute{Name: "bar"}},
+					},
+				},
 				{
 					Type: "locals",
 					Body: &hclext.BodyContent{
@@ -1142,6 +1173,282 @@ func Test_overrideBlocks(t *testing.T) {
 		},
 		{
 			Name: "override required_providers",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws"},
+										"google": &hclext.Attribute{Name: "google"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":     &hclext.Attribute{Name: "aws2"},
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+									},
+								},
+							},
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google": &hclext.Attribute{Name: "google2"},
+										"assert": &hclext.Attribute{Name: "assert"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"time": &hclext.Attribute{Name: "time"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":     &hclext.Attribute{Name: "aws2"},
+										"google":  &hclext.Attribute{Name: "google2"},
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+										"assert":  &hclext.Attribute{Name: "assert"},
+										"time":    &hclext.Attribute{Name: "time"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override multiple required_providers",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws"},
+										"google": &hclext.Attribute{Name: "google"},
+									},
+								},
+							},
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google-beta": &hclext.Attribute{Name: "google-beta"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":     &hclext.Attribute{Name: "aws2"},
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws2"},
+										"google": &hclext.Attribute{Name: "google"},
+									},
+								},
+							},
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google-beta": &hclext.Attribute{Name: "google-beta"},
+									},
+								},
+							},
+						},
+					},
+				},
+				// Blocks not present in the primaries are added.
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override multiple terraform blocks with single required_providers",
+			Primaries: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws"},
+										"google": &hclext.Attribute{Name: "google"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google-beta": &hclext.Attribute{Name: "google-beta"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Overrides: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":     &hclext.Attribute{Name: "aws2"},
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			Want: hclext.Blocks{
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"aws":    &hclext.Attribute{Name: "aws2"},
+										"google": &hclext.Attribute{Name: "google"},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"google-beta": &hclext.Attribute{Name: "google-beta"},
+									},
+								},
+							},
+						},
+					},
+				},
+				// Blocks not present in the primaries are added.
+				{
+					Type: "terraform",
+					Body: &hclext.BodyContent{
+						Blocks: hclext.Blocks{
+							{
+								Type: "required_providers",
+								Body: &hclext.BodyContent{
+									Attributes: hclext.Attributes{
+										"azurerm": &hclext.Attribute{Name: "azurerm2"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "override multiple terraform blocks with multiple required_providers",
 			Primaries: hclext.Blocks{
 				{
 					Type: "terraform",

@@ -290,6 +290,10 @@ func overrideResourceBlock(primary, override *hclext.Block) {
 // it is returned to the caller with only those elements remaining.
 // This operation modifies the given override directly.
 func overrideLocalBlocks(primaries hclext.Blocks, override *hclext.Block) *hclext.Block {
+	// When there are multiple locals blocks,
+	// it is not obvious into which one the remaining local values ​​should be merged.
+	appendRemains := len(primaries) > 1
+
 	// Tracks locals ​​that were not used to override.
 	remains := hclext.Attributes{}
 	for name, attr := range override.Body.Attributes {
@@ -299,15 +303,21 @@ func overrideLocalBlocks(primaries hclext.Blocks, override *hclext.Block) *hclex
 	// Overrides are applied on a value-by-value basis, ignoring which locals block they are defined in.
 	for _, primary := range primaries {
 		for name, attr := range override.Body.Attributes {
-			if _, exists := primary.Body.Attributes[name]; exists {
+			// Track the remaining local values ​​only if you need to append to them,
+			// otherwise simply merge them.
+			if appendRemains {
+				if _, exists := primary.Body.Attributes[name]; exists {
+					primary.Body.Attributes[name] = attr
+					delete(remains, name)
+				}
+			} else {
 				primary.Body.Attributes[name] = attr
-				delete(remains, name)
 			}
 		}
 	}
 
 	// Any remaining locals that aren't overridden will be added as a new block.
-	if len(remains) > 0 {
+	if appendRemains && len(remains) > 0 {
 		override.Body.Attributes = remains
 		return override
 	}
@@ -322,6 +332,30 @@ func overrideLocalBlocks(primaries hclext.Blocks, override *hclext.Block) *hclex
 // it is returned to the caller with only those elements remaining.
 // This operation modifies the given override directly.
 func overrideTerraformBlocks(primaries hclext.Blocks, override *hclext.Block) *hclext.Block {
+	// When there are multiple required_providers blocks,
+	// it is not obvious into which one the remaining require providers ​​should be merged.
+	appendRemains := false
+	requiredProviderSeen := false
+	for _, primary := range primaries {
+		switch len(primary.Body.Blocks.ByType()["required_providers"]) {
+		case 0:
+			continue
+
+		case 1:
+			// Found multiple terraform blocks with required_providers
+			if requiredProviderSeen {
+				appendRemains = true
+				break
+			}
+			requiredProviderSeen = true
+
+		default:
+			// Found terraform block with multiple required_providers
+			appendRemains = true
+			break
+		}
+	}
+
 	// Tracks required providers ​​that were not used to override.
 	remainRequiredProviders := override.Body.Blocks.ByType()["required_providers"]
 
@@ -346,11 +380,17 @@ func overrideTerraformBlocks(primaries hclext.Blocks, override *hclext.Block) *h
 				// If the required_providers argument is set, its value is merged on an element-by-element basis
 				for _, override := range overridesByType[p.Type] {
 					for name, attr := range override.Body.Attributes {
-						if _, exists := p.Body.Attributes[name]; exists {
-							p.Body.Attributes[name] = attr
-							for _, remain := range remainRequiredProviders {
-								delete(remain.Body.Attributes, name)
+						// Track the remaining required providers ​​only if you need to append to them,
+						// otherwise simply merge them.
+						if appendRemains {
+							if _, exists := p.Body.Attributes[name]; exists {
+								p.Body.Attributes[name] = attr
+								for _, remain := range remainRequiredProviders {
+									delete(remain.Body.Attributes, name)
+								}
 							}
+						} else {
+							p.Body.Attributes[name] = attr
 						}
 					}
 				}
@@ -379,12 +419,14 @@ func overrideTerraformBlocks(primaries hclext.Blocks, override *hclext.Block) *h
 	}
 
 	// Any remaining required providers that aren't overridden will be added as a new block.
-	remainRequiredProviders = filterBlocks(remainRequiredProviders, func(b *hclext.Block) bool {
-		return len(b.Body.Attributes) > 0
-	})
-	if len(remainRequiredProviders) > 0 {
-		override.Body.Blocks = remainRequiredProviders
-		return override
+	if appendRemains {
+		remainRequiredProviders = filterBlocks(remainRequiredProviders, func(b *hclext.Block) bool {
+			return len(b.Body.Attributes) > 0
+		})
+		if len(remainRequiredProviders) > 0 {
+			override.Body.Blocks = remainRequiredProviders
+			return override
+		}
 	}
 	return nil
 }
