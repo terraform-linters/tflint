@@ -27,6 +27,7 @@ func main() {
 				rules.NewTerraformAutofixRemoveLocalRule(), // should be former than terraform_autofix_comment because this rule changes the line number
 				rules.NewTerraformAutofixCommentRule(),
 				rules.NewAwsInstanceAutofixConflictRule(), // should be later than terraform_autofix_comment because this rule adds an issue for terraform_autofix_comment
+				rules.NewTerraformRequiredProvidersRule(),
 			},
 		},
 	})
