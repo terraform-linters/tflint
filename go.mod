@@ -29,7 +29,7 @@ require (
 	github.com/xeipuuv/gojsonschema v1.2.0
 	github.com/zclconf/go-cty v1.15.0
 	github.com/zclconf/go-cty-debug v0.0.0-20240509010212-0d6042c53940
-	github.com/zclconf/go-cty-yaml v1.0.3
+	github.com/zclconf/go-cty-yaml v1.1.0
 	golang.org/x/crypto v0.27.0
 	golang.org/x/net v0.29.0
 	golang.org/x/oauth2 v0.23.0
