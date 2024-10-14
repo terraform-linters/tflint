@@ -39,6 +39,7 @@ func TestLoadConfigDir(t *testing.T) {
 					"main_override.tf": {Body: hcltest.MockBody(&hcl.BodyContent{MissingItemRange: hcl.Range{Filename: "main_override.tf"}})},
 					"override.tf":      {Body: hcltest.MockBody(&hcl.BodyContent{MissingItemRange: hcl.Range{Filename: "override.tf"}})},
 				},
+				overrideFilenames: []string{"main_override.tf", "override.tf"},
 				Sources: map[string][]byte{
 					"main.tf":          {},
 					"main_override.tf": {},
@@ -69,6 +70,7 @@ func TestLoadConfigDir(t *testing.T) {
 					"main_override.tf.json": {Body: hcltest.MockBody(&hcl.BodyContent{MissingItemRange: hcl.Range{Filename: "main_override.tf.json"}})},
 					"override.tf.json":      {Body: hcltest.MockBody(&hcl.BodyContent{MissingItemRange: hcl.Range{Filename: "override.tf.json"}})},
 				},
+				overrideFilenames: []string{"main_override.tf.json", "override.tf.json"},
 				Sources: map[string][]byte{
 					"main.tf.json":          []byte("{}"),
 					"main_override.tf.json": []byte("{}"),
@@ -99,6 +101,7 @@ func TestLoadConfigDir(t *testing.T) {
 					filepath.Join("foo", "main_override.tf"): {Body: hcltest.MockBody(&hcl.BodyContent{MissingItemRange: hcl.Range{Filename: filepath.Join("foo", "main_override.tf")}})},
 					filepath.Join("foo", "override.tf"):      {Body: hcltest.MockBody(&hcl.BodyContent{MissingItemRange: hcl.Range{Filename: filepath.Join("foo", "override.tf")}})},
 				},
+				overrideFilenames: []string{filepath.Join("foo", "main_override.tf"), filepath.Join("foo", "override.tf")},
 				Sources: map[string][]byte{
 					filepath.Join("foo", "main.tf"):          {},
 					filepath.Join("foo", "main_override.tf"): {},
@@ -129,6 +132,7 @@ func TestLoadConfigDir(t *testing.T) {
 					filepath.Join("bar", "main_override.tf"): {Body: hcltest.MockBody(&hcl.BodyContent{MissingItemRange: hcl.Range{Filename: filepath.Join("bar", "main_override.tf")}})},
 					filepath.Join("bar", "override.tf"):      {Body: hcltest.MockBody(&hcl.BodyContent{MissingItemRange: hcl.Range{Filename: filepath.Join("bar", "override.tf")}})},
 				},
+				overrideFilenames: []string{filepath.Join("bar", "main_override.tf"), filepath.Join("bar", "override.tf")},
 				Sources: map[string][]byte{
 					filepath.Join("bar", "main.tf"):          {},
 					filepath.Join("bar", "main_override.tf"): {},
@@ -159,6 +163,7 @@ func TestLoadConfigDir(t *testing.T) {
 					filepath.Join("foo", "bar", "main_override.tf"): {Body: hcltest.MockBody(&hcl.BodyContent{MissingItemRange: hcl.Range{Filename: filepath.Join("foo", "bar", "main_override.tf")}})},
 					filepath.Join("foo", "bar", "override.tf"):      {Body: hcltest.MockBody(&hcl.BodyContent{MissingItemRange: hcl.Range{Filename: filepath.Join("foo", "bar", "override.tf")}})},
 				},
+				overrideFilenames: []string{filepath.Join("foo", "bar", "main_override.tf"), filepath.Join("foo", "bar", "override.tf")},
 				Sources: map[string][]byte{
 					filepath.Join("foo", "bar", "main.tf"):          {},
 					filepath.Join("foo", "bar", "main_override.tf"): {},
@@ -213,6 +218,10 @@ func TestLoadConfigDir(t *testing.T) {
 				overridesWant[i] = f.Body.MissingItemRange().Filename
 			}
 			if diff := cmp.Diff(overrides, overridesWant); diff != "" {
+				t.Errorf("diff: %s", diff)
+			}
+
+			if diff := cmp.Diff(mod.overrideFilenames, test.want.overrideFilenames); diff != "" {
 				t.Errorf("diff: %s", diff)
 			}
 
