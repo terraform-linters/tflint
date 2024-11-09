@@ -3,6 +3,7 @@ package plugin
 import (
 	"archive/zip"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -11,6 +12,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
 
 	"github.com/google/go-github/v53/github"
 	"github.com/terraform-linters/tflint/tflint"
@@ -29,6 +31,21 @@ type InstallConfig struct {
 
 	*tflint.PluginConfig
 }
+
+// ReleaseCacheEntry is a entry in the release cache file.
+type ReleaseCacheEntry struct {
+	// Type is a type of release. This is always "github". (just for future compatibility)
+	Type string `json:"type"`
+	// GithubAssets is a chache of the result of github API `/repos/{owner}/{repo}/releases/tags/{tag}`.
+	GithubAssets map[string]*github.ReleaseAsset `json:"githubAssets,omitempty"`
+}
+
+const ReleaseCacheTypeGithub = "github"
+
+// ReleaseCache is data contained in the release cache file.
+type ReleaseCache map[string]*ReleaseCacheEntry
+
+var releaseCacheMutex sync.Mutex
 
 // NewInstallConfig returns a new InstallConfig from passed PluginConfig.
 func NewInstallConfig(config *tflint.Config, pluginCfg *tflint.PluginConfig) *InstallConfig {
@@ -87,11 +104,29 @@ func (c *InstallConfig) Install() (string, error) {
 		return "", fmt.Errorf("Failed to mkdir to %s: %w", filepath.Dir(path), err)
 	}
 
-	assets, err := c.fetchReleaseAssets()
+	assets, err := c.fetchReleaseAssetsFromCache()
 	if err != nil {
-		return "", fmt.Errorf("Failed to fetch GitHub releases: %w", err)
+		log.Printf("[DEBUG] Error retrieving release assets from cache (ignored): %+v", err)
+	}
+	if assets != nil {
+		log.Print("[DEBUG] Found release assets from cache")
+		path, err := c.installFromAssets(path, assets)
+		if err == nil {
+			return path, nil
+		}
+		log.Printf("[WARN] Error installing assets from cache. Go install without cache: %+v", err)
 	}
 
+	assets, err = c.fetchReleaseAssets()
+	if err != nil {
+		return "", err
+	}
+	return c.installFromAssets(path, assets)
+}
+
+// installFromAssets is the later part of `Install()`.
+// Installs the plugin from fetched asset information.
+func (c *InstallConfig) installFromAssets(path string, assets map[string]*github.ReleaseAsset) (string, error) {
 	log.Printf("[DEBUG] Download checksums.txt")
 	checksumsFile, err := c.downloadToTempFile(assets["checksums.txt"])
 	if checksumsFile != nil {
@@ -149,7 +184,98 @@ func (c *InstallConfig) Install() (string, error) {
 
 // fetchReleaseAssets fetches assets from the GitHub release.
 // The release is determined by the source path and tag name.
+// Stores to cache if cache is enabled.
 func (c *InstallConfig) fetchReleaseAssets() (map[string]*github.ReleaseAsset, error) {
+	assets, err := c.fetchReleaseAssetsImpl()
+	if err != nil {
+		return assets, err
+	}
+	err = c.storeToReleaseCache(assets)
+	if err != nil {
+		log.Printf("[WARN] Failed to store to plugin release cache (ignored): %s", err)
+	}
+	return assets, nil
+}
+
+// getReleaseCacheKey returns the key for the release cache.
+func (c *InstallConfig) getReleaseCacheKey() string {
+	return fmt.Sprintf("%s:%s", c.Source, c.TagName())
+}
+
+// storeToReleaseCache stores asset information to the cache file.
+func (c *InstallConfig) storeToReleaseCache(assets map[string]*github.ReleaseAsset) error {
+	if c.globalConfig.PluginReleaseCache == "" {
+		return nil
+	}
+	if len(assets) == 0 {
+		return nil
+	}
+	releaseCacheMutex.Lock()
+	defer releaseCacheMutex.Unlock()
+
+	file := c.globalConfig.PluginReleaseCache
+
+	releaseCache, err := readReleaseCache(file)
+	if err != nil {
+		return err
+	}
+
+	if releaseCache == nil {
+		releaseCache = make(ReleaseCache, 1)
+	}
+	releaseCache[c.getReleaseCacheKey()] = &ReleaseCacheEntry{
+		Type:         ReleaseCacheTypeGithub,
+		GithubAssets: assets,
+	}
+	return storeReleaseCache(file, releaseCache)
+}
+
+// readReleaseCache reads and unmarshals release caches.
+// Returns `nil` with no error if no cache file.
+func readReleaseCache(file string) (ReleaseCache, error) {
+	_, err := os.Stat(file)
+	if os.IsNotExist(err) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("Failed to stat %s: %w", file, err)
+	}
+	content, err := os.ReadFile(file)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to read %s: %w", file, err)
+	}
+	var releaseCache ReleaseCache
+	err = json.Unmarshal(content, &releaseCache)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to unmarshal %s: %w", file, err)
+	}
+	return releaseCache, nil
+}
+
+// storeReleaseCache marshals and stores release caches.
+func storeReleaseCache(file string, releaseCache ReleaseCache) error {
+	content, err := json.MarshalIndent(releaseCache, "", "  ")
+	if err != nil {
+		return fmt.Errorf("Failed to marshal release cache: %w", err)
+	}
+	dir := filepath.Dir(file)
+	_, err = os.Stat(dir)
+	if os.IsNotExist(err) {
+		log.Printf("[DEBUG] Mkdir plugin release cache dir: %s", dir)
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			return fmt.Errorf("Failed to mkdir to %s: %w", dir, err)
+		}
+	} else if err != nil {
+		return fmt.Errorf("Failed to stat plugin release cache dir: %s: %w", dir, err)
+	}
+	err = os.WriteFile(file, content, 0644)
+	if err != nil {
+		return fmt.Errorf("Failed to write %s: %w", file, err)
+	}
+	return err
+}
+
+func (c *InstallConfig) fetchReleaseAssetsImpl() (map[string]*github.ReleaseAsset, error) {
 	assets := map[string]*github.ReleaseAsset{}
 
 	ctx := context.Background()
@@ -169,6 +295,33 @@ func (c *InstallConfig) fetchReleaseAssets() (map[string]*github.ReleaseAsset, e
 		assets[asset.GetName()] = asset
 	}
 	return assets, nil
+}
+
+func (c *InstallConfig) fetchReleaseAssetsFromCache() (map[string]*github.ReleaseAsset, error) {
+	if c.globalConfig.PluginReleaseCache == "" {
+		return nil, nil
+	}
+	releaseCacheMutex.Lock()
+	defer releaseCacheMutex.Unlock()
+
+	file := c.globalConfig.PluginReleaseCache
+	releaseCache, err := readReleaseCache(file)
+	if err != nil {
+		return nil, err
+	}
+	if releaseCache == nil {
+		return nil, nil
+	}
+
+	key := c.getReleaseCacheKey()
+	cacheEntry, ok := releaseCache[key]
+	if !ok {
+		return nil, nil
+	}
+	if cacheEntry.Type != ReleaseCacheTypeGithub {
+		return nil, nil
+	}
+	return cacheEntry.GithubAssets, nil
 }
 
 // downloadToTempFile download assets from GitHub to a local temp file.

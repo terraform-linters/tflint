@@ -50,6 +50,7 @@ var innerConfigSchema = &hcl.BodySchema{
 		{Name: "variables"},
 		{Name: "disabled_by_default"},
 		{Name: "plugin_dir"},
+		{Name: "plugin_release_cache"},
 		{Name: "format"},
 	},
 }
@@ -74,8 +75,10 @@ type Config struct {
 	DisabledByDefault    bool
 	DisabledByDefaultSet bool
 
-	PluginDir    string
-	PluginDirSet bool
+	PluginDir             string
+	PluginDirSet          bool
+	PluginReleaseCache    string
+	PluginReleaseCacheSet bool
 
 	Format    string
 	FormatSet bool
@@ -301,6 +304,12 @@ func loadConfig(file afero.File) (*Config, error) {
 						return config, err
 					}
 
+				case "plugin_release_cache":
+					config.PluginReleaseCacheSet = true
+					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.PluginReleaseCache); err != nil {
+						return config, err
+					}
+
 				case "format":
 					config.FormatSet = true
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.Format); err != nil {
@@ -353,6 +362,8 @@ func loadConfig(file afero.File) (*Config, error) {
 	log.Printf("[DEBUG]   DisabledByDefaultSet: %t", config.DisabledByDefaultSet)
 	log.Printf("[DEBUG]   PluginDir: %s", config.PluginDir)
 	log.Printf("[DEBUG]   PluginDirSet: %t", config.PluginDirSet)
+	log.Printf("[DEBUG]   PluginReleaseCache: %s", config.PluginReleaseCache)
+	log.Printf("[DEBUG]   PluginReleaseCacheSet: %t", config.PluginReleaseCacheSet)
 	log.Printf("[DEBUG]   Format: %s", config.Format)
 	log.Printf("[DEBUG]   FormatSet: %t", config.FormatSet)
 	log.Printf("[DEBUG]   Varfiles: %s", strings.Join(config.Varfiles, ", "))
@@ -521,6 +532,10 @@ func (c *Config) Merge(other *Config) {
 	if other.PluginDirSet {
 		c.PluginDirSet = true
 		c.PluginDir = other.PluginDir
+	}
+	if other.PluginReleaseCacheSet {
+		c.PluginReleaseCacheSet = true
+		c.PluginReleaseCache = other.PluginReleaseCache
 	}
 	if other.FormatSet {
 		c.FormatSet = true
