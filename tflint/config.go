@@ -42,7 +42,6 @@ var configSchema = &hcl.BodySchema{
 
 var innerConfigSchema = &hcl.BodySchema{
 	Attributes: []hcl.AttributeSchema{
-		{Name: "module"},
 		{Name: "call_module_type"},
 		{Name: "force"},
 		{Name: "ignore_module"},
@@ -51,6 +50,9 @@ var innerConfigSchema = &hcl.BodySchema{
 		{Name: "disabled_by_default"},
 		{Name: "plugin_dir"},
 		{Name: "format"},
+
+		// Removed attributes
+		{Name: "module"},
 	},
 }
 
@@ -249,25 +251,6 @@ func loadConfig(file afero.File) (*Config, error) {
 						return config, err
 					}
 
-				// "module" attribute is deprecated. Use "call_module_type" instead.
-				// This is for backward compatibility.
-				case "module":
-					fmt.Fprintf(os.Stderr, "WARNING: \"module\" attribute in %s is deprecated. Use \"call_module_type\" instead.\n", file.Name())
-					if config.CallModuleTypeSet {
-						// If "call_module_type" is set, ignore "module" attribute
-						continue
-					}
-					var module bool
-					config.CallModuleTypeSet = true
-					if err := gohcl.DecodeExpression(attr.Expr, nil, &module); err != nil {
-						return config, err
-					}
-					if module {
-						config.CallModuleType = terraform.CallAllModule
-					} else {
-						config.CallModuleType = terraform.CallNoModule
-					}
-
 				case "force":
 					config.ForceSet = true
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.Force); err != nil {
@@ -316,6 +299,10 @@ func loadConfig(file afero.File) (*Config, error) {
 					if !formatValid {
 						return config, fmt.Errorf("%s is invalid format. Allowed formats are: %s", config.Format, strings.Join(validFormats, ", "))
 					}
+
+				// Removed attributes
+				case "module":
+					return config, fmt.Errorf(`"module" attribute was removed in v0.54.0. Use "call_module_type" instead`)
 
 				default:
 					panic("never happened")

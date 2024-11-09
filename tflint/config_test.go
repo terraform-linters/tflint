@@ -418,34 +418,6 @@ config {
 			errCheck: neverHappend,
 		},
 		{
-			name: "prefer call_module_type over module",
-			file: "config.hcl",
-			files: map[string]string{
-				"config.hcl": `
-config {
-  call_module_type = "none"
-  module           = true
-}`,
-			},
-			want: &Config{
-				CallModuleType:    terraform.CallNoModule,
-				CallModuleTypeSet: true,
-				Force:             false,
-				IgnoreModules:     map[string]bool{},
-				Varfiles:          []string{},
-				Variables:         []string{},
-				DisabledByDefault: false,
-				Rules:             map[string]*RuleConfig{},
-				Plugins: map[string]*PluginConfig{
-					"terraform": {
-						Name:    "terraform",
-						Enabled: true,
-					},
-				},
-			},
-			errCheck: neverHappend,
-		},
-		{
 			name: "valid required_version",
 			file: "config.hcl",
 			files: map[string]string{
@@ -485,6 +457,19 @@ tflint {
 			},
 			errCheck: func(err error) bool {
 				return err == nil || err.Error() != `config.hcl:6,1-7: Multiple "tflint" blocks are not allowed; The "tflint" block is already found in config.hcl:2,1-7, but found the second one.`
+			},
+		},
+		{
+			name: "removed module attribute",
+			file: "config.hcl",
+			files: map[string]string{
+				"config.hcl": `
+config {
+  module = true
+}`,
+			},
+			errCheck: func(err error) bool {
+				return err == nil || err.Error() != `"module" attribute was removed in v0.54.0. Use "call_module_type" instead`
 			},
 		},
 	}

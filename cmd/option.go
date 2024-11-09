@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/terraform-linters/tflint/terraform"
@@ -24,8 +23,6 @@ type Options struct {
 	EnablePlugins          []string `long:"enable-plugin" description:"Enable plugins from the command line" value-name:"PLUGIN_NAME"`
 	Varfiles               []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
 	Variables              []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
-	Module                 *bool    `long:"module" description:"Enable module inspection" hidden:"true"`
-	NoModule               *bool    `long:"no-module" description:"Disable module inspection" hidden:"true"`
 	CallModuleType         *string  `long:"call-module-type" description:"Types of module to call (default: local)" choice:"all" choice:"local" choice:"none"`
 	Chdir                  string   `long:"chdir" description:"Switch to a different working directory before executing the command" value-name:"DIR"`
 	Recursive              bool     `long:"recursive" description:"Run command in each directory recursively"`
@@ -61,17 +58,6 @@ func (opts *Options) toConfig() *tflint.Config {
 
 	callModuleType := terraform.CallLocalModule
 	callModuleTypeSet := false
-	// --call-module-type takes precedence over --module/--no-module. This is for backward compatibility.
-	if opts.Module != nil {
-		fmt.Fprintln(os.Stderr, "WARNING: --module is deprecated. Use --call-module-type=all instead.")
-		callModuleType = terraform.CallAllModule
-		callModuleTypeSet = true
-	}
-	if opts.NoModule != nil {
-		fmt.Fprintln(os.Stderr, "WARNING: --no-module is deprecated. Use --call-module-type=none instead.")
-		callModuleType = terraform.CallNoModule
-		callModuleTypeSet = true
-	}
 	if opts.CallModuleType != nil {
 		var err error
 		callModuleType, err = terraform.AsCallModuleType(*opts.CallModuleType)
@@ -191,12 +177,6 @@ func (opts *Options) toWorkerCommands(workingDir string) []string {
 	}
 	for _, variable := range opts.Variables {
 		commands = append(commands, fmt.Sprintf("--var=%s", variable))
-	}
-	if opts.Module != nil && *opts.Module {
-		commands = append(commands, "--module")
-	}
-	if opts.NoModule != nil && *opts.NoModule {
-		commands = append(commands, "--no-module")
 	}
 	if opts.CallModuleType != nil {
 		commands = append(commands, fmt.Sprintf("--call-module-type=%s", *opts.CallModuleType))

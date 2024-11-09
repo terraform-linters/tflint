@@ -162,6 +162,20 @@ func TestIntegration(t *testing.T) {
 			stderr:  "--loglevel option was removed in v0.40.0. Please set TFLINT_LOG environment variables instead",
 		},
 		{
+			name:    "removed --module option",
+			command: "./tflint --module",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "--module option was removed in v0.54.0. Use --call-module-type=all instead",
+		},
+		{
+			name:    "removed --no-module option",
+			command: "./tflint --no-module",
+			dir:     "no_issues",
+			status:  cmd.ExitCodeError,
+			stderr:  "--no-module option was removed in v0.54.0. Use --call-module-type=none instead",
+		},
+		{
 			name:    "invalid options",
 			command: "./tflint --unknown",
 			dir:     "no_issues",
