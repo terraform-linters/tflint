@@ -51,6 +51,7 @@ var innerConfigSchema = &hcl.BodySchema{
 		{Name: "disabled_by_default"},
 		{Name: "plugin_dir"},
 		{Name: "plugin_release_cache"},
+		{Name: "plugin_reduce_gh_api"},
 		{Name: "format"},
 	},
 }
@@ -79,6 +80,8 @@ type Config struct {
 	PluginDirSet          bool
 	PluginReleaseCache    string
 	PluginReleaseCacheSet bool
+	PluginReduceGhAPI     bool
+	PluginReduceGhAPISet  bool
 
 	Format    string
 	FormatSet bool
@@ -310,6 +313,12 @@ func loadConfig(file afero.File) (*Config, error) {
 						return config, err
 					}
 
+				case "plugin_reduce_gh_api":
+					config.PluginReduceGhAPISet = true
+					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.PluginReduceGhAPI); err != nil {
+						return config, err
+					}
+
 				case "format":
 					config.FormatSet = true
 					if err := gohcl.DecodeExpression(attr.Expr, nil, &config.Format); err != nil {
@@ -364,6 +373,8 @@ func loadConfig(file afero.File) (*Config, error) {
 	log.Printf("[DEBUG]   PluginDirSet: %t", config.PluginDirSet)
 	log.Printf("[DEBUG]   PluginReleaseCache: %s", config.PluginReleaseCache)
 	log.Printf("[DEBUG]   PluginReleaseCacheSet: %t", config.PluginReleaseCacheSet)
+	log.Printf("[DEBUG]   PluginReduceGhAPI: %t", config.PluginReduceGhAPI)
+	log.Printf("[DEBUG]   PluginReduceGhAPISet: %t", config.PluginReduceGhAPISet)
 	log.Printf("[DEBUG]   Format: %s", config.Format)
 	log.Printf("[DEBUG]   FormatSet: %t", config.FormatSet)
 	log.Printf("[DEBUG]   Varfiles: %s", strings.Join(config.Varfiles, ", "))
@@ -536,6 +547,10 @@ func (c *Config) Merge(other *Config) {
 	if other.PluginReleaseCacheSet {
 		c.PluginReleaseCacheSet = true
 		c.PluginReleaseCache = other.PluginReleaseCache
+	}
+	if other.PluginReduceGhAPISet {
+		c.PluginReduceGhAPISet = true
+		c.PluginReduceGhAPI = other.PluginReduceGhAPI
 	}
 	if other.FormatSet {
 		c.FormatSet = true

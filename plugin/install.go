@@ -330,17 +330,20 @@ func (c *InstallConfig) downloadToTempFile(asset *github.ReleaseAsset) (*os.File
 	if asset == nil {
 		return nil, fmt.Errorf("file not found in the GitHub release. Does the release contain the file with the correct name ?")
 	}
-
-	ctx := context.Background()
-
-	client, err := newGitHubClient(ctx, c)
-	if err != nil {
-		return nil, err
+	var downloader io.ReadCloser
+	if c.globalConfig.PluginReduceGhAPI {
+		var err error
+		downloader, err = c.downloadWithoutGitHubClient(asset)
+		if err != nil {
+			return nil, err
+		}
 	}
-
-	downloader, _, err := client.Repositories.DownloadReleaseAsset(ctx, c.SourceOwner, c.SourceRepo, asset.GetID(), http.DefaultClient)
-	if err != nil {
-		return nil, err
+	if downloader == nil {
+		var err error
+		downloader, err = c.downloadWithGitHubClient(asset)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	file, err := os.CreateTemp("", "tflint-download-temp-file-*")
@@ -357,6 +360,45 @@ func (c *InstallConfig) downloadToTempFile(asset *github.ReleaseAsset) (*os.File
 
 	log.Printf("[DEBUG] Downloaded to %s", file.Name())
 	return file, nil
+}
+
+// downloadWithGitHubClient creates a download stream from the asset with github client.
+func (c *InstallConfig) downloadWithGitHubClient(asset *github.ReleaseAsset) (io.ReadCloser, error) {
+	ctx := context.Background()
+
+	client, err := newGitHubClient(ctx, c)
+	if err != nil {
+		return nil, err
+	}
+
+	downloader, _, err := client.Repositories.DownloadReleaseAsset(ctx, c.SourceOwner, c.SourceRepo, asset.GetID(), http.DefaultClient)
+	if err != nil {
+		return nil, err
+	}
+
+	return downloader, nil
+}
+
+// downloadWithGitHubClient creates a download stream from the asset without github client.
+// This downloads the asset with `browser_download_url`
+// Returns `nil` if `browser_download_url` is unavailable.
+func (c *InstallConfig) downloadWithoutGitHubClient(asset *github.ReleaseAsset) (io.ReadCloser, error) {
+	if asset.BrowserDownloadURL == nil || *asset.BrowserDownloadURL == "" {
+		log.Print("[WARN] browser_download_url is unavailable")
+		return nil, nil
+	}
+	ctx := context.Background()
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, *asset.BrowserDownloadURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to prepare request to %s: %w", *asset.BrowserDownloadURL, err)
+	}
+	client := &http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to request to %s: %w", *asset.BrowserDownloadURL, err)
+	}
+	return res.Body, nil
 }
 
 // getGitHubToken gets a GitHub access token from environment variables.
