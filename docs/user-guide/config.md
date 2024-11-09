@@ -17,6 +17,8 @@ tflint {
 config {
   format = "compact"
   plugin_dir = "~/.tflint.d/plugins"
+	plugin_release_cache = ".plugin-release-cache.json"
+	plugin_reduce_gh_api = true
 
   call_module_type = "local"
   force = false
@@ -71,6 +73,14 @@ In recursive mode (`--recursive`), this field will be ignored in configuration f
 ### `plugin_dir`
 
 Set the plugin directory. The default is `~/.tflint.d/plugins` (or `./.tflint.d/plugins`). See also [Configuring Plugins](plugins.md#advanced-usage)
+
+### `plugin_release_cache`
+
+Set the file to cache release metadata from GitHub API. The default is not set, and the cache feature is not enabled. This is useful for avoiding [GitHub rate limit issue](plugins.md#avoiding-rate-limiting).
+
+### `plugin_reduce_gh_api`
+
+Download the plugin not with GitHub API, but with the URL provided by release metadata. The default is not enabled (use GitHub API). This is useful for avoiding [GitHub rate limit issue](plugins.md#avoiding-rate-limiting).
 
 ### `call_module_type`
 

@@ -88,6 +88,8 @@ plugin "bar" {
 }
 ```
 
+You can reduce the usage of GitHub API with [`plugin_release_cache`](config.md#plugin_release_cache) and [`plugin_reduce_gh_api`](config.md#plugin_reduce_gh_api) in the configuration.
+
 ## Keeping plugins up to date
 
 We recommend using automatic updates to keep your plugin version up-to-date. [Renovate supports TFLint plugins](https://docs.renovatebot.com/modules/manager/tflint-plugin/) to easily set up automated update workflows.
