@@ -29,8 +29,8 @@ jobs:
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6
       with:
-        version: v1.12.3
-        args: release --rm-dist --release-notes tools/release/release-note.md
+        version: v2.3.2
+        args: release --release-notes tools/release/release-note.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/attest-build-provenance@1c608d11d69870c2092266b3f9a6f3abbf17002c # v1
