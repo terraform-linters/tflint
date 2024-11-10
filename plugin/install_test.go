@@ -2,11 +2,65 @@ package plugin
 
 import (
 	"context"
+	"errors"
 	"os"
 	"testing"
 
 	"github.com/terraform-linters/tflint/tflint"
 )
+
+func TestIsExperimentalModeEnabled(t *testing.T) {
+	tests := []struct {
+		name string
+		envs map[string]string
+		want bool
+	}{
+		{
+			name: "no env",
+			want: false,
+		},
+		{
+			name: "TFLINT_EXPERIMENTAL=true",
+			envs: map[string]string{
+				"TFLINT_EXPERIMENTAL": "true",
+			},
+			want: true,
+		},
+		{
+			name: "TFLINT_EXPERIMENTAL=false",
+			envs: map[string]string{
+				"TFLINT_EXPERIMENTAL": "false",
+			},
+			want: false,
+		},
+		{
+			name: "TFLINT_EXPERIMENTAL=1",
+			envs: map[string]string{
+				"TFLINT_EXPERIMENTAL": "1",
+			},
+			want: true,
+		},
+		{
+			name: "TFLINT_EXPERIMENTAL=0",
+			envs: map[string]string{
+				"TFLINT_EXPERIMENTAL": "0",
+			},
+			want: false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			for k, v := range test.envs {
+				t.Setenv(k, v)
+			}
+			got := IsExperimentalModeEnabled()
+			if got != test.want {
+				t.Errorf("want=%t, got=%t", test.want, got)
+			}
+		})
+	}
+}
 
 func Test_Install(t *testing.T) {
 	original := PluginRoot
@@ -40,6 +94,126 @@ func Test_Install(t *testing.T) {
 	expected := "tflint-ruleset-aws" + fileExt()
 	if info.Name() != expected {
 		t.Fatalf("Installed binary name is invalid: expected=%s, got=%s", expected, info.Name())
+	}
+}
+
+func Test_Install_Keyless(t *testing.T) {
+	t.Setenv("TFLINT_EXPERIMENTAL", "true")
+
+	originalPluginRoot := PluginRoot
+	PluginRoot = t.TempDir()
+	originalSigningKey := builtinSigningKey
+	builtinSigningKey = "" // disable built-in signing key
+	defer func() {
+		PluginRoot = originalPluginRoot
+		builtinSigningKey = originalSigningKey
+	}()
+
+	config := NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{
+		Name:        "aws",
+		Enabled:     true,
+		Version:     "0.35.0",
+		Source:      "github.com/terraform-linters/tflint-ruleset-aws",
+		SourceHost:  "github.com",
+		SourceOwner: "terraform-linters",
+		SourceRepo:  "tflint-ruleset-aws",
+	})
+
+	// Because the built-in signing key is disabled, an error should be returned,
+	// but because artifact attestation is present, no error occurs.
+	path, err := config.Install()
+	if err != nil {
+		t.Fatalf("Failed to install: %s", err)
+	}
+	file, err := os.Open(path)
+	if err != nil {
+		t.Fatalf("Failed to open installed binary: %s", err)
+	}
+	info, err := file.Stat()
+	if err != nil {
+		t.Fatalf("Failed to stat installed binary: %s", err)
+	}
+	file.Close()
+
+	expected := "tflint-ruleset-aws" + fileExt()
+	if info.Name() != expected {
+		t.Fatalf("Installed binary name is invalid: expected=%s, got=%s", expected, info.Name())
+	}
+}
+
+func Test_Install_Keyless_withoutAttestation(t *testing.T) {
+	originalPluginRoot := PluginRoot
+	PluginRoot = t.TempDir()
+	originalSigningKey := builtinSigningKey
+	builtinSigningKey = "" // disable built-in signing key
+	defer func() {
+		PluginRoot = originalPluginRoot
+		builtinSigningKey = originalSigningKey
+	}()
+
+	config := NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{
+		Name:        "aws",
+		Enabled:     true,
+		Version:     "0.31.0", // This is the last version that does not support Artifact Attestation
+		Source:      "github.com/terraform-linters/tflint-ruleset-aws",
+		SourceHost:  "github.com",
+		SourceOwner: "terraform-linters",
+		SourceRepo:  "tflint-ruleset-aws",
+	})
+
+	path, err := config.Install()
+	if err == nil {
+		t.Fatal("config.Install() should return ErrPluginNotVerified, but did not")
+	}
+	if !errors.Is(err, ErrPluginNotVerified) {
+		t.Fatalf("Failed to install: %s", err)
+	}
+	file, err := os.Open(path)
+	if err != nil {
+		t.Fatalf("Failed to open installed binary: %s", err)
+	}
+	info, err := file.Stat()
+	if err != nil {
+		t.Fatalf("Failed to stat installed binary: %s", err)
+	}
+	file.Close()
+
+	expected := "tflint-ruleset-aws" + fileExt()
+	if info.Name() != expected {
+		t.Fatalf("Installed binary name is invalid: expected=%s, got=%s", expected, info.Name())
+	}
+}
+
+func Test_Install_Keyless_withoutAttestation_InExperimentalMode(t *testing.T) {
+	// In experimental mode, if there is no attestation, an error will occur.
+	t.Setenv("TFLINT_EXPERIMENTAL", "true")
+
+	originalPluginRoot := PluginRoot
+	PluginRoot = t.TempDir()
+	originalSigningKey := builtinSigningKey
+	builtinSigningKey = "" // disable built-in signing key
+	defer func() {
+		PluginRoot = originalPluginRoot
+		builtinSigningKey = originalSigningKey
+	}()
+
+	config := NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{
+		Name:        "aws",
+		Enabled:     true,
+		Version:     "0.31.0", // This is the last version that does not support Artifact Attestation
+		Source:      "github.com/terraform-linters/tflint-ruleset-aws",
+		SourceHost:  "github.com",
+		SourceOwner: "terraform-linters",
+		SourceRepo:  "tflint-ruleset-aws",
+	})
+
+	_, err := config.Install()
+	if err == nil {
+		t.Fatal("config.Install() should return an error, but did not")
+	}
+	wantErr := "Failed to download artifact attestations: GET https://api.github.com/repos/terraform-linters/tflint-ruleset-aws/attestations/sha256:2263ed2f64b535a95ab7d19ff22b366bf6b36fb84e4f7fa879f85da698a96595: 404 Not Found []"
+	if err.Error() != wantErr {
+		t.Fatalf("want=%s, got=%s", wantErr, err)
 	}
 }
 

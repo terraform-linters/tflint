@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -11,6 +12,10 @@ import (
 )
 
 func (cli *CLI) init(opts Options) int {
+	if plugin.IsExperimentalModeEnabled() {
+		_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `Experimental mode is enabled. This behavior may change in future versions without notice`)
+	}
+
 	workingDirs, err := findWorkingDirs(opts)
 	if err != nil {
 		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to find workspaces; %w", err), map[string][]byte{})
@@ -47,14 +52,13 @@ func (cli *CLI) init(opts Options) int {
 				if os.IsNotExist(err) {
 					fmt.Fprintf(cli.outStream, "Installing \"%s\" plugin...\n", pluginCfg.Name)
 
-					sigchecker := plugin.NewSignatureChecker(installCfg)
-					if !sigchecker.HasSigningKey() {
-						_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `No signing key configured. Set "signing_key" to verify that the release is signed by the plugin developer`)
-					}
-
 					_, err = installCfg.Install()
 					if err != nil {
-						return fmt.Errorf("Failed to install a plugin; %w", err)
+						if errors.Is(err, plugin.ErrPluginNotVerified) {
+							_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `No signing key configured. Set "signing_key" to verify that the release is signed by the plugin developer`)
+						} else {
+							return fmt.Errorf("Failed to install a plugin; %w", err)
+						}
 					}
 
 					fmt.Fprintf(cli.outStream, "Installed \"%s\" (source: %s, version: %s)\n", pluginCfg.Name, pluginCfg.Source, pluginCfg.Version)

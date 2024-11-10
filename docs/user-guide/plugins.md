@@ -54,6 +54,8 @@ Plugin developer's PGP public signing key. When this attribute is set, TFLint wi
 
 Plugins under the terraform-linters organization (AWS/GCP/Azure ruleset plugins) can use the built-in signing key, so this attribute can be omitted.
 
+If the plugin developer generates [Artifact Attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds), you can omit this attribute. See [Keyless Verification](#keyless-verification-experimental) for details.
+
 ## Plugin directory
 
 Plugins are usually installed under `~/.tflint.d/plugins`. Exceptionally, if you already have `./.tflint.d/plugins` in your working directory, it will be installed there.
@@ -132,3 +134,11 @@ plugin "terraform" {
 ```
 
 If you have tflint-ruleset-terraform manually installed, the bundled plugin will not be automatically enabled. In this case the manually installed version takes precedence.
+
+## Keyless verification (experimental)
+
+If the plugin developer has generated [Artifact Attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds), TFLint will automatically verify them and prove that the plugin binary was built in that repository.
+
+This verification is experimental and optional: it is only attempted if there is no PGP public signing key, and if there is no artifact attestation, a warning will be output, not an error. If you want to require all plugin installs to be signed with a PGP signing key or an artifact attestation, you can force this behavior to be enabled by setting the `TFLINT_EXPERIMENTAL=1`. This behavior will be the default in future versions, but is subject to change without notice.
+
+Note that this validation, like the PGP signing key, does not guarantee that the plugin is secure. Moreover it only guarantees the repository it was built from, not the signer, so it is not secure if an attacker has control over the repository.

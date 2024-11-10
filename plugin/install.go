@@ -3,20 +3,33 @@ package plugin
 import (
 	"archive/zip"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
 
-	"github.com/google/go-github/v53/github"
+	"github.com/google/go-github/v67/github"
 	"github.com/terraform-linters/tflint/tflint"
 	"golang.org/x/net/idna"
 	"golang.org/x/oauth2"
 )
+
+// IsExperimentalModeEnabled returns whether TFLINT_EXPERIMENTAL is set.
+func IsExperimentalModeEnabled() bool {
+	if b, err := strconv.ParseBool(os.Getenv("TFLINT_EXPERIMENTAL")); err == nil {
+		return b
+	}
+	return false
+}
 
 const defaultSourceHost = "github.com"
 
@@ -59,6 +72,27 @@ func (c *InstallConfig) AssetName() string {
 	return fmt.Sprintf("tflint-ruleset-%s_%s_%s.zip", c.Name, runtime.GOOS, runtime.GOARCH)
 }
 
+// CertificateIdentitySANRegex returns a regular expression that matches
+// the Subject Alternative Name in the certificate in keyless signing.
+// Typically the SAN will be a value like https://github.com/terraform-linters/tflint-ruleset-aws/.github/workflows/release.yml@refs/tags/v0.35.0
+// This ensures that the installed plugin was indeed built from that source repository.
+func (c *InstallConfig) CertificateIdentitySANRegex() string {
+	return fmt.Sprintf("^https://%s/%s/%s/", regexp.QuoteMeta(c.SourceHost), regexp.QuoteMeta(c.SourceOwner), regexp.QuoteMeta(c.SourceRepo))
+}
+
+// CertificateIdentityIssuer returns the iss field of the OIDC token for keyless signing.
+// This ensures that the OIDC token was indeed issued by GitHub.
+func (c *InstallConfig) CertificateIdentityIssuer() string {
+	if c.SourceHost != defaultSourceHost {
+		// https://docs.github.com/en/enterprise-server@3.15/actions/security-for-github-actions/security-hardening-your-deployments/about-security-hardening-with-openid-connect#understanding-the-oidc-token
+		return fmt.Sprintf("https://%s/_services/token", c.SourceHost)
+	}
+	// https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/about-security-hardening-with-openid-connect#understanding-the-oidc-token
+	return "https://token.actions.githubusercontent.com"
+}
+
+var ErrPluginNotVerified = errors.New("plugin not verified")
+
 // Install fetches the release from GitHub and puts the binary in the plugin directory.
 // This installation process will automatically check the checksum of the downloaded zip file.
 // Therefore, the release must always contain a checksum file.
@@ -70,8 +104,11 @@ func (c *InstallConfig) AssetName() string {
 //   - The release must contain a checksum file for the zip file with the name checksums.txt
 //   - The checksum file must contain a sha256 hash and filename
 //
-// For security, you can also make sure that the checksum file is signed correctly.
-// In that case, the release must additionally meet the following conventions:
+// If Artifact Attestations are present, TFLint will verify the checksum file
+// to ensure that it has not been tampered with.
+//
+// If the following conditions are met, the checksum file will be verified
+// as being signed with the PGP key.
 //
 //   - The release must contain a signature file for the checksum file with the name checksums.txt.sig
 //   - The signature file must be binary OpenPGP format
@@ -101,8 +138,10 @@ func (c *InstallConfig) Install() (string, error) {
 		return "", fmt.Errorf("Failed to download checksums.txt: %s", err)
 	}
 
+	var skipVerify bool
 	sigchecker := NewSignatureChecker(c)
 	if sigchecker.HasSigningKey() {
+		// Verify by PGP signing key
 		log.Printf("[DEBUG] Download checksums.txt.sig")
 		signatureFile, err := c.downloadToTempFile(assets["checksums.txt.sig"])
 		if signatureFile != nil {
@@ -119,6 +158,32 @@ func (c *InstallConfig) Install() (string, error) {
 			return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
 		}
 		log.Printf("[DEBUG] Verified signature successfully")
+
+	} else {
+		// Attempt to verify by artifact attestations.
+		// If there are no attestations, it will be ignored without errors.
+		log.Printf("[DEBUG] Download artifact attestations")
+		attestations, err := c.fetchArtifactAttestations(checksumsFile)
+		if err != nil {
+			var gerr *github.ErrorResponse
+			// If experimental mode is enabled, enforces that attestations are present.
+			if errors.As(err, &gerr) && gerr.Response.StatusCode == 404 && !IsExperimentalModeEnabled() {
+				log.Printf("[DEBUG] Artifact attestations not found and will be ignored: %s", err)
+				skipVerify = true
+			} else {
+				return "", fmt.Errorf("Failed to download artifact attestations: %s", err)
+			}
+		}
+
+		if !skipVerify {
+			if err := sigchecker.VerifyKeyless(checksumsFile, attestations); err != nil {
+				return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
+			}
+			if _, err := checksumsFile.Seek(0, 0); err != nil {
+				return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
+			}
+			log.Printf("[DEBUG] Verified signature successfully")
+		}
 	}
 
 	log.Printf("[DEBUG] Download %s", c.AssetName())
@@ -144,6 +209,9 @@ func (c *InstallConfig) Install() (string, error) {
 	}
 
 	log.Printf("[DEBUG] Installed %s successfully", path)
+	if skipVerify {
+		return path, ErrPluginNotVerified
+	}
 	return path, nil
 }
 
@@ -169,6 +237,34 @@ func (c *InstallConfig) fetchReleaseAssets() (map[string]*github.ReleaseAsset, e
 		assets[asset.GetName()] = asset
 	}
 	return assets, nil
+}
+
+// fetchArtifactAttestations fetches GitHub Artifact Attestations based on the given io.ReadSeeker.
+func (c *InstallConfig) fetchArtifactAttestations(artifact io.ReadSeeker) ([]*github.Attestation, error) {
+	bytes, err := io.ReadAll(artifact)
+	if err != nil {
+		return []*github.Attestation{}, err
+	}
+	if _, err := artifact.Seek(0, 0); err != nil {
+		return nil, err
+	}
+	hash := sha256.New()
+	if _, err := hash.Write(bytes); err != nil {
+		return []*github.Attestation{}, err
+	}
+	digest := hex.EncodeToString(hash.Sum(nil))
+
+	ctx := context.Background()
+	client, err := newGitHubClient(ctx, c)
+	if err != nil {
+		return []*github.Attestation{}, err
+	}
+
+	resp, _, err := client.Repositories.ListAttestations(ctx, c.SourceOwner, c.SourceRepo, "sha256:"+digest, nil)
+	if err != nil {
+		return []*github.Attestation{}, err
+	}
+	return resp.Attestations, nil
 }
 
 // downloadToTempFile download assets from GitHub to a local temp file.
@@ -312,7 +408,7 @@ func newGitHubClient(ctx context.Context, config *InstallConfig) (*github.Client
 	}
 
 	baseURL := fmt.Sprintf("https://%s/", config.SourceHost)
-	return github.NewEnterpriseClient(baseURL, baseURL, hc)
+	return github.NewClient(hc).WithEnterpriseURLs(baseURL, baseURL)
 }
 
 func fileExt() string {

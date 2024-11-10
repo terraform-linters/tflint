@@ -1,12 +1,18 @@
 package plugin
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"strings"
 
-	//nolint:staticcheck
-	"golang.org/x/crypto/openpgp"
+	"github.com/google/go-github/v67/github"
+	"github.com/sigstore/sigstore-go/pkg/bundle"
+	"github.com/sigstore/sigstore-go/pkg/root"
+	"github.com/sigstore/sigstore-go/pkg/tuf"
+	"github.com/sigstore/sigstore-go/pkg/verify"
+	"golang.org/x/crypto/openpgp" //nolint:staticcheck
 )
 
 // SignatureChecker checks the signature of GitHub releases.
@@ -27,7 +33,10 @@ func (c *SignatureChecker) GetSigningKey() string {
 		return c.config.SigningKey
 	}
 	if c.config.SourceOwner == "terraform-linters" {
-		return builtinSigningKey
+		// If experimental mode is enabled, Artifact Attestations will be used in preference to built-in keys.
+		if !IsExperimentalModeEnabled() {
+			return builtinSigningKey
+		}
 	}
 	return c.config.SigningKey
 }
@@ -38,7 +47,7 @@ func (c *SignatureChecker) HasSigningKey() bool {
 	return c.GetSigningKey() != ""
 }
 
-// Verify returns the results of signature verification.
+// Verify returns the results of signature verification by PGP signing key.
 // The signing key must be ASCII armored and the signature must be in binary OpenPGP format.
 func (c *SignatureChecker) Verify(target, signature io.Reader) error {
 	key := c.GetSigningKey()
@@ -57,6 +66,89 @@ func (c *SignatureChecker) Verify(target, signature io.Reader) error {
 		return err
 	}
 	return nil
+}
+
+// VerifyKeyless returns the results of signature verification by Artifact Attestations.
+// See also https://docs.sigstore.dev/about/security/
+func (c *SignatureChecker) VerifyKeyless(target io.ReadSeeker, attestations []*github.Attestation) error {
+	if len(attestations) == 0 {
+		return fmt.Errorf("no attestations found")
+	}
+
+	// Initialize Sigstore trust root
+	// This saves the caches under the "~/.sigstore"
+	client, err := tuf.New(tuf.DefaultOptions())
+	if err != nil {
+		return err
+	}
+	trustedrootJSON, err := client.GetTarget("trusted_root.json")
+	if err != nil {
+		return err
+	}
+	trustedRoot, err := root.NewTrustedRootFromJSON(trustedrootJSON)
+	if err != nil {
+		return err
+	}
+
+	// Create verifier that verifies the following:
+	//
+	//  - Signed Entity Timestamp (SET), the time that the short-lived certificate was valid
+	//  - Certificate Transparency Logs, as public records
+	//  - Signed Cerificate Timestamp (SCT), the time that the certificate was issued
+	verifier, err := verify.NewSignedEntityVerifier(
+		trustedRoot,
+		verify.WithObserverTimestamps(1),
+		verify.WithTransparencyLog(1),
+		verify.WithSignedCertificateTimestamps(1),
+	)
+	if err != nil {
+		return err
+	}
+
+	// Build certificate identity policy
+	// Ensure that the plugin was built in the source repository by checking the OIDC issuer and SAN.
+	certID, err := verify.NewShortCertificateIdentity(
+		c.config.CertificateIdentityIssuer(),
+		"",
+		"",
+		c.config.CertificateIdentitySANRegex(),
+	)
+	if err != nil {
+		return err
+	}
+	policy := verify.NewPolicy(
+		verify.WithArtifact(target),
+		verify.WithCertificateIdentity(certID),
+	)
+
+	// Verify attestations
+	var b *bundle.Bundle
+	var verifyErr error
+	for _, attestation := range attestations {
+		if err := json.Unmarshal(attestation.Bundle, &b); err != nil {
+			return fmt.Errorf("failed to unmarshal sigstore bundle: %s", err)
+		}
+
+		ret, err := verifier.Verify(b, policy)
+		if err != nil {
+			verifyErr = err
+			log.Printf("[DEBUG] Failed to verify signature: %s", err)
+			// Instead of returning an error immediately, try other attestations.
+			if _, err := target.Seek(0, 0); err != nil {
+				return err
+			}
+			continue
+		}
+
+		marshaled, err := json.Marshal(ret)
+		if err != nil {
+			return err
+		}
+		log.Printf("[DEBUG] verification result=%s", string(marshaled))
+		return nil
+	}
+	// Return only the last error.
+	return verifyErr
 }
 
 // builtinSigningKey is the default signing key that applies only to plugins under the terraform-linters organization.
