@@ -20,7 +20,7 @@ jobs:
       uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349 # v3
     - name: Docker meta
       id: meta
-      uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81 # v5
+      uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96 # v5
       with:
         images: ghcr.io/${{ github.repository }}
     - name: Login to GitHub Container Registry
