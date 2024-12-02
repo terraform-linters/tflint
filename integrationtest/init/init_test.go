@@ -94,17 +94,11 @@ func TestIntegration(t *testing.T) {
 	}
 
 	cli.Run([]string{"./tflint", "--recursive", "--init"})
-	if !strings.Contains(outStream.String(), "working directory: .") {
+	if !strings.Contains(outStream.String(), "Installing plugins on each working directory...") {
 		t.Fatalf("Expected to contain working dir log, but did not: stdout=%s, stderr=%s", outStream, errStream)
 	}
-	if !strings.Contains(outStream.String(), "No plugins to install") {
-		t.Fatalf("Expected to contain no plugins log, but did not: stdout=%s, stderr=%s", outStream, errStream)
-	}
-	if !strings.Contains(outStream.String(), "working directory: basic") {
-		t.Fatalf("Expected to contain working dir log, but did not: stdout=%s, stderr=%s", outStream, errStream)
-	}
-	if !strings.Contains(outStream.String(), `Plugin "aws" is already installed`) {
-		t.Fatalf("Expected to contain an already installed log, but did not: stdout=%s, stderr=%s", outStream, errStream)
+	if !strings.Contains(outStream.String(), "All plugins are already installed") {
+		t.Fatalf("Expected to contain alread installed log, but did not: stdout=%s, stderr=%s", outStream, errStream)
 	}
 
 	outStream, errStream = new(bytes.Buffer), new(bytes.Buffer)
