@@ -51,9 +51,12 @@ The requirements to support automatic installation are as follows:
 - The release must contain a checksum file for the zip file with the name `checksums.txt`
 - The checksum file must contain a sha256 hash and filename
 
-When signing a release, the release must additionally meet the following requirements:
+When signing a release, one of the following requirements must be met:
 
-- The release must contain a signature file for the checksum file with the name `checksums.txt.sig`
-- The signature file must be binary OpenPGP format
+- PGP signing key
+  - The release must contain a signature file for the checksum file with the name `checksums.txt.sig`
+  - The signature file must be binary OpenPGP format
+- [Artifact Attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds)
+  - Include a step in your GitHub Actions workflow that uses the [`attest-build-provenance` action](https://github.com/actions/attest-build-provenance) for `checksums.txt`.
 
 Releases that meet these requirements can be easily created by following the GoReleaser config in the template repository.
