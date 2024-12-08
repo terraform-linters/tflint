@@ -328,6 +328,17 @@ func TestFunctions(t *testing.T) {
 			},
 		},
 
+		"ephemeralasnull": {
+			{
+				`ephemeralasnull(local.ephemeral)`,
+				cty.NullVal(cty.String),
+			},
+			{
+				`ephemeralasnull("not ephemeral")`,
+				cty.StringVal("not ephemeral"),
+			},
+		},
+
 		"file": {
 			{
 				`file("hello.txt")`,
@@ -1187,6 +1198,7 @@ func TestFunctions(t *testing.T) {
 					data := &dataForTests{
 						LocalValues: map[string]cty.Value{
 							"greeting_template": cty.StringVal("Hello, ${name}!"),
+							"ephemeral":         cty.StringVal("ephemeral").Mark(marks.Ephemeral),
 						},
 					}
 					scope := &Scope{
