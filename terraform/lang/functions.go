@@ -92,6 +92,7 @@ func (s *Scope) Functions() map[string]function.Function {
 			"distinct":         stdlib.DistinctFunc,
 			"element":          stdlib.ElementFunc,
 			"endswith":         funcs.EndsWithFunc,
+			"ephemeralasnull":  funcs.EphemeralAsNullFunc,
 			"chunklist":        stdlib.ChunklistFunc,
 			"file":             funcs.MakeFileFunc(s.BaseDir, false),
 			"fileexists":       funcs.MakeFileExistsFunc(s.BaseDir),
