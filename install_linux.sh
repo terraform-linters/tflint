@@ -43,8 +43,8 @@ get_latest_release() {
       headers=(-H "Authorization: Bearer ${GITHUB_TOKEN}")
   fi
   curl --fail -sS "${headers[@]}" "https://api.github.com/repos/terraform-linters/tflint/releases/latest" | # Get latest release from GitHub api
-    grep '"tag_name":' |                                                                                    # Get tag line
-    sed -E 's/.*"([^"]+)".*/\1/'                                                                            # Pluck JSON value
+    grep '"tag_name":' |                                                                                    # Filter other lines from multiline JSON
+    sed -E 's/.*"tag_name"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/'                                         # Get tag_name value
 }
 
 download_path=$(mktemp -d -t tflint.XXXXXXXXXX)
