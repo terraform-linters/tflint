@@ -88,7 +88,7 @@ See the [tflint-ruleset-terraform documentation](https://github.com/terraform-li
 Next, If you are using an AWS/Azure/GCP provider, it is a good idea to install the plugin and try it according to each usage:
 
 - [Amazon Web Services](https://github.com/terraform-linters/tflint-ruleset-aws)
-- [Microsoft Azure](https://github.com/terraform-linters/tflint-ruleset-azurerm)
+- [Microsoft Azure](https://github.com/terraform-linters/tflint-ruleset-azurerm) / [Microsoft Azure Security](https://github.com/pregress/tflint-ruleset-azurerm-security)
 - [Google Cloud Platform](https://github.com/terraform-linters/tflint-ruleset-google)
 
 If you want to extend TFLint with other plugins, you can declare the plugins in the config file and easily install them with `tflint --init`.
