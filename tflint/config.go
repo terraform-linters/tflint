@@ -445,7 +445,7 @@ var bundledPluginConfigContent = `
 preset = "recommended"
 `
 
-// DisbaleBundledPlugin is a flag to temporarily disable the bundled plugin for integration tests.
+// DisableBundledPlugin is a flag to temporarily disable the bundled plugin for integration tests.
 var DisableBundledPlugin = false
 
 // Terraform Language plugin is automatically enabled if the plugin isn't explicitly declared.

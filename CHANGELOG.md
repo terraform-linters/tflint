@@ -845,7 +845,7 @@ plugin "aws" {
 }
 ```
 
-For backward compatibility, The AWS ruleset plugin is bundled with the binary. So you can still use AWS rules without installing the plugin separetely. The plugin is automatically enabled if there are AWS resources in your Terraform configuration, but it can also be turned on explicitly. See https://github.com/terraform-linters/tflint/pull/1009 for details.
+For backward compatibility, The AWS ruleset plugin is bundled with the binary. So you can still use AWS rules without installing the plugin separately. The plugin is automatically enabled if there are AWS resources in your Terraform configuration, but it can also be turned on explicitly. See https://github.com/terraform-linters/tflint/pull/1009 for details.
 
 ### Breaking Changes
 
@@ -1028,7 +1028,7 @@ Also, this release is built with Go v1.15. As a result, darwin/386 build will no
 
 TFLint v0.19 relies on and is compatible with Terraform v0.13! 🎉
 
-This version is also compatible with most Terraform v0.12 configurations without an immediate update to Terraform v0.13. [Custom variable validation](https://www.terraform.io/docs/configuration/variables.html#custom-validation-rules) was officially added in v0.13. Any modules that enabled this featue during the experiment phase must remove the experiment setting to be compatible with Terraform v0.13. Consult the [Terraform 0.13.0 changelog](https://github.com/hashicorp/terraform/blob/master/CHANGELOG.md#0130-august-10-2020) for a full list of breaking changes. We recommend all users update when possible.
+This version is also compatible with most Terraform v0.12 configurations without an immediate update to Terraform v0.13. [Custom variable validation](https://www.terraform.io/docs/configuration/variables.html#custom-validation-rules) was officially added in v0.13. Any modules that enabled this feature during the experiment phase must remove the experiment setting to be compatible with Terraform v0.13. Consult the [Terraform 0.13.0 changelog](https://github.com/hashicorp/terraform/blob/master/CHANGELOG.md#0130-august-10-2020) for a full list of breaking changes. We recommend all users update when possible.
 
 ### Breaking Changes
 
@@ -1169,7 +1169,7 @@ This release contains several improvements for plugins. In order to take advanta
 
 In this release, some great Terraform rules are added by great contributors! Please note that many rules are not enabled by default. You need to set it appropriately according to your policy.
 
-The naming convention rules have been merged into the `terraform_naming_convetion` rule, so if you are using the `terraform_dash_in_*` rules you will need to change your configuration. See the documentation for details.
+The naming convention rules have been merged into the `terraform_naming_convention` rule, so if you are using the `terraform_dash_in_*` rules you will need to change your configuration. See the documentation for details.
 
 ### Breaking Changes
 
@@ -1426,7 +1426,7 @@ This is the first release in the terraform-linters organization. This release in
 
 ## 0.12.0 (2019-09-29)
 
-This release includes an experimental Language Server Procotol support. Using LSP makes it easy to integrate TFLint with your favorite editor. Currently, only diagnostics are provided.
+This release includes an experimental Language Server Protocol support. Using LSP makes it easy to integrate TFLint with your favorite editor. Currently, only diagnostics are provided.
 
 ### Breaking Changes
 
@@ -1474,7 +1474,7 @@ This release includes an experimental Language Server Procotol support. Using LS
 
 ### Chores
 
-- [#435](https://github.com/terraform-linters/tflint/pull/435): docs: Add Linix oneliner to download latest `tflint` ([@abitrolly](https://github.com/abitrolly))
+- [#435](https://github.com/terraform-linters/tflint/pull/435): docs: Add Linux oneliner to download latest `tflint` ([@abitrolly](https://github.com/abitrolly))
 - [#437](https://github.com/terraform-linters/tflint/pull/437): docs: Fix typo in dash rule ([@abitrolly](https://github.com/abitrolly))
 
 ## 0.11.1 (2019-09-11)
@@ -1725,7 +1725,7 @@ As a major improvement, added 700+ rules in this release. These rules are automa
 ### Enhancements
 
 - [#277](https://github.com/terraform-linters/tflint/pull/277): Ignore annotation support.
-  - `tflint-ignore: rule_name` annotation is now availble. See [README.md](https://github.com/terraform-linters/tflint/blob/v0.8.1/README.md#rules).
+  - `tflint-ignore: rule_name` annotation is now available. See [README.md](https://github.com/terraform-linters/tflint/blob/v0.8.1/README.md#rules).
 
 ### BugFixes
 
@@ -1925,7 +1925,7 @@ Minor version update. This release includes environment variable support.
 ### Enhancements
 
 - Support variables from environment variables ([#147](https://github.com/terraform-linters/tflint/pull/147))
-- Support moudle path for v0.10.7 ([#149](https://github.com/terraform-linters/tflint/pull/149))
+- Support module path for v0.10.7 ([#149](https://github.com/terraform-linters/tflint/pull/149))
 
 ### Others
 

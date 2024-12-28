@@ -66,7 +66,7 @@ func ParseModuleSource(raw string) (ModuleSource, error) {
 // and then create relative references within the same directory in order
 // to ensure all modules in the package are looking at a consistent filesystem
 // layout. We also assume that modules within a package are maintained together,
-// which means that cross-cutting maintenence across all of them would be
+// which means that cross-cutting maintenance across all of them would be
 // possible.
 //
 // The actual value of a ModuleSourceLocal is a normalized relative path using
@@ -106,7 +106,7 @@ func parseModuleSourceLocal(raw string) (ModuleSourceLocal, error) {
 	clean := path.Clean(raw)
 
 	// However, we do need to keep a single "./" on the front if it isn't
-	// a "../" path, or else it would be ambigous with the registry address
+	// a "../" path, or else it would be ambiguous with the registry address
 	// syntax.
 	if !strings.HasPrefix(clean, "../") {
 		clean = "./" + clean

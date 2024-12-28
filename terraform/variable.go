@@ -27,7 +27,7 @@ type Variable struct {
 	Nullable    bool
 }
 
-func decodeVairableBlock(block *hclext.Block) (*Variable, hcl.Diagnostics) {
+func decodeVariableBlock(block *hclext.Block) (*Variable, hcl.Diagnostics) {
 	v := &Variable{
 		Name:           block.Labels[0],
 		Type:           cty.DynamicPseudoType,

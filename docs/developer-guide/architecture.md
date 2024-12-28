@@ -93,7 +93,7 @@ The `plugin.Discovery` returns a client for the RuleSet server it started. Use t
 
 Similarly, send inspection requests to the server. The server responds to requests and runs an inspection, but the plugin needs access to `terraform.Config` (imagine `runner.GetResourceContent`).
 
-For this, the host process launches a gRPC server to respond such requests. Ths host server is called "Runner" server. Its behavior is implemented by TFLint. The plugin is passed a client that corresponds to the Runner server.
+For this, the host process launches a gRPC server to respond such requests. The host server is called "Runner" server. Its behavior is implemented by TFLint. The plugin is passed a client that corresponds to the Runner server.
 
 ### Respond to requests for Terraform config (`plugin.GRPCServer`)
 

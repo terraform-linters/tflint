@@ -59,7 +59,7 @@ func (m *Module) build() hcl.Diagnostics {
 			}
 			m.Resources[r.Type][r.Name] = r
 		case "variable":
-			v, valDiags := decodeVairableBlock(block)
+			v, valDiags := decodeVariableBlock(block)
 			diags = diags.Extend(valDiags)
 			m.Variables[v.Name] = v
 		case "module":

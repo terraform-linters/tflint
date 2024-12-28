@@ -75,7 +75,7 @@ TFLint supports the [`count`](https://developer.hashicorp.com/terraform/language
 resource "aws_instance" "foo" {
   count = 0
 
-  instance_type = "invalid" # => ignored because ths resource is not created
+  instance_type = "invalid" # => ignored because the resource is not created
 }
 ```
 

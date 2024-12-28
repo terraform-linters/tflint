@@ -125,7 +125,7 @@ var BcryptFunc = function.New(&function.Spec{
 		input := args[0].AsString()
 		out, err := bcrypt.GenerateFromPassword([]byte(input), defaultCost)
 		if err != nil {
-			return cty.UnknownVal(cty.String), fmt.Errorf("error occured generating password %s", err.Error())
+			return cty.UnknownVal(cty.String), fmt.Errorf("error occurred generating password %s", err.Error())
 		}
 
 		return cty.StringVal(string(out)), nil
@@ -171,7 +171,7 @@ var RsaDecryptFunc = function.New(&function.Spec{
 			case asn1.SyntaxError:
 				errStr = strings.ReplaceAll(e.Error(), "asn1: syntax error", "invalid ASN1 data in the given private key")
 			case asn1.StructuralError:
-				errStr = strings.ReplaceAll(e.Error(), "asn1: struture error", "invalid ASN1 data in the given private key")
+				errStr = strings.ReplaceAll(e.Error(), "asn1: structure error", "invalid ASN1 data in the given private key")
 			default:
 				errStr = fmt.Sprintf("invalid private key: %s", e)
 			}
@@ -191,7 +191,7 @@ var RsaDecryptFunc = function.New(&function.Spec{
 	},
 })
 
-// Sha1Func contructs a function that computes the SHA1 hash of a given string
+// Sha1Func constructs a function that computes the SHA1 hash of a given string
 // and encodes it with hexadecimal digits.
 var Sha1Func = makeStringHashFunction(sha1.New, hex.EncodeToString)
 
@@ -201,7 +201,7 @@ func MakeFileSha1Func(baseDir string) function.Function {
 	return makeFileHashFunction(baseDir, sha1.New, hex.EncodeToString)
 }
 
-// Sha256Func contructs a function that computes the SHA256 hash of a given string
+// Sha256Func constructs a function that computes the SHA256 hash of a given string
 // and encodes it with hexadecimal digits.
 var Sha256Func = makeStringHashFunction(sha256.New, hex.EncodeToString)
 
@@ -211,7 +211,7 @@ func MakeFileSha256Func(baseDir string) function.Function {
 	return makeFileHashFunction(baseDir, sha256.New, hex.EncodeToString)
 }
 
-// Sha512Func contructs a function that computes the SHA512 hash of a given string
+// Sha512Func constructs a function that computes the SHA512 hash of a given string
 // and encodes it with hexadecimal digits.
 var Sha512Func = makeStringHashFunction(sha512.New, hex.EncodeToString)
 

@@ -14,7 +14,7 @@ import (
 )
 
 // Runner checks templates according rules.
-// For variables interplation, it has Terraform eval context.
+// For variables interpolation, it has Terraform eval context.
 // After checking, it accumulates results as issues.
 type Runner struct {
 	TFConfig *terraform.Config
@@ -36,7 +36,7 @@ type Rule interface {
 }
 
 // NewRunner returns new TFLint runner.
-// It prepares built-in context (workpace metadata, variables) from
+// It prepares built-in context (workspace metadata, variables) from
 // received `terraform.Config` and `terraform.InputValues`.
 func NewRunner(originalWorkingDir string, c *Config, ants map[string]Annotations, cfg *terraform.Config, variables ...terraform.InputValues) (*Runner, error) {
 	path := "root"
