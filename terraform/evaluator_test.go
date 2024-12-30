@@ -277,7 +277,7 @@ variable "integer_var" {
 			},
 		},
 		{
-			name:     "no defualt variable",
+			name:     "no default variable",
 			config:   `variable "no_value_var" {}`,
 			expr:     expr(`var.no_value_var`),
 			ty:       cty.String,

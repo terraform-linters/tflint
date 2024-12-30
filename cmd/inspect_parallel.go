@@ -163,7 +163,7 @@ func spawnWorker(ctx context.Context, executable string, workingDir string, opts
 	cmd.WaitDelay = 3 * time.Second
 	err := cmd.Run()
 	if ctx.Err() != nil {
-		// If the context is canceled, return the context error instread of the command error.
+		// If the context is canceled, return the context error instead of the command error.
 		err = ctx.Err()
 	}
 

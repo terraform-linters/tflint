@@ -181,7 +181,7 @@ func TestIntegration(t *testing.T) {
 			Dir:     "eval-on-root-context",
 		},
 		{
-			Name:    "sensitve variable",
+			Name:    "sensitive variable",
 			Command: "tflint --format json",
 			Dir:     "sensitive",
 		},

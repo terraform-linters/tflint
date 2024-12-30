@@ -1,4 +1,4 @@
-resource "aws_instance" "intance" {
+resource "aws_instance" "instance" {
   tags = { foo = "bar" }
 }
 

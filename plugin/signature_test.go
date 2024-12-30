@@ -30,17 +30,17 @@ func Test_GetSigningKey(t *testing.T) {
 			Expected: testSigningKey,
 		},
 		{
-			Name:     "bulit-in signing key",
+			Name:     "built-in signing key",
 			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: "", SourceOwner: "terraform-linters"}),
 			Expected: builtinSigningKey,
 		},
 		{
-			Name:     "bulit-in signing key and configured signing key",
+			Name:     "built-in signing key and configured signing key",
 			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: testSigningKey, SourceOwner: "terraform-linters"}),
 			Expected: testSigningKey,
 		},
 		{
-			Name:     "bulit-in signing key, but in experimental mode",
+			Name:     "built-in signing key, but in experimental mode",
 			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: "", SourceOwner: "terraform-linters"}),
 			Envs:     map[string]string{"TFLINT_EXPERIMENTAL": "true"},
 			Expected: "",
@@ -81,17 +81,17 @@ func Test_HasSigningKey(t *testing.T) {
 			Expected: true,
 		},
 		{
-			Name:     "bulit-in signing key",
+			Name:     "built-in signing key",
 			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: "", SourceOwner: "terraform-linters"}),
 			Expected: true,
 		},
 		{
-			Name:     "bulit-in signing key and configured signing key",
+			Name:     "built-in signing key and configured signing key",
 			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: testSigningKey, SourceOwner: "terraform-linters"}),
 			Expected: true,
 		},
 		{
-			Name:     "bulit-in signing key, but in experimental mode",
+			Name:     "built-in signing key, but in experimental mode",
 			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: "", SourceOwner: "terraform-linters"}),
 			Envs:     map[string]string{"TFLINT_EXPERIMENTAL": "true"},
 			Expected: false,

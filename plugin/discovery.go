@@ -123,18 +123,18 @@ func getPluginDir(cfg *tflint.Config) (string, error) {
 // and if it exists, the extension is added to the argument.
 func findPluginPath(path string) (string, error) {
 	if runtime.GOOS != "windows" {
-		return checkPluginExistance(path)
+		return checkPluginExistence(path)
 	}
 
-	returnPath, err := checkPluginExistance(path)
+	returnPath, err := checkPluginExistence(path)
 	if os.IsNotExist(err) {
-		return checkPluginExistance(path + ".exe")
+		return checkPluginExistence(path + ".exe")
 	}
 
 	return returnPath, err
 }
 
-func checkPluginExistance(path string) (string, error) {
+func checkPluginExistence(path string) (string, error) {
 	info, err := os.Stat(path)
 	if err != nil {
 		return "", err

@@ -248,7 +248,7 @@ func (b *expandBody) decodeMetaArgSpec(rawSpec *hcl.Block) (*expandMetaArgSpec, 
 
 		spec.countVal = countVal
 
-		// We skip validation for count attribute if the value is unknwon
+		// We skip validation for count attribute if the value is unknown
 		if countVal.IsKnown() {
 			if countVal.IsNull() {
 				diags = append(diags, &hcl.Diagnostic{

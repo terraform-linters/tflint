@@ -98,7 +98,7 @@ func TestIntegration(t *testing.T) {
 		t.Fatalf("Expected to contain working dir log, but did not: stdout=%s, stderr=%s", outStream, errStream)
 	}
 	if !strings.Contains(outStream.String(), "All plugins are already installed") {
-		t.Fatalf("Expected to contain alread installed log, but did not: stdout=%s, stderr=%s", outStream, errStream)
+		t.Fatalf("Expected to contain already installed log, but did not: stdout=%s, stderr=%s", outStream, errStream)
 	}
 
 	outStream, errStream = new(bytes.Buffer), new(bytes.Buffer)

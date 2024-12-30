@@ -60,7 +60,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println("commiting and tagging...")
+	log.Println("committing and tagging...")
 	if err := execCommand(os.Stdout, "git", "add", "."); err != nil {
 		log.Fatal(err)
 	}
