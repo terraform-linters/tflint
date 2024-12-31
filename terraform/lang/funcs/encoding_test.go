@@ -1,5 +1,5 @@
 // Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: BUSL-1.1
 
 package funcs
 
@@ -36,6 +36,12 @@ func TestBase64Decode(t *testing.T) {
 			cty.StringVal("\xc3\x28"),
 			cty.UnknownVal(cty.String),
 			true,
+		},
+		// unknown marked
+		{
+			cty.UnknownVal(cty.String).Mark("a").Mark("b"),
+			cty.UnknownVal(cty.String).RefineNotNull().Mark("a").Mark("b"),
+			false,
 		},
 	}
 
