@@ -24,6 +24,7 @@ type Variable struct {
 
 	ParsingMode VariableParsingMode
 	Sensitive   bool
+	Ephemeral   bool
 	Nullable    bool
 }
 
@@ -48,6 +49,11 @@ func decodeVariableBlock(block *hclext.Block) (*Variable, hcl.Diagnostics) {
 
 	if attr, exists := block.Body.Attributes["sensitive"]; exists {
 		valDiags := gohcl.DecodeExpression(attr.Expr, nil, &v.Sensitive)
+		diags = diags.Extend(valDiags)
+	}
+
+	if attr, exists := block.Body.Attributes["ephemeral"]; exists {
+		valDiags := gohcl.DecodeExpression(attr.Expr, nil, &v.Ephemeral)
 		diags = diags.Extend(valDiags)
 	}
 
@@ -228,6 +234,9 @@ var variableBlockSchema = &hclext.BodySchema{
 		},
 		{
 			Name: "sensitive",
+		},
+		{
+			Name: "ephemeral",
 		},
 		{
 			Name: "nullable",

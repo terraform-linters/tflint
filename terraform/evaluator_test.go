@@ -760,6 +760,30 @@ locals {
 			want:     `cty.StringVal("foo")`,
 			errCheck: neverHappend,
 		},
+		{
+			name: "sensitive variable",
+			config: `
+variable "foo" {
+  sensitive = true
+  default   = "bar"
+}`,
+			expr:     expr(`var.foo`),
+			ty:       cty.String,
+			want:     `cty.StringVal("bar").Mark(marks.Sensitive)`,
+			errCheck: neverHappend,
+		},
+		{
+			name: "ephemeral variable",
+			config: `
+variable "foo" {
+  ephemeral = true
+  default   = "bar"
+}`,
+			expr:     expr(`var.foo`),
+			ty:       cty.String,
+			want:     `cty.StringVal("bar").Mark(marks.Ephemeral)`,
+			errCheck: neverHappend,
+		},
 	}
 
 	for _, test := range tests {
