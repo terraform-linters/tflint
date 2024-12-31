@@ -171,6 +171,13 @@ variable "string_var" {
 			errCheck: neverHappend,
 		},
 		{
+			name:     "terraform.applying",
+			expr:     expr(`terraform.applying`),
+			ty:       cty.Bool,
+			want:     `cty.False.Mark(marks.Ephemeral)`,
+			errCheck: neverHappend,
+		},
+		{
 			name: "interpolation in string",
 			config: `
 variable "string_var" {
