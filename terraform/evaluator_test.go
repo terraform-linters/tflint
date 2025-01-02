@@ -171,6 +171,13 @@ variable "string_var" {
 			errCheck: neverHappend,
 		},
 		{
+			name:     "terraform.applying",
+			expr:     expr(`terraform.applying`),
+			ty:       cty.Bool,
+			want:     `cty.False.Mark(marks.Ephemeral)`,
+			errCheck: neverHappend,
+		},
+		{
 			name: "interpolation in string",
 			config: `
 variable "string_var" {
@@ -758,6 +765,44 @@ locals {
 			expr:     hclext.BindValue(cty.StringVal("foo"), expr(`each.value`)),
 			ty:       cty.String,
 			want:     `cty.StringVal("foo")`,
+			errCheck: neverHappend,
+		},
+		{
+			name: "sensitive variable",
+			config: `
+variable "foo" {
+  sensitive = true
+  default   = "bar"
+}`,
+			expr:     expr(`var.foo`),
+			ty:       cty.String,
+			want:     `cty.StringVal("bar").Mark(marks.Sensitive)`,
+			errCheck: neverHappend,
+		},
+		{
+			name: "ephemeral variable",
+			config: `
+variable "foo" {
+  ephemeral = true
+  default   = "bar"
+}`,
+			expr:     expr(`var.foo`),
+			ty:       cty.String,
+			want:     `cty.StringVal("bar").Mark(marks.Ephemeral)`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "ephemeral resource",
+			expr:     expr(`ephemeral.aws_secretsmanager_secret_version.db_master.secret_string`),
+			ty:       cty.String,
+			want:     `cty.UnknownVal(cty.String).Mark(marks.Ephemeral)`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "ephemeral resource with ephemeralasnull",
+			expr:     expr(`ephemeralasnull(ephemeral.aws_secretsmanager_secret_version.db_master.secret_string)`),
+			ty:       cty.String,
+			want:     `cty.UnknownVal(cty.String)`,
 			errCheck: neverHappend,
 		},
 	}
