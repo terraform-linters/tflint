@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: BUSL-1.1
+
 package terraform
 
 import (
@@ -8,6 +11,7 @@ import (
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	"github.com/terraform-linters/tflint/terraform/tfdiags"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
 )
@@ -84,8 +88,11 @@ func decodeVariableBlock(block *hclext.Block) (*Variable, hcl.Diagnostics) {
 				diags = append(diags, &hcl.Diagnostic{
 					Severity: hcl.DiagError,
 					Summary:  "Invalid default value for variable",
-					Detail:   fmt.Sprintf("This default value is not compatible with the variable's type constraint: %s.", err),
-					Subject:  attr.Expr.Range().Ptr(),
+					Detail: fmt.Sprintf(
+						"This default value is not compatible with the variable's type constraint: %s.",
+						tfdiags.FormatError(err),
+					),
+					Subject: attr.Expr.Range().Ptr(),
 				})
 				val = cty.DynamicVal
 			}
