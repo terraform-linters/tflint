@@ -7,6 +7,7 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang/marks"
 
 	"github.com/zclconf/go-cty/cty"
 	ctyjson "github.com/zclconf/go-cty/cty/json"
@@ -49,10 +50,11 @@ func TestScopeEvalContext(t *testing.T) {
 				"count": cty.ObjectVal(map[string]cty.Value{
 					"index": cty.NumberIntVal(0),
 				}),
-				"resource": cty.DynamicVal,
-				"data":     cty.DynamicVal,
-				"module":   cty.DynamicVal,
-				"self":     cty.DynamicVal,
+				"resource":  cty.DynamicVal,
+				"ephemeral": cty.DynamicVal.Mark(marks.Ephemeral),
+				"data":      cty.DynamicVal,
+				"module":    cty.DynamicVal,
+				"self":      cty.DynamicVal,
 			},
 		},
 		{
@@ -61,10 +63,11 @@ func TestScopeEvalContext(t *testing.T) {
 				"each": cty.ObjectVal(map[string]cty.Value{
 					"key": cty.StringVal("a"),
 				}),
-				"resource": cty.DynamicVal,
-				"data":     cty.DynamicVal,
-				"module":   cty.DynamicVal,
-				"self":     cty.DynamicVal,
+				"resource":  cty.DynamicVal,
+				"ephemeral": cty.DynamicVal.Mark(marks.Ephemeral),
+				"data":      cty.DynamicVal,
+				"module":    cty.DynamicVal,
+				"self":      cty.DynamicVal,
 			},
 		},
 		{
@@ -73,10 +76,11 @@ func TestScopeEvalContext(t *testing.T) {
 				"each": cty.ObjectVal(map[string]cty.Value{
 					"value": cty.NumberIntVal(1),
 				}),
-				"resource": cty.DynamicVal,
-				"data":     cty.DynamicVal,
-				"module":   cty.DynamicVal,
-				"self":     cty.DynamicVal,
+				"resource":  cty.DynamicVal,
+				"ephemeral": cty.DynamicVal.Mark(marks.Ephemeral),
+				"data":      cty.DynamicVal,
+				"module":    cty.DynamicVal,
+				"self":      cty.DynamicVal,
 			},
 		},
 		{
@@ -85,10 +89,11 @@ func TestScopeEvalContext(t *testing.T) {
 				"local": cty.ObjectVal(map[string]cty.Value{
 					"foo": cty.StringVal("bar"),
 				}),
-				"resource": cty.DynamicVal,
-				"data":     cty.DynamicVal,
-				"module":   cty.DynamicVal,
-				"self":     cty.DynamicVal,
+				"resource":  cty.DynamicVal,
+				"ephemeral": cty.DynamicVal.Mark(marks.Ephemeral),
+				"data":      cty.DynamicVal,
+				"module":    cty.DynamicVal,
+				"self":      cty.DynamicVal,
 			},
 		},
 		{
@@ -96,6 +101,7 @@ func TestScopeEvalContext(t *testing.T) {
 			map[string]cty.Value{
 				"null_resource": cty.DynamicVal,
 				"resource":      cty.DynamicVal,
+				"ephemeral":     cty.DynamicVal.Mark(marks.Ephemeral),
 				"data":          cty.DynamicVal,
 				"module":        cty.DynamicVal,
 				"self":          cty.DynamicVal,
@@ -106,6 +112,7 @@ func TestScopeEvalContext(t *testing.T) {
 			map[string]cty.Value{
 				"null_resource": cty.DynamicVal,
 				"resource":      cty.DynamicVal,
+				"ephemeral":     cty.DynamicVal.Mark(marks.Ephemeral),
 				"data":          cty.DynamicVal,
 				"module":        cty.DynamicVal,
 				"self":          cty.DynamicVal,
@@ -116,6 +123,7 @@ func TestScopeEvalContext(t *testing.T) {
 			map[string]cty.Value{
 				"null_resource": cty.DynamicVal,
 				"resource":      cty.DynamicVal,
+				"ephemeral":     cty.DynamicVal.Mark(marks.Ephemeral),
 				"data":          cty.DynamicVal,
 				"module":        cty.DynamicVal,
 				"self":          cty.DynamicVal,
@@ -126,6 +134,7 @@ func TestScopeEvalContext(t *testing.T) {
 			map[string]cty.Value{
 				"null_resource": cty.DynamicVal,
 				"resource":      cty.DynamicVal,
+				"ephemeral":     cty.DynamicVal.Mark(marks.Ephemeral),
 				"data":          cty.DynamicVal,
 				"module":        cty.DynamicVal,
 				"self":          cty.DynamicVal,
@@ -136,6 +145,7 @@ func TestScopeEvalContext(t *testing.T) {
 			map[string]cty.Value{
 				"null_resource": cty.DynamicVal,
 				"resource":      cty.DynamicVal,
+				"ephemeral":     cty.DynamicVal.Mark(marks.Ephemeral),
 				"data":          cty.DynamicVal,
 				"module":        cty.DynamicVal,
 				"self":          cty.DynamicVal,
@@ -146,6 +156,7 @@ func TestScopeEvalContext(t *testing.T) {
 			map[string]cty.Value{
 				"null_resource": cty.DynamicVal,
 				"resource":      cty.DynamicVal,
+				"ephemeral":     cty.DynamicVal.Mark(marks.Ephemeral),
 				"data":          cty.DynamicVal,
 				"module":        cty.DynamicVal,
 				"self":          cty.DynamicVal,
@@ -156,6 +167,7 @@ func TestScopeEvalContext(t *testing.T) {
 			map[string]cty.Value{
 				"null_resource": cty.DynamicVal,
 				"resource":      cty.DynamicVal,
+				"ephemeral":     cty.DynamicVal.Mark(marks.Ephemeral),
 				"data":          cty.DynamicVal,
 				"module":        cty.DynamicVal,
 				"self":          cty.DynamicVal,
@@ -167,10 +179,11 @@ func TestScopeEvalContext(t *testing.T) {
 				"path": cty.ObjectVal(map[string]cty.Value{
 					"module": cty.StringVal("foo/bar"),
 				}),
-				"resource": cty.DynamicVal,
-				"data":     cty.DynamicVal,
-				"module":   cty.DynamicVal,
-				"self":     cty.DynamicVal,
+				"resource":  cty.DynamicVal,
+				"ephemeral": cty.DynamicVal.Mark(marks.Ephemeral),
+				"data":      cty.DynamicVal,
+				"module":    cty.DynamicVal,
+				"self":      cty.DynamicVal,
 			},
 		},
 		{
@@ -179,10 +192,11 @@ func TestScopeEvalContext(t *testing.T) {
 				"terraform": cty.ObjectVal(map[string]cty.Value{
 					"workspace": cty.StringVal("default"),
 				}),
-				"resource": cty.DynamicVal,
-				"data":     cty.DynamicVal,
-				"module":   cty.DynamicVal,
-				"self":     cty.DynamicVal,
+				"resource":  cty.DynamicVal,
+				"ephemeral": cty.DynamicVal.Mark(marks.Ephemeral),
+				"data":      cty.DynamicVal,
+				"module":    cty.DynamicVal,
+				"self":      cty.DynamicVal,
 			},
 		},
 		{
@@ -191,10 +205,11 @@ func TestScopeEvalContext(t *testing.T) {
 				"var": cty.ObjectVal(map[string]cty.Value{
 					"baz": cty.StringVal("boop"),
 				}),
-				"resource": cty.DynamicVal,
-				"data":     cty.DynamicVal,
-				"module":   cty.DynamicVal,
-				"self":     cty.DynamicVal,
+				"resource":  cty.DynamicVal,
+				"ephemeral": cty.DynamicVal.Mark(marks.Ephemeral),
+				"data":      cty.DynamicVal,
+				"module":    cty.DynamicVal,
+				"self":      cty.DynamicVal,
 			},
 		},
 	}

@@ -5,6 +5,7 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang/marks"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/tfdiags"
 	"github.com/terraform-linters/tflint/terraform/tfhcl"
@@ -210,6 +211,7 @@ func (s *Scope) evalContext(refs []*addrs.Reference, selfAddr addrs.Referenceabl
 
 	// The following are unknown values as they are not supported by TFLint.
 	vals["resource"] = cty.UnknownVal(cty.DynamicPseudoType)
+	vals["ephemeral"] = cty.UnknownVal(cty.DynamicPseudoType).Mark(marks.Ephemeral)
 	vals["data"] = cty.UnknownVal(cty.DynamicPseudoType)
 	vals["module"] = cty.UnknownVal(cty.DynamicPseudoType)
 	vals["self"] = cty.UnknownVal(cty.DynamicPseudoType)
