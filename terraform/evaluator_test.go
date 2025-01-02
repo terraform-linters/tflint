@@ -791,6 +791,20 @@ variable "foo" {
 			want:     `cty.StringVal("bar").Mark(marks.Ephemeral)`,
 			errCheck: neverHappend,
 		},
+		{
+			name:     "ephemeral resource",
+			expr:     expr(`ephemeral.aws_secretsmanager_secret_version.db_master.secret_string`),
+			ty:       cty.String,
+			want:     `cty.UnknownVal(cty.String).Mark(marks.Ephemeral)`,
+			errCheck: neverHappend,
+		},
+		{
+			name:     "ephemeral resource with ephemeralasnull",
+			expr:     expr(`ephemeralasnull(ephemeral.aws_secretsmanager_secret_version.db_master.secret_string)`),
+			ty:       cty.String,
+			want:     `cty.UnknownVal(cty.String)`,
+			errCheck: neverHappend,
+		},
 	}
 
 	for _, test := range tests {
