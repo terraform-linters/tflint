@@ -457,6 +457,11 @@ variable "sensitive" {
 	default   = "foo"
 }
 
+variable "ephemeral" {
+	ephemeral = true
+	default   = "foo"
+}
+
 variable "no_default" {}
 
 variable "null" {
@@ -472,6 +477,7 @@ variable "foo" {
 	server := NewGRPCServer(runner, rootRunner, runner.Files(), SDKVersion)
 
 	sdkv15 := version.Must(version.NewVersion("0.15.0"))
+	sdkv21 := version.Must(version.NewVersion("0.21.0"))
 
 	// test util functions
 	hclExpr := func(expr string) hcl.Expression {
@@ -541,6 +547,15 @@ variable "foo" {
 			ErrCheck: func(err error) bool {
 				return err == nil || !errors.Is(err, sdk.ErrSensitive)
 			},
+		},
+		{
+			Name: "sensitive value (SDK v0.21)",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				return hclExpr(`var.sensitive`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want:       cty.StringVal("foo").Mark(marks.Sensitive),
+			SDKVersion: sdkv21,
+			ErrCheck:   neverHappend,
 		},
 		{
 			Name: "no default",
@@ -620,6 +635,37 @@ variable "foo" {
 			SDKVersion: sdkv15,
 			ErrCheck: func(err error) bool {
 				return err == nil || !errors.Is(err, sdk.ErrNullValue)
+			},
+		},
+		{
+			Name: "ephemeral value",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				return hclExpr(`var.ephemeral`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want:     cty.StringVal("foo").Mark(marks.Ephemeral),
+			ErrCheck: neverHappend,
+		},
+		{
+			Name: "ephemeral value (SDK v0.21)",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				return hclExpr(`var.ephemeral`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want:       cty.NullVal(cty.NilType),
+			SDKVersion: sdkv21,
+			ErrCheck: func(err error) bool {
+				return err == nil || !errors.Is(err, sdk.ErrSensitive)
+			},
+		},
+		{
+			Name: "ephemeral value in object (SDK v0.21)",
+			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
+				ty := cty.Object(map[string]cty.Type{"value": cty.String})
+				return hclExpr(`{ value = var.ephemeral }`), sdk.EvaluateExprOption{WantType: &ty, ModuleCtx: sdk.SelfModuleCtxType}
+			},
+			Want:       cty.NullVal(cty.NilType),
+			SDKVersion: sdkv21,
+			ErrCheck: func(err error) bool {
+				return err == nil || !errors.Is(err, sdk.ErrSensitive)
 			},
 		},
 	}
