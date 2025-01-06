@@ -33,7 +33,7 @@ require (
 	github.com/zclconf/go-cty-yaml v1.1.0
 	golang.org/x/crypto v0.31.0
 	golang.org/x/net v0.33.0
-	golang.org/x/oauth2 v0.24.0
+	golang.org/x/oauth2 v0.25.0
 	golang.org/x/text v0.21.0
 	google.golang.org/grpc v1.69.2
 )
