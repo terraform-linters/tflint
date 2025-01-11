@@ -4,7 +4,7 @@ TFLint interprets the [Terraform language](https://developer.hashicorp.com/terra
 
 The parser supports Terraform v1.x syntax and semantics. The language compatibility on Terraform v1.x is defined by [Compatibility Promises](https://developer.hashicorp.com/terraform/language/v1-compatibility-promises). TFLint follows this promise. New features are only supported in newer TFLint versions, and bug and experimental features compatibility are not guaranteed.
 
-The latest supported version is Terraform v1.9.
+The latest supported version is Terraform v1.10.
 
 ## Input Variables
 
@@ -32,7 +32,7 @@ resource "aws_instance" "foo" {
 }
 ```
 
-Sensitive variables are ignored. This is to avoid unintended disclosure.
+Sensitive or ephemeral variables are ignored. This is to avoid unintended disclosure.
 
 ```hcl
 variable "instance_type" {
@@ -101,7 +101,7 @@ resource "aws_instance" "foo" {
 }
 ```
 
-## The `path.*` and `terraform.workspace` Values
+## The `path.*` and `terraform.*` Values
 
 TFLint supports [filesystem and workspace info](https://developer.hashicorp.com/terraform/language/expressions/references#filesystem-and-workspace-info).
 
@@ -110,14 +110,20 @@ TFLint supports [filesystem and workspace info](https://developer.hashicorp.com/
 - `path.cwd`
 - `terraform.workspace`.
 
+The [`terraform.applying`](https://developer.hashicorp.com/terraform/language/functions/terraform-applying) always resolves to false.
+
 ## Unsupported Named Values
 
-The values below are state-dependent and cannot be determined statically, so TFLint resolves them to unknown values.
+The values below are state-dependent or cannot be determined statically, so TFLint resolves them to unknown values.
 
 - `<RESOURCE TYPE>.<NAME>`
+- `resource.<RESOURCE TYPE>.<NAME>`
+- `ephemeral.<RESOURCE TYPE>.<NAME>`
 - `module.<MODULE NAME>`
 - `data.<DATA TYPE>.<NAME>`
-- `self`
+- `self.<NAME>`
+
+The `ephemeral.<RESOURCE TYPE>.<NAME>` always resolves to an unknown value marked as ephemeral, which is the same in most cases as anything else, but some rules may treat it differently.
 
 ## Functions
 
@@ -143,7 +149,9 @@ resource "aws_instance" "dynamic" {
 }
 ```
 
-Similar to support for meta-arguments, some rules may process a dynamic block as-is without expansion. If the `for_each` is unknown, the block will be empty.
+Similar to support for meta-arguments, some rules may process a dynamic block as-is without expansion.
+
+If the `for_each` is unknown, the expanded block will be empty. If the `for_each` is sensitive or ephemeral, TFLint expands dynamic blocks like Terraform does, but the mark does not propagate to children and expressions containing iterators resolve to unknown. This is a backwards compatibility limitation that may be resolved in a future version.
 
 ## Modules
 

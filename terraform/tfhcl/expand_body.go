@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package tfhcl
 
 import (
@@ -15,6 +18,7 @@ type expandBody struct {
 	ctx              *hcl.EvalContext
 	dynamicIteration *dynamicIteration // non-nil if we're nested inside a "dynamic" block
 	metaArgIteration *metaArgIteration // non-nil if we're nested inside a block with meta-arguments
+	valueMarks       cty.ValueMarks
 
 	// These are used with PartialContent to produce a "remaining items"
 	// body to return. They are nil on all bodies fresh out of the transformer.
@@ -126,7 +130,7 @@ func (b *expandBody) extendSchema(schema *hcl.BodySchema) *hcl.BodySchema {
 func (b *expandBody) prepareAttributes(rawAttrs hcl.Attributes) (hcl.Attributes, hcl.Diagnostics) {
 	var diags hcl.Diagnostics
 
-	if len(b.hiddenAttrs) == 0 && b.dynamicIteration == nil && b.metaArgIteration == nil {
+	if len(b.hiddenAttrs) == 0 && b.dynamicIteration == nil && b.metaArgIteration == nil && len(b.valueMarks) == 0 {
 		// Easy path: just pass through the attrs from the original body verbatim
 		return rawAttrs, diags
 	}
@@ -143,9 +147,10 @@ func (b *expandBody) prepareAttributes(rawAttrs hcl.Attributes) (hcl.Attributes,
 		if b.dynamicIteration != nil || b.metaArgIteration != nil {
 			attr := *rawAttr // shallow copy so we can mutate it
 			expr := exprWrap{
-				Expression: attr.Expr,
-				di:         b.dynamicIteration,
-				mi:         b.metaArgIteration,
+				Expression:  attr.Expr,
+				di:          b.dynamicIteration,
+				mi:          b.metaArgIteration,
+				resultMarks: b.valueMarks,
 			}
 			// Unlike hcl/ext/dynblock, wrapped expressions are evaluated immediately.
 			// The result is bound to the expression and can be accessed without
@@ -161,8 +166,18 @@ func (b *expandBody) prepareAttributes(rawAttrs hcl.Attributes) (hcl.Attributes,
 			}
 			attrs[name] = &attr
 		} else {
-			// If we have no active iteration then no wrapping is required.
-			attrs[name] = rawAttr
+			// If we have no active iteration then no wrapping is required
+			// unless we have marks to apply.
+			if len(b.valueMarks) != 0 {
+				attr := *rawAttr // shallow copy so we can mutate it
+				attr.Expr = exprWrap{
+					Expression:  attr.Expr,
+					resultMarks: b.valueMarks,
+				}
+				attrs[name] = &attr
+			} else {
+				attrs[name] = rawAttr
+			}
 		}
 	}
 	return attrs, diags
@@ -228,14 +243,16 @@ func (b *expandBody) expandDynamicBlock(schema *hcl.BodySchema, rawBlock *hcl.Bl
 		return hcl.Blocks{}, diags
 	}
 
-	if !spec.forEachVal.IsKnown() {
+	// For dynamic blocks only, it allows marked values
+	forEachVal, marks := spec.forEachVal.Unmark()
+	if !forEachVal.IsKnown() {
 		// If for_each is unknown, no blocks are returned
 		return hcl.Blocks{}, diags
 	}
 
 	var blocks hcl.Blocks
 
-	for it := spec.forEachVal.ElementIterator(); it.Next(); {
+	for it := forEachVal.ElementIterator(); it.Next(); {
 		key, value := it.Element()
 		i := b.dynamicIteration.MakeChild(spec.iteratorName, key, value)
 
@@ -244,7 +261,7 @@ func (b *expandBody) expandDynamicBlock(schema *hcl.BodySchema, rawBlock *hcl.Bl
 		if block != nil {
 			// Attach our new iteration context so that attributes
 			// and other nested blocks can refer to our iterator.
-			block.Body = b.expandChild(block.Body, i, b.metaArgIteration)
+			block.Body = b.expandChild(block.Body, i, b.metaArgIteration, marks)
 			blocks = append(blocks, block)
 		}
 	}
@@ -278,7 +295,7 @@ func (b *expandBody) expandMetaArgBlock(schema *hcl.BodySchema, rawBlock *hcl.Bl
 			i := MakeCountIteration(cty.NumberIntVal(int64(idx)))
 
 			expandedBlock := *rawBlock // shallow copy
-			expandedBlock.Body = b.expandChild(rawBlock.Body, b.dynamicIteration, i)
+			expandedBlock.Body = b.expandChild(rawBlock.Body, b.dynamicIteration, i, nil)
 			blocks = append(blocks, &expandedBlock)
 		}
 
@@ -299,7 +316,7 @@ func (b *expandBody) expandMetaArgBlock(schema *hcl.BodySchema, rawBlock *hcl.Bl
 			i := MakeForEachIteration(it.Element())
 
 			expandedBlock := *rawBlock // shallow copy
-			expandedBlock.Body = b.expandChild(rawBlock.Body, b.dynamicIteration, i)
+			expandedBlock.Body = b.expandChild(rawBlock.Body, b.dynamicIteration, i, nil)
 			blocks = append(blocks, &expandedBlock)
 		}
 
@@ -317,15 +334,16 @@ func (b *expandBody) expandStaticBlock(rawBlock *hcl.Block) *hcl.Block {
 	// case it contains expressions that refer to our inherited
 	// iterators, or nested "dynamic" blocks.
 	expandedBlock := *rawBlock
-	expandedBlock.Body = b.expandChild(rawBlock.Body, b.dynamicIteration, b.metaArgIteration)
+	expandedBlock.Body = b.expandChild(rawBlock.Body, b.dynamicIteration, b.metaArgIteration, nil)
 	return &expandedBlock
 }
 
-func (b *expandBody) expandChild(child hcl.Body, i *dynamicIteration, mi *metaArgIteration) hcl.Body {
+func (b *expandBody) expandChild(child hcl.Body, i *dynamicIteration, mi *metaArgIteration, valueMarks cty.ValueMarks) hcl.Body {
 	chiCtx := i.EvalContext(mi.EvalContext(b.ctx))
 	ret := Expand(child, chiCtx)
 	ret.(*expandBody).dynamicIteration = i
 	ret.(*expandBody).metaArgIteration = mi
+	ret.(*expandBody).valueMarks = valueMarks
 	return ret
 }
 
@@ -338,4 +356,9 @@ func (b *expandBody) JustAttributes() (hcl.Attributes, hcl.Diagnostics) {
 
 func (b *expandBody) MissingItemRange() hcl.Range {
 	return b.original.MissingItemRange()
+}
+
+// hcldec.MarkedBody impl
+func (b *expandBody) BodyValueMarks() cty.ValueMarks {
+	return b.valueMarks
 }

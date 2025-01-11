@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: BUSL-1.1
+
 package terraform
 
 import (
@@ -171,9 +174,11 @@ func (d *evaluationData) GetInputVariable(addr addrs.InputVariable, rng hcl.Rang
 		val = cty.UnknownVal(config.Type)
 	}
 
-	// Mark if sensitive
 	if config.Sensitive {
 		val = val.Mark(marks.Sensitive)
+	}
+	if config.Ephemeral {
+		val = val.Mark(marks.Ephemeral)
 	}
 
 	return val, diags
@@ -299,6 +304,10 @@ func (d *evaluationData) GetTerraformAttr(addr addrs.TerraformAttr, rng hcl.Rang
 		workspaceName := d.Meta.Env
 		return cty.StringVal(workspaceName), diags
 
+	case "applying":
+		// terraform.applying always returns false in TFLint
+		return cty.BoolVal(false).Mark(marks.Ephemeral), nil
+
 	case "env":
 		// Prior to Terraform 0.12 there was an attribute "env", which was
 		// an alias name for "workspace". This was deprecated and is now
@@ -315,7 +324,7 @@ func (d *evaluationData) GetTerraformAttr(addr addrs.TerraformAttr, rng hcl.Rang
 		diags = diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
 			Summary:  `Invalid "terraform" attribute`,
-			Detail:   fmt.Sprintf(`The "terraform" object does not have an attribute named %q. The only supported attribute is terraform.workspace, the name of the currently-selected workspace.`, addr.Name),
+			Detail:   fmt.Sprintf(`The "terraform" object does not have an attribute named %q. The only supported attributes are terraform.workspace, the name of the currently-selected workspace, and terraform.applying, a boolean which is true only during apply.`, addr.Name),
 			Subject:  rng.Ptr(),
 		})
 		return cty.DynamicVal, diags

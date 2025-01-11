@@ -1,0 +1,85 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is t2.micro",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 21,
+          "column": 19
+        },
+        "end": {
+          "line": 21,
+          "column": 32
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`lifecycle_rule` block found",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 33,
+          "column": 3
+        },
+        "end": {
+          "line": 33,
+          "column": 27
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`lifecycle_rule` block found",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 41,
+          "column": 3
+        },
+        "end": {
+          "line": 41,
+          "column": 27
+        }
+      },
+      "callers": []
+    },
+    {
+      "rule": {
+        "name": "aws_s3_bucket_example_lifecycle_rule",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "`enabled` attribute found: true",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 45,
+          "column": 17
+        },
+        "end": {
+          "line": 45,
+          "column": 21
+        }
+      },
+      "callers": []
+    }
+  ],
+  "errors": []
+}

@@ -10,6 +10,7 @@ import (
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint-plugin-sdk/plugin/plugin2host"
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang/marks"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/tflint"
@@ -145,7 +146,10 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts sdk.EvaluateExprOpti
 
 	// SDK v0.16+ introduces client-side handling of unknown/NULL/sensitive values.
 	if s.clientSDKVersion != nil && s.clientSDKVersion.GreaterThanOrEqual(version.Must(version.NewVersion("0.16.0"))) {
-		return val, nil
+		// Before SDK v0.22, ephemeral marks are ignored, so retrun ErrSensitive to prevent secrets ​​from being leaked.
+		if !marks.Contains(val, marks.Ephemeral) || s.clientSDKVersion.GreaterThanOrEqual(version.Must(version.NewVersion("0.22.0"))) {
+			return val, nil
+		}
 	}
 
 	if val.ContainsMarked() {
