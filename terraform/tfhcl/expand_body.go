@@ -160,7 +160,8 @@ func (b *expandBody) prepareAttributes(rawAttrs hcl.Attributes) (hcl.Attributes,
 				diags = append(diags, evalDiags...)
 				continue
 			}
-			// Marked values (e.g. sensitive values) are unbound for serialization.
+			// Marked values (e.g. ephemeral values) are unbound for serialization.
+			// TODO: Update the minimum supported SDK version to v0.22+ and then remove this condition.
 			if !val.ContainsMarked() {
 				attr.Expr = hclext.BindValue(val, expr)
 			}

@@ -144,59 +144,22 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts sdk.EvaluateExprOpti
 		return val, diags
 	}
 
-	// SDK v0.16+ introduces client-side handling of unknown/NULL/sensitive values.
-	if s.clientSDKVersion != nil && s.clientSDKVersion.GreaterThanOrEqual(version.Must(version.NewVersion("0.16.0"))) {
-		// Before SDK v0.22, ephemeral marks are ignored, so retrun ErrSensitive to prevent secrets ​​from being leaked.
-		if !marks.Contains(val, marks.Ephemeral) || s.clientSDKVersion.GreaterThanOrEqual(version.Must(version.NewVersion("0.22.0"))) {
-			return val, nil
-		}
-	}
-
-	if val.ContainsMarked() {
-		err := fmt.Errorf(
-			"sensitive value found in %s:%d%w",
-			expr.Range().Filename,
-			expr.Range().Start.Line,
-			sdk.ErrSensitive,
-		)
-		log.Printf("[INFO] %s. TFLint ignores expressions with sensitive values.", err)
-		return cty.NullVal(cty.NilType), err
-	}
-
-	if *opts.WantType == cty.DynamicPseudoType {
+	// If an ephemeral mark is contained, cty.Value will not be returned
+	// unless the plugin is built with SDK 0.22+ which supports ephemeral marks.
+	if !marks.Contains(val, marks.Ephemeral) || s.clientSDKVersion.GreaterThanOrEqual(version.Must(version.NewVersion("0.22.0"))) {
 		return val, nil
 	}
 
-	err := cty.Walk(val, func(path cty.Path, v cty.Value) (bool, error) {
-		if !v.IsKnown() {
-			err := fmt.Errorf(
-				"unknown value found in %s:%d%w",
-				expr.Range().Filename,
-				expr.Range().Start.Line,
-				sdk.ErrUnknownValue,
-			)
-			log.Printf("[INFO] %s. TFLint can only evaluate provided variables and skips dynamic values.", err)
-			return false, err
-		}
-
-		if v.IsNull() {
-			err := fmt.Errorf(
-				"null value found in %s:%d%w",
-				expr.Range().Filename,
-				expr.Range().Start.Line,
-				sdk.ErrNullValue,
-			)
-			log.Printf("[INFO] %s. TFLint ignores expressions with null values.", err)
-			return false, err
-		}
-
-		return true, nil
-	})
-	if err != nil {
-		return cty.NullVal(cty.NilType), err
-	}
-
-	return val, nil
+	// Plugins that do not support ephemeral marks will return ErrSensitive to prevent secrets from being exposed.
+	// Do not return ErrEphemeral as it is not supported by plugins.
+	err := fmt.Errorf(
+		"ephemeral value found in %s:%d%w",
+		expr.Range().Filename,
+		expr.Range().Start.Line,
+		sdk.ErrSensitive,
+	)
+	log.Printf("[INFO] %s. TFLint ignores ephemeral values for plugins built with SDK versions earlier than v0.22.", err)
+	return cty.NullVal(cty.NilType), err
 }
 
 // EmitIssue stores an issue in the server based on passed rule, message, and location.

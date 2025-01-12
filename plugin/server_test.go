@@ -476,7 +476,6 @@ variable "foo" {
 
 	server := NewGRPCServer(runner, rootRunner, runner.Files(), SDKVersion)
 
-	sdkv15 := version.Must(version.NewVersion("0.15.0"))
 	sdkv21 := version.Must(version.NewVersion("0.21.0"))
 
 	// test util functions
@@ -526,29 +525,6 @@ variable "foo" {
 			ErrCheck: neverHappend,
 		},
 		{
-			Name: "sensitive value (SDK v0.15)",
-			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
-				return hclExpr(`var.sensitive`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
-			},
-			Want:       cty.NullVal(cty.NilType),
-			SDKVersion: sdkv15,
-			ErrCheck: func(err error) bool {
-				return err == nil || !errors.Is(err, sdk.ErrSensitive)
-			},
-		},
-		{
-			Name: "sensitive value in object (SDK v0.15)",
-			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
-				ty := cty.Object(map[string]cty.Type{"value": cty.String})
-				return hclExpr(`{ value = var.sensitive }`), sdk.EvaluateExprOption{WantType: &ty, ModuleCtx: sdk.SelfModuleCtxType}
-			},
-			Want:       cty.NullVal(cty.NilType),
-			SDKVersion: sdkv15,
-			ErrCheck: func(err error) bool {
-				return err == nil || !errors.Is(err, sdk.ErrSensitive)
-			},
-		},
-		{
 			Name: "sensitive value (SDK v0.21)",
 			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
 				return hclExpr(`var.sensitive`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
@@ -566,76 +542,12 @@ variable "foo" {
 			ErrCheck: neverHappend,
 		},
 		{
-			Name: "no default (SDK v0.15)",
-			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
-				return hclExpr(`var.no_default`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
-			},
-			SDKVersion: sdkv15,
-			Want:       cty.NullVal(cty.NilType),
-			ErrCheck: func(err error) bool {
-				return err == nil || !errors.Is(err, sdk.ErrUnknownValue)
-			},
-		},
-		{
-			Name: "no default as cty.Value (SDK v0.15)",
-			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
-				return hclExpr(`var.no_default`), sdk.EvaluateExprOption{WantType: &cty.DynamicPseudoType, ModuleCtx: sdk.SelfModuleCtxType}
-			},
-			SDKVersion: sdkv15,
-			Want:       cty.DynamicVal,
-			ErrCheck:   neverHappend,
-		},
-		{
-			Name: "no default value in object (SDK v0.15)",
-			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
-				ty := cty.Object(map[string]cty.Type{"value": cty.String})
-				return hclExpr(`{ value = var.no_default }`), sdk.EvaluateExprOption{WantType: &ty, ModuleCtx: sdk.SelfModuleCtxType}
-			},
-			SDKVersion: sdkv15,
-			Want:       cty.NullVal(cty.NilType),
-			ErrCheck: func(err error) bool {
-				return err == nil || !errors.Is(err, sdk.ErrUnknownValue)
-			},
-		},
-		{
 			Name: "null",
 			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
 				return hclExpr(`var.null`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
 			},
 			Want:     cty.NullVal(cty.String),
 			ErrCheck: neverHappend,
-		},
-		{
-			Name: "null (SDK v0.15)",
-			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
-				return hclExpr(`var.null`), sdk.EvaluateExprOption{WantType: &cty.String, ModuleCtx: sdk.SelfModuleCtxType}
-			},
-			SDKVersion: sdkv15,
-			Want:       cty.NullVal(cty.NilType),
-			ErrCheck: func(err error) bool {
-				return err == nil || !errors.Is(err, sdk.ErrNullValue)
-			},
-		},
-		{
-			Name: "null as cty.Value (SDK v0.15)",
-			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
-				return hclExpr(`var.null`), sdk.EvaluateExprOption{WantType: &cty.DynamicPseudoType, ModuleCtx: sdk.SelfModuleCtxType}
-			},
-			SDKVersion: sdkv15,
-			Want:       cty.NullVal(cty.String),
-			ErrCheck:   neverHappend,
-		},
-		{
-			Name: "null value in object (SDK v0.15)",
-			Args: func() (hcl.Expression, sdk.EvaluateExprOption) {
-				ty := cty.Object(map[string]cty.Type{"value": cty.String})
-				return hclExpr(`{ value = var.null }`), sdk.EvaluateExprOption{WantType: &ty, ModuleCtx: sdk.SelfModuleCtxType}
-			},
-			Want:       cty.NullVal(cty.NilType),
-			SDKVersion: sdkv15,
-			ErrCheck: func(err error) bool {
-				return err == nil || !errors.Is(err, sdk.ErrNullValue)
-			},
 		},
 		{
 			Name: "ephemeral value",
