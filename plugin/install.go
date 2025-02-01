@@ -95,8 +95,7 @@ var ErrPluginNotVerified = errors.New("plugin not verified")
 
 // Install fetches the release from GitHub and puts the binary in the plugin directory.
 // This installation process will automatically check the checksum of the downloaded zip file.
-// Therefore, the release must always contain a checksum file.
-// In addition, the release must meet the following conventions:
+// The release must always contain a checksum file and meet the following conventions:
 //
 //   - The release must be tagged with a name like v1.1.1
 //   - The release must contain an asset with a name like tflint-ruleset-{name}_{GOOS}_{GOARCH}.zip
@@ -104,14 +103,7 @@ var ErrPluginNotVerified = errors.New("plugin not verified")
 //   - The release must contain a checksum file for the zip file with the name checksums.txt
 //   - The checksum file must contain a sha256 hash and filename
 //
-// If Artifact Attestations are present, TFLint will verify the checksum file
-// to ensure that it has not been tampered with.
-//
-// If the following conditions are met, the checksum file will be verified
-// as being signed with the PGP key.
-//
-//   - The release must contain a signature file for the checksum file with the name checksums.txt.sig
-//   - The signature file must be binary OpenPGP format
+// If possible, verify the signature to ensure that the checksum file has not been tampered with.
 func (c *InstallConfig) Install() (string, error) {
 	dir, err := getPluginDir(c.globalConfig)
 	if err != nil {
@@ -138,62 +130,17 @@ func (c *InstallConfig) Install() (string, error) {
 		return "", fmt.Errorf("Failed to download checksums.txt: %s", err)
 	}
 
-	var skipVerify bool
+	var verified bool
 	sigchecker := NewSignatureChecker(c)
 	if sigchecker.HasSigningKey() {
-		// Verify by PGP signing key
-		log.Printf("[DEBUG] Download checksums.txt.sig")
-		signatureFile, err := c.downloadToTempFile(assets["checksums.txt.sig"])
-		if signatureFile != nil {
-			defer os.Remove(signatureFile.Name())
+		if err := c.verifyChecksumsSignature(sigchecker, checksumsFile, assets); err != nil {
+			return "", err
 		}
-		if err != nil {
-			return "", fmt.Errorf("Failed to download checksums.txt.sig: %s", err)
-		}
-
-		if err := sigchecker.Verify(checksumsFile, signatureFile); err != nil {
-			return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
-		}
-		if _, err := checksumsFile.Seek(0, 0); err != nil {
-			return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
-		}
-		log.Printf("[DEBUG] Verified signature successfully")
-
+		verified = true
 	} else {
-		// Attempt to verify by artifact attestations.
-		var attestations []*github.Attestation
-		repo, err := c.fetchRepository()
+		verified, err = c.tryKeylessVerifyChecksumsSignature(sigchecker, checksumsFile)
 		if err != nil {
-			return "", fmt.Errorf("Failed to get GitHub repository metadata: %s", err)
-		}
-		// If the repository is private, artifact attestations is not always available
-		// because it requires GitHub Enterprise Cloud plan, so we skip verification here.
-		if repo.Private != nil && *repo.Private {
-			skipVerify = true
-		} else {
-			log.Printf("[DEBUG] Download artifact attestations")
-			attestations, err = c.fetchArtifactAttestations(checksumsFile)
-			if err != nil {
-				var gerr *github.ErrorResponse
-				// If there are no attestations, it will be ignored without errors.
-				// However, experimental mode is enabled, enforces that attestations are present.
-				if errors.As(err, &gerr) && gerr.Response.StatusCode == 404 && !IsExperimentalModeEnabled() {
-					log.Printf("[DEBUG] Artifact attestations not found and will be ignored: %s", err)
-					skipVerify = true
-				} else {
-					return "", fmt.Errorf("Failed to download artifact attestations: %s", err)
-				}
-			}
-		}
-
-		if !skipVerify {
-			if err := sigchecker.VerifyKeyless(checksumsFile, attestations); err != nil {
-				return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
-			}
-			if _, err := checksumsFile.Seek(0, 0); err != nil {
-				return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
-			}
-			log.Printf("[DEBUG] Verified signature successfully")
+			return "", err
 		}
 	}
 
@@ -220,10 +167,71 @@ func (c *InstallConfig) Install() (string, error) {
 	}
 
 	log.Printf("[DEBUG] Installed %s successfully", path)
-	if skipVerify {
+	if !verified {
 		return path, ErrPluginNotVerified
 	}
 	return path, nil
+}
+
+// Verify checksums.txt.sig by PGP signing key.
+// The release must contain a signature file for the checksum file with the name checksums.txt.sig.
+// The signature file must be binary OpenPGP format.
+func (c *InstallConfig) verifyChecksumsSignature(sigchecker *SignatureChecker, checksum io.ReadSeeker, assets map[string]*github.ReleaseAsset) error {
+	log.Printf("[DEBUG] Download checksums.txt.sig")
+	signatureFile, err := c.downloadToTempFile(assets["checksums.txt.sig"])
+	if signatureFile != nil {
+		defer os.Remove(signatureFile.Name())
+	}
+	if err != nil {
+		return fmt.Errorf("Failed to download checksums.txt.sig: %s", err)
+	}
+
+	if err := sigchecker.Verify(checksum, signatureFile); err != nil {
+		return fmt.Errorf("Failed to check checksums.txt signature: %s", err)
+	}
+	if _, err := checksum.Seek(0, 0); err != nil {
+		return fmt.Errorf("Failed to check checksums.txt signature: %s", err)
+	}
+
+	log.Printf("[DEBUG] Verified signature successfully")
+	return nil
+}
+
+// Verify checksums.txt signature by artifact attestations.
+func (c *InstallConfig) tryKeylessVerifyChecksumsSignature(sigchecker *SignatureChecker, checksum io.ReadSeeker) (bool, error) {
+	repo, err := c.fetchRepository()
+	if err != nil {
+		return false, fmt.Errorf("Failed to get GitHub repository metadata: %s", err)
+	}
+	// If the repository is private, artifact attestations is not always available
+	// because it requires GitHub Enterprise Cloud plan, so we skip verification here.
+	if repo.Private != nil && *repo.Private {
+		return false, nil
+	}
+
+	log.Printf("[DEBUG] Download artifact attestations")
+	attestations, err := c.fetchArtifactAttestations(checksum)
+	if err != nil {
+		var gerr *github.ErrorResponse
+		// If there are no attestations, it will be ignored without errors.
+		// However, experimental mode is enabled, enforces that attestations are present.
+		if errors.As(err, &gerr) && gerr.Response.StatusCode == 404 && !IsExperimentalModeEnabled() {
+			log.Printf("[DEBUG] Artifact attestations not found and will be ignored: %s", err)
+			return false, nil
+		} else {
+			return false, fmt.Errorf("Failed to download artifact attestations: %s", err)
+		}
+	}
+
+	if err := sigchecker.VerifyKeyless(checksum, attestations); err != nil {
+		return false, fmt.Errorf("Failed to check checksums.txt signature: %s", err)
+	}
+	if _, err := checksum.Seek(0, 0); err != nil {
+		return false, fmt.Errorf("Failed to check checksums.txt signature: %s", err)
+	}
+
+	log.Printf("[DEBUG] Verified signature successfully")
+	return true, nil
 }
 
 // fetchReleaseAssets fetches assets from the GitHub release.
