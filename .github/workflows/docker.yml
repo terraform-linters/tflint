@@ -30,7 +30,7 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build and push
-      uses: docker/build-push-action@b32b51a8eda65d6793cd0494a773d4f6bcef32dc # v6
+      uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6
       with:
         platforms: 'linux/amd64,linux/arm64/v8'
         push: ${{ github.event_name != 'pull_request' }}
