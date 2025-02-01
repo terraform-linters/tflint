@@ -161,17 +161,28 @@ func (c *InstallConfig) Install() (string, error) {
 
 	} else {
 		// Attempt to verify by artifact attestations.
-		// If there are no attestations, it will be ignored without errors.
-		log.Printf("[DEBUG] Download artifact attestations")
-		attestations, err := c.fetchArtifactAttestations(checksumsFile)
+		var attestations []*github.Attestation
+		repo, err := c.fetchRepository()
 		if err != nil {
-			var gerr *github.ErrorResponse
-			// If experimental mode is enabled, enforces that attestations are present.
-			if errors.As(err, &gerr) && gerr.Response.StatusCode == 404 && !IsExperimentalModeEnabled() {
-				log.Printf("[DEBUG] Artifact attestations not found and will be ignored: %s", err)
-				skipVerify = true
-			} else {
-				return "", fmt.Errorf("Failed to download artifact attestations: %s", err)
+			return "", fmt.Errorf("Failed to get GitHub repository metadata: %s", err)
+		}
+		// If the repository is private, artifact attestations is not always available
+		// because it requires GitHub Enterprise Cloud plan, so we skip verification here.
+		if repo.Private != nil && *repo.Private {
+			skipVerify = true
+		} else {
+			log.Printf("[DEBUG] Download artifact attestations")
+			attestations, err = c.fetchArtifactAttestations(checksumsFile)
+			if err != nil {
+				var gerr *github.ErrorResponse
+				// If there are no attestations, it will be ignored without errors.
+				// However, experimental mode is enabled, enforces that attestations are present.
+				if errors.As(err, &gerr) && gerr.Response.StatusCode == 404 && !IsExperimentalModeEnabled() {
+					log.Printf("[DEBUG] Artifact attestations not found and will be ignored: %s", err)
+					skipVerify = true
+				} else {
+					return "", fmt.Errorf("Failed to download artifact attestations: %s", err)
+				}
 			}
 		}
 
@@ -237,6 +248,18 @@ func (c *InstallConfig) fetchReleaseAssets() (map[string]*github.ReleaseAsset, e
 		assets[asset.GetName()] = asset
 	}
 	return assets, nil
+}
+
+// fetchRepository fetches GitHub repository metadata.
+func (c *InstallConfig) fetchRepository() (*github.Repository, error) {
+	ctx := context.Background()
+	client, err := newGitHubClient(ctx, c)
+	if err != nil {
+		return nil, err
+	}
+
+	repo, _, err := client.Repositories.Get(ctx, c.SourceOwner, c.SourceRepo)
+	return repo, err
 }
 
 // fetchArtifactAttestations fetches GitHub Artifact Attestations based on the given io.ReadSeeker.
