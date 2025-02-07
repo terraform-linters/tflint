@@ -6,11 +6,10 @@ set -o pipefail
 get_machine_arch () {
     machine_arch=""
     case $(uname -m) in
-        i386)     machine_arch="386" ;;
-        i686)     machine_arch="386" ;;
-        x86_64)   machine_arch="amd64" ;;
-        arm64)    machine_arch="arm64" ;;
-        aarch64)  dpkg --print-architecture | grep -q "arm64" && machine_arch="arm64" || machine_arch="arm" ;;
+        i386)             machine_arch="386" ;;
+        i686)             machine_arch="386" ;;
+        x86_64)           machine_arch="amd64" ;;
+        arm64|aarch64)    machine_arch="arm64" ;;
     esac
     echo $machine_arch
 }
