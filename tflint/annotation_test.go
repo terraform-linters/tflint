@@ -1,23 +1,27 @@
 package tflint
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	hcl "github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 )
 
 func Test_NewAnnotations(t *testing.T) {
 	tests := []struct {
-		name  string
-		src   string
-		want  Annotations
-		diags string
+		name     string
+		filename string
+		src      string
+		want     Annotations
+		diags    string
 	}{
 		{
-			name: "annotation starting with #",
+			name:     "annotation starting with #",
+			filename: "resource.tf",
 			src: `
 resource "aws_instance" "foo" {
   # tflint-ignore: aws_instance_invalid_type
@@ -39,7 +43,8 @@ resource "aws_instance" "foo" {
 			},
 		},
 		{
-			name: "annotation starting with //",
+			name:     "annotation starting with //",
+			filename: "resource.tf",
 			src: `
 resource "aws_instance" "foo" {
   // This is also comment
@@ -61,7 +66,8 @@ resource "aws_instance" "foo" {
 			},
 		},
 		{
-			name: "annotation starting with /*",
+			name:     "annotation starting with /*",
+			filename: "resource.tf",
 			src: `
 resource "aws_instance" "foo" {
   /* tflint-ignore: aws_instance_invalid_type */
@@ -83,7 +89,8 @@ resource "aws_instance" "foo" {
 			},
 		},
 		{
-			name: "ignoring multiple rules",
+			name:     "ignoring multiple rules",
+			filename: "resource.tf",
 			src: `
 resource "aws_instance" "foo" {
   /* tflint-ignore: aws_instance_invalid_type, terraform_deprecated_syntax */
@@ -105,7 +112,8 @@ resource "aws_instance" "foo" {
 			},
 		},
 		{
-			name: "with reason starting with //",
+			name:     "with reason starting with //",
+			filename: "resource.tf",
 			src: `
 resource "aws_instance" "foo" {
   instance_type = "t2.micro" // tflint-ignore: aws_instance_invalid_type // With reason
@@ -126,7 +134,8 @@ resource "aws_instance" "foo" {
 			},
 		},
 		{
-			name: "with reason starting with #",
+			name:     "with reason starting with #",
+			filename: "resource.tf",
 			src: `
 resource "aws_instance" "foo" {
   # tflint-ignore: aws_instance_invalid_type # With reason
@@ -148,7 +157,8 @@ resource "aws_instance" "foo" {
 			},
 		},
 		{
-			name: "tflint-ignore-file annotation",
+			name:     "tflint-ignore-file annotation",
+			filename: "resource.tf",
 			src: `# tflint-ignore-file: aws_instance_invalid_type
 resource "aws_instance" "foo" {
   instance_type = "t2.micro"
@@ -169,7 +179,8 @@ resource "aws_instance" "foo" {
 			},
 		},
 		{
-			name: "tflint-ignore-file annotation outside the first line",
+			name:     "tflint-ignore-file annotation outside the first line",
+			filename: "resource.tf",
 			src: `
 resource "aws_instance" "foo" {
   # tflint-ignore-file: aws_instance_invalid_type
@@ -179,22 +190,111 @@ resource "aws_instance" "foo" {
 			diags: "resource.tf:3,3-4,1: tflint-ignore-file annotation must be written at the top of file; tflint-ignore-file annotation is written at line 3, column 3",
 		},
 		{
-			name: "tflint-ignore-file annotation outside the first column",
+			name:     "tflint-ignore-file annotation outside the first column",
+			filename: "resource.tf",
 			src: `resource "aws_instance" "foo" { # tflint-ignore-file: aws_instance_invalid_type
   instance_type = "t2.micro"
 }`,
 			want:  Annotations{},
 			diags: "resource.tf:1,33-2,1: tflint-ignore-file annotation must be written at the top of file; tflint-ignore-file annotation is written at line 1, column 33",
 		},
+		{
+			name:     "tflint-ignore-file in JSON comment property",
+			filename: "resource.tf.json",
+			src: `{
+  "//": "tflint-ignore-file: aws_instance_invalid_type",
+  "resource": {
+    "aws_instance": {
+      "foo": {
+        "instance_type": "t2.micro"
+      }
+    }
+  }
+}`,
+			want: Annotations{
+				&FileAnnotation{
+					Content: "aws_instance_invalid_type",
+					Token: hclsyntax.Token{
+						Range: hcl.Range{
+							Filename: "resource.tf.json",
+						},
+					},
+				},
+			},
+		},
+		{
+			name:     "tglint-ignore-file with multiple rules in JSON comment property and following comment",
+			filename: "resource.tf.json",
+			src: `{
+  "//": "tflint-ignore-file: aws_instance_invalid_type, terraform_deprecated_syntax # this is an extra comment",
+  "resource": {
+	"aws_instance": {
+	  "foo": {
+		"instance_type": "t2.micro"
+	  }
+	}
+  }
+}`,
+			want: Annotations{
+				&FileAnnotation{
+					Content: "aws_instance_invalid_type, terraform_deprecated_syntax",
+					Token: hclsyntax.Token{
+						Range: hcl.Range{
+							Filename: "resource.tf.json",
+						},
+					},
+				},
+			},
+		},
+		{
+			name:     "no errors if JSON comment property is not the expected structure",
+			filename: "resource.tf.json",
+			src: `{
+  "//": {"foo": "bar"},
+  "resource": {
+	"aws_instance": {
+	  "foo": {
+		"instance_type": "t2.micro"
+	  }
+	}
+  }
+}`,
+			want: Annotations{},
+		},
+		{
+			name:     "tflint-ignore-file annotation outside the first column of the JSON comment property",
+			filename: "resource.tf.json",
+			src: `{
+  "//": "blah blah # tflint-ignore-file: aws_instance_invalid_type",
+  "resource": {
+	"aws_instance": {
+	  "foo": {
+		"instance_type": "t2.micro"
+	  }
+	}
+  }
+}`,
+			want:  Annotations{},
+			diags: "resource.tf.json:0,0-0: tflint-ignore-file annotation must appear at the beginning of the JSON comment property value; tflint-ignore-file annotation is written at index 12 of the comment property value",
+		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			file, diags := hclsyntax.ParseConfig([]byte(test.src), "resource.tf", hcl.InitialPos)
+			parser := hclparse.NewParser()
+			var file *hcl.File
+			var diags hcl.Diagnostics
+			switch {
+			case strings.HasSuffix(test.filename, ".json"):
+				file, diags = parser.ParseJSON([]byte(test.src), test.filename)
+			default:
+				file, diags = parser.ParseHCL([]byte(test.src), test.filename)
+			}
 			if diags.HasErrors() {
 				t.Fatal(diags)
 			}
-			got, diags := NewAnnotations("resource.tf", file)
+
+			got, diags := NewAnnotations(test.filename, file)
 			if diags.HasErrors() || test.diags != "" {
 				if diags.Error() != test.diags {
 					t.Errorf("want=%s, got=%s", test.diags, diags.Error())
