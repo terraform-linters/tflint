@@ -223,7 +223,7 @@ resource "aws_instance" "foo" {
 			},
 		},
 		{
-			name:     "tglint-ignore-file with multiple rules in JSON comment property and following comment",
+			name:     "tflint-ignore-file with multiple rules in JSON comment property and following comment",
 			filename: "resource.tf.json",
 			src: `{
   "//": "tflint-ignore-file: aws_instance_invalid_type, terraform_deprecated_syntax # this is an extra comment",
@@ -282,8 +282,10 @@ resource "aws_instance" "foo" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			parser := hclparse.NewParser()
-			var file *hcl.File
-			var diags hcl.Diagnostics
+			var (
+				file  *hcl.File
+				diags hcl.Diagnostics
+			)
 			switch {
 			case strings.HasSuffix(test.filename, ".json"):
 				file, diags = parser.ParseJSON([]byte(test.src), test.filename)

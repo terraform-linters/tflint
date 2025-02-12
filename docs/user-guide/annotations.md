@@ -55,6 +55,8 @@ resource "aws_instance" "foo" {
 }
 ```
 
+## Files
+
 To disable an entire file, you can also use the `tflint-ignore-file` annotation:
 
 ```hcl
@@ -80,8 +82,9 @@ resource "aws_instance" "foo" { # tflint-ignore-file: aws_instance_invalid_type
 }
 ```
 
-The `tflint-ignore-file` annotation is also supported in Terraform JSON by
-using a top-level [comment property](https://developer.hashicorp.com/terraform/language/syntax/json#comment-properties):
+## JSON
+
+The `tflint-ignore-file` annotation is also supported in Terraform JSON by using a top-level [comment property](https://developer.hashicorp.com/terraform/language/syntax/json#comment-properties):
 
 ```json
 {
