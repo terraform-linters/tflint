@@ -66,6 +66,12 @@ Instead of installing directly, you can use the Docker image:
 docker run --rm -v $(pwd):/data -t ghcr.io/terraform-linters/tflint
 ```
 
+To download plugins, you can override the entrypoint to a shell (`sh`) to run `--init` and the main command in a single `docker run` command:
+
+```console
+ docker run --rm -v $(pwd):/data -t --entrypoint /bin/sh ghcr.io/terraform-linters/tflint -c "tflint --init && tflint"
+```
+
 ### GitHub Actions
 
 If you want to run on GitHub Actions, [setup-tflint](https://github.com/terraform-linters/setup-tflint) action is available.
