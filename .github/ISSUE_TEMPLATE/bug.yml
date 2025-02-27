@@ -5,7 +5,7 @@ labels:
 body:
   - type: markdown
     attributes:
-      value: |
+      value: >
         Thanks for reporting a bug in TFLint. Please be sure to complete the fields below as we can only investigate reproducible issues.
         You **must** include an isolated reproduction with all issues. We will not accept reports that reference private modules or otherwise cannot be run.
         If you need additional room/files to demonstrate your issue, create a public repository and upload your modules there.
