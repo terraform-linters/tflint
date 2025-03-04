@@ -52,16 +52,7 @@ func TestIntegration(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			testDir := filepath.Join(dir, test.dir)
-
-			t.Cleanup(func() {
-				if err := os.Chdir(dir); err != nil {
-					t.Fatal(err)
-				}
-			})
-
-			if err := os.Chdir(testDir); err != nil {
-				t.Fatal(err)
-			}
+			t.Chdir(testDir)
 
 			args := strings.Split(test.command, " ")
 			var cmd *exec.Cmd

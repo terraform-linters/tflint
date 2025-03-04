@@ -52,15 +52,7 @@ func TestIntegration(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
 			testDir := filepath.Join(dir, tc.Dir)
-
-			defer func() {
-				if err := os.Chdir(dir); err != nil {
-					t.Fatal(err)
-				}
-			}()
-			if err := os.Chdir(testDir); err != nil {
-				t.Fatal(err)
-			}
+			t.Chdir(testDir)
 
 			outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
 			cli, err := cmd.NewCLI(outStream, errStream)
