@@ -55,6 +55,8 @@ resource "aws_instance" "foo" {
 }
 ```
 
+## Files
+
 To disable an entire file, you can also use the `tflint-ignore-file` annotation:
 
 ```hcl
@@ -79,3 +81,53 @@ resource "aws_instance" "foo" { # tflint-ignore-file: aws_instance_invalid_type
   instance_type = "t1.2xlarge"
 }
 ```
+
+## JSON
+
+The `tflint-ignore-file` annotation is also supported in Terraform JSON by using a top-level [comment property](https://developer.hashicorp.com/terraform/language/syntax/json#comment-properties):
+
+```json
+{
+  "//": "tflint-ignore-file: aws_instance_invalid_type",
+  "resource": {
+    "aws_instance": {
+      "foo": {
+        "instance_type": "t2.micro"
+      }
+    }
+  }
+}
+```
+
+As with annotations in HCL files, multiple rules can be specified as a
+comma-separated list:
+
+```json
+{
+  "//": "tflint-ignore-file: aws_instance_invalid_type, other_rule",
+  "resource": {
+    "aws_instance": {
+      "foo": {
+        "instance_type": "t2.micro"
+      }
+    }
+  }
+}
+```
+
+Similarly, annotations in JSON can be followed with arbitrary comments, but the annotation must be the first thing in the comment property string:
+
+```json
+{
+  "//": "tflint-ignore-file: aws_instance_invalid_type # This instance type is new and TFLint doesn't know about it yet",
+  "resource": {
+    "aws_instance": {
+      "foo": {
+        "instance_type": "t2.micro"
+      }
+    }
+  }
+}
+```
+
+The `tflint-ignore` annotation is not supported in JSON configuration.

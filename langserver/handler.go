@@ -178,9 +178,6 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 	}
 	annotations := map[string]tflint.Annotations{}
 	for path, file := range files {
-		if !strings.HasSuffix(path, ".tf") {
-			continue
-		}
 		ants, lexDiags := tflint.NewAnnotations(path, file)
 		diags = diags.Extend(lexDiags)
 		annotations[path] = ants
