@@ -43,14 +43,7 @@ func TestWorkspace(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			if test.dir != "" {
-				if err := os.Chdir(test.dir); err != nil {
-					t.Fatal(err)
-				}
-				defer func() {
-					if err := os.Chdir(currentDir); err != nil {
-						t.Fatal(err)
-					}
-				}()
+				t.Chdir(test.dir)
 			}
 
 			for k, v := range test.env {
