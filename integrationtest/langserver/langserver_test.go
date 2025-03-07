@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/logutils"
 	lsp "github.com/sourcegraph/go-lsp"
@@ -47,12 +48,10 @@ func startServer(t *testing.T, configPath string) (io.Writer, io.Reader) {
 	stdin, stdinWriter := io.Pipe()
 	stdoutReader, stdout := io.Pipe()
 
-	var connOpt []jsonrpc2.ConnOpt
 	conn := jsonrpc2.NewConn(
 		t.Context(),
 		jsonrpc2.NewBufferedStream(langserver.NewConn(stdin, stdout), jsonrpc2.VSCodeObjectCodec{}),
 		handler,
-		connOpt...,
 	)
 
 	t.Cleanup(func() {
@@ -60,6 +59,8 @@ func startServer(t *testing.T, configPath string) (io.Writer, io.Reader) {
 
 		if plugin != nil {
 			plugin.Clean()
+			// Ensure the plugin process on Windows has time to exit
+			time.Sleep(100 * time.Millisecond)
 		}
 
 		if err := stdinWriter.Close(); err != nil {
