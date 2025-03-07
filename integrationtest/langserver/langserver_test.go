@@ -99,12 +99,11 @@ func withinFixtureDir(t *testing.T, dir string, test func(dir string)) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	t.Cleanup(func() {
+	defer func() {
 		if err = os.Chdir(current); err != nil {
 			t.Fatal(err)
 		}
-	})
+	}()
 
 	dir, err = filepath.Abs("test-fixtures/" + dir)
 	if err != nil {
@@ -118,17 +117,22 @@ func withinTempDir(t *testing.T, test func(dir string)) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	t.Cleanup(func() {
+	defer func() {
 		if err = os.Chdir(current); err != nil {
 			t.Fatal(err)
 		}
-	})
+	}()
+
+	dir, err := os.MkdirTemp("", "withinTempDir")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
 
 	// on macOS MkdirTemp returns a /var/folders/... path
 	// In other contexts these paths are returned with their full /private/var/folders/... path
 	// EvalSymlinks will resolve the /var/folders/... path to the full path
-	dir, err := filepath.EvalSymlinks(t.TempDir())
+	dir, err = filepath.EvalSymlinks(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
