@@ -21,16 +21,8 @@ func withinFixtureDir(t *testing.T, dir string, test func()) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer func() {
-		if err = os.Chdir(currentDir); err != nil {
-			t.Fatal(err)
-		}
-	}()
 
-	if err = os.Chdir(filepath.Join(currentDir, "test-fixtures", dir)); err != nil {
-		t.Fatal(err)
-	}
-
+	t.Chdir(filepath.Join(currentDir, "test-fixtures", dir))
 	test()
 }
 

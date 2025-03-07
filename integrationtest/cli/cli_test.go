@@ -394,16 +394,10 @@ func TestIntegration(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			testDir := filepath.Join(dir, test.dir)
-			defer func() {
-				if err := os.Chdir(dir); err != nil {
-					t.Fatal(err)
-				}
-				// Reset global color option
+			t.Cleanup(func() {
 				color.NoColor = defaultNoColor
-			}()
-			if err := os.Chdir(testDir); err != nil {
-				t.Fatal(err)
-			}
+			})
+			t.Chdir(testDir)
 
 			outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
 			cli, err := cmd.NewCLI(outStream, errStream)

@@ -21,19 +21,13 @@ func TestIntegration(t *testing.T) {
 	current, _ := os.Getwd()
 	dir := filepath.Join(current, "basic")
 
-	defer func() {
-		if err := os.Chdir(current); err != nil {
-			t.Fatal(err)
-		}
-	}()
 	pluginDir := t.TempDir()
 	os.Setenv("TFLINT_PLUGIN_DIR", pluginDir)
 	defer os.Setenv("TFLINT_PLUGIN_DIR", "")
 
 	// Init on the current directory
-	if err := os.Chdir(dir); err != nil {
-		t.Fatal(err)
-	}
+	t.Chdir(dir)
+
 	outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
 	cli, err := cmd.NewCLI(outStream, errStream)
 	if err != nil {
@@ -64,9 +58,8 @@ func TestIntegration(t *testing.T) {
 	}
 
 	// Init with --chdir
-	if err := os.Chdir(current); err != nil {
-		t.Fatal(err)
-	}
+	t.Chdir(current)
+
 	outStream, errStream = new(bytes.Buffer), new(bytes.Buffer)
 	cli, err = cmd.NewCLI(outStream, errStream)
 	if err != nil {
@@ -84,9 +77,8 @@ func TestIntegration(t *testing.T) {
 	}
 
 	// Init with --recursive
-	if err := os.Chdir(current); err != nil {
-		t.Fatal(err)
-	}
+	t.Chdir(current)
+
 	outStream, errStream = new(bytes.Buffer), new(bytes.Buffer)
 	cli, err = cmd.NewCLI(outStream, errStream)
 	if err != nil {

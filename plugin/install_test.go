@@ -1,7 +1,6 @@
 package plugin
 
 import (
-	"context"
 	"errors"
 	"os"
 	"testing"
@@ -245,7 +244,7 @@ func TestNewGitHubClient(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			client, err := newGitHubClient(context.Background(), tc.config)
+			client, err := newGitHubClient(t.Context(), tc.config)
 			if err != nil {
 				t.Fatalf("Failed to create client: %s", err)
 			}
