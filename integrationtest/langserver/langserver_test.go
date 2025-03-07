@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"log"
@@ -13,6 +14,7 @@ import (
 	lsp "github.com/sourcegraph/go-lsp"
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/terraform-linters/tflint/langserver"
+	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -24,6 +26,7 @@ type jsonrpcMessage struct {
 }
 
 func TestMain(m *testing.M) {
+	// Disable the bundled plugin because the `os.Executable()` is go(1) in the tests
 	tflint.DisableBundledPlugin = true
 	defer func() {
 		tflint.DisableBundledPlugin = false
@@ -38,7 +41,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func startServer(t *testing.T, configPath string) (io.Writer, io.Reader) {
+func startServer(t *testing.T, configPath string) (io.Writer, io.Reader, *plugin.Plugin) {
 	handler, plugin, err := langserver.NewHandler(configPath, tflint.EmptyConfig())
 	if err != nil {
 		t.Fatal(err)
@@ -47,18 +50,15 @@ func startServer(t *testing.T, configPath string) (io.Writer, io.Reader) {
 	stdin, stdinWriter := io.Pipe()
 	stdoutReader, stdout := io.Pipe()
 
-	conn := jsonrpc2.NewConn(
-		t.Context(),
+	var connOpt []jsonrpc2.ConnOpt
+	jsonrpc2.NewConn(
+		context.Background(),
 		jsonrpc2.NewBufferedStream(langserver.NewConn(stdin, stdout), jsonrpc2.VSCodeObjectCodec{}),
 		handler,
+		connOpt...,
 	)
 
-	t.Cleanup(func() {
-		<-conn.DisconnectNotify()
-		plugin.Clean()
-	})
-
-	return stdinWriter, stdoutReader
+	return stdinWriter, stdoutReader, plugin
 }
 
 func pathToURI(path string) lsp.DocumentURI {
@@ -95,17 +95,44 @@ func toJSONRPC2(json string) string {
 }
 
 func withinFixtureDir(t *testing.T, dir string, test func(dir string)) {
-	dir, err := filepath.Abs("test-fixtures/" + dir)
+	current, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer func() {
+		if err = os.Chdir(current); err != nil {
+			t.Fatal(err)
+		}
+	}()
 
-	t.Chdir(dir)
+	dir, err = filepath.Abs("test-fixtures/" + dir)
+	if err != nil {
+		t.Fatal(err)
+	}
 	test(dir)
 }
 
 func withinTempDir(t *testing.T, test func(dir string)) {
-	dir, err := filepath.EvalSymlinks(t.TempDir())
+	current, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		if err = os.Chdir(current); err != nil {
+			t.Fatal(err)
+		}
+	}()
+
+	dir, err := os.MkdirTemp("", "withinTempDir")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+
+	// on macOS MkdirTemp returns a /var/folders/... path
+	// In other contexts these paths are returned with their full /private/var/folders/... path
+	// EvalSymlinks will resolve the /var/folders/... path to the full path
+	dir, err = filepath.EvalSymlinks(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
