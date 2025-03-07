@@ -110,6 +110,5 @@ func withinTempDir(t *testing.T, test func(dir string)) {
 		t.Fatal(err)
 	}
 
-	t.Chdir(dir)
 	test(dir)
 }
