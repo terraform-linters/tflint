@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/hashicorp/logutils"
 	lsp "github.com/sourcegraph/go-lsp"
@@ -55,21 +54,8 @@ func startServer(t *testing.T, configPath string) (io.Writer, io.Reader) {
 	)
 
 	t.Cleanup(func() {
-		_ = conn.Close()
-
-		if plugin != nil {
-			plugin.Clean()
-			// Ensure the plugin process on Windows has time to exit
-			time.Sleep(100 * time.Millisecond)
-		}
-
-		if err := stdinWriter.Close(); err != nil {
-			t.Error(err)
-		}
-
-		if err := stdoutReader.Close(); err != nil {
-			t.Error(err)
-		}
+		<-conn.DisconnectNotify()
+		plugin.Clean()
 	})
 
 	return stdinWriter, stdoutReader
