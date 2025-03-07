@@ -10,8 +10,7 @@ import (
 
 func Test_initialize(t *testing.T) {
 	withinFixtureDir(t, "workdir", func(dir string) {
-		stdin, stdout, plugin := startServer(t, dir+"/.tflint.hcl")
-		defer plugin.Clean()
+		stdin, stdout := startServer(t, dir+"/.tflint.hcl")
 
 		go func() {
 			fmt.Fprint(stdin, initializeRequest())

@@ -19,8 +19,7 @@ func Test_textDocumentDidOpen(t *testing.T) {
 		}
 		uri := pathToURI(dir + "/main.tf")
 
-		stdin, stdout, plugin := startServer(t, dir+"/.tflint.hcl")
-		defer plugin.Clean()
+		stdin, stdout := startServer(t, dir+"/.tflint.hcl")
 
 		go func() {
 			fmt.Fprint(stdin, initializeRequest())
@@ -95,8 +94,7 @@ func Test_textDocumentDidOpen_pathFunctions(t *testing.T) {
 		}
 		uri := pathToURI(dir + "/main.tf")
 
-		stdin, stdout, plugin := startServer(t, dir+"/.tflint.hcl")
-		defer plugin.Clean()
+		stdin, stdout := startServer(t, dir+"/.tflint.hcl")
 
 		go func() {
 			fmt.Fprint(stdin, initializeRequest())

@@ -13,7 +13,6 @@ import (
 	lsp "github.com/sourcegraph/go-lsp"
 	"github.com/sourcegraph/jsonrpc2"
 	"github.com/terraform-linters/tflint/langserver"
-	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -25,7 +24,6 @@ type jsonrpcMessage struct {
 }
 
 func TestMain(m *testing.M) {
-	// Disable the bundled plugin because the `os.Executable()` is go(1) in the tests
 	tflint.DisableBundledPlugin = true
 	defer func() {
 		tflint.DisableBundledPlugin = false
@@ -40,7 +38,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func startServer(t *testing.T, configPath string) (io.Writer, io.Reader, *plugin.Plugin) {
+func startServer(t *testing.T, configPath string) (io.Writer, io.Reader) {
 	handler, plugin, err := langserver.NewHandler(configPath, tflint.EmptyConfig())
 	if err != nil {
 		t.Fatal(err)
@@ -50,14 +48,30 @@ func startServer(t *testing.T, configPath string) (io.Writer, io.Reader, *plugin
 	stdoutReader, stdout := io.Pipe()
 
 	var connOpt []jsonrpc2.ConnOpt
-	jsonrpc2.NewConn(
+	conn := jsonrpc2.NewConn(
 		t.Context(),
 		jsonrpc2.NewBufferedStream(langserver.NewConn(stdin, stdout), jsonrpc2.VSCodeObjectCodec{}),
 		handler,
 		connOpt...,
 	)
 
-	return stdinWriter, stdoutReader, plugin
+	t.Cleanup(func() {
+		_ = conn.Close()
+
+		if plugin != nil {
+			plugin.Clean()
+		}
+
+		if err := stdinWriter.Close(); err != nil {
+			t.Error(err)
+		}
+
+		if err := stdoutReader.Close(); err != nil {
+			t.Error(err)
+		}
+	})
+
+	return stdinWriter, stdoutReader
 }
 
 func pathToURI(path string) lsp.DocumentURI {
@@ -104,9 +118,6 @@ func withinFixtureDir(t *testing.T, dir string, test func(dir string)) {
 }
 
 func withinTempDir(t *testing.T, test func(dir string)) {
-	// on macOS MkdirTemp returns a /var/folders/... path
-	// In other contexts these paths are returned with their full /private/var/folders/... path
-	// EvalSymlinks will resolve the /var/folders/... path to the full path
 	dir, err := filepath.EvalSymlinks(t.TempDir())
 	if err != nil {
 		t.Fatal(err)
