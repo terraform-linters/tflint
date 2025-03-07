@@ -1,6 +1,7 @@
 package tflint
 
 import (
+	"encoding/json"
 	"fmt"
 	"regexp"
 	"slices"
@@ -21,6 +22,15 @@ type Annotations []Annotation
 
 // NewAnnotations find annotations from the passed tokens and return that list.
 func NewAnnotations(path string, file *hcl.File) (Annotations, hcl.Diagnostics) {
+	switch {
+	case strings.HasSuffix(path, ".json"):
+		return jsonAnnotations(path, file)
+	default:
+		return hclAnnotations(path, file)
+	}
+}
+
+func hclAnnotations(path string, file *hcl.File) (Annotations, hcl.Diagnostics) {
 	ret := Annotations{}
 
 	tokens, diags := hclsyntax.LexConfig(file.Bytes, path, hcl.Pos{Byte: 0, Line: 1, Column: 1})
@@ -64,6 +74,52 @@ func NewAnnotations(path string, file *hcl.File) (Annotations, hcl.Diagnostics) 
 	}
 
 	return ret, diags
+}
+
+// jsonAnnotations finds annotations in .tf.json files. Only file-level ignores
+// are supported, by specifying a root-level comment property (with key "//")
+// which is an object containing a string property with the key
+// "tflint-ignore-file".
+func jsonAnnotations(path string, file *hcl.File) (Annotations, hcl.Diagnostics) {
+	ret := Annotations{}
+	diags := hcl.Diagnostics{}
+
+	var config jsonConfigWithComment
+	if err := json.Unmarshal(file.Bytes, &config); err != nil {
+		return ret, diags
+	}
+
+	// tflint-ignore-file annotation
+	matchIndexes := fileAnnotationPattern.FindStringSubmatchIndex(config.Comment)
+	if len(matchIndexes) == 4 {
+		if matchIndexes[0] != 0 {
+			diags = append(diags, &hcl.Diagnostic{
+				Severity: hcl.DiagError,
+				Summary:  "tflint-ignore-file annotation must appear at the beginning of the JSON comment property value",
+				Detail:   fmt.Sprintf("tflint-ignore-file annotation is written at index %d of the comment property value", matchIndexes[0]),
+				Subject: &hcl.Range{
+					// Cannot set Start/End because encoding/json does not expose it
+					Filename: path,
+				},
+			})
+			return ret, diags
+		}
+		ret = append(ret, &FileAnnotation{
+			Content: strings.TrimSpace(config.Comment[matchIndexes[2]:matchIndexes[3]]),
+			Token: hclsyntax.Token{
+				Range: hcl.Range{
+					// Cannot set Start/End because encoding/json does not expose it
+					Filename: path,
+				},
+			},
+		})
+	}
+
+	return ret, diags
+}
+
+type jsonConfigWithComment struct {
+	Comment string `json:"//,omitempty"`
 }
 
 var lineAnnotationPattern = regexp.MustCompile(`tflint-ignore: ([^\n*/#]+)`)

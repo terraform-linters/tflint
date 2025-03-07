@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hcl/v2"
@@ -223,9 +222,6 @@ func (cli *CLI) setupRunners(opts Options, dir string) (*tflint.Runner, []*tflin
 	}
 	annotations := map[string]tflint.Annotations{}
 	for path, file := range files {
-		if !strings.HasSuffix(path, ".tf") {
-			continue
-		}
 		ants, lexDiags := tflint.NewAnnotations(path, file)
 		diags = diags.Extend(lexDiags)
 		annotations[path] = ants
