@@ -24,7 +24,7 @@ require (
 	github.com/sigstore/sigstore-go v0.7.0
 	github.com/sourcegraph/go-lsp v0.0.0-20200429204803-219e11d77f5d
 	github.com/sourcegraph/jsonrpc2 v0.2.0
-	github.com/spf13/afero v1.12.0
+	github.com/spf13/afero v1.14.0
 	github.com/terraform-linters/tflint-plugin-sdk v0.22.0
 	github.com/terraform-linters/tflint-ruleset-terraform v0.10.0
 	github.com/xeipuuv/gojsonschema v1.2.0
