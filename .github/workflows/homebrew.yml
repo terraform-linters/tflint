@@ -9,7 +9,7 @@ jobs:
     name: Bump Homebrew formula
     runs-on: ubuntu-latest
     steps:
-      - uses: mislav/bump-homebrew-formula-action@942e550c6344cfdb9e1ab29b9bb9bf0c43efa19b # v3
+      - uses: mislav/bump-homebrew-formula-action@942e550c6344cfdb9e1ab29b9bb9bf0c43efa19b # v3.2
         with:
           # A PR will be sent to github.com/Homebrew/homebrew-core to update this formula:
           formula-name: tflint
