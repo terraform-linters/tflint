@@ -56,7 +56,7 @@ func hclAnnotations(path string, file *hcl.File) (Annotations, hcl.Diagnostics) 
 		// tflint-ignore-file annotation
 		match = fileAnnotationPattern.FindStringSubmatch(string(token.Bytes))
 		if len(match) == 2 {
-			if !(token.Range.Start.Line == 1 && token.Range.Start.Column == 1) {
+			if token.Range.Start.Line != 1 || token.Range.Start.Column != 1 {
 				diags = append(diags, &hcl.Diagnostic{
 					Severity: hcl.DiagError,
 					Summary:  "tflint-ignore-file annotation must be written at the top of file",
