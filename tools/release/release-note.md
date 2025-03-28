@@ -1,20 +1,53 @@
 ## What's Changed
 
-### Fixes
-* plugin: Skip keyless verification for private third-party plugins by @wata727 in https://github.com/terraform-linters/tflint/pull/2223
+### Enhancements
+* Add support for tflint-ignore-file annotations in JSON by @isobit in https://github.com/terraform-linters/tflint/pull/2230
+* build(deps): Bump github.com/terraform-linters/tflint-ruleset-terraform from 0.10.0 to 0.11.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2264
+* Add support for Terraform v1.11 by @wata727 in https://github.com/terraform-linters/tflint/pull/2258
+
+### Bug Fixes
+* Exclude expression context from marked `for_each` diagnostics by @wata727 in https://github.com/terraform-linters/tflint/pull/2256
 
 ### Chores
-* build(deps): Bump docker/build-push-action from 6.10.0 to 6.11.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2205
-* Refactor plugin verifications by @wata727 in https://github.com/terraform-linters/tflint/pull/2224
-* build(deps): Bump golangci/golangci-lint-action from 6.1.1 to 6.2.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2211
-* build(deps): Bump github.com/mattn/go-colorable from 0.1.13 to 0.1.14 by @dependabot in https://github.com/terraform-linters/tflint/pull/2214
-* build(deps): Bump github.com/spf13/afero from 1.11.0 to 1.12.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2216
-* build(deps): Bump docker/build-push-action from 6.11.0 to 6.13.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2217
-* build(deps): Bump actions/attest-build-provenance from 2.1.0 to 2.2.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2218
-* build(deps): Bump github.com/hashicorp/go-plugin from 1.6.2 to 1.6.3 by @dependabot in https://github.com/terraform-linters/tflint/pull/2220
-* build(deps): Bump github.com/zclconf/go-cty from 1.16.0 to 1.16.2 by @dependabot in https://github.com/terraform-linters/tflint/pull/2222
-* build(deps): Bump github.com/sigstore/sigstore-go from 0.6.2 to 0.7.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2219
-* build(deps): Bump google.golang.org/grpc from 1.69.2 to 1.70.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2221
+* Remove dependency on dpkg in install_linux.sh by @jimmydavies in https://github.com/terraform-linters/tflint/pull/2229
+* build(deps): Bump golang.org/x/crypto from 0.32.0 to 0.33.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2237
+* build(deps): Bump sigstore/cosign-installer from 3.7.0 to 3.8.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2233
+* dependabot: group golang.org/x/* deps by @bendrucker in https://github.com/terraform-linters/tflint/pull/2238
+* build(deps): Bump golang.org/x/oauth2 from 0.25.0 to 0.26.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2236
+* build(deps): Bump docker/setup-buildx-action from 3.8.0 to 3.9.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2232
+* build(deps): Bump golangci/golangci-lint-action from 6.2.0 to 6.3.2 by @dependabot in https://github.com/terraform-linters/tflint/pull/2231
+* build(deps): Bump golang.org/x/net from 0.34.0 to 0.35.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2235
+* feat: bump to build with go1.24 by @chenrui333 in https://github.com/terraform-linters/tflint/pull/2239
+* build(deps): Bump goreleaser/goreleaser-action from 6.1.0 to 6.2.1 by @dependabot in https://github.com/terraform-linters/tflint/pull/2241
+* build(deps): Bump golangci/golangci-lint-action from 6.3.2 to 6.5.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2240
+* docs: add docker example with `--init` by @coolapso in https://github.com/terraform-linters/tflint/pull/2242
+* build(deps): Bump github.com/go-jose/go-jose/v4 from 4.0.2 to 4.0.5 by @dependabot in https://github.com/terraform-linters/tflint/pull/2244
+* build(deps): Bump docker/metadata-action from 5.6.1 to 5.7.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2247
+* build(deps): Bump docker/build-push-action from 6.13.0 to 6.15.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2248
+* build(deps): Bump sigstore/cosign-installer from 3.8.0 to 3.8.1 by @dependabot in https://github.com/terraform-linters/tflint/pull/2249
+* build(deps): Bump docker/setup-buildx-action from 3.9.0 to 3.10.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2250
+* build(deps): Bump actions/attest-build-provenance from 2.2.0 to 2.2.2 by @dependabot in https://github.com/terraform-linters/tflint/pull/2251
+* build(deps): Bump github.com/google/go-cmp from 0.6.0 to 0.7.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2253
+* build(deps): Bump the go-x group with 2 updates by @dependabot in https://github.com/terraform-linters/tflint/pull/2252
+* go: use `testing.T` helpers by @bendrucker in https://github.com/terraform-linters/tflint/pull/2254
+* Fix broken GitHub Actions badge by @wata727 in https://github.com/terraform-linters/tflint/pull/2255
+* build(deps): Bump actions/attest-build-provenance from 2.2.2 to 2.2.3 by @dependabot in https://github.com/terraform-linters/tflint/pull/2261
+* build(deps): Bump google.golang.org/grpc from 1.70.0 to 1.71.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2260
+* build(deps): Bump the go-x group with 4 updates by @dependabot in https://github.com/terraform-linters/tflint/pull/2259
+* build(deps): Bump golangci/golangci-lint-action from 6.5.0 to 6.5.1 by @dependabot in https://github.com/terraform-linters/tflint/pull/2262
+* build(deps): Bump docker/login-action from 3.3.0 to 3.4.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2263
+* build(deps): Bump github.com/spf13/afero from 1.12.0 to 1.14.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2265
+* go: 1.24.1 by @bendrucker in https://github.com/terraform-linters/tflint/pull/2266
+* Update pinned GitHub Action versions by @wata727 in https://github.com/terraform-linters/tflint/pull/2268
+* Enable Dependabot auto-merge by @wata727 in https://github.com/terraform-linters/tflint/pull/2269
+* build(deps): Bump actions/checkout from 4.1.7 to 4.2.2 by @dependabot in https://github.com/terraform-linters/tflint/pull/2270
+* golangci-lint v2 by @bendrucker in https://github.com/terraform-linters/tflint/pull/2273
+* build(deps): Bump actions/setup-go from 5.0.2 to 5.4.0 by @dependabot in https://github.com/terraform-linters/tflint/pull/2272
+* go: use `govulncheck` to detect security issues by @bendrucker in https://github.com/terraform-linters/tflint/pull/2274
 
+## New Contributors
+* @jimmydavies made their first contribution in https://github.com/terraform-linters/tflint/pull/2229
+* @coolapso made their first contribution in https://github.com/terraform-linters/tflint/pull/2242
+* @isobit made their first contribution in https://github.com/terraform-linters/tflint/pull/2230
 
-**Full Changelog**: https://github.com/terraform-linters/tflint/compare/v0.55.0...v0.55.1
+**Full Changelog**: https://github.com/terraform-linters/tflint/compare/v0.55.1...v0.56.0
