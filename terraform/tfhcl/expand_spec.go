@@ -334,14 +334,23 @@ func (b *expandBody) decodeMetaArgSpec(rawSpec *hcl.Block) (*expandMetaArgSpec, 
 			// We skip this error for DynamicPseudoType because that means we either
 			// have a null (which is checked immediately below) or an unknown
 			// (which is handled in the expandBody Content methods).
-			diags = diags.Append(&hcl.Diagnostic{
+			diag := &hcl.Diagnostic{
 				Severity:    hcl.DiagError,
 				Summary:     "The `for_each` value is not iterable",
 				Detail:      fmt.Sprintf("`%s` is not iterable", eachVal.GoString()),
 				Subject:     eachAttr.Expr.Range().Ptr(),
 				Expression:  eachAttr.Expr,
 				EvalContext: b.ctx,
-			})
+			}
+			// Exclude expression and eval context here because there is an issue where
+			// including an expression with marked values ​​in diagnostics causes the
+			// DiagnosticTextWriter to panic.
+			// @see https://github.com/hashicorp/hcl/issues/737
+			if eachVal.IsMarked() {
+				diag.Expression = nil
+				diag.EvalContext = nil
+			}
+			diags = diags.Append(diag)
 			return spec, diags
 		}
 		if eachVal.IsNull() {
