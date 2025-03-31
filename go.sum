@@ -1258,8 +1258,8 @@ github.com/subosito/gotenv v1.6.0 h1:9NlTDc1FTs4qu0DDq7AEtTPNw6SVm7uBMsUCUjABIf8
 github.com/subosito/gotenv v1.6.0/go.mod h1:Dk4QP5c2W3ibzajGcXpNraDfq2IrhjMIvMSWPKKo0FU=
 github.com/terraform-linters/tflint-plugin-sdk v0.22.0 h1:holOVJW0hjf0wkjtnYyPWRooQNp8ETUcKE86rdYkH5U=
 github.com/terraform-linters/tflint-plugin-sdk v0.22.0/go.mod h1:Cag3YJjBpHdQzI/limZR+Cj7WYPLTIE61xsCdIXoeUI=
-github.com/terraform-linters/tflint-ruleset-terraform v0.11.0 h1:6dH4Hd8aRFXy4rJxWsScJMz8gupf7/MONKHBg5LDGHA=
-github.com/terraform-linters/tflint-ruleset-terraform v0.11.0/go.mod h1:gvZ5ZVAyrtZFMlMpIf9t1jqAb3gqe7uJHiLYkxJeHYs=
+github.com/terraform-linters/tflint-ruleset-terraform v0.12.0 h1:158C56w1lJ4DSezzz54ISbkrgmQKBEy8iHSBFwxsBVs=
+github.com/terraform-linters/tflint-ruleset-terraform v0.12.0/go.mod h1:P6r/WFW87mxzsTBxaYAWYNelweWDQzk5LJt/p3PxCn4=
 github.com/theupdateframework/go-tuf v0.7.0 h1:CqbQFrWo1ae3/I0UCblSbczevCCbS31Qvs5LdxRWqRI=
 github.com/theupdateframework/go-tuf v0.7.0/go.mod h1:uEB7WSY+7ZIugK6R1hiBMBjQftaFzn7ZCDJcp1tCUug=
 github.com/theupdateframework/go-tuf/v2 v2.0.2 h1:PyNnjV9BJNzN1ZE6BcWK+5JbF+if370jjzO84SS+Ebo=
