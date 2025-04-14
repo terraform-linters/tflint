@@ -32,7 +32,7 @@ require (
 	github.com/zclconf/go-cty-debug v0.0.0-20240509010212-0d6042c53940
 	github.com/zclconf/go-cty-yaml v1.1.0
 	golang.org/x/crypto v0.37.0
-	golang.org/x/net v0.38.0
+	golang.org/x/net v0.39.0
 	golang.org/x/oauth2 v0.29.0
 	golang.org/x/text v0.24.0
 	google.golang.org/grpc v1.71.1
