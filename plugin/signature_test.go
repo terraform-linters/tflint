@@ -311,7 +311,7 @@ b97e20eae04a45d650886611f17020fd0aa29114b86268b71e3841195fbc55ca  tflint-ruleset
 					Bundle:       []byte(testSigstoreBundle034), // sigstore bundle for v0.34.0 (mismatched)
 				},
 			},
-			Expected: fmt.Errorf(`failed to verify signature: could not verify artifact: unable to confirm artifact digest is present in subject digests: %%!w(<nil>)`),
+			Expected: fmt.Errorf(`failed to verify signature: provided artifact digests do not match digests in statement`),
 		},
 		{
 			Name:   "invalid identity issuer",
