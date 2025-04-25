@@ -10,6 +10,9 @@ on:
   schedule:
     - cron: "0 0 * * *"
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: ${{ matrix.os }}
@@ -35,11 +38,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Run build
       run: make build
-    - name: Upload Artifact
-      uses: actions/upload-artifact@master
-      with:
-        name: tflint-${{ matrix.os }}
-        path: dist/tflint
   vulnerabilities:
     runs-on: ubuntu-latest
     steps:

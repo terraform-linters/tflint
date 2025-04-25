@@ -4,6 +4,8 @@ on:
   push:
     tags: 'v*'
 
+permissions: {}
+
 jobs:
   homebrew:
     name: Bump Homebrew formula
