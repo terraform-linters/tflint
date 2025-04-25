@@ -20,7 +20,7 @@ import (
 var token = os.Getenv("GITHUB_TOKEN")
 var versionRegexp = regexp.MustCompile(`^\d+\.\d+\.\d+$`)
 var goModRequireSDKRegexp = regexp.MustCompile(`github.com/terraform-linters/tflint-plugin-sdk v(.+)`)
-var goModRequireBundledPluginRegexp = regexp.MustCompile(`github.com/terraform-linters/tflint-ruleset-terraform v(.+)`)
+var goModRequireBundledPluginRegexp = regexp.MustCompile(`github\.com/terraform-linters/tflint-ruleset-terraform v(.+)`)
 
 func main() {
 	currentVersion := getCurrentVersion()
