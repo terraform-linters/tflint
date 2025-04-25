@@ -2,6 +2,9 @@ name: generate
 
 on: pull_request
 
+permissions:
+  contents: read
+
 jobs:
   generate:
     runs-on: ubuntu-latest
