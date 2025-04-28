@@ -33,6 +33,6 @@ jobs:
         args: release --release-notes tools/release/release-note.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - uses: actions/attest-build-provenance@c074443f1aee8d4aeeae555aebba3282517141b2 # v1
+    - uses: actions/attest-build-provenance@db473fddc028af60658334401dc6fa3ffd8669fd # v1
       with:
         subject-path: 'dist/checksums.txt'
