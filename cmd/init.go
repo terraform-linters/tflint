@@ -54,6 +54,7 @@ func (cli *CLI) init(opts Options) int {
 					if err != nil {
 						if errors.Is(err, plugin.ErrPluginNotVerified) {
 							_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `No signing key configured. Set "signing_key" to verify that the release is signed by the plugin developer`)
+							err = nil
 						} else {
 							return fmt.Errorf("Failed to install a plugin; %w", err)
 						}
