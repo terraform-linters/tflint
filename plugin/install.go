@@ -206,8 +206,7 @@ func (c *InstallConfig) tryKeylessVerifyChecksumsSignature(sigchecker *Signature
 	// If the repository is private, artifact attestations is not always available
 	// because it requires GitHub Enterprise Cloud plan, so we skip verification here.
 	if repo.Private != nil && *repo.Private {
-		log.Printf("[DEBUG] Bypassing verification of artifact attestations for private repository")
-		return true, nil
+		return false, nil
 	}
 
 	log.Printf("[DEBUG] Download artifact attestations")
