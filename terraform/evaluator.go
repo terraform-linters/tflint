@@ -54,7 +54,10 @@ func (e *Evaluator) ExpandBlock(body hcl.Body, schema *hclext.BodySchema) (hcl.B
 // The difference with Evaluator is that each evaluation is independent
 // and is not shared between goroutines.
 func (e *Evaluator) scope() *lang.Scope {
-	scope := &lang.Scope{CallStack: lang.NewCallStack()}
+	scope := &lang.Scope{
+		CallStack:           lang.NewCallStack(),
+		ResolvedLocalValues: map[string]cty.Value{},
+	}
 	scope.Data = &evaluationData{
 		Scope:          scope,
 		Meta:           e.Meta,
@@ -187,6 +190,11 @@ func (d *evaluationData) GetInputVariable(addr addrs.InputVariable, rng hcl.Rang
 func (d *evaluationData) GetLocalValue(addr addrs.LocalValue, rng hcl.Range) (cty.Value, hcl.Diagnostics) {
 	var diags hcl.Diagnostics
 
+	// If the local value has already been resolved, return it.
+	if val, exists := d.Scope.ResolvedLocalValues[addr.Name]; exists {
+		return val, diags
+	}
+
 	// First we'll make sure the requested value is declared in configuration,
 	// so we can produce a nice message if not.
 	moduleConfig := d.Config.DescendentForInstance(d.ModulePath)
@@ -223,6 +231,7 @@ func (d *evaluationData) GetLocalValue(addr addrs.LocalValue, rng hcl.Range) (ct
 
 	val, diags := d.Scope.EvalExpr(config.Expr, cty.DynamicPseudoType)
 
+	d.Scope.ResolvedLocalValues[addr.Name] = val
 	d.Scope.CallStack.Pop()
 	return val, diags
 }
