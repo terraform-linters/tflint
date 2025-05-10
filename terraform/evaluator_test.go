@@ -704,6 +704,18 @@ locals {
 			errCheck: neverHappend,
 		},
 		{
+			name: "local value with impure function calls",
+			config: `
+locals {
+  foo = uuid()
+  bar = local.foo
+}`,
+			expr:     expr(`local.foo == local.bar`),
+			ty:       cty.Bool,
+			want:     `cty.True`,
+			errCheck: neverHappend,
+		},
+		{
 			name:   "self-referencing local value",
 			config: `locals { foo = local.foo }`,
 			expr:   expr(`local.foo`),

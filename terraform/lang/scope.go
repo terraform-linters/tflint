@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/hashicorp/hcl/v2"
+	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/function"
 
 	"github.com/terraform-linters/tflint/terraform/addrs"
@@ -34,6 +35,11 @@ type Scope struct {
 	// CallStack is a stack for recording local value references to detect
 	// circular references.
 	CallStack *CallStack
+
+	// ResolvedLocalValues ​​is a cache of evaluated local values.
+	// This prevents the slowdown caused by evaluating the same local value
+	// multiple times in the same scope.
+	ResolvedLocalValues map[string]cty.Value
 
 	funcs     map[string]function.Function
 	funcsLock sync.Mutex
