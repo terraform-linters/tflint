@@ -101,7 +101,7 @@ type handler struct {
 	diagsPaths        []string
 }
 
-func (h *handler) handle(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (result interface{}, err error) {
+func (h *handler) handle(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (result any, err error) {
 	if req.Params != nil {
 		params, err := json.Marshal(&req.Params)
 		if err != nil {

@@ -3,6 +3,7 @@ package tflint
 import (
 	"fmt"
 	"log"
+	"maps"
 	"os"
 	"strings"
 
@@ -484,9 +485,7 @@ func (c *Config) Sources() map[string][]byte {
 		bundledPluginConfigFilename: []byte(bundledPluginConfigContent),
 	}
 
-	for name, content := range c.sources {
-		ret[name] = content
-	}
+	maps.Copy(ret, c.sources)
 	return ret
 }
 
@@ -518,9 +517,7 @@ func (c *Config) Merge(other *Config) {
 	c.Variables = append(c.Variables, other.Variables...)
 	c.Only = append(c.Only, other.Only...)
 
-	for name, ignore := range other.IgnoreModules {
-		c.IgnoreModules[name] = ignore
-	}
+	maps.Copy(c.IgnoreModules, other.IgnoreModules)
 
 	for name, rule := range other.Rules {
 		// HACK: If you enable the rule through the CLI instead of the file, its hcl.Body will be nil.

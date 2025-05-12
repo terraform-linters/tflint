@@ -3,6 +3,7 @@ package tflint
 import (
 	"fmt"
 	"log"
+	"maps"
 	"path/filepath"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -213,9 +214,7 @@ func (r *Runner) File(path string) *hcl.File {
 // Files returns the raw *hcl.File representation of all Terraform configuration in the module directory.
 func (r *Runner) Files() map[string]*hcl.File {
 	result := make(map[string]*hcl.File)
-	for name, file := range r.TFConfig.Module.Files {
-		result[name] = file
-	}
+	maps.Copy(result, r.TFConfig.Module.Files)
 	return result
 }
 
@@ -284,9 +283,7 @@ func (r *Runner) ApplyChanges(changes map[string][]byte) hcl.Diagnostics {
 	if diags.HasErrors() {
 		return diags
 	}
-	for path, source := range changes {
-		r.changes[path] = source
-	}
+	maps.Copy(r.changes, changes)
 	return nil
 }
 

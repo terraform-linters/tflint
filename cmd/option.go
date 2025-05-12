@@ -42,7 +42,7 @@ func (opts *Options) toConfig() *tflint.Config {
 	ignoreModules := map[string]bool{}
 	for _, module := range opts.IgnoreModules {
 		// For the backward compatibility, allow specifying like "source1,source2" style
-		for _, m := range strings.Split(module, ",") {
+		for m := range strings.SplitSeq(module, ",") {
 			ignoreModules[m] = true
 		}
 	}
