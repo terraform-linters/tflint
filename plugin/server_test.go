@@ -3,6 +3,7 @@ package plugin
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"os"
 	"testing"
 
@@ -18,7 +19,6 @@ import (
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
-	"maps"
 )
 
 var SDKVersion = version.Must(version.NewVersion(plugin.SDKVersion))

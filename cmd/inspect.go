@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"path/filepath"
 
@@ -16,7 +17,6 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"maps"
 )
 
 func (cli *CLI) inspect(opts Options) int {

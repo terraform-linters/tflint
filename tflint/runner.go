@@ -3,6 +3,7 @@ package tflint
 import (
 	"fmt"
 	"log"
+	"maps"
 	"path/filepath"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -11,7 +12,6 @@ import (
 	"github.com/terraform-linters/tflint/terraform/addrs"
 	"github.com/terraform-linters/tflint/terraform/lang"
 	"github.com/zclconf/go-cty/cty"
-	"maps"
 )
 
 // Runner checks templates according rules.

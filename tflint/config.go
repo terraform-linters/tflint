@@ -3,6 +3,7 @@ package tflint
 import (
 	"fmt"
 	"log"
+	"maps"
 	"os"
 	"strings"
 
@@ -16,7 +17,6 @@ import (
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/terraform"
-	"maps"
 )
 
 var defaultConfigFile = ".tflint.hcl"
