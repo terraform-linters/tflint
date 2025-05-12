@@ -50,11 +50,25 @@ func TestIntegration(t *testing.T) {
 			stdout:  "",
 		},
 		{
-			name:    "specify format",
+			name:    "format flag",
 			command: "./tflint --format json",
 			dir:     "no_issues",
 			status:  cmd.ExitCodeOK,
-			stdout:  "[]",
+			stdout:  `{"issues":[],"errors":[]}`,
+		},
+		{
+			name:    "format config",
+			command: "./tflint",
+			dir:     "format_config",
+			status:  cmd.ExitCodeIssuesFound,
+			stdout:  `main.tf:2:19: Error - instance type is t2.micro (aws_instance_example_type)`,
+		},
+		{
+			name:    "format flag overrides config",
+			command: "./tflint --format json",
+			dir:     "format_config",
+			status:  cmd.ExitCodeIssuesFound,
+			stdout:  `{"issues":[{"rule":{"name":"aws_instance_example_type","severity":"error","link":""},"message":"instance type is t2.micro","range":{"filename":"main.tf","start":{"line":2,"column":19},"end":{"line":2,"column":29}},"callers":[]}],"errors":[]}`,
 		},
 		{
 			name:    "`--force` option with no issues",
