@@ -92,6 +92,14 @@ func TestIntegration(t *testing.T) {
 
 			opts := []cmp.Option{
 				cmpopts.IgnoreFields(formatter.JSONRule{}, "Link"),
+				// Only compare error messages up to the double new line.
+				// After this, stderr will be printed which is verbose.
+				cmp.Transformer("TruncateMessage", func(e formatter.JSONError) formatter.JSONError {
+					if parts := strings.Split(e.Message, "\n\n"); len(parts) > 1 {
+						e.Message = parts[0]
+					}
+					return e
+				}),
 			}
 			if test.ignoreOrder {
 				opts = append(opts, cmpopts.SortSlices(func(a, b formatter.JSONError) bool {
