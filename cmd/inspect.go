@@ -16,6 +16,7 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"maps"
 )
 
 func (cli *CLI) inspect(opts Options) int {
@@ -171,7 +172,7 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 					}(runner)
 				}
 			}
-			for i := 0; i < len(moduleRunners); i++ {
+			for range moduleRunners {
 				err = <-ch
 				if err != nil {
 					return issues, changes, fmt.Errorf("Failed to check ruleset; %w", err)
@@ -203,9 +204,7 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 	}
 
 	// Set module sources to CLI
-	for path, source := range cli.loader.Sources() {
-		cli.sources[path] = source
-	}
+	maps.Copy(cli.sources, cli.loader.Sources())
 
 	return issues, changes, nil
 }

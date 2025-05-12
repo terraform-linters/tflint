@@ -18,6 +18,7 @@ import (
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/zclconf/go-cty/cty"
+	"maps"
 )
 
 var SDKVersion = version.Must(version.NewVersion(plugin.SDKVersion))
@@ -264,9 +265,7 @@ resource "aws_instance" "foo" {
 }`,
 			})
 			files := runner.Files()
-			for name, file := range rootRunner.Files() {
-				files[name] = file
-			}
+			maps.Copy(files, rootRunner.Files())
 
 			server := NewGRPCServer(runner, rootRunner, files, SDKVersion)
 
@@ -480,7 +479,7 @@ variable "foo" {
 
 	// test util functions
 	hclExpr := func(expr string) hcl.Expression {
-		file, diags := hclsyntax.ParseConfig([]byte(fmt.Sprintf(`expr = %s`, expr)), "test.tf", hcl.InitialPos)
+		file, diags := hclsyntax.ParseConfig(fmt.Appendf(nil, `expr = %s`, expr), "test.tf", hcl.InitialPos)
 		if diags.HasErrors() {
 			panic(diags)
 		}

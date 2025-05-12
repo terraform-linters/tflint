@@ -7,7 +7,7 @@ import (
 	"github.com/sourcegraph/jsonrpc2"
 )
 
-func initialize(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (result interface{}, err error) {
+func initialize(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (result any, err error) {
 	return lsp.InitializeResult{
 		Capabilities: lsp.ServerCapabilities{
 			TextDocumentSync: &lsp.TextDocumentSyncOptionsOrKind{

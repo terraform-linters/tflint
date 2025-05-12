@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/afero"
 )
 
-func (h *handler) textDocumentDidOpen(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (result interface{}, err error) {
+func (h *handler) textDocumentDidOpen(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (result any, err error) {
 	if req.Params == nil {
 		return nil, &jsonrpc2.Error{
 			Code:    jsonrpc2.CodeInvalidRequest,
