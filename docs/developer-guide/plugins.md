@@ -14,6 +14,8 @@ The template repository uses the [SDK](https://github.com/terraform-linters/tfli
 
 Visit [tflint-ruleset-template](https://github.com/terraform-linters/tflint-ruleset-template) and click the "Use this template" button. Repository name must be `tflint-ruleset-*`.
 
+For public repositories, you can optionally add the [`tflint-ruleset`](https://github.com/topics/tflint-ruleset) topic to make your ruleset discoverable on the topic page.
+
 ## 2. Building and installing the plugin
 
 The created repository can be installed locally with `make install`. Enable the plugin as follows and verify that the installed plugin works.
