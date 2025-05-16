@@ -118,6 +118,8 @@ plugin "foo" {
 
 See also [Configuring Plugins](docs/user-guide/plugins.md).
 
+You can discover plugins from other organizations on GitHub via the [`tflint-ruleset`](https://github.com/topics/tflint-ruleset) topic.
+
 If you want to add custom rules that are not in existing plugins, you can build your own plugin or write your own policy in Rego. See [Writing Plugins](docs/developer-guide/plugins.md) or [OPA Ruleset](https://github.com/terraform-linters/tflint-ruleset-opa).
 
 ## Usage
