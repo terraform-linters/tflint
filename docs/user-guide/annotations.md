@@ -1,5 +1,7 @@
 # Annotations
 
+TFLint supports several comment annotations for suppressing issues for specific lines or files. Annotations can only suppress _issues_ emitted from fully valid, parseable Terraform modules. _Errors_ cannot be ignored.
+
 Annotation comments can disable rules on specific lines:
 
 ```hcl
