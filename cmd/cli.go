@@ -14,6 +14,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/hashicorp/logutils"
 	flags "github.com/jessevdk/go-flags"
+	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint/formatter"
 	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/tflint"
@@ -54,19 +55,46 @@ func NewCLI(outStream io.Writer, errStream io.Writer) (*CLI, error) {
 
 // Run invokes the CLI with the given arguments.
 func (cli *CLI) Run(args []string) int {
+	cli.formatter = &formatter.Formatter{
+		Stdout: cli.outStream,
+		Stderr: cli.errStream,
+	}
+
+	// Configure options parser
 	var opts Options
 	parser := flags.NewParser(&opts, flags.HelpFlag)
 	parser.Usage = "--chdir=DIR/--recursive [OPTIONS]"
 	parser.UnknownOptionHandler = unknownOptionHandler
-	// Parse commandline flag
+
+	// Parse command line options
 	args, err := parser.ParseArgs(args)
-	// Set up output formatter
-	cli.formatter = &formatter.Formatter{
-		Stdout: cli.outStream,
-		Stderr: cli.errStream,
-		Format: opts.Format,
-		Fix:    opts.Fix,
+	if err != nil {
+		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {
+			fmt.Fprintln(cli.outStream, err)
+			return ExitCodeOK
+		}
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse CLI options; %w", err), map[string][]byte{})
+		return ExitCodeError
 	}
+
+	if len(args) > 1 {
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Command line arguments support was dropped in v0.47. Use --chdir or --filter instead."), map[string][]byte{})
+		return ExitCodeError
+	}
+
+	// Setup config
+	cfg, err := tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, opts.Config)
+	if err != nil {
+		fmt.Fprintf(cli.errStream, "Failed to load TFLint config; %s\n", err)
+		return ExitCodeError
+	}
+
+	cfg.Merge(opts.toConfig())
+
+	// Set formatter fields from options/config
+	cli.formatter.Format = cfg.Format
+	cli.formatter.Fix = opts.Fix
+
 	if opts.Color {
 		color.NoColor = false
 		cli.formatter.NoColor = false
@@ -83,18 +111,6 @@ func (cli *CLI) Run(args []string) int {
 	})
 	log.SetFlags(log.Ltime | log.Lshortfile)
 
-	if err != nil {
-		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {
-			fmt.Fprintln(cli.outStream, err)
-			return ExitCodeOK
-		}
-		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to parse CLI options; %w", err), map[string][]byte{})
-		return ExitCodeError
-	}
-	if len(args) > 1 {
-		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Command line arguments support was dropped in v0.47. Use --chdir or --filter instead."), map[string][]byte{})
-		return ExitCodeError
-	}
 	if opts.MaxWorkers != nil && *opts.MaxWorkers <= 0 {
 		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Max workers should be greater than 0"), map[string][]byte{})
 		return ExitCodeError
