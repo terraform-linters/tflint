@@ -50,9 +50,24 @@ func TestIntegration(t *testing.T) {
 			stdout:  "",
 		},
 		{
-			name:    "specify format",
+			name:    "--format option",
 			command: "./tflint --format json",
 			dir:     "no_issues",
+			status:  cmd.ExitCodeOK,
+			stdout:  "[]",
+		},
+		{
+			name:    "format config",
+			command: "./tflint",
+			dir:     "format_config",
+			status:  cmd.ExitCodeOK,
+			stdout: `<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle></checkstyle>`,
+		},
+		{
+			name:    "--format + config",
+			command: "./tflint --format json",
+			dir:     "format_config",
 			status:  cmd.ExitCodeOK,
 			stdout:  "[]",
 		},
@@ -378,6 +393,13 @@ func TestIntegration(t *testing.T) {
 			dir:     "chdir",
 			status:  cmd.ExitCodeIssuesFound,
 			stdout:  fmt.Sprintf("%s (aws_instance_example_type)", color.New(color.Bold).Sprint("instance type is m5.2xlarge")),
+		},
+		{
+			name:    "--chdir and format config",
+			command: "./tflint --chdir=subdir", // Apply config in subdir
+			dir:     "chdir_format",
+			status:  cmd.ExitCodeOK,
+			stdout:  "[]",
 		},
 		{
 			name:    "invalid max workers",

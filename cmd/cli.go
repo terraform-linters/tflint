@@ -64,6 +64,7 @@ func (cli *CLI) Run(args []string) int {
 	cli.formatter = &formatter.Formatter{
 		Stdout: cli.outStream,
 		Stderr: cli.errStream,
+		// NOTE: The format may be set in config file, but the flag will take precedence until it is loaded.
 		Format: opts.Format,
 		Fix:    opts.Fix,
 	}

@@ -93,6 +93,8 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 		return issues, changes, fmt.Errorf("Failed to load TFLint config; %w", err)
 	}
 	cli.config.Merge(opts.toConfig())
+	// Apply format set in config file
+	cli.formatter.Format = cli.config.Format
 
 	// Setup loader
 	cli.loader, err = terraform.NewLoader(afero.Afero{Fs: afero.NewOsFs()}, cli.originalWorkingDir)
