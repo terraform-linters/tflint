@@ -90,6 +90,8 @@ func (cli *CLI) inspectParallel(opts Options) int {
 		force = *opts.Force
 	}
 
+	// Parallel inspection ignores the format set in the config file
+	// and the --format CLI flag always takes precedence.
 	if err := cli.formatter.PrintParallel(issues, cli.sources); err != nil {
 		return ExitCodeError
 	}
