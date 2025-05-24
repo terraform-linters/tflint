@@ -95,7 +95,7 @@ func (c *SignatureChecker) VerifyKeyless(target io.ReadSeeker, attestations []*g
 	//  - Signed Entity Timestamp (SET), the time that the short-lived certificate was valid
 	//  - Certificate Transparency Logs, as public records
 	//  - Signed Certificate Timestamp (SCT), the time that the certificate was issued
-	verifier, err := verify.NewSignedEntityVerifier(
+	verifier, err := verify.NewVerifier(
 		trustedRoot,
 		verify.WithObserverTimestamps(1),
 		verify.WithTransparencyLog(1),
