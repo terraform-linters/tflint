@@ -4,7 +4,7 @@ TFLint interprets the [Terraform language](https://developer.hashicorp.com/terra
 
 The parser supports Terraform v1.x syntax and semantics. The language compatibility on Terraform v1.x is defined by [Compatibility Promises](https://developer.hashicorp.com/terraform/language/v1-compatibility-promises). TFLint follows this promise. New features are only supported in newer TFLint versions, and bug and experimental features compatibility are not guaranteed.
 
-The latest supported version is Terraform v1.11.
+The latest supported version is Terraform v1.12.
 
 ## Input Variables
 
