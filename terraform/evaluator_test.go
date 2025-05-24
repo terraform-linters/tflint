@@ -318,7 +318,7 @@ variable "null_var" {
 			ty:   cty.String,
 			want: `cty.UnknownVal(cty.String)`,
 			errCheck: func(diags hcl.Diagnostics) bool {
-				return diags.Error() != `:1,1-24: Incorrect value type; Invalid expression value: string required.`
+				return diags.Error() != `:1,1-24: Incorrect value type; Invalid expression value: string required, but have tuple.`
 			},
 		},
 		{
