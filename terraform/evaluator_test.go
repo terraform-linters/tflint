@@ -157,6 +157,13 @@ variable "string_var" {
 			errCheck: neverHappend,
 		},
 		{
+			name:     "provider-defined functions without arguments",
+			expr:     expr(`provider::tflint::rand()`),
+			ty:       cty.String,
+			want:     `cty.UnknownVal(cty.String)`,
+			errCheck: neverHappend,
+		},
+		{
 			name:     "built-in provider-defined functions",
 			expr:     expr(`provider::terraform::decode_tfvars("a = 1")`),
 			ty:       cty.Object(map[string]cty.Type{"a": cty.Number}),

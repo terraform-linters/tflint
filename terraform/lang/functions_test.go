@@ -1278,56 +1278,49 @@ func TestNewMockFunction(t *testing.T) {
 		{
 			name: "no args",
 			call: &FunctionCall{
-				Name:      "foo",
-				ArgsCount: 0,
+				Name: "foo",
 			},
 			args: []cty.Value{},
 		},
 		{
 			name: "single arg",
 			call: &FunctionCall{
-				Name:      "bar",
-				ArgsCount: 1,
+				Name: "bar",
 			},
 			args: []cty.Value{cty.StringVal("hello")},
 		},
 		{
 			name: "multiple args",
 			call: &FunctionCall{
-				Name:      "baz",
-				ArgsCount: 2,
+				Name: "baz",
 			},
 			args: []cty.Value{cty.BoolVal(false), cty.NumberIntVal(1)},
 		},
 		{
 			name: "null arg",
 			call: &FunctionCall{
-				Name:      "null",
-				ArgsCount: 1,
+				Name: "null",
 			},
 			args: []cty.Value{cty.NullVal(cty.String)},
 		},
 		{
 			name: "unknown arg",
 			call: &FunctionCall{
-				Name:      "unknown",
-				ArgsCount: 1,
+				Name: "unknown",
 			},
 			args: []cty.Value{cty.UnknownVal(cty.Number)},
 		},
 		{
 			name: "dynamic value arg",
 			call: &FunctionCall{
-				Name:      "dynamic",
-				ArgsCount: 1,
+				Name: "dynamic",
 			},
 			args: []cty.Value{cty.DynamicVal},
 		},
 		{
 			name: "marked value arg",
 			call: &FunctionCall{
-				Name:      "marked",
-				ArgsCount: 1,
+				Name: "marked",
 			},
 			args: []cty.Value{cty.StringVal("marked").Mark(marks.Sensitive)},
 		},

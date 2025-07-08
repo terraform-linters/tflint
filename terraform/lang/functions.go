@@ -228,20 +228,15 @@ func (s *Scope) Functions() map[string]function.Function {
 // NewMockFunction creates a mock function that returns a dynamic value.
 // This is primarily used to replace provider-defined functions.
 func NewMockFunction(call *FunctionCall) function.Function {
-	params := make([]function.Parameter, call.ArgsCount)
-	for idx := 0; idx < call.ArgsCount; idx++ {
-		params[idx] = function.Parameter{
+	return function.New(&function.Spec{
+		VarParam: &function.Parameter{
 			Type:             cty.DynamicPseudoType,
 			AllowNull:        true,
 			AllowUnknown:     true,
 			AllowDynamicType: true,
 			AllowMarked:      true,
-		}
-	}
-
-	return function.New(&function.Spec{
-		Params: params,
-		Type:   function.StaticReturnType(cty.DynamicPseudoType),
+		},
+		Type: function.StaticReturnType(cty.DynamicPseudoType),
 		Impl: func(args []cty.Value, retType cty.Type) (cty.Value, error) {
 			return cty.DynamicVal, nil
 		},

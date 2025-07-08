@@ -13,8 +13,7 @@ import (
 // The difference with hclsyntax.FunctionCallExpr is that
 // function calls are also available in JSON syntax.
 type FunctionCall struct {
-	Name      string
-	ArgsCount int
+	Name string
 }
 
 // FunctionCallsInExpr finds all of the function calls in the given expression.
@@ -33,8 +32,7 @@ func FunctionCallsInExpr(expr hcl.Expression) ([]*FunctionCall, hcl.Diagnostics)
 		visitDiags := hclsyntax.VisitAll(node, func(n hclsyntax.Node) hcl.Diagnostics {
 			if funcCallExpr, ok := n.(*hclsyntax.FunctionCallExpr); ok {
 				ret = append(ret, &FunctionCall{
-					Name:      funcCallExpr.Name,
-					ArgsCount: len(funcCallExpr.Args),
+					Name: funcCallExpr.Name,
 				})
 			}
 			return nil
