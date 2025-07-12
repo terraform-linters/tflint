@@ -66,44 +66,44 @@ func TestFunctionCallsInExpr(t *testing.T) {
 			name: "single function call",
 			expr: parse(`md5("hello")`),
 			want: []*FunctionCall{
-				{Name: "md5", ArgsCount: 1},
+				{Name: "md5"},
 			},
 		},
 		{
 			name: "single function call (JSON)",
 			expr: parseJSON(`"${md5(\"hello\")}"`),
 			want: []*FunctionCall{
-				{Name: "md5", ArgsCount: 1},
+				{Name: "md5"},
 			},
 		},
 		{
 			name: "multiple function calls",
 			expr: parse(`[md5("hello"), "world", provider::tflint::world()]`),
 			want: []*FunctionCall{
-				{Name: "md5", ArgsCount: 1},
-				{Name: "provider::tflint::world", ArgsCount: 0},
+				{Name: "md5"},
+				{Name: "provider::tflint::world"},
 			},
 		},
 		{
 			name: "multiple function calls (JSON)",
 			expr: parseJSON(`["${md5(\"hello\")}", "world", "${provider::tflint::world()}"]`),
 			want: []*FunctionCall{
-				{Name: "md5", ArgsCount: 1},
-				{Name: "provider::tflint::world", ArgsCount: 0},
+				{Name: "md5"},
+				{Name: "provider::tflint::world"},
 			},
 		},
 		{
 			name: "bound expr with native syntax",
 			expr: hclext.BindValue(cty.StringVal("foo-Hello, John and Mike"), parse(`"foo-${hello("John", "Mike")}"`)),
 			want: []*FunctionCall{
-				{Name: "hello", ArgsCount: 2},
+				{Name: "hello"},
 			},
 		},
 		{
 			name: "bound expr with JSON syntax",
 			expr: hclext.BindValue(cty.StringVal("foo-Hello, John and Mike"), parseJSON(`"foo-${hello(\"John\", \"Mike\")}"`)),
 			want: []*FunctionCall{
-				{Name: "hello", ArgsCount: 2},
+				{Name: "hello"},
 			},
 		},
 	}
