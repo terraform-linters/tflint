@@ -29,7 +29,7 @@ jobs:
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
       with:
-        version: v2.3.2
+        version: v2.11.0
         args: release --release-notes tools/release/release-note.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
