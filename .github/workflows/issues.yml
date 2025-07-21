@@ -1,0 +1,11 @@
+name: issues
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  terraform:
+    uses: terraform-linters/actions-workflows/.github/workflows/validate-terraform-issues.yml@main
+    permissions:
+      issues: write

@@ -1,6 +1,6 @@
 name: Bug Report
 description: Report an bug/issue in TFLint's CLI
-labels: 
+labels:
   - bug
 body:
   - type: markdown
@@ -9,7 +9,7 @@ body:
         Thanks for reporting a bug in TFLint. Please be sure to complete the fields below as we can only investigate reproducible issues.
         You **must** include an isolated reproduction with all issues. We will not accept reports that reference private modules or otherwise cannot be run.
         If you need additional room/files to demonstrate your issue, create a public repository and upload your modules there.
-        If you're having an issue with a specific rule/ruleset, report that in the relevant [ruleset repository](https://github.com/terraform-linters?q=topic%3Atflint-ruleset&type=source&language=&sort=). 
+        If you're having an issue with a specific rule/ruleset, report that in the relevant [ruleset repository](https://github.com/terraform-linters?q=topic%3Atflint-ruleset&type=source&language=&sort=).
   - type: textarea
     attributes:
       label: Summary
@@ -29,6 +29,8 @@ body:
       description: >
         The Terraform configuration (typically HCL) that reproduces the bug.
         You may need to reduce your project to an isolated configuration.
+        This will automatically be validated by GitHub Actions on submission.
+        We will not investigate issues submitted with incomplete reproductions.
       render: terraform
     validations:
       required: true
