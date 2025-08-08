@@ -8,7 +8,7 @@
       },
       "message": "Use \"# autofixed\" instead of \"// autofixed\"",
       "range": {
-        "filename": "dir/main.tf",
+        "filename": "dir\\main.tf",
         "start": {
           "line": 1,
           "column": 1
@@ -30,7 +30,7 @@
       },
       "message": "instance type is [AUTO_FIXED]",
       "range": {
-        "filename": "dir/main.tf",
+        "filename": "dir\\main.tf",
         "start": {
           "line": 3,
           "column": 19
@@ -52,7 +52,7 @@
       },
       "message": "instance type is [AUTO_FIXED]",
       "range": {
-        "filename": "dir/main.tf",
+        "filename": "dir\\main.tf",
         "start": {
           "line": 3,
           "column": 19
@@ -74,7 +74,7 @@
       },
       "message": "Use \"# autofixed\" instead of \"// autofixed\"",
       "range": {
-        "filename": "dir/main.tf",
+        "filename": "dir\\main.tf",
         "start": {
           "line": 3,
           "column": 30

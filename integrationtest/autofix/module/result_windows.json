@@ -97,7 +97,7 @@
           }
         },
         {
-          "filename": "module/main.tf",
+          "filename": "module\\main.tf",
           "start": {
             "line": 8,
             "column": 19
@@ -142,7 +142,7 @@
           }
         },
         {
-          "filename": "module/main.tf",
+          "filename": "module\\main.tf",
           "start": {
             "line": 8,
             "column": 19
