@@ -16,6 +16,8 @@ type JSONIssue struct {
 	Message string      `json:"message"`
 	Range   JSONRange   `json:"range"`
 	Callers []JSONRange `json:"callers"`
+	Fixable bool        `json:"fixable"`
+	Fixed   bool        `json:"fixed"`
 }
 
 // JSONRule is a temporary structure for converting TFLint rules to JSON.
@@ -69,6 +71,8 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, appErr error) {
 				End:      JSONPos{Line: issue.Range.End.Line, Column: issue.Range.End.Column},
 			},
 			Callers: make([]JSONRange, len(issue.Callers)),
+			Fixable: issue.Fixable,
+			Fixed:   issue.Fixable && f.Fix,
 		}
 		for i, caller := range issue.Callers {
 			ret.Issues[idx].Callers[i] = JSONRange{

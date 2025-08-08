@@ -18,7 +18,9 @@
           "column": 29
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": false,
+      "fixed": false
     }
   ],
   "errors": []

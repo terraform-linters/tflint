@@ -18,7 +18,9 @@
           "column": 42
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": false,
+      "fixed": false
     },
     {
       "rule": {
@@ -38,7 +40,9 @@
           "column": 42
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": false,
+      "fixed": false
     },
     {
       "rule": {
@@ -58,7 +62,9 @@
           "column": 46
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": false,
+      "fixed": false
     },
     {
       "rule": {
@@ -78,7 +84,9 @@
           "column": 46
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": false,
+      "fixed": false
     },
     {
       "rule": {
@@ -121,7 +129,9 @@
             "column": 36
           }
         }
-      ]
+      ],
+      "fixable": false,
+      "fixed": false
     },
     {
       "rule": {
@@ -164,7 +174,9 @@
             "column": 36
           }
         }
-      ]
+      ],
+      "fixable": false,
+      "fixed": false
     },
     {
       "rule": {
@@ -207,7 +219,9 @@
             "column": 36
           }
         }
-      ]
+      ],
+      "fixable": false,
+      "fixed": false
     },
     {
       "rule": {
@@ -250,7 +264,9 @@
             "column": 36
           }
         }
-      ]
+      ],
+      "fixable": false,
+      "fixed": false
     }
   ],
   "errors": []

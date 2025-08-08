@@ -18,7 +18,9 @@
           "column": 33
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": false,
+      "fixed": false
     },
     {
       "rule": {
@@ -38,7 +40,9 @@
           "column": 39
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": false,
+      "fixed": false
     },
     {
       "rule": {
@@ -58,7 +62,9 @@
           "column": 64
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": false,
+      "fixed": false
     }
   ],
   "errors": []
