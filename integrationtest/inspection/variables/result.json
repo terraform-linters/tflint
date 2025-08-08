@@ -18,7 +18,9 @@
           "column": 30
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": false,
+      "fixed": false
     },
     {
       "rule": {
@@ -38,7 +40,9 @@
           "column": 42
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": false,
+      "fixed": false
     },
     {
       "rule": {
@@ -58,7 +62,9 @@
           "column": 39
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": false,
+      "fixed": false
     },
     {
       "rule": {
@@ -78,7 +84,9 @@
           "column": 34
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": false,
+      "fixed": false
     },
     {
       "rule": {
@@ -98,7 +106,9 @@
           "column": 26
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": false,
+      "fixed": false
     }
   ],
   "errors": []

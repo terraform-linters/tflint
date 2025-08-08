@@ -117,14 +117,14 @@ Reference: https://github.com
 				f.PrintErrorParallel(errors.New("an error occurred"), map[string][]byte{})
 				f.PrintErrorParallel(errors.New("failed"), map[string][]byte{})
 			},
-			stdout: `{"issues":[{"rule":{"name":"test_rule","severity":"error","link":"https://github.com"},"message":"test","range":{"filename":"test.tf","start":{"line":1,"column":1},"end":{"line":1,"column":4}},"callers":[]}],"errors":[{"message":"an error occurred","severity":"error"},{"message":"failed","severity":"error"}]}`,
+			stdout: `{"issues":[{"rule":{"name":"test_rule","severity":"error","link":"https://github.com"},"message":"test","range":{"filename":"test.tf","start":{"line":1,"column":1},"end":{"line":1,"column":4}},"callers":[],"fixable":false,"fixed":false}],"errors":[{"message":"an error occurred","severity":"error"},{"message":"failed","severity":"error"}]}`,
 			error:  true,
 		},
 		{
 			name:   "JSON without errors",
 			format: "json",
 			before: func(f *Formatter) {},
-			stdout: `{"issues":[{"rule":{"name":"test_rule","severity":"error","link":"https://github.com"},"message":"test","range":{"filename":"test.tf","start":{"line":1,"column":1},"end":{"line":1,"column":4}},"callers":[]}],"errors":[]}`,
+			stdout: `{"issues":[{"rule":{"name":"test_rule","severity":"error","link":"https://github.com"},"message":"test","range":{"filename":"test.tf","start":{"line":1,"column":1},"end":{"line":1,"column":4}},"callers":[],"fixable":false,"fixed":false}],"errors":[]}`,
 		},
 	}
 

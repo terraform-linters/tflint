@@ -8,7 +8,7 @@
       },
       "message": "Use \"# autofixed\" instead of \"// autofixed\"",
       "range": {
-        "filename": "dir\\main.tf",
+        "filename": "dir/main.tf",
         "start": {
           "line": 1,
           "column": 1
@@ -18,7 +18,9 @@
           "column": 1
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": true,
+      "fixed": true
     },
     {
       "rule": {
@@ -28,7 +30,7 @@
       },
       "message": "instance type is [AUTO_FIXED]",
       "range": {
-        "filename": "dir\\main.tf",
+        "filename": "dir/main.tf",
         "start": {
           "line": 3,
           "column": 19
@@ -38,7 +40,9 @@
           "column": 33
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": false,
+      "fixed": false
     },
     {
       "rule": {
@@ -48,7 +52,7 @@
       },
       "message": "instance type is [AUTO_FIXED]",
       "range": {
-        "filename": "dir\\main.tf",
+        "filename": "dir/main.tf",
         "start": {
           "line": 3,
           "column": 19
@@ -58,7 +62,9 @@
           "column": 33
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": true,
+      "fixed": true
     },
     {
       "rule": {
@@ -68,7 +74,7 @@
       },
       "message": "Use \"# autofixed\" instead of \"// autofixed\"",
       "range": {
-        "filename": "dir\\main.tf",
+        "filename": "dir/main.tf",
         "start": {
           "line": 3,
           "column": 30
@@ -78,7 +84,9 @@
           "column": 1
         }
       },
-      "callers": []
+      "callers": [],
+      "fixable": true,
+      "fixed": true
     }
   ],
   "errors": []
