@@ -63,7 +63,7 @@
         }
       },
       "callers": [],
-      "fixable": false,
+      "fixable": true,
       "fixed": false
     },
     {
@@ -107,7 +107,7 @@
         }
       },
       "callers": [],
-      "fixable": false,
+      "fixable": true,
       "fixed": false
     },
     {
@@ -129,7 +129,7 @@
         }
       },
       "callers": [],
-      "fixable": false,
+      "fixable": true,
       "fixed": false
     }
   ],
