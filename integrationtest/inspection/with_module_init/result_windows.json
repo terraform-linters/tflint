@@ -41,7 +41,9 @@
             "column": 36
           }
         }
-      ]
+      ],
+      "fixable": false,
+      "fixed": false
     },
     {
       "rule": {
@@ -84,7 +86,9 @@
             "column": 43
           }
         }
-      ]
+      ],
+      "fixable": false,
+      "fixed": false
     }
   ],
   "errors": []

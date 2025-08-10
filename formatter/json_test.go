@@ -15,12 +15,64 @@ func Test_jsonPrint(t *testing.T) {
 		Name   string
 		Issues tflint.Issues
 		Error  error
+		Fix    bool
 		Stdout string
 	}{
 		{
 			Name:   "no issues",
 			Issues: tflint.Issues{},
 			Stdout: `{"issues":[],"errors":[]}`,
+		},
+		{
+			Name: "fixable issue without fix",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRule{},
+					Message: "test message",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1},
+						End:      hcl.Pos{Line: 1, Column: 5},
+					},
+					Fixable: true,
+				},
+			},
+			Fix:    false,
+			Stdout: `{"issues":[{"rule":{"name":"test_rule","severity":"error","link":"https://github.com"},"message":"test message","range":{"filename":"test.tf","start":{"line":1,"column":1},"end":{"line":1,"column":5}},"callers":[],"fixable":true,"fixed":false}],"errors":[]}`,
+		},
+		{
+			Name: "fixable issue with fix",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRule{},
+					Message: "test message",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1},
+						End:      hcl.Pos{Line: 1, Column: 5},
+					},
+					Fixable: true,
+				},
+			},
+			Fix:    true,
+			Stdout: `{"issues":[{"rule":{"name":"test_rule","severity":"error","link":"https://github.com"},"message":"test message","range":{"filename":"test.tf","start":{"line":1,"column":1},"end":{"line":1,"column":5}},"callers":[],"fixable":true,"fixed":true}],"errors":[]}`,
+		},
+		{
+			Name: "non-fixable issue",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRule{},
+					Message: "test message",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1},
+						End:      hcl.Pos{Line: 1, Column: 5},
+					},
+					Fixable: false,
+				},
+			},
+			Fix:    false,
+			Stdout: `{"issues":[{"rule":{"name":"test_rule","severity":"error","link":"https://github.com"},"message":"test message","range":{"filename":"test.tf","start":{"line":1,"column":1},"end":{"line":1,"column":5}},"callers":[],"fixable":false,"fixed":false}],"errors":[]}`,
 		},
 		{
 			Name:   "error",
@@ -71,7 +123,7 @@ func Test_jsonPrint(t *testing.T) {
 	for _, tc := range cases {
 		stdout := &bytes.Buffer{}
 		stderr := &bytes.Buffer{}
-		formatter := &Formatter{Stdout: stdout, Stderr: stderr, Format: "json"}
+		formatter := &Formatter{Stdout: stdout, Stderr: stderr, Format: "json", Fix: tc.Fix}
 
 		formatter.Print(tc.Issues, tc.Error, map[string][]byte{})
 
