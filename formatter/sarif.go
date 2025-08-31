@@ -95,6 +95,8 @@ func (f *Formatter) sarifAddErrors(errRun *sarif.Run, err error) {
 	var diags hcl.Diagnostics
 	if errors.As(err, &diags) {
 		for _, diag := range diags {
+			rule := errRun.AddRule(diag.Summary).WithDescription("")
+
 			location := sarif.NewPhysicalLocation().
 				WithArtifactLocation(sarif.NewSimpleArtifactLocation(filepath.ToSlash(diag.Subject.Filename))).
 				WithRegion(
@@ -107,7 +109,7 @@ func (f *Formatter) sarifAddErrors(errRun *sarif.Run, err error) {
 						WithEndColumn(diag.Subject.End.Column),
 				)
 
-			errRun.CreateResultForRule(diag.Summary).
+			errRun.CreateResultForRule(rule.ID).
 				WithLevel(fromHclSeverity(diag.Severity)).
 				WithMessage(sarif.NewTextMessage(diag.Detail)).
 				AddLocation(sarif.NewLocationWithPhysicalLocation(location))
@@ -115,7 +117,9 @@ func (f *Formatter) sarifAddErrors(errRun *sarif.Run, err error) {
 		return
 	}
 
-	errRun.CreateResultForRule("application_error").
+	rule := errRun.AddRule("application_error").WithDescription("")
+
+	errRun.CreateResultForRule(rule.ID).
 		WithLevel("error").
 		WithMessage(sarif.NewTextMessage(err.Error()))
 }
