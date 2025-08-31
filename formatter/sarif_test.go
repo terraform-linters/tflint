@@ -407,14 +407,21 @@ func Test_sarifPrint(t *testing.T) {
         "driver": {
           "informationUri": "https://github.com/terraform-linters/tflint",
           "name": "tflint-errors",
-          "rules": [],
+          "rules": [
+            {
+              "id": "application_error",
+              "shortDescription": {
+                "text": ""
+              }
+            }
+          ],
           "version": "%s"
         }
       },
       "results": [
         {
           "ruleId": "application_error",
-          "ruleIndex": 18446744073709551615,
+          "ruleIndex": 0,
           "level": "error",
           "message": {
             "text": "Failed to work; I don't feel like working"
@@ -462,14 +469,21 @@ func Test_sarifPrint(t *testing.T) {
         "driver": {
           "informationUri": "https://github.com/terraform-linters/tflint",
           "name": "tflint-errors",
-          "rules": [],
+          "rules": [
+            {
+              "id": "summary",
+              "shortDescription": {
+                "text": ""
+              }
+            }
+          ],
           "version": "%s"
         }
       },
       "results": [
         {
           "ruleId": "summary",
-          "ruleIndex": 18446744073709551615,
+          "ruleIndex": 0,
           "level": "warning",
           "message": {
             "text": "detail"
@@ -535,14 +549,27 @@ func Test_sarifPrint(t *testing.T) {
         "driver": {
           "informationUri": "https://github.com/terraform-linters/tflint",
           "name": "tflint-errors",
-          "rules": [],
+          "rules": [
+            {
+              "id": "application_error",
+              "shortDescription": {
+                "text": ""
+              }
+            },
+            {
+              "id": "summary",
+              "shortDescription": {
+                "text": ""
+              }
+            }
+          ],
           "version": "%s"
         }
       },
       "results": [
         {
           "ruleId": "application_error",
-          "ruleIndex": 18446744073709551615,
+          "ruleIndex": 0,
           "level": "error",
           "message": {
             "text": "an error occurred"
@@ -550,7 +577,7 @@ func Test_sarifPrint(t *testing.T) {
         },
         {
           "ruleId": "application_error",
-          "ruleIndex": 18446744073709551615,
+          "ruleIndex": 0,
           "level": "error",
           "message": {
             "text": "failed"
@@ -558,7 +585,7 @@ func Test_sarifPrint(t *testing.T) {
         },
         {
           "ruleId": "summary",
-          "ruleIndex": 18446744073709551615,
+          "ruleIndex": 1,
           "level": "warning",
           "message": {
             "text": "detail"
