@@ -81,6 +81,11 @@ func TestIntegration(t *testing.T) {
 			Dir:     "jsonsyntax",
 		},
 		{
+			Name:    "json config with complex plugin settings",
+			Command: "./tflint --format json",
+			Dir:     "json-config",
+		},
+		{
 			Name:    "path",
 			Command: "./tflint --format json",
 			Dir:     "path",
