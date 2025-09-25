@@ -5,6 +5,7 @@ import (
 	"log"
 	"maps"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/hashicorp/go-version"
@@ -92,7 +93,10 @@ type Config struct {
 	Rules         map[string]*RuleConfig
 	Plugins       map[string]*PluginConfig
 
-	sources map[string][]byte
+	sources        map[string][]byte
+	jsonConfigFile string // Track if config was loaded from a JSON file
+	originalSource []byte // Store original source for re-parsing
+	originalPath   string // Store original file path for re-parsing
 }
 
 // RuleConfig is a TFLint's rule config
@@ -145,6 +149,8 @@ func EmptyConfig() *Config {
 //
 // Files are parsed as HCL or JSON based on their file extension.
 // JSON files use HCL-compatible JSON syntax, following Terraform's .tf.json conventions.
+// JSON config files must be named .tflint.json or match patterns like *-tflint.json or *_tflint.json
+// to avoid confusion with other JSON files (e.g., terraform.tfvars.json).
 // For steps 1-2, if the file does not exist, an error will be returned immediately.
 // For steps 3-6, each step is tried in order until a file is found or all fail.
 //
@@ -243,16 +249,35 @@ func loadConfig(file afero.File) (*Config, error) {
 		return nil, err
 	}
 
+	// Use the actual filename for parsing
+	filename := file.Name()
+
 	parser := hclparse.NewParser()
 	var f *hcl.File
 	var diags hcl.Diagnostics
 
 	// Parse based on file extension
 	switch {
-	case strings.HasSuffix(strings.ToLower(file.Name()), ".json"):
-		f, diags = parser.ParseJSON(src, file.Name())
+	case strings.HasSuffix(strings.ToLower(filename), ".json"):
+		// JSON config files must be named .tflint.json or end with a pattern like *-tflint.json or *_tflint.json
+		// to avoid confusion with other JSON files (e.g., terraform.tfvars.json)
+		baseName := filepath.Base(filename)
+		lowerName := strings.ToLower(baseName)
+		isValidName := lowerName == ".tflint.json" ||
+			strings.HasSuffix(lowerName, "-tflint.json") ||
+			strings.HasSuffix(lowerName, "_tflint.json") ||
+			strings.HasSuffix(lowerName, ".tflint.json") // handles foo.tflint.json
+
+		if !isValidName {
+			return nil, fmt.Errorf(
+				"JSON configuration file must be named '.tflint.json' or match pattern '*[-._]tflint.json'. "+
+					"Got: %s. Please rename the file or use an HCL configuration file.",
+				baseName,
+			)
+		}
+		f, diags = parser.ParseJSON(src, filename)
 	default:
-		f, diags = parser.ParseHCL(src, file.Name())
+		f, diags = parser.ParseHCL(src, filename)
 	}
 
 	if diags.HasErrors() {
@@ -270,6 +295,12 @@ func loadConfig(file afero.File) (*Config, error) {
 
 	config := EmptyConfig()
 	config.sources = parser.Sources()
+	// Track if this was loaded from a JSON file and store original for potential re-parsing
+	if strings.HasSuffix(strings.ToLower(filename), ".json") {
+		config.jsonConfigFile = filename
+		config.originalSource = src
+		config.originalPath = filename
+	}
 	for _, block := range content.Blocks {
 		switch block.Type {
 		case "tflint":
@@ -529,6 +560,112 @@ func (c *Config) Sources() map[string][]byte {
 
 	maps.Copy(ret, c.sources)
 	return ret
+}
+
+// ReparseForCompatibility re-parses a JSON config file with a .tf.json extension
+// for compatibility with plugins using SDK version < 0.23.0.
+// Plugins with SDK < 0.23.0 cannot parse JSON config files with the .json extension.
+// This is a temporary compatibility shim that will be removed once all plugins
+// are updated to SDK version 0.23.0 or later.
+func (c *Config) ReparseForCompatibility(sdkVersions map[string]*version.Version) (*Config, error) {
+	log.Printf("[DEBUG] ReparseForCompatibility called with %d plugins", len(sdkVersions))
+	// Only apply shim for JSON configs
+	if c.jsonConfigFile == "" || c.originalSource == nil {
+		log.Printf("[DEBUG] No JSON config file to reparse")
+		return c, nil
+	}
+	log.Printf("[DEBUG] JSON config file detected: %s", c.jsonConfigFile)
+
+	// Check if we need the compatibility shim
+	needsShim := false
+	incompatiblePlugins := []string{}
+	minVersion := version.Must(version.NewVersion("0.23.0"))
+
+	for name, sdkVersion := range sdkVersions {
+		log.Printf("[DEBUG] Plugin %s SDK version: %s", name, sdkVersion)
+		if sdkVersion.LessThan(minVersion) {
+			needsShim = true
+			incompatiblePlugins = append(incompatiblePlugins, fmt.Sprintf("%s (v%s)", name, sdkVersion))
+		}
+	}
+
+	if !needsShim {
+		return c, nil
+	}
+
+	log.Printf("[WARN] JSON configuration file detected with plugin(s) using SDK < 0.23.0: %s", strings.Join(incompatiblePlugins, ", "))
+	log.Printf("[WARN] Applying compatibility shim by re-parsing config as .tf.json")
+	log.Printf("[WARN] Please update your plugins or use an HCL configuration file (.tflint.hcl) for full compatibility.")
+
+	// Re-parse with .tf.json extension for compatibility
+	compatFilename := strings.TrimSuffix(c.originalPath, ".json") + ".tf.json"
+
+	parser := hclparse.NewParser()
+	f, diags := parser.ParseJSON(c.originalSource, compatFilename)
+	if diags.HasErrors() {
+		return nil, fmt.Errorf("failed to re-parse config for compatibility: %w", diags)
+	}
+
+	// Check version requirement
+	if diags := checkVersionRequirement(f.Body); diags.HasErrors() {
+		return nil, diags
+	}
+
+	content, diags := f.Body.Content(configSchema)
+	if diags.HasErrors() {
+		return nil, diags
+	}
+
+	// Create a copy of the original config with updated sources
+	// Start with a shallow copy of the original config
+	newConfig := *c
+
+	// Update sources with re-parsed filenames
+	newConfig.sources = parser.Sources()
+
+	// Initialize maps if needed (since we did a shallow copy)
+	newConfig.Rules = make(map[string]*RuleConfig)
+	newConfig.Plugins = make(map[string]*PluginConfig)
+
+	// Debug: log the sources to verify filenames
+	for filename := range newConfig.sources {
+		log.Printf("[DEBUG] Re-parsed config source: %s", filename)
+	}
+
+	// Re-parse plugin and rule blocks with new filename in ranges
+	for _, block := range content.Blocks {
+		switch block.Type {
+		case "config":
+			// Already copied these values above
+			continue
+
+		case "rule":
+			ruleConfig := &RuleConfig{Name: block.Labels[0]}
+			if err := gohcl.DecodeBody(block.Body, nil, ruleConfig); err != nil {
+				return nil, err
+			}
+			// The rule's Body now has ranges with the new filename
+			if ruleConfig.Body != nil {
+				log.Printf("[DEBUG] Rule %s has body with re-parsed ranges", ruleConfig.Name)
+			}
+			newConfig.Rules[block.Labels[0]] = ruleConfig
+
+		case "plugin":
+			pluginConfig := &PluginConfig{Name: block.Labels[0]}
+			if err := gohcl.DecodeBody(block.Body, nil, pluginConfig); err != nil {
+				return nil, err
+			}
+			if err := pluginConfig.validate(); err != nil {
+				return nil, err
+			}
+			newConfig.Plugins[block.Labels[0]] = pluginConfig
+			log.Printf("[DEBUG] Re-parsed plugin %s config", pluginConfig.Name)
+		}
+	}
+
+	log.Printf("[DEBUG] Successfully re-parsed config with compatibility shim: %d plugins, %d rules",
+		len(newConfig.Plugins), len(newConfig.Rules))
+	return &newConfig, nil
 }
 
 // Merge merges the two configs and applies to itself.

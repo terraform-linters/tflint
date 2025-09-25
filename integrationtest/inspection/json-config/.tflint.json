@@ -1,0 +1,30 @@
+{
+  "config": {
+    "call_module_type": "local",
+    "force": false,
+    "disabled_by_default": false,
+    "ignore_module": {
+      "./ignore": true
+    }
+  },
+  "plugin": {
+    "terraform": {
+      "enabled": true,
+      "preset": "recommended"
+    }
+  },
+  "rule": {
+    "terraform_naming_convention": {
+      "enabled": true
+    },
+    "terraform_documented_outputs": {
+      "enabled": false
+    },
+    "terraform_module_pinned_source": {
+      "enabled": false
+    },
+    "terraform_standard_module_structure": {
+      "enabled": true
+    }
+  }
+}

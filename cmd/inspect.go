@@ -113,7 +113,11 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 	}
 
 	// Launch plugin processes
-	rulesetPlugin, err := launchPlugins(cli.config, opts.Fix)
+	// Note: launchPlugins may return an updated config if JSON files need renaming for SDK compatibility
+	rulesetPlugin, updatedConfig, sdkVersions, err := launchPlugins(cli.config, opts.Fix)
+	if updatedConfig != nil {
+		cli.config = updatedConfig // Update config with re-parsed version (JSON files may be renamed to .tf.json)
+	}
 	if rulesetPlugin != nil {
 		defer rulesetPlugin.Clean()
 		go cli.registerShutdownHandler(func() {
@@ -123,24 +127,6 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 	}
 	if err != nil {
 		return issues, changes, err
-	}
-
-	// Check preconditions
-	sdkVersions := map[string]*version.Version{}
-	for name, ruleset := range rulesetPlugin.RuleSets {
-		sdkVersion, err := ruleset.SDKVersion()
-		if err != nil {
-			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
-				// SDKVersion endpoint is available in tflint-plugin-sdk v0.14+.
-				return issues, changes, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
-			} else {
-				return issues, changes, fmt.Errorf(`Failed to get plugin "%s" SDK version; %w`, name, err)
-			}
-		}
-		if !plugin.SDKVersionConstraints.Check(sdkVersion) {
-			return issues, changes, fmt.Errorf(`Plugin "%s" SDK version (%s) is incompatible. Compatible versions: %s`, name, sdkVersion, plugin.SDKVersionConstraints)
-		}
-		sdkVersions[name] = sdkVersion
 	}
 
 	// Run inspection
@@ -254,11 +240,37 @@ func (cli *CLI) setupRunners(opts Options, dir string) (*tflint.Runner, []*tflin
 	return runner, moduleRunners, nil
 }
 
-func launchPlugins(config *tflint.Config, fix bool) (*plugin.Plugin, error) {
+func launchPlugins(config *tflint.Config, fix bool) (*plugin.Plugin, *tflint.Config, map[string]*version.Version, error) {
 	// Lookup plugins
 	rulesetPlugin, err := plugin.Discovery(config)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to initialize plugins; %w", err)
+		return nil, nil, nil, fmt.Errorf("Failed to initialize plugins; %w", err)
+	}
+
+	// First, collect SDK versions from all plugins
+	sdkVersions := map[string]*version.Version{}
+	for name, ruleset := range rulesetPlugin.RuleSets {
+		sdkVersion, err := ruleset.SDKVersion()
+		if err != nil {
+			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
+				// SDKVersion endpoint is available in tflint-plugin-sdk v0.14+.
+				// Assume old version for compatibility checking
+				sdkVersions[name] = version.Must(version.NewVersion("0.13.0"))
+			} else {
+				return nil, nil, nil, fmt.Errorf(`Failed to get plugin "%s" SDK version; %w`, name, err)
+			}
+		}
+		// Check SDK version compatibility
+		if !plugin.SDKVersionConstraints.Check(sdkVersion) {
+			return nil, nil, nil, fmt.Errorf(`Plugin "%s" SDK version (%s) is incompatible. Compatible versions: %s`, name, sdkVersion, plugin.SDKVersionConstraints)
+		}
+		sdkVersions[name] = sdkVersion
+	}
+
+	// Apply compatibility shim if needed by re-parsing config
+	config, err = config.ReparseForCompatibility(sdkVersions)
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("Failed to apply compatibility shim: %w", err)
 	}
 
 	rulesets := []tflint.RuleSet{}
@@ -271,33 +283,33 @@ func launchPlugins(config *tflint.Config, fix bool) (*plugin.Plugin, error) {
 		if err != nil {
 			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
 				// VersionConstraints endpoint is available in tflint-plugin-sdk v0.14+.
-				return rulesetPlugin, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
+				return rulesetPlugin, config, sdkVersions, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
 			} else {
-				return rulesetPlugin, fmt.Errorf(`Failed to get TFLint version constraints to "%s" plugin; %w`, name, err)
+				return rulesetPlugin, config, sdkVersions, fmt.Errorf(`Failed to get TFLint version constraints to "%s" plugin; %w`, name, err)
 			}
 		}
 		if !constraints.Check(tflint.Version) {
-			return rulesetPlugin, fmt.Errorf("Failed to satisfy version constraints; tflint-ruleset-%s requires %s, but TFLint version is %s", name, constraints, tflint.Version)
+			return rulesetPlugin, config, sdkVersions, fmt.Errorf("Failed to satisfy version constraints; tflint-ruleset-%s requires %s, but TFLint version is %s", name, constraints, tflint.Version)
 		}
 
 		if err := ruleset.ApplyGlobalConfig(pluginConf); err != nil {
-			return rulesetPlugin, fmt.Errorf(`Failed to apply global config to "%s" plugin; %w`, name, err)
+			return rulesetPlugin, config, sdkVersions, fmt.Errorf(`Failed to apply global config to "%s" plugin; %w`, name, err)
 		}
 		configSchema, err := ruleset.ConfigSchema()
 		if err != nil {
-			return rulesetPlugin, fmt.Errorf(`Failed to fetch config schema from "%s" plugin; %w`, name, err)
+			return rulesetPlugin, config, sdkVersions, fmt.Errorf(`Failed to fetch config schema from "%s" plugin; %w`, name, err)
 		}
 		content := &hclext.BodyContent{}
 		if plugin, exists := config.Plugins[name]; exists {
 			var diags hcl.Diagnostics
 			content, diags = plugin.Content(configSchema)
 			if diags.HasErrors() {
-				return rulesetPlugin, fmt.Errorf(`Failed to parse "%s" plugin config; %w`, name, diags)
+				return rulesetPlugin, config, sdkVersions, fmt.Errorf(`Failed to parse "%s" plugin config; %w`, name, diags)
 			}
 		}
 		err = ruleset.ApplyConfig(content, config.Sources())
 		if err != nil {
-			return rulesetPlugin, fmt.Errorf(`Failed to apply config to "%s" plugin; %w`, name, err)
+			return rulesetPlugin, config, sdkVersions, fmt.Errorf(`Failed to apply config to "%s" plugin; %w`, name, err)
 		}
 
 		rulesets = append(rulesets, ruleset)
@@ -305,10 +317,10 @@ func launchPlugins(config *tflint.Config, fix bool) (*plugin.Plugin, error) {
 
 	// Validate config for plugins
 	if err := config.ValidateRules(rulesets...); err != nil {
-		return rulesetPlugin, fmt.Errorf("Failed to check rule config; %w", err)
+		return rulesetPlugin, config, sdkVersions, fmt.Errorf("Failed to check rule config; %w", err)
 	}
 
-	return rulesetPlugin, nil
+	return rulesetPlugin, config, sdkVersions, nil
 }
 
 func writeChanges(changes map[string][]byte) error {

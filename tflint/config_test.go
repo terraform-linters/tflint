@@ -475,9 +475,9 @@ config {
 		},
 		{
 			name: "load JSON config file",
-			file: "config.json",
+			file: "config-tflint.json",
 			files: map[string]string{
-				"config.json": `{
+				"config-tflint.json": `{
   "tflint": {
     "required_version": ">= 0"
   },
@@ -572,21 +572,21 @@ config {
 		},
 		{
 			name: "empty JSON file",
-			file: "empty.json",
+			file: "empty-tflint.json",
 			files: map[string]string{
-				"empty.json": "{}",
+				"empty-tflint.json": "{}",
 			},
 			want:     EmptyConfig().enableBundledPlugin(),
 			errCheck: neverHappend,
 		},
 		{
 			name: "JSON syntax error",
-			file: "syntax_error.json",
+			file: "syntax_error-tflint.json",
 			files: map[string]string{
-				"syntax_error.json": `{"config": {`,
+				"syntax_error-tflint.json": `{"config": {`,
 			},
 			errCheck: func(err error) bool {
-				return err == nil || !strings.Contains(err.Error(), "syntax_error.json")
+				return err == nil || !strings.Contains(err.Error(), "syntax_error-tflint.json")
 			},
 		},
 		{
@@ -674,10 +674,51 @@ config {
 			errCheck: neverHappend,
 		},
 		{
+			name: "invalid JSON config filename",
+			file: "myconfig.json",
+			files: map[string]string{
+				"myconfig.json": `{
+  "config": {
+    "force": true
+  }
+}`,
+			},
+			errCheck: func(err error) bool {
+				return err == nil || !strings.Contains(err.Error(), "JSON configuration file must be named '.tflint.json' or match pattern '*[-._]tflint.json'")
+			},
+		},
+		{
+			name: "valid JSON config with tflint.json suffix",
+			file: "my-tflint.json",
+			files: map[string]string{
+				"my-tflint.json": `{
+  "config": {
+    "force": true
+  }
+}`,
+			},
+			want: &Config{
+				CallModuleType: terraform.CallLocalModule,
+				Force:          true,
+				ForceSet:       true,
+				IgnoreModules:  map[string]bool{},
+				Varfiles:       []string{},
+				Variables:      []string{},
+				Rules:          map[string]*RuleConfig{},
+				Plugins: map[string]*PluginConfig{
+					"terraform": {
+						Name:    "terraform",
+						Enabled: true,
+					},
+				},
+			},
+			errCheck: neverHappend,
+		},
+		{
 			name: "TFLINT_CONFIG_FILE with JSON",
 			file: "",
 			files: map[string]string{
-				"env.json": `{
+				"env-tflint.json": `{
   "config": {
     "force": true,
     "disabled_by_default": true
@@ -685,7 +726,7 @@ config {
 }`,
 			},
 			envs: map[string]string{
-				"TFLINT_CONFIG_FILE": "env.json",
+				"TFLINT_CONFIG_FILE": "env-tflint.json",
 			},
 			want: &Config{
 				CallModuleType:       terraform.CallLocalModule,
@@ -1501,9 +1542,9 @@ plugin "terraform" {
 		},
 		{
 			name: "JSON config sources preserved",
-			file: "config.json",
+			file: "config-tflint.json",
 			files: map[string]string{
-				"config.json": `{
+				"config-tflint.json": `{
   "config": {
     "format": "json"
   },
@@ -1516,7 +1557,7 @@ plugin "terraform" {
 }`,
 			},
 			wantSources: map[string]string{
-				"config.json": `{
+				"config-tflint.json": `{
   "config": {
     "format": "json"
   },
@@ -1553,9 +1594,9 @@ plugin "terraform" {
 		},
 		{
 			name: "mixed HCL bundled + JSON user config",
-			file: "user.json",
+			file: "user-tflint.json",
 			files: map[string]string{
-				"user.json": `{
+				"user-tflint.json": `{
   "rule": {
     "terraform_unused_declarations": {
       "enabled": false
@@ -1564,7 +1605,7 @@ plugin "terraform" {
 }`,
 			},
 			wantSources: map[string]string{
-				"user.json": `{
+				"user-tflint.json": `{
   "rule": {
     "terraform_unused_declarations": {
       "enabled": false
