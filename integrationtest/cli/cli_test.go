@@ -72,6 +72,21 @@ func TestIntegration(t *testing.T) {
 			stdout:  "[]",
 		},
 		{
+			name:    "JSON format config",
+			command: "./tflint",
+			dir:     "json_config",
+			status:  cmd.ExitCodeOK,
+			stdout: `<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle></checkstyle>`,
+		},
+		{
+			name:    "HCL precedence over JSON config",
+			command: "./tflint",
+			dir:     "hcl_json_precedence",
+			status:  cmd.ExitCodeOK,
+			stdout:  "",
+		},
+		{
 			name:    "`--force` option with no issues",
 			command: "./tflint --force",
 			dir:     "no_issues",
