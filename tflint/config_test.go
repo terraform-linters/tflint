@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -471,6 +472,239 @@ config {
 			errCheck: func(err error) bool {
 				return err == nil || err.Error() != `"module" attribute was removed in v0.54.0. Use "call_module_type" instead`
 			},
+		},
+		{
+			name: "load JSON config file",
+			file: "config.json",
+			files: map[string]string{
+				"config.json": `{
+  "tflint": {
+    "required_version": ">= 0"
+  },
+  "config": {
+    "format": "compact",
+    "plugin_dir": "~/.tflint.d/plugins",
+    "call_module_type": "all",
+    "force": true,
+    "ignore_module": {
+      "github.com/terraform-linters/example-module": true
+    },
+    "varfile": ["example1.tfvars", "example2.tfvars"],
+    "variables": ["foo=bar", "bar=['foo']"]
+  },
+  "rule": {
+    "aws_instance_invalid_type": {
+      "enabled": false
+    },
+    "aws_instance_previous_type": {
+      "enabled": false,
+      "foo": "bar"
+    }
+  },
+  "plugin": {
+    "foo": {
+      "enabled": true
+    },
+    "bar": {
+      "enabled": false,
+      "version": "0.1.0",
+      "source": "github.com/foo/bar",
+      "signing_key": "SIGNING_KEY"
+    },
+    "baz": {
+      "enabled": true,
+      "foo": "baz"
+    }
+  }
+}`,
+			},
+			want: &Config{
+				CallModuleType:    terraform.CallAllModule,
+				CallModuleTypeSet: true,
+				Force:             true,
+				ForceSet:          true,
+				IgnoreModules: map[string]bool{
+					"github.com/terraform-linters/example-module": true,
+				},
+				Varfiles:          []string{"example1.tfvars", "example2.tfvars"},
+				Variables:         []string{"foo=bar", "bar=['foo']"},
+				DisabledByDefault: false,
+				PluginDir:         "~/.tflint.d/plugins",
+				PluginDirSet:      true,
+				Format:            "compact",
+				FormatSet:         true,
+				Rules: map[string]*RuleConfig{
+					"aws_instance_invalid_type": {
+						Name:    "aws_instance_invalid_type",
+						Enabled: false,
+					},
+					"aws_instance_previous_type": {
+						Name:    "aws_instance_previous_type",
+						Enabled: false,
+					},
+				},
+				Plugins: map[string]*PluginConfig{
+					"foo": {
+						Name:    "foo",
+						Enabled: true,
+					},
+					"bar": {
+						Name:        "bar",
+						Enabled:     false,
+						Version:     "0.1.0",
+						Source:      "github.com/foo/bar",
+						SigningKey:  "SIGNING_KEY",
+						SourceHost:  "github.com",
+						SourceOwner: "foo",
+						SourceRepo:  "bar",
+					},
+					"baz": {
+						Name:    "baz",
+						Enabled: true,
+					},
+					"terraform": {
+						Name:    "terraform",
+						Enabled: true,
+					},
+				},
+			},
+			errCheck: neverHappend,
+		},
+		{
+			name: "empty JSON file",
+			file: "empty.json",
+			files: map[string]string{
+				"empty.json": "{}",
+			},
+			want:     EmptyConfig().enableBundledPlugin(),
+			errCheck: neverHappend,
+		},
+		{
+			name: "JSON syntax error",
+			file: "syntax_error.json",
+			files: map[string]string{
+				"syntax_error.json": `{"config": {`,
+			},
+			errCheck: func(err error) bool {
+				return err == nil || !strings.Contains(err.Error(), "syntax_error.json")
+			},
+		},
+		{
+			name: "default JSON config file",
+			file: "",
+			files: map[string]string{
+				".tflint.json": `{
+  "config": {
+    "force": true,
+    "disabled_by_default": true
+  }
+}`,
+			},
+			want: &Config{
+				CallModuleType:       terraform.CallLocalModule,
+				Force:                true,
+				ForceSet:             true,
+				IgnoreModules:        map[string]bool{},
+				Varfiles:             []string{},
+				Variables:            []string{},
+				DisabledByDefault:    true,
+				DisabledByDefaultSet: true,
+				Rules:                map[string]*RuleConfig{},
+				Plugins: map[string]*PluginConfig{
+					"terraform": {
+						Name:    "terraform",
+						Enabled: true,
+					},
+				},
+			},
+			errCheck: neverHappend,
+		},
+		{
+			name: "prefer HCL over JSON in current directory",
+			file: "",
+			files: map[string]string{
+				".tflint.hcl":  `config { force = false }`,
+				".tflint.json": `{"config": {"force": true}}`,
+			},
+			want: &Config{
+				CallModuleType: terraform.CallLocalModule,
+				Force:          false,
+				ForceSet:       true,
+				IgnoreModules:  map[string]bool{},
+				Varfiles:       []string{},
+				Variables:      []string{},
+				Rules:          map[string]*RuleConfig{},
+				Plugins: map[string]*PluginConfig{
+					"terraform": {
+						Name:    "terraform",
+						Enabled: true,
+					},
+				},
+			},
+			errCheck: neverHappend,
+		},
+		{
+			name: "home directory JSON config",
+			file: "",
+			files: map[string]string{
+				"/root/.tflint.json": `{
+  "config": {
+    "force": true,
+    "disabled_by_default": true
+  }
+}`,
+			},
+			want: &Config{
+				CallModuleType:       terraform.CallLocalModule,
+				Force:                true,
+				ForceSet:             true,
+				IgnoreModules:        map[string]bool{},
+				Varfiles:             []string{},
+				Variables:            []string{},
+				DisabledByDefault:    true,
+				DisabledByDefaultSet: true,
+				Rules:                map[string]*RuleConfig{},
+				Plugins: map[string]*PluginConfig{
+					"terraform": {
+						Name:    "terraform",
+						Enabled: true,
+					},
+				},
+			},
+			errCheck: neverHappend,
+		},
+		{
+			name: "TFLINT_CONFIG_FILE with JSON",
+			file: "",
+			files: map[string]string{
+				"env.json": `{
+  "config": {
+    "force": true,
+    "disabled_by_default": true
+  }
+}`,
+			},
+			envs: map[string]string{
+				"TFLINT_CONFIG_FILE": "env.json",
+			},
+			want: &Config{
+				CallModuleType:       terraform.CallLocalModule,
+				Force:                true,
+				ForceSet:             true,
+				IgnoreModules:        map[string]bool{},
+				Varfiles:             []string{},
+				Variables:            []string{},
+				DisabledByDefault:    true,
+				DisabledByDefaultSet: true,
+				Rules:                map[string]*RuleConfig{},
+				Plugins: map[string]*PluginConfig{
+					"terraform": {
+						Name:    "terraform",
+						Enabled: true,
+					},
+				},
+			},
+			errCheck: neverHappend,
 		},
 	}
 
@@ -1228,5 +1462,156 @@ func Test_ValidateRules(t *testing.T) {
 				t.Fatalf("Failed %s: error message is not matched: want=%s got=%s", tc.Name, tc.Err, err)
 			}
 		}
+	}
+}
+
+func TestConfigSources(t *testing.T) {
+	tests := []struct {
+		name        string
+		file        string
+		files       map[string]string
+		wantSources map[string]string // filename -> expected content
+		errCheck    func(error) bool
+	}{
+		{
+			name: "HCL config sources preserved",
+			file: "config.hcl",
+			files: map[string]string{
+				"config.hcl": `config {
+  format = "compact"
+}
+
+plugin "terraform" {
+  enabled = true
+  preset = "all"
+}`,
+			},
+			wantSources: map[string]string{
+				"config.hcl": `config {
+  format = "compact"
+}
+
+plugin "terraform" {
+  enabled = true
+  preset = "all"
+}`,
+				bundledPluginConfigFilename: bundledPluginConfigContent,
+			},
+			errCheck: func(err error) bool { return err != nil },
+		},
+		{
+			name: "JSON config sources preserved",
+			file: "config.json",
+			files: map[string]string{
+				"config.json": `{
+  "config": {
+    "format": "json"
+  },
+  "plugin": {
+    "terraform": {
+      "enabled": true,
+      "preset": "all"
+    }
+  }
+}`,
+			},
+			wantSources: map[string]string{
+				"config.json": `{
+  "config": {
+    "format": "json"
+  },
+  "plugin": {
+    "terraform": {
+      "enabled": true,
+      "preset": "all"
+    }
+  }
+}`,
+				bundledPluginConfigFilename: bundledPluginConfigContent,
+			},
+			errCheck: func(err error) bool { return err != nil },
+		},
+		{
+			name: "default JSON config sources",
+			file: "",
+			files: map[string]string{
+				".tflint.json": `{
+  "config": {
+    "force": true
+  }
+}`,
+			},
+			wantSources: map[string]string{
+				".tflint.json": `{
+  "config": {
+    "force": true
+  }
+}`,
+				bundledPluginConfigFilename: bundledPluginConfigContent,
+			},
+			errCheck: func(err error) bool { return err != nil },
+		},
+		{
+			name: "mixed HCL bundled + JSON user config",
+			file: "user.json",
+			files: map[string]string{
+				"user.json": `{
+  "rule": {
+    "terraform_unused_declarations": {
+      "enabled": false
+    }
+  }
+}`,
+			},
+			wantSources: map[string]string{
+				"user.json": `{
+  "rule": {
+    "terraform_unused_declarations": {
+      "enabled": false
+    }
+  }
+}`,
+				bundledPluginConfigFilename: bundledPluginConfigContent,
+			},
+			errCheck: func(err error) bool { return err != nil },
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			fs := afero.Afero{Fs: afero.NewMemMapFs()}
+			for name, src := range test.files {
+				if err := fs.WriteFile(name, []byte(src), os.ModePerm); err != nil {
+					t.Fatal(err)
+				}
+			}
+
+			config, err := LoadConfig(fs, test.file)
+			if test.errCheck(err) {
+				t.Fatal(err)
+			}
+
+			sources := config.Sources()
+
+			// Verify all expected sources are present
+			for filename, expectedContent := range test.wantSources {
+				actualContent, exists := sources[filename]
+				if !exists {
+					t.Errorf("Expected source file %q not found in sources map", filename)
+					continue
+				}
+
+				if string(actualContent) != expectedContent {
+					t.Errorf("Source content mismatch for %q:\nwant: %s\ngot:  %s", filename, expectedContent, string(actualContent))
+				}
+			}
+
+			// Verify no unexpected sources are present
+			for filename := range sources {
+				if _, expected := test.wantSources[filename]; !expected {
+					t.Errorf("Unexpected source file %q found in sources map", filename)
+				}
+			}
+		})
 	}
 }

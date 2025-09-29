@@ -20,7 +20,9 @@ import (
 )
 
 var defaultConfigFile = ".tflint.hcl"
+var defaultConfigFileJSON = ".tflint.json"
 var fallbackConfigFile = "~/.tflint.hcl"
+var fallbackConfigFileJSON = "~/.tflint.json"
 
 var configSchema = &hcl.BodySchema{
 	Blocks: []hcl.BlockHeaderSchema{
@@ -90,7 +92,8 @@ type Config struct {
 	Rules         map[string]*RuleConfig
 	Plugins       map[string]*PluginConfig
 
-	sources map[string][]byte
+	sources      map[string][]byte
+	isJSONConfig bool
 }
 
 // RuleConfig is a TFLint's rule config
@@ -136,11 +139,15 @@ func EmptyConfig() *Config {
 //
 // 1. file passed by the --config option
 // 2. file set by the TFLINT_CONFIG_FILE environment variable
-// 3. current directory (./.tflint.hcl)
-// 4. home directory (~/.tflint.hcl)
+// 3. current directory ./.tflint.hcl
+// 4. current directory ./.tflint.json
+// 5. home directory ~/.tflint.hcl
+// 6. home directory ~/.tflint.json
 //
-// For 1 and 2, if the file does not exist, an error will be returned immediately.
-// If 3 fails, fallback to 4, and If it fails, an empty configuration is returned.
+// Files are parsed as HCL or JSON based on their file extension.
+// JSON files use HCL-compatible JSON syntax, following Terraform's .tf.json conventions.
+// For steps 1-2, if the file does not exist, an error will be returned immediately.
+// For steps 3-6, each step is tried in order until a file is found or all fail.
 //
 // It also automatically enables bundled plugin if the "terraform"
 // plugin block is not explicitly declared.
@@ -174,7 +181,7 @@ func LoadConfig(fs afero.Afero, file string) (*Config, error) {
 		return cfg.enableBundledPlugin(), nil
 	}
 
-	// Load the default config file
+	// Load the default config file (prefer .hcl over .json)
 	log.Printf("[INFO] Load config: %s", defaultConfigFile)
 	if f, err := fs.Open(defaultConfigFile); err == nil {
 		cfg, err := loadConfig(f)
@@ -185,13 +192,39 @@ func LoadConfig(fs afero.Afero, file string) (*Config, error) {
 	}
 	log.Printf("[INFO] file not found")
 
-	// Load the fallback config file
+	// Try JSON config file if HCL not found
+	log.Printf("[INFO] Load config: %s", defaultConfigFileJSON)
+	if f, err := fs.Open(defaultConfigFileJSON); err == nil {
+		cfg, err := loadConfig(f)
+		if err != nil {
+			return nil, err
+		}
+		return cfg.enableBundledPlugin(), nil
+	}
+	log.Printf("[INFO] file not found")
+
+	// Load the fallback config file (prefer .hcl over .json)
 	fallback, err := homedir.Expand(fallbackConfigFile)
 	if err != nil {
 		return nil, err
 	}
 	log.Printf("[INFO] Load config: %s", fallback)
 	if f, err := fs.Open(fallback); err == nil {
+		cfg, err := loadConfig(f)
+		if err != nil {
+			return nil, err
+		}
+		return cfg.enableBundledPlugin(), nil
+	}
+	log.Printf("[INFO] file not found")
+
+	// Try JSON fallback config file if HCL not found
+	fallbackJSON, err := homedir.Expand(fallbackConfigFileJSON)
+	if err != nil {
+		return nil, err
+	}
+	log.Printf("[INFO] Load config: %s", fallbackJSON)
+	if f, err := fs.Open(fallbackJSON); err == nil {
 		cfg, err := loadConfig(f)
 		if err != nil {
 			return nil, err
@@ -212,7 +245,17 @@ func loadConfig(file afero.File) (*Config, error) {
 	}
 
 	parser := hclparse.NewParser()
-	f, diags := parser.ParseHCL(src, file.Name())
+	var f *hcl.File
+	var diags hcl.Diagnostics
+
+	// Parse based on file extension
+	switch {
+	case strings.HasSuffix(strings.ToLower(file.Name()), ".json"):
+		f, diags = parser.ParseJSON(src, file.Name())
+	default:
+		f, diags = parser.ParseHCL(src, file.Name())
+	}
+
 	if diags.HasErrors() {
 		return nil, diags
 	}
@@ -228,6 +271,8 @@ func loadConfig(file afero.File) (*Config, error) {
 
 	config := EmptyConfig()
 	config.sources = parser.Sources()
+	// Set the flag if this is a JSON config file
+	config.isJSONConfig = strings.HasSuffix(strings.ToLower(file.Name()), ".json")
 	for _, block := range content.Blocks {
 		switch block.Type {
 		case "tflint":
@@ -475,6 +520,11 @@ func (c *Config) enableBundledPlugin() *Config {
 		}
 	}
 	return c
+}
+
+// IsJSONConfig returns true if the configuration was loaded from a JSON file
+func (c *Config) IsJSONConfig() bool {
+	return c.isJSONConfig
 }
 
 // Sources returns parsed config file sources.

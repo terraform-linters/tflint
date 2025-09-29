@@ -4,10 +4,12 @@ You can change the behavior not only in CLI flags but also in config files. TFLi
 
 1. File passed by the `--config` option
 2. File set by the `TFLINT_CONFIG_FILE` environment variable
-3. Current directory (`./.tflint.hcl`)
-4. Home directory (`~/.tflint.hcl`)
+3. Current directory `./.tflint.hcl`
+4. Current directory `./.tflint.json`
+5. Home directory `~/.tflint.hcl`
+6. Home directory `~/.tflint.json`
 
-The config file is written in [HCL](https://github.com/hashicorp/hcl). An example is shown below:
+The config file can be written in either [HCL](https://github.com/hashicorp/hcl) or JSON format, determined by the file extension. JSON files use the [HCL-compatible JSON syntax](https://developer.hashicorp.com/terraform/language/syntax/json), following the same structure as Terraform's `.tf.json` files. An HCL example is shown below:
 
 ```hcl
 tflint {
@@ -42,10 +44,47 @@ rule "aws_instance_invalid_type" {
 }
 ```
 
+The same configuration can be written in JSON format as `.tflint.json`:
+
+```json
+{
+  "tflint": {
+    "required_version": ">= 0.50"
+  },
+  "config": {
+    "format": "compact",
+    "plugin_dir": "~/.tflint.d/plugins",
+    "call_module_type": "local",
+    "force": false,
+    "disabled_by_default": false,
+    "ignore_module": {
+      "terraform-aws-modules/vpc/aws": true,
+      "terraform-aws-modules/security-group/aws": true
+    },
+    "varfile": ["example1.tfvars", "example2.tfvars"],
+    "variables": ["foo=bar", "bar=[\"baz\"]"]
+  },
+  "plugin": {
+    "aws": {
+      "enabled": true,
+      "version": "0.4.0",
+      "source": "github.com/terraform-linters/tflint-ruleset-aws"
+    }
+  },
+  "rule": {
+    "aws_instance_invalid_type": {
+      "enabled": false
+    }
+  }
+}
+```
+
 The file path is resolved relative to the module directory when `--chdir` or `--recursive` is used. To use a config file from the working directory when recursing, pass an absolute path:
 
 ```sh
 tflint --recursive --config "$(pwd)/.tflint.hcl"
+# or
+tflint --recursive --config "$(pwd)/.tflint.json"
 ```
 
 ### `required_version`
