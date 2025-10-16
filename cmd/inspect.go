@@ -8,15 +8,12 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/tflint"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (cli *CLI) inspect(opts Options) int {
@@ -125,22 +122,10 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 		return issues, changes, err
 	}
 
-	// Check preconditions
-	sdkVersions := map[string]*version.Version{}
-	for name, ruleset := range rulesetPlugin.RuleSets {
-		sdkVersion, err := ruleset.SDKVersion()
-		if err != nil {
-			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
-				// SDKVersion endpoint is available in tflint-plugin-sdk v0.14+.
-				return issues, changes, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
-			} else {
-				return issues, changes, fmt.Errorf(`Failed to get plugin "%s" SDK version; %w`, name, err)
-			}
-		}
-		if !plugin.SDKVersionConstraints.Check(sdkVersion) {
-			return issues, changes, fmt.Errorf(`Plugin "%s" SDK version (%s) is incompatible. Compatible versions: %s`, name, sdkVersion, plugin.SDKVersionConstraints)
-		}
-		sdkVersions[name] = sdkVersion
+	// Validate and collect plugin versions
+	sdkVersions, err := plugin.ValidatePluginVersions(rulesetPlugin, cli.config.IsJSONConfig())
+	if err != nil {
+		return issues, changes, err
 	}
 
 	// Run inspection
@@ -265,19 +250,20 @@ func launchPlugins(config *tflint.Config, fix bool) (*plugin.Plugin, error) {
 	pluginConf := config.ToPluginConfig()
 	pluginConf.Fix = fix
 
-	// Check version constraints and apply a config to plugins
+	// Apply config to plugins
 	for name, ruleset := range rulesetPlugin.RuleSets {
+		// Check TFLint version constraints before applying config
 		constraints, err := ruleset.VersionConstraints()
 		if err != nil {
-			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
+			if plugin.IsVersionConstraintsUnimplemented(err) {
 				// VersionConstraints endpoint is available in tflint-plugin-sdk v0.14+.
-				return rulesetPlugin, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
-			} else {
-				return rulesetPlugin, fmt.Errorf(`Failed to get TFLint version constraints to "%s" plugin; %w`, name, err)
+				// Plugin is too old
+				return rulesetPlugin, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.DefaultSDKVersionConstraints)
 			}
+			return rulesetPlugin, fmt.Errorf(`Failed to get TFLint version constraints to "%s" plugin; %w`, name, err)
 		}
-		if !constraints.Check(tflint.Version) {
-			return rulesetPlugin, fmt.Errorf("Failed to satisfy version constraints; tflint-ruleset-%s requires %s, but TFLint version is %s", name, constraints, tflint.Version)
+		if err := plugin.CheckTFLintVersionConstraints(name, constraints); err != nil {
+			return rulesetPlugin, err
 		}
 
 		if err := ruleset.ApplyGlobalConfig(pluginConf); err != nil {

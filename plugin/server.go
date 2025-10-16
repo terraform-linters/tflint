@@ -146,7 +146,7 @@ func (s *GRPCServer) EvaluateExpr(expr hcl.Expression, opts sdk.EvaluateExprOpti
 
 	// If an ephemeral mark is contained, cty.Value will not be returned
 	// unless the plugin is built with SDK 0.22+ which supports ephemeral marks.
-	if !marks.Contains(val, marks.Ephemeral) || s.clientSDKVersion.GreaterThanOrEqual(version.Must(version.NewVersion("0.22.0"))) {
+	if !marks.Contains(val, marks.Ephemeral) || SupportsEphemeralMarks(s.clientSDKVersion) {
 		return val, nil
 	}
 
