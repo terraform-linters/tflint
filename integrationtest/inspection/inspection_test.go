@@ -1,4 +1,4 @@
-package inspection
+package main
 
 import (
 	"bytes"
