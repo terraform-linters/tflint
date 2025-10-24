@@ -5,6 +5,7 @@ import (
 	"log"
 	"maps"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/hashicorp/go-version"
@@ -92,8 +93,8 @@ type Config struct {
 	Rules         map[string]*RuleConfig
 	Plugins       map[string]*PluginConfig
 
-	sources      map[string][]byte
-	isJSONConfig bool
+	sources    map[string][]byte
+	configPath string
 }
 
 // RuleConfig is a TFLint's rule config
@@ -244,13 +245,16 @@ func loadConfig(file afero.File) (*Config, error) {
 		return nil, err
 	}
 
+	config := EmptyConfig()
+	config.configPath = file.Name()
+
 	parser := hclparse.NewParser()
 	var f *hcl.File
 	var diags hcl.Diagnostics
 
 	// Parse based on file extension
-	switch {
-	case strings.HasSuffix(strings.ToLower(file.Name()), ".json"):
+	switch filepath.Ext(file.Name()) {
+	case ".json":
 		f, diags = parser.ParseJSON(src, file.Name())
 	default:
 		f, diags = parser.ParseHCL(src, file.Name())
@@ -269,10 +273,7 @@ func loadConfig(file afero.File) (*Config, error) {
 		return nil, diags
 	}
 
-	config := EmptyConfig()
 	config.sources = parser.Sources()
-	// Set the flag if this is a JSON config file
-	config.isJSONConfig = strings.HasSuffix(strings.ToLower(file.Name()), ".json")
 	for _, block := range content.Blocks {
 		switch block.Type {
 		case "tflint":
@@ -524,7 +525,7 @@ func (c *Config) enableBundledPlugin() *Config {
 
 // IsJSONConfig returns true if the configuration was loaded from a JSON file
 func (c *Config) IsJSONConfig() bool {
-	return c.isJSONConfig
+	return filepath.Ext(c.configPath) == ".json"
 }
 
 // Sources returns parsed config file sources.
