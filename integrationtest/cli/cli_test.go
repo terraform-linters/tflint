@@ -36,6 +36,13 @@ func TestIntegration(t *testing.T) {
 			stdout:  fmt.Sprintf("TFLint version %s", tflint.Version),
 		},
 		{
+			name:    "print version with plugins in alphabetical order",
+			command: "./tflint --version",
+			dir:     "version_ordering",
+			status:  cmd.ExitCodeOK,
+			stdout:  "ruleset.bar (0.1.0)\n+ ruleset.foo (0.1.0)",
+		},
+		{
 			name:    "print help",
 			command: "./tflint --help",
 			dir:     "no_issues",
