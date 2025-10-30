@@ -1,0 +1,1 @@
+../../../plugin/test-fixtures/locals/.tflint.d

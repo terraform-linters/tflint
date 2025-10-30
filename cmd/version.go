@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"maps"
+	"slices"
 
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint/plugin"
@@ -63,9 +65,13 @@ func getPluginVersions(opts Options) []string {
 	}
 	defer rulesetPlugin.Clean()
 
+	// Sort ruleset names to ensure consistent ordering
+	rulesetNames := slices.Sorted(maps.Keys(rulesetPlugin.RuleSets))
+
 	versions := []string{}
-	for _, ruleset := range rulesetPlugin.RuleSets {
-		name, err := ruleset.RuleSetName()
+	for _, name := range rulesetNames {
+		ruleset := rulesetPlugin.RuleSets[name]
+		rulesetName, err := ruleset.RuleSetName()
 		if err != nil {
 			log.Printf("[ERROR] Failed to get ruleset name: %s", err)
 			continue
@@ -76,7 +82,7 @@ func getPluginVersions(opts Options) []string {
 			continue
 		}
 
-		versions = append(versions, fmt.Sprintf("+ ruleset.%s (%s)\n", name, version))
+		versions = append(versions, fmt.Sprintf("+ ruleset.%s (%s)\n", rulesetName, version))
 	}
 
 	return versions
