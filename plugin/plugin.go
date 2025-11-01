@@ -2,7 +2,6 @@ package plugin
 
 import (
 	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/go-version"
 	"github.com/terraform-linters/tflint-plugin-sdk/plugin/host2plugin"
 )
 
@@ -12,9 +11,6 @@ var (
 	PluginRoot      = "~/.tflint.d/plugins"
 	localPluginRoot = "./.tflint.d/plugins"
 )
-
-// SDKVersionConstraints is the version constraint of the supported SDK version.
-var SDKVersionConstraints = version.MustConstraints(version.NewConstraint(">= 0.16.0"))
 
 // Plugin is an object handling plugins
 // Basically, it is a wrapper for go-plugin and provides an API to handle them collectively.
