@@ -49,7 +49,10 @@ gh attestation verify checksums.txt -R terraform-linters/tflint
 sha256sum --ignore-missing -c checksums.txt
 ```
 
-#### Cosign
+#### Cosign (Deprecated)
+
+> [!WARNING]
+> Cosign signatures are now deprecated. Please use GitHub CLI.
 
 [Cosign](https://github.com/sigstore/cosign) `verify-blob` command ensures that the release was built with GitHub Actions in this repository.
 
