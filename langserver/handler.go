@@ -21,8 +21,6 @@ import (
 	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/tflint"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 // NewHandler returns a new JSON-RPC handler
@@ -48,29 +46,34 @@ func NewHandler(configPath string, cliConfig *tflint.Config) (jsonrpc2.Handler, 
 	for name, ruleset := range rulsetPlugin.RuleSets {
 		constraints, err := ruleset.VersionConstraints()
 		if err != nil {
-			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
+			if plugin.IsVersionConstraintsUnimplemented(err) {
 				// VersionConstraints endpoint is available in tflint-plugin-sdk v0.14+.
-				return nil, nil, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
+				return nil, nil, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.DefaultSDKVersionConstraints)
 			} else {
 				return nil, nil, fmt.Errorf(`Failed to get TFLint version constraints to "%s" plugin; %w`, name, err)
 			}
 		}
-		if !constraints.Check(tflint.Version) {
-			return nil, nil, fmt.Errorf("Failed to satisfy version constraints; tflint-ruleset-%s requires %s, but TFLint version is %s", name, constraints, tflint.Version)
+		if err := plugin.CheckTFLintVersionConstraints(name, constraints); err != nil {
+			return nil, nil, err
 		}
 
-		clientSDKVersions[name], err = ruleset.SDKVersion()
+		sdkVersion, err := ruleset.SDKVersion()
 		if err != nil {
-			if st, ok := status.FromError(err); ok && st.Code() == codes.Unimplemented {
+			if plugin.IsSDKVersionUnimplemented(err) {
 				// SDKVersion endpoint is available in tflint-plugin-sdk v0.14+.
-				return nil, nil, fmt.Errorf(`Plugin "%s" SDK version is incompatible. Compatible versions: %s`, name, plugin.SDKVersionConstraints)
+				// Plugin is too old, treat as nil
+				sdkVersion = nil
 			} else {
 				return nil, nil, fmt.Errorf(`Failed to get plugin "%s" SDK version; %w`, name, err)
 			}
 		}
-		if !plugin.SDKVersionConstraints.Check(clientSDKVersions[name]) {
-			return nil, nil, fmt.Errorf(`Plugin "%s" SDK version (%s) is incompatible. Compatible versions: %s`, name, clientSDKVersions[name], plugin.SDKVersionConstraints)
+
+		// Check if plugin SDK version meets minimum requirements for the config type
+		if err := plugin.CheckSDKVersionSatisfiesConstraints(name, sdkVersion, cfg.IsJSONConfig()); err != nil {
+			return nil, nil, err
 		}
+
+		clientSDKVersions[name] = sdkVersion
 
 		rulesets = append(rulesets, ruleset)
 	}
