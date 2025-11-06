@@ -2,8 +2,13 @@ package formatter
 
 import (
 	"encoding/xml"
+	"errors"
 	"fmt"
+	"slices"
+	"strings"
 
+	hcl "github.com/hashicorp/hcl/v2"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -53,9 +58,38 @@ func (f *Formatter) checkstylePrint(issues tflint.Issues, appErr error, sources 
 		}
 	}
 
+	for _, cherr := range f.checkstyleErrors(appErr) {
+		filename := cherr.Source
+		if filename == "" {
+			filename = "(application)"
+		}
+		if file, exists := files[filename]; exists {
+			file.Errors = append(file.Errors, cherr)
+		} else {
+			files[filename] = &checkstyleFile{
+				Name:   filename,
+				Errors: []*checkstyleError{cherr},
+			}
+		}
+	}
+
+	filenames := make([]string, 0, len(files))
+	for filename := range files {
+		filenames = append(filenames, filename)
+	}
+	slices.SortFunc(filenames, func(a, b string) int {
+		if a == "(application)" {
+			return -1
+		}
+		if b == "(application)" {
+			return 1
+		}
+		return strings.Compare(a, b)
+	})
+
 	ret := &checkstyle{}
-	for _, file := range files {
-		ret.Files = append(ret.Files, file)
+	for _, filename := range filenames {
+		ret.Files = append(ret.Files, files[filename])
 	}
 
 	out, err := xml.MarshalIndent(ret, "", "  ")
@@ -64,8 +98,42 @@ func (f *Formatter) checkstylePrint(issues tflint.Issues, appErr error, sources 
 	}
 	fmt.Fprint(f.Stdout, xml.Header)
 	fmt.Fprint(f.Stdout, string(out))
+}
 
-	if appErr != nil {
-		f.prettyPrintErrors(appErr, sources, false)
+func (f *Formatter) checkstyleErrors(err error) []*checkstyleError {
+	if err == nil {
+		return []*checkstyleError{}
 	}
+
+	// errors.Join
+	if errs, ok := err.(interface{ Unwrap() []error }); ok {
+		ret := []*checkstyleError{}
+		for _, err := range errs.Unwrap() {
+			ret = append(ret, f.checkstyleErrors(err)...)
+		}
+		return ret
+	}
+
+	// hcl.Diagnostics
+	var diags hcl.Diagnostics
+	if errors.As(err, &diags) {
+		ret := make([]*checkstyleError, len(diags))
+		for idx, diag := range diags {
+			ret[idx] = &checkstyleError{
+				Source:   diag.Summary,
+				Line:     diag.Subject.Start.Line,
+				Column:   diag.Subject.Start.Column,
+				Severity: fromHclSeverity(diag.Severity),
+				Message:  diag.Detail,
+			}
+		}
+		return ret
+	}
+
+	return []*checkstyleError{{
+		Source:   "(application)",
+		Severity: toSeverity(sdk.ERROR),
+		Message:  err.Error(),
+		Rule:     "(application)",
+	}}
 }
