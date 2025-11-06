@@ -2,7 +2,6 @@ package formatter
 
 import (
 	"encoding/xml"
-	"errors"
 	"fmt"
 	"slices"
 	"strings"
@@ -101,39 +100,23 @@ func (f *Formatter) checkstylePrint(issues tflint.Issues, appErr error, sources 
 }
 
 func (f *Formatter) checkstyleErrors(err error) []*checkstyleError {
-	if err == nil {
-		return []*checkstyleError{}
-	}
-
-	// errors.Join
-	if errs, ok := err.(interface{ Unwrap() []error }); ok {
-		ret := []*checkstyleError{}
-		for _, err := range errs.Unwrap() {
-			ret = append(ret, f.checkstyleErrors(err)...)
-		}
-		return ret
-	}
-
-	// hcl.Diagnostics
-	var diags hcl.Diagnostics
-	if errors.As(err, &diags) {
-		ret := make([]*checkstyleError, len(diags))
-		for idx, diag := range diags {
-			ret[idx] = &checkstyleError{
+	return mapErrors(err, errorMapper[*checkstyleError]{
+		diagnostic: func(diag *hcl.Diagnostic) *checkstyleError {
+			return &checkstyleError{
 				Source:   diag.Summary,
 				Line:     diag.Subject.Start.Line,
 				Column:   diag.Subject.Start.Column,
 				Severity: fromHclSeverity(diag.Severity),
 				Message:  diag.Detail,
 			}
-		}
-		return ret
-	}
-
-	return []*checkstyleError{{
-		Source:   "(application)",
-		Severity: toSeverity(sdk.ERROR),
-		Message:  err.Error(),
-		Rule:     "(application)",
-	}}
+		},
+		error: func(err error) *checkstyleError {
+			return &checkstyleError{
+				Source:   "(application)",
+				Severity: toSeverity(sdk.ERROR),
+				Message:  err.Error(),
+				Rule:     "(application)",
+			}
+		},
+	})
 }

@@ -2,7 +2,6 @@ package formatter
 
 import (
 	"encoding/xml"
-	"errors"
 	"fmt"
 
 	hcl "github.com/hashicorp/hcl/v2"
@@ -59,25 +58,9 @@ func (f *Formatter) junitPrint(issues tflint.Issues, appErr error, sources map[s
 }
 
 func (f *Formatter) junitErrors(err error) []formatter.JUnitTestCase {
-	if err == nil {
-		return []formatter.JUnitTestCase{}
-	}
-
-	// errors.Join
-	if errs, ok := err.(interface{ Unwrap() []error }); ok {
-		ret := []formatter.JUnitTestCase{}
-		for _, err := range errs.Unwrap() {
-			ret = append(ret, f.junitErrors(err)...)
-		}
-		return ret
-	}
-
-	// hcl.Diagnostics
-	var diags hcl.Diagnostics
-	if errors.As(err, &diags) {
-		ret := make([]formatter.JUnitTestCase, len(diags))
-		for idx, diag := range diags {
-			ret[idx] = formatter.JUnitTestCase{
+	return mapErrors(err, errorMapper[formatter.JUnitTestCase]{
+		diagnostic: func(diag *hcl.Diagnostic) formatter.JUnitTestCase {
+			return formatter.JUnitTestCase{
 				Name:      diag.Summary,
 				Classname: diag.Subject.Filename,
 				Time:      "0",
@@ -104,18 +87,18 @@ func (f *Formatter) junitErrors(err error) []formatter.JUnitTestCase {
 					),
 				},
 			}
-		}
-		return ret
-	}
-
-	return []formatter.JUnitTestCase{{
-		Name:      "application_error",
-		Classname: "(application)",
-		Time:      "0",
-		Failure: &formatter.JUnitFailure{
-			Message:  err.Error(),
-			Type:     toSeverity(sdk.ERROR),
-			Contents: fmt.Sprintf("Error: %s", err.Error()),
 		},
-	}}
+		error: func(err error) formatter.JUnitTestCase {
+			return formatter.JUnitTestCase{
+				Name:      "application_error",
+				Classname: "(application)",
+				Time:      "0",
+				Failure: &formatter.JUnitFailure{
+					Message:  err.Error(),
+					Type:     toSeverity(sdk.ERROR),
+					Contents: fmt.Sprintf("Error: %s", err.Error()),
+				},
+			}
+		},
+	})
 }
