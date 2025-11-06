@@ -60,7 +60,7 @@ func (f *Formatter) checkstylePrint(issues tflint.Issues, appErr error, sources 
 	for _, cherr := range f.checkstyleErrors(appErr) {
 		filename := cherr.Source
 		if filename == "" {
-			filename = "(application)"
+			filename = applicationErrorSource
 		}
 		if file, exists := files[filename]; exists {
 			file.Errors = append(file.Errors, cherr)
@@ -77,10 +77,10 @@ func (f *Formatter) checkstylePrint(issues tflint.Issues, appErr error, sources 
 		filenames = append(filenames, filename)
 	}
 	slices.SortFunc(filenames, func(a, b string) int {
-		if a == "(application)" {
+		if a == applicationErrorSource {
 			return -1
 		}
-		if b == "(application)" {
+		if b == applicationErrorSource {
 			return 1
 		}
 		return strings.Compare(a, b)
@@ -112,10 +112,10 @@ func (f *Formatter) checkstyleErrors(err error) []*checkstyleError {
 		},
 		error: func(err error) *checkstyleError {
 			return &checkstyleError{
-				Source:   "(application)",
+				Source:   applicationErrorSource,
 				Severity: toSeverity(sdk.ERROR),
 				Message:  err.Error(),
-				Rule:     "(application)",
+				Rule:     applicationErrorSource,
 			}
 		},
 	})

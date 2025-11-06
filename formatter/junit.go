@@ -91,7 +91,7 @@ func (f *Formatter) junitErrors(err error) []formatter.JUnitTestCase {
 		error: func(err error) formatter.JUnitTestCase {
 			return formatter.JUnitTestCase{
 				Name:      "application_error",
-				Classname: "(application)",
+				Classname: applicationErrorSource,
 				Time:      "0",
 				Failure: &formatter.JUnitFailure{
 					Message:  err.Error(),
