@@ -3,7 +3,11 @@ package formatter
 import (
 	"encoding/xml"
 	"fmt"
+	"slices"
+	"strings"
 
+	hcl "github.com/hashicorp/hcl/v2"
+	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -53,9 +57,38 @@ func (f *Formatter) checkstylePrint(issues tflint.Issues, appErr error, sources 
 		}
 	}
 
+	for _, cherr := range f.checkstyleErrors(appErr) {
+		filename := cherr.Source
+		if filename == "" {
+			filename = applicationErrorSource
+		}
+		if file, exists := files[filename]; exists {
+			file.Errors = append(file.Errors, cherr)
+		} else {
+			files[filename] = &checkstyleFile{
+				Name:   filename,
+				Errors: []*checkstyleError{cherr},
+			}
+		}
+	}
+
+	filenames := make([]string, 0, len(files))
+	for filename := range files {
+		filenames = append(filenames, filename)
+	}
+	slices.SortFunc(filenames, func(a, b string) int {
+		if a == applicationErrorSource {
+			return -1
+		}
+		if b == applicationErrorSource {
+			return 1
+		}
+		return strings.Compare(a, b)
+	})
+
 	ret := &checkstyle{}
-	for _, file := range files {
-		ret.Files = append(ret.Files, file)
+	for _, filename := range filenames {
+		ret.Files = append(ret.Files, files[filename])
 	}
 
 	out, err := xml.MarshalIndent(ret, "", "  ")
@@ -64,8 +97,26 @@ func (f *Formatter) checkstylePrint(issues tflint.Issues, appErr error, sources 
 	}
 	fmt.Fprint(f.Stdout, xml.Header)
 	fmt.Fprint(f.Stdout, string(out))
+}
 
-	if appErr != nil {
-		f.prettyPrintErrors(appErr, sources, false)
-	}
+func (f *Formatter) checkstyleErrors(err error) []*checkstyleError {
+	return mapErrors(err, errorMapper[*checkstyleError]{
+		diagnostic: func(diag *hcl.Diagnostic) *checkstyleError {
+			return &checkstyleError{
+				Source:   diag.Summary,
+				Line:     diag.Subject.Start.Line,
+				Column:   diag.Subject.Start.Column,
+				Severity: fromHclSeverity(diag.Severity),
+				Message:  diag.Detail,
+			}
+		},
+		error: func(err error) *checkstyleError {
+			return &checkstyleError{
+				Source:   applicationErrorSource,
+				Severity: toSeverity(sdk.ERROR),
+				Message:  err.Error(),
+				Rule:     applicationErrorSource,
+			}
+		},
+	})
 }

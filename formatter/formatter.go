@@ -11,6 +11,8 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
+const applicationErrorSource = "(application)"
+
 // Formatter outputs appropriate results to stdout and stderr depending on the format
 type Formatter struct {
 	Stdout  io.Writer

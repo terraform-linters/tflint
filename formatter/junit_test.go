@@ -2,6 +2,7 @@ package formatter
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -45,6 +46,47 @@ func Test_junitPrint(t *testing.T) {
     <properties></properties>
     <testcase classname="test.tf" name="test_rule" time="0">
       <failure message="test.tf:1,1-4: issue message" type="Error">Error: issue message&#xA;Rule: test_rule&#xA;Range: test.tf:1,1-4</failure>
+    </testcase>
+  </testsuite>
+</testsuites>`,
+		},
+		{
+			Name:   "error only",
+			Issues: tflint.Issues{},
+			Error:  fmt.Errorf("Failed to check ruleset"),
+			Stdout: `<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite tests="1" failures="1" time="0" name="">
+    <properties></properties>
+    <testcase classname="(application)" name="application_error" time="0">
+      <failure message="Failed to check ruleset" type="error">Error: Failed to check ruleset</failure>
+    </testcase>
+  </testsuite>
+</testsuites>`,
+		},
+		{
+			Name: "issues and errors",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRule{},
+					Message: "issue message",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+					},
+				},
+			},
+			Error: fmt.Errorf("Failed to check ruleset"),
+			Stdout: `<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite tests="2" failures="2" time="0" name="">
+    <properties></properties>
+    <testcase classname="test.tf" name="test_rule" time="0">
+      <failure message="test.tf:1,1-4: issue message" type="Error">Error: issue message&#xA;Rule: test_rule&#xA;Range: test.tf:1,1-4</failure>
+    </testcase>
+    <testcase classname="(application)" name="application_error" time="0">
+      <failure message="Failed to check ruleset" type="error">Error: Failed to check ruleset</failure>
     </testcase>
   </testsuite>
 </testsuites>`,

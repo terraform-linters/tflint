@@ -2,7 +2,6 @@ package formatter
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/hashicorp/hcl/v2"
@@ -91,25 +90,9 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, appErr error) {
 }
 
 func (f *Formatter) jsonErrors(err error) []JSONError {
-	if err == nil {
-		return []JSONError{}
-	}
-
-	// errors.Join
-	if errs, ok := err.(interface{ Unwrap() []error }); ok {
-		ret := []JSONError{}
-		for _, err := range errs.Unwrap() {
-			ret = append(ret, f.jsonErrors(err)...)
-		}
-		return ret
-	}
-
-	// hcl.Diagnostics
-	var diags hcl.Diagnostics
-	if errors.As(err, &diags) {
-		ret := make([]JSONError, len(diags))
-		for idx, diag := range diags {
-			ret[idx] = JSONError{
+	return mapErrors(err, errorMapper[JSONError]{
+		diagnostic: func(diag *hcl.Diagnostic) JSONError {
+			return JSONError{
 				Severity: fromHclSeverity(diag.Severity),
 				Summary:  diag.Summary,
 				Message:  diag.Detail,
@@ -119,12 +102,12 @@ func (f *Formatter) jsonErrors(err error) []JSONError {
 					End:      JSONPos{Line: diag.Subject.End.Line, Column: diag.Subject.End.Column},
 				},
 			}
-		}
-		return ret
-	}
-
-	return []JSONError{{
-		Severity: toSeverity(sdk.ERROR),
-		Message:  err.Error(),
-	}}
+		},
+		error: func(err error) JSONError {
+			return JSONError{
+				Severity: toSeverity(sdk.ERROR),
+				Message:  err.Error(),
+			}
+		},
+	})
 }
