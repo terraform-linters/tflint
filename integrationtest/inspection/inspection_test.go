@@ -210,6 +210,14 @@ func TestIntegration(t *testing.T) {
 			Command: "tflint --format json",
 			Dir:     "functions",
 		},
+		{
+			Name:    "child module with environment variables",
+			Command: "tflint --format json",
+			Env: map[string]string{
+				"TF_VAR_environment": "prod",
+			},
+			Dir: "child-module-env-vars",
+		},
 	}
 
 	// Disable the bundled plugin because the `os.Executable()` is go(1) in the tests

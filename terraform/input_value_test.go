@@ -292,7 +292,7 @@ func TestVariableValues(t *testing.T) {
 				"module.child1.module.child2": {
 					"a": cty.StringVal("input2"),
 					"b": cty.StringVal("input1"),
-					"c": cty.StringVal("env"),
+					"c": cty.StringVal("config"), // Environment variables don't apply to child modules
 					"d": cty.StringVal("config"),
 				},
 			},
