@@ -148,10 +148,21 @@ func VariableValues(config *Config, values ...InputValues) (map[string]map[strin
 	variableValues[moduleKey] = make(map[string]cty.Value)
 
 	variables := DefaultVariableValues(config.Module.Variables)
-	envVars, diags := EnvironmentVariableValues(config.Module.Variables)
-	if diags.HasErrors() {
-		return variableValues, diags
+
+	// Environment variables should only be processed for the root module.
+	// Child modules receive their variable values explicitly through module calls.
+	var envVars InputValues
+	var diags hcl.Diagnostics
+	if config.Path.IsRoot() {
+		log.Printf("[DEBUG] Processing environment variables for root module")
+		envVars, diags = EnvironmentVariableValues(config.Module.Variables)
+		if diags.HasErrors() {
+			return variableValues, diags
+		}
+	} else {
+		log.Printf("[DEBUG] Skipping environment variables for child module: %s", config.Path.String())
 	}
+
 	overrideVariables := variables.Override(envVars).Override(values...)
 
 	for k, iv := range overrideVariables {
