@@ -8,6 +8,8 @@ Below is a list of environment variables available in TFLint.
   - Configure the config file path. See [Configuring TFLint](./config.md).
 - `TFLINT_PLUGIN_DIR`
   - Configure the plugin directory. See [Configuring Plugins](./plugins.md).
+- `TFLINT_DISABLE_VERSION_CHECK`
+  - Disable version update notifications when running `tflint --version`. Set to `1`, `true`, or `yes` to disable.
 - `TFLINT_EXPERIMENTAL`
   - Enable experimental features. Note that experimental features are subject to change without notice. Currently only [Keyless Verification](./plugins.md#keyless-verification-experimental) are supported.
 - `TF_VAR_name`
