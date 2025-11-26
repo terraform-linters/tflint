@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	// CacheTTL is how long cached version info is considered valid (matches checkpoint's 48-hour default)
+	// CacheTTL is how long cached version info is considered valid
 	CacheTTL = 48 * time.Hour
 )
 
