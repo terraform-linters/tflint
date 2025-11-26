@@ -18,14 +18,22 @@ const (
 
 // fetchLatestRelease fetches the latest release version from GitHub
 func fetchLatestRelease(ctx context.Context) (string, error) {
+	return fetchLatestReleaseWithClient(ctx, nil)
+}
+
+// fetchLatestReleaseWithClient fetches the latest release version from GitHub using a custom HTTP client
+// If httpClient is nil, creates a default client with optional GITHUB_TOKEN authentication
+func fetchLatestReleaseWithClient(ctx context.Context, httpClient *http.Client) (string, error) {
 	// Create GitHub client with optional authentication
-	hc := &http.Client{Transport: http.DefaultTransport}
-	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
-		hc = oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{
-			AccessToken: token,
-		}))
+	if httpClient == nil {
+		httpClient = &http.Client{Transport: http.DefaultTransport}
+		if token := os.Getenv("GITHUB_TOKEN"); token != "" {
+			httpClient = oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{
+				AccessToken: token,
+			}))
+		}
 	}
-	client := github.NewClient(hc)
+	client := github.NewClient(httpClient)
 
 	log.Printf("[DEBUG] Fetching latest release from GitHub API")
 	release, resp, err := client.Repositories.GetLatestRelease(ctx, repoOwner, repoName)

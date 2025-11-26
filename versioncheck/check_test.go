@@ -28,6 +28,41 @@ func TestEnabled(t *testing.T) {
 			envValue: "invalid",
 			want:     true,
 		},
+		{
+			name:     "disabled with 0",
+			envValue: "0",
+			want:     true,
+		},
+		{
+			name:     "disabled with true",
+			envValue: "true",
+			want:     false,
+		},
+		{
+			name:     "disabled with True",
+			envValue: "True",
+			want:     false,
+		},
+		{
+			name:     "disabled with TRUE",
+			envValue: "TRUE",
+			want:     false,
+		},
+		{
+			name:     "enabled with false",
+			envValue: "false",
+			want:     true,
+		},
+		{
+			name:     "enabled with False",
+			envValue: "False",
+			want:     true,
+		},
+		{
+			name:     "enabled with FALSE",
+			envValue: "FALSE",
+			want:     true,
+		},
 	}
 
 	for _, tt := range tests {
@@ -92,6 +127,13 @@ func TestCompareVersions(t *testing.T) {
 			wantAvailable: false,
 			wantError:     true,
 		},
+		{
+			name:          "current newer than latest",
+			current:       "0.61.0",
+			latest:        "0.60.0",
+			wantAvailable: false,
+			wantError:     false,
+		},
 	}
 
 	for _, tt := range tests {
@@ -110,7 +152,7 @@ func TestCompareVersions(t *testing.T) {
 				}
 
 				expectedLatest := tt.latest
-				if expectedLatest[0] == 'v' {
+				if len(expectedLatest) > 0 && expectedLatest[0] == 'v' {
 					expectedLatest = expectedLatest[1:]
 				}
 				if got.Latest != expectedLatest {

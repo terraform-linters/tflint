@@ -34,7 +34,6 @@ func Enabled() bool {
 
 // CheckForUpdate checks if a new version of tflint is available
 // It returns UpdateInfo indicating if an update is available and the latest version string
-// Errors are logged but not returned - failures should not break the version command
 func CheckForUpdate(ctx context.Context, current *version.Version) (*UpdateInfo, error) {
 
 	// Try to load from cache first
