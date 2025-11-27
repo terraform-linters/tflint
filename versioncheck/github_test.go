@@ -71,7 +71,7 @@ func TestFetchLatestReleaseWithClient(t *testing.T) {
 
 				w.WriteHeader(tt.statusCode)
 				if tt.response != nil {
-					json.NewEncoder(w).Encode(tt.response)
+					_ = json.NewEncoder(w).Encode(tt.response)
 				}
 			}))
 			defer server.Close()
