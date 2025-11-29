@@ -21,10 +21,11 @@ const (
 
 // VersionOutput is the JSON output structure for version command
 type VersionOutput struct {
-	Version         string          `json:"version"`
-	Plugins         []PluginVersion `json:"plugins"`
-	UpdateAvailable bool            `json:"update_available"`
-	LatestVersion   string          `json:"latest_version,omitempty"`
+	Version            string          `json:"version"`
+	Plugins            []PluginVersion `json:"plugins"`
+	UpdateCheckEnabled bool            `json:"update_check_enabled"`
+	UpdateAvailable    bool            `json:"update_available"`
+	LatestVersion      string          `json:"latest_version,omitempty"`
 }
 
 // PluginVersion represents a plugin's name and version
@@ -34,34 +35,42 @@ type PluginVersion struct {
 }
 
 func (cli *CLI) printVersion(opts Options) int {
-	// Check for updates (unless disabled)
-	var updateInfo *versioncheck.UpdateInfo
-	if versioncheck.Enabled() {
-		ctx, cancel := context.WithTimeout(context.Background(), versionCheckTimeout)
-		defer cancel()
-
-		info, err := versioncheck.CheckForUpdate(ctx, tflint.Version)
-		if err != nil {
-			log.Printf("[ERROR] Failed to check for updates: %s", err)
-		} else {
-			updateInfo = info
-		}
-	}
-
-	// If JSON format requested, output JSON
+	// For JSON format: perform synchronous version check
 	if opts.Format == "json" {
+		var updateInfo *versioncheck.UpdateInfo
+		if versioncheck.Enabled() {
+			ctx, cancel := context.WithTimeout(context.Background(), versionCheckTimeout)
+			defer cancel()
+
+			info, err := versioncheck.CheckForUpdate(ctx, tflint.Version)
+			if err != nil {
+				log.Printf("[ERROR] Failed to check for updates: %s", err)
+			} else {
+				updateInfo = info
+			}
+		}
 		return cli.printVersionJSON(opts, updateInfo)
 	}
 
-	// Print version
-	fmt.Fprintf(cli.outStream, "TFLint version %s\n", tflint.Version)
+	// For text format: start async version check
+	var updateChan chan *versioncheck.UpdateInfo
+	if versioncheck.Enabled() {
+		updateChan = make(chan *versioncheck.UpdateInfo, 1)
+		go func() {
+			ctx, cancel := context.WithTimeout(context.Background(), versionCheckTimeout)
+			defer cancel()
 
-	// Print update notification if available
-	if updateInfo != nil && updateInfo.Available {
-		fmt.Fprintf(cli.outStream, "\n")
-		fmt.Fprintf(cli.outStream, "Your version of TFLint is out of date! The latest version\n")
-		fmt.Fprintf(cli.outStream, "is %s. You can update by downloading from https://github.com/terraform-linters/tflint/releases\n", updateInfo.Latest)
+			info, err := versioncheck.CheckForUpdate(ctx, tflint.Version)
+			if err != nil {
+				log.Printf("[ERROR] Failed to check for updates: %s", err)
+			}
+			updateChan <- info
+			close(updateChan)
+		}()
 	}
+
+	// Print version immediately
+	fmt.Fprintf(cli.outStream, "TFLint version %s\n", tflint.Version)
 
 	workingDirs, err := findWorkingDirs(opts)
 	if err != nil {
@@ -95,14 +104,23 @@ func (cli *CLI) printVersion(opts Options) int {
 		}
 	}
 
+	// Wait for update check to complete and print notification if available
+	if updateChan != nil {
+		updateInfo := <-updateChan
+		if updateInfo != nil && updateInfo.Available {
+			fmt.Fprintf(cli.outStream, "\nYour version of TFLint is out of date! The latest version\nis %s. You can update by downloading from https://github.com/terraform-linters/tflint/releases\n", updateInfo.Latest)
+		}
+	}
+
 	return ExitCodeOK
 }
 
 func (cli *CLI) printVersionJSON(opts Options, updateInfo *versioncheck.UpdateInfo) int {
 	// Build output
 	output := VersionOutput{
-		Version: tflint.Version.String(),
-		Plugins: getPluginVersions(opts),
+		Version:            tflint.Version.String(),
+		Plugins:            getPluginVersions(opts),
+		UpdateCheckEnabled: versioncheck.Enabled(),
 	}
 
 	if updateInfo != nil {

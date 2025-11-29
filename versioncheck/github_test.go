@@ -76,11 +76,6 @@ func TestFetchLatestReleaseWithClient(t *testing.T) {
 			}))
 			defer server.Close()
 
-			client := &http.Client{Transport: http.DefaultTransport}
-			ghClient := github.NewClient(client)
-			serverURL, _ := url.Parse(server.URL + "/")
-			ghClient.BaseURL = serverURL
-
 			// Create a custom client that points to our test server
 			testClient := &http.Client{
 				Transport: &testTransport{
