@@ -1,7 +1,6 @@
 package versioncheck
 
 import (
-	"os"
 	"testing"
 
 	"github.com/hashicorp/go-version"
@@ -67,20 +66,8 @@ func TestEnabled(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Save and restore original env
-			original := os.Getenv("TFLINT_DISABLE_VERSION_CHECK")
-			defer func() {
-				if original == "" {
-					os.Unsetenv("TFLINT_DISABLE_VERSION_CHECK")
-				} else {
-					os.Setenv("TFLINT_DISABLE_VERSION_CHECK", original)
-				}
-			}()
-
-			if tt.envValue == "" {
-				os.Unsetenv("TFLINT_DISABLE_VERSION_CHECK")
-			} else {
-				os.Setenv("TFLINT_DISABLE_VERSION_CHECK", tt.envValue)
+			if tt.envValue != "" {
+				t.Setenv("TFLINT_DISABLE_VERSION_CHECK", tt.envValue)
 			}
 
 			got := Enabled()

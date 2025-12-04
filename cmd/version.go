@@ -108,7 +108,7 @@ func (cli *CLI) printVersion(opts Options) int {
 	if updateChan != nil {
 		updateInfo := <-updateChan
 		if updateInfo != nil && updateInfo.Available {
-			fmt.Fprintf(cli.outStream, "\nYour version of TFLint is out of date! The latest version\nis %s. You can update by downloading from https://github.com/terraform-linters/tflint/releases\n", updateInfo.Latest)
+			fmt.Fprintf(cli.outStream, "\nYour version of TFLint is out of date! The latest version is %s.\nYou can update by downloading from https://github.com/terraform-linters/tflint/releases\n", updateInfo.Latest)
 		}
 	}
 
