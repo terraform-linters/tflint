@@ -1,12 +1,14 @@
 package cmd
 
 import (
+	"cmp"
 	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"maps"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/spf13/afero"
@@ -21,11 +23,18 @@ const (
 
 // VersionOutput is the JSON output structure for version command
 type VersionOutput struct {
-	Version            string          `json:"version"`
-	Plugins            []PluginVersion `json:"plugins"`
-	UpdateCheckEnabled bool            `json:"update_check_enabled"`
-	UpdateAvailable    bool            `json:"update_available"`
-	LatestVersion      string          `json:"latest_version,omitempty"`
+	Version            string                `json:"version"`
+	Plugins            []PluginVersion       `json:"plugins,omitempty"`
+	Modules            []ModuleVersionOutput `json:"modules,omitempty"`
+	UpdateCheckEnabled bool                  `json:"update_check_enabled"`
+	UpdateAvailable    bool                  `json:"update_available"`
+	LatestVersion      string                `json:"latest_version,omitempty"`
+}
+
+// ModuleVersionOutput represents plugins for a specific module
+type ModuleVersionOutput struct {
+	Path    string          `json:"path"`
+	Plugins []PluginVersion `json:"plugins"`
 }
 
 // PluginVersion represents a plugin's name and version
@@ -116,10 +125,15 @@ func (cli *CLI) printVersion(opts Options) int {
 }
 
 func (cli *CLI) printVersionJSON(opts Options, updateInfo *versioncheck.UpdateInfo) int {
+	workingDirs, err := findWorkingDirs(opts)
+	if err != nil {
+		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to find workspaces; %w", err), map[string][]byte{})
+		return ExitCodeError
+	}
+
 	// Build output
 	output := VersionOutput{
 		Version:            tflint.Version.String(),
-		Plugins:            getPluginVersions(opts),
 		UpdateCheckEnabled: versioncheck.Enabled(),
 	}
 
@@ -127,6 +141,57 @@ func (cli *CLI) printVersionJSON(opts Options, updateInfo *versioncheck.UpdateIn
 		output.UpdateAvailable = updateInfo.Available
 		if updateInfo.Available {
 			output.LatestVersion = updateInfo.Latest
+		}
+	}
+
+	// Handle multiple working directories for --recursive
+	if opts.Recursive && len(workingDirs) > 1 {
+		// Track all unique plugins across modules
+		pluginMap := make(map[string]PluginVersion)
+
+		for _, wd := range workingDirs {
+			var plugins []PluginVersion
+			err := cli.withinChangedDir(wd, func() error {
+				plugins = getPluginVersions(opts)
+				return nil
+			})
+			if err != nil {
+				log.Printf("[ERROR] Failed to get plugins for %s: %s", wd, err)
+				continue
+			}
+
+			// Add to modules output
+			output.Modules = append(output.Modules, ModuleVersionOutput{
+				Path:    wd,
+				Plugins: plugins,
+			})
+
+			// Accumulate unique plugins
+			for _, plugin := range plugins {
+				key := plugin.Name + "@" + plugin.Version
+				pluginMap[key] = plugin
+			}
+		}
+
+		// Convert map to sorted slice for consistent output
+		for _, plugin := range pluginMap {
+			output.Plugins = append(output.Plugins, plugin)
+		}
+		slices.SortFunc(output.Plugins, func(a, b PluginVersion) int {
+			return cmp.Or(
+				strings.Compare(a.Name, b.Name),
+				strings.Compare(a.Version, b.Version),
+			)
+		})
+	} else {
+		// Single directory mode (backwards compatible)
+		err := cli.withinChangedDir(workingDirs[0], func() error {
+			output.Plugins = getPluginVersions(opts)
+			return nil
+		})
+		if err != nil {
+			cli.formatter.Print(tflint.Issues{}, err, map[string][]byte{})
+			return ExitCodeError
 		}
 	}
 
