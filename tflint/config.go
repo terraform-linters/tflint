@@ -160,6 +160,7 @@ func LoadConfig(fs afero.Afero, file string) (*Config, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to load file: %w", err)
 		}
+		defer f.Close()
 		cfg, err := loadConfig(f)
 		if err != nil {
 			return nil, err
@@ -175,6 +176,7 @@ func LoadConfig(fs afero.Afero, file string) (*Config, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to load file: %w", err)
 		}
+		defer f.Close()
 		cfg, err := loadConfig(f)
 		if err != nil {
 			return nil, err
@@ -185,6 +187,7 @@ func LoadConfig(fs afero.Afero, file string) (*Config, error) {
 	// Load the default config file (prefer .hcl over .json)
 	log.Printf("[INFO] Load config: %s", defaultConfigFile)
 	if f, err := fs.Open(defaultConfigFile); err == nil {
+		defer f.Close()
 		cfg, err := loadConfig(f)
 		if err != nil {
 			return nil, err
@@ -196,6 +199,7 @@ func LoadConfig(fs afero.Afero, file string) (*Config, error) {
 	// Try JSON config file if HCL not found
 	log.Printf("[INFO] Load config: %s", defaultConfigFileJSON)
 	if f, err := fs.Open(defaultConfigFileJSON); err == nil {
+		defer f.Close()
 		cfg, err := loadConfig(f)
 		if err != nil {
 			return nil, err
@@ -211,6 +215,7 @@ func LoadConfig(fs afero.Afero, file string) (*Config, error) {
 	}
 	log.Printf("[INFO] Load config: %s", fallback)
 	if f, err := fs.Open(fallback); err == nil {
+		defer f.Close()
 		cfg, err := loadConfig(f)
 		if err != nil {
 			return nil, err
@@ -226,6 +231,7 @@ func LoadConfig(fs afero.Afero, file string) (*Config, error) {
 	}
 	log.Printf("[INFO] Load config: %s", fallbackJSON)
 	if f, err := fs.Open(fallbackJSON); err == nil {
+		defer f.Close()
 		cfg, err := loadConfig(f)
 		if err != nil {
 			return nil, err
