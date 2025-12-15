@@ -2,36 +2,22 @@ package tfhcl
 
 import (
 	"github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/ext/dynblock"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 )
 
-// ExpandVariablesHCLExt is a wrapper around dynblock.WalkVariables that
-// uses the given hclext.BodySchema to automatically drive the recursive
-// walk through nested blocks in the given body.
-//
-// Note that it's a wrapper around ExpandVariables, not WalkExpandVariables.
-// This package evaluates expressions immediately on expansion, so we always
-// need all variables to expand. It also implicitly walks count/for_each to
-// support expansion by meta-arguments.
+// ExpandVariablesHCLExt collects traversals (variables) from expressions
+// within the given body according to the provided schema. It mirrors
+// ExpandExpressionsHCLExt but returns the discovered traversals. This allows
+// us to apply special-casing consistent with expression collection, such as
+// skipping lifecycle.ignore_changes, where bare identifiers are not true
+// variable references.
 func ExpandVariablesHCLExt(body hcl.Body, schema *hclext.BodySchema) []hcl.Traversal {
-	rootNode := dynblock.WalkVariables(body)
-	return walkVariablesWithHCLExt(rootNode, schema)
-}
-
-func walkVariablesWithHCLExt(node dynblock.WalkVariablesNode, schema *hclext.BodySchema) []hcl.Traversal {
-	vars, children := node.Visit(extendSchema(asHCLSchema(schema)))
-
-	if len(children) > 0 {
-		childSchemas := childBlockTypes(schema)
-		for _, child := range children {
-			if childSchema, exists := childSchemas[child.BlockTypeName]; exists {
-				vars = append(vars, walkVariablesWithHCLExt(child.Node, childSchema.Body)...)
-			}
-		}
+	exprs := ExpandExpressionsHCLExt(body, schema)
+	var result []hcl.Traversal
+	for _, expr := range exprs {
+		result = append(result, expr.Variables()...)
 	}
-
-	return vars
+	return result
 }
 
 func asHCLSchema(in *hclext.BodySchema) *hcl.BodySchema {

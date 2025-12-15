@@ -36,7 +36,8 @@ func WalkExpandExpressions(body hcl.Body) WalkExpressionsNode {
 }
 
 type WalkExpressionsNode struct {
-	body hcl.Body
+	body          hcl.Body
+	blockTypeName string
 }
 
 type WalkExpressionsChild struct {
@@ -61,7 +62,15 @@ func (n WalkExpressionsNode) Visit(schema *hcl.BodySchema) (exprs []hcl.Expressi
 
 	children = make([]WalkExpressionsChild, 0, len(container.Blocks))
 
-	for _, attr := range container.Attributes {
+	for name, attr := range container.Attributes {
+		// Special case: Terraform Core allows bare identifiers in
+		// lifecycle.ignore_changes. These are attribute paths, not
+		// variable references. To avoid treating them as variables or
+		// collecting function calls from them, skip collecting the
+		// expression here. This keeps behavior aligned with Core.
+		if n.blockTypeName == "lifecycle" && name == "ignore_changes" {
+			continue
+		}
 		exprs = append(exprs, attr.Expr)
 	}
 
@@ -91,7 +100,8 @@ func (n WalkExpressionsNode) Visit(schema *hcl.BodySchema) (exprs []hcl.Expressi
 				children = append(children, WalkExpressionsChild{
 					BlockTypeName: blockTypeName,
 					Node: WalkExpressionsNode{
-						body: contentBlock.Body,
+						body:          contentBlock.Body,
+						blockTypeName: blockTypeName,
 					},
 				})
 			}
@@ -100,7 +110,8 @@ func (n WalkExpressionsNode) Visit(schema *hcl.BodySchema) (exprs []hcl.Expressi
 			children = append(children, WalkExpressionsChild{
 				BlockTypeName: block.Type,
 				Node: WalkExpressionsNode{
-					body: block.Body,
+					body:          block.Body,
+					blockTypeName: block.Type,
 				},
 			})
 
