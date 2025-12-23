@@ -1,0 +1,27 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_prometheus_workspace_unignorable_logging_configuration",
+        "severity": "warning",
+        "link": ""
+      },
+      "message": "ignore_changes should not include logging_configuration",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 3,
+          "column": 5
+        },
+        "end": {
+          "line": 5,
+          "column": 6
+        }
+      },
+      "callers": [],
+      "fixable": false,
+      "fixed": false
+    }
+  ],
+  "errors": []
+}

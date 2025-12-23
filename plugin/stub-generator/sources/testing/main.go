@@ -28,6 +28,7 @@ func main() {
 				rules.NewTerraformAutofixCommentRule(),
 				rules.NewAwsInstanceAutofixConflictRule(), // should be later than terraform_autofix_comment because this rule adds an issue for terraform_autofix_comment
 				rules.NewTerraformRequiredProvidersRule(),
+				rules.NewAwsPrometheusWorkspaceUnignorableLoggingConfigurationRule(),
 			},
 		},
 	})

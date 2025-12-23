@@ -218,6 +218,11 @@ func TestIntegration(t *testing.T) {
 			},
 			Dir: "child-module-env-vars",
 		},
+		{
+			Name:    "traversals",
+			Command: "tflint --format json",
+			Dir:     "traversals",
+		},
 	}
 
 	// Disable the bundled plugin because the `os.Executable()` is go(1) in the tests
