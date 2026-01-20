@@ -108,8 +108,6 @@ When enabled, TFLint looks for the plugin binary following the pattern tflint-ru
 
 Thus, with the configuration above where the plugin name is "foo", the executable must be named tflint-ruleset-foo (or tflint-ruleset-foo.exe on Windows). So you should move the binary into the plugin directory in advance.
 
-**Important for Windows Users:** On Windows, make sure to place the executable directly into the plugins folder (e.g. C:\Users\\[username]\\.tflint.d\plugins\) without using any subfolders. This direct placement is required for TFLint to detect and load the plugin correctly.
-
 ## Bundled plugin
 
 [TFLint Ruleset for Terraform Language](https://github.com/terraform-linters/tflint-ruleset-terraform) is built directly into TFLint binary. This is called a bundled plugin. Unlike other plugins, bundled plugins can be used without installation.
