@@ -104,7 +104,9 @@ plugin "foo" {
 }
 ```
 
-When the plugin is enabled, TFLint invokes the `tflint-ruleset-[name]` (`tflint-ruleset-[name].exe` on Windows) binary in the plugin directory (For instance, `~/.tflint.d/plugins/tflint-ruleset-[name]`). So you should move the binary into the directory in advance.
+When enabled, TFLint looks for the plugin binary following the pattern tflint-ruleset-\[name] (or tflint-ruleset-\[name].exe on Windows) directly in your plugins folder (e.g., ~/.tflint.d/plugins/ on Unix-like systems or C:\Users\\[username]\\.tflint.d\plugins\ on Windows).
+
+Thus, with the configuration above where the plugin name is "foo", the executable must be named tflint-ruleset-foo (or tflint-ruleset-foo.exe on Windows). So you should move the binary into the plugin directory in advance.
 
 ## Bundled plugin
 
