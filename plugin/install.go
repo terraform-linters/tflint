@@ -17,7 +17,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/google/go-github/v67/github"
+	"github.com/google/go-github/v81/github"
 	"github.com/terraform-linters/tflint/tflint"
 	"golang.org/x/net/idna"
 	"golang.org/x/oauth2"
