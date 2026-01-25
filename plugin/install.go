@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"archive/zip"
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
@@ -14,7 +15,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
-	"strconv"
 	"strings"
 
 	"github.com/google/go-github/v81/github"
@@ -22,14 +22,6 @@ import (
 	"golang.org/x/net/idna"
 	"golang.org/x/oauth2"
 )
-
-// IsExperimentalModeEnabled returns whether TFLINT_EXPERIMENTAL is set.
-func IsExperimentalModeEnabled() bool {
-	if b, err := strconv.ParseBool(os.Getenv("TFLINT_EXPERIMENTAL")); err == nil {
-		return b
-	}
-	return false
-}
 
 const defaultSourceHost = "github.com"
 
@@ -92,6 +84,7 @@ func (c *InstallConfig) CertificateIdentityIssuer() string {
 }
 
 var ErrPluginNotVerified = errors.New("plugin not verified")
+var ErrLegacySigningKeyUsed = errors.New("legacy signing key used")
 
 // Install fetches the release from GitHub and puts the binary in the plugin directory.
 // This installation process will automatically check the checksum of the downloaded zip file.
@@ -116,36 +109,59 @@ func (c *InstallConfig) Install() (string, error) {
 		return "", fmt.Errorf("Failed to mkdir to %s: %w", filepath.Dir(path), err)
 	}
 
-	assets, err := c.fetchReleaseAssets()
+	ctx := context.Background()
+	client, err := newGitHubClient(ctx, c)
 	if err != nil {
-		return "", fmt.Errorf("Failed to fetch GitHub releases: %w", err)
+		return "", fmt.Errorf("Failed to create GitHub client: %s", err)
 	}
 
-	log.Printf("[DEBUG] Download checksums.txt")
-	checksumsFile, err := c.downloadToTempFile(assets["checksums.txt"])
-	if checksumsFile != nil {
-		defer os.Remove(checksumsFile.Name())
-	}
+	assets, checksum, attestations, repo, err := c.fetchFromGitHub(ctx, client)
 	if err != nil {
-		return "", fmt.Errorf("Failed to download checksums.txt: %s", err)
+		return "", err
 	}
 
 	var verified bool
+	var legacyKeyUsed bool
 	sigchecker := NewSignatureChecker(c)
-	if sigchecker.HasSigningKey() {
-		if err := c.verifyChecksumsSignature(sigchecker, checksumsFile, assets); err != nil {
-			return "", err
+	switch {
+	// Prefer to use artifact attestations if available
+	case c.shouldVerifyAttestations(repo, attestations):
+		log.Printf("[DEBUG] Verifying using artifact attestations")
+		if err := sigchecker.VerifyAttestations(bytes.NewReader(checksum), attestations); err != nil {
+			return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
 		}
+		log.Printf("[DEBUG] Verified signature successfully")
 		verified = true
-	} else {
-		verified, err = c.tryKeylessVerifyChecksumsSignature(sigchecker, checksumsFile)
-		if err != nil {
-			return "", err
+
+	// Fallback to PGP signing key verification
+	case sigchecker.HasSigningKey():
+		log.Printf("[DEBUG] Download checksums.txt.sig")
+		signatureFile, err := c.downloadToTempFile(ctx, client, assets["checksums.txt.sig"])
+		if signatureFile != nil {
+			defer os.Remove(signatureFile.Name())
 		}
+		if err != nil {
+			return "", fmt.Errorf("Failed to download checksums.txt.sig: %s", err)
+		}
+
+		log.Printf("[DEBUG] Verifying using PGP signing key")
+		if err := sigchecker.VerifyPGPSignature(bytes.NewReader(checksum), signatureFile); err != nil {
+			return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
+		}
+		log.Printf("[DEBUG] Verified signature successfully")
+		verified = true
+
+		// If using built-in signing key, a warning will be shown.
+		if sigchecker.GetSigningKey() == builtinSigningKey {
+			legacyKeyUsed = true
+		}
+
+	default:
+		log.Printf("[DEBUG] No signing key or attestations found, skipping signature verification")
 	}
 
 	log.Printf("[DEBUG] Download %s", c.AssetName())
-	zipFile, err := c.downloadToTempFile(assets[c.AssetName()])
+	zipFile, err := c.downloadToTempFile(ctx, client, assets[c.AssetName()])
 	if zipFile != nil {
 		defer os.Remove(zipFile.Name())
 	}
@@ -153,7 +169,7 @@ func (c *InstallConfig) Install() (string, error) {
 		return "", fmt.Errorf("Failed to download %s: %s", c.AssetName(), err)
 	}
 
-	checksummer, err := NewChecksummer(checksumsFile)
+	checksummer, err := NewChecksummer(bytes.NewReader(checksum))
 	if err != nil {
 		return "", fmt.Errorf("Failed to parse checksums file: %s", err)
 	}
@@ -170,81 +186,70 @@ func (c *InstallConfig) Install() (string, error) {
 	if !verified {
 		return path, ErrPluginNotVerified
 	}
+	if legacyKeyUsed {
+		return path, ErrLegacySigningKeyUsed
+	}
 	return path, nil
 }
 
-// Verify checksums.txt.sig by PGP signing key.
-// The release must contain a signature file for the checksum file with the name checksums.txt.sig.
-// The signature file must be binary OpenPGP format.
-func (c *InstallConfig) verifyChecksumsSignature(sigchecker *SignatureChecker, checksum io.ReadSeeker, assets map[string]*github.ReleaseAsset) error {
-	log.Printf("[DEBUG] Download checksums.txt.sig")
-	signatureFile, err := c.downloadToTempFile(assets["checksums.txt.sig"])
-	if signatureFile != nil {
-		defer os.Remove(signatureFile.Name())
+func (c *InstallConfig) shouldVerifyAttestations(repo *github.Repository, attestations []*github.Attestation) bool {
+	// If the repository is private, we ignore attestations because we need to apply a different policy.
+	// See https://github.com/terraform-linters/tflint/issues/2209
+	if repo != nil && repo.Private != nil && *repo.Private {
+		return false
 	}
-	if err != nil {
-		return fmt.Errorf("Failed to download checksums.txt.sig: %s", err)
-	}
-
-	if err := sigchecker.Verify(checksum, signatureFile); err != nil {
-		return fmt.Errorf("Failed to check checksums.txt signature: %s", err)
-	}
-	if _, err := checksum.Seek(0, 0); err != nil {
-		return fmt.Errorf("Failed to check checksums.txt signature: %s", err)
-	}
-
-	log.Printf("[DEBUG] Verified signature successfully")
-	return nil
+	return len(attestations) > 0
 }
 
-// Verify checksums.txt signature by artifact attestations.
-func (c *InstallConfig) tryKeylessVerifyChecksumsSignature(sigchecker *SignatureChecker, checksum io.ReadSeeker) (bool, error) {
-	repo, err := c.fetchRepository()
+func (c *InstallConfig) fetchFromGitHub(ctx context.Context, client *github.Client) (map[string]*github.ReleaseAsset, []byte, []*github.Attestation, *github.Repository, error) {
+	assets, err := c.fetchReleaseAssets(ctx, client)
 	if err != nil {
-		return false, fmt.Errorf("Failed to get GitHub repository metadata: %s", err)
-	}
-	// If the repository is private, artifact attestations is not always available
-	// because it requires GitHub Enterprise Cloud plan, so we skip verification here.
-	if repo.Private != nil && *repo.Private {
-		return false, nil
+		return nil, nil, nil, nil, fmt.Errorf("Failed to fetch GitHub releases: %w", err)
 	}
 
-	log.Printf("[DEBUG] Download artifact attestations")
-	attestations, err := c.fetchArtifactAttestations(checksum)
+	log.Printf("[DEBUG] Download checksums.txt")
+	checksumsFile, err := c.downloadToTempFile(ctx, client, assets["checksums.txt"])
+	if checksumsFile != nil {
+		defer os.Remove(checksumsFile.Name())
+	}
+	if err != nil {
+		return assets, nil, nil, nil, fmt.Errorf("Failed to download checksums.txt: %s", err)
+	}
+	checksum, err := io.ReadAll(checksumsFile)
+	if err != nil {
+		return assets, nil, nil, nil, fmt.Errorf("Failed to read checksums.txt: %s", err)
+	}
+
+	attestations, err := c.fetchArtifactAttestations(ctx, client, checksum)
 	if err != nil {
 		var gerr *github.ErrorResponse
 		// If there are no attestations, it will be ignored without errors.
-		// However, experimental mode is enabled, enforces that attestations are present.
-		if errors.As(err, &gerr) && gerr.Response.StatusCode == 404 && !IsExperimentalModeEnabled() {
+		if errors.As(err, &gerr) && gerr.Response.StatusCode == 404 {
 			log.Printf("[DEBUG] Artifact attestations not found and will be ignored: %s", err)
-			return false, nil
+			return assets, checksum, nil, nil, nil
 		} else {
-			return false, fmt.Errorf("Failed to download artifact attestations: %s", err)
+			return assets, checksum, nil, nil, fmt.Errorf("Failed to download artifact attestations: %s", err)
 		}
 	}
 
-	if err := sigchecker.VerifyKeyless(checksum, attestations); err != nil {
-		return false, fmt.Errorf("Failed to check checksums.txt signature: %s", err)
-	}
-	if _, err := checksum.Seek(0, 0); err != nil {
-		return false, fmt.Errorf("Failed to check checksums.txt signature: %s", err)
+	repo, err := c.fetchRepository(ctx, client)
+	if err != nil {
+		return assets, checksum, attestations, nil, fmt.Errorf("Failed to get GitHub repository metadata: %s", err)
 	}
 
-	log.Printf("[DEBUG] Verified signature successfully")
-	return true, nil
+	return assets, checksum, attestations, repo, nil
+}
+
+// fetchRepository fetches GitHub repository metadata.
+func (c *InstallConfig) fetchRepository(ctx context.Context, client *github.Client) (*github.Repository, error) {
+	repo, _, err := client.Repositories.Get(ctx, c.SourceOwner, c.SourceRepo)
+	return repo, err
 }
 
 // fetchReleaseAssets fetches assets from the GitHub release.
 // The release is determined by the source path and tag name.
-func (c *InstallConfig) fetchReleaseAssets() (map[string]*github.ReleaseAsset, error) {
+func (c *InstallConfig) fetchReleaseAssets(ctx context.Context, client *github.Client) (map[string]*github.ReleaseAsset, error) {
 	assets := map[string]*github.ReleaseAsset{}
-
-	ctx := context.Background()
-
-	client, err := newGitHubClient(ctx, c)
-	if err != nil {
-		return assets, err
-	}
 
 	release, _, err := client.Repositories.GetReleaseByTag(ctx, c.SourceOwner, c.SourceRepo, c.TagName())
 	if err != nil {
@@ -258,38 +263,13 @@ func (c *InstallConfig) fetchReleaseAssets() (map[string]*github.ReleaseAsset, e
 	return assets, nil
 }
 
-// fetchRepository fetches GitHub repository metadata.
-func (c *InstallConfig) fetchRepository() (*github.Repository, error) {
-	ctx := context.Background()
-	client, err := newGitHubClient(ctx, c)
-	if err != nil {
-		return nil, err
-	}
-
-	repo, _, err := client.Repositories.Get(ctx, c.SourceOwner, c.SourceRepo)
-	return repo, err
-}
-
-// fetchArtifactAttestations fetches GitHub Artifact Attestations based on the given io.ReadSeeker.
-func (c *InstallConfig) fetchArtifactAttestations(artifact io.ReadSeeker) ([]*github.Attestation, error) {
-	bytes, err := io.ReadAll(artifact)
-	if err != nil {
-		return []*github.Attestation{}, err
-	}
-	if _, err := artifact.Seek(0, 0); err != nil {
-		return nil, err
-	}
+// fetchArtifactAttestations fetches GitHub Artifact Attestations based on the given artifact.
+func (c *InstallConfig) fetchArtifactAttestations(ctx context.Context, client *github.Client, artifact []byte) ([]*github.Attestation, error) {
 	hash := sha256.New()
-	if _, err := hash.Write(bytes); err != nil {
+	if _, err := hash.Write(artifact); err != nil {
 		return []*github.Attestation{}, err
 	}
 	digest := hex.EncodeToString(hash.Sum(nil))
-
-	ctx := context.Background()
-	client, err := newGitHubClient(ctx, c)
-	if err != nil {
-		return []*github.Attestation{}, err
-	}
 
 	resp, _, err := client.Repositories.ListAttestations(ctx, c.SourceOwner, c.SourceRepo, "sha256:"+digest, nil)
 	if err != nil {
@@ -300,16 +280,9 @@ func (c *InstallConfig) fetchArtifactAttestations(artifact io.ReadSeeker) ([]*gi
 
 // downloadToTempFile download assets from GitHub to a local temp file.
 // It is the caller's responsibility to delete the generated the temp file.
-func (c *InstallConfig) downloadToTempFile(asset *github.ReleaseAsset) (*os.File, error) {
+func (c *InstallConfig) downloadToTempFile(ctx context.Context, client *github.Client, asset *github.ReleaseAsset) (*os.File, error) {
 	if asset == nil {
 		return nil, fmt.Errorf("file not found in the GitHub release. Does the release contain the file with the correct name ?")
-	}
-
-	ctx := context.Background()
-
-	client, err := newGitHubClient(ctx, c)
-	if err != nil {
-		return nil, err
 	}
 
 	downloader, _, err := client.Repositories.DownloadReleaseAsset(ctx, c.SourceOwner, c.SourceRepo, asset.GetID(), http.DefaultClient)

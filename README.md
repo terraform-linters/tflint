@@ -107,15 +107,6 @@ plugin "foo" {
   enabled = true
   version = "0.1.0"
   source  = "github.com/org/tflint-ruleset-foo"
-
-  signing_key = <<-KEY
-  -----BEGIN PGP PUBLIC KEY BLOCK-----
-
-  mQINBFzpPOMBEADOat4P4z0jvXaYdhfy+UcGivb2XYgGSPQycTgeW1YuGLYdfrwz
-  9okJj9pMMWgt/HpW8WrJOLv7fGecFT3eIVGDOzyT8j2GIRJdXjv8ZbZIn1Q+1V72
-  AkqlyThflWOZf8GFrOw+UAR1OASzR00EDxC9BqWtW5YZYfwFUQnmhxU+9Cd92e6i
-  ...
-  KEY
 }
 ```
 
