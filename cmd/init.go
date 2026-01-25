@@ -12,10 +12,6 @@ import (
 )
 
 func (cli *CLI) init(opts Options) int {
-	if plugin.IsExperimentalModeEnabled() {
-		_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `Experimental mode is enabled. This behavior may change in future versions without notice`)
-	}
-
 	workingDirs, err := findWorkingDirs(opts)
 	if err != nil {
 		cli.formatter.Print(tflint.Issues{}, fmt.Errorf("Failed to find workspaces; %w", err), map[string][]byte{})
@@ -53,7 +49,10 @@ func (cli *CLI) init(opts Options) int {
 					_, err = installCfg.Install()
 					if err != nil {
 						if errors.Is(err, plugin.ErrPluginNotVerified) {
-							_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `No signing key configured. Set "signing_key" to verify that the release is signed by the plugin developer`)
+							_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `No signing key or attestations found. The plugin signature is not verified`)
+							err = nil
+						} else if errors.Is(err, plugin.ErrLegacySigningKeyUsed) {
+							_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `The plugin was signed using a legacy PGP signing key. Please update the plugin to the latest version`)
 							err = nil
 						} else {
 							return fmt.Errorf("Failed to install a plugin; %w", err)
