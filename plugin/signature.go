@@ -1,13 +1,14 @@
 package plugin
 
 import (
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"strings"
 
-	"github.com/google/go-github/v67/github"
+	"github.com/google/go-github/v81/github"
 	"github.com/sigstore/sigstore-go/pkg/bundle"
 	"github.com/sigstore/sigstore-go/pkg/root"
 	"github.com/sigstore/sigstore-go/pkg/tuf"
@@ -33,10 +34,7 @@ func (c *SignatureChecker) GetSigningKey() string {
 		return c.config.SigningKey
 	}
 	if c.config.SourceOwner == "terraform-linters" {
-		// If experimental mode is enabled, Artifact Attestations will be used in preference to built-in keys.
-		if !IsExperimentalModeEnabled() {
-			return builtinSigningKey
-		}
+		return builtinSigningKey
 	}
 	return c.config.SigningKey
 }
@@ -47,9 +45,9 @@ func (c *SignatureChecker) HasSigningKey() bool {
 	return c.GetSigningKey() != ""
 }
 
-// Verify returns the results of signature verification by PGP signing key.
+// VerifyPGPSignature returns the results of signature verification by PGP signing key.
 // The signing key must be ASCII armored and the signature must be in binary OpenPGP format.
-func (c *SignatureChecker) Verify(target, signature io.Reader) error {
+func (c *SignatureChecker) VerifyPGPSignature(target, signature io.Reader) error {
 	key := c.GetSigningKey()
 	if key == "" {
 		return fmt.Errorf("No signing key configured")
@@ -68,12 +66,18 @@ func (c *SignatureChecker) Verify(target, signature io.Reader) error {
 	return nil
 }
 
-// VerifyKeyless returns the results of signature verification by Artifact Attestations.
+// VerifyAttestations returns the results of signature verification by Artifact Attestations.
 // See also https://docs.sigstore.dev/about/security/
-func (c *SignatureChecker) VerifyKeyless(target io.ReadSeeker, attestations []*github.Attestation) error {
+func (c *SignatureChecker) VerifyAttestations(target io.Reader, attestations []*github.Attestation) error {
 	if len(attestations) == 0 {
 		return fmt.Errorf("no attestations found")
 	}
+
+	artifact, err := io.ReadAll(target)
+	if err != nil {
+		return err
+	}
+	artifactDigest := sha256.Sum256(artifact)
 
 	// Initialize Sigstore trust root
 	// This saves the caches under the "~/.sigstore"
@@ -117,7 +121,7 @@ func (c *SignatureChecker) VerifyKeyless(target io.ReadSeeker, attestations []*g
 		return err
 	}
 	policy := verify.NewPolicy(
-		verify.WithArtifact(target),
+		verify.WithArtifactDigest("sha256", artifactDigest[:]),
 		verify.WithCertificateIdentity(certID),
 	)
 
@@ -133,10 +137,6 @@ func (c *SignatureChecker) VerifyKeyless(target io.ReadSeeker, attestations []*g
 		if err != nil {
 			verifyErr = err
 			log.Printf("[DEBUG] Failed to verify signature: %s", err)
-			// Instead of returning an error immediately, try other attestations.
-			if _, err := target.Seek(0, 0); err != nil {
-				return err
-			}
 			continue
 		}
 

@@ -12,7 +12,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/google/go-github/v67/github"
+	"github.com/google/go-github/v81/github"
 	"github.com/hashicorp/go-version"
 	"golang.org/x/oauth2"
 )

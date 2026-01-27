@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/google/go-github/v67/github"
+	"github.com/google/go-github/v81/github"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -38,12 +38,6 @@ func Test_GetSigningKey(t *testing.T) {
 			Name:     "built-in signing key and configured signing key",
 			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: testSigningKey, SourceOwner: "terraform-linters"}),
 			Expected: testSigningKey,
-		},
-		{
-			Name:     "built-in signing key, but in experimental mode",
-			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: "", SourceOwner: "terraform-linters"}),
-			Envs:     map[string]string{"TFLINT_EXPERIMENTAL": "true"},
-			Expected: "",
 		},
 	}
 
@@ -90,12 +84,6 @@ func Test_HasSigningKey(t *testing.T) {
 			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: testSigningKey, SourceOwner: "terraform-linters"}),
 			Expected: true,
 		},
-		{
-			Name:     "built-in signing key, but in experimental mode",
-			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: "", SourceOwner: "terraform-linters"}),
-			Envs:     map[string]string{"TFLINT_EXPERIMENTAL": "true"},
-			Expected: false,
-		},
 	}
 
 	for _, tc := range cases {
@@ -114,7 +102,7 @@ func Test_HasSigningKey(t *testing.T) {
 	}
 }
 
-func Test_SignatureChecker_Verify(t *testing.T) {
+func Test_SignatureChecker_VerifyPGPSignature(t *testing.T) {
 	cwd, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
@@ -144,12 +132,12 @@ dd536fed0ebe4c1115240574c5dd7a31b563d67bfe0d1111750438718f995d43  tflint-ruleset
 	reader := strings.NewReader(target)
 
 	sigchecker := NewSignatureChecker(NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: builtinSigningKey}))
-	if err := sigchecker.Verify(reader, signature); err != nil {
+	if err := sigchecker.VerifyPGPSignature(reader, signature); err != nil {
 		t.Fatalf("Verify failed: %s", err)
 	}
 }
 
-func Test_SignatureChecker_Verify_errors(t *testing.T) {
+func Test_SignatureChecker_VerifyPGPSignature_errors(t *testing.T) {
 	cwd, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
@@ -220,7 +208,7 @@ dd536fed0ebe4c1115240574c5dd7a31b563d67bfe0d1111750438718f995d43  tflint-ruleset
 			sigchecker := NewSignatureChecker(tc.Config)
 			reader := strings.NewReader(tc.Target)
 
-			err := sigchecker.Verify(reader, tc.Signature)
+			err := sigchecker.VerifyPGPSignature(reader, tc.Signature)
 			if err == nil {
 				t.Fatalf("expected=%s, actual=no errors", tc.Expected)
 			}
@@ -231,7 +219,7 @@ dd536fed0ebe4c1115240574c5dd7a31b563d67bfe0d1111750438718f995d43  tflint-ruleset
 	}
 }
 
-func Test_SignatureChecker_VerifyKeyless(t *testing.T) {
+func Test_SignatureChecker_VerifyAttestations(t *testing.T) {
 	// checksums.txt for tflint-ruleset-aws v0.35.0
 	target := `57847831c681fcd3817945d3e4cb0ca8a72f571aa1ea91f0d0f9f19c98bf2b9f  tflint-ruleset-aws_darwin_amd64
 11575e9dff6d19a91848c42f216b83d0eef788f6efd3ec07fe2dae936bade71c  tflint-ruleset-aws_darwin_amd64.zip
@@ -265,12 +253,12 @@ b97e20eae04a45d650886611f17020fd0aa29114b86268b71e3841195fbc55ca  tflint-ruleset
 
 	// The first mismatched bundle is ignored without errors
 	sigchecker := NewSignatureChecker(NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SourceHost: "github.com", SourceOwner: "terraform-linters", SourceRepo: "tflint-ruleset-aws"}))
-	if err := sigchecker.VerifyKeyless(reader, attestations); err != nil {
+	if err := sigchecker.VerifyAttestations(reader, attestations); err != nil {
 		t.Fatalf("Verify failed: %s", err)
 	}
 }
 
-func Test_SignatureChecker_VerifyKeyless_errors(t *testing.T) {
+func Test_SignatureChecker_VerifyAttestations_errors(t *testing.T) {
 	// checksums.txt for tflint-ruleset-aws v0.35.0
 	target := `57847831c681fcd3817945d3e4cb0ca8a72f571aa1ea91f0d0f9f19c98bf2b9f  tflint-ruleset-aws_darwin_amd64
 11575e9dff6d19a91848c42f216b83d0eef788f6efd3ec07fe2dae936bade71c  tflint-ruleset-aws_darwin_amd64.zip
@@ -311,7 +299,7 @@ b97e20eae04a45d650886611f17020fd0aa29114b86268b71e3841195fbc55ca  tflint-ruleset
 					Bundle:       []byte(testSigstoreBundle034), // sigstore bundle for v0.34.0 (mismatched)
 				},
 			},
-			Expected: fmt.Errorf(`failed to verify signature: provided artifact digests do not match digests in statement`),
+			Expected: fmt.Errorf(`failed to verify signature: provided artifact digest does not match any digest in statement`),
 		},
 		{
 			Name:   "invalid identity issuer",
@@ -342,7 +330,7 @@ b97e20eae04a45d650886611f17020fd0aa29114b86268b71e3841195fbc55ca  tflint-ruleset
 			sigchecker := NewSignatureChecker(tc.Config)
 			reader := strings.NewReader(target)
 
-			err := sigchecker.VerifyKeyless(reader, tc.Attestations)
+			err := sigchecker.VerifyAttestations(reader, tc.Attestations)
 			if err == nil {
 				t.Fatalf("expected=%s, actual=no errors", tc.Expected)
 			}
