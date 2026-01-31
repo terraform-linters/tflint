@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/google/go-github/v67/github"
+	"github.com/google/go-github/v81/github"
 )
 
 func TestFetchLatestReleaseWithClient(t *testing.T) {
@@ -24,7 +24,7 @@ func TestFetchLatestReleaseWithClient(t *testing.T) {
 			name:       "successful fetch",
 			statusCode: http.StatusOK,
 			response: &github.RepositoryRelease{
-				TagName: github.String("v0.60.0"),
+				TagName: github.Ptr("v0.60.0"),
 			},
 			wantVersion: "v0.60.0",
 		},
