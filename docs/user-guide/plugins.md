@@ -7,15 +7,6 @@ plugin "foo" {
   enabled = true
   version = "0.1.0"
   source  = "github.com/org/tflint-ruleset-foo"
-
-  signing_key = <<-KEY
-  -----BEGIN PGP PUBLIC KEY BLOCK-----
-
-  mQINBFzpPOMBEADOat4P4z0jvXaYdhfy+UcGivb2XYgGSPQycTgeW1YuGLYdfrwz
-  9okJj9pMMWgt/HpW8WrJOLv7fGecFT3eIVGDOzyT8j2GIRJdXjv8ZbZIn1Q+1V72
-  AkqlyThflWOZf8GFrOw+UAR1OASzR00EDxC9BqWtW5YZYfwFUQnmhxU+9Cd92e6i
-  ...
-  KEY
 }
 ```
 
@@ -50,11 +41,11 @@ Plugin version. Do not prefix with "v". This attribute cannot be omitted when th
 
 ### `signing_key`
 
-Plugin developer's PGP public signing key. When this attribute is set, TFLint will automatically verify the signature of the checksum file downloaded from GitHub. It is recommended to set it to prevent supply chain attacks.
+Plugins are verified by default with [Artifact Attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds) when available. If no attestations are found, TFLint falls back to PGP signature verification using the `signing_key`.
 
-Plugins under the terraform-linters organization (AWS/GCP/Azure ruleset plugins) can use the built-in signing key, so this attribute can be omitted.
+If the plugin developer distributes a PGP public key, setting the `signing_key` will ensure that the signature of the checksum file downloaded from GitHub is signed by the key.
 
-If the plugin developer generates [Artifact Attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds), you can omit this attribute. See [Keyless Verification](#keyless-verification-experimental) for details.
+NOTE: Artifact Attestations will not be verified if the `source` is a private repository. If you want to verify signatures in a private repository, you must set the `signing_key`.
 
 ## Plugin directory
 
@@ -136,11 +127,3 @@ plugin "terraform" {
 ```
 
 If you have tflint-ruleset-terraform manually installed, the bundled plugin will not be automatically enabled. In this case the manually installed version takes precedence.
-
-## Keyless verification (experimental)
-
-If the plugin developer has generated [Artifact Attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds), TFLint will automatically verify them and prove that the plugin binary was built in that repository.
-
-This verification is experimental and optional: it is only attempted if there is no PGP public signing key, and if there is no artifact attestation, a warning will be output, not an error. If you want to require all plugin installs to be signed with a PGP signing key or an artifact attestation, you can force this behavior to be enabled by setting the `TFLINT_EXPERIMENTAL=1`. This behavior will be the default in future versions, but is subject to change without notice.
-
-Note that this validation, like the PGP signing key, does not guarantee that the plugin is secure. It only attests the source repository/revision from which it was built. It prevents direct upload of malicious release artifacts to GitHub or manipulation of download requests. If an attacker has control over the repository and can perform execution during a build, any resulting malicious release will still be considered "verified."
