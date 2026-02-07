@@ -51,7 +51,7 @@ body:
   - type: input
     attributes:
       label: TFLint Version
-      placeholder: '0.60.0'
+      placeholder: '0.61.0'
     validations:
       required: true
   - type: input
