@@ -2,9 +2,11 @@ package plugin
 
 import (
 	"errors"
+	"net/http"
 	"os"
 	"testing"
 
+	"github.com/google/go-github/v81/github"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -332,6 +334,54 @@ func TestGetGitHubToken(t *testing.T) {
 			got := test.config.getGitHubToken()
 			if got != test.want {
 				t.Errorf("got %q, want %q", got, test.want)
+			}
+		})
+	}
+}
+
+func TestIsIgnorableAttestationError(t *testing.T) {
+	tests := []struct {
+		name string
+		err  error
+		want bool
+	}{
+		{
+			name: "403 forbidden",
+			err: &github.ErrorResponse{
+				Response: &http.Response{StatusCode: http.StatusForbidden},
+			},
+			want: true,
+		},
+		{
+			name: "404 not found",
+			err: &github.ErrorResponse{
+				Response: &http.Response{StatusCode: http.StatusNotFound},
+			},
+			want: true,
+		},
+		{
+			name: "401 unauthorized",
+			err: &github.ErrorResponse{
+				Response: &http.Response{StatusCode: http.StatusUnauthorized},
+			},
+			want: false,
+		},
+		{
+			name: "non github error",
+			err:  errors.New("boom"),
+			want: false,
+		},
+		{
+			name: "github error without response",
+			err:  &github.ErrorResponse{},
+			want: false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if got := isIgnorableAttestationError(test.err); got != test.want {
+				t.Fatalf("isIgnorableAttestationError() = %v, want %v", got, test.want)
 			}
 		})
 	}

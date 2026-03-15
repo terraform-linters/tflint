@@ -222,10 +222,10 @@ func (c *InstallConfig) fetchFromGitHub(ctx context.Context, client *github.Clie
 
 	attestations, err := c.fetchArtifactAttestations(ctx, client, checksum)
 	if err != nil {
-		var gerr *github.ErrorResponse
-		// If there are no attestations, it will be ignored without errors.
-		if errors.As(err, &gerr) && gerr.Response.StatusCode == 404 {
-			log.Printf("[DEBUG] Artifact attestations not found and will be ignored: %s", err)
+		// If attestations are not available or not accessible, ignore them and
+		// continue with the remaining verification flow.
+		if isIgnorableAttestationError(err) {
+			log.Printf("[DEBUG] Artifact attestations unavailable and will be ignored: %s", err)
 			return assets, checksum, nil, nil, nil
 		} else {
 			return assets, checksum, nil, nil, fmt.Errorf("Failed to download artifact attestations: %s", err)
@@ -276,6 +276,20 @@ func (c *InstallConfig) fetchArtifactAttestations(ctx context.Context, client *g
 		return []*github.Attestation{}, err
 	}
 	return resp.Attestations, nil
+}
+
+func isIgnorableAttestationError(err error) bool {
+	var gerr *github.ErrorResponse
+	if !errors.As(err, &gerr) || gerr.Response == nil {
+		return false
+	}
+
+	switch gerr.Response.StatusCode {
+	case http.StatusForbidden, http.StatusNotFound:
+		return true
+	default:
+		return false
+	}
 }
 
 // downloadToTempFile download assets from GitHub to a local temp file.
