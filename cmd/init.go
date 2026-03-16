@@ -49,7 +49,11 @@ func (cli *CLI) init(opts Options) int {
 					_, err = installCfg.Install()
 					if err != nil {
 						if errors.Is(err, plugin.ErrPluginNotVerified) {
-							_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `No signing key or attestations found. The plugin signature is not verified`)
+							if installCfg.Signature == string(plugin.SignatureModeNone) {
+								_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `The plugin signature verification is disabled. Please be aware that disabling verification can pose security risks`)
+							} else {
+								_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `No signing key or attestations found. The plugin signature is not verified`)
+							}
 							err = nil
 						} else if errors.Is(err, plugin.ErrLegacySigningKeyUsed) {
 							_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `The plugin was signed using a legacy PGP signing key. Please update the plugin to the latest version`)
