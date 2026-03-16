@@ -39,13 +39,18 @@ The source URL to install the plugin. Must be in the format `github.com/org/repo
 
 Plugin version. Do not prefix with "v". This attribute cannot be omitted when the `source` is set. Version constraints (like `>= 0.3`) are not supported.
 
+### `signature`
+
+Controls how TFLint verifies plugin releases. Valid values are:
+
+- `auto`: Prefer `attestation` when available, then fall back to `pgp`. This is the default behavior.
+- `attestation`: Require [artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds). Attestation verification in private repositories is not supported.
+- `pgp`: Require PGP signature verification with `signing_key`.
+- `none`: Skip plugin signature verification.
+
 ### `signing_key`
 
-Plugins are verified by default with [Artifact Attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds) when available. If no attestations are found, TFLint falls back to PGP signature verification using the `signing_key`.
-
-If the plugin developer distributes a PGP public key, setting the `signing_key` will ensure that the signature of the checksum file downloaded from GitHub is signed by the key.
-
-NOTE: Artifact Attestations will not be verified if the `source` is a private repository. If you want to verify signatures in a private repository, you must set the `signing_key`.
+The signing key used when `signature = "pgp"` or `"auto"`.
 
 ## Plugin directory
 
