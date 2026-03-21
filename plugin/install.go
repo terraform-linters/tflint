@@ -25,6 +25,15 @@ import (
 
 const defaultSourceHost = "github.com"
 
+type SignatureMode string
+
+const (
+	SignatureModeAuto        SignatureMode = "auto"
+	SignatureModeAttestation SignatureMode = "attestation"
+	SignatureModePGP         SignatureMode = "pgp"
+	SignatureModeNone        SignatureMode = "none"
+)
+
 // InstallConfig is a config for plugin installation.
 // This is a wrapper for PluginConfig and manages naming conventions
 // and directory names for installation.
@@ -120,21 +129,18 @@ func (c *InstallConfig) Install() (string, error) {
 		return "", err
 	}
 
-	var verified bool
 	var legacyKeyUsed bool
 	sigchecker := NewSignatureChecker(c)
-	switch {
-	// Prefer to use artifact attestations if available
-	case c.shouldVerifyAttestations(repo, attestations):
+	sigMode := c.signatureMode(repo, attestations, sigchecker)
+	switch sigMode {
+	case SignatureModeAttestation:
 		log.Printf("[DEBUG] Verifying using artifact attestations")
 		if err := sigchecker.VerifyAttestations(bytes.NewReader(checksum), attestations); err != nil {
 			return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
 		}
 		log.Printf("[DEBUG] Verified signature successfully")
-		verified = true
 
-	// Fallback to PGP signing key verification
-	case sigchecker.HasSigningKey():
+	case SignatureModePGP:
 		log.Printf("[DEBUG] Download checksums.txt.sig")
 		signatureFile, err := c.downloadToTempFile(ctx, client, assets["checksums.txt.sig"])
 		if signatureFile != nil {
@@ -149,15 +155,17 @@ func (c *InstallConfig) Install() (string, error) {
 			return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
 		}
 		log.Printf("[DEBUG] Verified signature successfully")
-		verified = true
 
 		// If using built-in signing key, a warning will be shown.
 		if sigchecker.GetSigningKey() == builtinSigningKey {
 			legacyKeyUsed = true
 		}
 
+	case SignatureModeNone:
+		log.Printf("[DEBUG] Skipping signature verification")
+
 	default:
-		log.Printf("[DEBUG] No signing key or attestations found, skipping signature verification")
+		panic(fmt.Sprintf("never happened. signature=%s", sigMode))
 	}
 
 	log.Printf("[DEBUG] Download %s", c.AssetName())
@@ -183,13 +191,35 @@ func (c *InstallConfig) Install() (string, error) {
 	}
 
 	log.Printf("[DEBUG] Installed %s successfully", path)
-	if !verified {
+	if sigMode == SignatureModeNone {
 		return path, ErrPluginNotVerified
 	}
 	if legacyKeyUsed {
 		return path, ErrLegacySigningKeyUsed
 	}
 	return path, nil
+}
+
+func (c *InstallConfig) signatureMode(repo *github.Repository, attestations []*github.Attestation, sigchecker *SignatureChecker) SignatureMode {
+	switch SignatureMode(c.Signature) {
+	case SignatureModeAttestation, SignatureModePGP, SignatureModeNone:
+		return SignatureMode(c.Signature)
+
+	case "", SignatureModeAuto:
+		// Prefer to use artifact attestations if available
+		if c.shouldVerifyAttestations(repo, attestations) {
+			return SignatureModeAttestation
+		}
+		// Fallback to PGP signing key verification
+		if sigchecker.HasSigningKey() {
+			return SignatureModePGP
+		}
+		log.Printf("[DEBUG] No signing key or attestations found, skipping signature verification")
+		return SignatureModeNone
+
+	default:
+		panic(fmt.Sprintf("never happened. signature=%s", c.Signature))
+	}
 }
 
 func (c *InstallConfig) shouldVerifyAttestations(repo *github.Repository, attestations []*github.Attestation) bool {

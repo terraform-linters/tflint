@@ -167,6 +167,70 @@ func Test_Install_withoutAttestationsAndPGPSignature(t *testing.T) {
 	}
 }
 
+func TestInstallConfigSignatureMode(t *testing.T) {
+	private := true
+	public := false
+
+	tests := []struct {
+		name         string
+		config       *InstallConfig
+		repo         *github.Repository
+		attestations []*github.Attestation
+		want         SignatureMode
+	}{
+		{
+			name:   "auto prefers attestations",
+			config: NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{}),
+			repo:   &github.Repository{Private: &public},
+			attestations: []*github.Attestation{
+				{},
+			},
+			want: SignatureModeAttestation,
+		},
+		{
+			name:   "auto falls back to signing key",
+			config: NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: testSigningKey}),
+			repo:   &github.Repository{Private: &public},
+			want:   SignatureModePGP,
+		},
+		{
+			name:   "auto skips private repo attestations",
+			config: NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{}),
+			repo:   &github.Repository{Private: &private},
+			attestations: []*github.Attestation{
+				{},
+			},
+			want: SignatureModeNone,
+		},
+		{
+			name:   "forced attestation",
+			config: NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{Signature: "attestation", SigningKey: testSigningKey}),
+			want:   SignatureModeAttestation,
+		},
+		{
+			name:   "forced pgp",
+			config: NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{Signature: "pgp"}),
+			want:   SignatureModePGP,
+		},
+		{
+			name:   "forced none",
+			config: NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{Signature: "none", SigningKey: testSigningKey}),
+			want:   SignatureModeNone,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			sigchecker := NewSignatureChecker(test.config)
+
+			got := test.config.signatureMode(test.repo, test.attestations, sigchecker)
+			if got != test.want {
+				t.Fatalf("unexpected signature mode: want %s, got %s", test.want, got)
+			}
+		})
+	}
+}
+
 func TestNewGitHubClient(t *testing.T) {
 	cases := []struct {
 		name     string
