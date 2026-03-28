@@ -10,15 +10,21 @@ updates:
         patterns:
           - "golang.org/x/*"
         applies-to: version-updates
+    cooldown:
+      default-days: 5
 
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 5
 
   # Maintain dependencies for docker
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 5
