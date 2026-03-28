@@ -72,6 +72,7 @@ plugin "bar" {
 	version = "0.1.0"
 	source = "github.com/foo/bar"
 	signing_key = "SIGNING_KEY"
+	signature = "pgp"
 }
 
 plugin "baz" {
@@ -115,6 +116,7 @@ plugin "baz" {
 						Version:     "0.1.0",
 						Source:      "github.com/foo/bar",
 						SigningKey:  "SIGNING_KEY",
+						Signature:   "pgp",
 						SourceHost:  "github.com",
 						SourceOwner: "foo",
 						SourceRepo:  "bar",
@@ -344,6 +346,56 @@ plugin "foo" {
 			},
 		},
 		{
+			name: "plugin with invalid signature",
+			file: "plugin_with_invalid_signature.hcl",
+			files: map[string]string{
+				"plugin_with_invalid_signature.hcl": `
+plugin "foo" {
+	enabled = true
+	version = "0.1.0"
+	source = "github.com/foo/bar"
+	signature = "invalid"
+}`,
+			},
+			errCheck: func(err error) bool {
+				return err == nil || err.Error() != `plugin "foo": "invalid" is invalid signature. Allowed values are: auto, attestation, pgp, none`
+			},
+		},
+		{
+			name: "plugin with attestation signature and signing key",
+			file: "plugin_with_attestation_signature_and_signing_key.hcl",
+			files: map[string]string{
+				"plugin_with_attestation_signature_and_signing_key.hcl": `
+plugin "foo" {
+	enabled = true
+	version = "0.1.0"
+	source = "github.com/foo/bar"
+	signature = "attestation"
+	signing_key = "SIGNING_KEY"
+}`,
+			},
+			errCheck: func(err error) bool {
+				return err == nil || err.Error() != `plugin "foo": "signing_key" cannot be used when "signature" is "attestation"`
+			},
+		},
+		{
+			name: "plugin with none signature and signing key",
+			file: "plugin_with_none_signature_and_signing_key.hcl",
+			files: map[string]string{
+				"plugin_with_none_signature_and_signing_key.hcl": `
+plugin "foo" {
+	enabled = true
+	version = "0.1.0"
+	source = "github.com/foo/bar"
+	signature = "none"
+	signing_key = "SIGNING_KEY"
+}`,
+			},
+			errCheck: func(err error) bool {
+				return err == nil || err.Error() != `plugin "foo": "signing_key" cannot be used when "signature" is "none"`
+			},
+		},
+		{
 			name: "plugin with GHES source host",
 			file: "plugin_with_ghes_source_host.hcl",
 			files: map[string]string{
@@ -509,7 +561,8 @@ config {
       "enabled": false,
       "version": "0.1.0",
       "source": "github.com/foo/bar",
-      "signing_key": "SIGNING_KEY"
+      "signing_key": "SIGNING_KEY",
+      "signature": "pgp"
     },
     "baz": {
       "enabled": true,
@@ -554,6 +607,7 @@ config {
 						Version:     "0.1.0",
 						Source:      "github.com/foo/bar",
 						SigningKey:  "SIGNING_KEY",
+						Signature:   "pgp",
 						SourceHost:  "github.com",
 						SourceOwner: "foo",
 						SourceRepo:  "bar",
@@ -1293,6 +1347,7 @@ plugin "test" {
 	source  = "github.com/example/example"
 
 	signing_key = "PUBLIC_KEY"
+	signature = "pgp"
 
 	foo = "bar"
 }`,

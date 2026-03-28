@@ -6,6 +6,7 @@ import (
 	"maps"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/hashicorp/go-version"
@@ -69,6 +70,20 @@ var validFormats = []string{
 	"sarif",
 }
 
+const (
+	signatureModeAuto        = "auto"
+	signatureModeAttestation = "attestation"
+	signatureModePGP         = "pgp"
+	signatureModeNone        = "none"
+)
+
+var validPluginSignatures = []string{
+	signatureModeAuto,
+	signatureModeAttestation,
+	signatureModePGP,
+	signatureModeNone,
+}
+
 // Config describes the behavior of TFLint
 type Config struct {
 	CallModuleType    terraform.CallModuleType
@@ -110,6 +125,7 @@ type PluginConfig struct {
 	Enabled    bool   `hcl:"enabled"`
 	Version    string `hcl:"version,optional"`
 	Source     string `hcl:"source,optional"`
+	Signature  string `hcl:"signature,optional"`
 	SigningKey string `hcl:"signing_key,optional"`
 
 	Body hcl.Body `hcl:",remain"`
@@ -681,6 +697,15 @@ func (c *PluginConfig) validate() error {
 		c.SourceHost = parts[0]
 		c.SourceOwner = parts[1]
 		c.SourceRepo = parts[2]
+	}
+
+	if c.Signature != "" {
+		if !slices.Contains(validPluginSignatures, c.Signature) {
+			return fmt.Errorf(`plugin "%s": %q is invalid signature. Allowed values are: %s`, c.Name, c.Signature, strings.Join(validPluginSignatures, ", "))
+		}
+		if c.SigningKey != "" && slices.Contains([]string{signatureModeAttestation, signatureModeNone}, c.Signature) {
+			return fmt.Errorf(`plugin "%s": "signing_key" cannot be used when "signature" is %q`, c.Name, c.Signature)
+		}
 	}
 
 	return nil
