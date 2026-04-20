@@ -1,11 +1,8 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 
 package addrs
 
-import (
-	"fmt"
-)
+import "fmt"
 
 // Resource is an address for a resource block within configuration, which
 // contains potentially-multiple resource instances if that configuration
@@ -18,18 +15,7 @@ type Resource struct {
 }
 
 func (r Resource) String() string {
-	switch r.Mode {
-	case ManagedResourceMode:
-		return fmt.Sprintf("%s.%s", r.Type, r.Name)
-	case DataResourceMode:
-		return fmt.Sprintf("data.%s.%s", r.Type, r.Name)
-	case EphemeralResourceMode:
-		return fmt.Sprintf("ephemeral.%s.%s", r.Type, r.Name)
-	default:
-		// Should never happen, but we'll return a string here rather than
-		// crashing just in case it does.
-		return fmt.Sprintf("<invalid>.%s.%s", r.Type, r.Name)
-	}
+	return fmt.Sprintf("%s.%s", resourceModePrefix(r.Mode, r.Type), r.Name)
 }
 
 // ResourceInstance is an address for a specific instance of a resource.
@@ -75,3 +61,16 @@ const (
 	// "ephemeral" blocks in configuration.
 	EphemeralResourceMode ResourceMode = 'E'
 )
+
+func resourceModePrefix(mode ResourceMode, typeName string) string {
+	switch mode {
+	case ManagedResourceMode:
+		return typeName
+	case DataResourceMode:
+		return "data." + typeName
+	case EphemeralResourceMode:
+		return "ephemeral." + typeName
+	default:
+		return "<invalid>." + typeName
+	}
+}

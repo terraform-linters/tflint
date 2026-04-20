@@ -2,7 +2,7 @@
 [![Build Status](https://github.com/terraform-linters/tflint/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/terraform-linters/tflint/actions)
 [![GitHub release](https://img.shields.io/github/release/terraform-linters/tflint.svg)](https://github.com/terraform-linters/tflint/releases/latest)
 [![Terraform Compatibility](https://img.shields.io/badge/terraform-%3E%3D%201.0-blue)](docs/user-guide/compatibility.md)
-[![License: MPL 2.0 + BUSL 1.1](https://img.shields.io/badge/License-MPL%202.0%20+%20BUSL%201.1-blue.svg)](#license)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-blue.svg)](#license)
 [![Go Report Card](https://goreportcard.com/badge/github.com/terraform-linters/tflint)](https://goreportcard.com/report/github.com/terraform-linters/tflint)
 [![Homebrew](https://img.shields.io/badge/dynamic/json.svg?url=https://formulae.brew.sh/api/formula/tflint.json&query=$.versions.stable&label=homebrew)](https://formulae.brew.sh/formula/tflint)
 
@@ -174,11 +174,7 @@ If you find a security vulnerability, please refer our [security policy](SECURIT
 
 ## License
 
-Please note that although much of this project is licensed under MPL 2.0, some files in the `terraform` package are licensed under BUSL 1.1.
-
-For the reasons stated above, the executable forms (release binaries) is bound by both licenses.
-
-See also https://discuss.hashicorp.com/t/hashicorp-projects-changing-license-to-business-source-license-v1-1/57106/7
+TFLint is licensed under MPL 2.0. See [LICENSE](LICENSE).
 
 ## Stargazers over time
 

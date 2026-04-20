@@ -1,5 +1,4 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 
 package terraform
 
@@ -33,150 +32,46 @@ type Variable struct {
 }
 
 func decodeVariableBlock(block *hclext.Block) (*Variable, hcl.Diagnostics) {
-	v := &Variable{
-		Name:           block.Labels[0],
-		Type:           cty.DynamicPseudoType,
-		ConstraintType: cty.DynamicPseudoType,
-		ParsingMode:    VariableParseLiteral,
-		DeclRange:      block.DefRange,
-	}
-	diags := hcl.Diagnostics{}
+	variable := newVariable(block.Labels[0], block.DefRange)
+	var diags hcl.Diagnostics
 
-	if attr, exists := block.Body.Attributes["type"]; exists {
-		ty, tyDefaults, parseMode, tyDiags := decodeVariableType(attr.Expr)
-		diags = diags.Extend(tyDiags)
-		v.ConstraintType = ty
-		v.TypeDefaults = tyDefaults
-		v.Type = ty.WithoutOptionalAttributesDeep()
-		v.ParsingMode = parseMode
+	if attr, ok := block.Body.Attributes["type"]; ok {
+		applyVariableType(variable, attr.Expr, &diags)
 	}
-
-	if attr, exists := block.Body.Attributes["sensitive"]; exists {
-		valDiags := gohcl.DecodeExpression(attr.Expr, nil, &v.Sensitive)
-		diags = diags.Extend(valDiags)
+	if attr, ok := block.Body.Attributes["sensitive"]; ok {
+		diags = diags.Extend(decodeBoolAttribute(attr.Expr, &variable.Sensitive))
 	}
-
-	if attr, exists := block.Body.Attributes["ephemeral"]; exists {
-		valDiags := gohcl.DecodeExpression(attr.Expr, nil, &v.Ephemeral)
-		diags = diags.Extend(valDiags)
+	if attr, ok := block.Body.Attributes["ephemeral"]; ok {
+		diags = diags.Extend(decodeBoolAttribute(attr.Expr, &variable.Ephemeral))
 	}
-
-	if attr, exists := block.Body.Attributes["nullable"]; exists {
-		valDiags := gohcl.DecodeExpression(attr.Expr, nil, &v.Nullable)
-		diags = append(diags, valDiags...)
+	if attr, ok := block.Body.Attributes["nullable"]; ok {
+		diags = diags.Extend(decodeBoolAttribute(attr.Expr, &variable.Nullable))
 	} else {
-		// The current default is true, which is subject to change in a future
-		// language edition.
-		v.Nullable = true
+		variable.Nullable = true
+	}
+	if attr, ok := block.Body.Attributes["default"]; ok {
+		applyVariableDefault(variable, attr, &diags)
 	}
 
-	if attr, exists := block.Body.Attributes["default"]; exists {
-		val, valDiags := attr.Expr.Value(nil)
-		diags = diags.Extend(valDiags)
-
-		if v.ConstraintType != cty.NilType {
-			var err error
-			// defaults to the variable default value before type conversion,
-			// unless the default value is null. Null is excluded from the
-			// type default application process as a special case, to allow
-			// nullable variables to have a null default value.
-			if v.TypeDefaults != nil && !val.IsNull() {
-				val = v.TypeDefaults.Apply(val)
-			}
-			val, err = convert.Convert(val, v.ConstraintType)
-			if err != nil {
-				diags = append(diags, &hcl.Diagnostic{
-					Severity: hcl.DiagError,
-					Summary:  "Invalid default value for variable",
-					Detail: fmt.Sprintf(
-						"This default value is not compatible with the variable's type constraint: %s.",
-						tfdiags.FormatError(err),
-					),
-					Subject: attr.Expr.Range().Ptr(),
-				})
-				val = cty.DynamicVal
-			}
-		}
-
-		v.Default = val
-	}
-
-	return v, diags
+	return variable, diags
 }
 
 func decodeVariableType(expr hcl.Expression) (cty.Type, *typeexpr.Defaults, VariableParsingMode, hcl.Diagnostics) {
-	if exprIsNativeQuotedString(expr) {
-		// If a user provides the pre-0.12 form of variable type argument where
-		// the string values "string", "list" and "map" are accepted, we
-		// provide an error to point the user towards using the type system
-		// correctly has a hint.
-		// Only the native syntax ends up in this codepath; we handle the
-		// JSON syntax (which is, of course, quoted within the type system)
-		// in the normal codepath below.
-		val, diags := expr.Value(nil)
-		if diags.HasErrors() {
-			return cty.DynamicPseudoType, nil, VariableParseHCL, diags
-		}
-		str := val.AsString()
-		switch str {
-		case "string":
-			diags = append(diags, &hcl.Diagnostic{
-				Severity: hcl.DiagError,
-				Summary:  "Invalid quoted type constraints",
-				Detail:   "Terraform 0.11 and earlier required type constraints to be given in quotes, but that form is now deprecated and will be removed in a future version of Terraform. Remove the quotes around \"string\".",
-				Subject:  expr.Range().Ptr(),
-			})
-			return cty.DynamicPseudoType, nil, VariableParseLiteral, diags
-		case "list":
-			diags = append(diags, &hcl.Diagnostic{
-				Severity: hcl.DiagError,
-				Summary:  "Invalid quoted type constraints",
-				Detail:   "Terraform 0.11 and earlier required type constraints to be given in quotes, but that form is now deprecated and will be removed in a future version of Terraform. Remove the quotes around \"list\" and write list(string) instead to explicitly indicate that the list elements are strings.",
-				Subject:  expr.Range().Ptr(),
-			})
-			return cty.DynamicPseudoType, nil, VariableParseHCL, diags
-		case "map":
-			diags = append(diags, &hcl.Diagnostic{
-				Severity: hcl.DiagError,
-				Summary:  "Invalid quoted type constraints",
-				Detail:   "Terraform 0.11 and earlier required type constraints to be given in quotes, but that form is now deprecated and will be removed in a future version of Terraform. Remove the quotes around \"map\" and write map(string) instead to explicitly indicate that the map elements are strings.",
-				Subject:  expr.Range().Ptr(),
-			})
-			return cty.DynamicPseudoType, nil, VariableParseHCL, diags
-		default:
-			return cty.DynamicPseudoType, nil, VariableParseHCL, hcl.Diagnostics{{
-				Severity: hcl.DiagError,
-				Summary:  "Invalid legacy variable type hint",
-				Detail:   `To provide a full type expression, remove the surrounding quotes and give the type expression directly.`,
-				Subject:  expr.Range().Ptr(),
-			}}
-		}
+	if ty, defaults, mode, diags, handled := decodeLegacyQuotedVariableType(expr); handled {
+		return ty, defaults, mode, diags
 	}
-
-	// First we'll deal with some shorthand forms that the HCL-level type
-	// expression parser doesn't include. These both emulate pre-0.12 behavior
-	// of allowing a list or map of any element type as long as all of the
-	// elements are consistent. This is the same as list(any) or map(any).
-	switch hcl.ExprAsKeyword(expr) {
-	case "list":
-		return cty.List(cty.DynamicPseudoType), nil, VariableParseHCL, nil
-	case "map":
-		return cty.Map(cty.DynamicPseudoType), nil, VariableParseHCL, nil
+	if ty, mode, handled := decodeShorthandVariableType(expr); handled {
+		return ty, nil, mode, nil
 	}
 
 	ty, typeDefaults, diags := typeexpr.TypeConstraintWithDefaults(expr)
 	if diags.HasErrors() {
 		return cty.DynamicPseudoType, nil, VariableParseHCL, diags
 	}
-
-	switch {
-	case ty.IsPrimitiveType():
-		// Primitive types use literal parsing.
+	if ty.IsPrimitiveType() {
 		return ty, typeDefaults, VariableParseLiteral, diags
-	default:
-		// Everything else uses HCL parsing
-		return ty, typeDefaults, VariableParseHCL, diags
 	}
+	return ty, typeDefaults, VariableParseHCL, diags
 }
 
 // VariableParsingMode defines how values of a particular variable given by
@@ -192,38 +87,126 @@ const VariableParseLiteral VariableParsingMode = 'L'
 // string as an HCL expression and returns the result.
 const VariableParseHCL VariableParsingMode = 'H'
 
-// Parse uses the receiving parsing mode to process the given variable value
-// string, returning the result along with any diagnostics.
-//
-// A VariableParsingMode does not know the expected type of the corresponding
-// variable, so it's the caller's responsibility to attempt to convert the
-// result to the appropriate type and return to the user any diagnostics that
-// conversion may produce.
-//
-// The given name is used to create a synthetic filename in case any diagnostics
-// must be generated about the given string value. This should be the name
-// of the root module variable whose value will be populated from the given
-// string.
-//
-// If the returned diagnostics has errors, the returned value may not be
-// valid.
 func (m VariableParsingMode) Parse(name, value string) (cty.Value, hcl.Diagnostics) {
 	switch m {
 	case VariableParseLiteral:
 		return cty.StringVal(value), nil
 	case VariableParseHCL:
-		fakeFilename := fmt.Sprintf("<value for var.%s>", name)
-		expr, diags := hclsyntax.ParseExpression([]byte(value), fakeFilename, hcl.Pos{Line: 1, Column: 1})
+		filename := fmt.Sprintf("<value for var.%s>", name)
+		expr, diags := hclsyntax.ParseExpression([]byte(value), filename, hcl.Pos{Line: 1, Column: 1})
 		if diags.HasErrors() {
 			return cty.DynamicVal, diags
 		}
-		val, valDiags := expr.Value(nil)
-		diags = append(diags, valDiags...)
+		val, valueDiags := expr.Value(nil)
+		diags = diags.Extend(valueDiags)
 		return val, diags
 	default:
-		// Should never happen
 		panic(fmt.Errorf("Parse called on invalid VariableParsingMode %#v", m))
 	}
+}
+
+func newVariable(name string, declRange hcl.Range) *Variable {
+	return &Variable{
+		Name:           name,
+		Type:           cty.DynamicPseudoType,
+		ConstraintType: cty.DynamicPseudoType,
+		ParsingMode:    VariableParseLiteral,
+		DeclRange:      declRange,
+	}
+}
+
+func applyVariableType(variable *Variable, expr hcl.Expression, diags *hcl.Diagnostics) {
+	ty, defaults, parsingMode, typeDiags := decodeVariableType(expr)
+	*diags = diags.Extend(typeDiags)
+	variable.ConstraintType = ty
+	variable.TypeDefaults = defaults
+	variable.Type = ty.WithoutOptionalAttributesDeep()
+	variable.ParsingMode = parsingMode
+}
+
+func decodeBoolAttribute(expr hcl.Expression, target *bool) hcl.Diagnostics {
+	return gohcl.DecodeExpression(expr, nil, target)
+}
+
+func applyVariableDefault(variable *Variable, attr *hclext.Attribute, diags *hcl.Diagnostics) {
+	value, valueDiags := attr.Expr.Value(nil)
+	*diags = diags.Extend(valueDiags)
+
+	if variable.ConstraintType != cty.NilType {
+		value = applyVariableDefaults(variable, value)
+
+		converted, err := convert.Convert(value, variable.ConstraintType)
+		if err != nil {
+			*diags = append(*diags, &hcl.Diagnostic{
+				Severity: hcl.DiagError,
+				Summary:  "Invalid default value for variable",
+				Detail: fmt.Sprintf(
+					"This default value is not compatible with the variable's type constraint: %s.",
+					tfdiags.FormatError(err),
+				),
+				Subject: attr.Expr.Range().Ptr(),
+			})
+			value = cty.DynamicVal
+		} else {
+			value = converted
+		}
+	}
+
+	variable.Default = value
+}
+
+func applyVariableDefaults(variable *Variable, value cty.Value) cty.Value {
+	if variable.TypeDefaults != nil && !value.IsNull() {
+		return variable.TypeDefaults.Apply(value)
+	}
+	return value
+}
+
+func decodeLegacyQuotedVariableType(expr hcl.Expression) (cty.Type, *typeexpr.Defaults, VariableParsingMode, hcl.Diagnostics, bool) {
+	if !exprIsNativeQuotedString(expr) {
+		return cty.NilType, nil, VariableParseHCL, nil, false
+	}
+
+	value, diags := expr.Value(nil)
+	if diags.HasErrors() {
+		return cty.DynamicPseudoType, nil, VariableParseHCL, diags, true
+	}
+
+	switch value.AsString() {
+	case "string":
+		return cty.DynamicPseudoType, nil, VariableParseLiteral, invalidQuotedTypeDiag(expr, `Terraform 0.11 and earlier required type constraints to be given in quotes, but that form is now deprecated and will be removed in a future version of Terraform. Remove the quotes around "string".`), true
+	case "list":
+		return cty.DynamicPseudoType, nil, VariableParseHCL, invalidQuotedTypeDiag(expr, `Terraform 0.11 and earlier required type constraints to be given in quotes, but that form is now deprecated and will be removed in a future version of Terraform. Remove the quotes around "list" and write list(string) instead to explicitly indicate that the list elements are strings.`), true
+	case "map":
+		return cty.DynamicPseudoType, nil, VariableParseHCL, invalidQuotedTypeDiag(expr, `Terraform 0.11 and earlier required type constraints to be given in quotes, but that form is now deprecated and will be removed in a future version of Terraform. Remove the quotes around "map" and write map(string) instead to explicitly indicate that the map elements are strings.`), true
+	default:
+		return cty.DynamicPseudoType, nil, VariableParseHCL, hcl.Diagnostics{{
+			Severity: hcl.DiagError,
+			Summary:  "Invalid legacy variable type hint",
+			Detail:   `To provide a full type expression, remove the surrounding quotes and give the type expression directly.`,
+			Subject:  expr.Range().Ptr(),
+		}}, true
+	}
+}
+
+func decodeShorthandVariableType(expr hcl.Expression) (cty.Type, VariableParsingMode, bool) {
+	switch hcl.ExprAsKeyword(expr) {
+	case "list":
+		return cty.List(cty.DynamicPseudoType), VariableParseHCL, true
+	case "map":
+		return cty.Map(cty.DynamicPseudoType), VariableParseHCL, true
+	default:
+		return cty.NilType, VariableParseHCL, false
+	}
+}
+
+func invalidQuotedTypeDiag(expr hcl.Expression, detail string) hcl.Diagnostics {
+	return hcl.Diagnostics{{
+		Severity: hcl.DiagError,
+		Summary:  "Invalid quoted type constraints",
+		Detail:   detail,
+		Subject:  expr.Range().Ptr(),
+	}}
 }
 
 func exprIsNativeQuotedString(expr hcl.Expression) bool {
@@ -233,20 +216,10 @@ func exprIsNativeQuotedString(expr hcl.Expression) bool {
 
 var variableBlockSchema = &hclext.BodySchema{
 	Attributes: []hclext.AttributeSchema{
-		{
-			Name: "default",
-		},
-		{
-			Name: "type",
-		},
-		{
-			Name: "sensitive",
-		},
-		{
-			Name: "ephemeral",
-		},
-		{
-			Name: "nullable",
-		},
+		{Name: "default"},
+		{Name: "type"},
+		{Name: "sensitive"},
+		{Name: "ephemeral"},
+		{Name: "nullable"},
 	},
 }

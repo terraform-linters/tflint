@@ -1,5 +1,4 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 
 package terraform
 
@@ -54,18 +53,26 @@ func (e *Evaluator) ExpandBlock(body hcl.Body, schema *hclext.BodySchema) (hcl.B
 // The difference with Evaluator is that each evaluation is independent
 // and is not shared between goroutines.
 func (e *Evaluator) scope() *lang.Scope {
+	return newEvaluationScope(e)
+}
+
+func newEvaluationScope(e *Evaluator) *lang.Scope {
 	scope := &lang.Scope{
 		CallStack:           lang.NewCallStack(),
 		ResolvedLocalValues: map[string]cty.Value{},
 	}
-	scope.Data = &evaluationData{
-		Scope:          scope,
-		Meta:           e.Meta,
-		ModulePath:     e.ModulePath,
-		Config:         e.Config,
-		VariableValues: e.VariableValues,
-	}
+	scope.Data = newEvaluationData(scope, e)
 	return scope
+}
+
+func newEvaluationData(scope *lang.Scope, evaluator *Evaluator) *evaluationData {
+	return &evaluationData{
+		Scope:          scope,
+		Meta:           evaluator.Meta,
+		ModulePath:     evaluator.ModulePath,
+		Config:         evaluator.Config,
+		VariableValues: evaluator.VariableValues,
+	}
 }
 
 type evaluationData struct {
@@ -103,32 +110,11 @@ func (d *evaluationData) GetForEachAttr(addr addrs.ForEachAttr, rng hcl.Range) (
 func (d *evaluationData) GetInputVariable(addr addrs.InputVariable, rng hcl.Range) (cty.Value, hcl.Diagnostics) {
 	var diags hcl.Diagnostics
 
-	moduleConfig := d.Config.DescendentForInstance(d.ModulePath)
-	if moduleConfig == nil {
-		// should never happen, since we can't be evaluating in a module
-		// that wasn't mentioned in configuration.
-		panic(fmt.Sprintf("input variable read from %s, which has no configuration", d.ModulePath))
-	}
+	moduleConfig := d.moduleConfigOrPanic("input variable")
 
 	config := moduleConfig.Module.Variables[addr.Name]
 	if config == nil {
-		var suggestions []string
-		for k := range moduleConfig.Module.Variables {
-			suggestions = append(suggestions, k)
-		}
-		suggestion := nameSuggestion(addr.Name, suggestions)
-		if suggestion != "" {
-			suggestion = fmt.Sprintf(" Did you mean %q?", suggestion)
-		} else {
-			suggestion = fmt.Sprintf(" This variable can be declared with a variable %q {} block.", addr.Name)
-		}
-
-		diags = diags.Append(&hcl.Diagnostic{
-			Severity: hcl.DiagError,
-			Summary:  `Reference to undeclared input variable`,
-			Detail:   fmt.Sprintf(`An input variable with the name %q has not been declared.%s`, addr.Name, suggestion),
-			Subject:  rng.Ptr(),
-		})
+		diags = diags.Extend(undeclaredInputVariableDiags(moduleConfig, addr.Name, rng))
 		return cty.DynamicVal, diags
 	}
 
@@ -146,24 +132,7 @@ func (d *evaluationData) GetInputVariable(addr addrs.InputVariable, rng hcl.Rang
 	// This has some restrictions on the representation of dynamic variables compared
 	// to Terraform, but since TFLint is intended for static analysis, this is often enough.
 	val, isSet := vals[addr.Name]
-	switch {
-	case !isSet:
-		// The config loader will ensure there is a default if the value is not
-		// set at all.
-		val = config.Default
-
-	case val.IsNull() && !config.Nullable && config.Default != cty.NilVal:
-		// If nullable=false a null value will use the configured default.
-		val = config.Default
-	}
-
-	// Apply defaults from the variable's type constraint to the value,
-	// unless the value is null. We do not apply defaults to top-level
-	// null values, as doing so could prevent assigning null to a nullable
-	// variable.
-	if config.TypeDefaults != nil && !val.IsNull() {
-		val = config.TypeDefaults.Apply(val)
-	}
+	val = resolveInputVariableValue(config, val, isSet)
 
 	var err error
 	val, err = convert.Convert(val, config.ConstraintType)
@@ -197,30 +166,11 @@ func (d *evaluationData) GetLocalValue(addr addrs.LocalValue, rng hcl.Range) (ct
 
 	// First we'll make sure the requested value is declared in configuration,
 	// so we can produce a nice message if not.
-	moduleConfig := d.Config.DescendentForInstance(d.ModulePath)
-	if moduleConfig == nil {
-		// should never happen, since we can't be evaluating in a module
-		// that wasn't mentioned in configuration.
-		panic(fmt.Sprintf("local value read from %s, which has no configuration", d.ModulePath))
-	}
+	moduleConfig := d.moduleConfigOrPanic("local value")
 
 	config := moduleConfig.Module.Locals[addr.Name]
 	if config == nil {
-		var suggestions []string
-		for k := range moduleConfig.Module.Locals {
-			suggestions = append(suggestions, k)
-		}
-		suggestion := nameSuggestion(addr.Name, suggestions)
-		if suggestion != "" {
-			suggestion = fmt.Sprintf(" Did you mean %q?", suggestion)
-		}
-
-		diags = diags.Append(&hcl.Diagnostic{
-			Severity: hcl.DiagError,
-			Summary:  `Reference to undeclared local value`,
-			Detail:   fmt.Sprintf(`A local value with the name %q has not been declared.%s`, addr.Name, suggestion),
-			Subject:  rng.Ptr(),
-		})
+		diags = diags.Extend(undeclaredLocalValueDiags(moduleConfig, addr.Name, rng))
 		return cty.DynamicVal, diags
 	}
 
@@ -277,12 +227,7 @@ func (d *evaluationData) GetPathAttr(addr addrs.PathAttr, rng hcl.Range) (cty.Va
 		return cty.StringVal(filepath.ToSlash(wd)), diags
 
 	case "module":
-		moduleConfig := d.Config.DescendentForInstance(d.ModulePath)
-		if moduleConfig == nil {
-			// should never happen, since we can't be evaluating in a module
-			// that wasn't mentioned in configuration.
-			panic(fmt.Sprintf("module.path read from module %s, which has no configuration", d.ModulePath))
-		}
+		moduleConfig := d.moduleConfigOrPanic("module.path")
 		sourceDir := moduleConfig.Module.SourceDir
 		return cty.StringVal(filepath.ToSlash(sourceDir)), diags
 
@@ -357,4 +302,60 @@ func nameSuggestion(given string, suggestions []string) string {
 		}
 	}
 	return ""
+}
+
+func (d *evaluationData) moduleConfigOrPanic(action string) *Config {
+	moduleConfig := d.Config.DescendentForInstance(d.ModulePath)
+	if moduleConfig == nil {
+		panic(fmt.Sprintf("%s read from %s, which has no configuration", action, d.ModulePath))
+	}
+	return moduleConfig
+}
+
+func undeclaredInputVariableDiags(moduleConfig *Config, name string, rng hcl.Range) hcl.Diagnostics {
+	suggestion := suggestionSuffix(name, moduleConfig.Module.Variables, func() string {
+		return fmt.Sprintf(" This variable can be declared with a variable %q {} block.", name)
+	})
+	return hcl.Diagnostics{{
+		Severity: hcl.DiagError,
+		Summary:  `Reference to undeclared input variable`,
+		Detail:   fmt.Sprintf(`An input variable with the name %q has not been declared.%s`, name, suggestion),
+		Subject:  rng.Ptr(),
+	}}
+}
+
+func undeclaredLocalValueDiags(moduleConfig *Config, name string, rng hcl.Range) hcl.Diagnostics {
+	suggestion := suggestionSuffix(name, moduleConfig.Module.Locals, func() string { return "" })
+	return hcl.Diagnostics{{
+		Severity: hcl.DiagError,
+		Summary:  `Reference to undeclared local value`,
+		Detail:   fmt.Sprintf(`A local value with the name %q has not been declared.%s`, name, suggestion),
+		Subject:  rng.Ptr(),
+	}}
+}
+
+func suggestionSuffix[T any](name string, declarations map[string]T, fallback func() string) string {
+	var suggestions []string
+	for candidate := range declarations {
+		suggestions = append(suggestions, candidate)
+	}
+	suggestion := nameSuggestion(name, suggestions)
+	if suggestion != "" {
+		return fmt.Sprintf(" Did you mean %q?", suggestion)
+	}
+	return fallback()
+}
+
+func resolveInputVariableValue(config *Variable, value cty.Value, isSet bool) cty.Value {
+	switch {
+	case !isSet:
+		value = config.Default
+	case value.IsNull() && !config.Nullable && config.Default != cty.NilVal:
+		value = config.Default
+	}
+
+	if config.TypeDefaults != nil && !value.IsNull() {
+		value = config.TypeDefaults.Apply(value)
+	}
+	return value
 }
