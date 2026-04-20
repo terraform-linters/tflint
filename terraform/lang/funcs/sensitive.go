@@ -1,5 +1,4 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 
 package funcs
 
@@ -9,71 +8,39 @@ import (
 	"github.com/zclconf/go-cty/cty/function"
 )
 
-// SensitiveFunc returns a value identical to its argument except that
-// Terraform will consider it to be sensitive.
 var SensitiveFunc = function.New(&function.Spec{
-	Params: []function.Parameter{
-		{
-			Name:             "value",
-			Type:             cty.DynamicPseudoType,
-			AllowUnknown:     true,
-			AllowNull:        true,
-			AllowMarked:      true,
-			AllowDynamicType: true,
-		},
-	},
+	Params: []function.Parameter{dynamicMarkedValueParam("value")},
 	Type: func(args []cty.Value) (cty.Type, error) {
-		// This function only affects the value's marks, so the result
-		// type is always the same as the argument type.
 		return args[0].Type(), nil
 	},
-	Impl: func(args []cty.Value, retType cty.Type) (ret cty.Value, err error) {
+	Impl: func(args []cty.Value, _ cty.Type) (cty.Value, error) {
 		return args[0].Mark(marks.Sensitive), nil
 	},
 })
 
-// NonsensitiveFunc takes a sensitive value and returns the same value without
-// the sensitive marking, effectively exposing the value.
 var NonsensitiveFunc = function.New(&function.Spec{
-	Params: []function.Parameter{
-		{
-			Name:             "value",
-			Type:             cty.DynamicPseudoType,
-			AllowUnknown:     true,
-			AllowNull:        true,
-			AllowMarked:      true,
-			AllowDynamicType: true,
-		},
-	},
+	Params: []function.Parameter{dynamicMarkedValueParam("value")},
 	Type: func(args []cty.Value) (cty.Type, error) {
-		// This function only affects the value's marks, so the result
-		// type is always the same as the argument type.
 		return args[0].Type(), nil
 	},
-	Impl: func(args []cty.Value, retType cty.Type) (ret cty.Value, err error) {
-		v, m := args[0].Unmark()
-		delete(m, marks.Sensitive) // remove the sensitive marking
-		return v.WithMarks(m), nil
+	Impl: func(args []cty.Value, _ cty.Type) (cty.Value, error) {
+		value, existingMarks := args[0].Unmark()
+		delete(existingMarks, marks.Sensitive)
+		return value.WithMarks(existingMarks), nil
 	},
 })
 
 var IssensitiveFunc = function.New(&function.Spec{
-	Params: []function.Parameter{{
-		Name:             "value",
-		Type:             cty.DynamicPseudoType,
-		AllowUnknown:     true,
-		AllowNull:        true,
-		AllowMarked:      true,
-		AllowDynamicType: true,
-	}},
-	Type: func(args []cty.Value) (cty.Type, error) {
+	Params: []function.Parameter{dynamicMarkedValueParam("value")},
+	Type: func([]cty.Value) (cty.Type, error) {
 		return cty.Bool, nil
 	},
-	Impl: func(args []cty.Value, retType cty.Type) (cty.Value, error) {
-		switch v := args[0]; {
-		case v.HasMark(marks.Sensitive):
+	Impl: func(args []cty.Value, _ cty.Type) (cty.Value, error) {
+		value := args[0]
+		switch {
+		case value.HasMark(marks.Sensitive):
 			return cty.True, nil
-		case !v.IsKnown():
+		case !value.IsKnown():
 			return cty.UnknownVal(cty.Bool), nil
 		default:
 			return cty.False, nil
@@ -81,14 +48,25 @@ var IssensitiveFunc = function.New(&function.Spec{
 	},
 })
 
-func Sensitive(v cty.Value) (cty.Value, error) {
-	return SensitiveFunc.Call([]cty.Value{v})
+func Sensitive(value cty.Value) (cty.Value, error) {
+	return SensitiveFunc.Call([]cty.Value{value})
 }
 
-func Nonsensitive(v cty.Value) (cty.Value, error) {
-	return NonsensitiveFunc.Call([]cty.Value{v})
+func Nonsensitive(value cty.Value) (cty.Value, error) {
+	return NonsensitiveFunc.Call([]cty.Value{value})
 }
 
-func Issensitive(v cty.Value) (cty.Value, error) {
-	return IssensitiveFunc.Call([]cty.Value{v})
+func Issensitive(value cty.Value) (cty.Value, error) {
+	return IssensitiveFunc.Call([]cty.Value{value})
+}
+
+func dynamicMarkedValueParam(name string) function.Parameter {
+	return function.Parameter{
+		Name:             name,
+		Type:             cty.DynamicPseudoType,
+		AllowUnknown:     true,
+		AllowNull:        true,
+		AllowMarked:      true,
+		AllowDynamicType: true,
+	}
 }

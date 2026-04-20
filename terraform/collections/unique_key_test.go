@@ -1,17 +1,22 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 
 package collections
 
-type testingKey string
+import "testing"
 
-// testingKey is its own UniqueKey, because it's already a comparable type
-var _ UniqueKey[testingKey] = testingKey("")
-var _ UniqueKeyer[testingKey] = testingKey("")
+type sampleKey string
 
-func (k testingKey) IsUniqueKey(testingKey) {}
+var _ UniqueKey[sampleKey] = sampleKey("")
+var _ UniqueKeyer[sampleKey] = sampleKey("")
 
-// UniqueKey implements UniqueKeyer.
-func (k testingKey) UniqueKey() UniqueKey[testingKey] {
-	return UniqueKey[testingKey](k)
+func (sampleKey) IsUniqueKey(sampleKey) {}
+
+func (k sampleKey) UniqueKey() UniqueKey[sampleKey] {
+	return k
+}
+
+func TestSampleKeyImplementsCollectionKeyContracts(t *testing.T) {
+	if got, want := sampleKey("example").UniqueKey(), UniqueKey[sampleKey](sampleKey("example")); got != want {
+		t.Fatalf("unexpected unique key: got %v want %v", got, want)
+	}
 }

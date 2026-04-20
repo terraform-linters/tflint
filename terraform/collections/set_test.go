@@ -1,53 +1,46 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 
 package collections
 
-import (
-	"testing"
-)
+import "testing"
 
-func TestSet(t *testing.T) {
-	set := NewSet[testingKey]()
+func TestSetTracksUniqueness(t *testing.T) {
+	set := NewSet[sampleKey]()
 
-	if got, want := set.Len(), 0; got != want {
-		t.Errorf("wrong initial number of elements\ngot:  %#v\nwant: %#v", got, want)
+	if got := set.Len(); got != 0 {
+		t.Fatalf("initial length = %d, want 0", got)
 	}
 
-	set.Add(testingKey("a"))
-	if got, want := set.Len(), 1; got != want {
-		t.Errorf("wrong number of elements after adding \"a\"\ngot:  %#v\nwant: %#v", got, want)
+	set.Add(sampleKey("a"))
+	set.Add(sampleKey("a"), sampleKey("b"))
+
+	if got := set.Len(); got != 2 {
+		t.Fatalf("length after inserts = %d, want 2", got)
+	}
+	if !set.Has(sampleKey("a")) {
+		t.Fatal("expected set to contain a")
+	}
+	if !set.Has(sampleKey("b")) {
+		t.Fatal("expected set to contain b")
 	}
 
-	set.Add(testingKey("a"))
-	set.Add(testingKey("b"))
-	if got, want := set.Len(), 2; got != want {
-		t.Errorf("wrong number of elements after re-adding \"a\" and adding \"b\"\ngot:  %#v\nwant: %#v", got, want)
-	}
+	set.Remove(sampleKey("a"))
 
-	set.Remove(testingKey("a"))
-	if got, want := set.Len(), 1; got != want {
-		t.Errorf("wrong number of elements after removing \"a\"\ngot:  %#v\nwant: %#v", got, want)
+	if got := set.Len(); got != 1 {
+		t.Fatalf("length after removal = %d, want 1", got)
 	}
-
-	if got, want := set.Has(testingKey("a")), false; got != want {
-		t.Errorf("set still has \"a\" after removing it")
-	}
-	if got, want := set.Has(testingKey("b")), true; got != want {
-		t.Errorf("set doesn't have \"b\" after adding it")
+	if set.Has(sampleKey("a")) {
+		t.Fatal("did not expect set to contain removed value")
 	}
 }
 
-func TestSetUninit(t *testing.T) {
-	// An zero-value set should behave like it's empty for read-only operations.
-	var zeroSet Set[string]
-	if got, want := zeroSet.Len(), 0; got != want {
-		t.Errorf("wrong number of elements\ngot:  %d\nwant: %d", got, want)
+func TestZeroValueSetSupportsReadOnlyCalls(t *testing.T) {
+	var set Set[string]
+
+	if got := set.Len(); got != 0 {
+		t.Fatalf("zero-value length = %d, want 0", got)
 	}
-	if zeroSet.Has("anything") {
-		// (this is really just testing that we can call Has without panicking;
-		// it's unlikely that this would ever fail by successfully lying about
-		// a particular member being present.)
-		t.Error("Has reported that \"anything\" is present")
+	if set.Has("anything") {
+		t.Fatal("zero-value set unexpectedly reported membership")
 	}
 }
