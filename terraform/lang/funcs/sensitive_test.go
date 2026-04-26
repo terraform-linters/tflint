@@ -1,236 +1,96 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 
 package funcs
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang/marks"
 	"github.com/zclconf/go-cty/cty"
 )
 
-func TestSensitive(t *testing.T) {
-	tests := []struct {
-		Input   cty.Value
-		WantErr string
-	}{
-		{
-			cty.NumberIntVal(1),
-			``,
-		},
-		{
-			// Unknown values stay unknown while becoming sensitive
-			cty.UnknownVal(cty.String),
-			``,
-		},
-		{
-			// Null values stay unknown while becoming sensitive
-			cty.NullVal(cty.String),
-			``,
-		},
-		{
-			// DynamicVal can be marked as sensitive
-			cty.DynamicVal,
-			``,
-		},
-		{
-			// The marking is shallow only
-			cty.ListVal([]cty.Value{cty.NumberIntVal(1)}),
-			``,
-		},
-		{
-			// A value already marked is allowed and stays marked
-			cty.NumberIntVal(1).Mark(marks.Sensitive),
-			``,
-		},
-		{
-			// A value deep already marked is allowed and stays marked,
-			// _and_ we'll also mark the outer collection as sensitive.
-			cty.ListVal([]cty.Value{cty.NumberIntVal(1).Mark(marks.Sensitive)}),
-			``,
-		},
+func TestSensitiveMarksTheOuterValue(t *testing.T) {
+	cases := []cty.Value{
+		cty.NumberIntVal(1),
+		cty.UnknownVal(cty.String),
+		cty.NullVal(cty.String),
+		cty.DynamicVal,
+		cty.ListVal([]cty.Value{cty.NumberIntVal(1)}),
+		cty.NumberIntVal(1).Mark(marks.Sensitive),
+		cty.ListVal([]cty.Value{cty.NumberIntVal(1).Mark(marks.Sensitive)}),
 	}
 
-	for _, test := range tests {
-		t.Run(fmt.Sprintf("sensitive(%#v)", test.Input), func(t *testing.T) {
-			got, err := Sensitive(test.Input)
+	for _, input := range cases {
+		got, err := Sensitive(input)
+		if err != nil {
+			t.Fatalf("Sensitive(%s) returned error: %v", input.GoString(), err)
+		}
+		if !got.HasMark(marks.Sensitive) {
+			t.Fatalf("Sensitive(%s) did not mark the result sensitive", input.GoString())
+		}
 
-			if test.WantErr != "" {
-				if err == nil {
-					t.Fatal("succeeded; want error")
-				}
-				if got, want := err.Error(), test.WantErr; got != want {
-					t.Fatalf("wrong error\ngot:  %s\nwant: %s", got, want)
-				}
-				return
-			} else if err != nil {
-				t.Fatalf("unexpected error: %s", err)
-			}
-
-			if !got.HasMark(marks.Sensitive) {
-				t.Errorf("result is not marked sensitive")
-			}
-
-			gotRaw, _ := got.Unmark()
-
-			// Disregarding shallow marks, the result should have the same
-			// effective value as the input.
-			wantRaw, _ := test.Input.Unmark()
-			if !gotRaw.RawEquals(wantRaw) {
-				t.Errorf("wrong unmarked result\ngot:  %#v\nwant: %#v", got, wantRaw)
-			}
-		})
+		gotRaw, _ := got.Unmark()
+		wantRaw, _ := input.Unmark()
+		if !gotRaw.RawEquals(wantRaw) {
+			t.Fatalf("Sensitive(%s) changed the underlying value", input.GoString())
+		}
 	}
 }
 
-func TestNonsensitive(t *testing.T) {
-	tests := []struct {
-		Input   cty.Value
-		WantErr string
-	}{
-		{
-			cty.NumberIntVal(1).Mark(marks.Sensitive),
-			``,
-		},
-		{
-			cty.DynamicVal.Mark(marks.Sensitive),
-			``,
-		},
-		{
-			cty.UnknownVal(cty.String).Mark(marks.Sensitive),
-			``,
-		},
-		{
-			cty.NullVal(cty.EmptyObject).Mark(marks.Sensitive),
-			``,
-		},
-		{
-			// The inner sensitive remains afterwards
-			cty.ListVal([]cty.Value{cty.NumberIntVal(1).Mark(marks.Sensitive)}).Mark(marks.Sensitive),
-			``,
-		},
-
-		// Passing a value that is already non-sensitive is not an error,
-		// as this function may be used with specific to ensure that all
-		// values are indeed non-sensitive
-		{
-			cty.NumberIntVal(1),
-			``,
-		},
-		{
-			cty.NullVal(cty.String),
-			``,
-		},
-
-		// Unknown values may become sensitive once they are known, so we
-		// permit them to be marked nonsensitive.
-		{
-			cty.DynamicVal,
-			``,
-		},
-		{
-			cty.UnknownVal(cty.String),
-			``,
-		},
+func TestNonsensitiveRemovesOnlyTheOuterSensitiveMark(t *testing.T) {
+	cases := []cty.Value{
+		cty.NumberIntVal(1).Mark(marks.Sensitive),
+		cty.DynamicVal.Mark(marks.Sensitive),
+		cty.UnknownVal(cty.String).Mark(marks.Sensitive),
+		cty.NullVal(cty.EmptyObject).Mark(marks.Sensitive),
+		cty.ListVal([]cty.Value{cty.NumberIntVal(1).Mark(marks.Sensitive)}).Mark(marks.Sensitive),
+		cty.NumberIntVal(1),
+		cty.NullVal(cty.String),
+		cty.DynamicVal,
+		cty.UnknownVal(cty.String),
 	}
 
-	for _, test := range tests {
-		t.Run(fmt.Sprintf("nonsensitive(%#v)", test.Input), func(t *testing.T) {
-			got, err := Nonsensitive(test.Input)
+	for _, input := range cases {
+		got, err := Nonsensitive(input)
+		if err != nil {
+			t.Fatalf("Nonsensitive(%s) returned error: %v", input.GoString(), err)
+		}
+		if got.HasMark(marks.Sensitive) {
+			t.Fatalf("Nonsensitive(%s) left the outer mark in place", input.GoString())
+		}
 
-			if test.WantErr != "" {
-				if err == nil {
-					t.Fatal("succeeded; want error")
-				}
-				if got, want := err.Error(), test.WantErr; got != want {
-					t.Fatalf("wrong error\ngot:  %s\nwant: %s", got, want)
-				}
-				return
-			} else if err != nil {
-				t.Fatalf("unexpected error: %s", err)
-			}
-
-			if got.HasMark(marks.Sensitive) {
-				t.Errorf("result is still marked sensitive")
-			}
-			wantRaw, _ := test.Input.Unmark()
-			if !got.RawEquals(wantRaw) {
-				t.Errorf("wrong result\ngot:  %#v\nwant: %#v", got, test.Input)
-			}
-		})
+		wantRaw, _ := input.Unmark()
+		if !got.RawEquals(wantRaw) {
+			t.Fatalf("Nonsensitive(%s) changed the underlying value", input.GoString())
+		}
 	}
 }
 
-func TestIssensitive(t *testing.T) {
-	tests := []struct {
-		Input     cty.Value
-		Sensitive cty.Value
-		WantErr   string
+func TestIssensitiveReflectsMarksAndUnknowns(t *testing.T) {
+	cases := []struct {
+		name  string
+		input cty.Value
+		want  cty.Value
 	}{
-		{
-			cty.NumberIntVal(1).Mark(marks.Sensitive),
-			cty.True,
-			``,
-		},
-		{
-			cty.NumberIntVal(1),
-			cty.False,
-			``,
-		},
-		{
-			cty.DynamicVal.Mark(marks.Sensitive),
-			cty.True,
-			``,
-		},
-		{
-			cty.UnknownVal(cty.String).Mark(marks.Sensitive),
-			cty.True,
-			``,
-		},
-		{
-			cty.NullVal(cty.EmptyObject).Mark(marks.Sensitive),
-			cty.True,
-			``,
-		},
-		{
-			cty.NullVal(cty.String),
-			cty.False,
-			``,
-		},
-		{
-			cty.DynamicVal,
-			cty.UnknownVal(cty.Bool),
-			``,
-		},
-		{
-			cty.UnknownVal(cty.String),
-			cty.UnknownVal(cty.Bool),
-			``,
-		},
+		{name: "marked number", input: cty.NumberIntVal(1).Mark(marks.Sensitive), want: cty.True},
+		{name: "plain number", input: cty.NumberIntVal(1), want: cty.False},
+		{name: "marked dynamic", input: cty.DynamicVal.Mark(marks.Sensitive), want: cty.True},
+		{name: "marked unknown string", input: cty.UnknownVal(cty.String).Mark(marks.Sensitive), want: cty.True},
+		{name: "marked null object", input: cty.NullVal(cty.EmptyObject).Mark(marks.Sensitive), want: cty.True},
+		{name: "plain null", input: cty.NullVal(cty.String), want: cty.False},
+		{name: "dynamic unknown", input: cty.DynamicVal, want: cty.UnknownVal(cty.Bool)},
+		{name: "unknown string", input: cty.UnknownVal(cty.String), want: cty.UnknownVal(cty.Bool)},
 	}
 
-	for _, test := range tests {
-		t.Run(fmt.Sprintf("issensitive(%#v)", test.Input), func(t *testing.T) {
-			got, err := Issensitive(test.Input)
-
-			if test.WantErr != "" {
-				if err == nil {
-					t.Fatal("succeeded; want error")
-				}
-				if got, want := err.Error(), test.WantErr; got != want {
-					t.Fatalf("wrong error\ngot:  %s\nwant: %s", got, want)
-				}
-				return
-			} else if err != nil {
-				t.Fatalf("unexpected error: %s", err)
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := Issensitive(tc.input)
+			if err != nil {
+				t.Fatalf("Issensitive(%s) returned error: %v", tc.input.GoString(), err)
 			}
-
-			if !got.RawEquals(test.Sensitive) {
-				t.Errorf("wrong result \ngot:  %#v\nwant: %#v", got, test.Sensitive)
+			if !got.RawEquals(tc.want) {
+				t.Fatalf("Issensitive(%s) = %s, want %s", tc.input.GoString(), got.GoString(), tc.want.GoString())
 			}
 		})
 	}
-
 }

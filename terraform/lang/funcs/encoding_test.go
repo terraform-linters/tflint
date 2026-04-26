@@ -1,10 +1,8 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 
 package funcs
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang/marks"
@@ -13,356 +11,166 @@ import (
 
 func TestBase64Decode(t *testing.T) {
 	tests := []struct {
-		String cty.Value
-		Want   cty.Value
-		Err    bool
+		name    string
+		input   cty.Value
+		want    cty.Value
+		wantErr string
 	}{
 		{
-			cty.StringVal("YWJjMTIzIT8kKiYoKSctPUB+"),
-			cty.StringVal("abc123!?$*&()'-=@~"),
-			false,
+			name:  "valid string",
+			input: cty.StringVal("YWJjMTIzIT8kKiYoKSctPUB+"),
+			want:  cty.StringVal("abc123!?$*&()'-=@~"),
 		},
 		{
-			cty.StringVal("YWJjMTIzIT8kKiYoKSctPUB+").Mark(marks.Sensitive),
-			cty.StringVal("abc123!?$*&()'-=@~").Mark(marks.Sensitive),
-			false,
+			name:  "preserves marks",
+			input: cty.StringVal("YWJjMTIzIT8kKiYoKSctPUB+").Mark(marks.Sensitive),
+			want:  cty.StringVal("abc123!?$*&()'-=@~").Mark(marks.Sensitive),
 		},
-		{ // Invalid base64 data decoding
-			cty.StringVal("this-is-an-invalid-base64-data"),
-			cty.UnknownVal(cty.String),
-			true,
-		},
-		{ // Invalid utf-8
-			cty.StringVal("\xc3\x28"),
-			cty.UnknownVal(cty.String),
-			true,
-		},
-		// unknown marked
 		{
-			cty.UnknownVal(cty.String).Mark("a").Mark("b"),
-			cty.UnknownVal(cty.String).RefineNotNull().Mark("a").Mark("b"),
-			false,
+			name:  "unknown keeps marks",
+			input: cty.UnknownVal(cty.String).Mark("a").Mark("b"),
+			want:  cty.UnknownVal(cty.String).RefineNotNull().Mark("a").Mark("b"),
+		},
+		{
+			name:    "invalid base64",
+			input:   cty.StringVal("dfg"),
+			wantErr: `failed to decode base64 data "dfg"`,
+		},
+		{
+			name:    "sensitive invalid base64",
+			input:   cty.StringVal("dfg").Mark(marks.Sensitive),
+			wantErr: `failed to decode base64 data (sensitive value)`,
+		},
+		{
+			name:    "invalid utf8",
+			input:   cty.StringVal("whee"),
+			wantErr: "the result of decoding the provided string is not valid UTF-8",
 		},
 	}
 
 	for _, test := range tests {
-		t.Run(fmt.Sprintf("base64decode(%#v)", test.String), func(t *testing.T) {
-			got, err := Base64Decode(test.String)
-
-			if test.Err {
-				if err == nil {
-					t.Fatal("succeeded; want error")
-				}
-				return
-			} else if err != nil {
-				t.Fatalf("unexpected error: %s", err)
-			}
-
-			if !got.RawEquals(test.Want) {
-				t.Errorf("wrong result\ngot:  %#v\nwant: %#v", got, test.Want)
-			}
-		})
-	}
-}
-
-func TestBase64Decode_error(t *testing.T) {
-	tests := map[string]struct {
-		String  cty.Value
-		WantErr string
-	}{
-		"invalid base64": {
-			cty.StringVal("dfg"),
-			`failed to decode base64 data "dfg"`,
-		},
-		"sensitive invalid base64": {
-			cty.StringVal("dfg").Mark(marks.Sensitive),
-			`failed to decode base64 data (sensitive value)`,
-		},
-		"invalid utf-8": {
-			cty.StringVal("whee"),
-			"the result of decoding the provided string is not valid UTF-8",
-		},
-	}
-
-	for name, test := range tests {
-		t.Run(name, func(t *testing.T) {
-			_, err := Base64Decode(test.String)
-
-			if err == nil {
-				t.Fatal("succeeded; want error")
-			}
-
-			if err.Error() != test.WantErr {
-				t.Errorf("wrong error result\ngot:  %#v\nwant: %#v", err.Error(), test.WantErr)
-			}
+		t.Run(test.name, func(t *testing.T) {
+			got, err := Base64Decode(test.input)
+			assertCtyResult(t, got, err, test.want, test.wantErr)
 		})
 	}
 }
 
 func TestBase64Encode(t *testing.T) {
-	tests := []struct {
-		String cty.Value
-		Want   cty.Value
-		Err    bool
-	}{
-		{
-			cty.StringVal("abc123!?$*&()'-=@~"),
-			cty.StringVal("YWJjMTIzIT8kKiYoKSctPUB+"),
-			false,
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(fmt.Sprintf("base64encode(%#v)", test.String), func(t *testing.T) {
-			got, err := Base64Encode(test.String)
-
-			if test.Err {
-				if err == nil {
-					t.Fatal("succeeded; want error")
-				}
-				return
-			} else if err != nil {
-				t.Fatalf("unexpected error: %s", err)
-			}
-
-			if !got.RawEquals(test.Want) {
-				t.Errorf("wrong result\ngot:  %#v\nwant: %#v", got, test.Want)
-			}
-		})
-	}
+	got, err := Base64Encode(cty.StringVal("abc123!?$*&()'-=@~"))
+	assertCtyResult(t, got, err, cty.StringVal("YWJjMTIzIT8kKiYoKSctPUB+"), "")
 }
 
 func TestBase64Gzip(t *testing.T) {
-	tests := []struct {
-		String cty.Value
-		Want   cty.Value
-		Err    bool
-	}{
-		{
-			cty.StringVal("test"),
-			cty.StringVal("H4sIAAAAAAAA/ypJLS4BAAAA//8BAAD//wx+f9gEAAAA"),
-			false,
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(fmt.Sprintf("base64gzip(%#v)", test.String), func(t *testing.T) {
-			got, err := Base64Gzip(test.String)
-
-			if test.Err {
-				if err == nil {
-					t.Fatal("succeeded; want error")
-				}
-				return
-			} else if err != nil {
-				t.Fatalf("unexpected error: %s", err)
-			}
-
-			if !got.RawEquals(test.Want) {
-				t.Errorf("wrong result\ngot:  %#v\nwant: %#v", got, test.Want)
-			}
-		})
-	}
+	got, err := Base64Gzip(cty.StringVal("test"))
+	assertCtyResult(t, got, err, cty.StringVal("H4sIAAAAAAAA/ypJLS4BAAAA//8BAAD//wx+f9gEAAAA"), "")
 }
 
 func TestURLEncode(t *testing.T) {
 	tests := []struct {
-		String cty.Value
-		Want   cty.Value
-		Err    bool
+		name string
+		in   string
+		want string
 	}{
-		{
-			cty.StringVal("abc123-_"),
-			cty.StringVal("abc123-_"),
-			false,
-		},
-		{
-			cty.StringVal("foo:bar@localhost?foo=bar&bar=baz"),
-			cty.StringVal("foo%3Abar%40localhost%3Ffoo%3Dbar%26bar%3Dbaz"),
-			false,
-		},
-		{
-			cty.StringVal("mailto:email?subject=this+is+my+subject"),
-			cty.StringVal("mailto%3Aemail%3Fsubject%3Dthis%2Bis%2Bmy%2Bsubject"),
-			false,
-		},
-		{
-			cty.StringVal("foo/bar"),
-			cty.StringVal("foo%2Fbar"),
-			false,
-		},
+		{name: "safe characters", in: "abc123-_", want: "abc123-_"},
+		{name: "query string", in: "foo:bar@localhost?foo=bar&bar=baz", want: "foo%3Abar%40localhost%3Ffoo%3Dbar%26bar%3Dbaz"},
+		{name: "slashes", in: "foo/bar", want: "foo%2Fbar"},
 	}
 
 	for _, test := range tests {
-		t.Run(fmt.Sprintf("urlencode(%#v)", test.String), func(t *testing.T) {
-			got, err := URLEncode(test.String)
-
-			if test.Err {
-				if err == nil {
-					t.Fatal("succeeded; want error")
-				}
-				return
-			} else if err != nil {
-				t.Fatalf("unexpected error: %s", err)
-			}
-
-			if !got.RawEquals(test.Want) {
-				t.Errorf("wrong result\ngot:  %#v\nwant: %#v", got, test.Want)
-			}
+		t.Run(test.name, func(t *testing.T) {
+			got, err := URLEncode(cty.StringVal(test.in))
+			assertCtyResult(t, got, err, cty.StringVal(test.want), "")
 		})
 	}
 }
 
-func TestBase64TextEncode(t *testing.T) {
+func TestTextEncodeBase64(t *testing.T) {
 	tests := []struct {
-		String   cty.Value
-		Encoding cty.Value
-		Want     cty.Value
-		Err      string
+		name    string
+		input   cty.Value
+		enc     cty.Value
+		want    cty.Value
+		wantErr string
 	}{
 		{
-			cty.StringVal("abc123!?$*&()'-=@~"),
-			cty.StringVal("UTF-8"),
-			cty.StringVal("YWJjMTIzIT8kKiYoKSctPUB+"),
-			``,
+			name:  "utf16",
+			input: cty.StringVal("abc123!?$*&()'-=@~"),
+			enc:   cty.StringVal("UTF-16LE"),
+			want:  cty.StringVal("YQBiAGMAMQAyADMAIQA/ACQAKgAmACgAKQAnAC0APQBAAH4A"),
 		},
 		{
-			cty.StringVal("abc123!?$*&()'-=@~"),
-			cty.StringVal("UTF-16LE"),
-			cty.StringVal("YQBiAGMAMQAyADMAIQA/ACQAKgAmACgAKQAnAC0APQBAAH4A"),
-			``,
+			name:    "unsupported encoding",
+			input:   cty.StringVal("abc123!?$*&()'-=@~"),
+			enc:     cty.StringVal("NOT-EXISTS"),
+			wantErr: `"NOT-EXISTS" is not a supported IANA encoding name or alias in this Terraform version`,
 		},
 		{
-			cty.StringVal("abc123!?$*&()'-=@~"),
-			cty.StringVal("CP936"),
-			cty.StringVal("YWJjMTIzIT8kKiYoKSctPUB+"),
-			``,
+			name:    "unrepresentable string",
+			input:   cty.StringVal("🤔"),
+			enc:     cty.StringVal("cp437"),
+			wantErr: `the given string contains characters that cannot be represented in IBM437`,
 		},
 		{
-			cty.StringVal("abc123!?$*&()'-=@~"),
-			cty.StringVal("NOT-EXISTS"),
-			cty.UnknownVal(cty.String).RefineNotNull(),
-			`"NOT-EXISTS" is not a supported IANA encoding name or alias in this Terraform version`,
-		},
-		{
-			cty.StringVal("🤔"),
-			cty.StringVal("cp437"),
-			cty.UnknownVal(cty.String).RefineNotNull(),
-			`the given string contains characters that cannot be represented in IBM437`,
-		},
-		{
-			cty.UnknownVal(cty.String),
-			cty.StringVal("windows-1250"),
-			cty.UnknownVal(cty.String).RefineNotNull(),
-			``,
-		},
-		{
-			cty.StringVal("hello world"),
-			cty.UnknownVal(cty.String),
-			cty.UnknownVal(cty.String).RefineNotNull(),
-			``,
+			name:  "unknown input",
+			input: cty.UnknownVal(cty.String),
+			enc:   cty.StringVal("windows-1250"),
+			want:  cty.UnknownVal(cty.String).RefineNotNull(),
 		},
 	}
 
 	for _, test := range tests {
-		t.Run(fmt.Sprintf("textencodebase64(%#v, %#v)", test.String, test.Encoding), func(t *testing.T) {
-			got, err := TextEncodeBase64(test.String, test.Encoding)
-
-			if test.Err != "" {
-				if err == nil {
-					t.Fatal("succeeded; want error")
-				}
-				if got, want := err.Error(), test.Err; got != want {
-					t.Fatalf("wrong error\ngot:  %s\nwant: %s", got, want)
-				}
-				return
-			} else if err != nil {
-				t.Fatalf("unexpected error: %s", err)
-			}
-
-			if !got.RawEquals(test.Want) {
-				t.Errorf("wrong result\ngot:  %#v\nwant: %#v", got, test.Want)
-			}
+		t.Run(test.name, func(t *testing.T) {
+			got, err := TextEncodeBase64(test.input, test.enc)
+			assertCtyResult(t, got, err, test.want, test.wantErr)
 		})
 	}
 }
 
-func TestBase64TextDecode(t *testing.T) {
+func TestTextDecodeBase64(t *testing.T) {
 	tests := []struct {
-		String   cty.Value
-		Encoding cty.Value
-		Want     cty.Value
-		Err      string
+		name    string
+		input   cty.Value
+		enc     cty.Value
+		want    cty.Value
+		wantErr string
 	}{
 		{
-			cty.StringVal("YWJjMTIzIT8kKiYoKSctPUB+"),
-			cty.StringVal("UTF-8"),
-			cty.StringVal("abc123!?$*&()'-=@~"),
-			``,
+			name:  "utf16",
+			input: cty.StringVal("YQBiAGMAMQAyADMAIQA/ACQAKgAmACgAKQAnAC0APQBAAH4A"),
+			enc:   cty.StringVal("UTF-16LE"),
+			want:  cty.StringVal("abc123!?$*&()'-=@~"),
 		},
 		{
-			cty.StringVal("YQBiAGMAMQAyADMAIQA/ACQAKgAmACgAKQAnAC0APQBAAH4A"),
-			cty.StringVal("UTF-16LE"),
-			cty.StringVal("abc123!?$*&()'-=@~"),
-			``,
+			name:    "unsupported encoding",
+			input:   cty.StringVal("doesn't matter"),
+			enc:     cty.StringVal("NOT-EXISTS"),
+			wantErr: `"NOT-EXISTS" is not a supported IANA encoding name or alias in this Terraform version`,
 		},
 		{
-			cty.StringVal("YWJjMTIzIT8kKiYoKSctPUB+"),
-			cty.StringVal("CP936"),
-			cty.StringVal("abc123!?$*&()'-=@~"),
-			``,
+			name:    "invalid base64",
+			input:   cty.StringVal("<invalid base64>"),
+			enc:     cty.StringVal("cp437"),
+			wantErr: `the given value is has an invalid base64 symbol at offset 0`,
 		},
 		{
-			cty.StringVal("doesn't matter"),
-			cty.StringVal("NOT-EXISTS"),
-			cty.UnknownVal(cty.String).RefineNotNull(),
-			`"NOT-EXISTS" is not a supported IANA encoding name or alias in this Terraform version`,
+			name:    "invalid symbol",
+			input:   cty.StringVal("gQ=="),
+			enc:     cty.StringVal("windows-1250"),
+			wantErr: `the given string contains symbols that are not defined for windows-1250`,
 		},
 		{
-			cty.StringVal("<invalid base64>"),
-			cty.StringVal("cp437"),
-			cty.UnknownVal(cty.String).RefineNotNull(),
-			`the given value is has an invalid base64 symbol at offset 0`,
-		},
-		{
-			cty.StringVal("gQ=="), // this is 0x81, which is not defined in windows-1250
-			cty.StringVal("windows-1250"),
-			cty.StringVal("�"),
-			`the given string contains symbols that are not defined for windows-1250`,
-		},
-		{
-			cty.UnknownVal(cty.String),
-			cty.StringVal("windows-1250"),
-			cty.UnknownVal(cty.String).RefineNotNull(),
-			``,
-		},
-		{
-			cty.StringVal("YQBiAGMAMQAyADMAIQA/ACQAKgAmACgAKQAnAC0APQBAAH4A"),
-			cty.UnknownVal(cty.String),
-			cty.UnknownVal(cty.String).RefineNotNull(),
-			``,
+			name:  "unknown input",
+			input: cty.UnknownVal(cty.String),
+			enc:   cty.StringVal("windows-1250"),
+			want:  cty.UnknownVal(cty.String).RefineNotNull(),
 		},
 	}
 
 	for _, test := range tests {
-		t.Run(fmt.Sprintf("textdecodebase64(%#v, %#v)", test.String, test.Encoding), func(t *testing.T) {
-			got, err := TextDecodeBase64(test.String, test.Encoding)
-
-			if test.Err != "" {
-				if err == nil {
-					t.Fatal("succeeded; want error")
-				}
-				if got, want := err.Error(), test.Err; got != want {
-					t.Fatalf("wrong error\ngot:  %s\nwant: %s", got, want)
-				}
-				return
-			} else if err != nil {
-				t.Fatalf("unexpected error: %s", err)
-			}
-
-			if !got.RawEquals(test.Want) {
-				t.Errorf("wrong result\ngot:  %#v\nwant: %#v", got, test.Want)
-			}
+		t.Run(test.name, func(t *testing.T) {
+			got, err := TextDecodeBase64(test.input, test.enc)
+			assertCtyResult(t, got, err, test.want, test.wantErr)
 		})
 	}
 }

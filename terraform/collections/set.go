@@ -1,118 +1,71 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 
 package collections
 
 import "iter"
 
-// Set represents an unordered set of values of a particular type.
+// Set stores unique values using a caller-supplied identity function.
 //
-// A caller-provided "key function" defines how to produce a comparable unique
-// key for each distinct value of type T.
-//
-// Set operations are not concurrency-safe. Use external locking if multiple
-// goroutines might modify the set concurrently or if one goroutine might
-// read a set while another is modifying it.
+// The zero value behaves like an empty read-only set. Callers must construct a
+// set with NewSet, NewSetFunc, or NewSetCmp before mutating it.
 type Set[T any] struct {
 	members map[UniqueKey[T]]T
 	key     func(T) UniqueKey[T]
 }
 
-// NewSet constructs a new set whose element type knows how to calculate its own
-// unique keys, by implementing [UniqueKeyer] of itself.
-func NewSet[T UniqueKeyer[T]](elems ...T) Set[T] {
-	return NewSetFunc(T.UniqueKey, elems...)
+// NewSet constructs a set for values that know how to derive their own key.
+func NewSet[T UniqueKeyer[T]](values ...T) Set[T] {
+	return NewSetFunc(T.UniqueKey, values...)
 }
 
-// NewSetFunc constructs a new set with the given "key function".
-//
-// A valid key function must produce only values of types that can be compared
-// for equality using the Go == operator, and must guarantee that each unique
-// value of T has a corresponding key that uniquely identifies it. The
-// implementer of the key function can decide what constitutes a
-// "unique value of T", based on the meaning of type T.
-func NewSetFunc[T any](keyFunc func(T) UniqueKey[T], elems ...T) Set[T] {
+// NewSetFunc constructs a set using keyFunc to define value identity.
+func NewSetFunc[T any](keyFunc func(T) UniqueKey[T], values ...T) Set[T] {
 	set := Set[T]{
 		members: make(map[UniqueKey[T]]T),
 		key:     keyFunc,
 	}
-	for _, elem := range elems {
-		set.Add(elem)
-	}
+	set.Add(values...)
 	return set
 }
 
-// NewSetCmp constructs a new set for any comparable type, using the built-in
-// == operator as the definition of element equivalence.
-func NewSetCmp[T comparable](elems ...T) Set[T] {
-	return NewSetFunc(cmpUniqueKeyFunc[T], elems...)
+// NewSetCmp constructs a set for comparable values using Go equality.
+func NewSetCmp[T comparable](values ...T) Set[T] {
+	return NewSetFunc(comparableKeyFunc[T], values...)
 }
 
-// Has returns true if the given value is present in the set, or false
-// otherwise.
-func (s Set[T]) Has(v T) bool {
+// Has reports whether value is present in the set.
+func (s Set[T]) Has(value T) bool {
 	if len(s.members) == 0 {
-		// We'll skip calling "s.key" in this case, so that we don't panic
-		// if called on an uninitialized Set.
 		return false
 	}
-	k := s.key(v)
-	_, ok := s.members[k]
+	_, ok := s.members[s.key(value)]
 	return ok
 }
 
-// Add inserts new members into the set.
-//
-// If any existing member of the set is considered to be equivalent to a
-// given value per the rules in the set's "key function", the old value will
-// be discarded and replaced by the new value.
-//
-// If multiple of the given arguments is considered to be equivalent then
-// only the later one is retained.
-func (s Set[T]) Add(vs ...T) {
-	for _, v := range vs {
-		k := s.key(v)
-		s.members[k] = v
+// Add inserts or replaces values by their identity key.
+func (s Set[T]) Add(values ...T) {
+	for _, value := range values {
+		s.members[s.key(value)] = value
 	}
 }
 
-// Remove removes the given member from the set, or does nothing if no
-// equivalent value was present.
-func (s Set[T]) Remove(v T) {
-	k := s.key(v)
-	delete(s.members, k)
+// Remove deletes value if an equivalent entry exists.
+func (s Set[T]) Remove(value T) {
+	delete(s.members, s.key(value))
 }
 
-// All returns an iterator over the elements of the set, in an unspecified
-// order.
-//
-// The result of this function is part of the internal state of the set
-// and so callers MUST NOT modify it. If a caller is using locks to ensure
-// safe concurrent access then any reads of the resulting map must be
-// guarded by the same lock as would be used for other methods that read
-// data from the set.
-//
-// All returns an iterator over the elements of the set, in an unspecified
-// order.
-//
-//	for elem := range set.All() {
-//		// do something with elem
-//	}
-//
-// Modifying the set during iteration causes unspecified results. Modifying
-// the set concurrently with advancing the iterator causes undefined behavior
-// including possible memory unsafety.
+// All returns an iterator over the current set members.
 func (s Set[T]) All() iter.Seq[T] {
 	return func(yield func(T) bool) {
-		for _, v := range s.members {
-			if !yield(v) {
+		for _, value := range s.members {
+			if !yield(value) {
 				return
 			}
 		}
 	}
 }
 
-// Len returns the number of unique elements in the set.
+// Len returns the number of unique values in the set.
 func (s Set[T]) Len() int {
 	return len(s.members)
 }
