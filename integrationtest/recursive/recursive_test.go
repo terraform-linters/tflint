@@ -45,6 +45,12 @@ func TestIntegration(t *testing.T) {
 			command: "tflint --chdir=subdir1 --recursive --format json --force",
 			dir:     "chdir",
 		},
+		{
+			name:        "multiple chdir",
+			command:     "tflint --chdir=subdir1 --chdir=subdir2 --format json --force",
+			dir:         "basic",
+			ignoreOrder: true,
+		},
 	}
 
 	dir, _ := os.Getwd()
