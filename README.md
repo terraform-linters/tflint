@@ -139,7 +139,7 @@ Application Options:
       --var-file=FILE                                           Terraform variable file name
       --var='foo=bar'                                           Set a Terraform variable
       --call-module-type=[all|local|none]                       Types of module to call (default: local)
-      --chdir=DIR                                               Switch to a different working directory before executing the command
+      --chdir=DIR                                               Switch to different working directories before executing the command
       --recursive                                               Run command in each directory recursively
       --filter=FILE                                             Filter issues by file names or globs
       --force                                                   Return zero exit status even if issues found
