@@ -18,11 +18,29 @@ TFLint is a framework and each feature is provided by plugins, the key features 
 
 ## Installation
 
-Bash script (Linux):
+Linux:
+
+Download the appropriate archive from the [latest release](https://github.com/terraform-linters/tflint/releases/latest), verify it, and install the binary:
 
 ```console
-curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+curl -sSLO https://github.com/terraform-linters/tflint/releases/latest/download/tflint_linux_amd64.zip
+curl -sSLO https://github.com/terraform-linters/tflint/releases/latest/download/checksums.txt
+gh attestation verify checksums.txt -R terraform-linters/tflint
+sha256sum --ignore-missing -c checksums.txt
+unzip tflint_linux_amd64.zip
+sudo install -c -v tflint /usr/local/bin/
 ```
+
+For other architectures, replace `linux_amd64` with the archive that matches your system.
+
+For local convenience, the installation script is still available in this repository, but it is not recommended for CI workflows or Dockerfiles:
+
+```console
+./install_linux.sh
+```
+
+> [!WARNING]
+> Piping remote scripts directly into a shell is not recommended for CI workflows or Dockerfiles.
 
 Homebrew (macOS):
 

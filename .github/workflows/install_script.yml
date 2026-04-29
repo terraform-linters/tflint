@@ -50,8 +50,9 @@ jobs:
     - name: Non-existent version
       id: fail
       continue-on-error: true
-      # Install instructions pipe the script from curl to bash
-      # Passing scripts via stdin can have differing behavior from passing as a file arg
+      # Keep coverage for executing the installation script via stdin.
+      # This matches the deprecated convenience pattern and can behave differently
+      # from passing the script as a file argument.
       run: |
         bash < install_linux.sh
         tflint -v
