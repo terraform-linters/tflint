@@ -64,13 +64,24 @@ func NewLoader(fs afero.Afero, originalWd string) (*Loader, error) {
 	return ret, nil
 }
 
+type VariablesCtx struct {
+	TFvars  []InputValues
+	CLIvars []string
+}
+
 // LoadConfig reads the Terraform module in the given directory and uses it as the
 // root module to build the static module tree that represents a configuration.
-func (l *Loader) LoadConfig(dir string, callModuleType CallModuleType) (*Config, hcl.Diagnostics) {
+func (l *Loader) LoadConfig(dir string, callModuleType CallModuleType, vars VariablesCtx) (*Config, hcl.Diagnostics) {
 	mod, diags := l.parser.LoadConfigDir(l.baseDir, dir)
 	if diags.HasErrors() {
 		return nil, diags
 	}
+
+	cliVars, diags := ParseVariableValues(vars.CLIvars, mod.Variables)
+	if diags.HasErrors() {
+		return nil, diags
+	}
+	variables := append(vars.TFvars, cliVars)
 
 	var walker ModuleWalkerFunc
 	switch callModuleType {
@@ -86,7 +97,7 @@ func (l *Loader) LoadConfig(dir string, callModuleType CallModuleType) (*Config,
 		panic(fmt.Sprintf("unexpected module call type: %d", callModuleType))
 	}
 
-	cfg, diags := BuildConfig(mod, walker)
+	cfg, diags := BuildConfig(mod, walker, variables...)
 	if diags.HasErrors() {
 		return nil, diags
 	}
