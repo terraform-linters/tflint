@@ -1,5 +1,5 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: MPL-2.0
+// Copyright IBM Corp. 2014, 2026
+// SPDX-License-Identifier: BUSL-1.1
 
 package terraform
 
@@ -7,15 +7,13 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
-	"github.com/terraform-linters/tflint/terraform/addrs"
 )
 
 type ModuleCall struct {
-	Name          string
-	SourceAddr    addrs.ModuleSource
-	SourceAddrRaw string
+	Name           string
+	SourceExpr     hcl.Expression
+	SourceResolved string
 
 	DeclRange hcl.Range
 }
@@ -29,21 +27,7 @@ func decodeModuleBlock(block *hclext.Block) (*ModuleCall, hcl.Diagnostics) {
 	}
 
 	if attr, exists := block.Body.Attributes["source"]; exists {
-		valDiags := gohcl.DecodeExpression(attr.Expr, nil, &mc.SourceAddrRaw)
-		diags = diags.Extend(valDiags)
-
-		if !diags.HasErrors() {
-			var err error
-			mc.SourceAddr, err = addrs.ParseModuleSource(mc.SourceAddrRaw)
-			if err != nil {
-				diags = diags.Append(&hcl.Diagnostic{
-					Severity: hcl.DiagError,
-					Summary:  "Invalid module source address",
-					Detail:   fmt.Sprintf("Failed to parse module source address: %s", err),
-					Subject:  attr.Expr.Range().Ptr(),
-				})
-			}
-		}
+		mc.SourceExpr = attr.Expr
 	}
 
 	return mc, diags

@@ -223,6 +223,11 @@ func TestIntegration(t *testing.T) {
 			Command: "tflint --format json",
 			Dir:     "traversals",
 		},
+		{
+			Name:    "dynamic module sources",
+			Command: "tflint --format json",
+			Dir:     "dynamic-module-sources",
+		},
 	}
 
 	// Disable the bundled plugin because the `os.Executable()` is go(1) in the tests

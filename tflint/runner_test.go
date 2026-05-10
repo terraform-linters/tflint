@@ -1,7 +1,6 @@
 package tflint
 
 import (
-	"errors"
 	"path/filepath"
 	"testing"
 
@@ -268,22 +267,6 @@ func Test_NewModuleRunners_ignoreModules(t *testing.T) {
 
 		if len(runners) != 0 {
 			t.Fatalf(`This function must not return runners because "ignore_module" is set. Got %d runner(s)`, len(runners))
-		}
-	})
-}
-
-func Test_NewModuleRunners_withInvalidExpression(t *testing.T) {
-	withinFixtureDir(t, "invalid_module_attribute", func() {
-		runner := testRunnerWithOsFs(t, moduleConfig())
-
-		_, err := NewModuleRunners(runner)
-
-		expected := errors.New(`module.tf:4,16-29: Invalid "terraform" attribute; The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The "state environment" concept was renamed to "workspace" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.`)
-		if err == nil {
-			t.Fatal("an error was expected to occur, but it did not")
-		}
-		if expected.Error() != err.Error() {
-			t.Fatalf(`expected error is "%s", but get "%s"`, expected, err)
 		}
 	})
 }

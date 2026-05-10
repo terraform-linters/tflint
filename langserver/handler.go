@@ -171,13 +171,13 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 		return ret, fmt.Errorf("Failed to prepare loading: %w", err)
 	}
 
-	configs, diags := loader.LoadConfig(".", h.config.CallModuleType)
+	rootMod, diags := loader.LoadRootModule(".")
 	if diags.HasErrors() {
-		return ret, fmt.Errorf("Failed to load configurations: %w", diags)
+		return ret, fmt.Errorf("Failed to load the root module: %w", diags)
 	}
 	files, diags := loader.LoadConfigDirFiles(".")
 	if diags.HasErrors() {
-		return ret, fmt.Errorf("Failed to load configurations: %w", diags)
+		return ret, fmt.Errorf("Failed to list configuration files: %w", diags)
 	}
 	annotations := map[string]tflint.Annotations{}
 	for path, file := range files {
@@ -190,11 +190,21 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 	if diags.HasErrors() {
 		return ret, fmt.Errorf("Failed to load values files: %w", diags)
 	}
-	cliVars, diags := terraform.ParseVariableValues(h.config.Variables, configs.Module.Variables)
+	cliVars, diags := terraform.ParseVariableValues(h.config.Variables, rootMod.Variables)
 	if diags.HasErrors() {
 		return ret, fmt.Errorf("Failed to parse variables: %w", diags)
 	}
 	variables = append(variables, cliVars)
+
+	configs, diags := terraform.BuildConfig(
+		rootMod,
+		loader.ModuleWalker(h.config.CallModuleType),
+		h.rootDir,
+		variables...,
+	)
+	if diags.HasErrors() {
+		return ret, fmt.Errorf("Failed to build configurations: %w", diags)
+	}
 
 	runner, err := tflint.NewRunner(h.rootDir, h.config, annotations, configs, variables...)
 	if err != nil {

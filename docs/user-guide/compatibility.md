@@ -173,6 +173,20 @@ module "aws_instance" {
 
 Remote modules can also be inspected. See [Calling Modules](./calling-modules.md) for details.
 
+If the module source contains an unknown value, the module will be ignored:
+
+```hcl
+variable "module_path" {
+  const = true
+}
+
+module "aws_instance" {
+  source = var.module_path
+
+  encrypted = false # => ignored
+}
+```
+
 ## Environment Variables
 
 The following environment variables are supported:

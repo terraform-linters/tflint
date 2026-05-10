@@ -1,0 +1,3 @@
+variable "input" {
+  const = true
+}
