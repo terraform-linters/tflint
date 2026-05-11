@@ -91,6 +91,41 @@ func Test_junitPrint(t *testing.T) {
   </testsuite>
 </testsuites>`,
 		},
+		{
+			Name: "duplicate issue names",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRule{},
+					Message: "first issue",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+					},
+				},
+				{
+					Rule:    &testRule{},
+					Message: "second issue",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1, Byte: 4},
+						End:      hcl.Pos{Line: 2, Column: 4, Byte: 7},
+					},
+				},
+			},
+			Stdout: `<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite tests="2" failures="2" time="0" name="">
+    <properties></properties>
+    <testcase classname="test.tf" name="test_rule" time="0">
+      <failure message="test.tf:1,1-4: first issue" type="Error">Error: first issue&#xA;Rule: test_rule&#xA;Range: test.tf:1,1-4</failure>
+    </testcase>
+    <testcase classname="test.tf" name="test_rule_2" time="0">
+      <failure message="test.tf:2,1-4: second issue" type="Error">Error: second issue&#xA;Rule: test_rule&#xA;Range: test.tf:2,1-4</failure>
+    </testcase>
+  </testsuite>
+</testsuites>`,
+		},
 	}
 
 	for _, tc := range cases {
