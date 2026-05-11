@@ -333,6 +333,41 @@ resource "aws_instance" "foo" {
 			},
 		},
 		{
+			name: "escaping blocks",
+			files: map[string]string{
+				"main.tf": `
+resource "aws_instance" "foo" {
+  _ {
+    count = 0
+    instance_type = "t2.micro"
+  }
+}`,
+			},
+			schema: &hclext.BodySchema{
+				Attributes: []hclext.AttributeSchema{{Name: "foo"}},
+				Blocks: []hclext.BlockSchema{
+					{
+						Type:       "resource",
+						LabelNames: []string{"type", "name"},
+						Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+					},
+				},
+			},
+			want: &hclext.BodyContent{
+				Blocks: hclext.Blocks{
+					{
+						Type:   "resource",
+						Labels: []string{"aws_instance", "foo"},
+						Body: &hclext.BodyContent{
+							Attributes: hclext.Attributes{"instance_type": &hclext.Attribute{Name: "instance_type", Range: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 5}}}},
+							Blocks:     hclext.Blocks{},
+						},
+						DefRange: hcl.Range{Filename: "main.tf", Start: hcl.Pos{Line: 2}},
+					},
+				},
+			},
+		},
+		{
 			name: "just attributes",
 			files: map[string]string{
 				"main.tf": `

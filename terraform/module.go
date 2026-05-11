@@ -133,9 +133,12 @@ func (m *Module) PartialContent(schema *hclext.BodySchema, ctx *Evaluator) (*hcl
 	for _, f := range m.primaries {
 		expanded, d := ctx.ExpandBlock(f.Body, schema)
 		diags = diags.Extend(d)
-		c, d := hclext.PartialContent(expanded, schema)
+		c, d := partialContentWithEscaping(expanded, schema)
 		diags = diags.Extend(d)
 		for name, attr := range c.Attributes {
+			if content.Attributes == nil {
+				content.Attributes = hclext.Attributes{}
+			}
 			content.Attributes[name] = attr
 		}
 		content.Blocks = append(content.Blocks, c.Blocks...)
@@ -145,15 +148,75 @@ func (m *Module) PartialContent(schema *hclext.BodySchema, ctx *Evaluator) (*hcl
 	for _, filename := range m.overrideFilenames {
 		expanded, d := ctx.ExpandBlock(m.overrides[filename].Body, schema)
 		diags = diags.Extend(d)
-		c, d := hclext.PartialContent(expanded, schema)
+		c, d := partialContentWithEscaping(expanded, schema)
 		diags = diags.Extend(d)
 		for name, attr := range c.Attributes {
+			if content.Attributes == nil {
+				content.Attributes = hclext.Attributes{}
+			}
 			content.Attributes[name] = attr
 		}
 		content.Blocks = overrideBlocks(content.Blocks, c.Blocks)
 	}
 
 	return content, diags
+}
+
+func partialContentWithEscaping(body hcl.Body, schema *hclext.BodySchema) (*hclext.BodyContent, hcl.Diagnostics) {
+	content, diags := hclext.PartialContent(body, schemaWithEscapingBlock(schema))
+	mergeEscapingBlocks(content)
+	return content, diags
+}
+
+func schemaWithEscapingBlock(schema *hclext.BodySchema) *hclext.BodySchema {
+	if schema == nil || schema.Mode == hclext.SchemaJustAttributesMode {
+		return schema
+	}
+
+	ret := &hclext.BodySchema{
+		Mode:       schema.Mode,
+		Attributes: append([]hclext.AttributeSchema{}, schema.Attributes...),
+		Blocks:     make([]hclext.BlockSchema, 0, len(schema.Blocks)+1),
+	}
+
+	escapingBody := &hclext.BodySchema{
+		Mode:       schema.Mode,
+		Attributes: append([]hclext.AttributeSchema{}, schema.Attributes...),
+		Blocks:     append([]hclext.BlockSchema{}, schema.Blocks...),
+	}
+	for _, block := range schema.Blocks {
+		copied := block
+		copied.Body = schemaWithEscapingBlock(block.Body)
+		ret.Blocks = append(ret.Blocks, copied)
+	}
+	ret.Blocks = append(ret.Blocks, hclext.BlockSchema{Type: "_", Body: escapingBody})
+
+	return ret
+}
+
+func mergeEscapingBlocks(content *hclext.BodyContent) {
+	if content == nil {
+		return
+	}
+
+	blocks := make(hclext.Blocks, 0, len(content.Blocks))
+	for _, block := range content.Blocks {
+		if block.Type != "_" {
+			mergeEscapingBlocks(block.Body)
+			blocks = append(blocks, block)
+			continue
+		}
+
+		mergeEscapingBlocks(block.Body)
+		for name, attr := range block.Body.Attributes {
+			if content.Attributes == nil {
+				content.Attributes = hclext.Attributes{}
+			}
+			content.Attributes[name] = attr
+		}
+		blocks = append(blocks, block.Body.Blocks...)
+	}
+	content.Blocks = blocks
 }
 
 // blockAddr returns an identifier of the given block (e.g. "resource.aws_instance.main").
