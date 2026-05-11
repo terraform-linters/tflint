@@ -293,7 +293,7 @@ func (r *Runner) ClearChanges() {
 }
 
 func (r *Runner) emitIssue(issue *Issue) bool {
-	if annotations, ok := r.annotations[issue.Range.Filename]; ok {
+	if annotations, ok := r.annotations[issue.Range.Filename]; ok && r.config.ruleIsIgnorable(issue.Rule.Name()) {
 		for _, annotation := range annotations {
 			if annotation.IsAffected(issue) {
 				log.Printf("[INFO] %s (%s) is ignored by %s", issue.Range.String(), issue.Rule.Name(), annotation.String())
