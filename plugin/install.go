@@ -84,10 +84,6 @@ func (c *InstallConfig) CertificateIdentitySANRegex() string {
 // CertificateIdentityIssuer returns the iss field of the OIDC token for keyless signing.
 // This ensures that the OIDC token was indeed issued by GitHub.
 func (c *InstallConfig) CertificateIdentityIssuer() string {
-	if c.SourceHost != defaultSourceHost {
-		// https://docs.github.com/en/enterprise-server@3.15/actions/security-for-github-actions/security-hardening-your-deployments/about-security-hardening-with-openid-connect#understanding-the-oidc-token
-		return fmt.Sprintf("https://%s/_services/token", c.SourceHost)
-	}
 	// https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/about-security-hardening-with-openid-connect#understanding-the-oidc-token
 	return "https://token.actions.githubusercontent.com"
 }
@@ -250,6 +246,11 @@ func (c *InstallConfig) fetchFromGitHub(ctx context.Context, client *github.Clie
 		return assets, nil, nil, nil, fmt.Errorf("Failed to read checksums.txt: %s", err)
 	}
 
+	// GitHub Enterprise Server does not support Artifact Attestations
+	if c.SourceHost != defaultSourceHost {
+		log.Printf("[DEBUG] Artifact attestations are not supported on GitHub Enterprise Server and will be ignored")
+		return assets, checksum, nil, nil, nil
+	}
 	attestations, err := c.fetchArtifactAttestations(ctx, client, checksum)
 	if err != nil {
 		// If attestations are not available or not accessible, ignore them and
