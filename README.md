@@ -17,8 +17,6 @@ TFLint is a framework and each feature is provided by plugins, the key features 
 
 ## Installation
 
-Linux:
-
 Download the appropriate archive from the [latest release](https://github.com/terraform-linters/tflint/releases/latest), verify it, and install the binary:
 
 ```console
@@ -30,30 +28,17 @@ unzip tflint_linux_amd64.zip
 sudo install -c -v tflint /usr/local/bin/
 ```
 
-For other architectures, replace `linux_amd64` with the archive that matches your system.
-
-For local convenience, the installation script is still available in this repository, but it is not recommended for CI workflows or Dockerfiles:
-
-```console
-./install_linux.sh
-```
-
-> [!WARNING]
-> Piping remote scripts directly into a shell is not recommended for CI workflows or Dockerfiles.
-
 Homebrew (macOS):
 
 ```console
 brew install terraform-linters/tap/tflint
 ```
 
-Chocolatey (Windows):
+WinGet (Windows):
 
-```cmd
-choco install tflint
+```console
+winget install -e --id TerraformLinters.tflint
 ```
-
-NOTE: The Chocolatey package is NOT directly maintained by the TFLint maintainers. The latest version is always available by manual installation.
 
 ### Verification
 
@@ -115,7 +100,7 @@ Next, If you are using an AWS/Azure/GCP provider, it is a good idea to install t
 
 - [Amazon Web Services](https://github.com/terraform-linters/tflint-ruleset-aws)
 - [Microsoft Azure](https://github.com/terraform-linters/tflint-ruleset-azurerm)
-- [Google Cloud Platform](https://github.com/terraform-linters/tflint-ruleset-google)
+- [Google Cloud](https://github.com/terraform-linters/tflint-ruleset-google)
 
 If you want to extend TFLint with other plugins, you can declare the plugins in the config file and easily install them with `tflint --init`.
 
