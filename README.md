@@ -4,7 +4,6 @@
 [![Terraform Compatibility](https://img.shields.io/badge/terraform-%3E%3D%201.0-blue)](docs/user-guide/compatibility.md)
 [![License: MPL 2.0 + BUSL 1.1](https://img.shields.io/badge/License-MPL%202.0%20+%20BUSL%201.1-blue.svg)](#license)
 [![Go Report Card](https://goreportcard.com/badge/github.com/terraform-linters/tflint)](https://goreportcard.com/report/github.com/terraform-linters/tflint)
-[![Homebrew](https://img.shields.io/badge/dynamic/json.svg?url=https://formulae.brew.sh/api/formula/tflint.json&query=$.versions.stable&label=homebrew)](https://formulae.brew.sh/formula/tflint)
 
 A Pluggable [Terraform](https://www.terraform.io/) Linter
 
@@ -45,7 +44,7 @@ For local convenience, the installation script is still available in this reposi
 Homebrew (macOS):
 
 ```console
-brew install tflint
+brew install terraform-linters/tap/tflint
 ```
 
 Chocolatey (Windows):
