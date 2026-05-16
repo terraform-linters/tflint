@@ -38,3 +38,19 @@ release:
   github: {}
 snapshot:
   version_template: "{{ .Tag }}-dev"
+
+homebrew_casks:
+  - repository:
+      owner: terraform-linters
+      name: homebrew-tap
+      token: "{{ .Env.GITHUB_APP_TOKEN }}"
+      pull_request:
+        enabled: true
+    homepage: https://github.com/terraform-linters/tflint
+    description: Pluggable Terraform linter
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/tflint"]
+          end
