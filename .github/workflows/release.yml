@@ -13,8 +13,23 @@ permissions:
   attestations: write
 
 jobs:
+  create-app-token:
+    runs-on: ubuntu-latest
+    outputs:
+      token: ${{ steps.app-token.outputs.token }}
+    steps:
+    - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+      id: app-token
+      with:
+        client-id: ${{ var.APP_CLIENT_ID }}
+        private-key: ${{ secrets.APP_PRIVATE_KEY }}
+        owner: terraform-linters
+        repositories: homebrew-tap
+        permission-contents: write
+        permission-pull-requests: write
   goreleaser:
     runs-on: ubuntu-latest
+    needs: create-app-token
     steps:
     - name: Checkout
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -35,6 +50,7 @@ jobs:
         args: release --release-notes tools/release/release-note.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_APP_TOKEN: ${{ needs.create-app-token.outputs.token }}
     - uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
       with:
         subject-path: 'dist/checksums.txt'
