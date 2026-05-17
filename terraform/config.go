@@ -9,7 +9,9 @@ import (
 
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint/terraform/addrs"
+	"github.com/zclconf/go-cty/cty"
 )
 
 // A Config is a node in the tree of modules within a configuration.
@@ -34,6 +36,9 @@ type Config struct {
 	// Module points to the object describing the configuration for the
 	// various elements (variables, resources, etc) defined by this module.
 	Module *Module
+
+	Ctx     *Evaluator
+	modVars map[string]*moduleVariable
 }
 
 // NewEmptyConfig constructs a single-node configuration tree with an empty
@@ -44,6 +49,7 @@ func NewEmptyConfig() *Config {
 	ret.Root = ret
 	ret.Children = make(map[string]*Config)
 	ret.Module = &Module{}
+	ret.Ctx = &Evaluator{}
 	return ret
 }
 
@@ -54,12 +60,27 @@ func NewEmptyConfig() *Config {
 // file-level invariants validated. If the returned diagnostics contains errors,
 // the returned module tree may be incomplete but can still be used carefully
 // for static analysis.
-func BuildConfig(root *Module, walker ModuleWalker) (*Config, hcl.Diagnostics) {
+func BuildConfig(root *Module, walker ModuleWalker, variables ...InputValues) (*Config, hcl.Diagnostics) {
 	var diags hcl.Diagnostics
 	cfg := &Config{
 		Module: root,
 	}
 	cfg.Root = cfg // Root module is self-referential.
+
+	variableValues, diags := VariableValues(cfg, variables...)
+	if diags.HasErrors() {
+		return nil, diags
+	}
+
+	cfg.Ctx = &Evaluator{
+		Meta: &ContextMeta{
+			Env:                Workspace(),
+			OriginalWorkingDir: "",
+		},
+		ModulePath:     cfg.Path.UnkeyedInstanceShim(),
+		Config:         cfg.Root,
+		VariableValues: variableValues,
+	}
 	cfg.Children, diags = buildChildModules(cfg, walker)
 
 	return cfg, diags
@@ -118,6 +139,75 @@ func buildChildModules(parent *Config, walker ModuleWalker) (map[string]*Config,
 			Module: mod,
 		}
 
+		moduleCallSchema := &hclext.BodySchema{
+			Blocks: []hclext.BlockSchema{
+				{
+					Type:       "module",
+					LabelNames: []string{"name"},
+					Body: &hclext.BodySchema{
+						Attributes: []hclext.AttributeSchema{},
+					},
+				},
+			},
+		}
+		for _, v := range mod.Variables {
+			attr := hclext.AttributeSchema{Name: v.Name}
+			moduleCallSchema.Blocks[0].Body.Attributes = append(moduleCallSchema.Blocks[0].Body.Attributes, attr)
+		}
+
+		moduleCalls, diags := parent.Module.PartialContent(moduleCallSchema, parent.Ctx)
+		if diags.HasErrors() {
+			return ret, diags
+		}
+		var moduleCallBodies []*hclext.BodyContent
+		for _, block := range moduleCalls.Blocks {
+			if call.Name == block.Labels[0] {
+				moduleCallBodies = append(moduleCallBodies, block.Body)
+			}
+		}
+		moduleCallBody := moduleCallBodies[0]
+
+		modVars := map[string]*moduleVariable{}
+		inputs := InputValues{}
+		for varName, attribute := range moduleCallBody.Attributes {
+			val, diags := parent.Ctx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType)
+			if diags.HasErrors() {
+				return ret, diags
+			}
+			inputs[varName] = &InputValue{Value: val}
+
+			if parent.Path.IsRoot() {
+				modVars[varName] = &moduleVariable{
+					Root:      true,
+					DeclRange: attribute.Expr.Range(),
+				}
+			} else {
+				parentVars := []*moduleVariable{}
+				for _, ref := range listVarRefs(attribute.Expr) {
+					if parentVar, exists := parent.modVars[ref.Name]; exists {
+						parentVars = append(parentVars, parentVar)
+					}
+				}
+				modVars[varName] = &moduleVariable{
+					Parents:   parentVars,
+					DeclRange: attribute.Expr.Range(),
+				}
+			}
+		}
+
+		variableValues, diags := VariableValues(child, inputs)
+		if diags.HasErrors() {
+			return nil, diags
+		}
+		child.Ctx = &Evaluator{
+			Meta: &ContextMeta{
+				Env:                Workspace(),
+				OriginalWorkingDir: "",
+			},
+			ModulePath:     child.Path.UnkeyedInstanceShim(),
+			Config:         parent.Root,
+			VariableValues: variableValues,
+		}
 		child.Children, modDiags = buildChildModules(child, walker)
 		diags = append(diags, modDiags...)
 

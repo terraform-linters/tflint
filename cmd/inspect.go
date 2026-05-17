@@ -197,15 +197,23 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 }
 
 func (cli *CLI) setupRunners(opts Options, dir string) (*tflint.Runner, []*tflint.Runner, error) {
-	configs, diags := cli.loader.LoadConfig(dir, cli.config.CallModuleType)
-	if diags.HasErrors() {
-		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
-	}
-
 	files, diags := cli.loader.LoadConfigDirFiles(dir)
 	if diags.HasErrors() {
 		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
 	}
+	variables, diags := cli.loader.LoadValuesFiles(dir, cli.config.Varfiles...)
+	if diags.HasErrors() {
+		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load values files; %w", diags)
+	}
+
+	configs, diags := cli.loader.LoadConfig(dir, cli.config.CallModuleType, terraform.VariablesCtx{
+		TFvars:  variables,
+		CLIvars: cli.config.Variables,
+	})
+	if diags.HasErrors() {
+		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
+	}
+
 	annotations := map[string]tflint.Annotations{}
 	for path, file := range files {
 		ants, lexDiags := tflint.NewAnnotations(path, file)
@@ -216,7 +224,7 @@ func (cli *CLI) setupRunners(opts Options, dir string) (*tflint.Runner, []*tflin
 		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
 	}
 
-	variables, diags := cli.loader.LoadValuesFiles(dir, cli.config.Varfiles...)
+	variables, diags = cli.loader.LoadValuesFiles(dir, cli.config.Varfiles...)
 	if diags.HasErrors() {
 		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load values files; %w", diags)
 	}
