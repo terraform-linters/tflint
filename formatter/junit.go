@@ -14,10 +14,11 @@ import (
 
 func (f *Formatter) junitPrint(issues tflint.Issues, appErr error, sources map[string][]byte) {
 	cases := make([]formatter.JUnitTestCase, len(issues))
+	names := map[string]int{}
 
 	for i, issue := range issues.Sort() {
 		cases[i] = formatter.JUnitTestCase{
-			Name:      issue.Rule.Name(),
+			Name:      uniqueJUnitTestCaseName(issue.Rule.Name(), names),
 			Classname: issue.Range.Filename,
 			Time:      "0",
 			Failure: &formatter.JUnitFailure{
@@ -55,6 +56,14 @@ func (f *Formatter) junitPrint(issues tflint.Issues, appErr error, sources map[s
 	}
 	fmt.Fprint(f.Stdout, xml.Header)
 	fmt.Fprint(f.Stdout, string(out))
+}
+
+func uniqueJUnitTestCaseName(name string, counts map[string]int) string {
+	counts[name]++
+	if counts[name] == 1 {
+		return name
+	}
+	return fmt.Sprintf("%s_%d", name, counts[name])
 }
 
 func (f *Formatter) junitErrors(err error) []formatter.JUnitTestCase {
