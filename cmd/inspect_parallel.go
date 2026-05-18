@@ -72,6 +72,7 @@ func (cli *CLI) inspectParallel(opts Options) int {
 		if err := json.Unmarshal(stdout, &workerIssues); err != nil {
 			panic(fmt.Errorf("failed to parse issues in %s; %s; stdout=%s; stderr=%s", worker.dir, err, stdout, stderr))
 		}
+		fillNoRangeIssueFilenames(worker.dir, workerIssues)
 		issues = append(issues, workerIssues...)
 
 		if len(stderr) > 0 {
@@ -101,6 +102,19 @@ func (cli *CLI) inspectParallel(opts Options) int {
 	}
 
 	return ExitCodeOK
+}
+
+func fillNoRangeIssueFilenames(dir string, issues tflint.Issues) {
+	for _, issue := range issues {
+		if issue.Range.Filename == "" {
+			issue.Range.Filename = dir
+		}
+		for idx := range issue.Callers {
+			if issue.Callers[idx].Filename == "" {
+				issue.Callers[idx].Filename = dir
+			}
+		}
+	}
 }
 
 // Spawn workers to run in parallel for each directory.
