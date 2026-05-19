@@ -16,8 +16,9 @@ func (f *Formatter) junitPrint(issues tflint.Issues, appErr error, sources map[s
 	cases := make([]formatter.JUnitTestCase, len(issues))
 
 	for i, issue := range issues.Sort() {
+		caseName := fmt.Sprintf("%s %s", issue.Rule.Name(), issue.Range)
 		cases[i] = formatter.JUnitTestCase{
-			Name:      issue.Rule.Name(),
+			Name:      caseName,
 			Classname: issue.Range.Filename,
 			Time:      "0",
 			Failure: &formatter.JUnitFailure{
