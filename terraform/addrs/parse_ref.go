@@ -266,6 +266,16 @@ func parseRef(traversal hcl.Traversal) (*Reference, hcl.Diagnostics) {
 		})
 		return nil, diags
 
+	case "string", "number", "bool", "any":
+		if len(traversal) == 1 {
+			// A standalone word is a primitive type constraint.
+			return nil, diags
+		}
+
+		// There could technically be providers that implement resources by
+		// these names, so if the traversal has more parts we still fallthrough
+		// to the default resource parsing.
+		fallthrough
 	default:
 		return parseResourceRef(ManagedResourceMode, rootRange, traversal)
 	}
