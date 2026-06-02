@@ -196,15 +196,15 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 	return issues, changes, nil
 }
 
-func (cli *CLI) setupRunners(opts Options, dir string) (*tflint.Runner, []*tflint.Runner, error) {
-	configs, diags := cli.loader.LoadConfig(dir, cli.config.CallModuleType)
+func (cli *CLI) setupRunners(_ Options, dir string) (*tflint.Runner, []*tflint.Runner, error) {
+	rootMod, diags := cli.loader.LoadRootModule(dir)
 	if diags.HasErrors() {
-		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
+		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load the root module; %w", diags)
 	}
 
 	files, diags := cli.loader.LoadConfigDirFiles(dir)
 	if diags.HasErrors() {
-		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
+		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to list configuration files; %w", diags)
 	}
 	annotations := map[string]tflint.Annotations{}
 	for path, file := range files {
@@ -213,18 +213,28 @@ func (cli *CLI) setupRunners(opts Options, dir string) (*tflint.Runner, []*tflin
 		annotations[path] = ants
 	}
 	if diags.HasErrors() {
-		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load configurations; %w", diags)
+		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to parse annotations; %w", diags)
 	}
 
 	variables, diags := cli.loader.LoadValuesFiles(dir, cli.config.Varfiles...)
 	if diags.HasErrors() {
 		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to load values files; %w", diags)
 	}
-	cliVars, diags := terraform.ParseVariableValues(cli.config.Variables, configs.Module.Variables)
+	cliVars, diags := terraform.ParseVariableValues(cli.config.Variables, rootMod.Variables)
 	if diags.HasErrors() {
 		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to parse variables; %w", diags)
 	}
 	variables = append(variables, cliVars)
+
+	configs, diags := terraform.BuildConfig(
+		rootMod,
+		cli.loader.ModuleWalker(cli.config.CallModuleType),
+		cli.originalWorkingDir,
+		variables...,
+	)
+	if diags.HasErrors() {
+		return nil, []*tflint.Runner{}, fmt.Errorf("Failed to build configurations; %w", diags)
+	}
 
 	runner, err := tflint.NewRunner(cli.originalWorkingDir, cli.config, annotations, configs, variables...)
 	if err != nil {

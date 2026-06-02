@@ -1,0 +1,61 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is ./nested",
+      "range": {
+        "filename": "main.tf",
+        "start": {
+          "line": 17,
+          "column": 16
+        },
+        "end": {
+          "line": 17,
+          "column": 39
+        }
+      },
+      "callers": [
+        {
+          "filename": "main.tf",
+          "start": {
+            "line": 17,
+            "column": 16
+          },
+          "end": {
+            "line": 17,
+            "column": 39
+          }
+        },
+        {
+          "filename": "module-suffix/main.tf",
+          "start": {
+            "line": 8,
+            "column": 11
+          },
+          "end": {
+            "line": 8,
+            "column": 25
+          }
+        },
+        {
+          "filename": "module-suffix/nested/main.tf",
+          "start": {
+            "line": 4,
+            "column": 19
+          },
+          "end": {
+            "line": 4,
+            "column": 28
+          }
+        }
+      ],
+      "fixable": false,
+      "fixed": false
+    }
+  ],
+  "errors": []
+}

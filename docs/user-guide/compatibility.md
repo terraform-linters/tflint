@@ -4,7 +4,7 @@ TFLint interprets the [Terraform language](https://developer.hashicorp.com/terra
 
 The parser supports Terraform v1.x syntax and semantics. The language compatibility on Terraform v1.x is defined by [Compatibility Promises](https://developer.hashicorp.com/terraform/language/v1-compatibility-promises). TFLint follows this promise. New features are only supported in newer TFLint versions, and bug and experimental features compatibility are not guaranteed.
 
-The latest supported version is Terraform v1.14.
+The latest supported version is Terraform v1.15.
 
 ## Input Variables
 
@@ -172,6 +172,20 @@ module "aws_instance" {
 ```
 
 Remote modules can also be inspected. See [Calling Modules](./calling-modules.md) for details.
+
+If the module source contains an unknown value, the module will be ignored:
+
+```hcl
+variable "module_path" {
+  const = true
+}
+
+module "aws_instance" {
+  source = var.module_path
+
+  encrypted = false # => ignored
+}
+```
 
 ## Environment Variables
 

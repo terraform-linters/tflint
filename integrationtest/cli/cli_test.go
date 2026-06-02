@@ -119,7 +119,7 @@ func TestIntegration(t *testing.T) {
 			command: "./tflint",
 			dir:     "load_errors",
 			status:  cmd.ExitCodeError,
-			stderr:  "Failed to load configurations;",
+			stderr:  "Failed to load the root module;",
 		},
 		{
 			name:    "removed --debug options",

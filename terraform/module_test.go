@@ -558,7 +558,7 @@ resource "aws_instance" "bar" {
 			if diags.HasErrors() {
 				t.Fatal(diags)
 			}
-			config, diags := BuildConfig(mod, ModuleWalkerFunc(func(req *ModuleRequest) (*Module, *version.Version, hcl.Diagnostics) { return nil, nil, nil }))
+			config, diags := BuildConfig(mod, ModuleWalkerFunc(func(req *ModuleRequest) (*Module, *version.Version, hcl.Diagnostics) { return nil, nil, nil }), ".")
 			if diags.HasErrors() {
 				t.Fatal(diags)
 			}

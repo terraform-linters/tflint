@@ -1,3 +1,6 @@
+// Copyright IBM Corp. 2014, 2026
+// SPDX-License-Identifier: BUSL-1.1
+
 package terraform
 
 import (
@@ -64,33 +67,25 @@ func NewLoader(fs afero.Afero, originalWd string) (*Loader, error) {
 	return ret, nil
 }
 
-// LoadConfig reads the Terraform module in the given directory and uses it as the
-// root module to build the static module tree that represents a configuration.
-func (l *Loader) LoadConfig(dir string, callModuleType CallModuleType) (*Config, hcl.Diagnostics) {
-	mod, diags := l.parser.LoadConfigDir(l.baseDir, dir)
-	if diags.HasErrors() {
-		return nil, diags
-	}
+// LoadRootModule reads the root module using the loader's parser options.
+func (l *Loader) LoadRootModule(dir string) (*Module, hcl.Diagnostics) {
+	return l.parser.LoadConfigDir(l.baseDir, dir)
+}
 
-	var walker ModuleWalkerFunc
+// ModuleWalker returns a walker suitable for loading already-installed modules.
+// Depending on the call type given as an argument, it controls which type of
+// module is traversed.
+func (l *Loader) ModuleWalker(callModuleType CallModuleType) ModuleWalkerFunc {
 	switch callModuleType {
 	case CallAllModule:
-		log.Print("[INFO] Building the root module while calling child modules...")
-		walker = l.moduleWalkerFunc(true, true)
+		return l.moduleWalkerFunc(true, true)
 	case CallLocalModule:
-		log.Print("[INFO] Building the root module while calling local child modules...")
-		walker = l.moduleWalkerFunc(true, false)
+		return l.moduleWalkerFunc(true, false)
 	case CallNoModule:
-		walker = l.moduleWalkerFunc(false, false)
+		return l.moduleWalkerFunc(false, false)
 	default:
 		panic(fmt.Sprintf("unexpected module call type: %d", callModuleType))
 	}
-
-	cfg, diags := BuildConfig(mod, walker)
-	if diags.HasErrors() {
-		return nil, diags
-	}
-	return cfg, nil
 }
 
 func (l *Loader) moduleWalkerFunc(walkLocal, walkRemote bool) ModuleWalkerFunc {

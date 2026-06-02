@@ -9,7 +9,9 @@ import (
 
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hcl/v2"
+	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
 	"github.com/terraform-linters/tflint/terraform/addrs"
+	"github.com/zclconf/go-cty/cty"
 )
 
 // A Config is a node in the tree of modules within a configuration.
@@ -54,18 +56,34 @@ func NewEmptyConfig() *Config {
 // file-level invariants validated. If the returned diagnostics contains errors,
 // the returned module tree may be incomplete but can still be used carefully
 // for static analysis.
-func BuildConfig(root *Module, walker ModuleWalker) (*Config, hcl.Diagnostics) {
+func BuildConfig(root *Module, walker ModuleWalker, originalWd string, variables ...InputValues) (*Config, hcl.Diagnostics) {
 	var diags hcl.Diagnostics
 	cfg := &Config{
-		Module: root,
+		Module:   root,
+		Children: map[string]*Config{},
 	}
 	cfg.Root = cfg // Root module is self-referential.
-	cfg.Children, diags = buildChildModules(cfg, walker)
+
+	variableValues, diags := VariableValues(cfg, variables...)
+	if diags.HasErrors() {
+		return nil, diags
+	}
+
+	ctx := &Evaluator{
+		Meta: &ContextMeta{
+			Env:                Workspace(),
+			OriginalWorkingDir: originalWd,
+		},
+		ModulePath:     cfg.Path.UnkeyedInstanceShim(),
+		Config:         cfg.Root,
+		VariableValues: variableValues,
+	}
+	cfg.Children, diags = buildChildModules(cfg, walker, ctx)
 
 	return cfg, diags
 }
 
-func buildChildModules(parent *Config, walker ModuleWalker) (map[string]*Config, hcl.Diagnostics) {
+func buildChildModules(parent *Config, walker ModuleWalker, ctx *Evaluator) (map[string]*Config, hcl.Diagnostics) {
 	var diags hcl.Diagnostics
 	ret := map[string]*Config{}
 
@@ -95,10 +113,22 @@ func buildChildModules(parent *Config, walker ModuleWalker) (map[string]*Config,
 			})
 		}
 
+		addr, sourceDiags := evalModuleSource(call, ctx)
+		if sourceDiags.HasErrors() {
+			diags = append(diags, sourceDiags...)
+			continue
+		}
+		if addr == nil {
+			// skip if the source address is not available,
+			// which can happen when the source attribute is missing,
+			// contains unknown values.
+			continue
+		}
+
 		req := ModuleRequest{
 			Name:       call.Name,
 			Path:       path,
-			SourceAddr: call.SourceAddr,
+			SourceAddr: addr,
 			Parent:     parent,
 			CallRange:  call.DeclRange,
 		}
@@ -113,18 +143,133 @@ func buildChildModules(parent *Config, walker ModuleWalker) (map[string]*Config,
 		}
 
 		child := &Config{
-			Root:   parent.Root,
-			Path:   path,
-			Module: mod,
+			Root:     parent.Root,
+			Path:     path,
+			Module:   mod,
+			Children: map[string]*Config{},
 		}
+		// To perform evaluation in a child module context,
+		// each loaded module must be set to the children immediately.
+		parent.Children[call.Name] = child
 
-		child.Children, modDiags = buildChildModules(child, walker)
+		childCtx, ctxDiags := buildChildCtx(parent, ctx, call.Name, child)
+		if ctxDiags.HasErrors() {
+			diags = append(diags, ctxDiags...)
+			continue
+		}
+		if childCtx == nil {
+			// skip if the child context cannot be built,
+			// which can happen when the module disappears after expansion (e.g. `count = 0`).
+			continue
+		}
+		child.Children, modDiags = buildChildModules(child, walker, childCtx)
 		diags = append(diags, modDiags...)
 
 		ret[call.Name] = child
 	}
 
 	return ret, diags
+}
+
+func evalModuleSource(call *ModuleCall, ctx *Evaluator) (addrs.ModuleSource, hcl.Diagnostics) {
+	// skip if the call doesn't have a source attribute
+	if call.SourceExpr == nil {
+		return nil, nil
+	}
+
+	val, diags := ctx.EvaluateExpr(call.SourceExpr, cty.String)
+	if diags.HasErrors() {
+		return nil, diags
+	}
+	// skip if the source is unknown, null, or sensitive.
+	// In Terraform, only constant variables can be used in module source, so this is not an issue.
+	if !val.IsKnown() || val.IsNull() || val.IsMarked() {
+		return nil, nil
+	}
+
+	rawSource := val.AsString()
+	addr, err := addrs.ParseModuleSource(rawSource)
+	if err != nil {
+		diags = append(diags, &hcl.Diagnostic{
+			Severity: hcl.DiagError,
+			Summary:  "Invalid module source address",
+			Detail:   fmt.Sprintf("Failed to parse module source address: %s", err),
+			Subject:  call.SourceExpr.Range().Ptr(),
+		})
+		return nil, diags
+	}
+
+	// FIXME: Save the resolved source for ignore module checks. However, this relies on a complex call graph
+	//        and is expected to be removed in the future.
+	call.SourceResolved = rawSource
+
+	return addr, diags
+}
+
+func buildChildCtx(parent *Config, parentCtx *Evaluator, callName string, child *Config) (*Evaluator, hcl.Diagnostics) {
+	moduleCallSchema := &hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type:       "module",
+				LabelNames: []string{"name"},
+				Body: &hclext.BodySchema{
+					Attributes: []hclext.AttributeSchema{},
+				},
+			},
+		},
+	}
+	for _, v := range child.Module.Variables {
+		attr := hclext.AttributeSchema{Name: v.Name}
+		moduleCallSchema.Blocks[0].Body.Attributes = append(moduleCallSchema.Blocks[0].Body.Attributes, attr)
+	}
+
+	moduleCalls, diags := parent.Module.PartialContent(moduleCallSchema, parentCtx)
+	if diags.HasErrors() {
+		return nil, diags
+	}
+	var moduleCallBodies []*hclext.BodyContent
+	for _, block := range moduleCalls.Blocks {
+		if callName == block.Labels[0] {
+			moduleCallBodies = append(moduleCallBodies, block.Body)
+		}
+	}
+	// In cases where the module disappears after expansion, such as `count = 0`,
+	// the module arguments should not be evaluated and is therefore skipped.
+	if len(moduleCallBodies) == 0 {
+		return nil, nil
+	}
+	// When `count = 2` expands into multiple module calls, the only differences
+	// between them are the values ​​of `count.index` and `each.*`.
+	// Since these are not values ​​available when the module is loaded, any module call can be used.
+	moduleCallBody := moduleCallBodies[0]
+
+	inputs := InputValues{}
+	for varName, attribute := range moduleCallBody.Attributes {
+		val, evalDiags := parentCtx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType)
+		if evalDiags.HasErrors() {
+			diags = append(diags, evalDiags...)
+			continue
+		}
+		inputs[varName] = &InputValue{Value: val}
+	}
+	if diags.HasErrors() {
+		return nil, diags
+	}
+
+	variableValues, diags := VariableValues(child, inputs)
+	if diags.HasErrors() {
+		return nil, diags
+	}
+
+	return &Evaluator{
+		Meta: &ContextMeta{
+			Env:                Workspace(),
+			OriginalWorkingDir: parentCtx.Meta.OriginalWorkingDir,
+		},
+		ModulePath:     child.Path.UnkeyedInstanceShim(),
+		Config:         parent.Root,
+		VariableValues: variableValues,
+	}, nil
 }
 
 // DescendentForInstance returns the descendent config that has the given instance path

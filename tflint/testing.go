@@ -56,7 +56,11 @@ func TestRunnerWithConfig(t *testing.T, files map[string]string, config *Config)
 		dir = dirs[0]
 	}
 
-	configs, diags := loader.LoadConfig(dir, config.CallModuleType)
+	rootMod, diags := loader.LoadRootModule(dir)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	configs, diags := terraform.BuildConfig(rootMod, loader.ModuleWalker(config.CallModuleType), originalWd)
 	if diags.HasErrors() {
 		t.Fatal(diags)
 	}

@@ -87,6 +87,7 @@ func (s *Scope) Functions() map[string]function.Function {
 			"compact":          stdlib.CompactFunc,
 			"concat":           stdlib.ConcatFunc,
 			"contains":         stdlib.ContainsFunc,
+			"convert":          funcs.ConvertFunc,
 			"csvdecode":        stdlib.CSVDecodeFunc,
 			"dirname":          funcs.DirnameFunc,
 			"distinct":         stdlib.DistinctFunc,

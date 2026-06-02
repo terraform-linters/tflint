@@ -1,6 +1,7 @@
 package terraform
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -19,15 +20,22 @@ func TestLoadConfig(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		config, diags := loader.LoadConfig(".", CallAllModule)
+
+		// load the root module
+		rootMod, diags := loader.LoadRootModule(".")
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+		if rootMod.SourceDir != "." {
+			t.Fatalf("root module path: want=%s, got=%s", ".", rootMod.SourceDir)
+		}
+
+		// build config tree with child modules
+		config, diags := BuildConfig(rootMod, loader.ModuleWalker(CallAllModule), dir)
 		if diags.HasErrors() {
 			t.Fatal(diags)
 		}
 
-		// root
-		if config.Module.SourceDir != "." {
-			t.Fatalf("root module path: want=%s, got=%s", ".", config.Module.SourceDir)
-		}
 		// module.instance
 		testChildModule(t, config, "instance", "ec2")
 		// module.consul
@@ -84,15 +92,22 @@ func TestLoadConfig_withBaseDir(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		config, diags := loader.LoadConfig(".", CallAllModule)
+
+		// load the root module
+		rootMod, diags := loader.LoadRootModule(".")
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+		if rootMod.SourceDir != "." {
+			t.Fatalf("root module path: want=%s, got=%s", ".", rootMod.SourceDir)
+		}
+
+		// build config tree with child modules
+		config, diags := BuildConfig(rootMod, loader.ModuleWalker(CallAllModule), filepath.Dir(dir))
 		if diags.HasErrors() {
 			t.Fatal(diags)
 		}
 
-		// root
-		if config.Module.SourceDir != "." {
-			t.Fatalf("root module path: want=%s, got=%s", ".", config.Module.SourceDir)
-		}
 		// module.instance
 		testChildModule(t, config, "instance", "ec2")
 		// module.consul
@@ -148,20 +163,88 @@ func TestLoadConfig_callLocalModules(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		config, diags := loader.LoadConfig(".", CallLocalModule)
+
+		// load the root module
+		rootMod, diags := loader.LoadRootModule(".")
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+		if rootMod.SourceDir != "." {
+			t.Fatalf("root module path: want=%s, got=%s", ".", rootMod.SourceDir)
+		}
+
+		// build config tree with child modules
+		config, diags := BuildConfig(rootMod, loader.ModuleWalker(CallLocalModule), dir)
 		if diags.HasErrors() {
 			t.Fatal(diags)
 		}
 
-		// root
-		if config.Module.SourceDir != "." {
-			t.Fatalf("root module path: want=%s, got=%s", ".", config.Module.SourceDir)
-		}
 		// module.instance
 		testChildModule(t, config, "instance", "ec2")
 
 		if len(config.Children) != 1 {
 			t.Fatalf("Root module has children unexpectedly: %#v", config.Children)
+		}
+	})
+}
+
+func TestLoadConfig_withDynamicModuleSources(t *testing.T) {
+	withinFixtureDir(t, "dynamic_module_sources", func(dir string) {
+		loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, dir)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		// load the root module
+		rootMod, diags := loader.LoadRootModule(".")
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+		if rootMod.SourceDir != "." {
+			t.Fatalf("root module path: want=%s, got=%s", ".", rootMod.SourceDir)
+		}
+
+		// build config tree with child modules
+		config, diags := BuildConfig(rootMod, loader.ModuleWalker(CallAllModule), dir)
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+
+		// module.module
+		testChildModule(t, config, "module", "modules")
+		// module.module.nested
+		testChildModule(
+			t,
+			config.Children["module"],
+			"nested",
+			"modules/nested",
+		)
+
+		if len(config.Children) != 1 {
+			t.Fatalf("Root module has children unexpectedly: %#v", config.Children)
+		}
+	})
+}
+
+func TestLoadConfig_withInvalidModuleAttributes(t *testing.T) {
+	withinFixtureDir(t, "invalid_module_attribute", func(dir string) {
+		loader, err := NewLoader(afero.Afero{Fs: afero.NewOsFs()}, dir)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		rootMod, diags := loader.LoadRootModule(".")
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+
+		_, diags = BuildConfig(rootMod, loader.ModuleWalker(CallAllModule), dir)
+		expected := errors.New(`module.tf:4,16-29: Invalid "terraform" attribute; The terraform.env attribute was deprecated in v0.10 and removed in v0.12. The "state environment" concept was renamed to "workspace" in v0.12, and so the workspace name can now be accessed using the terraform.workspace attribute.`)
+		if !diags.HasErrors() {
+			t.Fatal("an error was expected to occur, but it did not")
+		}
+		if expected.Error() != diags.Error() {
+			t.Fatalf(`expected error is "%s", but got "%s"`, expected, diags)
 		}
 	})
 }
@@ -172,7 +255,12 @@ func TestLoadConfig_withoutModuleManifest(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		_, diags := loader.LoadConfig(".", CallAllModule)
+		rootMod, diags := loader.LoadRootModule(".")
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+
+		_, diags = BuildConfig(rootMod, loader.ModuleWalker(CallAllModule), dir)
 		if !diags.HasErrors() {
 			t.Fatal("Expected error is not occurred")
 		}
@@ -190,15 +278,22 @@ func TestLoadConfig_withoutModuleManifest_callLocalModules(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		config, diags := loader.LoadConfig(".", CallLocalModule)
+
+		// load the root module
+		rootMod, diags := loader.LoadRootModule(".")
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+		if rootMod.SourceDir != "." {
+			t.Fatalf("root module path: want=%s, got=%s", ".", rootMod.SourceDir)
+		}
+
+		// build config tree with child modules
+		config, diags := BuildConfig(rootMod, loader.ModuleWalker(CallLocalModule), dir)
 		if diags.HasErrors() {
 			t.Fatal(diags)
 		}
 
-		// root
-		if config.Module.SourceDir != "." {
-			t.Fatalf("root module path: want=%s, got=%s", ".", config.Module.SourceDir)
-		}
 		// module.instance
 		testChildModule(t, config, "instance", "ec2")
 
@@ -214,7 +309,12 @@ func TestLoadConfig_moduleNotFound(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		_, diags := loader.LoadConfig(".", CallLocalModule)
+		rootMod, diags := loader.LoadRootModule(".")
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+
+		_, diags = BuildConfig(rootMod, loader.ModuleWalker(CallLocalModule), dir)
 		if !diags.HasErrors() {
 			t.Fatal("Expected error is not occurred")
 		}
@@ -232,14 +332,15 @@ func TestLoadConfig_moduleNotFound_callNoModules(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		config, diags := loader.LoadConfig(".", CallNoModule)
+		rootMod, diags := loader.LoadRootModule(".")
 		if diags.HasErrors() {
 			t.Fatal(diags)
 		}
-
-		if config.Module.SourceDir != "." {
-			t.Fatalf("Root module path: want=%s, got=%s", ".", config.Module.SourceDir)
+		if rootMod.SourceDir != "." {
+			t.Fatalf("Root module path: want=%s, got=%s", ".", rootMod.SourceDir)
 		}
+
+		config, diags := BuildConfig(rootMod, loader.ModuleWalker(CallNoModule), dir)
 		if len(config.Children) != 0 {
 			t.Fatalf("Root module has children unexpectedly: %#v", config.Children)
 		}
@@ -252,14 +353,15 @@ func TestLoadConfig_moduleNotFound_callNoModules_withArgDir(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		config, diags := loader.LoadConfig("module_not_found", CallNoModule)
+		rootMod, diags := loader.LoadRootModule("module_not_found")
 		if diags.HasErrors() {
 			t.Fatal(diags)
 		}
-
-		if config.Module.SourceDir != "module_not_found" {
-			t.Fatalf("Root module path: want=%s, got=%s", "module_not_found", config.Module.SourceDir)
+		if rootMod.SourceDir != "module_not_found" {
+			t.Fatalf("Root module path: want=%s, got=%s", "module_not_found", rootMod.SourceDir)
 		}
+
+		config, diags := BuildConfig(rootMod, loader.ModuleWalker(CallNoModule), dir)
 		if len(config.Children) != 0 {
 			t.Fatalf("Root module has children unexpectedly: %#v", config.Children)
 		}
@@ -272,7 +374,7 @@ func TestLoadConfig_invalidConfiguration(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		_, diags := loader.LoadConfig(".", CallNoModule)
+		_, diags := loader.LoadRootModule(".")
 		if !diags.HasErrors() {
 			t.Fatal("Expected error is not occurred")
 		}
@@ -290,7 +392,12 @@ func TestLoadConfig_circularReferencingModules(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		_, diags := loader.LoadConfig(".", CallAllModule)
+		rootMod, diags := loader.LoadRootModule(".")
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+
+		_, diags = BuildConfig(rootMod, loader.ModuleWalker(CallAllModule), dir)
 		if !diags.HasErrors() {
 			t.Fatal("Expected error is not occurred")
 		}
