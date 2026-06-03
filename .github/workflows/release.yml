@@ -13,20 +13,6 @@ permissions:
   attestations: write
 
 jobs:
-  create-app-token:
-    runs-on: ubuntu-latest
-    outputs:
-      token: ${{ steps.app-token.outputs.token }}
-    steps:
-    - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
-      id: app-token
-      with:
-        client-id: ${{ vars.APP_CLIENT_ID }}
-        private-key: ${{ secrets.APP_PRIVATE_KEY }}
-        owner: terraform-linters
-        repositories: homebrew-tap
-        permission-contents: write
-        permission-pull-requests: write
   goreleaser:
     runs-on: ubuntu-latest
     needs: create-app-token
@@ -43,6 +29,16 @@ jobs:
       uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
       with:
         cosign-release: 'v2.6.1'
+    - name: Create GitHub App token
+      uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+      id: app-token
+      with:
+        client-id: ${{ vars.APP_CLIENT_ID }}
+        private-key: ${{ secrets.APP_PRIVATE_KEY }}
+        owner: terraform-linters
+        repositories: homebrew-tap
+        permission-contents: write
+        permission-pull-requests: write
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@5daf1e915a5f0af01ddbcd89a43b8061ff4f1a89 # v7.2.2
       with:
@@ -50,7 +46,7 @@ jobs:
         args: release --release-notes tools/release/release-note.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_APP_TOKEN: ${{ needs.create-app-token.outputs.token }}
+        GITHUB_APP_TOKEN: ${{ steps.app-token.outputs.token }}
     - uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
       with:
         subject-path: 'dist/checksums.txt'
