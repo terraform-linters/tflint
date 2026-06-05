@@ -1,12 +1,19 @@
 package formatter
 
 import (
-	"errors"
 	"fmt"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint/tflint"
 )
+
+type compactFormat struct{}
+
+func (compactFormat) print(f *Formatter, issues tflint.Issues, err error, sources map[string][]byte) {
+	f.compactPrint(issues, err, sources)
+}
+
+func (compactFormat) buffersErrors() bool { return true }
 
 func (f *Formatter) compactPrint(issues tflint.Issues, appErr error, sources map[string][]byte) {
 	if len(issues) > 0 {
@@ -30,35 +37,25 @@ func (f *Formatter) compactPrint(issues tflint.Issues, appErr error, sources map
 }
 
 func (f *Formatter) compactPrintErrors(err error, sources map[string][]byte) {
-	if err == nil {
-		return
-	}
-
-	// errors.Join
-	if errs, ok := err.(interface{ Unwrap() []error }); ok {
-		for _, err := range errs.Unwrap() {
-			f.compactPrintErrors(err, sources)
-		}
-		return
-	}
-
-	// hcl.Diagnostics
-	var diags hcl.Diagnostics
-	if errors.As(err, &diags) {
-		for _, diag := range diags {
-			fmt.Fprintf(
-				f.Stdout,
-				"%s:%d:%d: %s - %s. %s\n",
-				diag.Subject.Filename,
-				diag.Subject.Start.Line,
-				diag.Subject.Start.Column,
-				fromHclSeverity(diag.Severity),
-				diag.Summary,
-				diag.Detail,
-			)
-		}
-		return
-	}
-
-	f.prettyPrintErrors(err, sources, false)
+	mapErrors(err, errorMapper[struct{}]{
+		diagnostics: func(_ error, diags hcl.Diagnostics) []struct{} {
+			for _, diag := range diags {
+				fmt.Fprintf(
+					f.Stdout,
+					"%s:%d:%d: %s - %s. %s\n",
+					diag.Subject.Filename,
+					diag.Subject.Start.Line,
+					diag.Subject.Start.Column,
+					fromHclSeverity(diag.Severity),
+					diag.Summary,
+					diag.Detail,
+				)
+			}
+			return nil
+		},
+		error: func(err error) struct{} {
+			f.prettyPrintErrors(err, sources, false)
+			return struct{}{}
+		},
+	})
 }

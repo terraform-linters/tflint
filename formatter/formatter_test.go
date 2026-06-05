@@ -30,6 +30,72 @@ func (r *testRule) Link() string {
 	return "https://github.com"
 }
 
+func TestResolveFormat(t *testing.T) {
+	tests := []struct {
+		name          string
+		format        string
+		resolved      format
+		buffersErrors bool
+	}{
+		{
+			name:          "default",
+			format:        "default",
+			resolved:      prettyFormat{},
+			buffersErrors: false,
+		},
+		{
+			name:          "json",
+			format:        "json",
+			resolved:      jsonFormat{},
+			buffersErrors: true,
+		},
+		{
+			name:          "checkstyle",
+			format:        "checkstyle",
+			resolved:      checkstyleFormat{},
+			buffersErrors: true,
+		},
+		{
+			name:          "junit",
+			format:        "junit",
+			resolved:      junitFormat{},
+			buffersErrors: true,
+		},
+		{
+			name:          "compact",
+			format:        "compact",
+			resolved:      compactFormat{},
+			buffersErrors: true,
+		},
+		{
+			name:          "sarif",
+			format:        "sarif",
+			resolved:      sarifFormat{},
+			buffersErrors: true,
+		},
+		{
+			name:          "unknown format falls back to pretty",
+			format:        "unknown",
+			resolved:      prettyFormat{},
+			buffersErrors: false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			f := &Formatter{Format: test.format}
+
+			resolved := f.resolveFormat()
+			if resolved != test.resolved {
+				t.Errorf("expected %T, got %T", test.resolved, resolved)
+			}
+			if buffers := resolved.buffersErrors(); buffers != test.buffersErrors {
+				t.Errorf("expected buffersErrors %t, got %t", test.buffersErrors, buffers)
+			}
+		})
+	}
+}
+
 func TestPrintErrorParallel(t *testing.T) {
 	// Disable color
 	color.NoColor = true

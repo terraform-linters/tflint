@@ -33,6 +33,14 @@ type checkstyle struct {
 	Files   []*checkstyleFile `xml:"file"`
 }
 
+type checkstyleFormat struct{}
+
+func (checkstyleFormat) print(f *Formatter, issues tflint.Issues, err error, sources map[string][]byte) {
+	f.checkstylePrint(issues, err, sources)
+}
+
+func (checkstyleFormat) buffersErrors() bool { return true }
+
 func (f *Formatter) checkstylePrint(issues tflint.Issues, appErr error, sources map[string][]byte) {
 	files := map[string]*checkstyleFile{}
 	for _, issue := range issues {
@@ -101,14 +109,18 @@ func (f *Formatter) checkstylePrint(issues tflint.Issues, appErr error, sources 
 
 func (f *Formatter) checkstyleErrors(err error) []*checkstyleError {
 	return mapErrors(err, errorMapper[*checkstyleError]{
-		diagnostic: func(diag *hcl.Diagnostic) *checkstyleError {
-			return &checkstyleError{
-				Source:   diag.Summary,
-				Line:     diag.Subject.Start.Line,
-				Column:   diag.Subject.Start.Column,
-				Severity: fromHclSeverity(diag.Severity),
-				Message:  diag.Detail,
+		diagnostics: func(_ error, diags hcl.Diagnostics) []*checkstyleError {
+			errors := make([]*checkstyleError, len(diags))
+			for i, diag := range diags {
+				errors[i] = &checkstyleError{
+					Source:   diag.Summary,
+					Line:     diag.Subject.Start.Line,
+					Column:   diag.Subject.Start.Column,
+					Severity: fromHclSeverity(diag.Severity),
+					Message:  diag.Detail,
+				}
 			}
+			return errors
 		},
 		error: func(err error) *checkstyleError {
 			return &checkstyleError{

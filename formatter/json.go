@@ -53,6 +53,14 @@ type JSONOutput struct {
 	Errors []JSONError `json:"errors"`
 }
 
+type jsonFormat struct{}
+
+func (jsonFormat) print(f *Formatter, issues tflint.Issues, err error, _ map[string][]byte) {
+	f.jsonPrint(issues, err)
+}
+
+func (jsonFormat) buffersErrors() bool { return true }
+
 func (f *Formatter) jsonPrint(issues tflint.Issues, appErr error) {
 	ret := &JSONOutput{Issues: make([]JSONIssue, len(issues)), Errors: f.jsonErrors(appErr)}
 
@@ -91,17 +99,21 @@ func (f *Formatter) jsonPrint(issues tflint.Issues, appErr error) {
 
 func (f *Formatter) jsonErrors(err error) []JSONError {
 	return mapErrors(err, errorMapper[JSONError]{
-		diagnostic: func(diag *hcl.Diagnostic) JSONError {
-			return JSONError{
-				Severity: fromHclSeverity(diag.Severity),
-				Summary:  diag.Summary,
-				Message:  diag.Detail,
-				Range: &JSONRange{
-					Filename: diag.Subject.Filename,
-					Start:    JSONPos{Line: diag.Subject.Start.Line, Column: diag.Subject.Start.Column},
-					End:      JSONPos{Line: diag.Subject.End.Line, Column: diag.Subject.End.Column},
-				},
+		diagnostics: func(_ error, diags hcl.Diagnostics) []JSONError {
+			errors := make([]JSONError, len(diags))
+			for i, diag := range diags {
+				errors[i] = JSONError{
+					Severity: fromHclSeverity(diag.Severity),
+					Summary:  diag.Summary,
+					Message:  diag.Detail,
+					Range: &JSONRange{
+						Filename: diag.Subject.Filename,
+						Start:    JSONPos{Line: diag.Subject.Start.Line, Column: diag.Subject.Start.Column},
+						End:      JSONPos{Line: diag.Subject.End.Line, Column: diag.Subject.End.Column},
+					},
+				}
 			}
+			return errors
 		},
 		error: func(err error) JSONError {
 			return JSONError{
