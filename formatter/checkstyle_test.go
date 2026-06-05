@@ -77,6 +77,28 @@ func Test_checkstylePrint(t *testing.T) {
   </file>
 </checkstyle>`,
 		},
+		{
+			Name:   "diagnostics group under the subject filename",
+			Issues: tflint.Issues{},
+			Error: hcl.Diagnostics{
+				&hcl.Diagnostic{
+					Severity: hcl.DiagError,
+					Summary:  "summary",
+					Detail:   "detail",
+					Subject: &hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+					},
+				},
+			},
+			Stdout: `<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle>
+  <file name="test.tf">
+    <error source="summary" line="1" column="1" severity="error" message="detail" link="" rule=""></error>
+  </file>
+</checkstyle>`,
+		},
 	}
 
 	for _, tc := range cases {

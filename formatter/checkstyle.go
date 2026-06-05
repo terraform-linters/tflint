@@ -21,6 +21,11 @@ type checkstyleError struct {
 
 	// Deprecated: Use `source` instead
 	Rule string `xml:"rule,attr"`
+
+	// filename groups the error under a <file>. It is unexported so it is not
+	// marshaled as an attribute; diagnostics carry their source file here while
+	// Source holds the summary.
+	filename string
 }
 
 type checkstyleFile struct {
@@ -64,7 +69,7 @@ func (f *Formatter) checkstylePrint(issues tflint.Issues, appErr error, sources 
 	}
 
 	for _, cherr := range f.checkstyleErrors(appErr) {
-		filename := cherr.Source
+		filename := cherr.filename
 		if filename == "" {
 			filename = applicationErrorSource
 		}
@@ -116,6 +121,7 @@ func (f *Formatter) checkstyleErrors(err error) []*checkstyleError {
 					Column:   diag.Subject.Start.Column,
 					Severity: fromHclSeverity(diag.Severity),
 					Message:  diag.Detail,
+					filename: diag.Subject.Filename,
 				}
 			}
 			return errors
