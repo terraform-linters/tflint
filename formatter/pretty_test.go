@@ -290,9 +290,9 @@ detail
 		t.Run(tc.Name, func(t *testing.T) {
 			stdout := &bytes.Buffer{}
 			stderr := &bytes.Buffer{}
-			formatter := &Formatter{Stdout: stdout, Stderr: stderr, Fix: tc.Fix}
+			formatter := &Formatter{Stdout: stdout, Stderr: stderr, Format: "default", Fix: tc.Fix}
 
-			formatter.prettyPrint(tc.Issues, tc.Error, tc.Sources)
+			formatter.Print(tc.Issues, tc.Error, tc.Sources)
 
 			if stdout.String() != tc.Stdout {
 				t.Fatalf("expected=%s, stdout=%s", tc.Stdout, stdout.String())

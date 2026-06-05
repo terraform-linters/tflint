@@ -9,11 +9,7 @@ import (
 
 type compactFormat struct{ bufferedFormat }
 
-func (compactFormat) print(f *Formatter, issues tflint.Issues, err error, sources map[string][]byte) {
-	f.compactPrint(issues, err, sources)
-}
-
-func (f *Formatter) compactPrint(issues tflint.Issues, appErr error, sources map[string][]byte) {
+func (compactFormat) print(f *Formatter, issues tflint.Issues, appErr error, sources map[string][]byte) {
 	if len(issues) > 0 {
 		fmt.Fprintf(f.Stdout, "%d issue(s) found:\n\n", len(issues))
 	}

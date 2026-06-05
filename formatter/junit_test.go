@@ -96,9 +96,9 @@ func Test_junitPrint(t *testing.T) {
 	for _, tc := range cases {
 		stdout := &bytes.Buffer{}
 		stderr := &bytes.Buffer{}
-		formatter := &Formatter{Stdout: stdout, Stderr: stderr}
+		formatter := &Formatter{Stdout: stdout, Stderr: stderr, Format: "junit"}
 
-		formatter.junitPrint(tc.Issues, tc.Error, map[string][]byte{})
+		formatter.Print(tc.Issues, tc.Error, map[string][]byte{})
 
 		if stdout.String() != tc.Stdout {
 			t.Fatalf("%s: stdout did not match expected:\n%s", tc.Name, cmp.Diff(tc.Stdout, stdout.String()))

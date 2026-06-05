@@ -55,11 +55,7 @@ type JSONOutput struct {
 
 type jsonFormat struct{ bufferedFormat }
 
-func (jsonFormat) print(f *Formatter, issues tflint.Issues, err error, _ map[string][]byte) {
-	f.jsonPrint(issues, err)
-}
-
-func (f *Formatter) jsonPrint(issues tflint.Issues, appErr error) {
+func (jsonFormat) print(f *Formatter, issues tflint.Issues, appErr error, _ map[string][]byte) {
 	ret := &JSONOutput{Issues: make([]JSONIssue, len(issues)), Errors: f.jsonErrors(appErr)}
 
 	for idx, issue := range issues.Sort() {
