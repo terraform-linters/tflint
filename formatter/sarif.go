@@ -12,11 +12,7 @@ import (
 
 type sarifFormat struct{ bufferedFormat }
 
-func (sarifFormat) print(f *Formatter, issues tflint.Issues, err error, _ map[string][]byte) {
-	f.sarifPrint(issues, err)
-}
-
-func (f *Formatter) sarifPrint(issues tflint.Issues, appErr error) {
+func (sarifFormat) print(f *Formatter, issues tflint.Issues, appErr error, _ map[string][]byte) {
 	report, initErr := sarif.New(sarif.Version210)
 	if initErr != nil {
 		panic(initErr)

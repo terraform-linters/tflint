@@ -21,13 +21,9 @@ var colorNotice = color.New(color.FgHiWhite).SprintFunc()
 
 type prettyFormat struct{}
 
-func (prettyFormat) print(f *Formatter, issues tflint.Issues, err error, sources map[string][]byte) {
-	f.prettyPrint(issues, err, sources)
-}
-
 func (prettyFormat) buffersErrors() bool { return false }
 
-func (f *Formatter) prettyPrint(issues tflint.Issues, err error, sources map[string][]byte) {
+func (prettyFormat) print(f *Formatter, issues tflint.Issues, err error, sources map[string][]byte) {
 	if len(issues) > 0 {
 		fmt.Fprintf(f.Stdout, "%d issue(s) found:\n\n", len(issues))
 

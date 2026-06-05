@@ -105,9 +105,9 @@ func Test_checkstylePrint(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			stdout := &bytes.Buffer{}
 			stderr := &bytes.Buffer{}
-			formatter := &Formatter{Stdout: stdout, Stderr: stderr}
+			formatter := &Formatter{Stdout: stdout, Stderr: stderr, Format: "checkstyle"}
 
-			formatter.checkstylePrint(tc.Issues, tc.Error, map[string][]byte{})
+			formatter.Print(tc.Issues, tc.Error, map[string][]byte{})
 
 			if stdout.String() != tc.Stdout {
 				t.Fatalf("expected=%s, stdout=%s", tc.Stdout, stdout.String())

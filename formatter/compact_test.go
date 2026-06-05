@@ -66,9 +66,9 @@ test.tf:1:1: Error - test (test_rule)
 	for _, tc := range cases {
 		stdout := &bytes.Buffer{}
 		stderr := &bytes.Buffer{}
-		formatter := &Formatter{Stdout: stdout, Stderr: stderr}
+		formatter := &Formatter{Stdout: stdout, Stderr: stderr, Format: "compact"}
 
-		formatter.compactPrint(tc.Issues, tc.Error, map[string][]byte{})
+		formatter.Print(tc.Issues, tc.Error, map[string][]byte{})
 
 		if stdout.String() != tc.Stdout {
 			t.Errorf("Failed %s test: expected=%s, stdout=%s", tc.Name, tc.Stdout, stdout.String())

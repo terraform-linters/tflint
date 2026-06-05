@@ -40,11 +40,7 @@ type checkstyle struct {
 
 type checkstyleFormat struct{ bufferedFormat }
 
-func (checkstyleFormat) print(f *Formatter, issues tflint.Issues, err error, sources map[string][]byte) {
-	f.checkstylePrint(issues, err, sources)
-}
-
-func (f *Formatter) checkstylePrint(issues tflint.Issues, appErr error, sources map[string][]byte) {
+func (checkstyleFormat) print(f *Formatter, issues tflint.Issues, appErr error, _ map[string][]byte) {
 	files := map[string]*checkstyleFile{}
 	for _, issue := range issues {
 		cherr := &checkstyleError{

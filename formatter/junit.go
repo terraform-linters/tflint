@@ -14,11 +14,7 @@ import (
 
 type junitFormat struct{ bufferedFormat }
 
-func (junitFormat) print(f *Formatter, issues tflint.Issues, err error, sources map[string][]byte) {
-	f.junitPrint(issues, err, sources)
-}
-
-func (f *Formatter) junitPrint(issues tflint.Issues, appErr error, sources map[string][]byte) {
+func (junitFormat) print(f *Formatter, issues tflint.Issues, appErr error, _ map[string][]byte) {
 	cases := make([]formatter.JUnitTestCase, len(issues))
 
 	for i, issue := range issues.Sort() {
