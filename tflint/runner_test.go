@@ -452,6 +452,7 @@ func Test_EmitIssue(t *testing.T) {
 		Location    hcl.Range
 		Fixable     bool
 		Annotations map[string]Annotations
+		Config      *Config
 		Module      *moduleConfig
 		Expected    Issues
 		Applied     bool
@@ -526,6 +527,94 @@ func Test_EmitIssue(t *testing.T) {
 			},
 			Expected: Issues{},
 			Applied:  false,
+		},
+		{
+			Name:    "ignore annotation is disabled by rule config",
+			Rule:    &testRule{},
+			Message: "This is test message",
+			Location: hcl.Range{
+				Filename: "test.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
+			Annotations: map[string]Annotations{
+				"test.tf": {
+					&LineAnnotation{
+						Content: "test_rule",
+						Token: hclsyntax.Token{
+							Type: hclsyntax.TokenComment,
+							Range: hcl.Range{
+								Filename: "test.tf",
+								Start:    hcl.Pos{Line: 1},
+							},
+						},
+					},
+				},
+			},
+			Config: &Config{
+				Rules: map[string]*RuleConfig{
+					"test_rule": {
+						Name:      "test_rule",
+						Enabled:   true,
+						Ignorable: boolPtr(false),
+					},
+				},
+			},
+			Expected: Issues{
+				{
+					Rule:    &testRule{},
+					Message: "This is test message",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1},
+					},
+					Source: []byte("foo = 1"),
+				},
+			},
+			Applied: true,
+		},
+		{
+			Name:    "ignore file annotation is disabled by rule config",
+			Rule:    &testRule{},
+			Message: "This is test message",
+			Location: hcl.Range{
+				Filename: "test.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
+			Annotations: map[string]Annotations{
+				"test.tf": {
+					&FileAnnotation{
+						Content: "test_rule",
+						Token: hclsyntax.Token{
+							Type: hclsyntax.TokenComment,
+							Range: hcl.Range{
+								Filename: "test.tf",
+								Start:    hcl.Pos{Line: 1},
+							},
+						},
+					},
+				},
+			},
+			Config: &Config{
+				Rules: map[string]*RuleConfig{
+					"test_rule": {
+						Name:      "test_rule",
+						Enabled:   true,
+						Ignorable: boolPtr(false),
+					},
+				},
+			},
+			Expected: Issues{
+				{
+					Rule:    &testRule{},
+					Message: "This is test message",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1},
+					},
+					Source: []byte("foo = 1"),
+				},
+			},
+			Applied: true,
 		},
 		{
 			Name:    "module",
@@ -702,6 +791,9 @@ func Test_EmitIssue(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
 			runner := testRunnerWithAnnotations(t, sources, tc.Annotations)
+			if tc.Config != nil {
+				runner.config = tc.Config
+			}
 			if tc.Module != nil {
 				runner.TFConfig.Path = []string{"module", "module1"}
 				runner.currentExpr = tc.Module.currentExpr

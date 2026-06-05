@@ -242,6 +242,17 @@ rule "aws_instance_previous_type" {
 }
 ```
 
+By default, annotations can suppress issues from a rule. Set `ignorable = false`
+to prevent `tflint-ignore` and `tflint-ignore-file` annotations from suppressing
+that rule:
+
+```hcl
+rule "aws_instance_previous_type" {
+  enabled   = true
+  ignorable = false
+}
+```
+
 Some rules support additional attributes that configure their behavior. See the documentation for each rule for details.
 
 ### `plugin` blocks

@@ -2,6 +2,10 @@
 
 TFLint supports several comment annotations for suppressing issues for specific lines or files. Annotations can only suppress _issues_ emitted from fully valid, parseable Terraform modules. _Errors_ cannot be ignored.
 
+Rule configs can opt out of annotation-based suppression by setting
+`ignorable = false`. In that case, `tflint-ignore` and `tflint-ignore-file`
+annotations do not suppress issues from that rule.
+
 Annotation comments can disable rules on specific lines:
 
 ```hcl

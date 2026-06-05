@@ -114,9 +114,24 @@ type Config struct {
 
 // RuleConfig is a TFLint's rule config
 type RuleConfig struct {
-	Name    string   `hcl:"name,label"`
-	Enabled bool     `hcl:"enabled"`
-	Body    hcl.Body `hcl:",remain"`
+	Name      string   `hcl:"name,label"`
+	Enabled   bool     `hcl:"enabled"`
+	Ignorable *bool    `hcl:"ignorable,optional"`
+	Body      hcl.Body `hcl:",remain"`
+}
+
+func (r *RuleConfig) isIgnorable() bool {
+	if r == nil || r.Ignorable == nil {
+		return true
+	}
+	return *r.Ignorable
+}
+
+func (c *Config) ruleIsIgnorable(name string) bool {
+	if c == nil {
+		return true
+	}
+	return c.Rules[name].isIgnorable()
 }
 
 // PluginConfig is a TFLint's plugin config

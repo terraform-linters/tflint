@@ -17,6 +17,10 @@ import (
 	"github.com/terraform-linters/tflint/terraform"
 )
 
+func boolPtr(v bool) *bool {
+	return &v
+}
+
 func TestLoadConfig(t *testing.T) {
 	// default error check helper
 	neverHappend := func(err error) bool { return err != nil }
@@ -56,6 +60,7 @@ config {
 
 rule "aws_instance_invalid_type" {
 	enabled = false
+	ignorable = false
 }
 
 rule "aws_instance_previous_type" {
@@ -97,8 +102,9 @@ plugin "baz" {
 				FormatSet:         true,
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
-						Name:    "aws_instance_invalid_type",
-						Enabled: false,
+						Name:      "aws_instance_invalid_type",
+						Enabled:   false,
+						Ignorable: boolPtr(false),
 					},
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
@@ -546,7 +552,8 @@ config {
   },
   "rule": {
     "aws_instance_invalid_type": {
-      "enabled": false
+      "enabled": false,
+      "ignorable": false
     },
     "aws_instance_previous_type": {
       "enabled": false,
@@ -588,8 +595,9 @@ config {
 				FormatSet:         true,
 				Rules: map[string]*RuleConfig{
 					"aws_instance_invalid_type": {
-						Name:    "aws_instance_invalid_type",
-						Enabled: false,
+						Name:      "aws_instance_invalid_type",
+						Enabled:   false,
+						Ignorable: boolPtr(false),
 					},
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
