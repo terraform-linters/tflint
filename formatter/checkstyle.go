@@ -33,13 +33,11 @@ type checkstyle struct {
 	Files   []*checkstyleFile `xml:"file"`
 }
 
-type checkstyleFormat struct{}
+type checkstyleFormat struct{ bufferedFormat }
 
 func (checkstyleFormat) print(f *Formatter, issues tflint.Issues, err error, sources map[string][]byte) {
 	f.checkstylePrint(issues, err, sources)
 }
-
-func (checkstyleFormat) buffersErrors() bool { return true }
 
 func (f *Formatter) checkstylePrint(issues tflint.Issues, appErr error, sources map[string][]byte) {
 	files := map[string]*checkstyleFile{}

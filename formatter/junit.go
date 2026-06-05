@@ -12,13 +12,11 @@ import (
 
 // https://www.ibm.com/docs/en/developer-for-zos/14.1.0?topic=formats-junit-xml-format
 
-type junitFormat struct{}
+type junitFormat struct{ bufferedFormat }
 
 func (junitFormat) print(f *Formatter, issues tflint.Issues, err error, sources map[string][]byte) {
 	f.junitPrint(issues, err, sources)
 }
-
-func (junitFormat) buffersErrors() bool { return true }
 
 func (f *Formatter) junitPrint(issues tflint.Issues, appErr error, sources map[string][]byte) {
 	cases := make([]formatter.JUnitTestCase, len(issues))

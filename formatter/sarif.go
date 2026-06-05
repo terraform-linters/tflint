@@ -10,13 +10,11 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 )
 
-type sarifFormat struct{}
+type sarifFormat struct{ bufferedFormat }
 
 func (sarifFormat) print(f *Formatter, issues tflint.Issues, err error, _ map[string][]byte) {
 	f.sarifPrint(issues, err)
 }
-
-func (sarifFormat) buffersErrors() bool { return true }
 
 func (f *Formatter) sarifPrint(issues tflint.Issues, appErr error) {
 	report, initErr := sarif.New(sarif.Version210)

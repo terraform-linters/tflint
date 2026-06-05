@@ -32,6 +32,12 @@ type format interface {
 	buffersErrors() bool
 }
 
+// bufferedFormat is embedded by formats that accumulate parallel errors and
+// print them at the end rather than in real time. Only pretty streams errors.
+type bufferedFormat struct{}
+
+func (bufferedFormat) buffersErrors() bool { return true }
+
 var formats = map[string]format{
 	"default":    prettyFormat{},
 	"json":       jsonFormat{},
