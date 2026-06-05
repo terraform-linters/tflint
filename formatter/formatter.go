@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"slices"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	sdk "github.com/terraform-linters/tflint-plugin-sdk/tflint"
@@ -26,24 +25,38 @@ type Formatter struct {
 	errInParallel error
 }
 
+// format is a per-format adapter owning how a format prints output and
+// whether it buffers parallel errors to the end instead of printing them in real time.
+type format interface {
+	print(f *Formatter, issues tflint.Issues, err error, sources map[string][]byte)
+	buffersErrors() bool
+}
+
+// bufferedFormat is embedded by formats that accumulate parallel errors and
+// print them at the end rather than in real time. Only pretty streams errors.
+type bufferedFormat struct{}
+
+func (bufferedFormat) buffersErrors() bool { return true }
+
+var formats = map[string]format{
+	"default":    prettyFormat{},
+	"json":       jsonFormat{},
+	"checkstyle": checkstyleFormat{},
+	"junit":      junitFormat{},
+	"compact":    compactFormat{},
+	"sarif":      sarifFormat{},
+}
+
+func (f *Formatter) resolveFormat() format {
+	if format, ok := formats[f.Format]; ok {
+		return format
+	}
+	return prettyFormat{} // unknown format falls back to pretty, matching today's default
+}
+
 // Print outputs the given issues and errors according to configured format
 func (f *Formatter) Print(issues tflint.Issues, err error, sources map[string][]byte) {
-	switch f.Format {
-	case "default":
-		f.prettyPrint(issues, err, sources)
-	case "json":
-		f.jsonPrint(issues, err)
-	case "checkstyle":
-		f.checkstylePrint(issues, err, sources)
-	case "junit":
-		f.junitPrint(issues, err, sources)
-	case "compact":
-		f.compactPrint(issues, err, sources)
-	case "sarif":
-		f.sarifPrint(issues, err)
-	default:
-		f.prettyPrint(issues, err, sources)
-	}
+	f.resolveFormat().print(f, issues, err, sources)
 }
 
 // PrintErrorParallel outputs an error occurred in parallel workers.
@@ -56,7 +69,7 @@ func (f *Formatter) PrintErrorParallel(err error, sources map[string][]byte) {
 		f.errInParallel = errors.Join(f.errInParallel, err)
 	}
 
-	if slices.Contains([]string{"json", "checkstyle", "junit", "compact", "sarif"}, f.Format) {
+	if f.resolveFormat().buffersErrors() {
 		// These formats require errors to be printed at the end, so do nothing here
 		return
 	}
@@ -69,7 +82,7 @@ func (f *Formatter) PrintErrorParallel(err error, sources map[string][]byte) {
 // Errors stored with PrintErrorParallel are output,
 // but in the default format they are output in real time, so they are ignored.
 func (f *Formatter) PrintParallel(issues tflint.Issues, sources map[string][]byte) error {
-	if slices.Contains([]string{"json", "checkstyle", "junit", "compact", "sarif"}, f.Format) {
+	if f.resolveFormat().buffersErrors() {
 		f.Print(issues, f.errInParallel, sources)
 		return f.errInParallel
 	}

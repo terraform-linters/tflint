@@ -72,8 +72,12 @@ func Test_mapErrors(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			results := mapErrors(tt.err, errorMapper[string]{
-				diagnostic: func(diag *hcl.Diagnostic) string {
-					return fmt.Sprintf("diagnostic: %s - %s", diag.Summary, diag.Detail)
+				diagnostics: func(_ error, diags hcl.Diagnostics) []string {
+					mapped := make([]string, len(diags))
+					for i, diag := range diags {
+						mapped[i] = fmt.Sprintf("diagnostic: %s - %s", diag.Summary, diag.Detail)
+					}
+					return mapped
 				},
 				error: func(err error) string {
 					return fmt.Sprintf("error: %s", err.Error())

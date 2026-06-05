@@ -221,6 +221,35 @@ detail
 `, warningColor, resetColor, highlightColor, resetColor),
 		},
 		{
+			Name:   "wrapped diagnostics",
+			Issues: tflint.Issues{},
+			Error: fmt.Errorf("Failed to load the root module; %w", hcl.Diagnostics{
+				&hcl.Diagnostic{
+					Severity: hcl.DiagWarning,
+					Summary:  "summary",
+					Detail:   "detail",
+					Subject: &hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+					},
+				},
+			}),
+			Sources: map[string][]byte{
+				"test.tf": []byte("foo = 1"),
+			},
+			Stderr: fmt.Sprintf(`Failed to load the root module; test.tf:1,1-4: summary; detail:
+
+%sWarning%s: summary
+
+  on test.tf line 1:
+   1: %sfoo%s = 1
+
+detail
+
+`, warningColor, resetColor, highlightColor, resetColor),
+		},
+		{
 			Name:   "joined errors",
 			Issues: tflint.Issues{},
 			Error: errors.Join(

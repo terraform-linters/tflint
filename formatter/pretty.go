@@ -2,7 +2,6 @@ package formatter
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"log"
 	"strings"
@@ -19,6 +18,14 @@ var colorHighlight = color.New(color.Bold).Add(color.Underline).SprintFunc()
 var colorError = color.New(color.FgRed).SprintFunc()
 var colorWarning = color.New(color.FgYellow).SprintFunc()
 var colorNotice = color.New(color.FgHiWhite).SprintFunc()
+
+type prettyFormat struct{}
+
+func (prettyFormat) print(f *Formatter, issues tflint.Issues, err error, sources map[string][]byte) {
+	f.prettyPrint(issues, err, sources)
+}
+
+func (prettyFormat) buffersErrors() bool { return false }
 
 func (f *Formatter) prettyPrint(issues tflint.Issues, err error, sources map[string][]byte) {
 	if len(issues) > 0 {
@@ -103,33 +110,23 @@ func (f *Formatter) prettyPrintIssueWithSource(issue *tflint.Issue, sources map[
 }
 
 func (f *Formatter) prettyPrintErrors(err error, sources map[string][]byte, withIndent bool) {
-	if err == nil {
-		return
-	}
+	mapErrors(err, errorMapper[struct{}]{
+		diagnostics: func(err error, diags hcl.Diagnostics) []struct{} {
+			fmt.Fprintf(f.Stderr, "%s:\n\n", err)
 
-	// errors.Join
-	if errs, ok := err.(interface{ Unwrap() []error }); ok {
-		for _, err := range errs.Unwrap() {
-			f.prettyPrintErrors(err, sources, withIndent)
-		}
-		return
-	}
-
-	// hcl.Diagnostics
-	var diags hcl.Diagnostics
-	if errors.As(err, &diags) {
-		fmt.Fprintf(f.Stderr, "%s:\n\n", err)
-
-		writer := hcl.NewDiagnosticTextWriter(f.Stderr, parseSources(sources), 0, !f.NoColor)
-		_ = writer.WriteDiagnostics(diags)
-		return
-	}
-
-	if withIndent {
-		fmt.Fprintf(f.Stderr, "%s %s\n", colorError("│"), err)
-	} else {
-		fmt.Fprintf(f.Stderr, "%s\n", err)
-	}
+			writer := hcl.NewDiagnosticTextWriter(f.Stderr, parseSources(sources), 0, !f.NoColor)
+			_ = writer.WriteDiagnostics(diags)
+			return nil
+		},
+		error: func(err error) struct{} {
+			if withIndent {
+				fmt.Fprintf(f.Stderr, "%s %s\n", colorError("│"), err)
+			} else {
+				fmt.Fprintf(f.Stderr, "%s\n", err)
+			}
+			return struct{}{}
+		},
+	})
 }
 
 // PrettyPrintStderr outputs the given output to stderr with an indent.

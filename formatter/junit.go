@@ -12,6 +12,12 @@ import (
 
 // https://www.ibm.com/docs/en/developer-for-zos/14.1.0?topic=formats-junit-xml-format
 
+type junitFormat struct{ bufferedFormat }
+
+func (junitFormat) print(f *Formatter, issues tflint.Issues, err error, sources map[string][]byte) {
+	f.junitPrint(issues, err, sources)
+}
+
 func (f *Formatter) junitPrint(issues tflint.Issues, appErr error, sources map[string][]byte) {
 	cases := make([]formatter.JUnitTestCase, len(issues))
 
@@ -59,34 +65,38 @@ func (f *Formatter) junitPrint(issues tflint.Issues, appErr error, sources map[s
 
 func (f *Formatter) junitErrors(err error) []formatter.JUnitTestCase {
 	return mapErrors(err, errorMapper[formatter.JUnitTestCase]{
-		diagnostic: func(diag *hcl.Diagnostic) formatter.JUnitTestCase {
-			return formatter.JUnitTestCase{
-				Name:      diag.Summary,
-				Classname: diag.Subject.Filename,
-				Time:      "0",
-				Failure: &formatter.JUnitFailure{
-					Message: fmt.Sprintf("%s:%d,%d-%d,%d: %s",
-						diag.Subject.Filename,
-						diag.Subject.Start.Line,
-						diag.Subject.Start.Column,
-						diag.Subject.End.Line,
-						diag.Subject.End.Column,
-						diag.Detail,
-					),
-					Type: fromHclSeverity(diag.Severity),
-					Contents: fmt.Sprintf(
-						"%s: %s\nSummary: %s\nRange: %s:%d,%d-%d,%d",
-						fromHclSeverity(diag.Severity),
-						diag.Detail,
-						diag.Summary,
-						diag.Subject.Filename,
-						diag.Subject.Start.Line,
-						diag.Subject.Start.Column,
-						diag.Subject.End.Line,
-						diag.Subject.End.Column,
-					),
-				},
+		diagnostics: func(_ error, diags hcl.Diagnostics) []formatter.JUnitTestCase {
+			cases := make([]formatter.JUnitTestCase, len(diags))
+			for i, diag := range diags {
+				cases[i] = formatter.JUnitTestCase{
+					Name:      diag.Summary,
+					Classname: diag.Subject.Filename,
+					Time:      "0",
+					Failure: &formatter.JUnitFailure{
+						Message: fmt.Sprintf("%s:%d,%d-%d,%d: %s",
+							diag.Subject.Filename,
+							diag.Subject.Start.Line,
+							diag.Subject.Start.Column,
+							diag.Subject.End.Line,
+							diag.Subject.End.Column,
+							diag.Detail,
+						),
+						Type: fromHclSeverity(diag.Severity),
+						Contents: fmt.Sprintf(
+							"%s: %s\nSummary: %s\nRange: %s:%d,%d-%d,%d",
+							fromHclSeverity(diag.Severity),
+							diag.Detail,
+							diag.Summary,
+							diag.Subject.Filename,
+							diag.Subject.Start.Line,
+							diag.Subject.Start.Column,
+							diag.Subject.End.Line,
+							diag.Subject.End.Column,
+						),
+					},
+				}
 			}
+			return cases
 		},
 		error: func(err error) formatter.JUnitTestCase {
 			return formatter.JUnitTestCase{
