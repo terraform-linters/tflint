@@ -44,6 +44,7 @@ homebrew_casks:
       owner: terraform-linters
       name: homebrew-tap
       token: "{{ .Env.GITHUB_APP_TOKEN }}"
+      branch: "{{ .ProjectName }}_{{ .Version }}"
       pull_request:
         enabled: true
     homepage: https://github.com/terraform-linters/tflint
