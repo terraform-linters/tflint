@@ -171,50 +171,11 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 		return ret, fmt.Errorf("Failed to prepare loading: %w", err)
 	}
 
-	rootMod, diags := loader.LoadRootModule(".")
-	if diags.HasErrors() {
-		return ret, fmt.Errorf("Failed to load the root module: %w", diags)
-	}
-	files, diags := loader.LoadConfigDirFiles(".")
-	if diags.HasErrors() {
-		return ret, fmt.Errorf("Failed to list configuration files: %w", diags)
-	}
-	annotations := map[string]tflint.Annotations{}
-	for path, file := range files {
-		ants, lexDiags := tflint.NewAnnotations(path, file)
-		diags = diags.Extend(lexDiags)
-		annotations[path] = ants
-	}
-
-	variables, diags := loader.LoadValuesFiles(".", h.config.Varfiles...)
-	if diags.HasErrors() {
-		return ret, fmt.Errorf("Failed to load values files: %w", diags)
-	}
-	cliVars, diags := terraform.ParseVariableValues(h.config.Variables, rootMod.Variables)
-	if diags.HasErrors() {
-		return ret, fmt.Errorf("Failed to parse variables: %w", diags)
-	}
-	variables = append(variables, cliVars)
-
-	configs, diags := terraform.BuildConfig(
-		rootMod,
-		loader.ModuleWalker(h.config.CallModuleType),
-		h.rootDir,
-		variables...,
-	)
-	if diags.HasErrors() {
-		return ret, fmt.Errorf("Failed to build configurations: %w", diags)
-	}
-
-	runner, err := tflint.NewRunner(h.rootDir, h.config, annotations, configs, variables...)
+	runner, runners, err := tflint.BuildRunners(loader, h.config, h.rootDir, ".")
 	if err != nil {
-		return ret, fmt.Errorf("Failed to initialize a runner: %w", err)
+		return ret, err
 	}
-	runners, err := tflint.NewModuleRunners(runner)
-	if err != nil {
-		return ret, fmt.Errorf("Failed to prepare rule checking: %w", err)
-	}
-	runners = append(runners, runner)
+	runners = append(runners, runner) // langserver iterates a single slice incl. root
 
 	config := h.config.ToPluginConfig()
 	for name, ruleset := range h.plugin.RuleSets {
