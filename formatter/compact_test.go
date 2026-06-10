@@ -52,6 +52,18 @@ test.tf:1:1: Error - test (test_rule)
 			Stdout: "main.tf:1:22: error - Unclosed configuration block. There is no closing brace for this block before the end of the file. This may be caused by incorrect brace nesting elsewhere in this file.\n",
 		},
 		{
+			Name: "diagnostics without subject",
+			Error: hcl.Diagnostics{
+				&hcl.Diagnostic{
+					Severity: hcl.DiagError,
+					Summary:  "summary",
+					Detail:   "detail",
+					Subject:  nil,
+				},
+			},
+			Stdout: ":0:0: error - summary. detail\n",
+		},
+		{
 			Name: "joined errors",
 			Error: errors.Join(
 				errors.New("an error occurred"),

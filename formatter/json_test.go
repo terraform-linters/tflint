@@ -99,6 +99,18 @@ func Test_jsonPrint(t *testing.T) {
 			Stdout: `{"issues":[],"errors":[{"summary":"summary","message":"detail","severity":"warning","range":{"filename":"filename","start":{"line":1,"column":1},"end":{"line":5,"column":1}}}]}`,
 		},
 		{
+			Name: "diagnostics without subject",
+			Error: hcl.Diagnostics{
+				&hcl.Diagnostic{
+					Severity: hcl.DiagError,
+					Summary:  "summary",
+					Detail:   "detail",
+					Subject:  nil,
+				},
+			},
+			Stdout: `{"issues":[],"errors":[{"summary":"summary","message":"detail","severity":"error"}]}`,
+		},
+		{
 			Name: "joined errors",
 			Error: errors.Join(
 				errors.New("an error occurred"),

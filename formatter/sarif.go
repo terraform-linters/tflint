@@ -85,22 +85,27 @@ func (f *Formatter) sarifAddErrors(errRun *sarif.Run, err error) {
 			for _, diag := range diags {
 				rule := errRun.AddRule(diag.Summary).WithDescription("")
 
-				location := sarif.NewPhysicalLocation().
-					WithArtifactLocation(sarif.NewSimpleArtifactLocation(filepath.ToSlash(diag.Subject.Filename))).
-					WithRegion(
-						sarif.NewRegion().
-							WithByteOffset(diag.Subject.Start.Byte).
-							WithByteLength(diag.Subject.End.Byte - diag.Subject.Start.Byte).
-							WithStartLine(diag.Subject.Start.Line).
-							WithStartColumn(diag.Subject.Start.Column).
-							WithEndLine(diag.Subject.End.Line).
-							WithEndColumn(diag.Subject.End.Column),
-					)
-
-				errRun.CreateResultForRule(rule.ID).
+				result := errRun.CreateResultForRule(rule.ID).
 					WithLevel(fromHclSeverity(diag.Severity)).
-					WithMessage(sarif.NewTextMessage(diag.Detail)).
-					AddLocation(sarif.NewLocationWithPhysicalLocation(location))
+					WithMessage(sarif.NewTextMessage(diag.Detail))
+
+				// hcl permits a nil Subject. Emit the result without a location
+				// in that case, mirroring how issues without a source are handled.
+				if diag.Subject != nil {
+					location := sarif.NewPhysicalLocation().
+						WithArtifactLocation(sarif.NewSimpleArtifactLocation(filepath.ToSlash(diag.Subject.Filename))).
+						WithRegion(
+							sarif.NewRegion().
+								WithByteOffset(diag.Subject.Start.Byte).
+								WithByteLength(diag.Subject.End.Byte - diag.Subject.Start.Byte).
+								WithStartLine(diag.Subject.Start.Line).
+								WithStartColumn(diag.Subject.Start.Column).
+								WithEndLine(diag.Subject.End.Line).
+								WithEndColumn(diag.Subject.End.Column),
+						)
+
+					result.AddLocation(sarif.NewLocationWithPhysicalLocation(location))
+				}
 			}
 			return nil
 		},

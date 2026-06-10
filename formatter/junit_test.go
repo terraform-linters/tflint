@@ -126,6 +126,26 @@ func Test_junitPrint(t *testing.T) {
   </testsuite>
 </testsuites>`,
 		},
+		{
+			Name: "diagnostics without subject",
+			Error: hcl.Diagnostics{
+				&hcl.Diagnostic{
+					Severity: hcl.DiagError,
+					Summary:  "summary",
+					Detail:   "detail",
+					Subject:  nil,
+				},
+			},
+			Stdout: `<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite tests="1" failures="1" time="0" name="">
+    <properties></properties>
+    <testcase classname="" name="summary" time="0">
+      <failure message=":0,0-0,0: detail" type="error">error: detail&#xA;Summary: summary&#xA;Range: :0,0-0,0</failure>
+    </testcase>
+  </testsuite>
+</testsuites>`,
+		},
 	}
 
 	for _, tc := range cases {
