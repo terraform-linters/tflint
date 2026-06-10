@@ -11,6 +11,16 @@ type errorMapper[T any] struct {
 	error       func(error) T
 }
 
+// diagRange returns the diagnostic's source range. hcl permits a nil Subject
+// ("some diagnostics have no source ranges at all"), in which case a zero range
+// is returned so formatters can render it without dereferencing nil.
+func diagRange(diag *hcl.Diagnostic) hcl.Range {
+	if diag.Subject == nil {
+		return hcl.Range{}
+	}
+	return *diag.Subject
+}
+
 func mapErrors[T any](err error, mapper errorMapper[T]) []T {
 	if err == nil {
 		return []T{}

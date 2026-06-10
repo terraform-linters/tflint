@@ -65,17 +65,18 @@ func (f *Formatter) junitErrors(err error) []formatter.JUnitTestCase {
 		diagnostics: func(_ error, diags hcl.Diagnostics) []formatter.JUnitTestCase {
 			cases := make([]formatter.JUnitTestCase, len(diags))
 			for i, diag := range diags {
+				rng := diagRange(diag)
 				cases[i] = formatter.JUnitTestCase{
 					Name:      diag.Summary,
-					Classname: diag.Subject.Filename,
+					Classname: rng.Filename,
 					Time:      "0",
 					Failure: &formatter.JUnitFailure{
 						Message: fmt.Sprintf("%s:%d,%d-%d,%d: %s",
-							diag.Subject.Filename,
-							diag.Subject.Start.Line,
-							diag.Subject.Start.Column,
-							diag.Subject.End.Line,
-							diag.Subject.End.Column,
+							rng.Filename,
+							rng.Start.Line,
+							rng.Start.Column,
+							rng.End.Line,
+							rng.End.Column,
 							diag.Detail,
 						),
 						Type: fromHclSeverity(diag.Severity),
@@ -84,11 +85,11 @@ func (f *Formatter) junitErrors(err error) []formatter.JUnitTestCase {
 							fromHclSeverity(diag.Severity),
 							diag.Detail,
 							diag.Summary,
-							diag.Subject.Filename,
-							diag.Subject.Start.Line,
-							diag.Subject.Start.Column,
-							diag.Subject.End.Line,
-							diag.Subject.End.Column,
+							rng.Filename,
+							rng.Start.Line,
+							rng.Start.Column,
+							rng.End.Line,
+							rng.End.Column,
 						),
 					},
 				}

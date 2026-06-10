@@ -100,11 +100,15 @@ func (f *Formatter) jsonErrors(err error) []JSONError {
 					Severity: fromHclSeverity(diag.Severity),
 					Summary:  diag.Summary,
 					Message:  diag.Detail,
-					Range: &JSONRange{
+				}
+				// hcl permits a nil Subject. Omit the range in that case;
+				// JSONError.Range is a pointer with omitempty for this reason.
+				if diag.Subject != nil {
+					errors[i].Range = &JSONRange{
 						Filename: diag.Subject.Filename,
 						Start:    JSONPos{Line: diag.Subject.Start.Line, Column: diag.Subject.Start.Column},
 						End:      JSONPos{Line: diag.Subject.End.Line, Column: diag.Subject.End.Column},
-					},
+					}
 				}
 			}
 			return errors

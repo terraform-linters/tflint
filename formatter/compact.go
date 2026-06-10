@@ -34,12 +34,13 @@ func (f *Formatter) compactPrintErrors(err error, sources map[string][]byte) {
 	mapErrors(err, errorMapper[struct{}]{
 		diagnostics: func(_ error, diags hcl.Diagnostics) []struct{} {
 			for _, diag := range diags {
+				rng := diagRange(diag)
 				fmt.Fprintf(
 					f.Stdout,
 					"%s:%d:%d: %s - %s. %s\n",
-					diag.Subject.Filename,
-					diag.Subject.Start.Line,
-					diag.Subject.Start.Column,
+					rng.Filename,
+					rng.Start.Line,
+					rng.Start.Column,
 					fromHclSeverity(diag.Severity),
 					diag.Summary,
 					diag.Detail,

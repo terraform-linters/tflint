@@ -613,6 +613,61 @@ func Test_sarifPrint(t *testing.T) {
   ]
 }`, tflint.Version, tflint.Version),
 		},
+		{
+			Name: "HCL diagnostics without a subject omit the location",
+			Error: hcl.Diagnostics{
+				&hcl.Diagnostic{
+					Severity: hcl.DiagError,
+					Summary:  "summary",
+					Detail:   "detail",
+					Subject:  nil,
+				},
+			},
+			Stdout: fmt.Sprintf(`{
+  "version": "2.1.0",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "informationUri": "https://github.com/terraform-linters/tflint",
+          "name": "tflint",
+          "rules": [],
+          "version": "%s"
+        }
+      },
+      "results": []
+    },
+    {
+      "tool": {
+        "driver": {
+          "informationUri": "https://github.com/terraform-linters/tflint",
+          "name": "tflint-errors",
+          "rules": [
+            {
+              "id": "summary",
+              "shortDescription": {
+                "text": ""
+              }
+            }
+          ],
+          "version": "%s"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "summary",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "detail"
+          }
+        }
+      ]
+    }
+  ]
+}`, tflint.Version, tflint.Version),
+		},
 	}
 
 	for _, tc := range cases {

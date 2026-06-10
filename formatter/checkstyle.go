@@ -111,13 +111,14 @@ func (f *Formatter) checkstyleErrors(err error) []*checkstyleError {
 		diagnostics: func(_ error, diags hcl.Diagnostics) []*checkstyleError {
 			errors := make([]*checkstyleError, len(diags))
 			for i, diag := range diags {
+				rng := diagRange(diag)
 				errors[i] = &checkstyleError{
 					Source:   diag.Summary,
-					Line:     diag.Subject.Start.Line,
-					Column:   diag.Subject.Start.Column,
+					Line:     rng.Start.Line,
+					Column:   rng.Start.Column,
 					Severity: fromHclSeverity(diag.Severity),
 					Message:  diag.Detail,
-					filename: diag.Subject.Filename,
+					filename: rng.Filename,
 				}
 			}
 			return errors

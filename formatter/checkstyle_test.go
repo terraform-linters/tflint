@@ -99,6 +99,24 @@ func Test_checkstylePrint(t *testing.T) {
   </file>
 </checkstyle>`,
 		},
+		{
+			Name:   "diagnostics without subject group under the application source",
+			Issues: tflint.Issues{},
+			Error: hcl.Diagnostics{
+				&hcl.Diagnostic{
+					Severity: hcl.DiagError,
+					Summary:  "summary",
+					Detail:   "detail",
+					Subject:  nil,
+				},
+			},
+			Stdout: `<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle>
+  <file name="(application)">
+    <error source="summary" line="0" column="0" severity="error" message="detail" link="" rule=""></error>
+  </file>
+</checkstyle>`,
+		},
 	}
 
 	for _, tc := range cases {
