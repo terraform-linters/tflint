@@ -40,6 +40,12 @@ WinGet (Windows):
 winget install -e --id TerraformLinters.tflint
 ```
 
+Go:
+
+```console
+go install github.com/terraform-linters/tflint@latest
+```
+
 ### Verification
 
 #### GitHub CLI (Recommended)
