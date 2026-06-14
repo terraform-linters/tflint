@@ -88,8 +88,10 @@ func (c *InstallConfig) CertificateIdentityIssuer() string {
 	return "https://token.actions.githubusercontent.com"
 }
 
-var ErrPluginNotVerified = errors.New("plugin not verified")
-var ErrLegacySigningKeyUsed = errors.New("legacy signing key used")
+var (
+	ErrPluginNotVerified    = errors.New("plugin not verified")
+	ErrLegacySigningKeyUsed = errors.New("legacy signing key used")
+)
 
 // Install fetches the release from GitHub and puts the binary in the plugin directory.
 // This installation process will automatically check the checksum of the downloaded zip file.
@@ -110,7 +112,7 @@ func (c *InstallConfig) Install() (string, error) {
 
 	path := filepath.Join(dir, c.InstallPath()+fileExt())
 	log.Printf("[DEBUG] Mkdir plugin dir: %s", filepath.Dir(path))
-	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return "", fmt.Errorf("Failed to mkdir to %s: %w", filepath.Dir(path), err)
 	}
 
@@ -334,6 +336,7 @@ func (c *InstallConfig) downloadToTempFile(ctx context.Context, client *github.C
 	if err != nil {
 		return nil, err
 	}
+	defer downloader.Close()
 
 	file, err := os.CreateTemp("", "tflint-download-temp-file-*")
 	if err != nil {
@@ -342,7 +345,6 @@ func (c *InstallConfig) downloadToTempFile(ctx context.Context, client *github.C
 	if _, err = io.Copy(file, downloader); err != nil {
 		return file, err
 	}
-	downloader.Close()
 	if _, err := file.Seek(0, 0); err != nil {
 		return file, err
 	}
@@ -419,13 +421,14 @@ func extractFileFromZipFile(zipFile *os.File, savePath string) error {
 		if err != nil {
 			return err
 		}
+		defer reader.Close()
 		break
 	}
 	if reader == nil {
 		return fmt.Errorf("file not found. Does the zip contain %s ?", filepath.Base(savePath))
 	}
 
-	file, err := os.OpenFile(savePath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	file, err := os.OpenFile(savePath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755)
 	if err != nil {
 		return err
 	}
