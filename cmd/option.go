@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"runtime"
 	"strings"
 
 	"github.com/terraform-linters/tflint/terraform"
@@ -33,9 +34,29 @@ type Options struct {
 	NoColor                bool     `long:"no-color" description:"Disable colorized output"`
 	Fix                    bool     `long:"fix" description:"Fix issues automatically"`
 	NoParallelRunners      bool     `long:"no-parallel-runners" description:"Disable per-runner parallelism"`
-	MaxWorkers             *int     `long:"max-workers" description:"Set maximum number of workers in recursive inspection (default: number of CPUs)" value-name:"N"`
+	MaxWorkers             *int     `long:"max-workers" description:"Set maximum number of workers for parallel inspection, across both directories and per-runner checks (default: number of CPUs)" value-name:"N"`
 	ActAsBundledPlugin     bool     `long:"act-as-bundled-plugin" hidden:"true"`
 	ActAsWorker            bool     `long:"act-as-worker" hidden:"true"`
+}
+
+// maxWorkers returns the configured worker count for parallel inspection.
+// It defaults to the number of CPUs and is overridden by --max-workers.
+func (opts *Options) maxWorkers() int {
+	if opts.MaxWorkers != nil {
+		if c := *opts.MaxWorkers; c > 0 {
+			return c
+		}
+	}
+	return runtime.NumCPU()
+}
+
+// runnerWorkers returns the maximum number of module runners checked
+// concurrently. --no-parallel-runners forces serial execution.
+func (opts *Options) runnerWorkers() int {
+	if opts.NoParallelRunners {
+		return 1
+	}
+	return opts.maxWorkers()
 }
 
 func (opts *Options) toConfig() *tflint.Config {
