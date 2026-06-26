@@ -127,6 +127,9 @@ func spawnWorkers(ctx context.Context, workingDirs []string, opts Options) (<-ch
 
 	ch := make(chan worker)
 	semaphore := make(chan struct{}, opts.maxWorkers())
+	// Divide the budget across the directory workers so the per-runner fan-out
+	// in each subprocess is bounded and total in-flight work stays within it.
+	workerShare := opts.workerShare(len(workingDirs))
 
 	go func() {
 		defer close(ch)
@@ -136,7 +139,7 @@ func spawnWorkers(ctx context.Context, workingDirs []string, opts Options) (<-ch
 			wg.Add(1)
 			go func(wd string) {
 				defer wg.Done()
-				spawnWorker(ctx, self, wd, opts, ch, semaphore)
+				spawnWorker(ctx, self, wd, opts, workerShare, ch, semaphore)
 			}(wd)
 		}
 		wg.Wait()
@@ -148,7 +151,7 @@ func spawnWorkers(ctx context.Context, workingDirs []string, opts Options) (<-ch
 // Spawn a worker process for the given directory.
 // When the process is complete, send the results to the given channel.
 // If the context is canceled, the started process will be interrupted.
-func spawnWorker(ctx context.Context, executable string, workingDir string, opts Options, ch chan<- worker, semaphore chan struct{}) {
+func spawnWorker(ctx context.Context, executable string, workingDir string, opts Options, maxWorkers int, ch chan<- worker, semaphore chan struct{}) {
 	// Blocks from exceeding the maximum number of workers
 	select {
 	case semaphore <- struct{}{}:
@@ -162,7 +165,7 @@ func spawnWorker(ctx context.Context, executable string, workingDir string, opts
 	}
 
 	stdout, stderr := new(bytes.Buffer), new(bytes.Buffer)
-	cmd := exec.CommandContext(ctx, executable, opts.toWorkerCommands(workingDir)...)
+	cmd := exec.CommandContext(ctx, executable, opts.toWorkerCommands(workingDir, maxWorkers)...)
 	cmd.Stdout, cmd.Stderr = stdout, stderr
 	cmd.Cancel = func() error {
 		log.Printf("[DEBUG] Worker in %s is terminated\n", workingDir)
