@@ -10,7 +10,6 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"runtime"
 	"sync"
 	"time"
 
@@ -126,15 +125,8 @@ func spawnWorkers(ctx context.Context, workingDirs []string, opts Options) (<-ch
 		return nil, err
 	}
 
-	maxWorkers := runtime.NumCPU()
-	if opts.MaxWorkers != nil {
-		if c := *opts.MaxWorkers; c > 0 {
-			maxWorkers = c
-		}
-	}
-
 	ch := make(chan worker)
-	semaphore := make(chan struct{}, maxWorkers)
+	semaphore := make(chan struct{}, opts.maxWorkers())
 
 	go func() {
 		defer close(ch)

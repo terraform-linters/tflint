@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -25,18 +26,29 @@ import (
 // the suite scales it across orders of magnitude.
 var benchModuleCounts = []int{1, 10, 100, 1000}
 
+// benchLimits sweeps the per-runner concurrency bound: serial, bounded to the
+// number of CPUs, and unbounded (the pre-bound behavior).
+var benchLimits = []struct {
+	name  string
+	limit int
+}{
+	{name: "serial", limit: 1},
+	{name: "cpu", limit: runtime.GOMAXPROCS(0)},
+	{name: "unbounded", limit: -1},
+}
+
 // BenchmarkCheckRunners measures the per-runner check fan-out in isolation with
 // a synthetic check of fixed latency. The deterministic "peak-concurrency"
 // metric is the authoritative signal: it records the maximum number of checks
-// running at once. With the current unbounded fan-out, parallel peak concurrency
-// equals the number of runners regardless of available CPUs.
+// running at once. With a finite limit, peak concurrency is capped at the limit
+// regardless of how many runners exist; unbounded, it equals the runner count.
 func BenchmarkCheckRunners(b *testing.B) {
 	const checkLatency = 50 * time.Microsecond
 
-	for _, parallel := range []bool{false, true} {
+	for _, lim := range benchLimits {
 		for _, modules := range benchModuleCounts {
 			runners := make([]*tflint.Runner, modules)
-			b.Run(fmt.Sprintf("parallel=%t/modules=%d", parallel, modules), func(b *testing.B) {
+			b.Run(fmt.Sprintf("limit=%s/modules=%d", lim.name, modules), func(b *testing.B) {
 				var calls, inflight, peak atomic.Int64
 				check := func(_ *tflint.Runner) error {
 					updatePeakConcurrency(&peak, inflight.Add(1))
@@ -49,7 +61,7 @@ func BenchmarkCheckRunners(b *testing.B) {
 				b.ReportAllocs()
 				iterations := 0
 				for b.Loop() {
-					if err := checkRunners(runners, parallel, check); err != nil {
+					if err := checkRunners(runners, lim.limit, check); err != nil {
 						b.Fatal(err)
 					}
 					iterations++
@@ -98,53 +110,60 @@ func BenchmarkBuildRunners(b *testing.B) {
 // generated fixture. Each check evaluates a root-context expression through a
 // real plugin GRPCServer (the shared-rootRunner path that issue #2094 concerns)
 // and then sleeps to model the remote latency of an I/O-bound deep check. The
-// "peak-concurrency" metric shows how many checks run at once; with the
-// unbounded fan-out it equals the number of module runners, which is the storm
-// this work aims to bound.
+// "peak-concurrency" metric shows how many checks run at once: bounded, it is
+// capped at the limit; unbounded, it equals the number of module runners, which
+// is the storm this work bounds.
 func BenchmarkInspectFanout(b *testing.B) {
 	const remoteLatency = time.Millisecond
 
-	for _, modules := range benchModuleCounts {
-		b.Run(fmt.Sprintf("modules=%d", modules), func(b *testing.B) {
-			dir := b.TempDir()
-			generateModulesFixture(b, dir, modules)
-			b.Chdir(dir)
+	for _, lim := range benchLimits {
+		if lim.limit == 1 {
+			// Serial is covered by BenchmarkCheckRunners; skip it here to keep
+			// the end-to-end sweep focused on bounded vs unbounded.
+			continue
+		}
+		for _, modules := range benchModuleCounts {
+			b.Run(fmt.Sprintf("limit=%s/modules=%d", lim.name, modules), func(b *testing.B) {
+				dir := b.TempDir()
+				generateModulesFixture(b, dir, modules)
+				b.Chdir(dir)
 
-			loader, err := terraform.NewLoader(afero.Afero{Fs: afero.NewOsFs()}, dir)
-			if err != nil {
-				b.Fatal(err)
-			}
-			rootRunner, moduleRunners, err := tflint.BuildRunners(loader, tflint.EmptyConfig(), dir, ".")
-			if err != nil {
-				b.Fatal(err)
-			}
-			files := loader.Files()
-			expr := parseBenchExpr(b, "local.tag")
-			wantType := cty.String
-
-			var inflight, peak atomic.Int64
-			check := func(runner *tflint.Runner) error {
-				updatePeakConcurrency(&peak, inflight.Add(1))
-				defer inflight.Add(-1)
-
-				server := plugin.NewGRPCServer(runner, rootRunner, files, nil)
-				if _, err := server.EvaluateExpr(expr, sdk.EvaluateExprOption{ModuleCtx: sdk.RootModuleCtxType, WantType: &wantType}); err != nil {
-					return err
-				}
-				time.Sleep(remoteLatency)
-				return nil
-			}
-
-			b.ReportAllocs()
-			for b.Loop() {
-				if err := checkRunners(moduleRunners, true, check); err != nil {
+				loader, err := terraform.NewLoader(afero.Afero{Fs: afero.NewOsFs()}, dir)
+				if err != nil {
 					b.Fatal(err)
 				}
-			}
+				rootRunner, moduleRunners, err := tflint.BuildRunners(loader, tflint.EmptyConfig(), dir, ".")
+				if err != nil {
+					b.Fatal(err)
+				}
+				files := loader.Files()
+				expr := parseBenchExpr(b, "local.tag")
+				wantType := cty.String
 
-			b.ReportMetric(float64(peak.Load()), "peak-concurrency")
-			b.ReportMetric(float64(len(moduleRunners)), "runners")
-		})
+				var inflight, peak atomic.Int64
+				check := func(runner *tflint.Runner) error {
+					updatePeakConcurrency(&peak, inflight.Add(1))
+					defer inflight.Add(-1)
+
+					server := plugin.NewGRPCServer(runner, rootRunner, files, nil)
+					if _, err := server.EvaluateExpr(expr, sdk.EvaluateExprOption{ModuleCtx: sdk.RootModuleCtxType, WantType: &wantType}); err != nil {
+						return err
+					}
+					time.Sleep(remoteLatency)
+					return nil
+				}
+
+				b.ReportAllocs()
+				for b.Loop() {
+					if err := checkRunners(moduleRunners, lim.limit, check); err != nil {
+						b.Fatal(err)
+					}
+				}
+
+				b.ReportMetric(float64(peak.Load()), "peak-concurrency")
+				b.ReportMetric(float64(len(moduleRunners)), "runners")
+			})
+		}
 	}
 }
 

@@ -3,11 +3,31 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"runtime"
 	"strings"
 
 	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/tflint"
 )
+
+// maxWorkers resolves the upper bound on concurrent work, from --max-workers or
+// the number of CPUs. It governs both the recursive directory pool and the
+// per-runner check fan-out.
+func (opts *Options) maxWorkers() int {
+	if opts.MaxWorkers != nil && *opts.MaxWorkers > 0 {
+		return *opts.MaxWorkers
+	}
+	return runtime.NumCPU()
+}
+
+// runnerWorkers resolves the maximum number of module-call runners checked
+// concurrently. It is 1 when --no-parallel-runners is set.
+func (opts *Options) runnerWorkers() int {
+	if opts.NoParallelRunners {
+		return 1
+	}
+	return opts.maxWorkers()
+}
 
 // Options is an option specified by arguments.
 type Options struct {
