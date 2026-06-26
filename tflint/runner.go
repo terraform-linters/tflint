@@ -81,6 +81,14 @@ func NewRunner(originalWorkingDir string, c *Config, ants map[string]Annotations
 func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 	runners := []*Runner{}
 
+	// Extract every module call's arguments in a single pass. Calling
+	// PartialContent once per child re-expands the entire parent body for each
+	// call, which is quadratic in the number of module calls.
+	bodiesByName, diags := moduleCallBodies(parent)
+	if diags.HasErrors() {
+		return runners, diags
+	}
+
 	for name, cfg := range parent.TFConfig.Children {
 		moduleCall, ok := parent.TFConfig.Module.ModuleCalls[name]
 		if !ok {
@@ -91,37 +99,15 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 			continue
 		}
 
-		moduleCallSchema := &hclext.BodySchema{
-			Blocks: []hclext.BlockSchema{
-				{
-					Type:       "module",
-					LabelNames: []string{"name"},
-					Body: &hclext.BodySchema{
-						Attributes: []hclext.AttributeSchema{},
-					},
-				},
-			},
-		}
-		for _, v := range cfg.Module.Variables {
-			attr := hclext.AttributeSchema{Name: v.Name}
-			moduleCallSchema.Blocks[0].Body.Attributes = append(moduleCallSchema.Blocks[0].Body.Attributes, attr)
-		}
-
-		moduleCalls, diags := parent.TFConfig.Module.PartialContent(moduleCallSchema, parent.Ctx)
-		if diags.HasErrors() {
-			return runners, diags
-		}
-		var moduleCallBodies []*hclext.BodyContent
-		for _, block := range moduleCalls.Blocks {
-			if moduleCall.Name == block.Labels[0] {
-				moduleCallBodies = append(moduleCallBodies, block.Body)
-			}
-		}
-
-		for _, body := range moduleCallBodies {
+		for _, body := range bodiesByName[moduleCall.Name] {
 			modVars := map[string]*moduleVariable{}
 			inputs := terraform.InputValues{}
 			for varName, attribute := range body.Attributes {
+				// The shared schema captures the union of all children's
+				// variables, so skip arguments that this child does not declare.
+				if _, declared := cfg.Module.Variables[varName]; !declared {
+					continue
+				}
 				val, diags := parent.Ctx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType)
 				if diags.HasErrors() {
 					err := fmt.Errorf(
@@ -169,6 +155,44 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 	}
 
 	return runners, nil
+}
+
+// moduleCallBodies extracts the argument bodies of every module call in the
+// parent module, keyed by call name. A single PartialContent pass over the
+// parent body uses the union of all children's input variables as its schema,
+// so module calls expanded by count/for_each appear once per instance.
+func moduleCallBodies(parent *Runner) (map[string][]*hclext.BodyContent, hcl.Diagnostics) {
+	schema := &hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type:       "module",
+				LabelNames: []string{"name"},
+				Body:       &hclext.BodySchema{},
+			},
+		},
+	}
+	seen := map[string]struct{}{}
+	for _, cfg := range parent.TFConfig.Children {
+		for _, v := range cfg.Module.Variables {
+			if _, ok := seen[v.Name]; ok {
+				continue
+			}
+			seen[v.Name] = struct{}{}
+			schema.Blocks[0].Body.Attributes = append(schema.Blocks[0].Body.Attributes, hclext.AttributeSchema{Name: v.Name})
+		}
+	}
+
+	content, diags := parent.TFConfig.Module.PartialContent(schema, parent.Ctx)
+	if diags.HasErrors() {
+		return nil, diags
+	}
+
+	bodies := map[string][]*hclext.BodyContent{}
+	for _, block := range content.Blocks {
+		name := block.Labels[0]
+		bodies[name] = append(bodies[name], block.Body)
+	}
+	return bodies, nil
 }
 
 // LookupIssues returns issues according to the received files
