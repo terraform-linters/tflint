@@ -97,6 +97,13 @@ func buildChildModules(parent *Config, walker ModuleWalker, ctx *Evaluator) (map
 	}
 	sort.Strings(callNames)
 
+	// Load every child module first and register it on the parent, so a single
+	// pass below can extract all of their arguments.
+	type loadedCall struct {
+		call  *ModuleCall
+		child *Config
+	}
+	loaded := make([]loadedCall, 0, len(callNames))
 	for _, callName := range callNames {
 		call := calls[callName]
 		path := make([]string, len(parent.Path)+1)
@@ -151,8 +158,23 @@ func buildChildModules(parent *Config, walker ModuleWalker, ctx *Evaluator) (map
 		// To perform evaluation in a child module context,
 		// each loaded module must be set to the children immediately.
 		parent.Children[call.Name] = child
+		loaded = append(loaded, loadedCall{call: call, child: child})
+	}
 
-		childCtx, ctxDiags := buildChildCtx(parent, ctx, call.Name, child)
+	// Extract every module call's arguments in a single PartialContent pass.
+	// Doing this per child would re-expand the entire parent body for each
+	// call, which is quadratic in the number of module calls.
+	children := make([]*Config, len(loaded))
+	for i, lc := range loaded {
+		children[i] = lc.child
+	}
+	bodiesByName, contentDiags := moduleCallBodies(parent, ctx, children)
+	if contentDiags.HasErrors() {
+		return ret, diags.Extend(contentDiags)
+	}
+
+	for _, lc := range loaded {
+		childCtx, ctxDiags := buildChildCtx(ctx, lc.child, bodiesByName[lc.call.Name])
 		if ctxDiags.HasErrors() {
 			diags = append(diags, ctxDiags...)
 			continue
@@ -162,13 +184,52 @@ func buildChildModules(parent *Config, walker ModuleWalker, ctx *Evaluator) (map
 			// which can happen when the module disappears after expansion (e.g. `count = 0`).
 			continue
 		}
-		child.Children, modDiags = buildChildModules(child, walker, childCtx)
+		var modDiags hcl.Diagnostics
+		lc.child.Children, modDiags = buildChildModules(lc.child, walker, childCtx)
 		diags = append(diags, modDiags...)
 
-		ret[call.Name] = child
+		ret[lc.call.Name] = lc.child
 	}
 
 	return ret, diags
+}
+
+// moduleCallBodies extracts the argument bodies of every module call in the
+// parent module, keyed by call name. A single PartialContent pass uses the
+// union of all children's input variables as its schema, so module calls
+// expanded by count/for_each appear once per instance.
+func moduleCallBodies(parent *Config, ctx *Evaluator, children []*Config) (map[string][]*hclext.BodyContent, hcl.Diagnostics) {
+	schema := &hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type:       "module",
+				LabelNames: []string{"name"},
+				Body:       &hclext.BodySchema{},
+			},
+		},
+	}
+	seen := map[string]struct{}{}
+	for _, child := range children {
+		for _, v := range child.Module.Variables {
+			if _, ok := seen[v.Name]; ok {
+				continue
+			}
+			seen[v.Name] = struct{}{}
+			schema.Blocks[0].Body.Attributes = append(schema.Blocks[0].Body.Attributes, hclext.AttributeSchema{Name: v.Name})
+		}
+	}
+
+	content, diags := parent.Module.PartialContent(schema, ctx)
+	if diags.HasErrors() {
+		return nil, diags
+	}
+
+	bodies := map[string][]*hclext.BodyContent{}
+	for _, block := range content.Blocks {
+		name := block.Labels[0]
+		bodies[name] = append(bodies[name], block.Body)
+	}
+	return bodies, nil
 }
 
 func evalModuleSource(call *ModuleCall, ctx *Evaluator) (addrs.ModuleSource, hcl.Diagnostics) {
@@ -206,45 +267,26 @@ func evalModuleSource(call *ModuleCall, ctx *Evaluator) (addrs.ModuleSource, hcl
 	return addr, diags
 }
 
-func buildChildCtx(parent *Config, parentCtx *Evaluator, callName string, child *Config) (*Evaluator, hcl.Diagnostics) {
-	moduleCallSchema := &hclext.BodySchema{
-		Blocks: []hclext.BlockSchema{
-			{
-				Type:       "module",
-				LabelNames: []string{"name"},
-				Body: &hclext.BodySchema{
-					Attributes: []hclext.AttributeSchema{},
-				},
-			},
-		},
-	}
-	for _, v := range child.Module.Variables {
-		attr := hclext.AttributeSchema{Name: v.Name}
-		moduleCallSchema.Blocks[0].Body.Attributes = append(moduleCallSchema.Blocks[0].Body.Attributes, attr)
-	}
+func buildChildCtx(parentCtx *Evaluator, child *Config, callBodies []*hclext.BodyContent) (*Evaluator, hcl.Diagnostics) {
+	var diags hcl.Diagnostics
 
-	moduleCalls, diags := parent.Module.PartialContent(moduleCallSchema, parentCtx)
-	if diags.HasErrors() {
-		return nil, diags
-	}
-	var moduleCallBodies []*hclext.BodyContent
-	for _, block := range moduleCalls.Blocks {
-		if callName == block.Labels[0] {
-			moduleCallBodies = append(moduleCallBodies, block.Body)
-		}
-	}
 	// In cases where the module disappears after expansion, such as `count = 0`,
 	// the module arguments should not be evaluated and is therefore skipped.
-	if len(moduleCallBodies) == 0 {
+	if len(callBodies) == 0 {
 		return nil, nil
 	}
 	// When `count = 2` expands into multiple module calls, the only differences
 	// between them are the values ​​of `count.index` and `each.*`.
 	// Since these are not values ​​available when the module is loaded, any module call can be used.
-	moduleCallBody := moduleCallBodies[0]
+	moduleCallBody := callBodies[0]
 
 	inputs := InputValues{}
 	for varName, attribute := range moduleCallBody.Attributes {
+		// The shared schema captures the union of all children's variables, so
+		// skip arguments that this child does not declare.
+		if _, declared := child.Module.Variables[varName]; !declared {
+			continue
+		}
 		val, evalDiags := parentCtx.EvaluateExpr(attribute.Expr, cty.DynamicPseudoType)
 		if evalDiags.HasErrors() {
 			diags = append(diags, evalDiags...)
@@ -267,7 +309,7 @@ func buildChildCtx(parent *Config, parentCtx *Evaluator, callName string, child 
 			OriginalWorkingDir: parentCtx.Meta.OriginalWorkingDir,
 		},
 		ModulePath:     child.Path.UnkeyedInstanceShim(),
-		Config:         parent.Root,
+		Config:         child.Root,
 		VariableValues: variableValues,
 	}, nil
 }
