@@ -260,6 +260,31 @@ func Test_toConfig(t *testing.T) {
 	}
 }
 
+func Test_workerShare(t *testing.T) {
+	maxWorkers := func(n int) *int { return &n }
+
+	for _, tc := range []struct {
+		name       string
+		maxWorkers *int
+		dirs       int
+		want       int
+	}{
+		{name: "dirs below budget get the remainder", maxWorkers: maxWorkers(10), dirs: 2, want: 5},
+		{name: "dirs at budget get one each", maxWorkers: maxWorkers(10), dirs: 10, want: 1},
+		{name: "dirs above budget get one each", maxWorkers: maxWorkers(10), dirs: 100, want: 1},
+		{name: "single dir gets the whole budget", maxWorkers: maxWorkers(8), dirs: 1, want: 8},
+		{name: "share floors at one", maxWorkers: maxWorkers(3), dirs: 5, want: 1},
+		{name: "zero dirs floors at one", maxWorkers: maxWorkers(4), dirs: 0, want: 4},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			opts := &Options{MaxWorkers: tc.maxWorkers}
+			if got := opts.workerShare(tc.dirs); got != tc.want {
+				t.Errorf("workerShare(%d) with max-workers %d = %d, want %d", tc.dirs, *tc.maxWorkers, got, tc.want)
+			}
+		})
+	}
+}
+
 func Test_toWorkerCommands(t *testing.T) {
 	tests := []struct {
 		name       string
@@ -271,7 +296,7 @@ func Test_toWorkerCommands(t *testing.T) {
 			name:       "no args",
 			in:         []string{},
 			workingDir: "subdir",
-			want:       []string{"--act-as-worker", "--chdir=subdir", "--force"},
+			want:       []string{"--act-as-worker", "--chdir=subdir", "--force", "--max-workers=3"},
 		},
 		{
 			name: "all",
@@ -342,7 +367,7 @@ func Test_toWorkerCommands(t *testing.T) {
 				// "--no-color",
 				"--fix",
 				"--no-parallel-runners",
-				// "--max-workers=2",
+				"--max-workers=3",
 				// "--act-as-bundled-plugin",
 				"--act-as-worker",
 			},
@@ -358,7 +383,7 @@ func Test_toWorkerCommands(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			got := in.toWorkerCommands(test.workingDir)
+			got := in.toWorkerCommands(test.workingDir, 3)
 
 			opt := cmpopts.SortSlices(func(a, b string) bool { return a < b })
 			if diff := cmp.Diff(test.want, got, opt); diff != "" {

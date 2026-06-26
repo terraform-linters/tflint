@@ -160,10 +160,28 @@ func (opts *Options) toConfig() *tflint.Config {
 	}
 }
 
+// workerShare divides the worker budget across the directory workers that run
+// concurrently, so that directories times per-runner checks stays within the
+// budget. Each recursive subprocess receives this share as its --max-workers.
+func (opts *Options) workerShare(dirs int) int {
+	budget := opts.maxWorkers()
+	concurrent := dirs
+	if concurrent > budget {
+		concurrent = budget
+	}
+	if concurrent < 1 {
+		concurrent = 1
+	}
+	if share := budget / concurrent; share > 1 {
+		return share
+	}
+	return 1
+}
+
 // Return commands to be executed by worker processes in recursive inspection.
 // All possible CLI flags are delegated, but some flags are ignored because
 // the coordinator process that starts the workers is responsible.
-func (opts *Options) toWorkerCommands(workingDir string) []string {
+func (opts *Options) toWorkerCommands(workingDir string, maxWorkers int) []string {
 	commands := []string{
 		"--act-as-worker",
 		"--chdir=" + workingDir,
@@ -221,7 +239,10 @@ func (opts *Options) toWorkerCommands(workingDir string) []string {
 		commands = append(commands, "--no-parallel-runners")
 	}
 
-	// opts.MaxWorkers is ignored because the coordinator is responsible for parallelism
+	// Propagate a derived per-runner worker share so the per-runner fan-out in
+	// each subprocess is bounded. Without this the bound resets to NumCPU per
+	// subprocess and total in-flight work becomes workers times NumCPU.
+	commands = append(commands, fmt.Sprintf("--max-workers=%d", maxWorkers))
 
 	// opts.ActAsBundledPlugin and opts.ActAsWorker are not supported
 
