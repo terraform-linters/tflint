@@ -4,6 +4,7 @@ import (
 	"errors"
 	"sync/atomic"
 	"testing"
+	"time"
 
 	"github.com/terraform-linters/tflint/tflint"
 )
@@ -12,39 +13,50 @@ func Test_checkRunners(t *testing.T) {
 	checkErr := errors.New("check failed")
 
 	for _, tc := range []struct {
-		name     string
-		parallel bool
-		runners  int
-		fail     bool
-		// wantAllChecked is whether every runner is deterministically checked.
-		// In parallel mode the first error is returned without waiting for the
-		// remaining goroutines, so on failure the number of checks actually run
-		// is not deterministic.
-		wantAllChecked bool
+		name    string
+		limit   int
+		runners int
+		fail    bool
 	}{
-		{name: "parallel success", parallel: true, runners: 8, fail: false, wantAllChecked: true},
-		{name: "serial success", parallel: false, runners: 8, fail: false, wantAllChecked: true},
-		{name: "serial failure", parallel: false, runners: 8, fail: true, wantAllChecked: true},
-		{name: "no runners", parallel: true, runners: 0, fail: true, wantAllChecked: true},
-		{name: "parallel failure", parallel: true, runners: 8, fail: true, wantAllChecked: false},
+		{name: "serial success", limit: 1, runners: 8, fail: false},
+		{name: "serial failure", limit: 1, runners: 8, fail: true},
+		{name: "bounded success", limit: 4, runners: 8, fail: false},
+		{name: "bounded failure", limit: 4, runners: 8, fail: true},
+		{name: "unbounded success", limit: 8, runners: 8, fail: false},
+		{name: "no runners", limit: 4, runners: 0, fail: true},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			runners := make([]*tflint.Runner, tc.runners)
-			var calls atomic.Int64
+			var calls, inflight, peak atomic.Int64
 			check := func(_ *tflint.Runner) error {
+				n := inflight.Add(1)
+				for {
+					p := peak.Load()
+					if n <= p || peak.CompareAndSwap(p, n) {
+						break
+					}
+				}
 				calls.Add(1)
+				// Hold briefly so concurrent checks overlap, exercising the bound.
+				time.Sleep(time.Millisecond)
+				inflight.Add(-1)
 				if tc.fail {
 					return checkErr
 				}
 				return nil
 			}
 
-			err := checkRunners(runners, tc.parallel, check)
+			err := checkRunners(runners, tc.limit, check)
 
-			if tc.wantAllChecked {
-				if got := int(calls.Load()); got != tc.runners {
-					t.Errorf("expected check to run for all %d runners, but ran %d", tc.runners, got)
-				}
+			// errgroup waits for every goroutine, so all runners are checked even
+			// when one fails.
+			if got := int(calls.Load()); got != tc.runners {
+				t.Errorf("expected check to run for all %d runners, but ran %d", tc.runners, got)
+			}
+
+			// Concurrency never exceeds the limit.
+			if got := int(peak.Load()); got > tc.limit {
+				t.Errorf("peak concurrency %d exceeded limit %d", got, tc.limit)
 			}
 
 			if tc.fail && tc.runners > 0 {

@@ -14,6 +14,7 @@ import (
 	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/tflint"
+	"golang.org/x/sync/errgroup"
 )
 
 func (cli *CLI) inspect(opts Options) int {
@@ -149,7 +150,7 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 			// Run checks for module calls are performed in parallel.
 			// The rootRunner is shared between goroutines but read-only, so this is goroutine-safe.
 			// Note that checks against the rootRunner are not parallelized, as autofix may cause the module to be rebuilt.
-			err = checkRunners(moduleRunners, !opts.NoParallelRunners, func(runner *tflint.Runner) error {
+			err = checkRunners(moduleRunners, opts.runnerWorkers(), func(runner *tflint.Runner) error {
 				return ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersions[name]))
 			})
 			if err != nil {
@@ -185,29 +186,19 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 	return issues, changes, nil
 }
 
-// checkRunners runs check against each of the given module-call runners and
-// returns the first error encountered. When parallel is true, each runner is
-// checked in its own goroutine; otherwise they are checked sequentially.
-//
-// The per-runner check fan-out is extracted into a single function so its
-// concurrency behavior can be benchmarked in isolation.
-func checkRunners(runners []*tflint.Runner, parallel bool, check func(runner *tflint.Runner) error) error {
-	ch := make(chan error, len(runners))
+// checkRunners runs check against each of the given module-call runners,
+// limiting the number of concurrent checks to limit (a limit of 1 runs them
+// sequentially). It returns the first error encountered after every check has
+// finished, so no check goroutine outlives the call.
+func checkRunners(runners []*tflint.Runner, limit int, check func(runner *tflint.Runner) error) error {
+	var g errgroup.Group
+	g.SetLimit(limit)
 	for _, runner := range runners {
-		if parallel {
-			go func(runner *tflint.Runner) {
-				ch <- check(runner)
-			}(runner)
-		} else {
-			ch <- check(runner)
-		}
+		g.Go(func() error {
+			return check(runner)
+		})
 	}
-	for range runners {
-		if err := <-ch; err != nil {
-			return err
-		}
-	}
-	return nil
+	return g.Wait()
 }
 
 func launchPlugins(config *tflint.Config, fix bool) (*plugin.Plugin, error) {
