@@ -146,26 +146,16 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 			if err := ruleset.Check(plugin.NewGRPCServer(rootRunner, rootRunner, cli.loader.Files(), sdkVersions[name])); err != nil {
 				return issues, changes, fmt.Errorf("Failed to check ruleset; %w", err)
 			}
-			// Run checks for module calls are performed in parallel.
+			// Checks for module calls run in parallel, bounded by runnerWorkers
+			// (the --max-workers value, or 1 with --no-parallel-runners).
 			// The rootRunner is shared between goroutines but read-only, so this is goroutine-safe.
 			// Note that checks against the rootRunner are not parallelized, as autofix may cause the module to be rebuilt.
-			ch := make(chan error, len(moduleRunners))
-			for _, runner := range moduleRunners {
-				if opts.NoParallelRunners {
-					ch <- ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersions[name]))
-				} else {
-					go func(runner *tflint.Runner) {
-						ch <- ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersions[name]))
-					}(runner)
-				}
+			err = checkRunners(moduleRunners, opts.runnerWorkers(), func(runner *tflint.Runner) error {
+				return ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersions[name]))
+			})
+			if err != nil {
+				return issues, changes, fmt.Errorf("Failed to check ruleset; %w", err)
 			}
-			for range moduleRunners {
-				err = <-ch
-				if err != nil {
-					return issues, changes, fmt.Errorf("Failed to check ruleset; %w", err)
-				}
-			}
-			close(ch)
 		}
 
 		changesInAttempt := map[string][]byte{}
@@ -194,6 +184,30 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 	maps.Copy(cli.sources, cli.loader.Sources())
 
 	return issues, changes, nil
+}
+
+// checkRunners runs check for each runner concurrently, bounding the number of
+// simultaneous calls to workers. It waits for all checks to finish and returns
+// the first error reported, if any. workers must be at least 1.
+func checkRunners(runners []*tflint.Runner, workers int, check func(*tflint.Runner) error) error {
+	ch := make(chan error, len(runners))
+	sem := make(chan struct{}, workers)
+	for _, runner := range runners {
+		sem <- struct{}{}
+		go func(runner *tflint.Runner) {
+			defer func() { <-sem }()
+			ch <- check(runner)
+		}(runner)
+	}
+
+	var firstErr error
+	for range runners {
+		if err := <-ch; err != nil && firstErr == nil {
+			firstErr = err
+		}
+	}
+	close(ch)
+	return firstErr
 }
 
 func launchPlugins(config *tflint.Config, fix bool) (*plugin.Plugin, error) {
