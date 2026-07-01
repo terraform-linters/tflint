@@ -1,5 +1,6 @@
 *.test
 /vendor
 /dist
+/bench.txt
 tflint-ruleset-*
 !tflint-ruleset-*/
