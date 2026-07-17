@@ -301,6 +301,8 @@ func (c *InstallConfig) fetchReleaseAssets(ctx context.Context, client *github.C
 // attestationsResponse is like github.AttestationsResponse, but also captures
 // the bundle_url field, which go-github does not expose. GitHub may serve the
 // sigstore bundle from blob storage instead of embedding it in the response.
+//
+// See https://github.com/terraform-linters/tflint/issues/2591
 type attestationsResponse struct {
 	Attestations []*attestation `json:"attestations"`
 }
@@ -312,8 +314,6 @@ type attestation struct {
 }
 
 // fetchArtifactAttestations fetches GitHub Artifact Attestations based on the given artifact.
-// Attestations whose sigstore bundle is not embedded in the API response are
-// resolved by downloading the bundle from the URL in the bundle_url field.
 func (c *InstallConfig) fetchArtifactAttestations(ctx context.Context, client *github.Client, artifact []byte) ([]*github.Attestation, error) {
 	hash := sha256.New()
 	if _, err := hash.Write(artifact); err != nil {
@@ -321,6 +321,8 @@ func (c *InstallConfig) fetchArtifactAttestations(ctx context.Context, client *g
 	}
 	digest := hex.EncodeToString(hash.Sum(nil))
 
+	// Since go-github does not support the bundle_url field,
+	// send a direct request instead of using client.Repositories.ListAttestations
 	u := fmt.Sprintf("repos/%s/%s/attestations/sha256:%s", c.SourceOwner, c.SourceRepo, digest)
 	req, err := client.NewRequest(http.MethodGet, u, nil)
 	if err != nil {
@@ -338,7 +340,6 @@ func (c *InstallConfig) fetchArtifactAttestations(ctx context.Context, client *g
 			if a.BundleURL == "" {
 				return []*github.Attestation{}, fmt.Errorf("attestation has no bundle or bundle URL")
 			}
-			log.Printf("[DEBUG] Attestation bundle is not embedded, downloading from the bundle URL")
 			b, err = downloadAttestationBundle(ctx, a.BundleURL)
 			if err != nil {
 				return []*github.Attestation{}, err
@@ -357,7 +358,6 @@ func isNullJSON(raw json.RawMessage) bool {
 
 // downloadAttestationBundle downloads a sigstore bundle from the given URL.
 // GitHub serves bundles from blob storage as snappy-compressed JSON.
-// The URL is pre-signed, so the request is sent without API credentials.
 func downloadAttestationBundle(ctx context.Context, url string) (json.RawMessage, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
@@ -378,10 +378,6 @@ func downloadAttestationBundle(ctx context.Context, url string) (json.RawMessage
 
 	decoded, err := snappy.Decode(nil, body)
 	if err != nil {
-		// Fall back to the response as-is for bundles served without compression.
-		if json.Valid(body) {
-			return body, nil
-		}
 		return nil, fmt.Errorf("failed to decompress attestation bundle: %s", err)
 	}
 	return decoded, nil

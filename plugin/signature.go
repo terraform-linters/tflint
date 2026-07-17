@@ -79,19 +79,6 @@ func (c *SignatureChecker) VerifyAttestations(target io.Reader, attestations []*
 	}
 	artifactDigest := sha256.Sum256(artifact)
 
-	// Parse attestation bundles upfront. Note that a null bundle is
-	// unmarshaled to nil without errors, which would crash the verifier
-	// if passed through.
-	bundles := make([]*bundle.Bundle, len(attestations))
-	for i, attestation := range attestations {
-		if err := json.Unmarshal(attestation.Bundle, &bundles[i]); err != nil {
-			return fmt.Errorf("failed to unmarshal sigstore bundle: %s", err)
-		}
-		if bundles[i] == nil {
-			return fmt.Errorf("attestation contains an empty sigstore bundle")
-		}
-	}
-
 	// Initialize Sigstore trust root
 	// This saves the caches under the "~/.sigstore"
 	client, err := tuf.New(tuf.DefaultOptions())
@@ -139,8 +126,13 @@ func (c *SignatureChecker) VerifyAttestations(target io.Reader, attestations []*
 	)
 
 	// Verify attestations
+	var b *bundle.Bundle
 	var verifyErr error
-	for _, b := range bundles {
+	for _, attestation := range attestations {
+		if err := json.Unmarshal(attestation.Bundle, &b); err != nil {
+			return fmt.Errorf("failed to unmarshal sigstore bundle: %s", err)
+		}
+
 		ret, err := verifier.Verify(b, policy)
 		if err != nil {
 			verifyErr = err

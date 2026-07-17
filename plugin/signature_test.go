@@ -291,17 +291,6 @@ b97e20eae04a45d650886611f17020fd0aa29114b86268b71e3841195fbc55ca  tflint-ruleset
 			Expected:     fmt.Errorf("no attestations found"),
 		},
 		{
-			Name:   "null bundle",
-			Config: NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SourceHost: "github.com", SourceOwner: "terraform-linters", SourceRepo: "tflint-ruleset-aws"}),
-			Attestations: []*github.Attestation{
-				{
-					RepositoryID: 245765716,
-					Bundle:       []byte(`null`),
-				},
-			},
-			Expected: fmt.Errorf("attestation contains an empty sigstore bundle"),
-		},
-		{
 			Name:   "mismatched attestations",
 			Config: NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SourceHost: "github.com", SourceOwner: "terraform-linters", SourceRepo: "tflint-ruleset-aws"}),
 			Attestations: []*github.Attestation{

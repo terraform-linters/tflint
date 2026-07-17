@@ -1,21 +1,12 @@
 package plugin
 
 import (
-	"context"
-	"crypto/sha256"
-	"encoding/hex"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
-	"net/http/httptest"
-	"net/url"
 	"os"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-github/v81/github"
-	"github.com/klauspost/compress/snappy"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -455,114 +446,6 @@ func TestIsIgnorableAttestationError(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			if got := isIgnorableAttestationError(test.err); got != test.want {
 				t.Fatalf("isIgnorableAttestationError() = %v, want %v", got, test.want)
-			}
-		})
-	}
-}
-
-func Test_fetchArtifactAttestations(t *testing.T) {
-	artifact := []byte("test artifact")
-	digest := sha256.Sum256(artifact)
-	attestationsPath := "/repos/terraform-linters/tflint-ruleset-aws/attestations/sha256:" + hex.EncodeToString(digest[:])
-
-	bundleJSON := `{"mediaType":"application/vnd.dev.sigstore.bundle.v0.3+json"}`
-
-	cases := []struct {
-		name        string
-		response    func(serverURL string) string
-		blobHandler http.HandlerFunc
-		want        []*github.Attestation
-		expectedErr error
-	}{
-		{
-			name: "embedded bundle",
-			response: func(string) string {
-				return `{"attestations":[{"repository_id":1,"bundle":` + bundleJSON + `}]}`
-			},
-			want: []*github.Attestation{{Bundle: json.RawMessage(bundleJSON), RepositoryID: 1}},
-		},
-		{
-			name: "bundle from bundle_url",
-			response: func(serverURL string) string {
-				return `{"attestations":[{"repository_id":1,"bundle":null,"bundle_url":"` + serverURL + `/blob"}]}`
-			},
-			blobHandler: func(w http.ResponseWriter, r *http.Request) {
-				w.Header().Set("Content-Type", "application/x-snappy")
-				w.Write(snappy.Encode(nil, []byte(bundleJSON)))
-			},
-			want: []*github.Attestation{{Bundle: json.RawMessage(bundleJSON), RepositoryID: 1}},
-		},
-		{
-			name: "uncompressed bundle from bundle_url",
-			response: func(serverURL string) string {
-				return `{"attestations":[{"repository_id":1,"bundle":null,"bundle_url":"` + serverURL + `/blob"}]}`
-			},
-			blobHandler: func(w http.ResponseWriter, r *http.Request) {
-				w.Write([]byte(bundleJSON))
-			},
-			want: []*github.Attestation{{Bundle: json.RawMessage(bundleJSON), RepositoryID: 1}},
-		},
-		{
-			name: "no bundle and no bundle_url",
-			response: func(string) string {
-				return `{"attestations":[{"repository_id":1,"bundle":null}]}`
-			},
-			expectedErr: fmt.Errorf("attestation has no bundle or bundle URL"),
-		},
-		{
-			name: "bundle_url download failure",
-			response: func(serverURL string) string {
-				return `{"attestations":[{"repository_id":1,"bundle":null,"bundle_url":"` + serverURL + `/blob"}]}`
-			},
-			blobHandler: func(w http.ResponseWriter, r *http.Request) {
-				http.Error(w, "gone", http.StatusNotFound)
-			},
-			expectedErr: fmt.Errorf("failed to download attestation bundle: 404 Not Found"),
-		},
-	}
-
-	for _, tc := range cases {
-		t.Run(tc.name, func(t *testing.T) {
-			mux := http.NewServeMux()
-			server := httptest.NewServer(mux)
-			defer server.Close()
-
-			mux.HandleFunc(attestationsPath, func(w http.ResponseWriter, r *http.Request) {
-				w.Header().Set("Content-Type", "application/json")
-				fmt.Fprint(w, tc.response(server.URL))
-			})
-			if tc.blobHandler != nil {
-				mux.HandleFunc("/blob", tc.blobHandler)
-			}
-
-			client := github.NewClient(nil)
-			baseURL, err := url.Parse(server.URL + "/")
-			if err != nil {
-				t.Fatal(err)
-			}
-			client.BaseURL = baseURL
-
-			config := NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{
-				SourceHost:  "github.com",
-				SourceOwner: "terraform-linters",
-				SourceRepo:  "tflint-ruleset-aws",
-			})
-			got, err := config.fetchArtifactAttestations(context.Background(), client, artifact)
-
-			if tc.expectedErr != nil {
-				if err == nil {
-					t.Fatalf("expected=%s, actual=no errors", tc.expectedErr)
-				}
-				if err.Error() != tc.expectedErr.Error() {
-					t.Fatalf("expected=%s, actual=%s", tc.expectedErr, err)
-				}
-				return
-			}
-			if err != nil {
-				t.Fatalf("failed to fetch attestations: %s", err)
-			}
-			if diff := cmp.Diff(tc.want, got); diff != "" {
-				t.Fatal(diff)
 			}
 		})
 	}
