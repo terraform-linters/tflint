@@ -133,6 +133,11 @@ func (c *SignatureChecker) VerifyAttestations(target io.Reader, attestations []*
 			return fmt.Errorf("failed to unmarshal sigstore bundle: %s", err)
 		}
 
+		if b == nil {
+			verifyErr = fmt.Errorf("attestation contains an empty sigstore bundle")
+			continue
+		}
+
 		ret, err := verifier.Verify(b, policy)
 		if err != nil {
 			verifyErr = err
