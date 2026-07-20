@@ -7,7 +7,7 @@ echo "===================================================="
 echo "WARNING!"
 echo
 echo "This automated installation script will be removed"
-echo "on July 1, 2026. To mitigate supply chain risks,"
+echo "on Sep 1, 2026. To mitigate supply chain risks,"
 echo "please do not run any unpinned downloaded scripts."
 echo "===================================================="
 echo
