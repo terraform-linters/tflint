@@ -21,6 +21,9 @@ e2e: prepare install
 e2e-race: prepare
 	go test --race --timeout 5m ./integrationtest/race
 
+bench:
+	go test -timeout 30m -run='^$$' -bench=. -benchmem -count=10 ./cmd/... | tee bench.txt
+
 lint:
 	golangci-lint run ./...
 	cd terraform/ && golangci-lint run ./...
@@ -34,4 +37,4 @@ generate:
 release:
 	go run ./tools/release/main.go
 
-.PHONY: prepare test build install e2e lint clean generate
+.PHONY: prepare test build install e2e e2e-race bench lint clean generate
