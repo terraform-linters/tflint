@@ -17,11 +17,6 @@ import (
 	"github.com/terraform-linters/tflint/terraform"
 )
 
-//go:fix inline
-func boolPtr(v bool) *bool {
-	return new(v)
-}
-
 func TestLoadConfig(t *testing.T) {
 	// default error check helper
 	neverHappend := func(err error) bool { return err != nil }

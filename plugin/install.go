@@ -437,12 +437,10 @@ func (c *InstallConfig) downloadToTempFile(ctx context.Context, client *github.C
 func (c *InstallConfig) getGitHubToken() string {
 	prefix := "GITHUB_TOKEN_"
 	for _, env := range os.Environ() {
-		before, after, ok := strings.Cut(env, "=")
+		name, value, ok := strings.Cut(env, "=")
 		if !ok {
 			continue
 		}
-		name := before
-		value := after
 
 		if !strings.HasPrefix(name, prefix) {
 			continue
