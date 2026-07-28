@@ -2,7 +2,7 @@ package rules
 
 import (
 	"fmt"
-	"sort"
+	"slices"
 	"strings"
 
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
@@ -70,7 +70,7 @@ func (r *TerraformRequiredProviders) Check(runner tflint.Runner) error {
 				}
 				ret = append(ret, fmt.Sprintf("%s=%s", name, v.AsString()))
 			}
-			sort.Strings(ret)
+			slices.Sort(ret)
 
 			err := runner.EmitIssue(
 				r,
