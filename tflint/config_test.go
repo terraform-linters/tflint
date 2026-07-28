@@ -17,8 +17,9 @@ import (
 	"github.com/terraform-linters/tflint/terraform"
 )
 
+//go:fix inline
 func boolPtr(v bool) *bool {
-	return &v
+	return new(v)
 }
 
 func TestLoadConfig(t *testing.T) {
@@ -104,7 +105,7 @@ plugin "baz" {
 					"aws_instance_invalid_type": {
 						Name:      "aws_instance_invalid_type",
 						Enabled:   false,
-						Ignorable: boolPtr(false),
+						Ignorable: new(false),
 					},
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
@@ -597,7 +598,7 @@ config {
 					"aws_instance_invalid_type": {
 						Name:      "aws_instance_invalid_type",
 						Enabled:   false,
-						Ignorable: boolPtr(false),
+						Ignorable: new(false),
 					},
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
