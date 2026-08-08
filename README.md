@@ -86,6 +86,8 @@ To download plugins, you can override the entrypoint to a shell (`sh`) to run `-
 
 If you want to run on GitHub Actions, [setup-tflint](https://github.com/terraform-linters/setup-tflint) action is available.
 
+TFLint is also embedded in [MegaLinter](https://megalinter.io/latest/descriptors/terraform_tflint/), which can run it in CI alongside linters for other languages.
+
 ## Getting Started
 
 First, enable rules for [Terraform Language](https://www.terraform.io/language) (e.g. warn about deprecated syntax, unused declarations). [TFLint Ruleset for Terraform Language](https://github.com/terraform-linters/tflint-ruleset-terraform) is bundled with TFLint, so you can use it without installing it separately.
