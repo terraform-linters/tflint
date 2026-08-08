@@ -24,7 +24,7 @@ require (
 	github.com/owenrumney/go-sarif/v2 v2.3.3
 	github.com/sigstore/sigstore-go v1.2.2
 	github.com/sourcegraph/go-lsp v0.0.0-20200429204803-219e11d77f5d
-	github.com/sourcegraph/jsonrpc2 v0.2.1
+	github.com/sourcegraph/jsonrpc2 v0.2.2
 	github.com/spf13/afero v1.15.0
 	github.com/terraform-linters/tflint-plugin-sdk v0.25.0
 	github.com/terraform-linters/tflint-ruleset-terraform v0.15.0
