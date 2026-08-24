@@ -65,6 +65,7 @@ func (p *Parser) LoadConfigDir(baseDir, dir string) (*Module, hcl.Diagnostics) {
 	}
 
 	mod := NewEmptyModule()
+	mod.primaryFilenames = make([]string, 0, len(primaries))
 	mod.overrideFilenames = make([]string, len(overrides))
 
 	for _, path := range primaries {
@@ -78,6 +79,7 @@ func (p *Parser) LoadConfigDir(baseDir, dir string) (*Module, hcl.Diagnostics) {
 		mod.primaries[realPath] = f
 		mod.Sources[realPath] = f.Bytes
 		mod.Files[realPath] = f
+		mod.primaryFilenames = append(mod.primaryFilenames, realPath)
 	}
 	for idx, path := range overrides {
 		f, loadDiags := p.loadHCLFile(baseDir, path)
@@ -92,7 +94,12 @@ func (p *Parser) LoadConfigDir(baseDir, dir string) (*Module, hcl.Diagnostics) {
 		mod.Files[realPath] = f
 		mod.overrideFilenames[idx] = realPath
 	}
-	// Overrides are processed in order first by filename (in lexicographical order)
+	// Primaries and overrides are both processed in order by filename
+	// (in lexicographical order) so that any rule whose logic depends on
+	// block order behaves deterministically across runs. Go randomizes map
+	// iteration order, so iterating m.primaries / m.overrides directly
+	// would otherwise yield a different block order every invocation.
+	sort.Strings(mod.primaryFilenames)
 	sort.Strings(mod.overrideFilenames)
 	if diags.HasErrors() {
 		return mod, diags

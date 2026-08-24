@@ -28,10 +28,12 @@ func TestRebuild(t *testing.T) {
 				primaries: map[string]*hcl.File{
 					"main.tf": {Bytes: []byte(`variable "foo" { default = 1 }`), Body: hcl.EmptyBody()},
 				},
+				primaryFilenames: []string{"main.tf"},
 				overrides: map[string]*hcl.File{
 					"main_override.tf": {Bytes: []byte(`variable "foo" { default = 2 }`), Body: hcl.EmptyBody()},
 					"override.tf":      {Bytes: []byte(`variable "foo" { default = 3 }`), Body: hcl.EmptyBody()},
 				},
+				overrideFilenames: []string{"main_override.tf", "override.tf"},
 				Sources: map[string][]byte{
 					"main.tf":          []byte(`variable "foo" { default = 1 }`),
 					"main_override.tf": []byte(`variable "foo" { default = 2 }`),
@@ -65,6 +67,7 @@ variable "bar" { default = "bar" }
 						Body: hcl.EmptyBody(),
 					},
 				},
+				primaryFilenames: []string{"main.tf"},
 				overrides: map[string]*hcl.File{
 					"main_override.tf": {
 						Bytes: []byte(`
@@ -75,6 +78,7 @@ variable "bar" { default = "baz" }
 					},
 					"override.tf": {Bytes: []byte(`variable "foo" { default = 3 }`), Body: hcl.EmptyBody()},
 				},
+				overrideFilenames: []string{"main_override.tf", "override.tf"},
 				Sources: map[string][]byte{
 					"main.tf": []byte(`
 variable "foo" { default = 1 }
@@ -113,10 +117,12 @@ variable "bar" { default = "baz" }
 				primaries: map[string]*hcl.File{
 					"main.tf.json": {Bytes: []byte(`{"variable": {"foo": {"default": 1}}}`), Body: hcl.EmptyBody()},
 				},
+				primaryFilenames: []string{"main.tf.json"},
 				overrides: map[string]*hcl.File{
 					"main_override.tf.json": {Bytes: []byte(`{"variable": {"foo": {"default": 2}}}`), Body: hcl.EmptyBody()},
 					"override.tf.json":      {Bytes: []byte(`{"variable": {"foo": {"default": 3}}}`), Body: hcl.EmptyBody()},
 				},
+				overrideFilenames: []string{"main_override.tf.json", "override.tf.json"},
 				Sources: map[string][]byte{
 					"main.tf.json":          []byte(`{"variable": {"foo": {"default": 1}}}`),
 					"main_override.tf.json": []byte(`{"variable": {"foo": {"default": 2}}}`),
@@ -138,10 +144,12 @@ variable "bar" { default = "baz" }
 				primaries: map[string]*hcl.File{
 					"main.tf.json": {Bytes: []byte(`{"variable": {"foo": {"default": 1}, "bar": {"default": "bar"}}}`), Body: hcl.EmptyBody()},
 				},
+				primaryFilenames: []string{"main.tf.json"},
 				overrides: map[string]*hcl.File{
 					"main_override.tf.json": {Bytes: []byte(`{"variable": {"foo": {"default": 2}, "bar": {"default": "baz"}}}`), Body: hcl.EmptyBody()},
 					"override.tf.json":      {Bytes: []byte(`{"variable": {"foo": {"default": 3}}}`), Body: hcl.EmptyBody()},
 				},
+				overrideFilenames: []string{"main_override.tf.json", "override.tf.json"},
 				Sources: map[string][]byte{
 					"main.tf.json":          []byte(`{"variable": {"foo": {"default": 1}, "bar": {"default": "bar"}}}`),
 					"main_override.tf.json": []byte(`{"variable": {"foo": {"default": 2}, "bar": {"default": "baz"}}}`),
@@ -1767,5 +1775,92 @@ func Test_overrideBlocks(t *testing.T) {
 				t.Errorf("diff: %s", diff)
 			}
 		})
+	}
+}
+
+// TestPartialContent_deterministicPrimaryOrder is a regression test for a
+// nondeterminism bug in Module.PartialContent. It used to iterate the
+// m.primaries map directly, and because Go randomizes map iteration order,
+// modules with multiple primary .tf files produced a different block order
+// on every invocation. Any rule whose logic depends on block order
+// (e.g. "last matching block wins") then produced non-reproducible results,
+// which surfaced as intermittent tflint failures on identical inputs.
+//
+// The same bug class was previously reported and fixed for override files:
+// tflint-ruleset-terraform#205 / tflint#2124 introduced overrideFilenames +
+// sort.Strings so overrides are iterated in a stable lexicographical order.
+// This test pins the equivalent guarantee for primary files.
+func TestPartialContent_deterministicPrimaryOrder(t *testing.T) {
+	files := map[string]string{
+		"d.tf": `resource "aws_instance" "d" {}`,
+		"b.tf": `resource "aws_instance" "b" {}`,
+		"a.tf": `resource "aws_instance" "a" {}`,
+		"c.tf": `resource "aws_instance" "c" {}`,
+	}
+	schema := &hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type:       "resource",
+				LabelNames: []string{"type", "name"},
+				Body:       &hclext.BodySchema{},
+			},
+		},
+	}
+	// Primaries must be iterated in lexicographical filename order, matching
+	// the existing guarantee for overrides.
+	wantOrder := []string{"a.tf", "b.tf", "c.tf", "d.tf"}
+
+	fs := afero.Afero{Fs: afero.NewMemMapFs()}
+	for name, content := range files {
+		if err := fs.WriteFile(name, []byte(content), os.ModePerm); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	parser := NewParser(fs)
+	mod, diags := parser.LoadConfigDir(".", ".")
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+
+	// LoadConfigDir must populate primaryFilenames in sorted order.
+	if diff := cmp.Diff(wantOrder, mod.primaryFilenames); diff != "" {
+		t.Fatalf("primaryFilenames mismatch:\n%s", diff)
+	}
+
+	config, diags := BuildConfig(mod, ModuleWalkerFunc(func(req *ModuleRequest) (*Module, *version.Version, hcl.Diagnostics) { return nil, nil, nil }), ".")
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	variableValues, diags := VariableValues(config)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	ctx := &Evaluator{
+		Meta:           &ContextMeta{Env: Workspace()},
+		ModulePath:     config.Path.UnkeyedInstanceShim(),
+		Config:         config,
+		VariableValues: variableValues,
+	}
+
+	// Call PartialContent many times. Every call must return blocks in the
+	// same lexicographical filename order. Without the fix, Go's randomized
+	// map iteration order over m.primaries would virtually guarantee that at
+	// least one of these iterations returned a different order.
+	for i := 0; i < 20; i++ {
+		got, diags := config.Module.PartialContent(schema, ctx)
+		if diags.HasErrors() {
+			t.Fatalf("iteration %d: %s", i, diags)
+		}
+		if len(got.Blocks) != len(wantOrder) {
+			t.Fatalf("iteration %d: got %d blocks, want %d", i, len(got.Blocks), len(wantOrder))
+		}
+		gotOrder := make([]string, len(got.Blocks))
+		for j, block := range got.Blocks {
+			gotOrder[j] = block.DefRange.Filename
+		}
+		if diff := cmp.Diff(wantOrder, gotOrder); diff != "" {
+			t.Fatalf("iteration %d: block order mismatch:\n%s", i, diff)
+		}
 	}
 }
