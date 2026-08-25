@@ -132,10 +132,6 @@ func (m *Module) PartialContent(schema *hclext.BodySchema, ctx *Evaluator) (*hcl
 	content := &hclext.BodyContent{}
 	diags := hcl.Diagnostics{}
 
-	// Primaries are processed in order by filename (in lexicographical order)
-	// to ensure a stable block order across runs. Go randomizes map iteration
-	// order, so iterating m.primaries directly produced non-deterministic
-	// results for any rule whose logic depends on block order.
 	for _, filename := range m.primaryFilenames {
 		expanded, d := ctx.ExpandBlock(m.primaries[filename].Body, schema)
 		diags = diags.Extend(d)

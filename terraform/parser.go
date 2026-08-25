@@ -94,11 +94,7 @@ func (p *Parser) LoadConfigDir(baseDir, dir string) (*Module, hcl.Diagnostics) {
 		mod.Files[realPath] = f
 		mod.overrideFilenames[idx] = realPath
 	}
-	// Primaries and overrides are both processed in order by filename
-	// (in lexicographical order) so that any rule whose logic depends on
-	// block order behaves deterministically across runs. Go randomizes map
-	// iteration order, so iterating m.primaries / m.overrides directly
-	// would otherwise yield a different block order every invocation.
+	// Primaries and overrides are processed in order by filename (in lexicographical order)
 	sort.Strings(mod.primaryFilenames)
 	sort.Strings(mod.overrideFilenames)
 	if diags.HasErrors() {

@@ -1778,18 +1778,6 @@ func Test_overrideBlocks(t *testing.T) {
 	}
 }
 
-// TestPartialContent_deterministicPrimaryOrder is a regression test for a
-// nondeterminism bug in Module.PartialContent. It used to iterate the
-// m.primaries map directly, and because Go randomizes map iteration order,
-// modules with multiple primary .tf files produced a different block order
-// on every invocation. Any rule whose logic depends on block order
-// (e.g. "last matching block wins") then produced non-reproducible results,
-// which surfaced as intermittent tflint failures on identical inputs.
-//
-// The same bug class was previously reported and fixed for override files:
-// tflint-ruleset-terraform#205 / tflint#2124 introduced overrideFilenames +
-// sort.Strings so overrides are iterated in a stable lexicographical order.
-// This test pins the equivalent guarantee for primary files.
 func TestPartialContent_deterministicPrimaryOrder(t *testing.T) {
 	files := map[string]string{
 		"d.tf": `resource "aws_instance" "d" {}`,
@@ -1806,8 +1794,6 @@ func TestPartialContent_deterministicPrimaryOrder(t *testing.T) {
 			},
 		},
 	}
-	// Primaries must be iterated in lexicographical filename order, matching
-	// the existing guarantee for overrides.
 	wantOrder := []string{"a.tf", "b.tf", "c.tf", "d.tf"}
 
 	fs := afero.Afero{Fs: afero.NewMemMapFs()}
@@ -1823,7 +1809,6 @@ func TestPartialContent_deterministicPrimaryOrder(t *testing.T) {
 		t.Fatal(diags)
 	}
 
-	// LoadConfigDir must populate primaryFilenames in sorted order.
 	if diff := cmp.Diff(wantOrder, mod.primaryFilenames); diff != "" {
 		t.Fatalf("primaryFilenames mismatch:\n%s", diff)
 	}
@@ -1843,10 +1828,6 @@ func TestPartialContent_deterministicPrimaryOrder(t *testing.T) {
 		VariableValues: variableValues,
 	}
 
-	// Call PartialContent many times. Every call must return blocks in the
-	// same lexicographical filename order. Without the fix, Go's randomized
-	// map iteration order over m.primaries would virtually guarantee that at
-	// least one of these iterations returned a different order.
 	for i := 0; i < 20; i++ {
 		got, diags := config.Module.PartialContent(schema, ctx)
 		if diags.HasErrors() {
