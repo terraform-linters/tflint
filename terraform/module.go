@@ -189,14 +189,56 @@ func overrideBlocks(primaries, overrides hclext.Blocks) hclext.Blocks {
 	// please note that the block to be overwritten cannot be uniquely determined.
 	newPrimaries := hclext.Blocks{}
 
+	// A resource override file can expand (via count/for_each) a single declaration into
+	// more instances than the primary configuration has for that address. Track, per
+	// address, the run of override blocks that share a DefRange (i.e. come from expanding
+	// the same declaration): the first instance in a run merges into the first primary as
+	// before, and any extra instance clones a pristine (pre-merge) copy of that primary
+	// instead of clobbering an already-merged block. An override block with a different
+	// DefRange is an independent declaration overriding the same address again (duplicate
+	// resource blocks aren't valid Terraform, but tflint tolerates them), and keeps the
+	// pre-existing behavior of clobbering the first primary.
+	// See https://github.com/terraform-linters/tflint/issues/2151
+	type resourceOverrideRun struct {
+		defRange hcl.Range
+		pristine *hclext.Block
+		next     int
+	}
+	resourceOverrideRuns := map[string]*resourceOverrideRun{}
+
 	for _, override := range overrides {
 		addr := blockAddr(override)
 
 		switch override.Type {
 		case "resource":
 			if primaries, exists := overridesByAddr[addr]; exists {
-				// Duplicate resource blocks are not allowed.
-				overrideResourceBlock(primaries[0], override)
+				run := resourceOverrideRuns[addr]
+				if run == nil || run.defRange != override.DefRange {
+					// Duplicate resource blocks are not allowed, so normally there is
+					// exactly one primary per address and every override merges into
+					// it. Start (or restart, for an independent declaration) a run at
+					// instance 0, applied directly exactly like before.
+					run = &resourceOverrideRun{defRange: override.DefRange, pristine: primaries[0].Copy(), next: 1}
+					resourceOverrideRuns[addr] = run
+					overrideResourceBlock(primaries[0], override)
+				} else {
+					idx := run.next
+					run.next++
+					if idx < len(primaries) {
+						overrideResourceBlock(primaries[idx], override)
+					} else {
+						// This run's override file expanded the same declaration
+						// into more instances than the primary configuration has
+						// for this address; clone the pristine (pre-merge) primary
+						// so this instance merges into its own block instead of
+						// clobbering an already-merged one.
+						clone := run.pristine.Copy()
+						overrideResourceBlock(clone, override)
+						overridesByAddr[addr] = append(overridesByAddr[addr], clone)
+						primaries = overridesByAddr[addr]
+						newPrimaries = append(newPrimaries, clone)
+					}
+				}
 			}
 
 		// The "data" block is the same as generic block except for "depends_on".
