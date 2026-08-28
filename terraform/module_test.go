@@ -708,6 +708,112 @@ resource "aws_instance" "foo" {
 	}
 }
 
+func TestPartialContent_OverrideChangesInstanceCountWithLifecycle(t *testing.T) {
+	files := map[string]string{
+		"main.tf": `
+resource "aws_instance" "foo" {
+  instance_type = "t2.micro"
+
+  lifecycle {
+    create_before_destroy = false
+  }
+}`,
+
+		"main_override.tf": `
+resource "aws_instance" "foo" {
+  count = 3
+
+  lifecycle {
+    create_before_destroy = count.index == 1
+  }
+}`,
+	}
+
+	fs := afero.Afero{Fs: afero.NewMemMapFs()}
+	for name, content := range files {
+		if err := fs.WriteFile(name, []byte(content), os.ModePerm); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	parser := NewParser(fs)
+	mod, diags := parser.LoadConfigDir(".", ".")
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	config, diags := BuildConfig(mod, ModuleWalkerFunc(func(req *ModuleRequest) (*Module, *version.Version, hcl.Diagnostics) { return nil, nil, nil }), ".")
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	variableValues, diags := VariableValues(config)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+
+	ctx := &Evaluator{
+		Meta:           &ContextMeta{Env: Workspace()},
+		ModulePath:     config.Path.UnkeyedInstanceShim(),
+		Config:         config,
+		VariableValues: variableValues,
+	}
+
+	schema := &hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type:       "resource",
+				LabelNames: []string{"type", "name"},
+				Body: &hclext.BodySchema{
+					Blocks: []hclext.BlockSchema{
+						{
+							Type: "lifecycle",
+							Body: &hclext.BodySchema{
+								Attributes: []hclext.AttributeSchema{{Name: "create_before_destroy"}},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	got, diags := config.Module.PartialContent(schema, ctx)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+
+	if len(got.Blocks) != 3 {
+		t.Fatalf("PartialContent() returned %d block(s), want 3", len(got.Blocks))
+	}
+
+	// Each instance overrides lifecycle.create_before_destroy with a value
+	// derived from count.index, so exactly one of the three is true. Three
+	// instances are used rather than two so that both kinds of sharing are
+	// covered: an extra instance sharing the lifecycle block with the primary,
+	// and two extra instances sharing it with each other. overrideResourceBlock
+	// merges lifecycle arguments into the existing block in place, so any
+	// sharing collapses the values onto whichever instance was merged last.
+	gotValues := make([]bool, 0, len(got.Blocks))
+	for i, block := range got.Blocks {
+		if len(block.Body.Blocks) != 1 {
+			t.Fatalf("got.Blocks[%d] has %d nested block(s), want 1 lifecycle block", i, len(block.Body.Blocks))
+		}
+		attr, exists := block.Body.Blocks[0].Body.Attributes["create_before_destroy"]
+		if !exists {
+			t.Fatalf("got.Blocks[%d] lifecycle has no create_before_destroy attribute", i)
+		}
+		val, diags := ctx.EvaluateExpr(attr.Expr, cty.Bool)
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+		gotValues = append(gotValues, val.True())
+	}
+	want := []bool{false, false, true}
+	if diff := cmp.Diff(want, gotValues, cmpopts.SortSlices(func(a, b bool) bool { return !a && b })); diff != "" {
+		t.Fatalf("lifecycle.create_before_destroy of the 3 overridden instances does not match (-want +got):\n%s\n"+
+			"(instances showing the same value share one lifecycle block)", diff)
+	}
+}
+
 func Test_overrideBlocks(t *testing.T) {
 	tests := []struct {
 		Name      string

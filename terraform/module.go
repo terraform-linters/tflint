@@ -167,6 +167,20 @@ func blockAddr(b *hclext.Block) string {
 	return b.Type
 }
 
+// deepCopyBlock copies a block including its nested blocks. hclext's Copy()
+// deep-copies attributes but shares the nested block pointers, which is not
+// enough on the clone path below: overrideResourceBlock merges the arguments of
+// a lifecycle block into the existing block in place, so two blocks sharing one
+// lifecycle block would both end up with the arguments of whichever override
+// instance was merged last.
+func deepCopyBlock(block *hclext.Block) *hclext.Block {
+	out := block.Copy()
+	for i, nested := range out.Body.Blocks {
+		out.Body.Blocks[i] = deepCopyBlock(nested)
+	}
+	return out
+}
+
 // overrideBlocks overrides the primary blocks passed with override blocks,
 // following Terraform's merge behavior.
 // https://developer.hashicorp.com/terraform/language/files/override#merging-behavior
@@ -218,7 +232,7 @@ func overrideBlocks(primaries, overrides hclext.Blocks) hclext.Blocks {
 					// exactly one primary per address and every override merges into
 					// it. Start (or restart, for an independent declaration) a run at
 					// instance 0, applied directly exactly like before.
-					run = &resourceOverrideRun{defRange: override.DefRange, pristine: primaries[0].Copy(), next: 1}
+					run = &resourceOverrideRun{defRange: override.DefRange, pristine: deepCopyBlock(primaries[0]), next: 1}
 					resourceOverrideRuns[addr] = run
 					overrideResourceBlock(primaries[0], override)
 				} else {
@@ -232,7 +246,7 @@ func overrideBlocks(primaries, overrides hclext.Blocks) hclext.Blocks {
 						// for this address; clone the pristine (pre-merge) primary
 						// so this instance merges into its own block instead of
 						// clobbering an already-merged one.
-						clone := run.pristine.Copy()
+						clone := deepCopyBlock(run.pristine)
 						overrideResourceBlock(clone, override)
 						overridesByAddr[addr] = append(overridesByAddr[addr], clone)
 						primaries = overridesByAddr[addr]
