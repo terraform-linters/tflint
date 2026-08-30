@@ -443,6 +443,7 @@ func Test_EmitIssue(t *testing.T) {
 	type moduleConfig struct {
 		currentExpr hcl.Expression
 		variables   map[string]*moduleVariable
+		locals      map[string]*terraform.Local
 	}
 
 	cases := []struct {
@@ -786,6 +787,55 @@ func Test_EmitIssue(t *testing.T) {
 			},
 			Applied: true,
 		},
+		{
+			// Regression test for terraform-linters/tflint#2169: an issue
+			// reported against an expression that is itself a local value
+			// (e.g. `local.ecr_name_abstraction`, where the local is derived
+			// from a module input variable such as `${var.ecr_name}-suffix`)
+			// must still be attributed back to the module call, exactly like
+			// a direct `var.*` reference is. Today `EmitIssue` -> listModuleVars
+			// -> listVarRefs only understands addrs.InputVariable references
+			// and silently discards addrs.LocalValue references (see
+			// runner.go listVarRefs, and the "local variable" case of
+			// Test_listVarRefs which currently freezes this as the expected,
+			// buggy behavior), so the whole issue is dropped instead of being
+			// misattributed. Fixing this requires resolving `local.*` refs
+			// via r.TFConfig.Module.Locals (see terraform.Local in
+			// terraform/local.go) back to the underlying `var.*` refs,
+			// recursively, before consulting r.modVars.
+			Name:    "module with local value derived from module variable",
+			Rule:    &testRule{},
+			Message: "This is test message",
+			Location: hcl.Range{
+				Filename: "test.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
+			Module: &moduleConfig{
+				currentExpr: parseExpr("local.foo_abstraction"),
+				variables: map[string]*moduleVariable{
+					"foo": {Root: true, DeclRange: hcl.Range{Filename: "module.tf", Start: hcl.Pos{Line: 1}}},
+				},
+				locals: map[string]*terraform.Local{
+					"foo_abstraction": {Name: "foo_abstraction", Expr: parseExpr(`"${var.foo}-suffix"`)},
+				},
+			},
+			Expected: Issues{
+				{
+					Rule:    &testRule{},
+					Message: "This is test message",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 1},
+					},
+					Callers: []hcl.Range{
+						{Filename: "module.tf", Start: hcl.Pos{Line: 1}},
+						{Filename: "test.tf", Start: hcl.Pos{Line: 1}},
+					},
+					Source: []byte("bar = 2"),
+				},
+			},
+			Applied: true,
+		},
 	}
 
 	for _, tc := range cases {
@@ -798,6 +848,9 @@ func Test_EmitIssue(t *testing.T) {
 				runner.TFConfig.Path = []string{"module", "module1"}
 				runner.currentExpr = tc.Module.currentExpr
 				runner.modVars = tc.Module.variables
+				if tc.Module.locals != nil {
+					runner.TFConfig.Module.Locals = tc.Module.locals
+				}
 			}
 
 			got := runner.EmitIssue(tc.Rule, tc.Message, tc.Location, tc.Fixable)
@@ -855,9 +908,18 @@ func TestApplyChanges(t *testing.T) {
 }
 
 func Test_listVarRefs(t *testing.T) {
+	parseExpr := func(in string) hcl.Expression {
+		expr, diags := hclsyntax.ParseExpression([]byte(in), "", hcl.InitialPos)
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+		return expr
+	}
+
 	cases := []struct {
 		Name     string
 		Expr     string
+		Locals   map[string]*terraform.Local
 		Expected map[string]addrs.InputVariable
 	}{
 		{
@@ -873,8 +935,41 @@ func Test_listVarRefs(t *testing.T) {
 			},
 		},
 		{
-			Name:     "local variable",
+			Name:     "undeclared local variable",
 			Expr:     "local.bar",
+			Expected: map[string]addrs.InputVariable{},
+		},
+		{
+			Name: "local variable derived from input variable",
+			// Regression test for terraform-linters/tflint#2169: a
+			// `local.*` reference must be resolved back to the `var.*`
+			// references in its own expression.
+			Expr: "local.bar",
+			Locals: map[string]*terraform.Local{
+				"bar": {Name: "bar", Expr: parseExpr(`"${var.foo}-suffix"`)},
+			},
+			Expected: map[string]addrs.InputVariable{
+				"var.foo": {Name: "foo"},
+			},
+		},
+		{
+			Name: "local variable derived from another local variable",
+			Expr: "local.baz",
+			Locals: map[string]*terraform.Local{
+				"baz": {Name: "baz", Expr: parseExpr("local.bar")},
+				"bar": {Name: "bar", Expr: parseExpr("var.foo")},
+			},
+			Expected: map[string]addrs.InputVariable{
+				"var.foo": {Name: "foo"},
+			},
+		},
+		{
+			Name: "circular local variable reference is not followed forever",
+			Expr: "local.a",
+			Locals: map[string]*terraform.Local{
+				"a": {Name: "a", Expr: parseExpr("local.b")},
+				"b": {Name: "b", Expr: parseExpr("local.a")},
+			},
 			Expected: map[string]addrs.InputVariable{},
 		},
 		{
@@ -908,7 +1003,7 @@ func Test_listVarRefs(t *testing.T) {
 			t.Fatal(diags)
 		}
 
-		refs := listVarRefs(expr)
+		refs := listVarRefs(expr, tc.Locals)
 
 		opt := cmpopts.IgnoreUnexported(addrs.InputVariable{})
 		if !cmp.Equal(tc.Expected, refs, opt) {
