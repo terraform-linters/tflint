@@ -105,6 +105,7 @@ type handler struct {
 }
 
 func (h *handler) handle(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (result any, err error) {
+	log.Printf(`Received %s`, req.Method)
 	if req.Params != nil {
 		params, err := json.Marshal(&req.Params)
 		if err != nil {
@@ -114,9 +115,7 @@ func (h *handler) handle(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2
 				Data:    req.Params,
 			}
 		}
-		log.Printf(`Received %s with %s`, req.Method, string(params))
-	} else {
-		log.Printf(`Received %s`, req.Method)
+		log.Printf(`[TRACE] Params for %s: %s`, req.Method, string(params))
 	}
 
 	if h.shutdown && req.Method != "exit" {
