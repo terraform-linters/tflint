@@ -163,6 +163,18 @@ Help Options:
 
 See [User Guide](docs/user-guide) for details.
 
+## Pre-commit
+
+Add to `.pre-commit-config.yaml`:
+
+```yaml
+repos:
+  - repo: https://github.com/terraform-linters/tflint
+    rev: v0.64.0
+    hooks:
+      - id: tflint
+```
+
 ## Debugging
 
 If you don't get the expected behavior, you can see the detailed logs when running with `TFLINT_LOG` environment variable.
