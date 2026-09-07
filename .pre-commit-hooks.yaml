@@ -1,0 +1,9 @@
+- id: tflint
+  name: tflint
+  description: "Find possible errors, deprecated syntax, unused declarations, and enforce best practices"
+  entry: tflint
+  args: [--recursive]
+  language: golang
+  pass_filenames: false
+  files: '(\.tf|\.tfvars)(\.json)?$|\.tflint\.(hcl|json)$'
+  require_serial: true
