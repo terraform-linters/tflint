@@ -64,7 +64,7 @@ sha256sum --ignore-missing -c checksums.txt
 [Cosign](https://github.com/sigstore/cosign) `verify-blob` command ensures that the release was built with GitHub Actions in this repository.
 
 ```console
-cosign verify-blob --certificate=checksums.txt.pem --signature=checksums.txt.keyless.sig --certificate-identity-regexp="^https://github.com/terraform-linters/tflint" --certificate-oidc-issuer=https://token.actions.githubusercontent.com checksums.txt
+cosign verify-blob --bundle=checksums.txt.sigstore.json --certificate-identity-regexp="^https://github.com/terraform-linters/tflint" --certificate-oidc-issuer=https://token.actions.githubusercontent.com checksums.txt
 sha256sum --ignore-missing -c checksums.txt
 ```
 
