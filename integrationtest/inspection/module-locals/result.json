@@ -1,0 +1,61 @@
+{
+  "issues": [
+    {
+      "rule": {
+        "name": "aws_instance_example_type",
+        "severity": "error",
+        "link": ""
+      },
+      "message": "instance type is t1.2xlarge",
+      "range": {
+        "filename": "module.tf",
+        "start": {
+          "line": 4,
+          "column": 19
+        },
+        "end": {
+          "line": 4,
+          "column": 31
+        }
+      },
+      "callers": [
+        {
+          "filename": "module.tf",
+          "start": {
+            "line": 4,
+            "column": 19
+          },
+          "end": {
+            "line": 4,
+            "column": 31
+          }
+        },
+        {
+          "filename": "module/template.tf",
+          "start": {
+            "line": 11,
+            "column": 19
+          },
+          "end": {
+            "line": 11,
+            "column": 38
+          }
+        },
+        {
+          "filename": "module/module/instance.tf",
+          "start": {
+            "line": 9,
+            "column": 19
+          },
+          "end": {
+            "line": 9,
+            "column": 38
+          }
+        }
+      ],
+      "fixable": false,
+      "fixed": false
+    }
+  ],
+  "errors": []
+}
