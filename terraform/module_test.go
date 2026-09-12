@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	"github.com/zclconf/go-cty/cty"
 )
 
 func TestRebuild(t *testing.T) {
@@ -600,6 +601,216 @@ resource "aws_instance" "bar" {
 				t.Error(diff)
 			}
 		})
+	}
+}
+
+// TestPartialContent_OverrideChangesInstanceCount is a regression test for
+// terraform-linters/tflint#2151.
+//
+// In real Terraform, override files are merged into the primary configuration
+// BEFORE resources are expanded by their count/for_each meta-arguments. TFLint's
+// PartialContent instead expands each primary file's blocks and each override
+// file's blocks independently (see the two ctx.ExpandBlock calls above) and only
+// then merges the results by resource address via overrideBlocks. When an
+// override changes the instance count (e.g. the primary has no count and the
+// override sets count = 2), the primary side of the merge still has only one
+// block for that address, so overrideBlocks/overrideResourceBlock ends up
+// overwriting that same primary block once per override instance instead of
+// producing one merged block per instance -- silently dropping all but the
+// last override instance.
+func TestPartialContent_OverrideChangesInstanceCount(t *testing.T) {
+	files := map[string]string{
+		"main.tf": `
+resource "aws_instance" "foo" {
+  instance_type = "t2.micro"
+}`,
+		"main_override.tf": `
+resource "aws_instance" "foo" {
+  count = 2
+  instance_type = "t${count.index + 1}.invalid"
+}`,
+	}
+
+	fs := afero.Afero{Fs: afero.NewMemMapFs()}
+	for name, content := range files {
+		if err := fs.WriteFile(name, []byte(content), os.ModePerm); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	parser := NewParser(fs)
+	mod, diags := parser.LoadConfigDir(".", ".")
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	config, diags := BuildConfig(mod, ModuleWalkerFunc(func(req *ModuleRequest) (*Module, *version.Version, hcl.Diagnostics) { return nil, nil, nil }), ".")
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	variableValues, diags := VariableValues(config)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+
+	ctx := &Evaluator{
+		Meta:           &ContextMeta{Env: Workspace()},
+		ModulePath:     config.Path.UnkeyedInstanceShim(),
+		Config:         config,
+		VariableValues: variableValues,
+	}
+
+	schema := &hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type:       "resource",
+				LabelNames: []string{"type", "name"},
+				Body:       &hclext.BodySchema{Attributes: []hclext.AttributeSchema{{Name: "instance_type"}}},
+			},
+		},
+	}
+
+	got, diags := config.Module.PartialContent(schema, ctx)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+
+	// The override sets count = 2, so two "aws_instance.foo" instances are
+	// expected (one per count.index), matching terraform-linters/tflint#2151.
+	if len(got.Blocks) != 2 {
+		t.Fatalf("PartialContent() returned %d block(s) for a resource overridden with count = 2, want 2 (see terraform-linters/tflint#2151)", len(got.Blocks))
+	}
+
+	// A block count of 2 is necessary but not sufficient: an implementation
+	// that merges both override instances into two blocks but always applies
+	// the SAME (e.g. last-seen) override instance to both - instead of one
+	// merged instance per block - would also pass the check above while
+	// silently losing the per-instance count.index substitution. Each
+	// instance's own override sets instance_type from count.index ("t1.invalid",
+	// "t2.invalid"), so require both distinct values to be present, order
+	// notwithstanding (PartialContent does not guarantee block order).
+	gotInstanceTypes := make([]string, 0, len(got.Blocks))
+	for i, block := range got.Blocks {
+		attr, exists := block.Body.Attributes["instance_type"]
+		if !exists {
+			t.Fatalf("got.Blocks[%d] has no instance_type attribute", i)
+		}
+		val, diags := ctx.EvaluateExpr(attr.Expr, cty.String)
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+		gotInstanceTypes = append(gotInstanceTypes, val.AsString())
+	}
+	want := []string{"t1.invalid", "t2.invalid"}
+	if diff := cmp.Diff(want, gotInstanceTypes, cmpopts.SortSlices(func(a, b string) bool { return a < b })); diff != "" {
+		t.Fatalf("instance_type of the 2 overridden instances does not match (-want +got):\n%s\n"+
+			"(returning 2 blocks that both carry the same override instance - instead of one "+
+			"merged instance per block - passes the block-count check above but fails here)", diff)
+	}
+}
+
+func TestPartialContent_OverrideChangesInstanceCountWithLifecycle(t *testing.T) {
+	files := map[string]string{
+		"main.tf": `
+resource "aws_instance" "foo" {
+  instance_type = "t2.micro"
+
+  lifecycle {
+    create_before_destroy = false
+  }
+}`,
+
+		"main_override.tf": `
+resource "aws_instance" "foo" {
+  count = 3
+
+  lifecycle {
+    create_before_destroy = count.index == 1
+  }
+}`,
+	}
+
+	fs := afero.Afero{Fs: afero.NewMemMapFs()}
+	for name, content := range files {
+		if err := fs.WriteFile(name, []byte(content), os.ModePerm); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	parser := NewParser(fs)
+	mod, diags := parser.LoadConfigDir(".", ".")
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	config, diags := BuildConfig(mod, ModuleWalkerFunc(func(req *ModuleRequest) (*Module, *version.Version, hcl.Diagnostics) { return nil, nil, nil }), ".")
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	variableValues, diags := VariableValues(config)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+
+	ctx := &Evaluator{
+		Meta:           &ContextMeta{Env: Workspace()},
+		ModulePath:     config.Path.UnkeyedInstanceShim(),
+		Config:         config,
+		VariableValues: variableValues,
+	}
+
+	schema := &hclext.BodySchema{
+		Blocks: []hclext.BlockSchema{
+			{
+				Type:       "resource",
+				LabelNames: []string{"type", "name"},
+				Body: &hclext.BodySchema{
+					Blocks: []hclext.BlockSchema{
+						{
+							Type: "lifecycle",
+							Body: &hclext.BodySchema{
+								Attributes: []hclext.AttributeSchema{{Name: "create_before_destroy"}},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	got, diags := config.Module.PartialContent(schema, ctx)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+
+	if len(got.Blocks) != 3 {
+		t.Fatalf("PartialContent() returned %d block(s), want 3", len(got.Blocks))
+	}
+
+	// Each instance overrides lifecycle.create_before_destroy with a value
+	// derived from count.index, so exactly one of the three is true. Three
+	// instances are used rather than two so that both kinds of sharing are
+	// covered: an extra instance sharing the lifecycle block with the primary,
+	// and two extra instances sharing it with each other. overrideResourceBlock
+	// merges lifecycle arguments into the existing block in place, so any
+	// sharing collapses the values onto whichever instance was merged last.
+	gotValues := make([]bool, 0, len(got.Blocks))
+	for i, block := range got.Blocks {
+		if len(block.Body.Blocks) != 1 {
+			t.Fatalf("got.Blocks[%d] has %d nested block(s), want 1 lifecycle block", i, len(block.Body.Blocks))
+		}
+		attr, exists := block.Body.Blocks[0].Body.Attributes["create_before_destroy"]
+		if !exists {
+			t.Fatalf("got.Blocks[%d] lifecycle has no create_before_destroy attribute", i)
+		}
+		val, diags := ctx.EvaluateExpr(attr.Expr, cty.Bool)
+		if diags.HasErrors() {
+			t.Fatal(diags)
+		}
+		gotValues = append(gotValues, val.True())
+	}
+	want := []bool{false, false, true}
+	if diff := cmp.Diff(want, gotValues, cmpopts.SortSlices(func(a, b bool) bool { return !a && b })); diff != "" {
+		t.Fatalf("lifecycle.create_before_destroy of the 3 overridden instances does not match (-want +got):\n%s\n"+
+			"(instances showing the same value share one lifecycle block)", diff)
 	}
 }
 
