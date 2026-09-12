@@ -149,23 +149,12 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 			// Run checks for module calls are performed in parallel.
 			// The rootRunner is shared between goroutines but read-only, so this is goroutine-safe.
 			// Note that checks against the rootRunner are not parallelized, as autofix may cause the module to be rebuilt.
-			ch := make(chan error, len(moduleRunners))
-			for _, runner := range moduleRunners {
-				if opts.NoParallelRunners {
-					ch <- ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersions[name]))
-				} else {
-					go func(runner *tflint.Runner) {
-						ch <- ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersions[name]))
-					}(runner)
-				}
+			err = checkRunners(moduleRunners, !opts.NoParallelRunners, func(runner *tflint.Runner) error {
+				return ruleset.Check(plugin.NewGRPCServer(runner, rootRunner, cli.loader.Files(), sdkVersions[name]))
+			})
+			if err != nil {
+				return issues, changes, fmt.Errorf("Failed to check ruleset; %w", err)
 			}
-			for range moduleRunners {
-				err = <-ch
-				if err != nil {
-					return issues, changes, fmt.Errorf("Failed to check ruleset; %w", err)
-				}
-			}
-			close(ch)
 		}
 
 		changesInAttempt := map[string][]byte{}
@@ -194,6 +183,31 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 	maps.Copy(cli.sources, cli.loader.Sources())
 
 	return issues, changes, nil
+}
+
+// checkRunners runs check against each of the given module-call runners and
+// returns the first error encountered. When parallel is true, each runner is
+// checked in its own goroutine; otherwise they are checked sequentially.
+//
+// The per-runner check fan-out is extracted into a single function so its
+// concurrency behavior can be benchmarked in isolation.
+func checkRunners(runners []*tflint.Runner, parallel bool, check func(runner *tflint.Runner) error) error {
+	ch := make(chan error, len(runners))
+	for _, runner := range runners {
+		if parallel {
+			go func(runner *tflint.Runner) {
+				ch <- check(runner)
+			}(runner)
+		} else {
+			ch <- check(runner)
+		}
+	}
+	for range runners {
+		if err := <-ch; err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func launchPlugins(config *tflint.Config, fix bool) (*plugin.Plugin, error) {
