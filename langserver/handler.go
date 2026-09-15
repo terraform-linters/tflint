@@ -3,6 +3,7 @@ package langserver
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/url"
@@ -172,6 +173,12 @@ func (h *handler) inspect() (map[string][]lsp.Diagnostic, error) {
 
 	runner, runners, err := tflint.BuildRunners(loader, h.config, h.rootDir, ".")
 	if err != nil {
+		// Transient invalid HCL (incomplete typing, undeclared refs, etc.) is a
+		// normal document state in the language server. Publish those HCL
+		// diagnostics instead of failing the JSON-RPC notification handler.
+		if diags, ok := errors.AsType[hcl.Diagnostics](err); ok {
+			return h.hclDiagnosticsToLSP(diags), nil
+		}
 		return ret, err
 	}
 	runners = append(runners, runner) // langserver iterates a single slice incl. root
@@ -264,6 +271,53 @@ func pathToURI(path string) lsp.DocumentURI {
 	}
 
 	return lsp.DocumentURI("file://" + head + rest)
+}
+
+func (h *handler) hclDiagnosticsToLSP(diags hcl.Diagnostics) map[string][]lsp.Diagnostic {
+	ret := map[string][]lsp.Diagnostic{}
+
+	// Clear previously published paths so editors drop stale diagnostics.
+	for _, path := range h.diagsPaths {
+		ret[path] = []lsp.Diagnostic{}
+	}
+	h.diagsPaths = []string{}
+
+	for _, d := range diags {
+		if d == nil || d.Subject == nil {
+			continue
+		}
+		path := d.Subject.Filename
+		if !filepath.IsAbs(path) {
+			path = filepath.Join(h.rootDir, path)
+		}
+		h.diagsPaths = append(h.diagsPaths, path)
+
+		msg := d.Summary
+		if d.Detail != "" {
+			msg = fmt.Sprintf("%s; %s", d.Summary, d.Detail)
+		}
+		diag := lsp.Diagnostic{
+			Message:  msg,
+			Severity: hclSeverityToLSP(d.Severity),
+			Range: lsp.Range{
+				Start: lsp.Position{Line: d.Subject.Start.Line - 1, Character: d.Subject.Start.Column - 1},
+				End:   lsp.Position{Line: d.Subject.End.Line - 1, Character: d.Subject.End.Column - 1},
+			},
+		}
+		ret[path] = append(ret[path], diag)
+	}
+	return ret
+}
+
+func hclSeverityToLSP(severity hcl.DiagnosticSeverity) lsp.DiagnosticSeverity {
+	switch severity {
+	case hcl.DiagError:
+		return lsp.Error
+	case hcl.DiagWarning:
+		return lsp.Warning
+	default:
+		return lsp.Information
+	}
 }
 
 func toLSPSeverity(severity tflint.Severity) lsp.DiagnosticSeverity {
