@@ -49,9 +49,9 @@ homebrew_casks:
         enabled: true
     homepage: https://github.com/terraform-linters/tflint
     description: Pluggable Terraform linter
-    hooks:
-      post:
-        install: |
-          if OS.mac?
-            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/tflint"]
-          end
+    custom_block: |
+      postflight_steps do
+        on_macos do
+          run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/tflint"]
+        end
+      end
