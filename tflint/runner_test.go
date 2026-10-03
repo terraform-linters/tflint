@@ -243,6 +243,15 @@ func Test_NewModuleRunners_modVars(t *testing.T) {
 					End:      hcl.Pos{Line: 10, Column: 49},
 				},
 			},
+			"purple": {
+				Root:    false,
+				Parents: []*moduleVariable{expected["bar"]},
+				DeclRange: hcl.Range{
+					Filename: filepath.Join("module", "main.tf"),
+					Start:    hcl.Pos{Line: 11, Column: 12},
+					End:      hcl.Pos{Line: 11, Column: 24},
+				},
+			},
 		}
 		opts = []cmp.Option{
 			cmpopts.IgnoreFields(hcl.Pos{}, "Byte"),
@@ -432,17 +441,10 @@ func Test_EmitIssue(t *testing.T) {
 		"module.tf": "bar = 2",
 	}
 
-	parseExpr := func(in string) hcl.Expression {
-		expr, diags := hclsyntax.ParseExpression([]byte(in), "", hcl.InitialPos)
-		if diags.HasErrors() {
-			t.Fatal(diags)
-		}
-		return expr
-	}
-
 	type moduleConfig struct {
 		currentExpr hcl.Expression
 		variables   map[string]*moduleVariable
+		locals      map[string]*terraform.Local
 	}
 
 	cases := []struct {
@@ -625,7 +627,7 @@ func Test_EmitIssue(t *testing.T) {
 				Start:    hcl.Pos{Line: 1},
 			},
 			Module: &moduleConfig{
-				currentExpr: parseExpr("var.foo"),
+				currentExpr: parseExpr(t, "var.foo"),
 				variables: map[string]*moduleVariable{
 					"foo": {Root: true, DeclRange: hcl.Range{Filename: "module.tf", Start: hcl.Pos{Line: 1}}},
 				},
@@ -656,7 +658,7 @@ func Test_EmitIssue(t *testing.T) {
 				Start:    hcl.Pos{Line: 1},
 			},
 			Module: &moduleConfig{
-				currentExpr: parseExpr(`"foo"`),
+				currentExpr: parseExpr(t, `"foo"`),
 				variables:   map[string]*moduleVariable{},
 			},
 			Expected: Issues{},
@@ -671,7 +673,7 @@ func Test_EmitIssue(t *testing.T) {
 				Start:    hcl.Pos{Line: 1},
 			},
 			Module: &moduleConfig{
-				currentExpr: parseExpr(`"${var.foo}-${var.bar}"`),
+				currentExpr: parseExpr(t, `"${var.foo}-${var.bar}"`),
 				variables: map[string]*moduleVariable{
 					"foo": {Root: true, DeclRange: hcl.Range{Filename: "module.tf", Start: hcl.Pos{Line: 1}}},
 					"bar": {Root: true, DeclRange: hcl.Range{Filename: "module.tf", Start: hcl.Pos{Line: 3}}},
@@ -716,7 +718,7 @@ func Test_EmitIssue(t *testing.T) {
 				Start:    hcl.Pos{Line: 1},
 			},
 			Module: &moduleConfig{
-				currentExpr: parseExpr(`"${var.foo}-${var.bar}"`),
+				currentExpr: parseExpr(t, `"${var.foo}-${var.bar}"`),
 				variables: map[string]*moduleVariable{
 					"foo": {Root: true, DeclRange: hcl.Range{Filename: "module.tf", Start: hcl.Pos{Line: 1}}},
 					"bar": {Root: true, DeclRange: hcl.Range{Filename: "module.tf", Start: hcl.Pos{Line: 3}}},
@@ -763,7 +765,7 @@ func Test_EmitIssue(t *testing.T) {
 			},
 			Fixable: true,
 			Module: &moduleConfig{
-				currentExpr: parseExpr("var.foo"),
+				currentExpr: parseExpr(t, "var.foo"),
 				variables: map[string]*moduleVariable{
 					"foo": {Root: true, DeclRange: hcl.Range{Filename: "module.tf", Start: hcl.Pos{Line: 1}}},
 				},
@@ -786,6 +788,42 @@ func Test_EmitIssue(t *testing.T) {
 			},
 			Applied: true,
 		},
+		{
+			// Regression test for terraform-linters/tflint#2169: an issue on a
+			// local derived from a module variable is attributed to the module call.
+			Name:    "module with local value derived from module variable",
+			Rule:    &testRule{},
+			Message: "This is test message",
+			Location: hcl.Range{
+				Filename: "test.tf",
+				Start:    hcl.Pos{Line: 1},
+			},
+			Module: &moduleConfig{
+				currentExpr: parseExpr(t, "local.foo_abstraction"),
+				variables: map[string]*moduleVariable{
+					"foo": {Root: true, DeclRange: hcl.Range{Filename: "module.tf", Start: hcl.Pos{Line: 1}}},
+				},
+				locals: map[string]*terraform.Local{
+					"foo_abstraction": {Name: "foo_abstraction", Expr: parseExpr(t, `"${var.foo}-suffix"`)},
+				},
+			},
+			Expected: Issues{
+				{
+					Rule:    &testRule{},
+					Message: "This is test message",
+					Range: hcl.Range{
+						Filename: "module.tf",
+						Start:    hcl.Pos{Line: 1},
+					},
+					Callers: []hcl.Range{
+						{Filename: "module.tf", Start: hcl.Pos{Line: 1}},
+						{Filename: "test.tf", Start: hcl.Pos{Line: 1}},
+					},
+					Source: []byte("bar = 2"),
+				},
+			},
+			Applied: true,
+		},
 	}
 
 	for _, tc := range cases {
@@ -798,6 +836,9 @@ func Test_EmitIssue(t *testing.T) {
 				runner.TFConfig.Path = []string{"module", "module1"}
 				runner.currentExpr = tc.Module.currentExpr
 				runner.modVars = tc.Module.variables
+				if tc.Module.locals != nil {
+					runner.TFConfig.Module.Locals = tc.Module.locals
+				}
 			}
 
 			got := runner.EmitIssue(tc.Rule, tc.Message, tc.Location, tc.Fixable)
@@ -858,6 +899,7 @@ func Test_listVarRefs(t *testing.T) {
 	cases := []struct {
 		Name     string
 		Expr     string
+		Locals   map[string]*terraform.Local
 		Expected map[string]addrs.InputVariable
 	}{
 		{
@@ -873,8 +915,38 @@ func Test_listVarRefs(t *testing.T) {
 			},
 		},
 		{
-			Name:     "local variable",
+			Name:     "undeclared local variable",
 			Expr:     "local.bar",
+			Expected: map[string]addrs.InputVariable{},
+		},
+		{
+			Name: "local variable derived from input variable",
+			Expr: "local.bar",
+			Locals: map[string]*terraform.Local{
+				"bar": {Name: "bar", Expr: parseExpr(t, `"${var.foo}-suffix"`)},
+			},
+			Expected: map[string]addrs.InputVariable{
+				"var.foo": {Name: "foo"},
+			},
+		},
+		{
+			Name: "local variable derived from another local variable",
+			Expr: "local.baz",
+			Locals: map[string]*terraform.Local{
+				"baz": {Name: "baz", Expr: parseExpr(t, "local.bar")},
+				"bar": {Name: "bar", Expr: parseExpr(t, "var.foo")},
+			},
+			Expected: map[string]addrs.InputVariable{
+				"var.foo": {Name: "foo"},
+			},
+		},
+		{
+			Name: "circular local variable reference is not followed forever",
+			Expr: "local.a",
+			Locals: map[string]*terraform.Local{
+				"a": {Name: "a", Expr: parseExpr(t, "local.b")},
+				"b": {Name: "b", Expr: parseExpr(t, "local.a")},
+			},
 			Expected: map[string]addrs.InputVariable{},
 		},
 		{
@@ -908,11 +980,21 @@ func Test_listVarRefs(t *testing.T) {
 			t.Fatal(diags)
 		}
 
-		refs := listVarRefs(expr)
+		refs := listVarRefs(expr, tc.Locals)
 
 		opt := cmpopts.IgnoreUnexported(addrs.InputVariable{})
 		if !cmp.Equal(tc.Expected, refs, opt) {
 			t.Fatalf("%s: Diff=%s", tc.Name, cmp.Diff(tc.Expected, refs, opt))
 		}
 	}
+}
+
+func parseExpr(t *testing.T, in string) hcl.Expression {
+	t.Helper()
+
+	expr, diags := hclsyntax.ParseExpression([]byte(in), "", hcl.InitialPos)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	return expr
 }

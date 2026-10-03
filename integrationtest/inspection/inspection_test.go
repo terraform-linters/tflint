@@ -56,6 +56,11 @@ func TestIntegration(t *testing.T) {
 			Dir:     "module",
 		},
 		{
+			Name:    "module with local values",
+			Command: "./tflint --format json",
+			Dir:     "module-locals",
+		},
+		{
 			Name:    "without module init",
 			Command: "./tflint --format json",
 			Dir:     "without_module_init",

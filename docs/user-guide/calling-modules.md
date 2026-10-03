@@ -55,6 +55,6 @@ $ tflint --ignore-module=./module
 
 ## Caveats
 
-* Issues _must_ be associated with a variable that was passed to the module. If an issue within a child module is detected in an expression that does not reference a variable (`var`), it will be discarded.
+* Issues _must_ be associated with a variable that was passed to the module. If an issue within a child module is detected in an expression that does not reference a variable (`var`), it will be discarded. A reference to a local value (`local`) counts if the local is defined in terms of a variable, directly or through other locals. References to `count`, `each`, and dynamic block iterators are not followed.
 * Rules that evaluate syntax rather than content _should_ ignore child modules.
 * If you want to evaluate all TFLint rules on non-root modules, inspect directly against the module directories. Note that there is a difference between calling a child module in an inspection and inspecting a child module as the root module.
