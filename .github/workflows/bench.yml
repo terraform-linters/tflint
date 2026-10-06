@@ -1,0 +1,63 @@
+name: benchmark
+
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    name: benchmark
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+        with:
+          go-version-file: 'go.mod'
+      - name: Install benchstat
+        run: go install golang.org/x/perf/cmd/benchstat@latest
+      - name: Benchmark HEAD
+        run: |
+          make bench
+          cp bench.txt head.txt
+      - name: Benchmark base
+        # The base branch may not contain the benchmarks yet (e.g. the PR that
+        # introduces them). A missing or empty base result falls back to showing
+        # the HEAD numbers alone, so this step must never fail the job.
+        continue-on-error: true
+        run: |
+          base_sha="${{ github.event.pull_request.base.sha }}"
+          if [ -z "$base_sha" ]; then
+            exit 0
+          fi
+          git worktree add ../base "$base_sha"
+          make -C ../base bench
+          cp ../base/bench.txt base.txt
+      - name: Compare
+        run: |
+          {
+            echo '## Benchmarks'
+            echo
+            if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
+              echo "Base: \`${{ github.event.pull_request.base.sha }}\`"
+            fi
+            echo "HEAD: \`${{ github.sha }}\`"
+            echo
+            echo '```'
+            if [ -s base.txt ] && grep -q '^Benchmark' base.txt; then
+              benchstat base.txt head.txt
+            else
+              echo '(no benchmarks on the base ref; showing HEAD results only)'
+              echo
+              benchstat head.txt
+            fi
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
