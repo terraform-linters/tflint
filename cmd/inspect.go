@@ -20,7 +20,12 @@ func (cli *CLI) inspect(opts Options) int {
 	issues := tflint.Issues{}
 	changes := map[string][]byte{}
 
-	err := cli.withinChangedDir(opts.Chdir, func() error {
+	chdir := ""
+	if len(opts.Chdir) > 0 {
+		chdir = opts.Chdir[0]
+	}
+
+	err := cli.withinChangedDir(chdir, func() error {
 		filterFiles := []string{}
 		for _, pattern := range opts.Filter {
 			files, err := filepath.Glob(pattern)
@@ -36,7 +41,7 @@ func (cli *CLI) inspect(opts Options) int {
 
 		// Join with the working directory to create the fullpath
 		for i, file := range filterFiles {
-			filterFiles[i] = filepath.Join(opts.Chdir, file)
+			filterFiles[i] = filepath.Join(chdir, file)
 		}
 
 		var err error

@@ -111,7 +111,7 @@ func (cli *CLI) Run(args []string) int {
 	case opts.ActAsBundledPlugin:
 		return cli.actAsBundledPlugin()
 	default:
-		if opts.Recursive {
+		if opts.Recursive || len(opts.Chdir) > 1 {
 			return cli.inspectParallel(opts)
 		} else {
 			return cli.inspect(opts)
@@ -151,33 +151,35 @@ func unknownOptionHandler(option string, arg flags.SplitArgument, args []string)
 }
 
 func findWorkingDirs(opts Options) ([]string, error) {
-	baseDir := opts.Chdir
-	if baseDir == "" {
-		baseDir = "."
+	baseDirs := opts.Chdir
+	if len(baseDirs) == 0 {
+		baseDirs = []string{"."}
 	}
 	workingDirs := []string{}
 
 	if opts.Recursive {
-		err := filepath.WalkDir(baseDir, func(path string, d os.DirEntry, err error) error {
-			if err != nil {
-				return err
-			}
-			if !d.IsDir() {
-				return nil
-			}
-			// hidden directories are skipped
-			if path != "." && strings.HasPrefix(d.Name(), ".") {
-				return filepath.SkipDir
-			}
+		for _, baseDir := range baseDirs {
+			err := filepath.WalkDir(baseDir, func(path string, d os.DirEntry, err error) error {
+				if err != nil {
+					return err
+				}
+				if !d.IsDir() {
+					return nil
+				}
+				// hidden directories are skipped
+				if path != "." && strings.HasPrefix(d.Name(), ".") {
+					return filepath.SkipDir
+				}
 
-			workingDirs = append(workingDirs, path)
-			return nil
-		})
-		if err != nil {
-			return []string{}, err
+				workingDirs = append(workingDirs, path)
+				return nil
+			})
+			if err != nil {
+				return []string{}, err
+			}
 		}
 	} else {
-		workingDirs = []string{baseDir}
+		workingDirs = baseDirs
 	}
 
 	return workingDirs, nil
