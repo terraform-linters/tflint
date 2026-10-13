@@ -62,7 +62,7 @@ func (c *InstallConfig) InstallPath() string {
 	return filepath.Join(c.Source, c.Version, fmt.Sprintf("tflint-ruleset-%s", c.Name))
 }
 
-// TagName returns a tag name that the GitHub release should meet.
+// TagName returns a tag name that the release should meet.
 // The version must not contain leading "v", as the prefix "v" is added here,
 // and the release tag must be in a format similar to `v1.1.1`.
 func (c *InstallConfig) TagName() string {
@@ -95,7 +95,7 @@ var (
 	ErrLegacySigningKeyUsed = errors.New("legacy signing key used")
 )
 
-// Install fetches the release from GitHub and puts the binary in the plugin directory.
+// Install fetches the release and puts the binary in the plugin directory.
 // This installation process will automatically check the checksum of the downloaded zip file.
 // The release must always contain a checksum file and meet the following conventions:
 //
@@ -119,14 +119,36 @@ func (c *InstallConfig) Install() (string, error) {
 	}
 
 	ctx := context.Background()
-	client, err := newGitHubClient(ctx, c)
-	if err != nil {
-		return "", fmt.Errorf("Failed to create GitHub client: %s", err)
-	}
-
-	assets, checksum, attestations, repo, err := c.fetchFromGitHub(ctx, client)
-	if err != nil {
-		return "", err
+	var checksum []byte
+	var attestations []*github.Attestation
+	var repo *github.Repository
+	var download func(string) (*os.File, error)
+	if c.SourceType == "gitlab" {
+		client := c.newGitLabClient()
+		assets, err := c.fetchGitLabReleaseAssets(ctx, client)
+		if err != nil {
+			return "", fmt.Errorf("Failed to fetch GitLab releases: %w", err)
+		}
+		download = func(name string) (*os.File, error) {
+			return downloadGitLabAsset(ctx, client, assets[name])
+		}
+		checksum, err = readChecksums(download)
+		if err != nil {
+			return "", err
+		}
+	} else {
+		client, err := newGitHubClient(ctx, c)
+		if err != nil {
+			return "", fmt.Errorf("Failed to create GitHub client: %s", err)
+		}
+		var assets map[string]*github.ReleaseAsset
+		assets, checksum, attestations, repo, err = c.fetchFromGitHub(ctx, client)
+		if err != nil {
+			return "", err
+		}
+		download = func(name string) (*os.File, error) {
+			return c.downloadToTempFile(ctx, client, assets[name])
+		}
 	}
 
 	var legacyKeyUsed bool
@@ -142,9 +164,10 @@ func (c *InstallConfig) Install() (string, error) {
 
 	case SignatureModePGP:
 		log.Printf("[DEBUG] Download checksums.txt.sig")
-		signatureFile, err := c.downloadToTempFile(ctx, client, assets["checksums.txt.sig"])
+		signatureFile, err := download("checksums.txt.sig")
 		if signatureFile != nil {
 			defer os.Remove(signatureFile.Name())
+			defer signatureFile.Close()
 		}
 		if err != nil {
 			return "", fmt.Errorf("Failed to download checksums.txt.sig: %s", err)
@@ -169,9 +192,10 @@ func (c *InstallConfig) Install() (string, error) {
 	}
 
 	log.Printf("[DEBUG] Download %s", c.AssetName())
-	zipFile, err := c.downloadToTempFile(ctx, client, assets[c.AssetName()])
+	zipFile, err := download(c.AssetName())
 	if zipFile != nil {
 		defer os.Remove(zipFile.Name())
+		defer zipFile.Close()
 	}
 	if err != nil {
 		return "", fmt.Errorf("Failed to download %s: %s", c.AssetName(), err)
@@ -237,17 +261,11 @@ func (c *InstallConfig) fetchFromGitHub(ctx context.Context, client *github.Clie
 		return nil, nil, nil, nil, fmt.Errorf("Failed to fetch GitHub releases: %w", err)
 	}
 
-	log.Printf("[DEBUG] Download checksums.txt")
-	checksumsFile, err := c.downloadToTempFile(ctx, client, assets["checksums.txt"])
-	if checksumsFile != nil {
-		defer os.Remove(checksumsFile.Name())
-	}
+	checksum, err := readChecksums(func(name string) (*os.File, error) {
+		return c.downloadToTempFile(ctx, client, assets[name])
+	})
 	if err != nil {
-		return assets, nil, nil, nil, fmt.Errorf("Failed to download checksums.txt: %s", err)
-	}
-	checksum, err := io.ReadAll(checksumsFile)
-	if err != nil {
-		return assets, nil, nil, nil, fmt.Errorf("Failed to read checksums.txt: %s", err)
+		return assets, nil, nil, nil, err
 	}
 
 	// GitHub Enterprise Server does not support Artifact Attestations
@@ -410,6 +428,27 @@ func (c *InstallConfig) downloadToTempFile(ctx context.Context, client *github.C
 	}
 	defer downloader.Close()
 
+	return downloadToTempFile(downloader)
+}
+
+func readChecksums(download func(string) (*os.File, error)) ([]byte, error) {
+	log.Printf("[DEBUG] Download checksums.txt")
+	file, err := download("checksums.txt")
+	if file != nil {
+		defer os.Remove(file.Name())
+		defer file.Close()
+	}
+	if err != nil {
+		return nil, fmt.Errorf("Failed to download checksums.txt: %s", err)
+	}
+	checksum, err := io.ReadAll(file)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to read checksums.txt: %s", err)
+	}
+	return checksum, nil
+}
+
+func downloadToTempFile(downloader io.Reader) (*os.File, error) {
 	file, err := os.CreateTemp("", "tflint-download-temp-file-*")
 	if err != nil {
 		return nil, err
@@ -435,7 +474,11 @@ func (c *InstallConfig) downloadToTempFile(ctx context.Context, client *github.C
 // can be useful, for example if you are hosting your plugin on GHES.
 // The host name must be normalized with Punycode, and "-" can be converted to "__" and "." to "-".
 func (c *InstallConfig) getGitHubToken() string {
-	prefix := "GITHUB_TOKEN_"
+	return c.getToken("GITHUB_TOKEN")
+}
+
+func (c *InstallConfig) getToken(variable string) string {
+	prefix := variable + "_"
 	for _, env := range os.Environ() {
 		name, value, ok := strings.Cut(env, "=")
 		if !ok {
@@ -462,8 +505,8 @@ func (c *InstallConfig) getGitHubToken() string {
 		return value
 	}
 
-	if t := os.Getenv("GITHUB_TOKEN"); t != "" {
-		log.Printf("[DEBUG] GITHUB_TOKEN set, plugin requests to the GitHub API will be authenticated")
+	if t := os.Getenv(variable); t != "" {
+		log.Printf("[DEBUG] %s set, plugin requests to %s will be authenticated", variable, c.SourceHost)
 		return t
 	}
 

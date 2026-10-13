@@ -33,7 +33,7 @@ func (c *SignatureChecker) GetSigningKey() string {
 	if c.config.SigningKey != "" {
 		return c.config.SigningKey
 	}
-	if c.config.SourceOwner == "terraform-linters" {
+	if c.config.SourceType != "gitlab" && c.config.SourceOwner == "terraform-linters" {
 		return builtinSigningKey
 	}
 	return c.config.SigningKey

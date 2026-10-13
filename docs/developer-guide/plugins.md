@@ -62,3 +62,15 @@ When signing a release, one of the following requirements must be met:
   - The signature file must be binary OpenPGP format
 
 Releases that meet these requirements can be easily created by following the GoReleaser config in the template repository.
+
+## Publishing on GitLab
+
+GitLab.com and self-managed GitLab releases are also supported. Build archives with the same OS/architecture names, binary names, and SHA-256 checksum file described above. Publish the files, for example in the GitLab Generic Package Registry, and add [release asset links](https://docs.gitlab.com/api/releases/links/) named exactly:
+
+- `tflint-ruleset-{name}_{GOOS}_{GOARCH}.zip`
+- `checksums.txt`
+- `checksums.txt.sig`, when using PGP signing
+
+Each asset link must use an HTTPS URL for the file itself. The release tag must be `v{version}`. GitLab's automatically generated source archives do not contain the compiled plugin and cannot be used instead.
+
+Consumers set `source_type = "gitlab"` in their plugin configuration. GitLab supports the existing PGP signature verification flow, but not GitHub artifact attestations. See [GitLab Releases](../user-guide/plugins.md#gitlab-releases) for configuration and authentication.
