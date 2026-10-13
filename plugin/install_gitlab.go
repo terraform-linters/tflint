@@ -65,16 +65,20 @@ func downloadGitLabAsset(ctx context.Context, client *http.Client, assetURL stri
 	return downloadToTempFile(resp.Body)
 }
 
-func (c *InstallConfig) newGitLabClient() *http.Client {
+func newGitLabClient(config *InstallConfig) *http.Client {
 	transport := &gitLabTransport{
 		RoundTripper: http.DefaultTransport,
-		host:         c.SourceHost,
+		host:         config.SourceHost,
 		header:       "PRIVATE-TOKEN",
-		token:        c.getToken("GITLAB_TOKEN"),
+		token:        config.getToken("GITLAB_TOKEN"),
+	}
+	if transport.token == "" {
+		// GitLab skips empty host tokens; GitHub retains its existing empty override.
+		transport.token = os.Getenv("GITLAB_TOKEN")
 	}
 	if transport.token == "" {
 		ciURL, err := url.Parse(os.Getenv("CI_SERVER_URL"))
-		if err == nil && ciURL.Scheme == "https" && strings.EqualFold(ciURL.Host, c.SourceHost) {
+		if err == nil && ciURL.Scheme == "https" && strings.EqualFold(ciURL.Host, config.SourceHost) {
 			transport.header = "JOB-TOKEN"
 			transport.token = os.Getenv("CI_JOB_TOKEN")
 		}

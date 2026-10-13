@@ -124,7 +124,7 @@ func (c *InstallConfig) Install() (string, error) {
 	var repo *github.Repository
 	var download func(string) (*os.File, error)
 	if c.SourceType == "gitlab" {
-		client := c.newGitLabClient()
+		client := newGitLabClient(c)
 		assets, err := c.fetchGitLabReleaseAssets(ctx, client)
 		if err != nil {
 			return "", fmt.Errorf("Failed to fetch GitLab releases: %w", err)
@@ -147,7 +147,7 @@ func (c *InstallConfig) Install() (string, error) {
 			return "", err
 		}
 		download = func(name string) (*os.File, error) {
-			return c.downloadToTempFile(ctx, client, assets[name])
+			return c.downloadGitHubAsset(ctx, client, assets[name])
 		}
 	}
 
@@ -262,7 +262,7 @@ func (c *InstallConfig) fetchFromGitHub(ctx context.Context, client *github.Clie
 	}
 
 	checksum, err := readChecksums(func(name string) (*os.File, error) {
-		return c.downloadToTempFile(ctx, client, assets[name])
+		return c.downloadGitHubAsset(ctx, client, assets[name])
 	})
 	if err != nil {
 		return assets, nil, nil, nil, err
@@ -415,9 +415,9 @@ func isIgnorableAttestationError(err error) bool {
 	}
 }
 
-// downloadToTempFile download assets from GitHub to a local temp file.
-// It is the caller's responsibility to delete the generated the temp file.
-func (c *InstallConfig) downloadToTempFile(ctx context.Context, client *github.Client, asset *github.ReleaseAsset) (*os.File, error) {
+// downloadGitHubAsset downloads an asset from GitHub to a local temp file.
+// It is the caller's responsibility to close and delete the generated temp file.
+func (c *InstallConfig) downloadGitHubAsset(ctx context.Context, client *github.Client, asset *github.ReleaseAsset) (*os.File, error) {
 	if asset == nil {
 		return nil, fmt.Errorf("file not found in the GitHub release. Does the release contain the file with the correct name ?")
 	}
@@ -464,19 +464,9 @@ func downloadToTempFile(downloader io.Reader) (*os.File, error) {
 	return file, nil
 }
 
-// getGitHubToken gets a GitHub access token from environment variables.
-// Environment variables are used in the following order of priority:
-//
-//   - GITHUB_TOKEN_{source_host} (e.g. GITHUB_TOKEN_example_com)
-//   - GITHUB_TOKEN
-//
-// In most cases, GITHUB_TOKEN will meet your requirements, but GITHUB_TOKEN_{source_host}
-// can be useful, for example if you are hosting your plugin on GHES.
-// The host name must be normalized with Punycode, and "-" can be converted to "__" and "." to "-".
-func (c *InstallConfig) getGitHubToken() string {
-	return c.getToken("GITHUB_TOKEN")
-}
-
+// getToken reads a host-specific token before falling back to variable.
+// For example, GITLAB_TOKEN_example_com takes precedence over GITLAB_TOKEN.
+// Hostnames use Punycode, with "_" for "." and "__" for "-".
 func (c *InstallConfig) getToken(variable string) string {
 	prefix := variable + "_"
 	for _, env := range os.Environ() {
@@ -560,7 +550,7 @@ func newGitHubClient(ctx context.Context, config *InstallConfig) (*github.Client
 		Transport: http.DefaultTransport,
 	}
 
-	if t := config.getGitHubToken(); t != "" {
+	if t := config.getToken("GITHUB_TOKEN"); t != "" {
 		hc = oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{
 			AccessToken: t,
 		}))

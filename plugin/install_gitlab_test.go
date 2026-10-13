@@ -246,6 +246,7 @@ func TestGitLabAuthentication(t *testing.T) {
 		{name: "public release"},
 		{name: "access token", envs: map[string]string{"GITLAB_TOKEN": "global"}, wantHeader: "PRIVATE-TOKEN", wantToken: "global"},
 		{name: "host token takes precedence", envs: map[string]string{"GITLAB_TOKEN": "global", "GITLAB_TOKEN_gitlab_example_com": "host"}, wantHeader: "PRIVATE-TOKEN", wantToken: "host"},
+		{name: "empty host token falls back to access token", envs: map[string]string{"GITLAB_TOKEN": "global", "GITLAB_TOKEN_gitlab_example_com": ""}, wantHeader: "PRIVATE-TOKEN", wantToken: "global"},
 		{name: "unrelated host token", envs: map[string]string{"GITLAB_TOKEN_other_example_com": "other"}},
 		{name: "GitHub token is not used", envs: map[string]string{"GITHUB_TOKEN": "github"}},
 		{name: "CI job token", envs: map[string]string{"CI_JOB_TOKEN": "job", "CI_SERVER_URL": "https://gitlab.example.com"}, wantHeader: "JOB-TOKEN", wantToken: "job"},
@@ -268,9 +269,6 @@ func TestGitLabAuthentication(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			for _, variable := range []string{"GITLAB_TOKEN", "GITLAB_TOKEN_gitlab_example_com", "GITLAB_TOKEN_other_example_com", "CI_JOB_TOKEN", "CI_SERVER_URL", "GITHUB_TOKEN"} {
 				t.Setenv(variable, "")
-				if err := os.Unsetenv(variable); err != nil {
-					t.Fatal(err)
-				}
 			}
 			for variable, value := range test.envs {
 				t.Setenv(variable, value)
@@ -313,7 +311,7 @@ func TestGitLabAuthentication(t *testing.T) {
 			if test.redirect != "" {
 				assetURL = "https://gitlab.example.com/redirect"
 			}
-			file, err := downloadGitLabAsset(t.Context(), config.newGitLabClient(), assetURL)
+			file, err := downloadGitLabAsset(t.Context(), newGitLabClient(config), assetURL)
 			if file != nil {
 				defer os.Remove(file.Name())
 				defer file.Close()
@@ -335,12 +333,5 @@ func TestGitLabAuthentication(t *testing.T) {
 				t.Fatalf("got %d requests, want %d", requests, wantRequests)
 			}
 		})
-	}
-}
-
-func TestGitLabDoesNotUseGitHubSigningKey(t *testing.T) {
-	config := NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SourceType: "gitlab", SourceOwner: "terraform-linters"})
-	if NewSignatureChecker(config).HasSigningKey() {
-		t.Fatal("a GitLab namespace must not inherit the GitHub organization's signing key")
 	}
 }

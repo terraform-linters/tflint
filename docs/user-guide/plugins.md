@@ -107,7 +107,7 @@ TFLint requests the `v0.1.0` release through the GitLab API at `/api/v4`. The re
 
 SHA-256 checksums are always verified. To verify the publisher as well, configure `signing_key` and publish a `checksums.txt.sig` asset using the same PGP signing format as GitHub releases. `signature = "pgp"` requires verification; `auto` uses PGP when a key is configured and otherwise installs with the existing unverified-signature warning. GitHub artifact attestations cannot be used for GitLab sources.
 
-For private projects, TFLint selects credentials in this order:
+For private projects, TFLint selects the first non-empty credential in this order:
 
 1. `GITLAB_TOKEN_${source_host}`, using the same hostname encoding as `GITHUB_TOKEN_${source_host}`.
 2. `GITLAB_TOKEN`.

@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"archive/zip"
@@ -12,6 +12,8 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+
+	"github.com/terraform-linters/tflint/cmd"
 )
 
 func TestInitGitLab(t *testing.T) {
@@ -65,11 +67,11 @@ func TestInitGitLab(t *testing.T) {
 	})
 	t.Cleanup(func() { http.DefaultTransport = original })
 	var out, stderr bytes.Buffer
-	cli, err := NewCLI(&out, &stderr)
+	cli, err := cmd.NewCLI(&out, &stderr)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if code := cli.Run([]string{"--init"}); code != ExitCodeOK {
+	if code := cli.Run([]string{"--init"}); code != cmd.ExitCodeOK {
 		t.Fatalf("init exited %d: %s", code, &stderr)
 	}
 	if !strings.Contains(out.String(), `Installed "example" (source: gitlab.example.com/group/subgroup/ruleset, version: 0.1.0)`) {
@@ -84,7 +86,7 @@ func TestInitGitLab(t *testing.T) {
 		t.Fatalf("got %d requests, want release metadata, checksums and archive", requests)
 	}
 	out.Reset()
-	if code := cli.Run([]string{"--init"}); code != ExitCodeOK {
+	if code := cli.Run([]string{"--init"}); code != cmd.ExitCodeOK {
 		t.Fatalf("second init exited %d: %s", code, &stderr)
 	}
 	if !strings.Contains(out.String(), "All plugins are already installed") || requests != 3 {
