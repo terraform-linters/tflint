@@ -67,7 +67,7 @@ func TestFunctions(t *testing.T) {
 					if err != nil {
 						panic(err)
 					}
-					return filepath.ToSlash(cwd)
+					return filepath.ToSlash(filepath.Join(cwd, "testdata/functions-test"))
 				})()),
 			},
 		},

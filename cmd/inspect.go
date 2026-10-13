@@ -1,48 +1,32 @@
 package cmd
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"maps"
 	"os"
+	"os/signal"
 	"path/filepath"
+	"syscall"
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
+	"github.com/terraform-linters/tflint/internal/workingdir"
 	"github.com/terraform-linters/tflint/plugin"
 	"github.com/terraform-linters/tflint/terraform"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
 func (cli *CLI) inspect(opts Options) int {
-	issues := tflint.Issues{}
-	changes := map[string][]byte{}
-
-	err := cli.withinChangedDir(opts.Chdir, func() error {
-		filterFiles := []string{}
-		for _, pattern := range opts.Filter {
-			files, err := filepath.Glob(pattern)
-			if err != nil {
-				return fmt.Errorf("Failed to parse --filter options; %w", err)
-			}
-			// Add the raw pattern to return an empty result if it doesn't match any files
-			if len(files) == 0 {
-				filterFiles = append(filterFiles, pattern)
-			}
-			filterFiles = append(filterFiles, files...)
-		}
-
-		// Join with the working directory to create the fullpath
-		for i, file := range filterFiles {
-			filterFiles[i] = filepath.Join(opts.Chdir, file)
-		}
-
-		var err error
-		issues, changes, err = cli.inspectModule(opts, ".", filterFiles)
-		return err
-	})
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+	issues, changes, err := cli.inspectDirectory(ctx, opts)
+	if ctx.Err() != nil {
+		return ExitCodeError
+	}
 	if err != nil {
 		sources := map[string][]byte{}
 		if cli.loader != nil {
@@ -79,13 +63,36 @@ func (cli *CLI) inspect(opts Options) int {
 	return ExitCodeOK
 }
 
-func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (tflint.Issues, map[string][]byte, error) {
+func (cli *CLI) inspectDirectory(ctx context.Context, opts Options) (tflint.Issues, map[string][]byte, error) {
+	wd := workingdir.Resolve(cli.originalWorkingDir, opts.Chdir)
+	filterFiles := []string{}
+	for _, pattern := range opts.Filter {
+		pattern = workingdir.Resolve(wd, pattern)
+		files, err := filepath.Glob(pattern)
+		if err != nil {
+			return nil, nil, fmt.Errorf("Failed to parse --filter options; %w", err)
+		}
+		if len(files) == 0 {
+			files = []string{pattern}
+		}
+		for _, file := range files {
+			path, err := filepath.Rel(cli.originalWorkingDir, file)
+			if err != nil {
+				return nil, nil, err
+			}
+			filterFiles = append(filterFiles, path)
+		}
+	}
+	return cli.inspectModule(ctx, opts, wd, filterFiles)
+}
+
+func (cli *CLI) inspectModule(ctx context.Context, opts Options, wd string, filterFiles []string) (tflint.Issues, map[string][]byte, error) {
 	issues := tflint.Issues{}
 	changes := map[string][]byte{}
 	var err error
 
 	// Setup config
-	cli.config, err = tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, opts.Config)
+	cli.config, err = tflint.LoadConfig(afero.Afero{Fs: workingdir.New(afero.NewOsFs(), wd)}, opts.Config)
 	if err != nil {
 		return issues, changes, fmt.Errorf("Failed to load TFLint config; %w", err)
 	}
@@ -94,29 +101,27 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 	cli.formatter.Format = cli.config.Format
 
 	// Setup loader
-	cli.loader, err = terraform.NewLoader(afero.Afero{Fs: afero.NewOsFs()}, cli.originalWorkingDir)
+	cli.loader, err = terraform.NewLoaderAt(afero.Afero{Fs: afero.NewOsFs()}, cli.originalWorkingDir, wd)
 	if err != nil {
 		return issues, changes, fmt.Errorf("Failed to prepare loading; %w", err)
 	}
-	if opts.ActAsWorker && !cli.loader.IsConfigDir(dir) {
+	if opts.ActAsWorker && !cli.loader.IsConfigDir(".") {
 		// Ignore non-module directories in worker mode
 		return issues, changes, nil
 	}
 
 	// Setup runners
-	rootRunner, moduleRunners, err := tflint.BuildRunners(cli.loader, cli.config, cli.originalWorkingDir, dir)
+	rootRunner, moduleRunners, err := tflint.BuildRunners(cli.loader, cli.config, cli.originalWorkingDir, ".")
 	if err != nil {
 		return issues, changes, err
 	}
 
 	// Launch plugin processes
-	rulesetPlugin, err := launchPlugins(cli.config, opts.Fix)
+	rulesetPlugin, err := launchPlugins(cli.config, opts.Fix, wd)
 	if rulesetPlugin != nil {
 		defer rulesetPlugin.Clean()
-		go cli.registerShutdownHandler(func() {
-			rulesetPlugin.Clean()
-			os.Exit(ExitCodeError)
-		})
+		stop := context.AfterFunc(ctx, rulesetPlugin.Clean)
+		defer stop()
 	}
 	if err != nil {
 		return issues, changes, err
@@ -159,13 +164,17 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 					}(runner)
 				}
 			}
+			var checkErr error
 			for range moduleRunners {
 				err = <-ch
 				if err != nil {
-					return issues, changes, fmt.Errorf("Failed to check ruleset; %w", err)
+					checkErr = err
 				}
 			}
 			close(ch)
+			if checkErr != nil {
+				return issues, changes, fmt.Errorf("Failed to check ruleset; %w", checkErr)
+			}
 		}
 
 		changesInAttempt := map[string][]byte{}
@@ -196,9 +205,9 @@ By setting TFLINT_LOG=trace, you can confirm the changes made by the autofix and
 	return issues, changes, nil
 }
 
-func launchPlugins(config *tflint.Config, fix bool) (*plugin.Plugin, error) {
+func launchPlugins(config *tflint.Config, fix bool, dir string) (*plugin.Plugin, error) {
 	// Lookup plugins
-	rulesetPlugin, err := plugin.Discovery(config)
+	rulesetPlugin, err := plugin.DiscoveryAt(config, dir)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to initialize plugins; %w", err)
 	}
