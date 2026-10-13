@@ -87,3 +87,53 @@ func TestRecursiveDirectoryIsolation(t *testing.T) {
 		t.Fatalf("working directory changed: %s, %v", wd, err)
 	}
 }
+
+func TestRecursiveBundledRules(t *testing.T) {
+	t.Setenv("TFLINT_BUNDLED_RPC", "0")
+	t.Setenv("TFLINT_PLUGIN_DIR", t.TempDir())
+	root, err := os.MkdirTemp(".", "bundled-directories-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if err := os.RemoveAll(root); err != nil {
+			t.Error(err)
+		}
+	})
+	for i := range 16 {
+		dir := filepath.Join(root, fmt.Sprintf("module-%02d", i))
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			t.Fatal(err)
+		}
+		for name, source := range map[string]string{
+			".tflint.hcl": fmt.Sprintf("config { disabled_by_default = true }\nrule \"terraform_typed_variables\" { enabled = %t }", i%2 == 0),
+			"main.tf":     `variable "untyped" { default = "hello" }`,
+		} {
+			if err := os.WriteFile(filepath.Join(dir, name), []byte(source), 0644); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	out, errs := new(bytes.Buffer), new(bytes.Buffer)
+	cli, err := cmd.NewCLI(out, errs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if status := cli.Run([]string{"tflint", "--recursive", "--chdir=" + root, "--max-workers=4", "--format=json"}); status != cmd.ExitCodeIssuesFound {
+		t.Fatalf("exit %d: %s %s", status, out, errs)
+	}
+	var result formatter.JSONOutput
+	if err := json.Unmarshal(out.Bytes(), &result); err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Errors) != 0 || len(result.Issues) != 8 {
+		t.Fatalf("unexpected result: %s", out)
+	}
+	for _, issue := range result.Issues {
+		var index int
+		name := filepath.Base(filepath.Dir(issue.Range.Filename))
+		if _, err := fmt.Sscanf(name, "module-%02d", &index); err != nil || index%2 != 0 {
+			t.Errorf("rule config leaked between directories: %s", name)
+		}
+	}
+}

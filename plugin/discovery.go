@@ -29,7 +29,7 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 // change the host's working directory.
 func DiscoveryAt(config *tflint.Config, dir string) (_ *Plugin, err error) {
 	clients := map[string]*plugin.Client{}
-	rulesets := map[string]*host2plugin.Client{}
+	rulesets := map[string]RuleSet{}
 	plugins := &Plugin{RuleSets: rulesets, clients: clients}
 	defer func() {
 		if err != nil {
@@ -43,6 +43,12 @@ func DiscoveryAt(config *tflint.Config, dir string) (_ *Plugin, err error) {
 		var cmd *exec.Cmd
 		if os.IsNotExist(err) {
 			if pluginCfg.Name == "terraform" && installCfg.ManuallyInstalled() {
+				if os.Getenv("TFLINT_BUNDLED_RPC") != "1" {
+					if pluginCfg.Enabled {
+						rulesets[pluginCfg.Name] = newLocalRuleSet()
+					}
+					continue
+				}
 				log.Print(`[INFO] Plugin "terraform" is not installed, but the bundled plugin is available.`)
 				self, err := os.Executable()
 				if err != nil {
