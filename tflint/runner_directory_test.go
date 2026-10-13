@@ -21,7 +21,17 @@ func TestBuildRunnersExplicitDirectories(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	root := t.TempDir()
+	// Relative diagnostic paths require the fixtures and invocation directory
+	// to share a Windows volume; the system temporary directory may not.
+	root, err := os.MkdirTemp(originalWd, "runner-directories-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if err := os.RemoveAll(root); err != nil {
+			t.Error(err)
+		}
+	})
 	for i := range 8 {
 		name := fmt.Sprintf("root-%d", i)
 		dir := filepath.Join(root, name)
