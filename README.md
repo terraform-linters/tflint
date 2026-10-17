@@ -185,4 +185,6 @@ Please note that although much of this project is licensed under MPL 2.0, some f
 
 For the reasons stated above, the executable forms (release binaries) is bound by both licenses.
 
+If you are contributing to TFLint, please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a pull request.
+
 See also https://discuss.hashicorp.com/t/hashicorp-projects-changing-license-to-business-source-license-v1-1/57106/7

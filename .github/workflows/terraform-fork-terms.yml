@@ -1,0 +1,34 @@
+name: terraform-fork-terms
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    paths:
+      - 'terraform/**'
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check agreement to the Terraform fork contribution terms
+      env:
+        PR_BODY: ${{ github.event.pull_request.body }}
+      run: |
+        if printf '%s' "$PR_BODY" | grep -qiE -- '- \[x\] I agree to the Terraform fork contribution terms'; then
+          echo "The contributor agreed to the Terraform fork contribution terms."
+          exit 0
+        fi
+
+        message='This pull request changes files under the terraform directory. Please read the "Terraform fork" section of CONTRIBUTING.md and check the agreement box in the pull request description.'
+        echo "::error::${message}"
+        {
+          echo "## Terraform fork contribution terms"
+          echo
+          echo "${message}"
+          echo
+          echo "https://github.com/${GITHUB_REPOSITORY}/blob/master/CONTRIBUTING.md#terraform-fork"
+        } >> "$GITHUB_STEP_SUMMARY"
+        exit 1
