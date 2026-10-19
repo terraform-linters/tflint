@@ -65,7 +65,7 @@ func (s *Scope) Functions() map[string]function.Function {
 		// functions relying on those classifications will behave correctly.
 		coreFuncs := map[string]function.Function{
 			"abs":              stdlib.AbsoluteFunc,
-			"abspath":          funcs.AbsPathFunc,
+			"abspath":          funcs.MakeAbsPathFunc(s.BaseDir),
 			"alltrue":          funcs.AllTrueFunc,
 			"anytrue":          funcs.AnyTrueFunc,
 			"basename":         funcs.BasenameFunc,

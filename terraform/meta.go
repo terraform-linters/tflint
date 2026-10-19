@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/terraform-linters/tflint/internal/workingdir"
 )
 
 func dataDir() string {
@@ -20,12 +22,17 @@ func dataDir() string {
 }
 
 func Workspace() string {
+	return WorkspaceAt("")
+}
+
+// WorkspaceAt resolves a relative TF_DATA_DIR against dir.
+func WorkspaceAt(dir string) string {
 	if envVar := os.Getenv("TF_WORKSPACE"); envVar != "" {
 		log.Printf("[INFO] TF_WORKSPACE environment variable found: %s", envVar)
 		return envVar
 	}
 
-	envData, _ := os.ReadFile(filepath.Join(dataDir(), "environment"))
+	envData, _ := os.ReadFile(workingdir.Resolve(dir, filepath.Join(dataDir(), "environment")))
 	current := string(bytes.TrimSpace(envData))
 	if current != "" {
 		log.Printf("[INFO] environment file found: %s", current)
