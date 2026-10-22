@@ -87,13 +87,13 @@ func (cli *CLI) printVersion(opts Options) int {
 		return ExitCodeError
 	}
 
-	if opts.Recursive {
+	if opts.Recursive || len(workingDirs) > 1 {
 		fmt.Fprint(cli.outStream, "\n")
 	}
 
 	for _, wd := range workingDirs {
 		err := cli.withinChangedDir(wd, func() error {
-			if opts.Recursive {
+			if opts.Recursive || len(workingDirs) > 1 {
 				fmt.Fprint(cli.outStream, "====================================================\n")
 				fmt.Fprintf(cli.outStream, "working directory: %s\n\n", wd)
 			}
@@ -103,7 +103,7 @@ func (cli *CLI) printVersion(opts Options) int {
 			for _, plugin := range plugins {
 				fmt.Fprintf(cli.outStream, "+ %s (%s)\n", plugin.Name, plugin.Version)
 			}
-			if len(plugins) == 0 && opts.Recursive {
+			if len(plugins) == 0 && (opts.Recursive || len(workingDirs) > 1) {
 				fmt.Fprint(cli.outStream, "No plugins\n")
 			}
 			return nil
@@ -144,8 +144,8 @@ func (cli *CLI) printVersionJSON(opts Options, updateInfo *versioncheck.UpdateIn
 		}
 	}
 
-	// Handle multiple working directories for --recursive
-	if opts.Recursive && len(workingDirs) > 1 {
+	// Handle multiple working directories for --recursive or multiple --chdir
+	if len(workingDirs) > 1 {
 		// Track all unique plugins across modules
 		pluginMap := make(map[string]PluginVersion)
 

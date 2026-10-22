@@ -11,7 +11,7 @@ import (
 )
 
 func (cli *CLI) startLanguageServer(opts Options) int {
-	if opts.Chdir != "" {
+	if len(opts.Chdir) > 0 {
 		fmt.Fprintf(cli.errStream, "Cannot use --chdir with --langserver\n")
 		return ExitCodeError
 	}
