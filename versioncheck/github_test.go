@@ -15,7 +15,7 @@ func TestFetchLatestReleaseWithClient(t *testing.T) {
 	tests := []struct {
 		name        string
 		statusCode  int
-		response    interface{}
+		response    any
 		wantErr     bool
 		wantVersion string
 		checkReq    func(*testing.T, *http.Request)
@@ -24,7 +24,7 @@ func TestFetchLatestReleaseWithClient(t *testing.T) {
 			name:       "successful fetch",
 			statusCode: http.StatusOK,
 			response: &github.RepositoryRelease{
-				TagName: github.Ptr("v0.60.0"),
+				TagName: new("v0.60.0"),
 			},
 			wantVersion: "v0.60.0",
 		},
@@ -39,7 +39,7 @@ func TestFetchLatestReleaseWithClient(t *testing.T) {
 		{
 			name:       "rate limit error",
 			statusCode: http.StatusForbidden,
-			response: map[string]interface{}{
+			response: map[string]any{
 				"message": "API rate limit exceeded",
 			},
 			wantErr: true,
@@ -47,7 +47,7 @@ func TestFetchLatestReleaseWithClient(t *testing.T) {
 		{
 			name:       "not found error",
 			statusCode: http.StatusNotFound,
-			response: map[string]interface{}{
+			response: map[string]any{
 				"message": "Not Found",
 			},
 			wantErr: true,
@@ -55,7 +55,7 @@ func TestFetchLatestReleaseWithClient(t *testing.T) {
 		{
 			name:       "server error",
 			statusCode: http.StatusInternalServerError,
-			response: map[string]interface{}{
+			response: map[string]any{
 				"message": "Internal Server Error",
 			},
 			wantErr: true,

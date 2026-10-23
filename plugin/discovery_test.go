@@ -87,8 +87,7 @@ func Test_Discovery_envVar(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	os.Setenv("TFLINT_PLUGIN_DIR", filepath.Join(cwd, "test-fixtures", "locals", ".tflint.d", "plugins"))
-	defer os.Setenv("TFLINT_PLUGIN_DIR", "")
+	t.Setenv("TFLINT_PLUGIN_DIR", filepath.Join(cwd, "test-fixtures", "locals", ".tflint.d", "plugins"))
 
 	plugin, err := Discovery(&tflint.Config{
 		Plugins: map[string]*tflint.PluginConfig{
@@ -370,8 +369,7 @@ func Test_FindPluginPath_envVar(t *testing.T) {
 	}
 
 	dir := filepath.Join(cwd, "test-fixtures", "locals", ".tflint.d", "plugins")
-	os.Setenv("TFLINT_PLUGIN_DIR", dir)
-	defer os.Setenv("TFLINT_PLUGIN_DIR", "")
+	t.Setenv("TFLINT_PLUGIN_DIR", dir)
 
 	cases := []struct {
 		Name     string

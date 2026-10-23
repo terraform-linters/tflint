@@ -3,7 +3,6 @@
 [![GitHub release](https://img.shields.io/github/release/terraform-linters/tflint.svg)](https://github.com/terraform-linters/tflint/releases/latest)
 [![Terraform Compatibility](https://img.shields.io/badge/terraform-%3E%3D%201.0-blue)](docs/user-guide/compatibility.md)
 [![License: MPL 2.0 + BUSL 1.1](https://img.shields.io/badge/License-MPL%202.0%20+%20BUSL%201.1-blue.svg)](#license)
-[![Go Report Card](https://goreportcard.com/badge/github.com/terraform-linters/tflint)](https://goreportcard.com/report/github.com/terraform-linters/tflint)
 
 A Pluggable [Terraform](https://www.terraform.io/) Linter
 
@@ -186,8 +185,6 @@ Please note that although much of this project is licensed under MPL 2.0, some f
 
 For the reasons stated above, the executable forms (release binaries) is bound by both licenses.
 
+If you are contributing to TFLint, please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a pull request.
+
 See also https://discuss.hashicorp.com/t/hashicorp-projects-changing-license-to-business-source-license-v1-1/57106/7
-
-## Stargazers over time
-
-[![Stargazers over time](https://starchart.cc/terraform-linters/tflint.svg)](https://starchart.cc/terraform-linters/tflint)

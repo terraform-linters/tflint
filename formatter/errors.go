@@ -34,8 +34,7 @@ func mapErrors[T any](err error, mapper errorMapper[T]) []T {
 		return results
 	}
 
-	var diags hcl.Diagnostics
-	if errors.As(err, &diags) {
+	if diags, ok := errors.AsType[hcl.Diagnostics](err); ok {
 		return mapper.diagnostics(err, diags)
 	}
 

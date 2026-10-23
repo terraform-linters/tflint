@@ -22,6 +22,7 @@ type Module struct {
 	Files   map[string]*hcl.File
 
 	primaries         map[string]*hcl.File
+	primaryFilenames  []string
 	overrides         map[string]*hcl.File
 	overrideFilenames []string
 }
@@ -39,6 +40,7 @@ func NewEmptyModule() *Module {
 		Files:   map[string]*hcl.File{},
 
 		primaries:         map[string]*hcl.File{},
+		primaryFilenames:  []string{},
 		overrides:         map[string]*hcl.File{},
 		overrideFilenames: []string{},
 	}
@@ -130,8 +132,8 @@ func (m *Module) PartialContent(schema *hclext.BodySchema, ctx *Evaluator) (*hcl
 	content := &hclext.BodyContent{}
 	diags := hcl.Diagnostics{}
 
-	for _, f := range m.primaries {
-		expanded, d := ctx.ExpandBlock(f.Body, schema)
+	for _, filename := range m.primaryFilenames {
+		expanded, d := ctx.ExpandBlock(m.primaries[filename].Body, schema)
 		diags = diags.Extend(d)
 		c, d := hclext.PartialContent(expanded, schema)
 		diags = diags.Extend(d)

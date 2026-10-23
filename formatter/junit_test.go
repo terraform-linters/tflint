@@ -140,8 +140,45 @@ func Test_junitPrint(t *testing.T) {
 <testsuites>
   <testsuite tests="1" failures="1" time="0" name="">
     <properties></properties>
-    <testcase classname="" name="summary" time="0">
+    <testcase classname="" name="summary :0,0-0" time="0">
       <failure message=":0,0-0,0: detail" type="error">error: detail&#xA;Summary: summary&#xA;Range: :0,0-0,0</failure>
+    </testcase>
+  </testsuite>
+</testsuites>`,
+		},
+		{
+			Name: "diagnostics with the same summary",
+			Error: hcl.Diagnostics{
+				&hcl.Diagnostic{
+					Severity: hcl.DiagError,
+					Summary:  "Unsupported argument",
+					Detail:   "first",
+					Subject: &hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+					},
+				},
+				&hcl.Diagnostic{
+					Severity: hcl.DiagError,
+					Summary:  "Unsupported argument",
+					Detail:   "second",
+					Subject: &hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1, Byte: 15},
+						End:      hcl.Pos{Line: 2, Column: 5, Byte: 18},
+					},
+				},
+			},
+			Stdout: `<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite tests="2" failures="2" time="0" name="">
+    <properties></properties>
+    <testcase classname="test.tf" name="Unsupported argument test.tf:1,1-4" time="0">
+      <failure message="test.tf:1,1-1,4: first" type="error">error: first&#xA;Summary: Unsupported argument&#xA;Range: test.tf:1,1-1,4</failure>
+    </testcase>
+    <testcase classname="test.tf" name="Unsupported argument test.tf:2,1-5" time="0">
+      <failure message="test.tf:2,1-2,5: second" type="error">error: second&#xA;Summary: Unsupported argument&#xA;Range: test.tf:2,1-2,5</failure>
     </testcase>
   </testsuite>
 </testsuites>`,

@@ -17,10 +17,6 @@ import (
 	"github.com/terraform-linters/tflint/terraform"
 )
 
-func boolPtr(v bool) *bool {
-	return &v
-}
-
 func TestLoadConfig(t *testing.T) {
 	// default error check helper
 	neverHappend := func(err error) bool { return err != nil }
@@ -104,7 +100,7 @@ plugin "baz" {
 					"aws_instance_invalid_type": {
 						Name:      "aws_instance_invalid_type",
 						Enabled:   false,
-						Ignorable: boolPtr(false),
+						Ignorable: new(false),
 					},
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",
@@ -597,7 +593,7 @@ config {
 					"aws_instance_invalid_type": {
 						Name:      "aws_instance_invalid_type",
 						Enabled:   false,
-						Ignorable: boolPtr(false),
+						Ignorable: new(false),
 					},
 					"aws_instance_previous_type": {
 						Name:    "aws_instance_previous_type",

@@ -555,7 +555,7 @@ func Test_EmitIssue(t *testing.T) {
 					"test_rule": {
 						Name:      "test_rule",
 						Enabled:   true,
-						Ignorable: boolPtr(false),
+						Ignorable: new(false),
 					},
 				},
 			},
@@ -599,7 +599,7 @@ func Test_EmitIssue(t *testing.T) {
 					"test_rule": {
 						Name:      "test_rule",
 						Enabled:   true,
-						Ignorable: boolPtr(false),
+						Ignorable: new(false),
 					},
 				},
 			},

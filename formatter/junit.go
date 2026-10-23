@@ -67,7 +67,10 @@ func (f *Formatter) junitErrors(err error) []formatter.JUnitTestCase {
 			for i, diag := range diags {
 				rng := diagRange(diag)
 				cases[i] = formatter.JUnitTestCase{
-					Name:      diag.Summary,
+					// Include the range so that diagnostics sharing a summary
+					// (e.g. the same error on different lines) still produce
+					// unique testcase names, matching how issues are named.
+					Name:      fmt.Sprintf("%s %s", diag.Summary, rng),
 					Classname: rng.Filename,
 					Time:      "0",
 					Failure: &formatter.JUnitFailure{
