@@ -94,18 +94,27 @@ jobs:
           set -euo pipefail
 
           git checkout -B "${BRANCH}" origin/master
-          git merge "${TAG_REF}" -m "Merging upstream tag ${TAG}"
+
+          # Merge upstream tag without committing yet
+          git merge --no-commit --no-ff "${TAG_REF}" || true
 
           # Keep fork-owned workflows as-is so this automation never tries to
           # push upstream workflow changes and does not need workflows:write.
+          git reset origin/master -- .github/workflows
           git checkout origin/master -- .github/workflows
+          git clean -fd .github/workflows
+
+          # Fail if there are unresolved merge conflicts outside of .github/workflows
+          if git diff --name-only --diff-filter=U | grep -q .; then
+            echo "Unresolved merge conflicts detected outside of .github/workflows:"
+            git diff --name-only --diff-filter=U
+            exit 1
+          fi
 
           sed "s/VERSION/${TAG}/g" snap/snapcraft.yaml.template > snap/snapcraft.yaml
+          git add snap/snapcraft.yaml
 
-          if ! git diff --quiet -- snap/snapcraft.yaml; then
-            git add snap/snapcraft.yaml
-            git commit -m "Setting version ${TAG} in snapcraft.yaml"
-          fi
+          git commit -m "Merging upstream tag ${TAG}"
 
       - name: Push sync branch
         if: steps.needs_sync.outputs.skip != 'true'

@@ -35,71 +35,78 @@ if ! git remote | grep ${UPSTREAM} &> /dev/null; then
     exit 1
 fi
 
-echo "Fetching ${UPSTREAM}"
-if ! git fetch ${UPSTREAM} &> /dev/null; then
-    echo "Cannot fetch ${UPSTREAM}"
+echo "Fetching ${UPSTREAM} tag ${TAG}"
+TAG_REF="refs/tags/upstream/${TAG}"
+if ! git fetch ${UPSTREAM} "refs/tags/${TAG}:${TAG_REF}"; then
+    echo "Cannot fetch tag ${TAG} from ${UPSTREAM}"
     exit 1
 fi
 
-
-#Check for tag on remote branch
-if ! git ls-remote ${UPSTREAM} | grep ${TAG} &> /dev/null; then
-    echo "Tag ${TAG} could not be found on ${UPSTREAM}"
+echo "Fetching origin"
+if ! git fetch origin master; then
+    echo "Could not fetch origin/master"
     exit 1
 fi
 
-echo "Checking out master"
-if ! git checkout master &> /dev/null; then
-    echo "Could not checkout master"
+BRANCH="sync-upstream-${TAG}"
+echo "Checking out sync branch ${BRANCH} from origin/master"
+if ! git checkout -B "${BRANCH}" origin/master; then
+    echo "Could not checkout branch ${BRANCH}"
     exit 1
 fi
 
-echo "Pulling master"
-if ! git pull  &> /dev/null; then
-    echo "Could not pull master"
-    exit 1
-fi
+echo "Merging upstream tag ${TAG} without committing"
+git merge --no-commit --no-ff "${TAG_REF}" || true
 
+echo "Restoring fork workflows from origin/master"
+git reset origin/master -- .github/workflows
+git checkout origin/master -- .github/workflows
+git clean -fd .github/workflows
 
-echo "Pulling master with upstream tag ${TAG}"
-if ! git merge ${TAG} -m "Merging upstream tag ${TAG}"  &> /dev/null; then
-    echo "Could not merge upstream tag ${TAG} into master"
-    exit 1
-fi
-
-echo "Removing local tag ${TAG} (previously on upstream commit)"
-if ! git tag -d ${TAG}  &> /dev/null; then
-    echo "Could not remove tag ${TAG}"
+if git diff --name-only --diff-filter=U | grep -q .; then
+    echo "Merge conflicts detected outside of .github/workflows:"
+    git diff --name-only --diff-filter=U
     exit 1
 fi
 
 echo "Setting version in snapcraft.yaml"
 if ! sed "s/VERSION/${TAG}/g" snap/snapcraft.yaml.template > snap/snapcraft.yaml; then
-    echo "Could not set version of snapraft.yaml"
+    echo "Could not set version of snapcraft.yaml"
+    exit 1
+fi
+git add snap/snapcraft.yaml
+
+if ! git commit -m "Merging upstream tag ${TAG}"; then
+    echo "Could not commit merge"
     exit 1
 fi
 
-if ! git commit snap/snapcraft.yaml -m "Settng version ${TAG} in snapcraft.yaml"; then
-    echo "Could not commit snapcraft.yaml"
+echo "Pushing ${BRANCH} to origin"
+if ! git push -u origin "${BRANCH}"; then
+    echo "Cannot push ${BRANCH} to origin"
     exit 1
 fi
 
-echo "Adding local tag ${TAG} to HEAD"
-if ! git tag -a ${TAG} -m "Added tag ${TAG}" &> /dev/null; then
-    echo "Could not add local tag ${TAG} to HEAD"
-    exit 1
+echo ""
+echo "Branch ${BRANCH} pushed successfully!"
+echo "Because 'master' requires the 'snapcraft-pack' status check, changes must be merged via Pull Request."
+
+if command -v gh &> /dev/null; then
+    echo "Checking for existing pull request..."
+    existing_pr="$(gh pr list -R tingdahl/tflint --head "${BRANCH}" --base master --json number --jq '.[0].number' 2>/dev/null || true)"
+    if [[ -n "${existing_pr}" ]]; then
+        echo "Pull request already exists: https://github.com/tingdahl/tflint/pull/${existing_pr}"
+    else
+        echo "Creating pull request..."
+        gh pr create -R tingdahl/tflint \
+            --base master \
+            --head "${BRANCH}" \
+            --title "Merge upstream tag ${TAG}" \
+            --body "Automated sync for upstream release tag ${TAG}." || true
+    fi
+else
+    echo "Create a PR from ${BRANCH} -> master on GitHub to run snapcraft-pack and merge into master."
 fi
 
-echo "Pushing merge to origin"
-if ! git push origin &> /dev/null; then
-    echo "Cannot push origin"
-    exit 1
-fi
-
-if ! git push origin ${TAG} &> /dev/null; then
-    echo "Cannot push origin ${TAG}"
-    exit 1
-fi
-
-echo "Merge completed"
+echo "Merge branch completed"
 
