@@ -325,6 +325,17 @@ func TestGetGitHubToken(t *testing.T) {
 			want: "example_com_token",
 		},
 		{
+			name: "empty host token overrides GITHUB_TOKEN",
+			config: &InstallConfig{
+				PluginConfig: &tflint.PluginConfig{SourceHost: "example.com"},
+			},
+			envs: map[string]string{
+				"GITHUB_TOKEN_example_com": "",
+				"GITHUB_TOKEN":             "github_com_token",
+			},
+			want: "",
+		},
+		{
 			name: "GITHUB_TOKEN_example_com and GITHUB_TOKEN_example_org",
 			config: &InstallConfig{
 				PluginConfig: &tflint.PluginConfig{
@@ -395,7 +406,7 @@ func TestGetGitHubToken(t *testing.T) {
 				t.Setenv(k, v)
 			}
 
-			got := test.config.getGitHubToken()
+			got := test.config.getToken("GITHUB_TOKEN")
 			if got != test.want {
 				t.Errorf("got %q, want %q", got, test.want)
 			}
