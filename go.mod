@@ -7,7 +7,7 @@ require (
 	github.com/apparentlymart/go-cidr v1.1.1
 	github.com/bmatcuk/doublestar v1.1.5
 	github.com/fatih/color v1.19.0
-	github.com/go-test/deep v1.1.1
+	github.com/go-test/deep v1.1.2
 	github.com/google/go-cmp v0.7.0
 	github.com/google/go-github/v81 v81.0.0
 	github.com/google/uuid v1.6.0
