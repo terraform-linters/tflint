@@ -18,12 +18,13 @@ func (cli *CLI) init(opts Options) int {
 		return ExitCodeError
 	}
 
+	multiDir := opts.Recursive || len(workingDirs) > 1
 	installed := false
 	for _, wd := range workingDirs {
 		err := cli.withinChangedDir(wd, func() error {
 			cfg, err := tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, opts.Config)
 			if err != nil {
-				if opts.Recursive {
+				if multiDir {
 					return fmt.Errorf("Failed to load TFLint config in %s; %w", wd, err)
 				} else {
 					return fmt.Errorf("Failed to load TFLint config; %w", err)
@@ -40,7 +41,7 @@ func (cli *CLI) init(opts Options) int {
 
 				_, err := plugin.FindPluginPath(installCfg)
 				if os.IsNotExist(err) {
-					if opts.Recursive {
+					if multiDir {
 						fmt.Fprintf(cli.outStream, "Installing \"%s\" plugin in %s...\n", pluginCfg.Name, wd)
 					} else {
 						fmt.Fprintf(cli.outStream, "Installing \"%s\" plugin...\n", pluginCfg.Name)
@@ -68,7 +69,7 @@ func (cli *CLI) init(opts Options) int {
 				}
 
 				if err != nil {
-					if opts.Recursive {
+					if multiDir {
 						return fmt.Errorf("Failed to find a plugin in %s; %w", wd, err)
 					} else {
 						return fmt.Errorf("Failed to find a plugin; %w", err)
