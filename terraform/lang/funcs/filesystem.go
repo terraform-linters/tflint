@@ -341,20 +341,29 @@ var DirnameFunc = function.New(&function.Spec{
 })
 
 // AbsPathFunc constructs a function that converts a filesystem path to an absolute path
-var AbsPathFunc = function.New(&function.Spec{
-	Params: []function.Parameter{
-		{
-			Name: "path",
-			Type: cty.String,
+var AbsPathFunc = MakeAbsPathFunc("")
+
+// MakeAbsPathFunc resolves relative paths against baseDir.
+func MakeAbsPathFunc(baseDir string) function.Function {
+	return function.New(&function.Spec{
+		Params: []function.Parameter{
+			{
+				Name: "path",
+				Type: cty.String,
+			},
 		},
-	},
-	Type:         function.StaticReturnType(cty.String),
-	RefineResult: refineNotNull,
-	Impl: func(args []cty.Value, retType cty.Type) (cty.Value, error) {
-		absPath, err := filepath.Abs(args[0].AsString())
-		return cty.StringVal(filepath.ToSlash(absPath)), err
-	},
-})
+		Type:         function.StaticReturnType(cty.String),
+		RefineResult: refineNotNull,
+		Impl: func(args []cty.Value, retType cty.Type) (cty.Value, error) {
+			path := args[0].AsString()
+			if !filepath.IsAbs(path) {
+				path = filepath.Join(baseDir, path)
+			}
+			absPath, err := filepath.Abs(path)
+			return cty.StringVal(filepath.ToSlash(absPath)), err
+		},
+	})
+}
 
 // PathExpandFunc constructs a function that expands a leading ~ character to the current user's home directory.
 var PathExpandFunc = function.New(&function.Spec{

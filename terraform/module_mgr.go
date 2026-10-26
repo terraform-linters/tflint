@@ -59,6 +59,7 @@ func (l *moduleMgr) readModuleManifest() error {
 		}
 		return err
 	}
+	defer r.Close()
 
 	log.Print("[INFO] Module manifest file found. Initializing...")
 
