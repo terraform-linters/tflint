@@ -30,7 +30,7 @@ sudo install -c -v tflint /usr/local/bin/
 Homebrew (macOS):
 
 ```console
-brew install terraform-linters/tap/tflint
+brew install --cask terraform-linters/tap/tflint
 ```
 
 WinGet (Windows):
