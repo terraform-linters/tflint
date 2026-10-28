@@ -4,7 +4,12 @@
 package funcs
 
 import (
+	"bytes"
+	"compress/gzip"
+	"encoding/base64"
 	"fmt"
+	"io"
+	"strings"
 	"testing"
 
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang/marks"
@@ -133,14 +138,24 @@ func TestBase64Encode(t *testing.T) {
 }
 
 func TestBase64Gzip(t *testing.T) {
+	// The exact compressed bytes depend on the compress/flate implementation
+	// in the Go standard library, which changed in Go 1.27. Instead of
+	// comparing against a fixed string, decode the result and check that it
+	// is a gzip stream of the original input.
 	tests := []struct {
 		String cty.Value
-		Want   cty.Value
 		Err    bool
 	}{
 		{
 			cty.StringVal("test"),
-			cty.StringVal("H4sIAAAAAAAA/ypJLS4BAAAA//8BAAD//wx+f9gEAAAA"),
+			false,
+		},
+		{
+			cty.StringVal(""),
+			false,
+		},
+		{
+			cty.StringVal(strings.Repeat("hello world ", 100)),
 			false,
 		},
 	}
@@ -158,8 +173,24 @@ func TestBase64Gzip(t *testing.T) {
 				t.Fatalf("unexpected error: %s", err)
 			}
 
-			if !got.RawEquals(test.Want) {
-				t.Errorf("wrong result\ngot:  %#v\nwant: %#v", got, test.Want)
+			raw, err := base64.StdEncoding.DecodeString(got.AsString())
+			if err != nil {
+				t.Fatalf("result is not valid base64: %s", err)
+			}
+			zr, err := gzip.NewReader(bytes.NewReader(raw))
+			if err != nil {
+				t.Fatalf("result is not a gzip stream: %s", err)
+			}
+			decompressed, err := io.ReadAll(zr)
+			if err != nil {
+				t.Fatalf("failed to decompress result: %s", err)
+			}
+			if err := zr.Close(); err != nil {
+				t.Fatalf("failed to close gzip reader: %s", err)
+			}
+
+			if want := test.String.AsString(); string(decompressed) != want {
+				t.Errorf("wrong result after decompression\ngot:  %q\nwant: %q", decompressed, want)
 			}
 		})
 	}

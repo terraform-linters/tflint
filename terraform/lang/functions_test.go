@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang/marks"
+	"github.com/terraform-linters/tflint/terraform/lang/funcs"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -102,8 +103,11 @@ func TestFunctions(t *testing.T) {
 
 		"base64gzip": {
 			{
+				// The compressed bytes depend on the Go version, so compare
+				// against funcs.Base64Gzip, whose output is tested in the
+				// funcs package.
 				`base64gzip("test")`,
-				cty.StringVal("H4sIAAAAAAAA/ypJLS4BAAAA//8BAAD//wx+f9gEAAAA"),
+				mustBase64Gzip(t, "test"),
 			},
 		},
 
@@ -1353,4 +1357,13 @@ func TestNewMockFunction(t *testing.T) {
 			}
 		})
 	}
+}
+
+func mustBase64Gzip(t *testing.T, s string) cty.Value {
+	t.Helper()
+	v, err := funcs.Base64Gzip(cty.StringVal(s))
+	if err != nil {
+		t.Fatalf("base64gzip(%q): %s", s, err)
+	}
+	return v
 }
