@@ -40,20 +40,23 @@ TFLint version 0.28.1
 
 Rename the ruleset and add/edit rules. After making changes, you can check the behavior with `make install`. See also the [tflint-plugin-sdk API reference](https://pkg.go.dev/github.com/terraform-linters/tflint-plugin-sdk) for communication with the host process.
 
-## 4. Creating a GitHub Release
+## 4. Publishing a release
 
 You can build and install your own ruleset locally as described above, but you can also install it automatically with `tflint --init`.
 
-The requirements to support automatic installation are as follows:
+Publish a GitHub or GitLab release with the following files to support automatic installation:
 
-- The built plugin binaries must be published on GitHub Release
 - The release must be tagged with a name like `v1.1.1`
 - The release must contain an asset with a name like `tflint-ruleset-{name}_{GOOS}_{GOARCH}.zip`
 - The zip file must contain a binary named `tflint-ruleset-{name}` (`tflint-ruleset-{name}.exe` in Windows)
 - The release must contain a checksum file for the zip file with the name `checksums.txt`
 - The checksum file must contain a sha256 hash and filename
 
-When signing a release, one of the following requirements must be met:
+These naming and checksum requirements are the same for both hosts. Automatically generated source archives do not contain the compiled plugin and cannot be used instead.
+
+### GitHub Releases
+
+Upload the plugin archives and `checksums.txt` as assets of the tagged release. When signing a release, use one of the following methods:
 
 - [Artifact Attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds)
   - Include a step in your GitHub Actions workflow that uses the [`attest-build-provenance` action](https://github.com/actions/attest-build-provenance) for `checksums.txt`.
@@ -61,4 +64,16 @@ When signing a release, one of the following requirements must be met:
   - The release must contain a signature file for the checksum file with the name `checksums.txt.sig`
   - The signature file must be binary OpenPGP format
 
-Releases that meet these requirements can be easily created by following the GoReleaser config in the template repository.
+Releases that meet these requirements can be created by following the GoReleaser config in the template repository. Consumers use `source = "github.com/org/tflint-ruleset-example"`; `source_type = "github"` is the default and can be omitted. GitHub Enterprise Server uses the same asset format and supports PGP signing, but not artifact attestations.
+
+### GitLab Releases
+
+For GitLab.com or self-managed GitLab, publish the files to a location such as the GitLab Generic Package Registry, then add [release asset links](https://docs.gitlab.com/api/releases/links/) named exactly:
+
+- `tflint-ruleset-{name}_{GOOS}_{GOARCH}.zip`
+- `checksums.txt`
+- `checksums.txt.sig`, when using PGP signing
+
+Each asset link must use an HTTPS URL for the file itself. To sign the release, publish `checksums.txt.sig` in binary OpenPGP format and provide the corresponding ASCII-armored public key to consumers. GitLab uses the same PGP verification flow as GitHub; GitHub artifact attestations are not supported for GitLab sources.
+
+Consumers use a source such as `gitlab.com/group/subgroup/tflint-ruleset-example` and set `source_type = "gitlab"`. For private releases, their token must be able to read both the release metadata and the linked files. See [Configuring Plugins](../user-guide/plugins.md) for configuration, verification, and authentication on either host.
