@@ -89,7 +89,7 @@ tflint --recursive --config "$(pwd)/.tflint.json"
 
 ### `required_version`
 
-Restrict the TFLint version used. This is almost the same as [Terraform's `required_version`](https://developer.hashicorp.com/terraform/language/settings#specifying-a-required-terraform-version).
+Restrict the TFLint version used. This is almost the same as [Terraform's `required_version`](https://developer.hashicorp.com/terraform/language/block/terraform#required_version).
 You can write version constraints in the same way.
 
 ### `format`
@@ -109,7 +109,7 @@ In recursive mode (`--recursive`), this field will be ignored in configuration f
 
 ### `plugin_dir`
 
-Set the plugin directory. The default is `~/.tflint.d/plugins` (or `./.tflint.d/plugins`). See also [Configuring Plugins](plugins.md#advanced-usage)
+Set the plugin directory. The default is `~/.tflint.d/plugins` (or `./.tflint.d/plugins`). See also [Configuring Plugins](plugins.md#plugin-directory).
 
 ### `call_module_type`
 
