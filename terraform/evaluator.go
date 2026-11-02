@@ -21,6 +21,7 @@ import (
 type ContextMeta struct {
 	Env                string
 	OriginalWorkingDir string
+	WorkingDir         string
 }
 
 type Evaluator struct {
@@ -57,6 +58,9 @@ func (e *Evaluator) scope() *lang.Scope {
 	scope := &lang.Scope{
 		CallStack:           lang.NewCallStack(),
 		ResolvedLocalValues: map[string]cty.Value{},
+	}
+	if e.Meta != nil {
+		scope.BaseDir = e.Meta.WorkingDir
 	}
 	scope.Data = &evaluationData{
 		Scope:          scope,

@@ -71,8 +71,9 @@ func BuildConfig(root *Module, walker ModuleWalker, originalWd string, variables
 
 	ctx := &Evaluator{
 		Meta: &ContextMeta{
-			Env:                Workspace(),
+			Env:                WorkspaceAt(root.WorkingDir),
 			OriginalWorkingDir: originalWd,
+			WorkingDir:         root.WorkingDir,
 		},
 		ModulePath:     cfg.Path.UnkeyedInstanceShim(),
 		Config:         cfg.Root,
@@ -262,10 +263,7 @@ func buildChildCtx(parent *Config, parentCtx *Evaluator, callName string, child 
 	}
 
 	return &Evaluator{
-		Meta: &ContextMeta{
-			Env:                Workspace(),
-			OriginalWorkingDir: parentCtx.Meta.OriginalWorkingDir,
-		},
+		Meta:           parentCtx.Meta,
 		ModulePath:     child.Path.UnkeyedInstanceShim(),
 		Config:         parent.Root,
 		VariableValues: variableValues,

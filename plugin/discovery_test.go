@@ -471,3 +471,28 @@ func Test_FindPluginPath_withoutExtensionInWindows(t *testing.T) {
 		t.Fatalf("Failed: want=%s got=%s", expected, got)
 	}
 }
+
+func TestPluginDirectoryExplicitWorkingDir(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("TFLINT_PLUGIN_DIR", "")
+	config := tflint.EmptyConfig()
+	config.PluginDir = "plugins"
+	got, err := getPluginDirAt(config, root)
+	if err != nil || got != filepath.Join(root, "plugins") {
+		t.Fatalf("configured path: %s, %v", got, err)
+	}
+	config.PluginDir = ""
+	t.Setenv("TFLINT_PLUGIN_DIR", "env-plugins")
+	got, err = getPluginDirAt(config, root)
+	if err != nil || got != filepath.Join(root, "env-plugins") {
+		t.Fatalf("environment path: %s, %v", got, err)
+	}
+	t.Setenv("TFLINT_PLUGIN_DIR", "")
+	if err := os.MkdirAll(filepath.Join(root, ".tflint.d", "plugins"), 0755); err != nil {
+		t.Fatal(err)
+	}
+	got, err = getPluginDirAt(config, root)
+	if err != nil || got != filepath.Join(root, ".tflint.d", "plugins") {
+		t.Fatalf("local path: %s, %v", got, err)
+	}
+}

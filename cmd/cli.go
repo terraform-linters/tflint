@@ -205,10 +205,3 @@ func registerShutdownCh() <-chan os.Signal {
 	signal.Notify(ch, os.Interrupt, syscall.SIGTERM)
 	return ch
 }
-
-func (cli *CLI) registerShutdownHandler(callback func()) {
-	ch := registerShutdownCh()
-	sig := <-ch
-	fmt.Fprintf(cli.errStream, "Received %s, shutting down...\n", sig)
-	callback()
-}

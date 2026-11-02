@@ -17,6 +17,8 @@ type Module struct {
 	ModuleCalls map[string]*ModuleCall
 
 	SourceDir string
+	// WorkingDir resolves filesystem functions without changing path.module.
+	WorkingDir string
 
 	Sources map[string][]byte
 	Files   map[string]*hcl.File
