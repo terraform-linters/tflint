@@ -1,4 +1,4 @@
-// Copyright (c) HashiCorp, Inc.
+// Copyright IBM Corp. 2014, 2026
 // SPDX-License-Identifier: BUSL-1.1
 
 package funcs
@@ -18,67 +18,6 @@ import (
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang/marks"
 	"github.com/terraform-linters/tflint/terraform/collections"
 )
-
-func TestFile(t *testing.T) {
-	tests := []struct {
-		Path cty.Value
-		Want cty.Value
-		Err  string
-	}{
-		{
-			cty.StringVal("testdata/hello.txt"),
-			cty.StringVal("Hello World"),
-			``,
-		},
-		{
-			cty.UnknownVal(cty.String).Mark(marks.Sensitive),
-			cty.UnknownVal(cty.String).RefineNotNull().Mark(marks.Sensitive),
-			``,
-		},
-		{
-			cty.StringVal("testdata/icon.png"),
-			cty.NilVal,
-			`contents of "testdata/icon.png" are not valid UTF-8; use the filebase64 function to obtain the Base64 encoded contents or the other file functions (e.g. filemd5, filesha256) to obtain file hashing results instead`,
-		},
-		{
-			cty.StringVal("testdata/icon.png").Mark(marks.Sensitive),
-			cty.NilVal,
-			`contents of (sensitive value) are not valid UTF-8; use the filebase64 function to obtain the Base64 encoded contents or the other file functions (e.g. filemd5, filesha256) to obtain file hashing results instead`,
-		},
-		{
-			cty.StringVal("testdata/missing"),
-			cty.NilVal,
-			`no file exists at "testdata/missing"; this function works only with files that are distributed as part of the configuration source code, so if this file will be created by a resource in this configuration you must instead obtain this result from an attribute of that resource`,
-		},
-		{
-			cty.StringVal("testdata/missing").Mark(marks.Sensitive),
-			cty.NilVal,
-			`no file exists at (sensitive value); this function works only with files that are distributed as part of the configuration source code, so if this file will be created by a resource in this configuration you must instead obtain this result from an attribute of that resource`,
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(fmt.Sprintf("File(\".\", %#v)", test.Path), func(t *testing.T) {
-			got, err := File(".", test.Path)
-
-			if test.Err != "" {
-				if err == nil {
-					t.Fatal("succeeded; want error")
-				}
-				if got, want := err.Error(), test.Err; got != want {
-					t.Errorf("wrong error\ngot:  %s\nwant: %s", got, want)
-				}
-				return
-			} else if err != nil {
-				t.Fatalf("unexpected error: %s", err)
-			}
-
-			if !got.RawEquals(test.Want) {
-				t.Errorf("wrong result\ngot:  %#v\nwant: %#v", got, test.Want)
-			}
-		})
-	}
-}
 
 func TestTemplateFile(t *testing.T) {
 	tests := []struct {
@@ -212,8 +151,8 @@ func TestTemplateFile(t *testing.T) {
 					cty.StringVal("a"),
 					cty.StringVal("b").Mark("var"),
 					cty.StringVal("c"),
-				}),
-			}).Mark("vars"),
+				}).Mark("vars"),
+			}),
 			cty.StringVal(fmt.Sprintf("- a%s- b%s- c%s", LineBreak(), LineBreak(), LineBreak())).Mark("path").Mark("var").Mark("vars"),
 			``,
 		},
@@ -252,7 +191,7 @@ func TestTemplateFile(t *testing.T) {
 	funcsFunc := func() (funcTable map[string]function.Function, fsFuncs collections.Set[string], templateFuncs collections.Set[string]) {
 		return funcs, collections.NewSetCmp[string](), collections.NewSetCmp[string]("templatefile")
 	}
-	templateFileFn := MakeTemplateFileFunc(".", funcsFunc)
+	templateFileFn := MakeTemplateFileFunc(".", funcsFunc, noopWrapper)
 	funcs["templatefile"] = templateFileFn
 	funcs["core::templatefile"] = templateFileFn
 
@@ -355,7 +294,7 @@ func TestFileExists(t *testing.T) {
 				t.Skip()
 			}
 
-			got, err := FileExists(".", test.Path)
+			got, err := testFileExists(".", test.Path)
 
 			if test.Err != "" {
 				if err == nil {
@@ -625,7 +564,7 @@ func TestFileSet(t *testing.T) {
 				t.Skip()
 			}
 
-			got, err := FileSet(".", test.Path, test.Pattern)
+			got, err := testFileSet(".", test.Path, test.Pattern)
 
 			if test.Err != "" {
 				if err == nil {
@@ -671,7 +610,7 @@ func TestFileBase64(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("FileBase64(\".\", %#v)", test.Path), func(t *testing.T) {
-			got, err := FileBase64(".", test.Path)
+			got, err := testFileBase64(".", test.Path)
 
 			if test.Err {
 				if err == nil {
@@ -714,7 +653,7 @@ func TestBasename(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("Basename(%#v)", test.Path), func(t *testing.T) {
-			got, err := Basename(test.Path)
+			got, err := BasenameFunc.Call([]cty.Value{test.Path})
 
 			if test.Err {
 				if err == nil {
@@ -762,7 +701,7 @@ func TestDirname(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("Dirname(%#v)", test.Path), func(t *testing.T) {
-			got, err := Dirname(test.Path)
+			got, err := DirnameFunc.Call([]cty.Value{test.Path})
 
 			if test.Err {
 				if err == nil {
@@ -815,7 +754,7 @@ func TestPathExpand(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("Dirname(%#v)", test.Path), func(t *testing.T) {
-			got, err := Pathexpand(test.Path)
+			got, err := PathExpandFunc.Call([]cty.Value{test.Path})
 
 			if test.Err {
 				if err == nil {
@@ -845,4 +784,19 @@ func DirSeparator() string {
 		return "\\"
 	}
 	return "/"
+}
+
+func testFileExists(baseDir string, path cty.Value) (cty.Value, error) {
+	fn := MakeFileExistsFunc(baseDir, noopWrapper)
+	return fn.Call([]cty.Value{path})
+}
+
+func testFileSet(baseDir string, path, pattern cty.Value) (cty.Value, error) {
+	fn := MakeFileSetFunc(baseDir, noopWrapper)
+	return fn.Call([]cty.Value{path, pattern})
+}
+
+func testFileBase64(baseDir string, path cty.Value) (cty.Value, error) {
+	fn := MakeFileFunc(baseDir, true, noopWrapper)
+	return fn.Call([]cty.Value{path})
 }

@@ -95,30 +95,30 @@ func (s *Scope) Functions() map[string]function.Function {
 			"endswith":         funcs.EndsWithFunc,
 			"ephemeralasnull":  funcs.EphemeralAsNullFunc,
 			"chunklist":        stdlib.ChunklistFunc,
-			"file":             funcs.MakeFileFunc(s.BaseDir, false),
-			"fileexists":       funcs.MakeFileExistsFunc(s.BaseDir),
-			"fileset":          funcs.MakeFileSetFunc(s.BaseDir),
-			"filebase64":       funcs.MakeFileFunc(s.BaseDir, true),
-			"filebase64sha256": funcs.MakeFileBase64Sha256Func(s.BaseDir),
-			"filebase64sha512": funcs.MakeFileBase64Sha512Func(s.BaseDir),
-			"filemd5":          funcs.MakeFileMd5Func(s.BaseDir),
-			"filesha1":         funcs.MakeFileSha1Func(s.BaseDir),
-			"filesha256":       funcs.MakeFileSha256Func(s.BaseDir),
-			"filesha512":       funcs.MakeFileSha512Func(s.BaseDir),
+			"file":             funcs.MakeFileFunc(s.BaseDir, false, noopWrapper),
+			"fileexists":       funcs.MakeFileExistsFunc(s.BaseDir, noopWrapper),
+			"fileset":          funcs.MakeFileSetFunc(s.BaseDir, noopWrapper),
+			"filebase64":       funcs.MakeFileFunc(s.BaseDir, true, noopWrapper),
+			"filebase64sha256": funcs.MakeFileBase64Sha256Func(s.BaseDir, noopWrapper),
+			"filebase64sha512": funcs.MakeFileBase64Sha512Func(s.BaseDir, noopWrapper),
+			"filemd5":          funcs.MakeFileMd5Func(s.BaseDir, noopWrapper),
+			"filesha1":         funcs.MakeFileSha1Func(s.BaseDir, noopWrapper),
+			"filesha256":       funcs.MakeFileSha256Func(s.BaseDir, noopWrapper),
+			"filesha512":       funcs.MakeFileSha512Func(s.BaseDir, noopWrapper),
 			"flatten":          stdlib.FlattenFunc,
 			"floor":            stdlib.FloorFunc,
 			"format":           stdlib.FormatFunc,
 			"formatdate":       stdlib.FormatDateFunc,
 			"formatlist":       stdlib.FormatListFunc,
 			"indent":           stdlib.IndentFunc,
-			"index":            funcs.IndexFunc, // stdlib.IndexFunc is not compatible
+			"index":            funcs.IndexFunc,
 			"join":             stdlib.JoinFunc,
 			"jsondecode":       stdlib.JSONDecodeFunc,
 			"jsonencode":       stdlib.JSONEncodeFunc,
 			"keys":             stdlib.KeysFunc,
 			"length":           funcs.LengthFunc,
 			"list":             funcs.ListFunc,
-			"log":              stdlib.LogFunc,
+			"log":              funcs.LogFunc,
 			"lookup":           funcs.LookupFunc,
 			"lower":            stdlib.LowerFunc,
 			"map":              funcs.MapFunc,
@@ -131,7 +131,7 @@ func (s *Scope) Functions() map[string]function.Function {
 			"parseint":         stdlib.ParseIntFunc,
 			"pathexpand":       funcs.PathExpandFunc,
 			"plantimestamp":    funcs.PlantimestampFunc,
-			"pow":              stdlib.PowFunc,
+			"pow":              funcs.PowFunc,
 			"range":            stdlib.RangeFunc,
 			"regex":            stdlib.RegexFunc,
 			"regexall":         stdlib.RegexAllFunc,
@@ -195,7 +195,7 @@ func (s *Scope) Functions() map[string]function.Function {
 			// overwriting the relevant entries.
 			return s.funcs, filesystemFunctions, templateFunctions
 		}
-		coreFuncs["templatefile"] = funcs.MakeTemplateFileFunc(s.BaseDir, funcsFunc)
+		coreFuncs["templatefile"] = funcs.MakeTemplateFileFunc(s.BaseDir, funcsFunc, noopWrapper)
 		coreFuncs["templatestring"] = funcs.MakeTemplateStringFunc(funcsFunc)
 
 		if s.PureOnly {
@@ -242,4 +242,8 @@ func NewMockFunction(call *FunctionCall) function.Function {
 			return cty.DynamicVal, nil
 		},
 	})
+}
+
+func noopWrapper(fn function.ImplFunc) function.ImplFunc {
+	return fn
 }

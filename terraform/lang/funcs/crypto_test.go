@@ -1,3 +1,6 @@
+// Copyright IBM Corp. 2014, 2026
+// SPDX-License-Identifier: BUSL-1.1
+
 package funcs
 
 import (
@@ -9,7 +12,7 @@ import (
 )
 
 func TestUUID(t *testing.T) {
-	result, err := UUID()
+	result, err := UUIDFunc.Call(nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -67,7 +70,7 @@ func TestUUIDV5(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("uuidv5(%#v, %#v)", test.Namespace, test.Name), func(t *testing.T) {
-			got, err := UUIDV5(test.Namespace, test.Name)
+			got, err := UUIDV5Func.Call([]cty.Value{test.Namespace, test.Name})
 
 			if test.Err {
 				if err == nil {
@@ -96,14 +99,14 @@ func TestBase64Sha256(t *testing.T) {
 			cty.StringVal("n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg="),
 			false,
 		},
-		// This would differ because we're base64-encoding hex representation, not raw bytes.
+		// This would differ because we're base64-encoding hex represantiation, not raw bytes.
 		// base64encode(sha256("test")) =
 		// "OWY4NmQwODE4ODRjN2Q2NTlhMmZlYWEwYzU1YWQwMTVhM2JmNGYxYjJiMGI4MjJjZDE1ZDZjMTViMGYwMGEwOA=="
 	}
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("base64sha256(%#v)", test.String), func(t *testing.T) {
-			got, err := Base64Sha256(test.String)
+			got, err := Base64Sha256Func.Call([]cty.Value{test.String})
 
 			if test.Err {
 				if err == nil {
@@ -144,7 +147,7 @@ func TestFileBase64Sha256(t *testing.T) {
 		},
 	}
 
-	fileSHA256 := MakeFileBase64Sha256Func(".")
+	fileSHA256 := MakeFileBase64Sha256Func(".", noopWrapper)
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("filebase64sha256(%#v)", test.Path), func(t *testing.T) {
@@ -177,14 +180,14 @@ func TestBase64Sha512(t *testing.T) {
 			cty.StringVal("7iaw3Ur350mqGo7jwQrpkj9hiYB3Lkc/iBml1JQODbJ6wYX4oOHV+E+IvIh/1nsUNzLDBMxfqa2Ob1f1ACio/w=="),
 			false,
 		},
-		// This would differ because we're base64-encoding hex representation, not raw bytes
+		// This would differ because we're base64-encoding hex represantiation, not raw bytes
 		// base64encode(sha512("test")) =
 		// "OZWUyNmIwZGQ0YWY3ZTc0OWFhMWE4ZWUzYzEwYWU5OTIzZjYxODk4MDc3MmU0NzNmODgxOWE1ZDQ5NDBlMGRiMjdhYzE4NWY4YTBlMWQ1Zjg0Zjg4YmM4ODdmZDY3YjE0MzczMmMzMDRjYzVmYTlhZDhlNmY1N2Y1MDAyOGE4ZmY="
 	}
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("base64sha512(%#v)", test.String), func(t *testing.T) {
-			got, err := Base64Sha512(test.String)
+			got, err := Base64Sha512Func.Call([]cty.Value{test.String})
 
 			if test.Err {
 				if err == nil {
@@ -225,7 +228,7 @@ func TestFileBase64Sha512(t *testing.T) {
 		},
 	}
 
-	fileSHA512 := MakeFileBase64Sha512Func(".")
+	fileSHA512 := MakeFileBase64Sha512Func(".", noopWrapper)
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("filebase64sha512(%#v)", test.Path), func(t *testing.T) {
@@ -249,7 +252,7 @@ func TestFileBase64Sha512(t *testing.T) {
 
 func TestBcrypt(t *testing.T) {
 	// single variable test
-	p, err := Bcrypt(cty.StringVal("test"))
+	p, err := BcryptFunc.Call([]cty.Value{cty.StringVal("test")})
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -260,7 +263,7 @@ func TestBcrypt(t *testing.T) {
 	}
 
 	// testing with two parameters
-	p, err = Bcrypt(cty.StringVal("test"), cty.NumberIntVal(5))
+	p, err = BcryptFunc.Call([]cty.Value{cty.StringVal("test"), cty.NumberIntVal(5)})
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -271,7 +274,7 @@ func TestBcrypt(t *testing.T) {
 	}
 
 	// Negative test for more than two parameters
-	_, err = Bcrypt(cty.StringVal("test"), cty.NumberIntVal(10), cty.NumberIntVal(11))
+	_, err = BcryptFunc.Call([]cty.Value{cty.StringVal("test"), cty.NumberIntVal(10), cty.NumberIntVal(11)})
 	if err == nil {
 		t.Fatal("succeeded; want error")
 	}
@@ -302,7 +305,7 @@ func TestMd5(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("md5(%#v)", test.String), func(t *testing.T) {
-			got, err := Md5(test.String)
+			got, err := Md5Func.Call([]cty.Value{test.String})
 
 			if test.Err {
 				if err == nil {
@@ -343,7 +346,7 @@ func TestFileMD5(t *testing.T) {
 		},
 	}
 
-	fileMD5 := MakeFileMd5Func(".")
+	fileMD5 := MakeFileMd5Func(".", noopWrapper)
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("filemd5(%#v)", test.Path), func(t *testing.T) {
@@ -424,7 +427,7 @@ func TestRsaDecrypt(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("RsaDecrypt(%#v, %#v)", test.Ciphertext, test.Privatekey), func(t *testing.T) {
-			got, err := RsaDecrypt(test.Ciphertext, test.Privatekey)
+			got, err := RsaDecryptFunc.Call([]cty.Value{test.Ciphertext, test.Privatekey})
 
 			if test.Err != "" {
 				if err == nil {
@@ -459,7 +462,7 @@ func TestSha1(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("sha1(%#v)", test.String), func(t *testing.T) {
-			got, err := Sha1(test.String)
+			got, err := Sha1Func.Call([]cty.Value{test.String})
 
 			if test.Err {
 				if err == nil {
@@ -500,7 +503,7 @@ func TestFileSHA1(t *testing.T) {
 		},
 	}
 
-	fileSHA1 := MakeFileSha1Func(".")
+	fileSHA1 := MakeFileSha1Func(".", noopWrapper)
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("filesha1(%#v)", test.Path), func(t *testing.T) {
@@ -537,7 +540,7 @@ func TestSha256(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("sha256(%#v)", test.String), func(t *testing.T) {
-			got, err := Sha256(test.String)
+			got, err := Sha256Func.Call([]cty.Value{test.String})
 
 			if test.Err {
 				if err == nil {
@@ -578,7 +581,7 @@ func TestFileSHA256(t *testing.T) {
 		},
 	}
 
-	fileSHA256 := MakeFileSha256Func(".")
+	fileSHA256 := MakeFileSha256Func(".", noopWrapper)
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("filesha256(%#v)", test.Path), func(t *testing.T) {
@@ -615,7 +618,7 @@ func TestSha512(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("sha512(%#v)", test.String), func(t *testing.T) {
-			got, err := Sha512(test.String)
+			got, err := Sha512Func.Call([]cty.Value{test.String})
 
 			if test.Err {
 				if err == nil {
@@ -656,7 +659,7 @@ func TestFileSHA512(t *testing.T) {
 		},
 	}
 
-	fileSHA512 := MakeFileSha512Func(".")
+	fileSHA512 := MakeFileSha512Func(".", noopWrapper)
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("filesha512(%#v)", test.Path), func(t *testing.T) {

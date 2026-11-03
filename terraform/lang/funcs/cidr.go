@@ -1,5 +1,5 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: MPL-2.0
+// Copyright IBM Corp. 2014, 2026
+// SPDX-License-Identifier: BUSL-1.1
 
 package funcs
 
@@ -8,13 +8,14 @@ import (
 	"math/big"
 
 	"github.com/apparentlymart/go-cidr/cidr"
-	"github.com/terraform-linters/tflint/terraform/ipaddr"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/function"
 	"github.com/zclconf/go-cty/cty/gocty"
+
+	"github.com/terraform-linters/tflint/terraform/ipaddr"
 )
 
-// CidrHostFunc constructs a function that calculates a full host IP address
+// CidrHostFunc contructs a function that calculates a full host IP address
 // within a given IP network address prefix.
 var CidrHostFunc = function.New(&function.Spec{
 	Params: []function.Parameter{
@@ -48,7 +49,7 @@ var CidrHostFunc = function.New(&function.Spec{
 	},
 })
 
-// CidrNetmaskFunc constructs a function that converts an IPv4 address prefix given
+// CidrNetmaskFunc contructs a function that converts an IPv4 address prefix given
 // in CIDR notation into a subnet mask address.
 var CidrNetmaskFunc = function.New(&function.Spec{
 	Params: []function.Parameter{
@@ -73,7 +74,7 @@ var CidrNetmaskFunc = function.New(&function.Spec{
 	},
 })
 
-// CidrSubnetFunc constructs a function that calculates a subnet address within
+// CidrSubnetFunc contructs a function that calculates a subnet address within
 // a given IP network address prefix.
 var CidrSubnetFunc = function.New(&function.Spec{
 	Params: []function.Parameter{
@@ -196,27 +197,3 @@ var CidrSubnetsFunc = function.New(&function.Spec{
 		return cty.ListVal(retVals), nil
 	},
 })
-
-// CidrHost calculates a full host IP address within a given IP network address prefix.
-func CidrHost(prefix, hostnum cty.Value) (cty.Value, error) {
-	return CidrHostFunc.Call([]cty.Value{prefix, hostnum})
-}
-
-// CidrNetmask converts an IPv4 address prefix given in CIDR notation into a subnet mask address.
-func CidrNetmask(prefix cty.Value) (cty.Value, error) {
-	return CidrNetmaskFunc.Call([]cty.Value{prefix})
-}
-
-// CidrSubnet calculates a subnet address within a given IP network address prefix.
-func CidrSubnet(prefix, newbits, netnum cty.Value) (cty.Value, error) {
-	return CidrSubnetFunc.Call([]cty.Value{prefix, newbits, netnum})
-}
-
-// CidrSubnets calculates a sequence of consecutive subnet prefixes that may
-// be of different prefix lengths under a common base prefix.
-func CidrSubnets(prefix cty.Value, newbits ...cty.Value) (cty.Value, error) {
-	args := make([]cty.Value, len(newbits)+1)
-	args[0] = prefix
-	copy(args[1:], newbits)
-	return CidrSubnetsFunc.Call(args)
-}
