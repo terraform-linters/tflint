@@ -1,4 +1,4 @@
-// Copyright (c) HashiCorp, Inc.
+// Copyright IBM Corp. 2014, 2026
 // SPDX-License-Identifier: BUSL-1.1
 
 package funcs
@@ -142,7 +142,6 @@ var CoalesceFunc = function.New(&function.Spec{
 		AllowDynamicType: true,
 		AllowNull:        true,
 	},
-	RefineResult: refineNotNull,
 	Type: func(args []cty.Value) (ret cty.Type, err error) {
 		argTypes := make([]cty.Type, len(args))
 		for i, val := range args {
@@ -154,6 +153,7 @@ var CoalesceFunc = function.New(&function.Spec{
 		}
 		return retType, nil
 	},
+	RefineResult: refineNotNull,
 	Impl: func(args []cty.Value, retType cty.Type) (ret cty.Value, err error) {
 		for _, argVal := range args {
 			// We already know this will succeed because of the checks in our Type func above
@@ -662,74 +662,3 @@ var MapFunc = function.New(&function.Spec{
 		return cty.DynamicVal, fmt.Errorf("the \"map\" function was deprecated in Terraform v0.12 and is no longer available; use tomap({ ... }) syntax to write a literal map")
 	},
 })
-
-// Length returns the number of elements in the given collection or number of
-// Unicode characters in the given string.
-func Length(collection cty.Value) (cty.Value, error) {
-	return LengthFunc.Call([]cty.Value{collection})
-}
-
-// AllTrue returns true if all elements of the list are true. If the list is empty,
-// return true.
-func AllTrue(collection cty.Value) (cty.Value, error) {
-	return AllTrueFunc.Call([]cty.Value{collection})
-}
-
-// AnyTrue returns true if any element of the list is true. If the list is empty,
-// return false.
-func AnyTrue(collection cty.Value) (cty.Value, error) {
-	return AnyTrueFunc.Call([]cty.Value{collection})
-}
-
-// Coalesce takes any number of arguments and returns the first one that isn't empty.
-func Coalesce(args ...cty.Value) (cty.Value, error) {
-	return CoalesceFunc.Call(args)
-}
-
-// Index finds the element index for a given value in a list.
-func Index(list, value cty.Value) (cty.Value, error) {
-	return IndexFunc.Call([]cty.Value{list, value})
-}
-
-// List takes any number of list arguments and returns a list containing those
-//
-//	values in the same order.
-func List(args ...cty.Value) (cty.Value, error) {
-	return ListFunc.Call(args)
-}
-
-// Lookup performs a dynamic lookup into a map.
-// There are two required arguments, map and key, plus an optional default,
-// which is a value to return if no key is found in map.
-func Lookup(args ...cty.Value) (cty.Value, error) {
-	return LookupFunc.Call(args)
-}
-
-// Map takes an even number of arguments and returns a map whose elements are constructed
-// from consecutive pairs of arguments.
-func Map(args ...cty.Value) (cty.Value, error) {
-	return MapFunc.Call(args)
-}
-
-// Matchkeys constructs a new list by taking a subset of elements from one list
-// whose indexes match the corresponding indexes of values in another list.
-func Matchkeys(values, keys, searchset cty.Value) (cty.Value, error) {
-	return MatchkeysFunc.Call([]cty.Value{values, keys, searchset})
-}
-
-// One returns either the first element of a one-element list, or null
-// if given a zero-element list..
-func One(list cty.Value) (cty.Value, error) {
-	return OneFunc.Call([]cty.Value{list})
-}
-
-// Sum adds numbers in a list, set, or tuple
-func Sum(list cty.Value) (cty.Value, error) {
-	return SumFunc.Call([]cty.Value{list})
-}
-
-// Transpose takes a map of lists of strings and swaps the keys and values to
-// produce a new map of lists of strings.
-func Transpose(values cty.Value) (cty.Value, error) {
-	return TransposeFunc.Call([]cty.Value{values})
-}

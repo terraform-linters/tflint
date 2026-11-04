@@ -1,4 +1,4 @@
-// Copyright (c) HashiCorp, Inc.
+// Copyright IBM Corp. 2014, 2026
 // SPDX-License-Identifier: BUSL-1.1
 
 package funcs
@@ -8,9 +8,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang/marks"
 	"github.com/zclconf/go-cty-debug/ctydebug"
 	"github.com/zclconf/go-cty/cty"
+
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang/marks"
 )
 
 func TestTo(t *testing.T) {
@@ -354,7 +355,7 @@ func TestEphemeralAsNull(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.Input.GoString(), func(t *testing.T) {
-			got, err := EphemeralAsNull(test.Input)
+			got, err := EphemeralAsNullFunc.Call([]cty.Value{test.Input})
 			if err != nil {
 				// This function is supposed to be infallible
 				t.Fatal(err)

@@ -1,4 +1,4 @@
-// Copyright (c) HashiCorp, Inc.
+// Copyright IBM Corp. 2014, 2026
 // SPDX-License-Identifier: BUSL-1.1
 
 package funcs
@@ -11,10 +11,12 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/ext/customdecode"
 	"github.com/hashicorp/hcl/v2/ext/typeexpr"
-	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang/marks"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
 	"github.com/zclconf/go-cty/cty/function"
+
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/lang/marks"
+	"github.com/terraform-linters/tflint/terraform/lang/ephemeral"
 )
 
 // MakeToFunc constructs a "to..." function, like "tostring", which converts
@@ -130,35 +132,9 @@ var EphemeralAsNullFunc = function.New(&function.Spec{
 		return args[0].Type(), nil
 	},
 	Impl: func(args []cty.Value, retType cty.Type) (cty.Value, error) {
-		return cty.Transform(args[0], func(p cty.Path, v cty.Value) (cty.Value, error) {
-			_, givenMarks := v.Unmark()
-			if _, isEphemeral := givenMarks[marks.Ephemeral]; isEphemeral {
-				// We'll strip the ephemeral mark but retain any other marks
-				// that might be present on the input.
-				delete(givenMarks, marks.Ephemeral)
-				if !v.IsKnown() {
-					// If the source value is unknown then we must leave it
-					// unknown because its final type might be more precise
-					// than the associated type constraint and returning a
-					// typed null could therefore over-promise on what the
-					// final result type will be.
-					// We're deliberately constructing a fresh unknown value
-					// here, rather than returning the one we were given,
-					// because we need to discard any refinements that the
-					// unknown value might be carrying that definitely won't
-					// be honored when we force the final result to be null.
-					return cty.UnknownVal(v.Type()).WithMarks(givenMarks), nil
-				}
-				return cty.NullVal(v.Type()).WithMarks(givenMarks), nil
-			}
-			return v, nil
-		})
+		return ephemeral.RemoveEphemeralValues(args[0]), nil
 	},
 })
-
-func EphemeralAsNull(input cty.Value) (cty.Value, error) {
-	return EphemeralAsNullFunc.Call([]cty.Value{input})
-}
 
 // ConvertFunc is a cty function which takes any value as the first argument,
 // and returns the result of converting the first argument to the type
