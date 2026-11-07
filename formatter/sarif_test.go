@@ -128,6 +128,79 @@ func Test_sarifPrint(t *testing.T) {
 }`, tflint.Version, tflint.Version),
 		},
 		{
+			Name: "rules without a link omit helpUri",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRuleWithoutLink{},
+					Message: "test",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+					},
+				},
+			},
+			Stdout: fmt.Sprintf(`{
+  "version": "2.1.0",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "informationUri": "https://github.com/terraform-linters/tflint",
+          "name": "tflint",
+          "rules": [
+            {
+              "id": "test_rule",
+              "shortDescription": {
+                "text": ""
+              }
+            }
+          ],
+          "version": "%s"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "test_rule",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "test"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "test.tf"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 4
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tool": {
+        "driver": {
+          "informationUri": "https://github.com/terraform-linters/tflint",
+          "name": "tflint-errors",
+          "rules": [],
+          "version": "%s"
+        }
+      },
+      "results": []
+    }
+  ]
+}`, tflint.Version, tflint.Version),
+		},
+		{
 			Name: "issues not on line 1",
 			Issues: tflint.Issues{
 				{
@@ -699,4 +772,12 @@ func Test_sarifPrint(t *testing.T) {
 			}
 		})
 	}
+}
+
+type testRuleWithoutLink struct {
+	testRule
+}
+
+func (r *testRuleWithoutLink) Link() string {
+	return ""
 }
