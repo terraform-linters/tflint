@@ -27,8 +27,10 @@ func (sarifFormat) print(f *Formatter, issues tflint.Issues, appErr error, _ map
 
 	for _, issue := range issues {
 		rule := run.AddRule(issue.Rule.Name()).
-			WithHelpURI(issue.Rule.Link()).
 			WithDescription("")
+		if link := issue.Rule.Link(); link != "" {
+			rule.WithHelpURI(link)
+		}
 
 		var level string
 		switch issue.Rule.Severity() {
