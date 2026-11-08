@@ -1,72 +1,28 @@
 ## What's Changed
 
-### Security Fixes
-* deps: Bump Go version to 1.26.10 by @wata727 in https://github.com/terraform-linters/tflint/pull/2672
-
 ### Enhancements
-* formatter: make JUnit error testcase names unique by @Kunalbehbud in https://github.com/terraform-linters/tflint/pull/2592
+* Add support for Terraform v1.17 by @wata727 in https://github.com/terraform-linters/tflint/pull/2687
 
-### Changes
-* terraform: iterate primary files in a deterministic order by @KetchupBomb in https://github.com/terraform-linters/tflint/pull/2633
-* langserver: log request params only at trace level by @chernetskyi in https://github.com/terraform-linters/tflint/pull/2642
+### Bug Fixes
+* formatter: omit helpUri in SARIF output when a rule has no link by @lbarrosby in https://github.com/terraform-linters/tflint/pull/2688
 
 ### Chores
-* build(deps): Bump golang from 1.26.4-alpine3.23 to 1.26.5-alpine3.23 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2601
-* build(deps): Bump the go-x group with 3 updates by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2602
-* build(deps): Bump github.com/klauspost/compress from 1.18.6 to 1.19.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2603
-* build(deps): Bump github.com/zclconf/go-cty from 1.18.1 to 1.19.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2604
-* build(deps): Bump docker/setup-buildx-action from 4.1.0 to 4.2.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2589
-* build(deps): Bump docker/login-action from 4.2.0 to 4.4.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2590
-* build(deps): Bump docker/metadata-action from 6.1.0 to 6.2.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2586
-* Remove broken badges and charts from README by @wata727 in https://github.com/terraform-linters/tflint/pull/2605
-* Postpone the deletion date for the installation script by @wata727 in https://github.com/terraform-linters/tflint/pull/2606
-* build(deps): Bump google.golang.org/grpc from 1.82.0 to 1.82.1 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2610
-* build(deps): Bump actions/checkout from 7.0.0 to 7.0.1 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2611
-* build(deps): Bump github.com/klauspost/compress from 1.19.0 to 1.19.1 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2614
-* build(deps): Bump actions/setup-go from 6.5.0 to 7.0.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2612
-* build(deps): Bump actions/attest from 4.1.1 to 4.2.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2613
-* Modernize the codebase with `go fix` by @bendrucker in https://github.com/terraform-linters/tflint/pull/2616
-* build(deps): Bump docker/login-action from 4.4.0 to 4.5.2 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2618
-* build(deps): Bump docker/login-action from 4.5.2 to 4.6.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2620
-* build(deps): Bump actions/attest from 4.2.0 to 4.2.1 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2619
-* build(deps): Bump github.com/sourcegraph/jsonrpc2 from 0.2.1 to 0.2.2 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2623
-* build(deps): Bump github.com/sigstore/sigstore-go from 1.2.2 to 1.3.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2622
-* build(deps): Bump google.golang.org/grpc from 1.82.1 to 1.83.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2621
-* Bump Go version to 1.26.5 by @apoiget in https://github.com/terraform-linters/tflint/pull/2626
-* build(deps): Bump golang from 1.26.5-alpine3.23 to 1.27rc2-alpine3.23 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2627
-* build(deps): Bump actions/attest from 4.2.1 to 4.2.2 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2629
-* build(deps): Bump github.com/klauspost/compress from 1.19.1 to 1.19.2 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2628
-* build(deps): Bump golang from 1.27rc2-alpine3.23 to 1.27rc3-alpine3.23 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2630
-* build(deps): Bump the go-x group with 3 updates by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2631
-* build(deps): Bump docker/setup-buildx-action from 4.2.0 to 4.3.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2632
-* build(deps): Bump golang from 1.27rc3-alpine3.23 to 1.27-alpine3.23 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2637
-* build(deps): Bump google.golang.org/grpc from 1.83.0 to 1.83.1 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2638
-* build(deps): Bump google.golang.org/grpc from 1.83.1 to 1.83.2 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2641
-* Remove the auto installation script by @wata727 in https://github.com/terraform-linters/tflint/pull/2607
-* build(deps): Bump github.com/klauspost/compress from 1.19.2 to 1.20.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2646
-* build(deps): Bump the go-x group with 2 updates by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2645
-* build(deps): Bump go.opentelemetry.io/otel/sdk from 1.44.0 to 1.45.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2649
-* build(deps): Bump the go-x group with 3 updates by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2650
-* build(deps): Bump github.com/sourcegraph/jsonrpc2 from 0.2.2 to 0.2.3 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2651
-* build(deps): Bump alpine from 3.24.1 to 3.24.2 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2652
-* build(deps): Bump docker/build-push-action from 7.3.0 to 7.4.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2653
-* build(deps): Bump google.golang.org/grpc from 1.83.2 to 1.84.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2654
-* build(deps): Bump github.com/hashicorp/go-uuid from 1.0.3 to 1.0.4 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2657
-* build(deps): Bump github.com/hashicorp/hcl/v2 from 2.24.0 to 2.25.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2656
-* build(deps): Bump github.com/klauspost/compress from 1.20.0 to 1.20.1 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2658
-* build(deps): Bump docker/setup-buildx-action from 4.3.0 to 4.4.1 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2655
-* Update the latest supported Terraform version to 1.16 by @wata727 in https://github.com/terraform-linters/tflint/pull/2664
-* build(deps): Bump actions/create-github-app-token from 3.2.0 to 3.3.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2666
-* build(deps): Bump the go-x group with 3 updates by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2667
-* build(deps): Bump github.com/mattn/go-colorable from 0.1.15 to 0.1.16 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2668
-* build(deps): Bump github.com/klauspost/compress from 1.20.1 to 1.20.3 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2670
-* build(deps): Bump goreleaser/goreleaser-action from 7.2.3 to 7.3.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2669
-* github: Add CONTRIBUTING.md and Terraform fork contribution terms check by @wata727 in https://github.com/terraform-linters/tflint/pull/2665
+* build(deps): Bump golang from 1.26.10-alpine3.23 to 1.27.2-alpine3.23 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2675
+* build(deps): Bump golang.org/x/net from 0.60.0 to 0.61.0 in the go-x group by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2676
+* build(deps): Bump github.com/go-test/deep from 1.1.1 to 1.1.2 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2677
+* fix README.md (how to install by Homebrew) by @KEY60228 in https://github.com/terraform-linters/tflint/pull/2680
+* build(deps): Bump alpine from 3.24.2 to 3.24.3 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2683
+* build(deps): Bump docker/login-action from 4.6.0 to 4.7.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2684
+* build(deps): Bump github.com/go-jose/go-jose/v4 from 4.1.4 to 4.1.6 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2686
+* docs: Fix dead links in config guide by @sarankumar1325 in https://github.com/terraform-linters/tflint/pull/2682
+* User postflight_steps in the Homebrew cask to fix the deprecation warning by @KEY60228 in https://github.com/terraform-linters/tflint/pull/2681
+* build(deps): Bump golang.org/x/net from 0.61.0 to 0.62.0 in the go-x group by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2689
+* build(deps): Bump google.golang.org/grpc from 1.84.0 to 1.85.0 by @dependabot[bot] in https://github.com/terraform-linters/tflint/pull/2691
+* github: Lock action versions by @wata727 in https://github.com/terraform-linters/tflint/pull/2692
 
 ## New Contributors
-* @Kunalbehbud made their first contribution in https://github.com/terraform-linters/tflint/pull/2592
-* @apoiget made their first contribution in https://github.com/terraform-linters/tflint/pull/2626
-* @KetchupBomb made their first contribution in https://github.com/terraform-linters/tflint/pull/2633
-* @chernetskyi made their first contribution in https://github.com/terraform-linters/tflint/pull/2642
+* @KEY60228 made their first contribution in https://github.com/terraform-linters/tflint/pull/2680
+* @sarankumar1325 made their first contribution in https://github.com/terraform-linters/tflint/pull/2682
+* @lbarrosby made their first contribution in https://github.com/terraform-linters/tflint/pull/2688
 
-**Full Changelog**: https://github.com/terraform-linters/tflint/compare/v0.64.0...v0.65.0
+**Full Changelog**: https://github.com/terraform-linters/tflint/compare/v0.65.0...v0.66.0
