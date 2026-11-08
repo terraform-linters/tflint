@@ -39,6 +39,11 @@ func Test_GetSigningKey(t *testing.T) {
 			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: testSigningKey, SourceOwner: "terraform-linters"}),
 			Expected: testSigningKey,
 		},
+		{
+			Name:     "GitLab namespace does not inherit the built-in GitHub signing key",
+			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SourceType: "gitlab", SourceOwner: "terraform-linters"}),
+			Expected: "",
+		},
 	}
 
 	for _, tc := range cases {
@@ -83,6 +88,11 @@ func Test_HasSigningKey(t *testing.T) {
 			Name:     "built-in signing key and configured signing key",
 			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SigningKey: testSigningKey, SourceOwner: "terraform-linters"}),
 			Expected: true,
+		},
+		{
+			Name:     "GitLab namespace does not inherit the built-in GitHub signing key",
+			Config:   NewInstallConfig(tflint.EmptyConfig(), &tflint.PluginConfig{SourceType: "gitlab", SourceOwner: "terraform-linters"}),
+			Expected: false,
 		},
 	}
 
