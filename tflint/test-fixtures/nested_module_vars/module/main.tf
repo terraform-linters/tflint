@@ -8,4 +8,9 @@ module "module2" {
   red   = "${var.foo}-${var.bar}"
   blue  = "blue"
   green = "${var.foo}-${var.baz}-${path.module}"
+  purple = local.purple
+}
+
+locals {
+  purple = "${var.bar}-purple"
 }

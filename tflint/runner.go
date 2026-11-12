@@ -142,7 +142,7 @@ func NewModuleRunners(parent *Runner) ([]*Runner, error) {
 					}
 				} else {
 					parentVars := []*moduleVariable{}
-					for _, ref := range listVarRefs(attribute.Expr) {
+					for _, ref := range listVarRefs(attribute.Expr, parent.TFConfig.Module.Locals) {
 						if parentVar, exists := parent.modVars[ref.Name]; exists {
 							parentVars = append(parentVars, parentVar)
 						}
@@ -307,7 +307,7 @@ func (r *Runner) emitIssue(issue *Issue) bool {
 
 func (r *Runner) listModuleVars(expr hcl.Expression) []*moduleVariable {
 	ret := []*moduleVariable{}
-	for _, ref := range listVarRefs(expr) {
+	for _, ref := range listVarRefs(expr, r.TFConfig.Module.Locals) {
 		if modVar, exists := r.modVars[ref.Name]; exists {
 			ret = append(ret, modVar.roots()...)
 		}
@@ -315,9 +315,17 @@ func (r *Runner) listModuleVars(expr hcl.Expression) []*moduleVariable {
 	return ret
 }
 
-// listVarRefs returns the references in the expression.
+// listVarRefs returns the references to input variables in the expression.
+// References to local values (`local.*`) are resolved transitively via
+// locals so that, e.g., `local.foo` where `foo` is itself derived from
+// `var.bar` is treated the same as a direct `var.bar` reference. See
+// terraform-linters/tflint#2169.
 // If the expression is not a valid expression, it returns an empty map.
-func listVarRefs(expr hcl.Expression) map[string]addrs.InputVariable {
+func listVarRefs(expr hcl.Expression, locals map[string]*terraform.Local) map[string]addrs.InputVariable {
+	return listVarRefsRecursive(expr, locals, map[string]bool{})
+}
+
+func listVarRefsRecursive(expr hcl.Expression, locals map[string]*terraform.Local, visiting map[string]bool) map[string]addrs.InputVariable {
 	ret := map[string]addrs.InputVariable{}
 	refs, diags := lang.ReferencesInExpr(expr)
 
@@ -328,8 +336,25 @@ func listVarRefs(expr hcl.Expression) map[string]addrs.InputVariable {
 	}
 
 	for _, ref := range refs {
-		if varRef, ok := ref.Subject.(addrs.InputVariable); ok {
-			ret[varRef.String()] = varRef
+		switch subject := ref.Subject.(type) {
+		case addrs.InputVariable:
+			ret[subject.String()] = subject
+		case addrs.LocalValue:
+			// Terraform itself rejects circular local value definitions, but
+			// guard against them anyway so a malformed config can't send us
+			// into infinite recursion here.
+			if visiting[subject.Name] {
+				continue
+			}
+			local, exists := locals[subject.Name]
+			if !exists {
+				continue
+			}
+			visiting[subject.Name] = true
+			for name, varRef := range listVarRefsRecursive(local.Expr, locals, visiting) {
+				ret[name] = varRef
+			}
+			delete(visiting, subject.Name)
 		}
 	}
 
