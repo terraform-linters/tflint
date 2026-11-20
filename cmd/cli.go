@@ -165,8 +165,9 @@ func findWorkingDirs(opts Options) ([]string, error) {
 			if !d.IsDir() {
 				return nil
 			}
-			// hidden directories are skipped
-			if path != "." && strings.HasPrefix(d.Name(), ".") {
+			// hidden directories are skipped, but never the base directory itself:
+			// its name can start with a dot even when it is not hidden (e.g. "..", "./").
+			if path != baseDir && strings.HasPrefix(d.Name(), ".") {
 				return filepath.SkipDir
 			}
 
