@@ -50,6 +50,23 @@ func NewChecksummer(f io.Reader) (*Checksummer, error) {
 	return checksummer, nil
 }
 
+// binaryHashes returns "h1:" hashes of plugin binaries keyed by platform.
+// Checksum entries for binaries must be named like tflint-ruleset-{name}_{GOOS}_{GOARCH}.
+// Note that the binary for Windows does not have the ".exe" extension in the entry.
+func (c *Checksummer) binaryHashes(pluginName string) map[string]string {
+	prefix := fmt.Sprintf("tflint-ruleset-%s_", pluginName)
+
+	hashes := map[string]string{}
+	for filename, checksum := range c.checksums {
+		platform, found := strings.CutPrefix(filename, prefix)
+		if !found || !platformPattern.MatchString(platform) {
+			continue
+		}
+		hashes[platform] = hashSchemeH1 + hex.EncodeToString(checksum)
+	}
+	return hashes
+}
+
 // Verify calculates the sha256 hash of the passed file and compares it to the expected hash value based on the filename.
 func (c *Checksummer) Verify(filename string, f io.Reader) error {
 	hash := sha256.New()

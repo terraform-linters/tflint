@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strings"
 
 	plugin "github.com/hashicorp/go-plugin"
@@ -20,9 +21,19 @@ import (
 // If the plugin is not enabled, skip without starting.
 // The Terraform Language plugin is treated specially. Plugins for which no version
 // is specified will launch the bundled plugin instead of returning an error.
+//
+// If the lockfile exists, installed plugins are checked against it before launching.
+// Plugins with a version that does not match the lock entry will return an error,
+// and plugins without lock entries will be reported as warnings.
 func Discovery(config *tflint.Config) (*Plugin, error) {
 	clients := map[string]*plugin.Client{}
 	rulesets := map[string]*host2plugin.Client{}
+	warnings := []string{}
+
+	lockfile, err := LoadLockfile(LockfilePath(config.ConfigPath()))
+	if err != nil {
+		return nil, err
+	}
 
 	for _, pluginCfg := range config.Plugins {
 		installCfg := NewInstallConfig(config, pluginCfg)
@@ -47,6 +58,19 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 				return nil, fmt.Errorf(`Plugin "%s" not found. Did you run "tflint --init"?`, pluginCfg.Name)
 			}
 		} else {
+			if pluginCfg.Enabled && lockfile != nil && !installCfg.ManuallyInstalled() {
+				warning, err := lockfile.checkInstalledPlugin(pluginCfg, pluginPath)
+				if err != nil {
+					for _, client := range clients {
+						client.Kill()
+					}
+					return nil, err
+				}
+				if warning != "" {
+					log.Printf("[WARN] %s", warning)
+					warnings = append(warnings, warning)
+				}
+			}
 			cmd = exec.Command(pluginPath)
 		}
 
@@ -73,7 +97,8 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 		}
 	}
 
-	return &Plugin{RuleSets: rulesets, clients: clients}, nil
+	slices.Sort(warnings)
+	return &Plugin{RuleSets: rulesets, Warnings: warnings, clients: clients}, nil
 }
 
 // FindPluginPath returns the plugin binary path.

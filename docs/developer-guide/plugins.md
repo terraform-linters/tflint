@@ -53,6 +53,8 @@ The requirements to support automatic installation are as follows:
 - The release must contain a checksum file for the zip file with the name `checksums.txt`
 - The checksum file must contain a sha256 hash and filename
 
+It is also recommended that the checksum file contains sha256 hashes of the plugin binaries for all platforms, named like `tflint-ruleset-{name}_{GOOS}_{GOARCH}` (without `.exe` even in Windows). If available, TFLint records the hashes for all platforms in the [dependency lockfile](../user-guide/plugins.md#dependency-lockfile) at once. Otherwise, only the hash of the binary installed on the current platform is recorded.
+
 When signing a release, one of the following requirements must be met:
 
 - [Artifact Attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds)

@@ -60,6 +60,82 @@ The automatically installed plugins are placed as `[plugin dir]/[source]/[versio
 
 If you want to change the plugin directory, you can change this with the [`plugin_dir`](config.md#plugin_dir) or `TFLINT_PLUGIN_DIR` environment variable.
 
+## Dependency lockfile
+
+`tflint --init` records the installed plugins in a dependency lockfile. Commit the lockfile to version control, just like Terraform's [dependency lock file](https://developer.hashicorp.com/terraform/language/files/dependency-lock). On later installations, TFLint verifies the plugins against the lockfile, so only the plugins that were trusted at the first installation can be installed. This mitigates supply chain attacks such as [repojacking](https://github.com/terraform-linters/tflint/issues/1634).
+
+```console
+$ tflint --init
+Installing "foo" plugin...
+Installed "foo" (source: github.com/org/tflint-ruleset-foo, version: 0.1.0)
+Created lockfile .tflint.lock.hcl
+```
+
+### Lockfile location
+
+The lockfile is placed next to the loaded config file. The name is derived from the config file name by replacing the `.hcl` or `.json` extension with `.lock.hcl`. This applies regardless of how the config file is found (`--config`, `TFLINT_CONFIG_FILE`, or the default lookup).
+
+| Config file | Lockfile |
+| --- | --- |
+| `.tflint.hcl` | `.tflint.lock.hcl` |
+| `.tflint.json` | `.tflint.lock.hcl` |
+| `configs/aws.hcl` | `configs/aws.lock.hcl` |
+| `~/.tflint.hcl` | `~/.tflint.lock.hcl` |
+
+If no config file is found, no lockfile is used. When using `--chdir` or `--recursive`, the lockfile path is derived from the config file loaded in each directory.
+
+### Lockfile format
+
+```hcl
+# This file is maintained automatically by "tflint --init".
+# Manual edits may be lost in future updates.
+
+lockfile_version = 1
+
+plugin "github.com/org/tflint-ruleset-foo" {
+  version       = "0.1.0"
+  repository_id = 123456789
+  hashes = {
+    darwin_amd64  = "h1:0a1b2c..."
+    linux_amd64   = "h1:3d4e5f..."
+    windows_amd64 = "h1:6a7b8c..."
+  }
+}
+```
+
+- `lockfile_version`: The version of the lockfile format.
+- `plugin` blocks: Locked plugins. The label is the plugin `source`.
+  - `version`: The installed plugin version.
+  - `repository_id`: The ID of the source repository on GitHub. The ID changes when the repository is deleted and recreated, even if it has the same name.
+  - `hashes`: The hashes of the plugin binary per platform (`[GOOS]_[GOARCH]`). `h1:` is followed by the sha256 hash of the plugin binary (not the zip file). Note that this is different from Terraform's `h1:` hash.
+
+If the plugin release contains the binary hashes for all platforms in `checksums.txt`, all of them are recorded. Otherwise, only the hash of the binary installed on the current platform is recorded, and hashes for other platforms are added when running `tflint --init` on those platforms.
+
+If all the hashes are available in `checksums.txt`, every value in the lockfile can be obtained from the GitHub release and the GitHub API. This means that automated update workflows can update the lockfile without running `tflint --init`.
+
+### Installation behavior
+
+When installing a plugin, `tflint --init` behaves as follows:
+
+- If the plugin is not recorded in the lockfile, the plugin is installed, and a new entry is added to the lockfile.
+- If the plugin is recorded with the same version, the repository ID and hashes must match the lockfile. Otherwise, the installation fails and nothing is installed. A hash for a platform not yet recorded is added to the lockfile.
+- If the plugin is recorded with a different version, the plugin is installed, and the hashes are replaced. However, if the repository ID does not match, the installation fails. If the repository change is expected, remove the entry from the lockfile and run `tflint --init` again.
+
+Plugins that are already installed are skipped as before and are not newly recorded in the lockfile. To record a plugin installed before introducing the lockfile, remove the installed plugin from the plugin directory and run `tflint --init` again. Entries for plugins no longer declared in the config file are removed from the lockfile.
+
+Plugins without `source` and `version` (manual installation and the bundled plugin) are not recorded in the lockfile.
+
+When launching plugins, if the lockfile exists, TFLint (including the language server) checks the installed plugins against it:
+
+- If the plugin version does not match the lockfile, an error is returned. Run `tflint --init` to update the lockfile.
+- If the plugin is not recorded in the lockfile, a warning is shown.
+
+### Lockfile versioning
+
+The `lockfile_version` is bumped only for changes that older TFLint cannot safely ignore, such as structural changes or additions related to verification. Attributes that older TFLint can safely ignore may be added without bumping the version, and unknown attributes are ignored when reading. When rewriting the lockfile, TFLint does not bump the version of an existing lockfile unless necessary.
+
+If the lockfile version is newer than the version supported by TFLint, TFLint returns an error. In that case, upgrade TFLint.
+
 ## Avoiding rate limiting
 
 When you install plugins with `tflint --init`, TFLint calls the GitHub API to get release metadata. By default, this is an unauthenticated request, subject to a rate limit of 60 requests per hour _per IP address_.

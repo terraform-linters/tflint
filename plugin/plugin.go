@@ -16,6 +16,8 @@ var (
 // Basically, it is a wrapper for go-plugin and provides an API to handle them collectively.
 type Plugin struct {
 	RuleSets map[string]*host2plugin.Client
+	// Warnings are messages to be shown to users, such as plugins not recorded in the lockfile.
+	Warnings []string
 
 	clients map[string]*plugin.Client
 }
