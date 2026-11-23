@@ -218,7 +218,7 @@ func (c *InstallConfig) Install(locked *LockedPlugin) (string, *LockedPlugin, er
 	if err = extractFileFromZipFile(zipFile, filepath.Base(path), tmpPath); err != nil {
 		return "", nil, fmt.Errorf("Failed to extract binary from %s: %s", c.AssetName(), err)
 	}
-	binaryHash, err := hashFile(tmpPath)
+	binaryHash, err := checksummer.HashFile(tmpPath)
 	if err != nil {
 		return "", nil, fmt.Errorf("Failed to calculate the hash of the plugin binary: %s", err)
 	}

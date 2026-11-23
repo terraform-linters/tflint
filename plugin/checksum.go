@@ -7,10 +7,31 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
+	"os"
+	"regexp"
+	"runtime"
 	"strings"
 )
 
-// Checksummer validates checksums
+// hashSchemeH1 is the prefix for the sha256 hash of a plugin binary.
+// Note that it is not the same as Terraform's "h1:" (dirhash).
+const hashSchemeH1 = "h1:"
+
+var (
+	// platformPattern matches platform names like "linux_amd64".
+	platformPattern = regexp.MustCompile(`^[a-z0-9]+_[a-z0-9]+$`)
+	// h1HashPattern matches "h1:" hashes.
+	h1HashPattern = regexp.MustCompile(`^h1:[0-9a-f]{64}$`)
+)
+
+// currentPlatform returns the platform name of the running TFLint, e.g. linux_amd64.
+func currentPlatform() string {
+	return fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH)
+}
+
+// Checksummer handles hashes of plugins.
+// It validates checksums based on checksums.txt, and generates "h1:" hashes
+// of plugin binaries recorded in the lockfile.
 type Checksummer struct {
 	checksums map[string][]byte
 }
@@ -67,18 +88,40 @@ func (c *Checksummer) binaryHashes(pluginName string) map[string]string {
 	return hashes
 }
 
+// HashFile returns the "h1:" hash of the given file.
+func (c *Checksummer) HashFile(path string) (string, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	sum, err := sha256Sum(f)
+	if err != nil {
+		return "", err
+	}
+	return hashSchemeH1 + hex.EncodeToString(sum), nil
+}
+
 // Verify calculates the sha256 hash of the passed file and compares it to the expected hash value based on the filename.
 func (c *Checksummer) Verify(filename string, f io.Reader) error {
-	hash := sha256.New()
-	if _, err := io.Copy(hash, f); err != nil {
+	actual, err := sha256Sum(f)
+	if err != nil {
 		return err
 	}
 
 	expected := c.checksums[filename]
-	actual := hash.Sum(nil)
 	if !bytes.Equal(actual, expected) {
 		return fmt.Errorf("Failed to match checksums: expected=%x, actual=%x", expected, actual)
 	}
 
 	return nil
+}
+
+func sha256Sum(r io.Reader) ([]byte, error) {
+	h := sha256.New()
+	if _, err := io.Copy(h, r); err != nil {
+		return nil, err
+	}
+	return h.Sum(nil), nil
 }

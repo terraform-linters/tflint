@@ -344,25 +344,3 @@ func TestLockfile_Save(t *testing.T) {
 		t.Fatalf("expected %s, but got %s", hashB, got)
 	}
 }
-
-func TestChecksummer_binaryHashes(t *testing.T) {
-	checksums := `
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  tflint-ruleset-aws_linux_amd64.zip
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb  tflint-ruleset-aws_linux_amd64
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc  tflint-ruleset-aws_windows_amd64
-dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd  tflint-ruleset-aws_extra_linux_amd64
-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee  tflint-ruleset-google_linux_amd64
-`
-	checksummer, err := NewChecksummer(strings.NewReader(strings.TrimSpace(checksums)))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	want := map[string]string{
-		"linux_amd64":   "h1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-		"windows_amd64": "h1:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-	}
-	if diff := cmp.Diff(want, checksummer.binaryHashes("aws")); diff != "" {
-		t.Error(diff)
-	}
-}

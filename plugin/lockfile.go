@@ -2,16 +2,11 @@ package plugin
 
 import (
 	"bytes"
-	"crypto/sha256"
-	"encoding/hex"
 	"errors"
 	"fmt"
-	"io"
 	"maps"
 	"os"
 	"path/filepath"
-	"regexp"
-	"runtime"
 	"slices"
 	"strings"
 
@@ -34,18 +29,9 @@ import (
 // the new version first, and start writing it in a later release.
 const LockfileVersion = 1
 
-// hashSchemeH1 is the prefix for the sha256 hash of a plugin binary.
-// Note that it is not the same as Terraform's "h1:" (dirhash).
-const hashSchemeH1 = "h1:"
-
 const lockfileHeader = `# This file is maintained automatically by "tflint --init".
 # Manual edits may be lost in future updates.
 `
-
-var (
-	platformPattern = regexp.MustCompile(`^[a-z0-9]+_[a-z0-9]+$`)
-	h1HashPattern   = regexp.MustCompile(`^h1:[0-9a-f]{64}$`)
-)
 
 // Lockfile represents a dependency lockfile (.tflint.lock.hcl).
 // It records the trusted plugins to prevent installing anything other
@@ -314,24 +300,4 @@ func (l *Lockfile) checkInstalledPlugin(cfg *tflint.PluginConfig) error {
 		return fmt.Errorf(`Plugin "%s" version %s does not match the lockfile %s (locked: %s). Did you run "tflint --init"?`, cfg.Name, cfg.Version, l.path, entry.Version)
 	}
 	return nil
-}
-
-// currentPlatform returns the platform name of the running TFLint, e.g. linux_amd64.
-func currentPlatform() string {
-	return fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH)
-}
-
-// hashFile returns the "h1:" hash of the given file.
-func hashFile(path string) (string, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return "", err
-	}
-	defer f.Close()
-
-	h := sha256.New()
-	if _, err := io.Copy(h, f); err != nil {
-		return "", err
-	}
-	return hashSchemeH1 + hex.EncodeToString(h.Sum(nil)), nil
 }
