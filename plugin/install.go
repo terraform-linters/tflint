@@ -205,33 +205,9 @@ func (c *InstallConfig) Install(locked *LockedPlugin) (string, *LockedPlugin, er
 	}
 	log.Printf("[DEBUG] Matched checksum successfully")
 
-	// Extract the binary to a temporary file first, and move it to the install path
-	// only after verifying the hash so that unverified binaries are never installed.
-	tmpFile, err := os.CreateTemp(filepath.Dir(path), filepath.Base(path)+".*.tmp")
-	if err != nil {
-		return "", nil, fmt.Errorf("Failed to create a temporary file: %s", err)
-	}
-	tmpPath := tmpFile.Name()
-	tmpFile.Close()
-	defer os.Remove(tmpPath)
-
-	if err = extractFileFromZipFile(zipFile, filepath.Base(path), tmpPath); err != nil {
-		return "", nil, fmt.Errorf("Failed to extract binary from %s: %s", c.AssetName(), err)
-	}
-	binaryHash, err := checksummer.HashFile(tmpPath)
-	if err != nil {
-		return "", nil, fmt.Errorf("Failed to calculate the hash of the plugin binary: %s", err)
-	}
-	entry, err := c.newLockedPlugin(locked, repo.GetID(), checksummer, binaryHash)
+	entry, err := c.installBinary(zipFile, path, locked, repo.GetID(), checksummer)
 	if err != nil {
 		return "", nil, err
-	}
-
-	if err := os.Chmod(tmpPath, 0o755); err != nil {
-		return "", nil, fmt.Errorf("Failed to change the permission of %s: %s", tmpPath, err)
-	}
-	if err := os.Rename(tmpPath, path); err != nil {
-		return "", nil, fmt.Errorf("Failed to move the plugin binary to %s: %s", path, err)
 	}
 
 	log.Printf("[DEBUG] Installed %s successfully", path)
@@ -242,6 +218,40 @@ func (c *InstallConfig) Install(locked *LockedPlugin) (string, *LockedPlugin, er
 		return path, entry, ErrLegacySigningKeyUsed
 	}
 	return path, entry, nil
+}
+
+// installBinary extracts the plugin binary from the zip file and installs it to the given path.
+// The binary is extracted to a temporary file first, and moved to the install path only after
+// verifying the binary hash against the lockfile and checksums.txt, so that binaries failing
+// the verification are never installed. Returns a new lock entry for the installed plugin.
+func (c *InstallConfig) installBinary(zipFile *os.File, path string, locked *LockedPlugin, repositoryID int64, checksummer *Checksummer) (*LockedPlugin, error) {
+	tmpFile, err := os.CreateTemp(filepath.Dir(path), filepath.Base(path)+".*.tmp")
+	if err != nil {
+		return nil, fmt.Errorf("Failed to create a temporary file: %s", err)
+	}
+	tmpPath := tmpFile.Name()
+	tmpFile.Close()
+	defer os.Remove(tmpPath)
+
+	if err = extractFileFromZipFile(zipFile, filepath.Base(path), tmpPath); err != nil {
+		return nil, fmt.Errorf("Failed to extract binary from %s: %s", c.AssetName(), err)
+	}
+	binaryHash, err := checksummer.HashFile(tmpPath)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to calculate the hash of the plugin binary: %s", err)
+	}
+	entry, err := c.newLockedPlugin(locked, repositoryID, checksummer, binaryHash)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := os.Chmod(tmpPath, 0o755); err != nil {
+		return nil, fmt.Errorf("Failed to change the permission of %s: %s", tmpPath, err)
+	}
+	if err := os.Rename(tmpPath, path); err != nil {
+		return nil, fmt.Errorf("Failed to move the plugin binary to %s: %s", path, err)
+	}
+	return entry, nil
 }
 
 // newLockedPlugin returns a new lock entry for the installed plugin.
