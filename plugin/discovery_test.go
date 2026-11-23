@@ -505,11 +505,10 @@ plugin "github.com/terraform-linters/tflint-ruleset-bar" {
 `
 
 	tests := []struct {
-		name         string
-		enabled      bool
-		lockfile     string
-		wantWarnings int
-		wantErr      string
+		name     string
+		enabled  bool
+		lockfile string
+		wantErr  string
 	}{
 		{
 			name:    "no lockfile",
@@ -521,10 +520,15 @@ plugin "github.com/terraform-linters/tflint-ruleset-bar" {
 			lockfile: fmt.Sprintf(lockfile, 1, "0.1.0"),
 		},
 		{
-			name:         "not locked",
-			enabled:      true,
-			lockfile:     "lockfile_version = 1\n",
-			wantWarnings: 1,
+			name:     "not locked",
+			enabled:  true,
+			lockfile: "lockfile_version = 1\n",
+			wantErr:  `Plugin "bar" (source: github.com/terraform-linters/tflint-ruleset-bar, version: 0.1.0) is not recorded in the lockfile .tflint.lock.hcl. Did you run "tflint --init"?`,
+		},
+		{
+			name:     "not locked in disabled plugin",
+			enabled:  false,
+			lockfile: "lockfile_version = 1\n",
 		},
 		{
 			name:     "version mismatch",
@@ -577,15 +581,6 @@ plugin "github.com/terraform-linters/tflint-ruleset-bar" {
 			}
 			if err != nil {
 				t.Fatalf("unexpected error: %s", err)
-			}
-
-			if len(plugin.Warnings) != test.wantWarnings {
-				t.Fatalf("expected %d warnings, but got %d: %v", test.wantWarnings, len(plugin.Warnings), plugin.Warnings)
-			}
-			for _, warning := range plugin.Warnings {
-				if !strings.Contains(warning, `Plugin "bar" (source: github.com/terraform-linters/tflint-ruleset-bar, version: 0.1.0) is not recorded in the lockfile .tflint.lock.hcl`) {
-					t.Fatalf("unexpected warning: %s", warning)
-				}
 			}
 		})
 	}

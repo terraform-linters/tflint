@@ -32,9 +32,6 @@ func (cli *CLI) startLanguageServer(opts Options) int {
 	}
 	if plugin != nil {
 		defer plugin.Clean()
-		for _, warning := range plugin.Warnings {
-			fmt.Fprintf(cli.errStream, "Warning: %s\n", warning)
-		}
 	}
 
 	ch := registerShutdownCh()

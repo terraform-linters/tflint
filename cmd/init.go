@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"log"
 	"maps"
 	"os"
 	"slices"
@@ -38,15 +37,12 @@ func (cli *CLI) init(opts Options) int {
 			if err != nil {
 				return err
 			}
-			lockfileCreated := false
-			if lockfile == nil && lockfilePath != "" {
-				lockfile = plugin.NewLockfile(lockfilePath)
-				lockfileCreated = true
-			}
 
+			// Collect plugins to be installed automatically and check if they are already installed
+			names := []string{}
+			alreadyInstalled := map[string]bool{}
 			// Plugins declared in the config. Used to remove unused entries from the lockfile.
 			declared := map[string]string{}
-
 			for _, name := range slices.Sorted(maps.Keys(cfg.Plugins)) {
 				pluginCfg := cfg.Plugins[name]
 				installCfg := plugin.NewInstallConfig(cfg, pluginCfg)
@@ -61,60 +57,78 @@ func (cli *CLI) init(opts Options) int {
 				}
 				declared[pluginCfg.Source] = pluginCfg.Version
 
-				var locked *plugin.LockedPlugin
-				if lockfile != nil {
-					locked = lockfile.Plugins[pluginCfg.Source]
-				}
-
 				_, err := plugin.FindPluginPath(installCfg)
-				if os.IsNotExist(err) {
-					if opts.Recursive {
-						fmt.Fprintf(cli.outStream, "Installing \"%s\" plugin in %s...\n", pluginCfg.Name, wd)
-					} else {
-						fmt.Fprintf(cli.outStream, "Installing \"%s\" plugin...\n", pluginCfg.Name)
-					}
-
-					var entry *plugin.LockedPlugin
-					_, entry, err = installCfg.Install(locked)
-					if err != nil {
-						if errors.Is(err, plugin.ErrPluginNotVerified) {
-							if installCfg.Signature == string(plugin.SignatureModeNone) {
-								_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `The plugin signature verification is disabled. Please be aware that disabling verification can pose security risks`)
-							} else {
-								_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `No signing key or attestations found. The plugin signature is not verified`)
-							}
-							err = nil
-						} else if errors.Is(err, plugin.ErrLegacySigningKeyUsed) {
-							_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `The plugin was signed using a legacy PGP signing key. Please update the plugin to the latest version`)
-							err = nil
-						} else {
-							// Save the lock entries of plugins installed so far
-							if saveErr := cli.saveLockfile(lockfile, lockfileCreated); saveErr != nil {
-								return saveErr
-							}
-							return fmt.Errorf("Failed to install a plugin; %w", err)
-						}
-					}
-
-					if lockfile != nil {
-						lockfile.Plugins[pluginCfg.Source] = entry
-					}
-					installed = true
-					fmt.Fprintf(cli.outStream, "Installed \"%s\" (source: %s, version: %s)\n", pluginCfg.Name, pluginCfg.Source, pluginCfg.Version)
-				} else if err == nil && locked != nil && locked.Version != pluginCfg.Version {
-					// The plugin is already installed, but the lock entry is for another version.
-					// Remove the stale entry because the installed plugin is not verified with the lockfile.
-					log.Printf(`[INFO] Remove the stale lock entry for "%s" (locked: %s, declared: %s)`, pluginCfg.Source, locked.Version, pluginCfg.Version)
-					delete(lockfile.Plugins, pluginCfg.Source)
-				}
-
-				if err != nil {
+				if err != nil && !os.IsNotExist(err) {
 					if opts.Recursive {
 						return fmt.Errorf("Failed to find a plugin in %s; %w", wd, err)
 					} else {
 						return fmt.Errorf("Failed to find a plugin; %w", err)
 					}
 				}
+				names = append(names, name)
+				alreadyInstalled[name] = err == nil
+			}
+
+			// The lockfile is created only when installing a new plugin, so as not to affect
+			// existing users who have already installed plugins.
+			lockfileCreated := false
+			if lockfile == nil && lockfilePath != "" && slices.ContainsFunc(names, func(name string) bool { return !alreadyInstalled[name] }) {
+				lockfile = plugin.NewLockfile(lockfilePath)
+				lockfileCreated = true
+			}
+
+			for _, name := range names {
+				pluginCfg := cfg.Plugins[name]
+				installCfg := plugin.NewInstallConfig(cfg, pluginCfg)
+
+				var locked *plugin.LockedPlugin
+				if lockfile != nil {
+					locked = lockfile.Plugins[pluginCfg.Source]
+				}
+
+				if alreadyInstalled[name] {
+					// If the lockfile is used, all plugins must be recorded with the declared version.
+					// Reinstall plugins that are installed but not recorded in the lockfile.
+					if lockfile == nil || (locked != nil && locked.Version == pluginCfg.Version) {
+						continue
+					}
+					if opts.Recursive {
+						fmt.Fprintf(cli.outStream, "Reinstalling \"%s\" plugin in %s to record it in the lockfile...\n", pluginCfg.Name, wd)
+					} else {
+						fmt.Fprintf(cli.outStream, "Reinstalling \"%s\" plugin to record it in the lockfile...\n", pluginCfg.Name)
+					}
+				} else {
+					if opts.Recursive {
+						fmt.Fprintf(cli.outStream, "Installing \"%s\" plugin in %s...\n", pluginCfg.Name, wd)
+					} else {
+						fmt.Fprintf(cli.outStream, "Installing \"%s\" plugin...\n", pluginCfg.Name)
+					}
+				}
+
+				_, entry, err := installCfg.Install(locked)
+				if err != nil {
+					if errors.Is(err, plugin.ErrPluginNotVerified) {
+						if installCfg.Signature == string(plugin.SignatureModeNone) {
+							_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `The plugin signature verification is disabled. Please be aware that disabling verification can pose security risks`)
+						} else {
+							_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `No signing key or attestations found. The plugin signature is not verified`)
+						}
+					} else if errors.Is(err, plugin.ErrLegacySigningKeyUsed) {
+						_, _ = color.New(color.FgYellow).Fprintln(cli.outStream, `The plugin was signed using a legacy PGP signing key. Please update the plugin to the latest version`)
+					} else {
+						// Save the lock entries of plugins installed so far
+						if saveErr := cli.saveLockfile(lockfile, lockfileCreated); saveErr != nil {
+							return saveErr
+						}
+						return fmt.Errorf("Failed to install a plugin; %w", err)
+					}
+				}
+
+				if lockfile != nil {
+					lockfile.Plugins[pluginCfg.Source] = entry
+				}
+				installed = true
+				fmt.Fprintf(cli.outStream, "Installed \"%s\" (source: %s, version: %s)\n", pluginCfg.Name, pluginCfg.Source, pluginCfg.Version)
 			}
 
 			// Remove entries for plugins that are no longer declared

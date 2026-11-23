@@ -121,14 +121,13 @@ When installing a plugin, `tflint --init` behaves as follows:
 - If the plugin is recorded with the same version, the repository ID and hashes must match the lockfile. Otherwise, the installation fails and nothing is installed. A hash for a platform not yet recorded is added to the lockfile.
 - If the plugin is recorded with a different version, the plugin is installed, and the hashes are replaced. However, if the repository ID does not match, the installation fails. If the repository change is expected, remove the entry from the lockfile and run `tflint --init` again.
 
-Plugins that are already installed are skipped as before and are not newly recorded in the lockfile. To record a plugin installed before introducing the lockfile, remove the installed plugin from the plugin directory and run `tflint --init` again. Entries for plugins no longer declared in the config file are removed from the lockfile.
+If the lockfile exists, all plugins must be recorded in the lockfile with the declared version. Plugins that are already installed are skipped if they are recorded with the declared version. Otherwise, they are reinstalled to record them in the lockfile.
 
-Plugins without `source` and `version` (manual installation and the bundled plugin) are not recorded in the lockfile.
+If the lockfile does not exist, plugins that are already installed are skipped as before. The lockfile is created only when a new plugin is installed. At that time, plugins that are already installed are also reinstalled to record them in the new lockfile.
 
-When launching plugins, if the lockfile exists, TFLint (including the language server) checks the installed plugins against it:
+Entries for plugins no longer declared in the config file are removed from the lockfile. Plugins without `source` and `version` (manual installation and the bundled plugin) are not recorded in the lockfile.
 
-- If the plugin version does not match the lockfile, an error is returned. Run `tflint --init` to update the lockfile.
-- If the plugin is not recorded in the lockfile, a warning is shown.
+When launching plugins, if the lockfile exists, TFLint (including the language server) checks the installed plugins against it. If the plugin is not recorded in the lockfile, or the plugin version does not match the lockfile, an error is returned. In that case, run `tflint --init` to update the lockfile.
 
 ### Lockfile versioning
 

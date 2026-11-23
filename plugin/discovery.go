@@ -8,7 +8,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"slices"
 	"strings"
 
 	plugin "github.com/hashicorp/go-plugin"
@@ -23,12 +22,11 @@ import (
 // is specified will launch the bundled plugin instead of returning an error.
 //
 // If the lockfile exists, installed plugins are checked against it before launching.
-// Plugins with a version that does not match the lock entry will return an error,
-// and plugins without lock entries will be reported as warnings.
+// Plugins not recorded in the lockfile or with a version that does not match
+// the lock entry will return an error.
 func Discovery(config *tflint.Config) (*Plugin, error) {
 	clients := map[string]*plugin.Client{}
 	rulesets := map[string]*host2plugin.Client{}
-	warnings := []string{}
 
 	lockfile, err := LoadLockfile(LockfilePath(config.ConfigPath()))
 	if err != nil {
@@ -59,16 +57,11 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 			}
 		} else {
 			if pluginCfg.Enabled && lockfile != nil && !installCfg.ManuallyInstalled() {
-				warning, err := lockfile.checkInstalledPlugin(pluginCfg, pluginPath)
-				if err != nil {
+				if err := lockfile.checkInstalledPlugin(pluginCfg); err != nil {
 					for _, client := range clients {
 						client.Kill()
 					}
 					return nil, err
-				}
-				if warning != "" {
-					log.Printf("[WARN] %s", warning)
-					warnings = append(warnings, warning)
 				}
 			}
 			cmd = exec.Command(pluginPath)
@@ -97,8 +90,7 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 		}
 	}
 
-	slices.Sort(warnings)
-	return &Plugin{RuleSets: rulesets, Warnings: warnings, clients: clients}, nil
+	return &Plugin{RuleSets: rulesets, clients: clients}, nil
 }
 
 // FindPluginPath returns the plugin binary path.

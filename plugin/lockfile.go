@@ -303,18 +303,17 @@ func (l *Lockfile) Save() (bool, error) {
 }
 
 // checkInstalledPlugin checks the consistency between the installed plugin and the lockfile
-// before launching it. If the version does not match the lock entry, it returns an error.
-// If the plugin is not locked, it returns a warning message because plugins installed
-// before introducing the lockfile are not recorded until they are reinstalled.
-func (l *Lockfile) checkInstalledPlugin(cfg *tflint.PluginConfig, pluginPath string) (string, error) {
+// before launching it. If the lockfile exists, all plugins installed automatically must be
+// recorded with the declared version.
+func (l *Lockfile) checkInstalledPlugin(cfg *tflint.PluginConfig) error {
 	entry, exists := l.Plugins[cfg.Source]
 	if !exists {
-		return fmt.Sprintf(`Plugin "%s" (source: %s, version: %s) is not recorded in the lockfile %s, so it is not verified. To record it, remove %s and run "tflint --init"`, cfg.Name, cfg.Source, cfg.Version, l.path, pluginPath), nil
+		return fmt.Errorf(`Plugin "%s" (source: %s, version: %s) is not recorded in the lockfile %s. Did you run "tflint --init"?`, cfg.Name, cfg.Source, cfg.Version, l.path)
 	}
 	if entry.Version != cfg.Version {
-		return "", fmt.Errorf(`Plugin "%s" version %s does not match the lockfile %s (locked: %s). Did you run "tflint --init"?`, cfg.Name, cfg.Version, l.path, entry.Version)
+		return fmt.Errorf(`Plugin "%s" version %s does not match the lockfile %s (locked: %s). Did you run "tflint --init"?`, cfg.Name, cfg.Version, l.path, entry.Version)
 	}
-	return "", nil
+	return nil
 }
 
 // currentPlatform returns the platform name of the running TFLint, e.g. linux_amd64.

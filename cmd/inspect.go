@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/fatih/color"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
@@ -121,9 +120,6 @@ func (cli *CLI) inspectModule(opts Options, dir string, filterFiles []string) (t
 	}
 	if err != nil {
 		return issues, changes, err
-	}
-	for _, warning := range rulesetPlugin.Warnings {
-		_, _ = color.New(color.FgYellow).Fprintf(cli.errStream, "Warning: %s\n", warning)
 	}
 
 	// Validate and collect plugin versions
