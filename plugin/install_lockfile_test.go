@@ -3,10 +3,12 @@ package plugin
 import (
 	"archive/zip"
 	"bytes"
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -114,11 +116,19 @@ func fakeGitHubServer(t *testing.T, release *fakeRelease) (string, *int) {
 	server := httptest.NewTLSServer(mux)
 	t.Cleanup(server.Close)
 
+	// Route all requests to the test server. The host name is used instead of
+	// "127.0.0.1:port" because the source host is part of the plugin install path,
+	// and ":" cannot be used in paths on Windows. The test server certificate is
+	// valid for example.com.
+	transport := server.Client().Transport.(*http.Transport).Clone()
+	transport.DialContext = func(ctx context.Context, network, _ string) (net.Conn, error) {
+		return (&net.Dialer{}).DialContext(ctx, network, server.Listener.Addr().String())
+	}
 	original := http.DefaultTransport
-	http.DefaultTransport = server.Client().Transport
+	http.DefaultTransport = transport
 	t.Cleanup(func() { http.DefaultTransport = original })
 
-	return strings.TrimPrefix(server.URL, "https://"), &downloads
+	return "example.com", &downloads
 }
 
 func newFakeInstallConfig(t *testing.T, host string, name string, version string) *InstallConfig {
