@@ -2,8 +2,10 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -25,6 +27,10 @@ func TestIntegration(t *testing.T) {
 	os.Setenv("TFLINT_PLUGIN_DIR", pluginDir)
 	defer os.Setenv("TFLINT_PLUGIN_DIR", "")
 
+	// The lockfile is created next to the config file by "tflint --init"
+	lockfilePath := filepath.Join(dir, ".tflint.lock.hcl")
+	t.Cleanup(func() { os.Remove(lockfilePath) })
+
 	// Init on the current directory
 	t.Chdir(dir)
 
@@ -45,6 +51,22 @@ func TestIntegration(t *testing.T) {
 	}
 	if !strings.Contains(outStream.String(), `Installed "aws" (source: github.com/terraform-linters/tflint-ruleset-aws, version: 0.21.1)`) {
 		t.Fatalf("Expected to contain an installed log, but did not: stdout=%s, stderr=%s", outStream, errStream)
+	}
+	if !strings.Contains(outStream.String(), "Created lockfile .tflint.lock.hcl") {
+		t.Fatalf("Expected to contain a lockfile creation log, but did not: stdout=%s, stderr=%s", outStream, errStream)
+	}
+	lockfile, err := os.ReadFile(lockfilePath)
+	if err != nil {
+		t.Fatalf("Failed to read the lockfile: %s", err)
+	}
+	for _, want := range []string{
+		`plugin "github.com/terraform-linters/tflint-ruleset-aws" {`,
+		`version       = "0.21.1"`,
+		fmt.Sprintf(`%s_%s = "h1:`, runtime.GOOS, runtime.GOARCH),
+	} {
+		if !strings.Contains(string(lockfile), want) {
+			t.Fatalf("Expected the lockfile to contain %q, but did not: %s", want, lockfile)
+		}
 	}
 
 	cli.Run([]string{"./tflint", "--init"})

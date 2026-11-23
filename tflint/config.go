@@ -560,6 +560,12 @@ func (c *Config) enableBundledPlugin() *Config {
 	return c
 }
 
+// ConfigPath returns the path of the loaded config file.
+// Returns an empty string if no config file was loaded (e.g. the default config is used).
+func (c *Config) ConfigPath() string {
+	return c.configPath
+}
+
 // IsJSONConfig returns true if the configuration was loaded from a JSON file
 func (c *Config) IsJSONConfig() bool {
 	return filepath.Ext(c.configPath) == ".json"

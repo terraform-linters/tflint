@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
+	"github.com/spf13/afero"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -469,5 +471,117 @@ func Test_FindPluginPath_withoutExtensionInWindows(t *testing.T) {
 	}
 	if got != expected {
 		t.Fatalf("Failed: want=%s got=%s", expected, got)
+	}
+}
+
+func Test_Discovery_lockfile(t *testing.T) {
+	tflint.DisableBundledPlugin = true
+	defer func() { tflint.DisableBundledPlugin = false }()
+
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	original := PluginRoot
+	PluginRoot = filepath.Join(cwd, "test-fixtures", "plugins")
+	defer func() { PluginRoot = original }()
+
+	config := `
+plugin "bar" {
+  enabled = %t
+  source  = "github.com/terraform-linters/tflint-ruleset-bar"
+  version = "0.1.0"
+}
+`
+	lockfile := `
+lockfile_version = %d
+
+plugin "github.com/terraform-linters/tflint-ruleset-bar" {
+  version       = "%s"
+  repository_id = 123
+  hashes        = {}
+}
+`
+
+	tests := []struct {
+		name     string
+		enabled  bool
+		lockfile string
+		wantErr  string
+	}{
+		{
+			name:    "no lockfile",
+			enabled: true,
+		},
+		{
+			name:     "locked",
+			enabled:  true,
+			lockfile: fmt.Sprintf(lockfile, 1, "0.1.0"),
+		},
+		{
+			name:     "not locked",
+			enabled:  true,
+			lockfile: "lockfile_version = 1\n",
+			wantErr:  `Plugin "bar" (source: github.com/terraform-linters/tflint-ruleset-bar, version: 0.1.0) is not recorded in the lockfile .tflint.lock.hcl. Did you run "tflint --init"?`,
+		},
+		{
+			name:     "not locked in disabled plugin",
+			enabled:  false,
+			lockfile: "lockfile_version = 1\n",
+		},
+		{
+			name:     "version mismatch",
+			enabled:  true,
+			lockfile: fmt.Sprintf(lockfile, 1, "0.2.0"),
+			wantErr:  `Plugin "bar" version 0.1.0 does not match the lockfile .tflint.lock.hcl (locked: 0.2.0). Did you run "tflint --init"?`,
+		},
+		{
+			name:     "version mismatch in disabled plugin",
+			enabled:  false,
+			lockfile: fmt.Sprintf(lockfile, 1, "0.2.0"),
+		},
+		{
+			name:     "unsupported lockfile version",
+			enabled:  true,
+			lockfile: fmt.Sprintf(lockfile, 2, "0.1.0"),
+			wantErr:  "Please upgrade TFLint.",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			t.Chdir(t.TempDir())
+			if err := os.WriteFile(".tflint.hcl", fmt.Appendf(nil, config, test.enabled), 0o644); err != nil {
+				t.Fatal(err)
+			}
+			if test.lockfile != "" {
+				if err := os.WriteFile(".tflint.lock.hcl", []byte(test.lockfile), 0o644); err != nil {
+					t.Fatal(err)
+				}
+			}
+			cfg, err := tflint.LoadConfig(afero.Afero{Fs: afero.NewOsFs()}, "")
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			plugin, err := Discovery(cfg)
+			if plugin != nil {
+				defer plugin.Clean()
+			}
+
+			if test.wantErr != "" {
+				if err == nil {
+					t.Fatal("expected an error, but got nil")
+				}
+				if !strings.Contains(err.Error(), test.wantErr) {
+					t.Fatalf("expected error to contain %q, but got %q", test.wantErr, err)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("unexpected error: %s", err)
+			}
+		})
 	}
 }

@@ -31,7 +31,7 @@ func Test_Install_withPGPSignature(t *testing.T) {
 		SigningKey:  originalSigningKey,
 	})
 
-	path, err := config.Install()
+	path, _, err := config.Install(nil)
 	if err != nil {
 		t.Fatalf("Failed to install: %s", err)
 	}
@@ -66,9 +66,9 @@ func Test_Install_withbuiltinPGPSignature(t *testing.T) {
 		SourceRepo:  "tflint-ruleset-aws",
 	})
 
-	path, err := config.Install()
+	path, _, err := config.Install(nil)
 	if err == nil {
-		t.Fatal("config.Install() should return ErrLegacySigningKeyUsed, but did not")
+		t.Fatal("config.Install(nil) should return ErrLegacySigningKeyUsed, but did not")
 	}
 	if !errors.Is(err, ErrLegacySigningKeyUsed) {
 		t.Fatalf("Failed to install: %s", err)
@@ -104,7 +104,7 @@ func Test_Install_withAttestations(t *testing.T) {
 		SourceRepo:  "tflint-ruleset-aws",
 	})
 
-	path, err := config.Install()
+	path, _, err := config.Install(nil)
 	if err != nil {
 		t.Fatalf("Failed to install: %s", err)
 	}
@@ -144,9 +144,9 @@ func Test_Install_withoutAttestationsAndPGPSignature(t *testing.T) {
 		SourceRepo:  "tflint-ruleset-aws",
 	})
 
-	path, err := config.Install()
+	path, _, err := config.Install(nil)
 	if err == nil {
-		t.Fatal("config.Install() should return ErrPluginNotVerified, but did not")
+		t.Fatal("config.Install(nil) should return ErrPluginNotVerified, but did not")
 	}
 	if !errors.Is(err, ErrPluginNotVerified) {
 		t.Fatalf("Failed to install: %s", err)

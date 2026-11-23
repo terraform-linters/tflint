@@ -20,9 +20,18 @@ import (
 // If the plugin is not enabled, skip without starting.
 // The Terraform Language plugin is treated specially. Plugins for which no version
 // is specified will launch the bundled plugin instead of returning an error.
+//
+// If the lockfile exists, installed plugins are checked against it before launching.
+// Plugins not recorded in the lockfile or with a version that does not match
+// the lock entry will return an error.
 func Discovery(config *tflint.Config) (*Plugin, error) {
 	clients := map[string]*plugin.Client{}
 	rulesets := map[string]*host2plugin.Client{}
+
+	lockfile, err := LoadLockfile(LockfilePath(config.ConfigPath()))
+	if err != nil {
+		return nil, err
+	}
 
 	for _, pluginCfg := range config.Plugins {
 		installCfg := NewInstallConfig(config, pluginCfg)
@@ -47,6 +56,14 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 				return nil, fmt.Errorf(`Plugin "%s" not found. Did you run "tflint --init"?`, pluginCfg.Name)
 			}
 		} else {
+			if pluginCfg.Enabled && lockfile != nil && !installCfg.ManuallyInstalled() {
+				if err := lockfile.checkInstalledPlugin(pluginCfg); err != nil {
+					for _, client := range clients {
+						client.Kill()
+					}
+					return nil, err
+				}
+			}
 			cmd = exec.Command(pluginPath)
 		}
 

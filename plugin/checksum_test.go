@@ -2,8 +2,12 @@ package plugin
 
 import (
 	"errors"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func Test_NewChecksummer(t *testing.T) {
@@ -113,5 +117,56 @@ func Test_Checksummer_Verify(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func Test_Checksummer_binaryHashes(t *testing.T) {
+	checksums := `
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  tflint-ruleset-aws_linux_amd64.zip
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb  tflint-ruleset-aws_linux_amd64
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc  tflint-ruleset-aws_windows_amd64
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd  tflint-ruleset-aws_extra_linux_amd64
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee  tflint-ruleset-google_linux_amd64
+`
+	checksummer, err := NewChecksummer(strings.NewReader(strings.TrimSpace(checksums)))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := map[string]string{
+		"linux_amd64":   "h1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+		"windows_amd64": "h1:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+	}
+	if diff := cmp.Diff(want, checksummer.binaryHashes("aws")); diff != "" {
+		t.Error(diff)
+	}
+}
+
+func Test_Checksummer_HashFile(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "tflint-ruleset-foo")
+	if err := os.WriteFile(path, []byte("plugin binary"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	checksummer, err := NewChecksummer(strings.NewReader(""))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	got, err := checksummer.HashFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// sha256 of "plugin binary"
+	want := "h1:" + sha256Hex([]byte("plugin binary"))
+	if got != want {
+		t.Errorf("expected %s, but got %s", want, got)
+	}
+	if !h1HashPattern.MatchString(got) {
+		t.Errorf("%s does not match the h1 hash pattern", got)
+	}
+
+	if _, err := checksummer.HashFile(filepath.Join(t.TempDir(), "not_found")); err == nil {
+		t.Error("expected an error, but got nil")
 	}
 }

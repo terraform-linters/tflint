@@ -11,11 +11,13 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"maps"
 	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"slices"
 	"strings"
 
 	"github.com/google/go-github/v81/github"
@@ -106,27 +108,44 @@ var (
 //   - The checksum file must contain a sha256 hash and filename
 //
 // If possible, verify the signature to ensure that the checksum file has not been tampered with.
-func (c *InstallConfig) Install() (string, error) {
+//
+// If a lock entry is passed, the installation is verified against it:
+//
+//   - The source repository ID must match the locked one
+//   - If the version matches, the binary hashes must match the locked ones
+//
+// If the verification fails, nothing is installed. On success, it returns
+// a new lock entry that should be recorded in the lockfile.
+func (c *InstallConfig) Install(locked *LockedPlugin) (string, *LockedPlugin, error) {
 	dir, err := getPluginDir(c.globalConfig)
 	if err != nil {
-		return "", fmt.Errorf("Failed to get plugin dir: %w", err)
+		return "", nil, fmt.Errorf("Failed to get plugin dir: %w", err)
 	}
 
 	path := filepath.Join(dir, c.InstallPath()+fileExt())
 	log.Printf("[DEBUG] Mkdir plugin dir: %s", filepath.Dir(path))
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-		return "", fmt.Errorf("Failed to mkdir to %s: %w", filepath.Dir(path), err)
+		return "", nil, fmt.Errorf("Failed to mkdir to %s: %w", filepath.Dir(path), err)
 	}
 
 	ctx := context.Background()
 	client, err := newGitHubClient(ctx, c)
 	if err != nil {
-		return "", fmt.Errorf("Failed to create GitHub client: %s", err)
+		return "", nil, fmt.Errorf("Failed to create GitHub client: %s", err)
 	}
 
-	assets, checksum, attestations, repo, err := c.fetchFromGitHub(ctx, client)
+	// Verify the repository ID before downloading anything
+	repo, err := c.fetchRepository(ctx, client)
 	if err != nil {
-		return "", err
+		return "", nil, fmt.Errorf("Failed to get GitHub repository metadata: %s", err)
+	}
+	if err := locked.verifyRepositoryID(repo.GetID()); err != nil {
+		return "", nil, err
+	}
+
+	assets, checksum, attestations, err := c.fetchFromGitHub(ctx, client)
+	if err != nil {
+		return "", nil, err
 	}
 
 	var legacyKeyUsed bool
@@ -136,7 +155,7 @@ func (c *InstallConfig) Install() (string, error) {
 	case SignatureModeAttestation:
 		log.Printf("[DEBUG] Verifying using artifact attestations")
 		if err := sigchecker.VerifyAttestations(bytes.NewReader(checksum), attestations); err != nil {
-			return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
+			return "", nil, fmt.Errorf("Failed to check checksums.txt signature: %s", err)
 		}
 		log.Printf("[DEBUG] Verified signature successfully")
 
@@ -147,12 +166,12 @@ func (c *InstallConfig) Install() (string, error) {
 			defer os.Remove(signatureFile.Name())
 		}
 		if err != nil {
-			return "", fmt.Errorf("Failed to download checksums.txt.sig: %s", err)
+			return "", nil, fmt.Errorf("Failed to download checksums.txt.sig: %s", err)
 		}
 
 		log.Printf("[DEBUG] Verifying using PGP signing key")
 		if err := sigchecker.VerifyPGPSignature(bytes.NewReader(checksum), signatureFile); err != nil {
-			return "", fmt.Errorf("Failed to check checksums.txt signature: %s", err)
+			return "", nil, fmt.Errorf("Failed to check checksums.txt signature: %s", err)
 		}
 		log.Printf("[DEBUG] Verified signature successfully")
 
@@ -174,30 +193,114 @@ func (c *InstallConfig) Install() (string, error) {
 		defer os.Remove(zipFile.Name())
 	}
 	if err != nil {
-		return "", fmt.Errorf("Failed to download %s: %s", c.AssetName(), err)
+		return "", nil, fmt.Errorf("Failed to download %s: %s", c.AssetName(), err)
 	}
 
 	checksummer, err := NewChecksummer(bytes.NewReader(checksum))
 	if err != nil {
-		return "", fmt.Errorf("Failed to parse checksums file: %s", err)
+		return "", nil, fmt.Errorf("Failed to parse checksums file: %s", err)
 	}
 	if err = checksummer.Verify(c.AssetName(), zipFile); err != nil {
-		return "", fmt.Errorf("Failed to verify checksums: %s", err)
+		return "", nil, fmt.Errorf("Failed to verify checksums: %s", err)
 	}
 	log.Printf("[DEBUG] Matched checksum successfully")
 
-	if err = extractFileFromZipFile(zipFile, path); err != nil {
-		return "", fmt.Errorf("Failed to extract binary from %s: %s", c.AssetName(), err)
+	entry, err := c.installBinary(zipFile, path, locked, repo.GetID(), checksummer)
+	if err != nil {
+		return "", nil, err
 	}
 
 	log.Printf("[DEBUG] Installed %s successfully", path)
 	if sigMode == SignatureModeNone {
-		return path, ErrPluginNotVerified
+		return path, entry, ErrPluginNotVerified
 	}
 	if legacyKeyUsed {
-		return path, ErrLegacySigningKeyUsed
+		return path, entry, ErrLegacySigningKeyUsed
 	}
-	return path, nil
+	return path, entry, nil
+}
+
+// installBinary extracts the plugin binary from the zip file and installs it to the given path.
+// The binary is extracted to a temporary file first, and moved to the install path only after
+// verifying the binary hash against the lockfile and checksums.txt, so that binaries failing
+// the verification are never installed. Returns a new lock entry for the installed plugin.
+func (c *InstallConfig) installBinary(zipFile *os.File, path string, locked *LockedPlugin, repositoryID int64, checksummer *Checksummer) (*LockedPlugin, error) {
+	tmpFile, err := os.CreateTemp(filepath.Dir(path), filepath.Base(path)+".*.tmp")
+	if err != nil {
+		return nil, fmt.Errorf("Failed to create a temporary file: %s", err)
+	}
+	tmpPath := tmpFile.Name()
+	tmpFile.Close()
+	defer os.Remove(tmpPath)
+
+	if err = extractFileFromZipFile(zipFile, filepath.Base(path), tmpPath); err != nil {
+		return nil, fmt.Errorf("Failed to extract binary from %s: %s", c.AssetName(), err)
+	}
+	binaryHash, err := checksummer.HashFile(tmpPath)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to calculate the hash of the plugin binary: %s", err)
+	}
+	entry, err := c.newLockedPlugin(locked, repositoryID, checksummer, binaryHash)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := os.Chmod(tmpPath, 0o755); err != nil {
+		return nil, fmt.Errorf("Failed to change the permission of %s: %s", tmpPath, err)
+	}
+	if err := os.Rename(tmpPath, path); err != nil {
+		return nil, fmt.Errorf("Failed to move the plugin binary to %s: %s", path, err)
+	}
+	return entry, nil
+}
+
+// newLockedPlugin returns a new lock entry for the installed plugin.
+// Binary hashes for all platforms are taken from checksums.txt if available.
+// Otherwise, only the hash of the installed binary for the current platform is recorded.
+//
+// If the passed lock entry has the same version, the hashes must match
+// the locked ones. Locked hashes for other platforms are kept.
+func (c *InstallConfig) newLockedPlugin(locked *LockedPlugin, repositoryID int64, checksummer *Checksummer, binaryHash string) (*LockedPlugin, error) {
+	platform := currentPlatform()
+
+	hashes := checksummer.binaryHashes(c.Name)
+	if len(hashes) == 0 {
+		log.Printf("[DEBUG] No binary hashes found in checksums.txt. Only the hash of the installed binary is recorded")
+	}
+	if expected, exists := hashes[platform]; exists && expected != binaryHash {
+		return nil, fmt.Errorf("Failed to match the plugin binary hash for %s with checksums.txt: expected=%s, actual=%s", platform, expected, binaryHash)
+	}
+	hashes[platform] = binaryHash
+
+	if locked != nil && locked.Version == c.Version {
+		for _, p := range slices.Sorted(maps.Keys(locked.Hashes)) {
+			lockedHash := locked.Hashes[p]
+			hash, exists := hashes[p]
+			if !exists {
+				hashes[p] = lockedHash
+				continue
+			}
+			if hash != lockedHash {
+				return nil, fmt.Errorf(`The hash of the "%s" plugin binary for %s does not match the lockfile: locked=%s, actual=%s. The release may have been tampered with`, c.Source, p, lockedHash, hash)
+			}
+		}
+	}
+
+	return &LockedPlugin{
+		Source:       c.Source,
+		Version:      c.Version,
+		RepositoryID: repositoryID,
+		Hashes:       hashes,
+	}, nil
+}
+
+// verifyRepositoryID checks that the given repository ID matches the locked one.
+// If the receiver is nil (not locked), it always succeeds.
+func (p *LockedPlugin) verifyRepositoryID(id int64) error {
+	if p == nil || p.RepositoryID == id {
+		return nil
+	}
+	return fmt.Errorf(`The repository ID of "%s" does not match the lockfile: locked=%d, actual=%d. The repository may have been deleted and recreated by someone else. If this change is expected, remove the plugin entry from the lockfile and run "tflint --init" again`, p.Source, p.RepositoryID, id)
 }
 
 func (c *InstallConfig) signatureMode(repo *github.Repository, attestations []*github.Attestation, sigchecker *SignatureChecker) SignatureMode {
@@ -231,10 +334,10 @@ func (c *InstallConfig) shouldVerifyAttestations(repo *github.Repository, attest
 	return len(attestations) > 0
 }
 
-func (c *InstallConfig) fetchFromGitHub(ctx context.Context, client *github.Client) (map[string]*github.ReleaseAsset, []byte, []*github.Attestation, *github.Repository, error) {
+func (c *InstallConfig) fetchFromGitHub(ctx context.Context, client *github.Client) (map[string]*github.ReleaseAsset, []byte, []*github.Attestation, error) {
 	assets, err := c.fetchReleaseAssets(ctx, client)
 	if err != nil {
-		return nil, nil, nil, nil, fmt.Errorf("Failed to fetch GitHub releases: %w", err)
+		return nil, nil, nil, fmt.Errorf("Failed to fetch GitHub releases: %w", err)
 	}
 
 	log.Printf("[DEBUG] Download checksums.txt")
@@ -243,17 +346,17 @@ func (c *InstallConfig) fetchFromGitHub(ctx context.Context, client *github.Clie
 		defer os.Remove(checksumsFile.Name())
 	}
 	if err != nil {
-		return assets, nil, nil, nil, fmt.Errorf("Failed to download checksums.txt: %s", err)
+		return assets, nil, nil, fmt.Errorf("Failed to download checksums.txt: %s", err)
 	}
 	checksum, err := io.ReadAll(checksumsFile)
 	if err != nil {
-		return assets, nil, nil, nil, fmt.Errorf("Failed to read checksums.txt: %s", err)
+		return assets, nil, nil, fmt.Errorf("Failed to read checksums.txt: %s", err)
 	}
 
 	// GitHub Enterprise Server does not support Artifact Attestations
 	if c.SourceHost != defaultSourceHost {
 		log.Printf("[DEBUG] Artifact attestations are not supported on GitHub Enterprise Server and will be ignored")
-		return assets, checksum, nil, nil, nil
+		return assets, checksum, nil, nil
 	}
 	attestations, err := c.fetchArtifactAttestations(ctx, client, checksum)
 	if err != nil {
@@ -261,18 +364,13 @@ func (c *InstallConfig) fetchFromGitHub(ctx context.Context, client *github.Clie
 		// continue with the remaining verification flow.
 		if isIgnorableAttestationError(err) {
 			log.Printf("[DEBUG] Artifact attestations unavailable and will be ignored: %s", err)
-			return assets, checksum, nil, nil, nil
+			return assets, checksum, nil, nil
 		} else {
-			return assets, checksum, nil, nil, fmt.Errorf("Failed to download artifact attestations: %s", err)
+			return assets, checksum, nil, fmt.Errorf("Failed to download artifact attestations: %s", err)
 		}
 	}
 
-	repo, err := c.fetchRepository(ctx, client)
-	if err != nil {
-		return assets, checksum, attestations, nil, fmt.Errorf("Failed to get GitHub repository metadata: %s", err)
-	}
-
-	return assets, checksum, attestations, repo, nil
+	return assets, checksum, attestations, nil
 }
 
 // fetchRepository fetches GitHub repository metadata.
@@ -470,7 +568,8 @@ func (c *InstallConfig) getGitHubToken() string {
 	return ""
 }
 
-func extractFileFromZipFile(zipFile *os.File, savePath string) error {
+// extractFileFromZipFile extracts the file with the given name from the zip file to savePath.
+func extractFileFromZipFile(zipFile *os.File, name string, savePath string) error {
 	zipFileStat, err := zipFile.Stat()
 	if err != nil {
 		return err
@@ -483,7 +582,7 @@ func extractFileFromZipFile(zipFile *os.File, savePath string) error {
 	var reader io.ReadCloser
 	for _, f := range zipReader.File {
 		log.Printf("[DEBUG] file found in zip: %s", f.Name)
-		if f.Name != filepath.Base(savePath) {
+		if f.Name != name {
 			continue
 		}
 
@@ -495,7 +594,7 @@ func extractFileFromZipFile(zipFile *os.File, savePath string) error {
 		break
 	}
 	if reader == nil {
-		return fmt.Errorf("file not found. Does the zip contain %s ?", filepath.Base(savePath))
+		return fmt.Errorf("file not found. Does the zip contain %s ?", name)
 	}
 
 	file, err := os.OpenFile(savePath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755)
