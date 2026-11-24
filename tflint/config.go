@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"maps"
+	"net/url"
 	"os"
 	"path/filepath"
 	"slices"
@@ -140,6 +141,7 @@ type PluginConfig struct {
 	Enabled    bool   `hcl:"enabled"`
 	Version    string `hcl:"version,optional"`
 	Source     string `hcl:"source,optional"`
+	SourceType string `hcl:"source_type,optional"`
 	Signature  string `hcl:"signature,optional"`
 	SigningKey string `hcl:"signing_key,optional"`
 
@@ -694,6 +696,10 @@ func (c *Config) ValidateRules(rulesets ...RuleSet) error {
 }
 
 func (c *PluginConfig) validate() error {
+	if !slices.Contains([]string{"", "github", "gitlab"}, c.SourceType) {
+		return fmt.Errorf(`plugin "%s": %q is invalid source_type. Allowed values are: github, gitlab`, c.Name, c.SourceType)
+	}
+
 	if c.Version != "" && c.Source == "" {
 		return fmt.Errorf(`plugin "%s": "source" attribute cannot be omitted when specifying "version"`, c.Name)
 	}
@@ -704,14 +710,17 @@ func (c *PluginConfig) validate() error {
 		}
 
 		parts := strings.Split(c.Source, "/")
-		// Expected `github.com/owner/repo` format
-		if len(parts) != 3 {
+		if c.SourceType == "gitlab" {
+			if err := c.validateGitLabSource(parts); err != nil {
+				return err
+			}
+		} else if len(parts) != 3 {
 			return fmt.Errorf(`plugin "%s": "source" is invalid. Must be a GitHub reference in the format "${host}/${owner}/${repo}"`, c.Name)
 		}
 
 		c.SourceHost = parts[0]
-		c.SourceOwner = parts[1]
-		c.SourceRepo = parts[2]
+		c.SourceOwner = strings.Join(parts[1:len(parts)-1], "/")
+		c.SourceRepo = parts[len(parts)-1]
 	}
 
 	if c.Signature != "" {
@@ -721,7 +730,27 @@ func (c *PluginConfig) validate() error {
 		if c.SigningKey != "" && slices.Contains([]string{signatureModeAttestation, signatureModeNone}, c.Signature) {
 			return fmt.Errorf(`plugin "%s": "signing_key" cannot be used when "signature" is %q`, c.Name, c.Signature)
 		}
+		if c.SourceType == "gitlab" && c.Signature == signatureModeAttestation {
+			return fmt.Errorf(`plugin "%s": "signature" = "attestation" is not supported for GitLab sources`, c.Name)
+		}
 	}
 
+	return nil
+}
+
+func (c *PluginConfig) validateGitLabSource(parts []string) error {
+	invalid := fmt.Errorf(`plugin "%s": "source" is invalid. Must be a GitLab reference in the format "${host}/${namespace}/${repo}"`, c.Name)
+	if len(parts) < 3 {
+		return invalid
+	}
+	u, err := url.Parse("https://" + c.Source)
+	if err != nil || u.Host != parts[0] || u.Hostname() == "" || u.User != nil || u.RawQuery != "" || u.ForceQuery || u.Fragment != "" {
+		return invalid
+	}
+	for _, part := range parts[1:] {
+		if part == "" || part == "." || part == ".." || strings.ContainsAny(part, `\:*?"<>|#%`) || strings.TrimSpace(part) != part {
+			return invalid
+		}
+	}
 	return nil
 }
