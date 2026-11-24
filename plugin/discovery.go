@@ -13,6 +13,7 @@ import (
 	plugin "github.com/hashicorp/go-plugin"
 	"github.com/mitchellh/go-homedir"
 	"github.com/terraform-linters/tflint-plugin-sdk/plugin/host2plugin"
+	"github.com/terraform-linters/tflint/internal/workingdir"
 	"github.com/terraform-linters/tflint/tflint"
 )
 
@@ -21,12 +22,24 @@ import (
 // The Terraform Language plugin is treated specially. Plugins for which no version
 // is specified will launch the bundled plugin instead of returning an error.
 func Discovery(config *tflint.Config) (*Plugin, error) {
+	return DiscoveryAt(config, "")
+}
+
+// DiscoveryAt resolves plugin paths and starts plugins in dir. It does not
+// change the host's working directory.
+func DiscoveryAt(config *tflint.Config, dir string) (_ *Plugin, err error) {
 	clients := map[string]*plugin.Client{}
 	rulesets := map[string]*host2plugin.Client{}
+	plugins := &Plugin{RuleSets: rulesets, clients: clients}
+	defer func() {
+		if err != nil {
+			plugins.Clean()
+		}
+	}()
 
 	for _, pluginCfg := range config.Plugins {
 		installCfg := NewInstallConfig(config, pluginCfg)
-		pluginPath, err := FindPluginPath(installCfg)
+		pluginPath, err := findPluginPathAt(installCfg, dir)
 		var cmd *exec.Cmd
 		if os.IsNotExist(err) {
 			if pluginCfg.Name == "terraform" && installCfg.ManuallyInstalled() {
@@ -38,7 +51,7 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 				cmd = exec.Command(self, "--act-as-bundled-plugin")
 			} else {
 				if installCfg.ManuallyInstalled() {
-					pluginDir, err := getPluginDir(config)
+					pluginDir, err := getPluginDirAt(config, dir)
 					if err != nil {
 						return nil, err
 					}
@@ -49,6 +62,7 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 		} else {
 			cmd = exec.Command(pluginPath)
 		}
+		cmd.Dir = dir
 
 		if pluginCfg.Enabled {
 			log.Printf(`[INFO] Plugin "%s" found`, pluginCfg.Name)
@@ -56,6 +70,7 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 			client := host2plugin.NewClient(&host2plugin.ClientOpts{
 				Cmd: cmd,
 			})
+			clients[pluginCfg.Name] = client
 			rpcClient, err := client.Client()
 			if err != nil {
 				return nil, pluginClientError(err, pluginCfg)
@@ -66,19 +81,22 @@ func Discovery(config *tflint.Config) (*Plugin, error) {
 			}
 			ruleset := raw.(*host2plugin.Client)
 
-			clients[pluginCfg.Name] = client
 			rulesets[pluginCfg.Name] = ruleset
 		} else {
 			log.Printf(`[INFO] Plugin "%s" found, but the plugin is disabled`, pluginCfg.Name)
 		}
 	}
 
-	return &Plugin{RuleSets: rulesets, clients: clients}, nil
+	return plugins, nil
 }
 
 // FindPluginPath returns the plugin binary path.
 func FindPluginPath(config *InstallConfig) (string, error) {
-	dir, err := getPluginDir(config.globalConfig)
+	return findPluginPathAt(config, "")
+}
+
+func findPluginPathAt(config *InstallConfig, workingDir string) (string, error) {
+	dir, err := getPluginDirAt(config.globalConfig, workingDir)
 	if err != nil {
 		return "", err
 	}
@@ -102,20 +120,26 @@ func FindPluginPath(config *InstallConfig) (string, error) {
 // If the environment variable is set, other directories will not be considered,
 // but if the current directory does not exist, it will fallback to the home directory.
 func getPluginDir(cfg *tflint.Config) (string, error) {
+	return getPluginDirAt(cfg, "")
+}
+
+func getPluginDirAt(cfg *tflint.Config, dir string) (string, error) {
 	if cfg.PluginDir != "" {
-		return homedir.Expand(cfg.PluginDir)
+		path, err := homedir.Expand(cfg.PluginDir)
+		return workingdir.Resolve(dir, path), err
 	}
 
-	if dir := os.Getenv("TFLINT_PLUGIN_DIR"); dir != "" {
-		return dir, nil
+	if path := os.Getenv("TFLINT_PLUGIN_DIR"); path != "" {
+		return workingdir.Resolve(dir, path), nil
 	}
 
-	_, err := os.Stat(localPluginRoot)
+	localRoot := workingdir.Resolve(dir, localPluginRoot)
+	_, err := os.Stat(localRoot)
 	if os.IsNotExist(err) {
 		return homedir.Expand(PluginRoot)
 	}
 
-	return localPluginRoot, err
+	return localRoot, err
 }
 
 // findPluginPath returns the path of the existing plugin.

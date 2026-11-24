@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/spf13/afero"
+	"github.com/terraform-linters/tflint/internal/workingdir"
 	"github.com/terraform-linters/tflint/terraform/addrs"
 )
 
@@ -25,7 +26,8 @@ type Loader struct {
 	parser  *Parser
 	modules moduleMgr
 
-	baseDir string
+	baseDir    string
+	workingDir string
 }
 
 // NewLoader creates and returns a loader that reads configuration from the
@@ -45,6 +47,25 @@ func NewLoader(fs afero.Afero, originalWd string) (*Loader, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to determine current working directory: %s", err)
 	}
+	return newLoader(fs, originalWd, wd)
+}
+
+// NewLoaderAt resolves filesystem reads against an absolute working directory.
+// Diagnostic filenames remain relative to originalWd.
+// Each concurrent inspection must use its own loader.
+func NewLoaderAt(fs afero.Afero, originalWd, wd string) (*Loader, error) {
+	if !filepath.IsAbs(wd) {
+		return nil, fmt.Errorf("working directory must be absolute: %s", wd)
+	}
+	loader, err := newLoader(afero.Afero{Fs: workingdir.New(fs, wd)}, originalWd, wd)
+	if err != nil {
+		return nil, err
+	}
+	loader.workingDir = wd
+	return loader, nil
+}
+
+func newLoader(fs afero.Afero, originalWd, wd string) (*Loader, error) {
 	baseDir, err := filepath.Rel(originalWd, wd)
 	if err != nil {
 		return nil, fmt.Errorf("failed to determine base dir: %s", err)
@@ -69,7 +90,11 @@ func NewLoader(fs afero.Afero, originalWd string) (*Loader, error) {
 
 // LoadRootModule reads the root module using the loader's parser options.
 func (l *Loader) LoadRootModule(dir string) (*Module, hcl.Diagnostics) {
-	return l.parser.LoadConfigDir(l.baseDir, dir)
+	mod, diags := l.parser.LoadConfigDir(l.baseDir, dir)
+	if mod != nil {
+		mod.WorkingDir = l.workingDir
+	}
+	return mod, diags
 }
 
 // ModuleWalker returns a walker suitable for loading already-installed modules.
@@ -161,7 +186,7 @@ func (l *Loader) LoadValuesFiles(dir string, files ...string) ([]InputValues, hc
 		return nil, diags
 	}
 	defaultVarsFile := filepath.Join(dir, defaultVarsFilename)
-	if _, err := os.Stat(defaultVarsFile); err == nil {
+	if l.parser.Exists(defaultVarsFile) {
 		autoLoadFiles = append([]string{defaultVarsFile}, autoLoadFiles...)
 	}
 

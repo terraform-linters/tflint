@@ -52,8 +52,9 @@ func NewRunner(originalWorkingDir string, c *Config, ants map[string]Annotations
 	}
 	ctx := &terraform.Evaluator{
 		Meta: &terraform.ContextMeta{
-			Env:                terraform.Workspace(),
+			Env:                terraform.WorkspaceAt(cfg.Root.Module.WorkingDir),
 			OriginalWorkingDir: originalWorkingDir,
+			WorkingDir:         cfg.Root.Module.WorkingDir,
 		},
 		ModulePath:     cfg.Path.UnkeyedInstanceShim(),
 		Config:         cfg.Root,
