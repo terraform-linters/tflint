@@ -2,6 +2,7 @@ package formatter
 
 import (
 	"fmt"
+	"net/url"
 	"path/filepath"
 
 	"github.com/hashicorp/hcl/v2"
@@ -11,6 +12,15 @@ import (
 )
 
 type sarifFormat struct{ bufferedFormat }
+
+func sarifArtifactLocation(filename string) *sarif.ArtifactLocation {
+	uri := url.URL{Path: filepath.ToSlash(filename)}
+	if filepath.VolumeName(filename) != "" {
+		// Keep the existing volume prefix when escaping the path.
+		return sarif.NewSimpleArtifactLocation(uri.EscapedPath())
+	}
+	return sarif.NewSimpleArtifactLocation(uri.String())
+}
 
 func (sarifFormat) print(f *Formatter, issues tflint.Issues, appErr error, _ map[string][]byte) {
 	report, initErr := sarif.New(sarif.Version210)
@@ -47,7 +57,7 @@ func (sarifFormat) print(f *Formatter, issues tflint.Issues, appErr error, _ map
 		var location *sarif.PhysicalLocation
 		if issue.Range.Filename != "" {
 			location = sarif.NewPhysicalLocation().
-				WithArtifactLocation(sarif.NewSimpleArtifactLocation(filepath.ToSlash(issue.Range.Filename)))
+				WithArtifactLocation(sarifArtifactLocation(issue.Range.Filename))
 
 			if !issue.Range.Empty() {
 				location.WithRegion(
@@ -95,7 +105,7 @@ func (f *Formatter) sarifAddErrors(errRun *sarif.Run, err error) {
 				// in that case, mirroring how issues without a source are handled.
 				if diag.Subject != nil {
 					location := sarif.NewPhysicalLocation().
-						WithArtifactLocation(sarif.NewSimpleArtifactLocation(filepath.ToSlash(diag.Subject.Filename))).
+						WithArtifactLocation(sarifArtifactLocation(diag.Subject.Filename)).
 						WithRegion(
 							sarif.NewRegion().
 								WithByteOffset(diag.Subject.Start.Byte).

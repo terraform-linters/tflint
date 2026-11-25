@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -13,6 +14,23 @@ import (
 	"github.com/terraform-linters/tflint/tflint"
 	"github.com/xeipuuv/gojsonschema"
 )
+
+func TestSARIFArtifactLocation(t *testing.T) {
+	uri := sarifArtifactLocation(filepath.Join("module", "main.tf")).URI
+	if got, want := *uri, "module/main.tf"; got != want {
+		t.Errorf("artifact URI = %q, want %q", got, want)
+	}
+
+	t.Run("drive-qualified path", func(t *testing.T) {
+		if runtime.GOOS != "windows" {
+			t.Skip("Windows drive letter")
+		}
+		uri := sarifArtifactLocation(`C:\module\stack #1.tf`).URI
+		if got, want := *uri, "C:/module/stack%20%231.tf"; got != want {
+			t.Errorf("artifact URI = %q, want %q", got, want)
+		}
+	})
+}
 
 func Test_sarifPrint(t *testing.T) {
 	cases := []struct {
@@ -54,13 +72,13 @@ func Test_sarifPrint(t *testing.T) {
 }`, tflint.Version, tflint.Version),
 		},
 		{
-			Name: "issues",
+			Name: "issues with a path that needs URI encoding",
 			Issues: tflint.Issues{
 				{
 					Rule:    &testRule{},
 					Message: "test",
 					Range: hcl.Range{
-						Filename: "test.tf",
+						Filename: filepath.Join("module", "stack #50% café.tf"),
 						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
 						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
 					},
@@ -99,7 +117,7 @@ func Test_sarifPrint(t *testing.T) {
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "test.tf"
+                  "uri": "module/stack%%20%%2350%%25%%20caf%%C3%%A9.tf"
                 },
                 "region": {
                   "startLine": 1,
@@ -506,7 +524,7 @@ func Test_sarifPrint(t *testing.T) {
 }`, tflint.Version, tflint.Version),
 		},
 		{
-			Name: "HCL diagnostics are surfaced as tflint-errors",
+			Name: "HCL diagnostics have encoded URIs in tflint-errors",
 			Error: fmt.Errorf(
 				"babel fish confused; %w",
 				hcl.Diagnostics{
@@ -515,7 +533,7 @@ func Test_sarifPrint(t *testing.T) {
 						Summary:  "summary",
 						Detail:   "detail",
 						Subject: &hcl.Range{
-							Filename: "filename",
+							Filename: filepath.Join("module", "parse #1.tf"),
 							Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
 							End:      hcl.Pos{Line: 5, Column: 1, Byte: 4},
 						},
@@ -565,7 +583,7 @@ func Test_sarifPrint(t *testing.T) {
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "filename"
+                  "uri": "module/parse%%20%%231.tf"
                 },
                 "region": {
                   "startLine": 1,
