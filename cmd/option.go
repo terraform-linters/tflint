@@ -24,7 +24,7 @@ type Options struct {
 	Varfiles               []string `long:"var-file" description:"Terraform variable file name" value-name:"FILE"`
 	Variables              []string `long:"var" description:"Set a Terraform variable" value-name:"'foo=bar'"`
 	CallModuleType         *string  `long:"call-module-type" description:"Types of module to call (default: local)" choice:"all" choice:"local" choice:"none"`
-	Chdir                  string   `long:"chdir" description:"Switch to a different working directory before executing the command" value-name:"DIR"`
+	Chdir                  []string `long:"chdir" description:"Switch to different working directories before executing the command" value-name:"DIR"`
 	Recursive              bool     `long:"recursive" description:"Run command in each directory recursively"`
 	Filter                 []string `long:"filter" description:"Filter issues by file names or globs" value-name:"FILE"`
 	Force                  *bool    `long:"force" description:"Return zero exit status even if issues found"`
