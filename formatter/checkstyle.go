@@ -42,7 +42,7 @@ type checkstyleFormat struct{ bufferedFormat }
 
 func (checkstyleFormat) print(f *Formatter, issues tflint.Issues, appErr error, _ map[string][]byte) {
 	files := map[string]*checkstyleFile{}
-	for _, issue := range issues {
+	for _, issue := range issues.Sort() {
 		cherr := &checkstyleError{
 			Source:   issue.Rule.Name(),
 			Line:     issue.Range.Start.Line,

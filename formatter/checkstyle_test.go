@@ -43,6 +43,36 @@ func Test_checkstylePrint(t *testing.T) {
 </checkstyle>`,
 		},
 		{
+			Name: "issues are sorted by position within a file",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRule{},
+					Message: "later line",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 3, Column: 1, Byte: 20},
+						End:      hcl.Pos{Line: 3, Column: 4, Byte: 23},
+					},
+				},
+				{
+					Rule:    &testRule{},
+					Message: "first",
+					Range: hcl.Range{
+						Filename: "test.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+					},
+				},
+			},
+			Stdout: `<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle>
+  <file name="test.tf">
+    <error source="test_rule" line="1" column="1" severity="error" message="first" link="https://github.com" rule="test_rule"></error>
+    <error source="test_rule" line="3" column="1" severity="error" message="later line" link="https://github.com" rule="test_rule"></error>
+  </file>
+</checkstyle>`,
+		},
+		{
 			Name:   "error only",
 			Issues: tflint.Issues{},
 			Error:  fmt.Errorf("Failed to check ruleset"),

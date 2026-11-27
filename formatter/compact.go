@@ -14,7 +14,7 @@ func (compactFormat) print(f *Formatter, issues tflint.Issues, appErr error, sou
 		fmt.Fprintf(f.Stdout, "%d issue(s) found:\n\n", len(issues))
 	}
 
-	for _, issue := range issues {
+	for _, issue := range issues.Sort() {
 		fmt.Fprintf(
 			f.Stdout,
 			"%s:%d:%d: %s - %s (%s)\n",

@@ -2,6 +2,7 @@ package formatter
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -780,4 +781,43 @@ type testRuleWithoutLink struct {
 
 func (r *testRuleWithoutLink) Link() string {
 	return ""
+}
+
+func Test_sarifPrintSortsIssues(t *testing.T) {
+	newIssue := func(message string, line int) *tflint.Issue {
+		return &tflint.Issue{
+			Rule:    &testRule{},
+			Message: message,
+			Range: hcl.Range{
+				Filename: "test.tf",
+				Start:    hcl.Pos{Line: line, Column: 1, Byte: line * 10},
+				End:      hcl.Pos{Line: line, Column: 4, Byte: line*10 + 3},
+			},
+		}
+	}
+
+	stdout := &bytes.Buffer{}
+	formatter := &Formatter{Stdout: stdout, Stderr: &bytes.Buffer{}, Format: "sarif"}
+	formatter.Print(tflint.Issues{newIssue("third", 3), newIssue("first", 1), newIssue("second", 2)}, nil, map[string][]byte{})
+
+	var report struct {
+		Runs []struct {
+			Results []struct {
+				Message struct {
+					Text string `json:"text"`
+				} `json:"message"`
+			} `json:"results"`
+		} `json:"runs"`
+	}
+	if err := json.Unmarshal(stdout.Bytes(), &report); err != nil {
+		t.Fatal(err)
+	}
+
+	var got []string
+	for _, result := range report.Runs[0].Results {
+		got = append(got, result.Message.Text)
+	}
+	if diff := cmp.Diff([]string{"first", "second", "third"}, got); diff != "" {
+		t.Fatalf("results are not sorted by position: %s", diff)
+	}
 }

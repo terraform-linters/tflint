@@ -42,6 +42,44 @@ test.tf:1:1: Error - test (test_rule)
 `,
 		},
 		{
+			Name: "issues are sorted by position",
+			Issues: tflint.Issues{
+				{
+					Rule:    &testRule{},
+					Message: "second file",
+					Range: hcl.Range{
+						Filename: "b.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+					},
+				},
+				{
+					Rule:    &testRule{},
+					Message: "later line",
+					Range: hcl.Range{
+						Filename: "a.tf",
+						Start:    hcl.Pos{Line: 3, Column: 1, Byte: 20},
+						End:      hcl.Pos{Line: 3, Column: 4, Byte: 23},
+					},
+				},
+				{
+					Rule:    &testRule{},
+					Message: "first",
+					Range: hcl.Range{
+						Filename: "a.tf",
+						Start:    hcl.Pos{Line: 1, Column: 1, Byte: 0},
+						End:      hcl.Pos{Line: 1, Column: 4, Byte: 3},
+					},
+				},
+			},
+			Stdout: `3 issue(s) found:
+
+a.tf:1:1: Error - first (test_rule)
+a.tf:3:1: Error - later line (test_rule)
+b.tf:1:1: Error - second file (test_rule)
+`,
+		},
+		{
 			Name:   "error",
 			Error:  errors.New("an error occurred"),
 			Stderr: "an error occurred\n",

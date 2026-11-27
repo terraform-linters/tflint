@@ -25,7 +25,7 @@ func (sarifFormat) print(f *Formatter, issues tflint.Issues, appErr error, _ map
 
 	report.AddRun(run)
 
-	for _, issue := range issues {
+	for _, issue := range issues.Sort() {
 		rule := run.AddRule(issue.Rule.Name()).
 			WithDescription("")
 		if link := issue.Rule.Link(); link != "" {
